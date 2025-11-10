@@ -62,6 +62,7 @@ function LoginPage() {
       }
     } catch (error) {
       setErrors({ apiError: error.response?.data?.message || "Login failed" });
+      console.log(error.message)
     }
     finally{
       setLoader2(false)

@@ -14,6 +14,7 @@ import Footer from "../ui/Footer";
 import { BiBookmarkAlt, BiLike, BiSolidLike } from "react-icons/bi";
 import axiosInstance from "../instances/Axiosinstances";
 import { BsPersonWorkspace } from "react-icons/bs";
+import getTimeAgo from "../components/DateCovertion";
 
 function YourPost() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -235,8 +236,9 @@ function YourPost() {
                       <p className="text-sm text-white font-semibold">
                         {data.authorName}
                       </p>
-                      <p className="text-xs text-gray-500">
-                        {data.timestamp.slice(0, 10)}
+                      <p className="text-xs text-gray-400 font-semibold">
+                        {/* {data.timestamp.slice(0, 10)} */}
+                        {getTimeAgo(data.timestamp)}
                       </p>
                     </div>
                   </div>
@@ -350,8 +352,7 @@ function YourPost() {
                 + Create New Post
               </Link>
               <span className="text-white/50 md:text-2xl  text-center w-full">
-                If you already have posts and they’re not showing, please check
-                your internet connection."{" "}
+               Else please check your internet connection.{" "}
               </span>
             </h1>
           )}

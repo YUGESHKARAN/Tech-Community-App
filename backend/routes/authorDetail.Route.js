@@ -30,7 +30,7 @@ const {
 } = require("../controllers/authorDetail.Controller");
 
 
-const authenticateToken = require('../authMiddleware')
+const authenticateToken = require('../middleware/authMiddleware')
 const storage = multer.memoryStorage();
 
 const upload = multer({ storage });

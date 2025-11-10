@@ -43,7 +43,7 @@ function HomePage() {
       );
       // console.log("authors", response.data);
     } catch (err) {
-      console.error(err);
+      console.log(err);
     }
   };
 
@@ -59,7 +59,7 @@ function HomePage() {
       setCategoryCount(response.data.count);
       // setPosts(response.data.posts);
     } catch (err) {
-      console.error("Error", err);
+      console.log("Error", err);
     }
   };
 
@@ -71,7 +71,7 @@ function HomePage() {
       setAnnouncement(response.data.announcement);
       setYourPost(response.data.posts);
     } catch (err) {
-      console.error("Error", err);
+      console.log("Error", err);
     }
   };
 
@@ -115,7 +115,7 @@ function HomePage() {
   //     console.log("bot response",response)
   //     typewriterEffect(botResponse, "bot");
   //   } catch (error) {
-  //     console.error("Error fetching response:", error);
+  //     console.log("Error fetching response:", error);
   //     const errorMessage = {
   //       message: "An error occurred. Please try again later.",
   //       sender: "bot",
@@ -156,12 +156,12 @@ function HomePage() {
       // Show the bot's response with a typewriter effect
       typewriterEffect(botResponse, "bot");
     } catch (error) {
-      console.error("Error fetching response:", error);
+      console.log("Error fetching response:", error);
 
       // Log error details for debugging
       if (error.response) {
-        console.error("Server Response Data:", error.response.data);
-        console.error("Server Response Status:", error.response.status);
+        console.log("Server Response Data:", error.response.data);
+        console.log("Server Response Status:", error.response.status);
       }
 
       // Add error message to the messages array

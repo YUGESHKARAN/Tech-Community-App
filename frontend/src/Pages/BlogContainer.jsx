@@ -266,7 +266,7 @@ function BlogContainer() {
                     <p className="text-xs text-white font-semibold">
                       {data.authorname}
                     </p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-gray-400 font-semibold">
                       {/* {data.timestamp.slice(0, 10)}
                        */}
                       {getTimeAgo(data.timestamp)}

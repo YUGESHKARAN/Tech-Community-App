@@ -4,7 +4,7 @@ const Author = require("../models/blogAuthorSchema");
 
 const multer = require('multer');
 const path = require('path');
-const authenticateToken = require('../authMiddleware')
+const authenticateToken = require('../middleware/authMiddleware')
 const {
   getAllPosts,
   getSingleAuthorPosts,

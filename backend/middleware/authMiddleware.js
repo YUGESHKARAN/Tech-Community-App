@@ -6,7 +6,7 @@ const authencateToken = (req, res, next) => {
   const token = authHeader && authHeader.split(" ")[1];
 
   if (token == null)
-    return resizeBy.status(401).json({ message: "Token not available" });
+    return res.status(401).json({ message: "Token not available" });
 
   jwt.verify(token, process.env.JWT_TOKEN_ACCESS_KEY, (err, decoded) => {
     if (err)

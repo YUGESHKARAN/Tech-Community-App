@@ -15,6 +15,7 @@ import { BiLike, BiSolidLike } from "react-icons/bi";
 import axiosInstance from "../instances/Axiosinstances";
 import user from "../images/user.png";
 import { useParams } from "react-router-dom";
+import getTimeAgo from "../components/DateCovertion";
 function SingleAuthorPosts() {
   const [searchTerm, setSearchTerm] = useState("");
   const [posts, setPosts] = useState([]);
@@ -111,8 +112,6 @@ function SingleAuthorPosts() {
       post.category.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
- 
-
   // console.log("local email", email);
   // console.log("your post",filterdPost)
 
@@ -145,15 +144,9 @@ function SingleAuthorPosts() {
     <div className="w-full min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 h-auto reltive  ">
       <NavBar />
       <div className="relative min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 py-8">
-
-     <h1 className=" text-2xl w-11/12 mx-auto md:text-3xl font-bold text-white tracking-wide">
-            <span className=" text-white">
-              {" "}
-            Posts page
-            </span>{" "}
-         
-          
-          </h1>
+        <h1 className=" text-2xl w-11/12 mx-auto md:text-3xl font-bold text-white tracking-wide">
+          <span className=" text-white"> Posts page</span>{" "}
+        </h1>
 
         <div className="relative w-full mt-6  mx-auto text-center   transition-all duration-300">
           {/* Profile Image */}
@@ -167,7 +160,9 @@ function SingleAuthorPosts() {
                 }
                 alt="Author Profile"
                 className={`rounded-full object-cover w-full h-full border-4 ${
-                  authorProfile ? "border-orange-500" : "border-gray-500 bg-white"
+                  authorProfile
+                    ? "border-orange-500"
+                    : "border-gray-500 bg-white"
                 } shadow-md  transition-transform duration-300`}
               />
             </Link>
@@ -175,8 +170,7 @@ function SingleAuthorPosts() {
 
           {/* Author Name */}
           <h1 className="mt-5 text-xl text-green-500 md:text-3xl font-bold text-white tracking-wide">
-           {authorName && `${authorName}`}
-
+            {authorName && `${authorName}`}
           </h1>
         </div>
 
@@ -278,32 +272,33 @@ function SingleAuthorPosts() {
                       <p className="text-sm text-white font-semibold">
                         {data.authorName}
                       </p>
-                      <p className="text-xs text-gray-500">
-                        {data.timestamp.slice(0, 10)}
+                      <p className="text-xs text-gray-400 font-semibold">
+                        {/* {data.timestamp.slice(0, 10)} */}
+                        {getTimeAgo(data.timestamp)}
                       </p>
                     </div>
                   </div>
                   <Link
-                          to={`/viewpage/${data.authoremail}/${data._id}`}
-                          onClick={() => postViews(data.authoremail, data._id)}
-                          // className="cursor-pointer flex items-center gap-1  hover:text-blue-300"
-                        >
-                  <img
-                    src={
-                      data.image
-                        ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.image}`
-                        : blog1
-                    }
-                    className="w-full h-36  rounded-xl object-cover bg-center  hover:opacity-90 transition-all duration-300"
-                    alt={data.title}
-                    // onClick={() =>
-                    //   handleImageClick(
-                    //     data.image
-                    //       ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.image}`
-                    //       : blog1
-                    //   )
-                    // }
-                  />
+                    to={`/viewpage/${data.authoremail}/${data._id}`}
+                    onClick={() => postViews(data.authoremail, data._id)}
+                    // className="cursor-pointer flex items-center gap-1  hover:text-blue-300"
+                  >
+                    <img
+                      src={
+                        data.image
+                          ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.image}`
+                          : blog1
+                      }
+                      className="w-full h-36  rounded-xl object-cover bg-center  hover:opacity-90 transition-all duration-300"
+                      alt={data.title}
+                      // onClick={() =>
+                      //   handleImageClick(
+                      //     data.image
+                      //       ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.image}`
+                      //       : blog1
+                      //   )
+                      // }
+                    />
                   </Link>
                   <div className="min-h-28 h-auto pt-4">
                     <h2 className="md:text-xl text-lg text-white font-bold">
@@ -370,7 +365,6 @@ function SingleAuthorPosts() {
             )}
           </div>
         </div>
-
       </div>
       <Footer />
     </div>

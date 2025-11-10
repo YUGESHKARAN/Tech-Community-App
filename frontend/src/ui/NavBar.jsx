@@ -74,19 +74,19 @@ function NavBar() {
     }
   };
 
-  // useEffect(() => {
-  //   fetchNotifications();
-  // }, [note]);
-
   useEffect(() => {
-  fetchNotifications(); // initial load
+    fetchNotifications();
+  }, [userEmail]);
 
-  const interval = setInterval(() => {
-    fetchNotifications(); // poll every 30 sec
-  }, 40000);
+//   useEffect(() => {
+//   fetchNotifications(); // initial load
 
-  return () => clearInterval(interval);
-}, [userEmail]);
+//   const interval = setInterval(() => {
+//     fetchNotifications(); // poll every 40 sec
+//   }, 40000);
+
+//   return () => clearInterval(interval);
+// }, [userEmail]);
 
   const deleteSigleNotification = async (userEmail, notificationId) => {
     try {
