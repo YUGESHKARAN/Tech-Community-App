@@ -48,7 +48,7 @@ function Announcement() {
   const fetchAllAnnouncement = async () => {
     try {
       const response = await axiosInstance.get(`/blog/author/${email}`);
-      console.log("announcement", response.data.announcement);
+      // console.log("announcement", response.data.announcement);
       setAnnouncement(response.data.announcement);
     } catch (err) {
       console.log("error", err);

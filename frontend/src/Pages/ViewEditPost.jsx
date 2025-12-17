@@ -303,7 +303,7 @@ function ViewEditPost() {
           }`}
         >
           <h1 className="md:text-3xl text-2xl font-bold mb-3 text-left w-full border-b border-gray-700 pb-2">
-            Edit Your Post
+            Edit Post
           </h1>
           {error.apiError && <p className="text-red-500">{error.apiError}</p>}
           {/* Title */}
@@ -410,7 +410,7 @@ function ViewEditPost() {
                     {/* Edit */}
                     <button
                       type="button"
-                      className=" bg-gray-900  p-1.5 rounded-full text-white hover:bg-orange-500 transition-all duration-200  group-hover:opacity-100"
+                      className=" bg-gray-900  p-2 rounded-full text-white hover:bg-orange-500 transition-all duration-200  group-hover:opacity-100"
                       onClick={() => {
                         setCurrentLinkTitle(link.title);
                         setCurrentLinkUrl(link.url);
@@ -418,7 +418,7 @@ function ViewEditPost() {
                         setLinks((prev) => prev.filter((_, i) => i !== index));
                       }}
                     >
-                      ✎
+                      <MdEdit className="text-white" />
                     </button>
 
                     <button
