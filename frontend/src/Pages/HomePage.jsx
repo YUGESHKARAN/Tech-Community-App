@@ -22,34 +22,12 @@ import { BsPersonWorkspace } from "react-icons/bs";
 function HomePage() {
   const username = localStorage.getItem("username");
 
-  const [posts, setPosts] = useState([]);
   const [categoryCount, setCategoryCount] = useState(0);
-  const [authors, setAuthors] = useState([]);
-  const [yourPost, setYourPost] = useState(0);
   const [announcement, setAnnouncement] = useState([]);
   const email = localStorage.getItem("email");
   const role = localStorage.getItem("role");
 
-  const getAuthors = async () => {
-    try {
-      // const response = await axios.get('https://node-blog-app-seven.vercel.app/blog/author');
-      const response = await axiosInstance.get("/blog/author/profiles/");
-      // const result = response.data.filter((author) => author.email !== email);
-      // setAuthors(response.data.filter((author) => author.email !== email).filter(author => author.role === "coordinator"));
-      setAuthors(
-        response.data
-          .filter((author) => author.email !== email)
-          .filter((author) => author.role === "coordinator")
-      );
-      // console.log("authors", response.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
-  useEffect(() => {
-    getAuthors();
-  }, []);
 
   const getData = async () => {
     try {
@@ -69,7 +47,7 @@ function HomePage() {
       const response = await axiosInstance.get(`/blog/author/${email}`);
       // console.log("data", response.data);
       setAnnouncement(response.data.announcement);
-      setYourPost(response.data.posts);
+  
     } catch (err) {
       console.log("Error", err);
     }
@@ -238,7 +216,7 @@ function HomePage() {
               </h3>
             </Link>
           ) : role === "coordinator" ? (
-            <Link to="/yourposts" className="flex flex-col items-center">
+            <Link to="/workspace" className="flex flex-col items-center">
               <span className="text-4xl font-bold mb-2 text-white">
                 {/* {yourPost && yourPost.length} */}
                 <BsPersonWorkspace className="text-4xl text-white mb-2" />
@@ -301,11 +279,11 @@ function HomePage() {
 
       {/* Blog Container */}
       <div className="flex-grow ">
-        <BlogContainer />
+        <BlogContainer/>
       </div>
 
       {/* Chatbot Overlay */}
-      <div
+      {/* <div
         className={`${
           chatbot
             ? "fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50"
@@ -355,7 +333,7 @@ function HomePage() {
             Close
           </button>
         </div>
-      </div>
+      </div> */}
 
       <Footer />
     </div>

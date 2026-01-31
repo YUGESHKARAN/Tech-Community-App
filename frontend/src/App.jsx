@@ -21,6 +21,12 @@ import ViewSingleAuthor from "./Pages/ViewSingleAuthor.jsx";
 import SingleAuthorPosts from "./Pages/SingleAuthorPosts.jsx";
 import BookMarkPage from "./Pages/BookMarkPage.jsx";
 import SingleTechDomainDetails from "./Pages/SingleTechDomainDetails.jsx";
+import TutorPlaylist from "./Pages/TutorPlaylist.jsx";
+import ViewTutorPlaylist from "./Pages/ViewTutorPlaylist.jsx";
+import ViewPostPlaylist from "./Pages/ViewPostPlaylist.jsx";
+import Workspace from "./Pages/Workspace.jsx";
+import YourPlaylist from "./Pages/YourPlaylists.jsx";
+import EditTutorPlaylist from "./Pages/EditTutoPlaylist.jsx";
 function App() {
   return (
     <AuthProvider>
@@ -56,6 +62,17 @@ function App() {
               path="/viewpage/:email/:id"
               element={<ProtectedRoute element={<ViewPage />} />}
             />
+
+            <Route
+              path="/viewpage/playlist/:email/:id"
+              element={<ProtectedRoute element={<ViewPostPlaylist />} />}
+            />
+
+            <Route
+              path="/viewplaylist/:playlistId"
+              element={<ProtectedRoute element={<ViewTutorPlaylist />} />}
+            />
+
             <Route
               path="/profile"
               element={<ProtectedRoute element={<ProfilePage />} />}
@@ -73,6 +90,26 @@ function App() {
             <Route
               path="/yourposts"
               element={<ProtectedRoute element={<YourPost />} />}
+            />
+
+            <Route
+              path="/addTutorPlaylist"
+              element={<ProtectedRoute element={<TutorPlaylist />} />}
+            />
+
+            <Route
+              path="/yourTutorPlaylists"
+              element={<ProtectedRoute element={<YourPlaylist />} />}
+            />
+
+            <Route
+              path="/editPlaylist/:id"
+              element={<ProtectedRoute element={<EditTutorPlaylist />} />}
+            />
+
+            <Route
+              path="/workspace"
+              element={<ProtectedRoute element={<Workspace />} />}
             />
 
             <Route

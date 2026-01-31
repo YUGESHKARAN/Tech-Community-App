@@ -78,15 +78,15 @@ function NavBar() {
     fetchNotifications();
   }, [userEmail]);
 
-//   useEffect(() => {
-//   fetchNotifications(); // initial load
+  //   useEffect(() => {
+  //   fetchNotifications(); // initial load
 
-//   const interval = setInterval(() => {
-//     fetchNotifications(); // poll every 40 sec
-//   }, 40000);
+  //   const interval = setInterval(() => {
+  //     fetchNotifications(); // poll every 40 sec
+  //   }, 40000);
 
-//   return () => clearInterval(interval);
-// }, [userEmail]);
+  //   return () => clearInterval(interval);
+  // }, [userEmail]);
 
   const deleteSigleNotification = async (userEmail, notificationId) => {
     try {
@@ -94,7 +94,6 @@ function NavBar() {
         `/blog/author/notification/delete?email=${userEmail}&notificationId=${notificationId}`
       );
 
-      console.log("deleted", response.data);
       fetchNotifications();
     } catch (err) {
       console.log("error", err);
@@ -150,7 +149,7 @@ function NavBar() {
       </div>
 
       {/* Desktop Menu */}
-      <ul className="lg:flex justify-center text-base hidden font-semibold text-gray-300 w-3/5  items-center gap-10">
+      <ul className="lg:flex justify-center text-sm hidden font-semibold text-gray-300 w-3/5  items-center gap-10">
         <li className="transition-all duration-200  hover:text-white">
           <Link to="/home" className="flex items-center gap-1">
             <IoHome className="text-xl" />
@@ -176,12 +175,7 @@ function NavBar() {
             </Link>
           </li>
         )}
-
-        {/* <li className='transition-all duration-200 hover:text-white'>
-                    <Link to="/profile" className='flex items-center gap-1'>
-                        <FaUserAlt className='text-lg'/>My Profile
-                    </Link>
-                </li> */}
+        
         <li className="transition-all duration-200 hover:text-white">
           <Link
             to="/announcement"
@@ -254,13 +248,13 @@ function NavBar() {
           </sup>
         </div>
       </div>
-  
 
       <button onClick={toggleSidebar} className="lg:hidden ml-2 text-white">
         ☰
       </button>
 
       {/* Sidebar */}
+      {/*       
       <div
         ref={sidebarRef}
         className={`${
@@ -351,14 +345,124 @@ function NavBar() {
           <li className="mx-auto">
             <a href="" onClick={exit}>
               <IoLogOutOutline className="text-3xl text-red-600" />
-              {/* <IoLogOutOutline /> */}
+             
             </a>
           </li>
         </ul>
-      </div>
+      </div> */}
+      <div
+        ref={sidebarRef}
+        className={`fixed top-0 right-0 h-full w-72 bg-gradient-to-b from-gray-900 to-gray-800 text-white shadow-2xl z-50 transition-transform duration-1000 ease-in-out
+    ${isSidebarOpen ? "translate-x-0" : "translate-x-full"}
+  `}
+      >
+        {/* Header */}
+        <div className="h-16 flex items-center px-6 border-b border-gray-700">
+          <h2 className="text-lg font-semibold tracking-wide text-white">
+               {/* Navigation */}
+          </h2>
+        </div>
 
-      {/* notification */}
-  
+        {/* Menu */}
+        <ul className="flex flex-col gap-1 mt-4 px-4 text-sm font-medium">
+          {/* Home */}
+          <li>
+            <Link
+              to="/home"
+              className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-700 transition"
+            >
+              <IoHome className="text-lg text-green-400" />
+              Home
+            </Link>
+          </li>
+
+          {/* Community */}
+          <li>
+            <Link
+              to="/community"
+              className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-700 transition"
+            >
+              <MdGroups className="text-lg text-green-400" />
+              Tech Communities
+            </Link>
+          </li>
+
+          {/* Coordinator Only */}
+          {role === "coordinator" && (
+            <li>
+              <Link
+                to="/yourposts"
+                className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-700 transition"
+              >
+                <MdDataObject className="text-lg text-green-400" />
+                My Posts
+              </Link>
+            </li>
+          )}
+
+          {/* Authors */}
+          <li>
+            <Link
+              to="/authors"
+              className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-700 transition"
+            >
+              <IoPeople className="text-lg text-green-400" />
+              Authors
+            </Link>
+          </li>
+
+          {/* Add Post */}
+          {role === "coordinator" && (
+            <li>
+              <Link
+                to="/addPost"
+                className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-700 transition"
+              >
+                <MdPostAdd className="text-lg text-green-400" />
+                Add Post
+              </Link>
+            </li>
+          )}
+
+          {/* Profile */}
+          <li>
+            <Link
+              to="/profile"
+              className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-700 transition"
+            >
+              <FaUserAlt className="text-lg text-green-400" />
+              My Profile
+            </Link>
+          </li>
+
+          {/* Announcement */}
+          <li>
+            <Link
+              to="/announcement"
+              className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-700 transition"
+            >
+              <MdAnnouncement className="text-xl text-green-400" />
+              Announcements
+              {announcement.length > 0 && (
+                <span className="ml-auto text-[10px] bg-green-600 w-5 h-5 flex items-center justify-center rounded-full text-white">
+                  {announcement.length}
+                </span>
+              )}
+            </Link>
+          </li>
+        </ul>
+
+        {/* Footer */}
+        <div className="absolute bottom-6 w-full px-6">
+          <button
+            onClick={exit}
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-red-600/10 hover:bg-red-600/20 text-red-500 transition"
+          >
+            <IoLogOutOutline className="text-xl" />
+            Logout
+          </button>
+        </div>
+      </div>
 
       <div
         ref={notificationRef}
@@ -381,7 +485,6 @@ function NavBar() {
           </button>
         </div>
 
-        {/* Notification List */}
         <div className="flex flex-col space-y-2 md:space-y-4">
           {[...note].reverse().map((data, index) => (
             <div
@@ -390,9 +493,13 @@ function NavBar() {
             >
               {/* Profile */}
               <img
-                src={data.profile?`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.profile}`:user}
+                src={
+                  data.profile
+                    ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.profile}`
+                    : user
+                }
                 alt="Profile"
-                className="w-7 h-7 bg-white rounded-full border-2 border-green-500 object-contain shadow-sm"
+                className="w-7 h-7 bg-white rounded-full border-2 border-green-500 object-cover shadow-sm"
               />
 
               {/* Content */}

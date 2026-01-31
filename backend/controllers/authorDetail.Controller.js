@@ -46,11 +46,67 @@ const getAllAuthor = async (req, res) => {
   }
 };
 
+const getAuthorsByRole = async(req,res)=>{
+  try{
+    const {role} = req.params;
+    const authors = await Author.find({role:role});
+
+    res.status(200).json({authors})
+  }
+  catch(err)
+  {
+    res.status(500).json({message:err.message})
+  }
+}
+
+// const getProfile = async (req, res) => {
+//   try {
+//     const authorsProfile = await Author.find({});
+
+//      const shuffleArray = (arr) => {
+//       const a = arr.slice();
+//       for (let i = a.length - 1; i > 0; i--) {
+//         const j = Math.floor(Math.random() * (i + 1));
+//         [a[i], a[j]] = [a[j], a[i]];
+//       }
+//       return a;
+//     };
+
+//     const shuffledAuthors = shuffleArray(authorsProfile);
+
+
+//     const data = shuffledAuthors.map((author) => ({
+//       authorName: author.authorname,
+//       email: author.email,
+//       postCount: author.posts.length,
+//       profile: author.profile,
+//       followers: author.followers,
+//       role: author.role,
+//       profileLinks: author.personalLinks,
+//       community: author.community,
+//     }));
+//     res.status(200).json(data);
+//   } catch (err) {
+//     res.status("Error", err);
+//   }
+// };
+
+
 const getProfile = async (req, res) => {
   try {
-    const authorsProfile = await Author.find({});
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+    // console.log("authors page:", page, "limit:", limit);
 
-     const shuffleArray = (arr) => {
+    // Fetch only required batch
+    const authorsProfile = await Author.find({})
+      .skip(skip)
+      .limit(limit)
+      .lean();
+
+    // Shuffle only this batch (not entire DB)
+    const shuffleArray = (arr) => {
       const a = arr.slice();
       for (let i = a.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -61,22 +117,33 @@ const getProfile = async (req, res) => {
 
     const shuffledAuthors = shuffleArray(authorsProfile);
 
-
     const data = shuffledAuthors.map((author) => ({
       authorName: author.authorname,
       email: author.email,
-      postCount: author.posts.length,
+      postCount: author.posts?.length || 0,
       profile: author.profile,
       followers: author.followers,
       role: author.role,
       profileLinks: author.personalLinks,
       community: author.community,
     }));
-    res.status(200).json(data);
+
+    const total = await Author.countDocuments();
+
+    res.status(200).json({
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
+      data,
+    });
   } catch (err) {
-    res.status("Error", err);
+    console.error("Error fetching profiles:", err);
+    res.status(500).json({ error: "Server error" });
   }
 };
+
+
 
 const getSingleAuthor = async (req, res) => {
   try {
@@ -90,24 +157,59 @@ const getSingleAuthor = async (req, res) => {
   }
 };
 
+// ----------------------------------------------------------------------
 
-const getAuthorsByDomain = async (req, res) => {
-  try{
-      let {category} = req.params;
-     console.log("Category received:", category);
-     category = decodeURIComponent(category);
-      const authors = await Author.find({})
-      const filteredAuthors = authors.filter((author) => author.community.includes(category));
+// const getAuthorsByDomain = async (req, res) => {
+//   try{
+//       let {category} = req.params;
+//      console.log("Category received:", category);
+//      category = decodeURIComponent(category);
+//       const authors = await Author.find({})
+//       const filteredAuthors = authors.filter((author) => author.community.includes(category));
       
-      res.status(200).json({filteredAuthors});
-  }
-  catch(err)
-  {
+//       res.status(200).json({filteredAuthors});
+//   }
+//   catch(err)
+//   {
 
-    console.log("Error fetching authors by domain:", err.message);  
-    res.status(500).json({message:"Server error", error: err.message})
+//     console.log("Error fetching authors by domain:", err.message);  
+//     res.status(500).json({message:"Server error", error: err.message})
+//   }
+// }
+const getAuthorsByDomain = async (req, res) => {
+  try {
+    let { category } = req.params;
+    let { page = 1, limit = 20 } = req.query;  // ← NEW
+  //  console.log("domain page", page, "limit", limit);  
+    category = decodeURIComponent(category);
+
+    page = parseInt(page);
+    limit = parseInt(limit);
+
+    // Filter directly in MongoDB (more efficient)
+    const filteredAuthors = await Author.find({
+      community: { $in: [category] }
+    })
+      .skip((page - 1) * limit)
+      .limit(limit);
+
+    const total = await Author.countDocuments({
+      community: { $in: [category] }
+    });
+
+    res.status(200).json({
+      filteredAuthors,
+      currentPage: page,
+      totalPages: Math.ceil(total / limit),
+      total
+    });
+  } catch (err) {
+    console.log("Error fetching authors by domain:", err.message);
+    res.status(500).json({ message: "Server error", error: err.message });
   }
-}
+};
+
+// ----------------------------------------------------------------------
 
 const addAuthor = async (req, res) => {
   const { authorname, password, email, post } = req.body;
@@ -392,7 +494,7 @@ const updateFollowers = async (req, res) => {
     const { email } = req.params;
     const { emailAuthor } = req.body;
 
-    console.log("Following request:", { email, emailAuthor });
+    // console.log("Following request:", { email, emailAuthor });
 
     if (!email || !emailAuthor) {
       return res.status(400).json({ message: "Both emails are required" });
@@ -1117,6 +1219,7 @@ const deleteAllAnnouncementByAdmin = async (req, res) => {
 module.exports = {
   addAuthor,
   getAllAuthor,
+  getAuthorsByRole,
   getSingleAuthor,
   updateAuthor,
   updateAPassword,

@@ -48,6 +48,7 @@ function LoginPage() {
         // await Cookies.set('token', response.data.token, { expires: 1, sameSite: 'lax' });
         // await Cookies.set('token', response.data.token,  { expires: 10 / 86400, sameSite: "lax" });
         login(response.data.token);
+        // console.log("token",response.data.token)  
 
         localStorage.setItem("username", response.data.author.authorname);
         localStorage.setItem("email", response.data.author.email);
@@ -100,122 +101,275 @@ function LoginPage() {
   };
 
   return (
-    <div className="text-md font-semibold w-full h-screen  bg-black flex justify-center items-center">
-      <div className={`${loader?'hidden':'bg-gray-800 w-11/12 max-w-md p-8 rounded-md'}`}>
-        <h2 className="text-center mb-6  text-white text-xl">{title}</h2>
+    // <div className="text-md font-semibold w-full h-screen  bg-black flex justify-center items-center">
+    //   <div className={`${loader?'hidden':'bg-gray-800 w-11/12 max-w-md p-8 rounded-md'}`}>
+    //     <h2 className="text-center mb-6  text-white text-xl">{title}</h2>
 
-        <form className={`md:w-96 w-full ${forgotPassword?'space-y-3':'space-y-8'} mx-auto md:p-4`}>
-          {success && <p className="text-green-500">{success}</p>}
-          {errors.apiError && <p className="text-red-500">{errors.apiError}</p>}
+    //     <form className={`md:w-96 w-full ${forgotPassword?'space-y-3':'space-y-8'} mx-auto md:p-4`}>
+    //       {success && <p className="text-green-500">{success}</p>}
+    //       {errors.apiError && <p className="text-red-500">{errors.apiError}</p>}
 
-          <div className="mb-4">
-            {/* <label htmlFor="email" className="block text-gray-700">
-              Email
-            </label> */}
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              className="w-full px-3 py-2 md:text-base text-sm border bg-gray-700 text-white rounded"
-              placeholder="Enter Email"
-              required
-            />
-          </div>
+    //       <div className="mb-4">
+    //         {/* <label htmlFor="email" className="block text-gray-700">
+    //           Email
+    //         </label> */}
+    //         <input
+    //           type="email"
+    //           id="email"
+    //           name="email"
+    //           value={formData.email}
+    //           onChange={handleChange}
+    //           className="w-full px-3 py-2 md:text-base text-sm border bg-gray-700 text-white rounded"
+    //           placeholder="Enter Email"
+    //           required
+    //         />
+    //       </div>
 
-          <div className={`${forgotPassword ? "hidden" : "mb-4"}`}>
-            {/* <label htmlFor="password" className="block text-gray-700">
+    //       <div className={`${forgotPassword ? "hidden" : "mb-4"}`}>
+    //         {/* <label htmlFor="password" className="block text-gray-700">
+    //           {passwordLabel}
+    //         </label> */}
+    //         <input
+    //           type="password"
+    //           id="password"
+    //           name="password"
+    //           value={formData.password}
+    //           onChange={handleChange}
+    //           className="w-full px-3 py-2 md:text-base text-sm border bg-gray-700 text-white rounded"
+    //           placeholder="Enter Password"
+    //           required
+    //         />
+    //       </div>
+
+    //       <button
+    //         onClick={handleSubmit}
+    //         type="submit"
+    //         disabled={loader2}
+    //         className={`${
+    //           forgotPassword
+    //             ? "hidden"
+    //             : "w-full bg-red-600 hover:bg-red-700 md:text-base text-sm transition-all duration-200 text-white font-bold py-2 px-4 rounded"
+    //         }`}
+    //       >
+    //         {loader2?'Logging in...':'Login'}
+    //       </button>
+
+    //       <button
+    //         onClick={(e) => sendOtp(e, formData.email)}
+    //         type="submit"
+    //         disabled={loader2}
+    //         className={`${
+    //           forgotPassword
+    //             ? "w-full bg-red-600 hover:bg-red-700 md:text-base text-sm transition-all duration-200 text-white font-bold py-2 px-4 rounded"
+    //             : "hidden"
+    //         }`}
+    //       >
+    //         {loader2?'Sending OTP...':'Send OTP'}
+    //       </button>
+    //     </form>
+
+    //     <p
+    //     className={`${forgotPassword?'mt-4 flex px-4 justify-start md:text-base text-xs gap-2 text-gray-400 cursor-pointer':'hidden'}`}
+    //     >
+    //     Go to Login?{" "}
+    //      <span
+    //       onClick={() => {
+    //         setForgotPassword(false);
+    //         setPasswordLabel("Password");
+    //         setTitle("Login ");
+    //       }}
+    //      className="text-green-500 md:text-base text-xs hover:underline"
+    //      >
+    //       Login here
+    //      </span>
+    //     </p>
+
+    //     <p
+    //       onClick={() => {
+    //         setForgotPassword(true);
+    //         setPasswordLabel("New Password");
+    //         setTitle("Forgot Password");
+    //       }}
+    //       className={`${forgotPassword?'hidden':'mt-4 flex px-4 justify-start md:text-base text-xs gap-2 text-gray-400 cursor-pointer'}`}
+    //     >
+    //       Forgot Password? <span className="text-green-500 md:text-base text-xs hover:underline">Click here</span>
+    //     </p>
+
+    //     <p className={`${forgotPassword?'hidden':'mt-4 px-4 md:text-base text-xs text-gray-400'}`}>
+    //       Don't have an account?{" "}
+    //       <Link to="/register" className="text-green-500 hover:underline">
+    //         Register here
+    //       </Link>
+    //     </p>
+    //   </div>
+    // {
+    //   loader &&   <CirclesWithBar
+    //   height="100"
+    //   width="100"
+    //   color="#4fa94d"
+    //   outerCircleColor="#4fa94d"
+    //   innerCircleColor="#4fa94d"
+    //   barColor="#4fa94d"
+    //   ariaLabel="circles-with-bar-loading"
+    //   wrapperStyle={{}}
+    //   wrapperClass=""
+    //   visible={true}
+    //   />
+    // }
+    // </div>
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center px-4">
+  {!loader && (
+    <div className="w-full max-w-md bg-gray-900 border border-gray-700 rounded-2xl shadow-2xl p-8">
+      
+      {/* Header */}
+      <div className="text-center mb-6">
+        <h2 className="text-2xl font-bold text-white tracking-wide">
+          {title}
+        </h2>
+        <p className="text-sm text-gray-400 mt-1">
+          Secure access to your account
+        </p>
+      </div>
+
+      {/* Form */}
+      <form
+        className={`w-full ${
+          forgotPassword ? "space-y-4" : "space-y-6"
+        }`}
+      >
+        {success && (
+          <p className="text-sm text-green-500 bg-green-500/10 px-3 py-2 rounded-md">
+            {success}
+          </p>
+        )}
+
+        {errors.apiError && (
+          <p className="text-sm text-red-500 bg-red-500/10 px-3 py-2 rounded-md">
+            {errors.apiError}
+          </p>
+        )}
+
+        {/* Email */}
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-1">
+            Email address
+          </label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+            placeholder="you@example.com"
+            className="w-full px-4 py-2.5 text-sm bg-gray-800 text-white border border-gray-700 rounded-lg focus:outline-none focus:ring-1 focus:ring-green-500"
+          />
+        </div>
+
+        {/* Password */}
+        {!forgotPassword && (
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">
               {passwordLabel}
-            </label> */}
+            </label>
             <input
               type="password"
               id="password"
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full px-3 py-2 md:text-base text-sm border bg-gray-700 text-white rounded"
-              placeholder="Enter Password"
               required
+              placeholder="••••••••"
+              className="w-full px-4 py-2.5 text-sm bg-gray-800 text-white border border-gray-700 rounded-lg focus:outline-none focus:ring-1 focus:ring-green-500"
             />
           </div>
+        )}
 
+        {/* Buttons */}
+        {!forgotPassword && (
           <button
             onClick={handleSubmit}
             type="submit"
             disabled={loader2}
-            className={`${
-              forgotPassword
-                ? "hidden"
-                : "w-full bg-red-600 hover:bg-red-700 md:text-base text-sm transition-all duration-200 text-white font-bold py-2 px-4 rounded"
-            }`}
+            className="w-full py-2.5 bg-red-600 hover:bg-red-700 transition text-white font-semibold rounded-lg"
           >
-            {loader2?'Logging in...':'Login'}
+            {loader2 ? "Logging in..." : "Login"}
           </button>
+        )}
 
+        {forgotPassword && (
           <button
             onClick={(e) => sendOtp(e, formData.email)}
             type="submit"
             disabled={loader2}
-            className={`${
-              forgotPassword
-                ? "w-full bg-red-600 hover:bg-red-700 md:text-base text-sm transition-all duration-200 text-white font-bold py-2 px-4 rounded"
-                : "hidden"
-            }`}
+            className="w-full py-2.5 bg-red-600 hover:bg-red-700 transition text-white font-semibold rounded-lg"
           >
-            {loader2?'Sending OTP...':'Send OTP'}
+            {loader2 ? "Sending OTP..." : "Send OTP"}
           </button>
-        </form>
+        )}
+      </form>
 
-        <p
-        className={`${forgotPassword?'mt-4 flex px-4 justify-start md:text-base text-xs gap-2 text-gray-400 cursor-pointer':'hidden'}`}
-        >
-        Go to Login?{" "}
-         <span
-          onClick={() => {
-            setForgotPassword(false);
-            setPasswordLabel("Password");
-            setTitle("Login ");
-          }}
-         className="text-green-500 md:text-base text-xs hover:underline"
-         >
-          Login here
-         </span>
+      {/* Footer Links */}
+      {forgotPassword && (
+        <p className="mt-5 text-sm text-gray-400">
+          Go to Login?{" "}
+          <span
+            onClick={() => {
+              setForgotPassword(false);
+              setPasswordLabel("Password");
+              setTitle("Login");
+            }}
+            className="text-green-500 cursor-pointer hover:underline"
+          >
+            Login here
+          </span>
         </p>
+      )}
 
-        <p
-          onClick={() => {
-            setForgotPassword(true);
-            setPasswordLabel("New Password");
-            setTitle("Forgot Password");
-          }}
-          className={`${forgotPassword?'hidden':'mt-4 flex px-4 justify-start md:text-base text-xs gap-2 text-gray-400 cursor-pointer'}`}
-        >
-          Forgot Password? <span className="text-green-500 md:text-base text-xs hover:underline">Click here</span>
-        </p>
+      {!forgotPassword && (
+        <>
+          <p
+            onClick={() => {
+              setForgotPassword(true);
+              setPasswordLabel("New Password");
+              setTitle("Forgot Password");
+            }}
+            className="mt-5 text-sm text-gray-400 cursor-pointer"
+          >
+            Forgot Password?{" "}
+            <span className="text-green-500 hover:underline">
+              Click here
+            </span>
+          </p>
 
-        <p className={`${forgotPassword?'hidden':'mt-4 px-4 md:text-base text-xs text-gray-400'}`}>
-          Don't have an account?{" "}
-          <Link to="/register" className="text-green-500 hover:underline">
-            Register here
-          </Link>
-        </p>
-      </div>
-    {
-      loader &&   <CirclesWithBar
-      height="100"
-      width="100"
-      color="#4fa94d"
-      outerCircleColor="#4fa94d"
-      innerCircleColor="#4fa94d"
-      barColor="#4fa94d"
-      ariaLabel="circles-with-bar-loading"
-      wrapperStyle={{}}
-      wrapperClass=""
-      visible={true}
-      />
-    }
+          <p className="mt-3 text-sm text-gray-400">
+            Don&apos;t have an account?{" "}
+            <Link to="/register" className="text-green-500 hover:underline">
+              Register here
+            </Link>
+          </p>
+        </>
+      )}
     </div>
+  )}
+
+  {/* Loader */}
+  {loader && (
+    <div className="flex justify-center items-center">
+      <CirclesWithBar
+        height="100"
+        width="100"
+        color="#4fa94d"
+        outerCircleColor="#4fa94d"
+        innerCircleColor="#4fa94d"
+        barColor="#4fa94d"
+        ariaLabel="circles-with-bar-loading"
+        visible={true}
+      />
+    </div>
+  )}
+</div>
+
   );
 }
 

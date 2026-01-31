@@ -21,6 +21,7 @@ function ViewSingleAuthor() {
   const [image, setImage] = useState("");
   const [followers, setFollowers] = useState([]);
   const [following, setFollowing] = useState([]);
+  const [ coordEamil, setCoordEmail ] = useState("");
   const [posts, setPosts] = useState([]);
   const authorEmail = localStorage.getItem("email");
   const [profileLinks, setProfileLinks] = useState([]); // New state for profile links
@@ -30,7 +31,7 @@ function ViewSingleAuthor() {
       const response = await axiosInstance.get(`/blog/author/${email}`);
       const authorData = response.data;
       setAuthorName(authorData.authorname);
-      // setAuthorEmail(authorData.email);
+      setCoordEmail(authorData.email);
       setAuthor(response.data);
       setImage(response.data.profile);
       setFollowers(authorData.followers);
@@ -151,7 +152,7 @@ function ViewSingleAuthor() {
               </div>
             )}
 
-            {author.role === "coordinator" && (
+            {author.role === "coordinator" && coordEamil !== authorEmail && (
               <div className="mt-4">
                 {author.followers.includes(authorEmail) ? (
                   <button

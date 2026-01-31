@@ -33,16 +33,14 @@ app.use(bodyParser.json());
 const loginRouter = require("./routes/login.Route");
 const authorRouter = require("./routes/authorDetail.Route");
 const postRouter = require("./routes/postDetail.Route");
+const tutorPlaylist = require("./routes/tutorPlayList.Route")
 
 app.use("/blog/login", loginRouter);
 app.use("/blog/author", authorRouter);
 app.use("/blog/posts", postRouter);
+app.use("/blog/playlist",tutorPlaylist);
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// Root route
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
 
 // Request timeout middleware
 app.use((req, res, next) => {

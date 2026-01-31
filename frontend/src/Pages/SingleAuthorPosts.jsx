@@ -161,7 +161,7 @@ function SingleAuthorPosts() {
                 alt="Author Profile"
                 className={`rounded-full object-cover w-full h-full border-4 ${
                   authorProfile
-                    ? "border-orange-500"
+                    ? "border-teal-500"
                     : "border-gray-500 bg-white"
                 } shadow-md  transition-transform duration-300`}
               />
@@ -184,7 +184,7 @@ function SingleAuthorPosts() {
               onClick={() => setPostCategory("")}
               className={` text-nowrap cursor-pointer rounded-md text-sm px-3 p-1 md:py-2 transition-all duration-200 ${
                 postCategory === ""
-                  ? "bg-orange-500 text-white shadow-md"
+                  ? "bg-teal-500 text-white shadow-md"
                   : "bg-gray-800 text-white hover:bg-gray-700"
               }`}
             >
@@ -198,7 +198,7 @@ function SingleAuthorPosts() {
                 onClick={() => setPostCategory(data)}
                 className={` text-nowrap cursor-pointer rounded-md text-sm px-3 py-1 md:py-2 transition-all duration-200 ${
                   postCategory === data
-                    ? "bg-orange-500 text-white shadow-md"
+                    ? "bg-teal-500 text-white shadow-md"
                     : "bg-gray-800 text-white hover:bg-gray-700"
                 }`}
               >

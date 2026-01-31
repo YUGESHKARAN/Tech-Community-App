@@ -30,6 +30,7 @@ function ViewEditPost() {
   const [selectedDocs, setSelectedDocs] = useState([]);
   const [showConfirm, setShowConfirm] = useState(false);
   const [linkId, setLinkId] = useState(null);
+  const [customTitle, setCustomTitle] = useState("");
   // const [loading, setLoading] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
 
@@ -410,7 +411,7 @@ function ViewEditPost() {
                     {/* Edit */}
                     <button
                       type="button"
-                      className=" bg-gray-900  p-2 rounded-full text-white hover:bg-orange-500 transition-all duration-200  group-hover:opacity-100"
+                      className=" bg-gray-900  p-2 rounded-full text-white hover:bg-gray-700 transition-all duration-200  group-hover:opacity-100"
                       onClick={() => {
                         setCurrentLinkTitle(link.title);
                         setCurrentLinkUrl(link.url);
@@ -481,7 +482,7 @@ function ViewEditPost() {
                   )}
              {currentLinkTitle ==="Others" && <input
                 type="text" 
-                        onChange={(e) => setCustomTitle(e.target.value)}
+                onChange={(e) => setCustomTitle(e.target.value)}
                 placeholder="Title"
                 className="flex-1 px-3 py-2 bg-gray-900 border border-gray-600 rounded-md text-sm text-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500"
               />}

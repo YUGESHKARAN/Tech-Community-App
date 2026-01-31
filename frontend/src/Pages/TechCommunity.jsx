@@ -108,17 +108,7 @@ function TechCommunity() {
     }
   };
 
-  // useEffect(()=>{
-  //     const categories = getUniqueCategories(posts);
-  //     const comm = categories.map((category) => getCategoryStats(authors, category));
-  //     setCommunities(comm);
-  // },[authorCommunity])
 
-  // console.log("authorCommunity", authorCommunity);
-  // // console.log("communities",communities)  ;
-  // console.log("authors", authors);
-  // console.log("categories", categories);
-  // console.log("role", role);
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-gray-900 to-gray-800  text-white flex flex-col">
@@ -136,7 +126,7 @@ function TechCommunity() {
               className="relative group backdrop-blur-xl  border border-white/40 p-6 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 flex flex-col justify-between overflow-hidden"
             >
               {/* Glow hover effect */}
-              <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 via-yellow-400/10 to-pink-500/10 opacity-0 group-hover:opacity-100 blur-2xl transition duration-700"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 via-purple-500/10 to-pink-600/10 opacity-0 group-hover:opacity-100 blur-2xl transition duration-700"></div>
 
               <Link to={`/techDomainDetails/${encodeURIComponent(item.categoryname)}`}>
               <div className="relative z-10 p-5 bg-white/10 backdrop-blur-md rounded-2xl shadow-md hover:shadow-lg transition-all duration-300">

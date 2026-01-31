@@ -149,6 +149,7 @@ function AddPost() {
   const [currentLinkUrl, setCurrentLinkUrl] = useState("");
   const [previewImage, setPreviewImage] = useState("");
   const imageInputRef = useRef(null); // Add this at the top of your component
+  // const [showLinkBox, setShowLinkBox] = useState(false);
   const handleSubmit = async (e) => {
     e.preventDefault();
     let errors = {};
@@ -393,7 +394,7 @@ function AddPost() {
                   e.preventDefault();
                   setCurrentLinkTitle("");
                   setCurrentLinkUrl("");
-                  setShowLinkBox(false);
+                  // setShowLinkBox(false);
                  }}
                   className="bg-red-500 md:px-3 px-2 md:text-sm text-xs py-0.5 rounded-md">Clear</button>}
 

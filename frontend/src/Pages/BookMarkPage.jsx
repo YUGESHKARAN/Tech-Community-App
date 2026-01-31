@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import {
   IoSearchOutline,
@@ -18,6 +18,7 @@ import user from "../images/user.png";
 import { useParams } from "react-router-dom";
 import { PiBookmarksSimpleFill, PiBookmarksSimpleLight } from "react-icons/pi";
 import { ToastContainer, toast } from "react-toastify";
+import TutorBookMarkPlaylist from "../components/TutorBookMarkPlaylist.jsx";
 function BookMarkPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [posts, setPosts] = useState([]);
@@ -26,73 +27,143 @@ function BookMarkPage() {
   const [authorName, setAuthorName] = useState("");
   const [authorProfile, setAuthorProfile] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
-  const [bookMarkData, setBookMarkData] = useState([]);
   const [bookMarkId, setBookMarkId] = useState([]);
   const { email } = useParams();
 
-  // Fetch posts from API
-  //   const fetchPosts = async () => {
-  //     setLoader(true);
-  //     try {
-  //       const response = await axiosInstance.get(`/blog/posts/${email}`);
-  //       setPosts(response.data.data);
+  // ----------------------------------------------------------------------------------------
+  // const getBookMarkPosts = async () => {
+  //   setLoader(true);
+  //   try {
+  //     const response = await axiosInstance.get(
+  //       `/blog/posts/getBookmarkPosts/${email}`
+  //     );
+  //     if (response.status == 200) {
+  //       setPosts(response.data.posts);
+  //       setBookMarkId(response.data.postIds);
   //       setAuthorName(response.data.authorName);
   //       setAuthorProfile(response.data.profile);
-  //     } catch (err) {
-  //       console.error("Error fetching posts:", err);
   //     }
-  //     finally{
+  //   } catch (err) {
+  //     console.log("error", err.message);
+  //   } finally {
   //     setLoader(false);
+  //   }
+  // };
+
+const [page, setPage] = useState(1);
+const limit = 10;
+const [hasMore, setHasMore] = useState(true);
+const isFetching = useRef(false);
+const [loading, setLoading] = useState(false);
+
+const getBookMarkPosts = async () => {
+  if (!hasMore || isFetching.current) return;
+
+  isFetching.current = true;
+  setLoading(true);
+
+  try {
+    const response = await axiosInstance.get(
+      `/blog/posts/getBookmarkPosts/${email}?page=${page}&limit=${limit}`
+    );
+
+    if (response.status === 200) {
+      const newPosts = response.data.posts;
+
+      if (newPosts.length === 0) {
+        setHasMore(false);
+        return;
+      }
+
+      // Append, don't replace
+      setPosts(prev => [...prev, ...newPosts]);
+
+      // Maintain exact same behavior for metadata
+      setBookMarkId(prev => [...prev, ...response.data.postIds]);
+      setAuthorName(response.data.authorName);
+      setAuthorProfile(response.data.profile);
+
+      setPage(prev => prev + 1);
+    }
+
+  } catch (err) {
+    console.log("error", err.message);
+  } finally {
+    setLoading(false);
+    isFetching.current = false;
+  }
+};
+
+
+
+  // ----------------------------------------------------------------------------------------
+
+  // const addBookMarkPostId = async (e, postId) => {
+  //   e.preventDefault();
+  //   try {
+  //     const response = await axiosInstance.post(
+  //       `/blog/posts/bookmarkPosts/${email}`,
+  //       { postId }
+  //     );
+  //     if (response.status == 200) {
+  //       {
+  //         bookMarkId.includes(postId)
+  //           ? toast.success("bookmark removed successfully")
+  //           : toast.success("post bookmarked successfully");
+  //       }
+  //       getBookMarkPosts();
   //     }
+  //   } catch (err) {
+  //     console.log("error", err.message);
+  //     toast.error("unable to bookmark");
+  //   }
+  // };
 
-  //   };
-  //   useEffect(() => {
-  //     fetchPosts();
-  //   }, []);
+  const addBookMarkPostId = async (e, postId) => {
+  e.preventDefault();
 
-  const getBookMarkPosts = async () => {
-    setLoader(true);
-    try {
-      const response = await axiosInstance.get(
-        `/blog/posts/getBookmarkPosts/${email}`
-      );
-      if (response.status == 200) {
-        setPosts(response.data.posts);
-        setBookMarkId(response.data.postIds);
-        setAuthorName(response.data.authorName);
-        setAuthorProfile(response.data.profile);
+  try {
+    const response = await axiosInstance.post(
+      `/blog/posts/bookmarkPosts/${email}`,
+      { postId }
+    );
+
+    if (response.status === 200) {
+
+      const isBookmarked = bookMarkId.includes(postId);
+
+      // ✅ Toast correct
+      if (isBookmarked) {
+        toast.success("Bookmark removed successfully");
+      } else {
+        toast.success("Post bookmarked successfully");
       }
-    } catch (err) {
-      console.log("error", err.message);
-    } finally {
-      setLoader(false);
-    }
-  };
 
-  const addBookMarkPostId = async (postId) => {
-    // e.preventDefault()
-    try {
-      const response = await axiosInstance.post(
-        `/blog/posts/bookmarkPosts/${email}`,
-        { postId }
+      // ✅ Update bookmark IDs instantly
+      setBookMarkId(prev =>
+        isBookmarked
+          ? prev.filter(id => id !== postId)  // remove
+          : [...prev, postId]                 // add
       );
-      if (response.status == 200) {
-        {
-          bookMarkId.includes(postId)
-            ? toast.success("bookmark removed successfully")
-            : toast.success("post bookmarked successfully");
-        }
-        getBookMarkPosts();
-      }
-    } catch (err) {
-      console.log("error", err.message);
-      toast.error("unable to bookmark");
+
+      // ✅ Also update posts list visually if needed
+      setPosts(prev =>
+        prev.filter(post =>
+          isBookmarked ? post._id !== postId : true
+        )
+      );
     }
-  };
+
+  } catch (err) {
+    console.log("error", err.message);
+    toast.error("Unable to bookmark");
+  }
+};
+
 
   useEffect(() => {
     getBookMarkPosts();
-  }, []);
+  }, [page]);
 
   // Search handler
   const handleSearch = (e) => {
@@ -205,7 +276,7 @@ function BookMarkPage() {
       <NavBar />
       <div className="relative min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 py-4">
         <h1 className=" text-2xl  w-11/12 flex items-center gap-2 mx-auto md:text-3xl font-bold text-white tracking-wide">
-        <BiBookmarkAlt />
+          <BiBookmarkAlt />
           <span className="group text-white"> My Bookmarks </span>{" "}
         </h1>
 
@@ -219,7 +290,7 @@ function BookMarkPage() {
               onClick={() => setPostCategory("")}
               className={` text-nowrap cursor-pointer rounded-md text-sm px-3 p-1 md:py-2 transition-all duration-200 ${
                 postCategory === ""
-                  ? "bg-orange-500 text-white shadow-md"
+                  ? "bg-teal-500 text-white shadow-md"
                   : "bg-gray-800 text-white hover:bg-gray-700"
               }`}
             >
@@ -233,7 +304,7 @@ function BookMarkPage() {
                 onClick={() => setPostCategory(data)}
                 className={` text-nowrap cursor-pointer rounded-md text-sm px-3 py-1 md:py-2 transition-all duration-200 ${
                   postCategory === data
-                    ? "bg-orange-500 text-white shadow-md"
+                    ? "bg-teal-500 text-white shadow-md"
                     : "bg-gray-800 text-white hover:bg-gray-700"
                 }`}
               >
@@ -258,7 +329,19 @@ function BookMarkPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 w-11/12 md:grid-cols-2 lg:grid-cols-4 md:gap-16 flex-wrap justify-center md:mt-10  mt-7 h-auto mx-auto">
+          <div className="w-11/12 mx-auto">
+            <TutorBookMarkPlaylist />
+            {(postCategory === ""
+              ? filterdPost
+              : posts.filter((post) => post.category === postCategory)
+            ).length > 0 && (
+              <h2 className="md:pl-4 pl-2  mt-9  text-2xl md:text-4xl font-bold tracking-wide text-gray-200">
+                Posts
+              </h2>
+            )}
+          </div>
+
+          <div className="grid grid-cols-1 w-11/12 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 md:gap-16 flex-wrap justify-center md:mt-10  mt-7 h-auto mx-auto">
             {/* Posts Grid */}
             {loader ? (
               <div className="col-span-4 flex flex-col items-center justify-center">
@@ -313,28 +396,20 @@ function BookMarkPage() {
                       </p>
                     </div>
                   </div>
-                   <Link
-                                    to={`/viewpage/${data.authoremail}/${data._id}`}
-                                    onClick={() => postViews(data.authoremail, data._id)}
-                                    // className="cursor-pointer flex items-center gap-1 hover:text-blue-300"
-                                  >
-                  <img
-                    src={
-                      data.image
-                        ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.image}`
-                        : blog1
-                    }
-                    className="w-full h-36  rounded-xl object-cover bg-center  hover:opacity-90 transition-all duration-300"
-                    alt={data.title}
-                    // onClick={() =>
-                    //   handleImageClick(
-                    //     data.image
-                    //       ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.image}`
-                    //       : blog1
-                    //   )
-                    // }
-                  />
-
+                  <Link
+                    to={`/viewpage/${data.authoremail}/${data._id}`}
+                    onClick={() => postViews(data.authoremail, data._id)}
+                    // className="cursor-pointer flex items-center gap-1 hover:text-blue-300"
+                  >
+                    <img
+                      src={
+                        data.image
+                          ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.image}`
+                          : blog1
+                      }
+                      className="w-full h-36  rounded-xl object-cover bg-center  hover:opacity-90 transition-all duration-300"
+                      alt={data.title}
+                    />
                   </Link>
                   <div className="min-h-28 h-auto pt-4">
                     <h2 className="md:text-xl text-lg text-white font-bold">
@@ -387,8 +462,8 @@ function BookMarkPage() {
                           <IoShareSocial className="text-sm text-blue-400" />
                         </div>
                         <div
-                          onClick={() => {
-                            addBookMarkPostId(data._id);
+                          onClick={(e) => {
+                            addBookMarkPostId(e, data._id);
                           }}
                           className="cursor-pointer flex items-center gap-1 hover:text-blue-300"
                         >

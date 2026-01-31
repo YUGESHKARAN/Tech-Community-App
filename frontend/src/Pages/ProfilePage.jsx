@@ -442,7 +442,7 @@ function ProfilePage() {
                     ? "Edit Link"
                     : ` You can add ${5 - profileLinks.length} ${
                         profileLinks.length >= 1 ? "more" : ""
-                      } profile links`}
+                      } profile link(s)`}
                 </label>
 
                 {currentLinkTitle.length > 0 && (
@@ -658,7 +658,7 @@ function ProfilePage() {
 
             <form className="mb-6">
               <label className="block text-gray-700 font-semibold mb-2 text-sm">
-                Enter Password
+                Enter Your Password
               </label>
 
               <input

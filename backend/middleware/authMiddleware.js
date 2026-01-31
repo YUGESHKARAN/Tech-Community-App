@@ -1,4 +1,5 @@
 require("dotenv").config();
+
 const jwt = require("jsonwebtoken");
 
 const authencateToken = (req, res, next) => {
@@ -9,6 +10,7 @@ const authencateToken = (req, res, next) => {
     return res.status(401).json({ message: "Token not available" });
 
   jwt.verify(token, process.env.JWT_TOKEN_ACCESS_KEY, (err, decoded) => {
+    
     if (err)
       return res.status(403).json({ message: "Invalid or expired token" });
 

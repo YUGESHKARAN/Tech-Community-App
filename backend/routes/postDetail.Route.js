@@ -18,7 +18,8 @@ const {
   getRecommendedPosts,
   addPostBookmark,
   getBookmarkedPosts,
-  removePostsLinks
+  removePostsLinks,
+  getAllBookmarkIds
 } = require("../controllers/postDetail.Controller");
 
 // handle authors blog post data
@@ -30,17 +31,6 @@ router.get("/recommended/:email",getRecommendedPosts)
 router.get("/:category", getCategoryPosts);
 
 
-// Multer setup for file upload
-// const storage = multer.diskStorage({
-//   destination: (req, file, cb) => {
-//     cb(null, 'uploads/'); // Set the upload folder
-//   },
-//   filename: (req, file, cb) => {
-//     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-//     const ext = path.extname(file.originalname); // Get the file extension
-//     cb(null, uniqueSuffix+ file.originalname + ext); // Include original extension
-//   }
-// });
 // Configure memory storage
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
@@ -57,6 +47,7 @@ router.post("/:email",authenticateToken,uploadData, addPosts);
 router.put("/:email/:postId",authenticateToken,uploadData,updatePost);
 router.get("/getBookmarkPosts/:email",authenticateToken,getBookmarkedPosts)
 router.post("/bookmarkPosts/:email",authenticateToken,addPostBookmark)
+router.get("/bookmarkIds/:email",authenticateToken,getAllBookmarkIds)
 
 router.get("/:email/:postId",authenticateToken, getSinglePost);
 router.put("/views/:email/:id",authenticateToken, postView)

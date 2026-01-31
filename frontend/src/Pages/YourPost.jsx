@@ -162,7 +162,7 @@ function YourPost() {
               onClick={() => setPostCategory("")}
               className={`w-fit text-nowrap cursor-pointer rounded-md text-sm px-3 py-1 md:py-2 transition-all duration-200 ${
                 postCategory === ""
-                  ? "bg-orange-500 text-white shadow-md"
+                  ? "bg-teal-500 text-white shadow-md"
                   : "bg-gray-800 text-white hover:bg-gray-700"
               }`}
             >
@@ -176,7 +176,7 @@ function YourPost() {
                 onClick={() => setPostCategory(data)}
                 className={`w-fit text-nowrap cursor-pointer rounded-md text-sm px-3 py-2 transition-all duration-200 ${
                   postCategory === data
-                    ? "bg-orange-500 text-white shadow-md"
+                    ? "bg-teal-500 text-white shadow-md"
                     : "bg-gray-800 text-white hover:bg-gray-700"
                 }`}
               >

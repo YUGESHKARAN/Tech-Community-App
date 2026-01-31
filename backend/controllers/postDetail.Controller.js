@@ -1,4 +1,5 @@
 const Author = require("../models/blogAuthorSchema");
+
 const path = require('path');
 
 const { v4: uuidv4 } = require('uuid'); // For generating unique IDs
@@ -7,6 +8,8 @@ const mongoose = require("mongoose");
 const sharp = require('sharp');
 dotenv = require("dotenv");
 dotenv.config();
+
+const redisClient = require("../middleware/redis");
 // import nodemailer from "nodemailer";
 
 const nodemailer = require('nodemailer')
@@ -75,58 +78,156 @@ const getAllPosts = async (req, res) => {
 
 
 // ...existing code...
+// const getRecommendedPosts = async (req, res) => {
+//   try {
+//     const { email } = req.params;
+
+//     let followedEmails = [];
+//     let authorCommunities = [];
+//     if (email) {
+//       const currentAuthor = await Author.findOne({ email }).select('following community');
+//       if (currentAuthor) {
+//         followedEmails = Array.isArray(currentAuthor.following) ? currentAuthor.following : [];
+//         authorCommunities = Array.isArray(currentAuthor.community) ? currentAuthor.community : [];
+//       }
+//     }
+
+//     // Fetch only needed authors
+//     const allAuthors = await Author.find({}).select('email authorname profile role community posts');
+
+//     // Split authors into priority (followed OR same community) and others
+//     const followedSet = new Set(followedEmails);
+//     const priorityAuthors = [];
+//     const otherAuthors = [];
+
+//     for (const a of allAuthors) {
+//       const inFollowing = followedSet.has(a.email);
+//       const inCommunity = Array.isArray(a.community) && a.community.some(c => authorCommunities.includes(c));
+//       if (inFollowing || inCommunity) priorityAuthors.push(a);
+//       else otherAuthors.push(a);
+//     }
+
+//     // Helper to flatten posts in reverse (newest first). Prefer createdAt if available.
+//     const flattenReverse = (authorsArray) => authorsArray.flatMap(author => {
+//       const posts = Array.isArray(author.posts) ? author.posts.slice() : [];
+//       const sorted = posts[0] && posts[0].createdAt
+//         ? posts.slice().sort((x, y) => new Date(y.createdAt) - new Date(x.createdAt))
+//         : posts.slice().reverse();
+
+//       return sorted.map(post => ({
+//         ...post.toObject(),
+//         authorname: author.authorname,
+//         authoremail: author.email,
+//         profile: author.profile || '',
+//         role: author.role,
+//         community: author.community,
+//       }));
+//     });
+
+//     // Priority posts first (followed OR community), then others — both in reverse/newest-first order
+//     const postsFromPriority = flattenReverse(priorityAuthors);
+//     const postsFromOthers = flattenReverse(otherAuthors);
+//     // const allPosts = [...postsFromPriority, ...postsFromOthers];
+//      // Shuffle arrays individually (Fisher–Yates) without mutating originals
+//     const shuffleArray = (arr) => {
+//       const a = arr.slice();
+//       for (let i = a.length - 1; i > 0; i--) {
+//         const j = Math.floor(Math.random() * (i + 1));
+//         [a[i], a[j]] = [a[j], a[i]];
+//       }
+//       return a;
+//     };
+
+//     const shuffledPriority = shuffleArray(postsFromPriority);
+//     const shuffledOthers = shuffleArray(postsFromOthers);
+  
+//     const allPosts = [...shuffledPriority, ...shuffledOthers];
+
+//     // category counts (unchanged)
+//     const categoryCounts = allAuthors.flatMap((author) =>
+//       author.posts.map((post) => post.category)
+//     ).reduce((counts, category) => {
+//       counts[category] = (counts[category] || 0) + 1;
+//       return counts;
+//     }, {});
+//     const count = Object.keys(categoryCounts).length;
+
+//     res.status(200).json({ message: "All posts", posts: allPosts, count });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ message: "server error", error: err.message });
+//   }
+// };
+
 const getRecommendedPosts = async (req, res) => {
   try {
     const { email } = req.params;
 
+    const page = parseInt(req.query.page) || 1;
+    const limit = Math.min(parseInt(req.query.limit) || 50, 100);
+    // console.log("page",page, "limit",limit)
+    const cacheKey = `feed:${email}:page:${page}:limit:${limit}`;
+
+    // 1. CHECK CACHE FIRST
+    // const cachedData = await redisClient.get(cacheKey);
+
+    // if (cachedData) {
+    //   console.log("Serving from Redis cache");
+    //   return res.status(200).json(JSON.parse(cachedData));
+    // }
+
+    // 2. IF NOT IN CACHE → FETCH FROM DB
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
     let followedEmails = [];
     let authorCommunities = [];
-    if (email) {
-      const currentAuthor = await Author.findOne({ email }).select('following community');
-      if (currentAuthor) {
-        followedEmails = Array.isArray(currentAuthor.following) ? currentAuthor.following : [];
-        authorCommunities = Array.isArray(currentAuthor.community) ? currentAuthor.community : [];
-      }
+
+    const currentAuthor = await Author.findOne({ email })
+      .select("following community");
+
+    if (currentAuthor) {
+      followedEmails = currentAuthor.following || [];
+      authorCommunities = currentAuthor.community || [];
     }
 
-    // Fetch only needed authors
-    const allAuthors = await Author.find({}).select('email authorname profile role community posts');
+    const allAuthors = await Author.find({})
+      .select("email authorname profile role community posts");
 
-    // Split authors into priority (followed OR same community) and others
     const followedSet = new Set(followedEmails);
+
     const priorityAuthors = [];
     const otherAuthors = [];
 
-    for (const a of allAuthors) {
-      const inFollowing = followedSet.has(a.email);
-      const inCommunity = Array.isArray(a.community) && a.community.some(c => authorCommunities.includes(c));
-      if (inFollowing || inCommunity) priorityAuthors.push(a);
-      else otherAuthors.push(a);
+    for (const author of allAuthors) {
+      const inFollowing = followedSet.has(author.email);
+      const inCommunity =
+        Array.isArray(author.community) &&
+        author.community.some((c) => authorCommunities.includes(c));
+
+      if (inFollowing || inCommunity) priorityAuthors.push(author);
+      else otherAuthors.push(author);
     }
 
-    // Helper to flatten posts in reverse (newest first). Prefer createdAt if available.
-    const flattenReverse = (authorsArray) => authorsArray.flatMap(author => {
-      const posts = Array.isArray(author.posts) ? author.posts.slice() : [];
-      const sorted = posts[0] && posts[0].createdAt
-        ? posts.slice().sort((x, y) => new Date(y.createdAt) - new Date(x.createdAt))
-        : posts.slice().reverse();
+    const flattenPosts = (authors) =>
+      authors.flatMap((author) => {
+        const posts = Array.isArray(author.posts) ? author.posts : [];
 
-      return sorted.map(post => ({
-        ...post.toObject(),
-        authorname: author.authorname,
-        authoremail: author.email,
-        profile: author.profile || '',
-        role: author.role,
-        community: author.community,
-      }));
-    });
+        const sorted = posts[0]?.createdAt
+          ? posts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+          : posts.reverse();
 
-    // Priority posts first (followed OR community), then others — both in reverse/newest-first order
-    const postsFromPriority = flattenReverse(priorityAuthors);
-    const postsFromOthers = flattenReverse(otherAuthors);
-    // const allPosts = [...postsFromPriority, ...postsFromOthers];
-     // Shuffle arrays individually (Fisher–Yates) without mutating originals
-    const shuffleArray = (arr) => {
+        return sorted.map((post) => ({
+          ...post.toObject(),
+          authorname: author.authorname,
+          authoremail: author.email,
+          profile: author.profile || "",
+          role: author.role,
+          community: author.community,
+        }));
+      });
+
+    const shuffle = (arr) => {
       const a = arr.slice();
       for (let i = a.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -135,26 +236,34 @@ const getRecommendedPosts = async (req, res) => {
       return a;
     };
 
-    const shuffledPriority = shuffleArray(postsFromPriority);
-    const shuffledOthers = shuffleArray(postsFromOthers);
-  
-    const allPosts = [...shuffledPriority, ...shuffledOthers];
+    const priorityPosts = shuffle(flattenPosts(priorityAuthors));
+    const otherPosts = shuffle(flattenPosts(otherAuthors));
 
-    // category counts (unchanged)
-    const categoryCounts = allAuthors.flatMap((author) =>
-      author.posts.map((post) => post.category)
-    ).reduce((counts, category) => {
-      counts[category] = (counts[category] || 0) + 1;
-      return counts;
-    }, {});
-    const count = Object.keys(categoryCounts).length;
+    const allPosts = [...priorityPosts, ...otherPosts];
 
-    res.status(200).json({ message: "All posts", posts: allPosts, count });
+    const paginatedPosts = allPosts.slice(startIndex, endIndex);
+
+    const responseData = {
+      message: "Recommended posts",
+      page,
+      limit,
+      totalPosts: allPosts.length,
+      totalPages: Math.ceil(allPosts.length / limit),
+      posts: paginatedPosts,
+    };
+
+    // 3. STORE IN REDIS (cache for 60 seconds)
+    // await redisClient.setEx(cacheKey, 300, JSON.stringify(responseData));
+
+    console.log("Serving from DB and cached to Redis");
+    res.status(200).json(responseData);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "server error", error: err.message });
+    console.error("Error:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 };
+
+
 // ...existing code...
 
 
@@ -215,6 +324,28 @@ const getCategoryPosts = async (req, res) => {
   }
 };
 
+const axios = require("axios");
+
+async function notifyAIIngestion(post) {
+ try{
+   console.log("post to ingest", post)
+  res = await axios.post(`${process.env.TECH_ASSISTANT_URL}/ingest`, post);
+  console.log("AI ingestion notified:", res.data);
+ }
+ catch(err){
+  console.error("Error notifying AI ingestion:", err.message);
+ }
+}
+
+async function deleteFromAIIngestion(post_id) {
+  try{
+
+     res = await axios.delete(`${process.env.TECH_ASSISTANT_URL}/delete/${post_id}`);
+  }
+  catch(err){
+    console.error("Error notifying AI deletion:", err.message); 
+  }
+}
 
 
 const addPosts = async (req, res) => {
@@ -269,7 +400,7 @@ const addPosts = async (req, res) => {
 
     // --- Create post ---
     const postId = new mongoose.Types.ObjectId();
-    author.posts.push({
+    let postData = {
       _id: postId,
       title,
       image: imageUrl,
@@ -277,7 +408,8 @@ const addPosts = async (req, res) => {
       category,
       documents: documentUrls,
       links: parsedLinks
-    });
+    }
+    author.posts.push(postData);
 
     const url = `${notificationUrl}/viewpage/${author.email}/${postId}`;
 
@@ -332,9 +464,19 @@ const addPosts = async (req, res) => {
 
     // --- Save post ---
     const data = await author.save();
+     
+    
 
     // ✅ Respond immediately (non-blocking email sending)
     res.status(201).json({ message: "Post added successfully", data });
+   
+    postData['authorName'] = author.authorname;
+    postData['profile'] = author.profile || '';
+    postData['authorEmail'] = author.email;
+
+    await notifyAIIngestion(postData).catch(err => {
+      console.error("AI ingestion error:", err.message);
+    }); 
 
     // --- Send emails in background ---
     if (followersSet.length > 0) {
@@ -437,24 +579,6 @@ const updatePost = async (req, res) => {
       }
     }
 
-  // console.log("old link", post.links);
-
-// let parsedLinks = post.links;
-// if (links && JSON.parse(links).length > 0) {
-//   try {
-//     const parsed = typeof links === "string" ? JSON.parse(links) : links;
-
-//     if (Array.isArray(parsed)) {
-//       parsedLinks = parsed.map(link => ({
-//         _id: new mongoose.Types.ObjectId(), // manually create if you want explicit IDs
-//         title: (link.title || "").trim(),
-//         url: (link.url || "").trim()
-//       }));
-//     }
-//   } catch (err) {
-//     console.error("Failed to parse links:", err);
-//   }
-// }
 let parsedLinks = post.links || [];
     // --- Parse links safely ---
     if (links && JSON.parse(links).length > 0) {
@@ -492,9 +616,9 @@ let parsedLinks = post.links || [];
         console.error("Failed to parse links:", err);
       }
     }
-console.log("links",parsedLinks)
+// console.log("links",parsedLinks)
     // Update post details
-    Object.assign(post, { 
+  Object.assign(post, { 
       title, 
       image: imageUrl, 
       description, 
@@ -509,6 +633,18 @@ console.log("links",parsedLinks)
       message: "Post updated successfully", 
       data: updatedPost 
     });
+
+    const updated = updatedPost.posts.id(postId);
+
+    let updatedToAI = {...updated.toObject(), authorName: author.authorname, profile: author.profile || '', authorEmail: author.email};
+ 
+
+
+    // console.log("updated post for AI", updatedToAI)
+
+     await notifyAIIngestion(updatedToAI).catch(err => {
+      console.error("AI update ingestion error:", err.message);
+    }); 
   } catch (err) {
     console.error(err.errors); 
     res.status(500).json({ 
@@ -562,54 +698,6 @@ const removePostsLinks = async (req, res) => {
   }
 };
 
-// const deletePost = async (req, res) => {
-//   try {
-//     const { email, postId } = req.params;
-
-//     // Find the author by email
-//     const author = await Author.findOne({ email });
-
-//     if (!author) {
-//       return res.status(404).json({ message: "Author not found" });
-//     }
-
-//     // Find the index of the post by _id within the posts array
-//     const postIndex = author.posts.findIndex(
-//       (post) => post._id.toString() === postId
-//     );
-//     const postToDelete  = author.posts[postIndex].image;
-//     console.log('post to delete',postToDelete)
-
-//     // if (postIndex === -1) {
-//     //   return res.status(404).json({ message: "Post not found" });
-//     // }
-
-//     // const postToDelete  = author.posts[postIndex]
-    
-//        // S3 Integration
-//        const params = {
-//         Bucket:bucketName,
-//         Key:postToDelete
-//       }
-   
-//       const command = new DeleteObjectCommand(params)
-//       await s3.send(command)
-//       console.log(postToDelete)
- 
-//     // Remove the post from the posts array
-//      author.posts.splice(postIndex, 1);
-
-//     // Save the updated author document
-//     const updatedAuthor = await author.save();
-
-//     res.status(200).json({
-//       message: "Post deleted successfully",
-//       data: updatedAuthor,
-//     });
-//   } catch (err) {
-//     res.status(500).json({ message: "Server error", error: err.message });
-//   }
-// };
 
 const deletePost = async (req, res) => {   
   try {
@@ -656,6 +744,14 @@ const deletePost = async (req, res) => {
       message: "Post deleted successfully",
       data: updatedAuthor,
     });
+
+    //  console.log("deleted post from pinecone", postId)
+
+     await deleteFromAIIngestion(postId).catch(err => {
+      console.error("AI update ingestion error:", err.message);
+    }); 
+
+
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
   }
@@ -836,30 +932,97 @@ const addPostBookmark = async(req,res)=>{
 }
 
 
+// const getBookmarkedPosts = async (req, res) => {
+//   try {
+//     const { email } = req.params;
+//     if (!email) return res.status(400).json({ message: "email required" });
+
+//     // fetch only bookmark ids (ensure field is returned)
+//     const author = await Author.findOne({ email }).select("postBookmark");
+//     if (!author) return res.status(404).json({ message: "author not found" });
+
+//     // normalize bookmark ids to strings
+//     const postIds = (author.postBookmark || [])
+//       .map((id) => (id ? id.toString() : null))
+//       .filter(Boolean);
+
+//     if (postIds.length === 0) {
+//       return res.status(200).json({ message: "No bookmarks", posts: [] });
+//     }
+
+//     // Fetch all authors that have posts (avoid relying on Mongo $in casting issues)
+//     const authorsWithPosts = await Author.find({ "posts.0": { $exists: true } })
+//       .select("authorname email profile role community posts");
+
+//     // Build map postId -> postWithAuthorDetails by scanning posts in JS
+//     const postMap = new Map();
+//     for (const a of authorsWithPosts) {
+//       for (const p of a.posts || []) {
+//         const pid = p._id && p._id.toString();
+//         if (pid && postIds.includes(pid) && !postMap.has(pid)) {
+//           postMap.set(pid, {
+//             ...p.toObject(),
+//             authorname: a.authorname,
+//             authoremail: a.email,
+//             profile: a.profile || "",
+//             role: a.role,
+//             community: a.community,
+//           });
+//         }
+//       }
+//     }
+
+//     // preserve bookmark order
+//     const bookmarkedPosts = postIds.map((id) => postMap.get(id)).filter(Boolean);
+//     const bookmarkedPostIds = bookmarkedPosts.map(p => (p && p._id) ? p._id.toString() : null).filter(Boolean);
+    
+
+//     return res.status(200).json({
+//       message: "Bookmarked posts",
+//       count: bookmarkedPosts.length,
+//       posts: bookmarkedPosts,
+//       postIds:bookmarkedPostIds
+//     });
+//   } catch (err) {
+//     console.error("getBookmarkedPosts error:", err);
+//     return res.status(500).json({ message: "server error", error: err.message });
+//   }
+// };
 const getBookmarkedPosts = async (req, res) => {
   try {
     const { email } = req.params;
+
+    // pagination inputs
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const start = (page - 1) * limit;
+    const end = start + limit;
+
+    // console.log("bookmark page:", page, "limit:", limit);
+
     if (!email) return res.status(400).json({ message: "email required" });
 
-    // fetch only bookmark ids (ensure field is returned)
     const author = await Author.findOne({ email }).select("postBookmark");
     if (!author) return res.status(404).json({ message: "author not found" });
 
-    // normalize bookmark ids to strings
     const postIds = (author.postBookmark || [])
       .map((id) => (id ? id.toString() : null))
       .filter(Boolean);
 
     if (postIds.length === 0) {
-      return res.status(200).json({ message: "No bookmarks", posts: [] });
+      return res.status(200).json({
+        message: "No bookmarks",
+        posts: [],
+        postIds: [],
+        count: 0,
+      });
     }
 
-    // Fetch all authors that have posts (avoid relying on Mongo $in casting issues)
     const authorsWithPosts = await Author.find({ "posts.0": { $exists: true } })
       .select("authorname email profile role community posts");
 
-    // Build map postId -> postWithAuthorDetails by scanning posts in JS
     const postMap = new Map();
+
     for (const a of authorsWithPosts) {
       for (const p of a.posts || []) {
         const pid = p._id && p._id.toString();
@@ -876,23 +1039,52 @@ const getBookmarkedPosts = async (req, res) => {
       }
     }
 
-    // preserve bookmark order
-    const bookmarkedPosts = postIds.map((id) => postMap.get(id)).filter(Boolean);
-    const bookmarkedPostIds = bookmarkedPosts.map(p => (p && p._id) ? p._id.toString() : null).filter(Boolean);
-    
+    // preserve order FIRST
+    const allBookmarkedPosts = postIds
+      .map((id) => postMap.get(id))
+      .filter(Boolean);
+
+    // THEN apply pagination
+    const paginatedPosts = allBookmarkedPosts.slice(start, end);
+
+    const paginatedPostIds = paginatedPosts
+      .map((p) => p?._id?.toString())
+      .filter(Boolean);
 
     return res.status(200).json({
       message: "Bookmarked posts",
-      count: bookmarkedPosts.length,
-      posts: bookmarkedPosts,
-      postIds:bookmarkedPostIds
+      count: allBookmarkedPosts.length, // unchanged meaning
+      posts: paginatedPosts,
+      postIds: paginatedPostIds,
     });
   } catch (err) {
     console.error("getBookmarkedPosts error:", err);
     return res.status(500).json({ message: "server error", error: err.message });
   }
 };
-//
+
+// GET /blog/posts/bookmarkIds/:email
+const getAllBookmarkIds = async (req, res) => {
+  try {
+    const { email } = req.params;
+
+    const author = await Author.findOne({ email }).select("postBookmark");
+
+    if (!author) {
+      return res.status(404).json({ message: "Author not found" });
+    }
+
+    const postIds = (author.postBookmark || []).map(id => id.toString());
+
+    res.status(200).json({ postIds });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+
+
+
 
 module.exports = {
   getAllPosts,
@@ -907,6 +1099,7 @@ module.exports = {
   getRecommendedPosts,
   addPostBookmark,
   getBookmarkedPosts,
-  removePostsLinks
+  removePostsLinks,
+  getAllBookmarkIds
  
 };

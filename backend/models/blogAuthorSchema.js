@@ -88,7 +88,11 @@ const postSchema = new mongoose.Schema({
       message: "Views array must contain unique values",
     },
   },
-  messages: [messageSchema], // Messages linked to the post
+  // messages: [messageSchema], // Messages linked to the post
+  messages: {
+  type: [messageSchema],
+  default: []
+},
   timestamp: {
     type: Date,
     default: Date.now, // Automatically set to the current date
@@ -302,5 +306,7 @@ authorSchema.methods.comparePassword =  function (enteredPassword) {
 
 // Author model
 const Author = mongoose.model('Author', authorSchema);
-
 module.exports = Author;
+
+
+
