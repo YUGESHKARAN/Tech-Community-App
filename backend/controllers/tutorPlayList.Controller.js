@@ -38,10 +38,7 @@ const getAllTutorPlaylist = async (req, res) => {
 const getPlaylistByEmail = async (req, res) => {
   try {
     const { email } = req.params;
-//     await Author.updateMany(
-//   { "posts.messages": { $exists: false } },
-//   { $set: { "posts.$[].messages": [] } }
-// );
+    if (!email) return res.status(400).json({ message: "email required" });
 
     const tutorPlayList = await TutorPlayList.find({ email });
 
