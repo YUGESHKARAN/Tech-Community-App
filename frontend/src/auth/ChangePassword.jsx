@@ -88,7 +88,7 @@ function ChangePassword() {
                   <button
                     onClick={handleSubmit}
                     type="submit"
-                    className='w-full bg-yellow-600 hover:bg-yellow-700 md:text-base text-sm transition-all duration-200 text-white font-bold py-2 px-4 rounded'
+                    className='w-full bg-yellow-600 hover:bg-yellow-700 md:text-base text-sm transition-all duration-200 text-white font-bold py-1.5 md:py-2.5 px-4 rounded'
                   >
                     Change Password
                   </button>

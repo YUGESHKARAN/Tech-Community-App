@@ -352,7 +352,7 @@ function NavBar() {
       </div> */}
       <div
         ref={sidebarRef}
-        className={`fixed top-0 right-0 h-full w-72 bg-gradient-to-b from-gray-900 to-gray-800 text-white shadow-2xl z-50 transition-transform duration-1000 ease-in-out
+        className={`fixed top-0 right-0 h-screen w-72 bg-gradient-to-b from-gray-900 to-gray-800 text-white shadow-2xl z-50 transition-transform duration-1000 ease-in-out
     ${isSidebarOpen ? "translate-x-0" : "translate-x-full"}
   `}
       >

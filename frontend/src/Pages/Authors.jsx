@@ -302,7 +302,7 @@ const authorsDetails = async () => {
                 <h3 className="text-sm font-semibold text-white truncate">
                   {author.authorName}
                 </h3>
-                <p className="text-xs text-gray-400 w-full text-[9px] w-9/12 md:w-full truncate">
+                <p className="text-xs text-gray-400 text-[9px] w-9/12 md:w-full truncate">
                   {author.email}
                 </p>
               </div>
@@ -322,7 +322,7 @@ const authorsDetails = async () => {
               {author.followers.includes(email) ? (
                 <button
                   onClick={() => addFollower(author.email)}
-                  className="w-full py-1.5 rounded-lg bg-gray-700 text-gray-300 text-sm cursor-default"
+                  className="w-full py-1.5 rounded-lg bg-gray-700 text-gray-300 trim text-sm cursor-default"
                 >
                   Following
                 </button>
@@ -340,7 +340,7 @@ const authorsDetails = async () => {
       </div>
 
       {/* Search and Filter */}
-      <div className="w-11/12 mx-auto flex  md:flex-row justify-between items-center gap-4 md:mt-10 mb-6">
+      <div className="w-11/12 mx-auto flex mt-7   md:flex-row justify-between items-center gap-4 md:mt-10 mb-6">
         <div
           // className="md:w-1/3 w-3/5 px-4 py-2 flex items-center gap-2 justify-center rounded-md bg-gray-600 border border-white text-xs md:text-base text-white placeholder-gray-400"
           className="w-full max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-2xl px-4 py-3 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition"

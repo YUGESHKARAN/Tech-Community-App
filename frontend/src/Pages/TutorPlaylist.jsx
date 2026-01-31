@@ -606,7 +606,7 @@ function TutorPlaylist() {
 
     {/* RIGHT — POSTS */}
     {filteredPosts.length > 0 ? (
-      <div className="lg:col-span-2 space-y-6 h-fit">
+      <div className="lg:col-span-2 mt-7 md:mt-0 space-y-6 h-fit">
         <h2 className="text-xl text-center md:text-left font-semibold text-white">
           Select Posts for Playlist
         </h2>
@@ -668,7 +668,7 @@ function TutorPlaylist() {
     {/* SUBMIT */}
    { 
    filteredPosts.length > 0 &&
-    <div className="lg:col-span-3 md:hidden flex justify-start ">
+    <div className="lg:col-span-3 md:hidden mt-7 flex justify-start ">
       <button
         type="submit"
         disabled={loader}

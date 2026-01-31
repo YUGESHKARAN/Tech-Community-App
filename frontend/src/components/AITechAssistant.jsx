@@ -137,7 +137,7 @@ export default function AITechAssistant({ currentPostId }) {
         className={`
       fixed md:static bottom-0 right-0
       w-full md:w-full
-      h-[60vh] md:h-[520px]
+      h-[75vh] md:h-[520px]
        text-white
        bg-[#0f0f0f]
       border-l border-neutral-800
@@ -278,9 +278,7 @@ export default function AITechAssistant({ currentPostId }) {
                             // border border-neutral-800
                             //   hover:border-neutral-700
                             className="
-                              group min-w-56 max-w-56
-                              
-                              
+                              group min-w-48 max-w-48
                               rounded-2xl
                               overflow-hidden
                               transition-all duration-300

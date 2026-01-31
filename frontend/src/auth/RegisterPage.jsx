@@ -249,7 +249,7 @@ function RegisterPage() {
           name="email"
           value={formData.email}
           onChange={handleChange}
-          placeholder="you@example.com"
+          placeholder="Enter University email"
           required
           className="w-full px-4 py-2.5 text-sm bg-gray-800 text-white border border-gray-700 rounded-lg focus:outline-none focus:ring-1 focus:ring-green-500"
         />
@@ -303,7 +303,7 @@ function RegisterPage() {
       <button
         type="submit"
         disabled={loading}
-        className="w-full py-2.5 bg-green-600 hover:bg-green-700 transition text-white font-semibold rounded-lg"
+        className="w-full py-1.5 md:py-2.5 bg-green-600 hover:bg-green-700 transition text-white font-semibold rounded-lg"
       >
         {loading ? "Setting up..." : "Register"}
       </button>

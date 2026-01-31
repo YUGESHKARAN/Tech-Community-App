@@ -313,7 +313,7 @@ useEffect(() => {
           </div>
         </section>
 
-        <section className="space-y-6 md:p-4">
+        <section className="space-y-6 mt-7 md:p-4">
           {(postCategory === ""
             ? filterdPost
             : posts.filter((post) => post.category === postCategory)
@@ -324,7 +324,7 @@ useEffect(() => {
           )}
 
           {/* Posts Grid */}
-          <div className="grid grid-cols-1 w-full md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 md:gap-16 flex-wrap justify-center md:mt-5 h-auto mx-auto">
+          <div className="grid grid-cols-1 w-11/12 mx-auto md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 md:gap-16 flex-wrap justify-center md:mt-5 h-auto mx-auto">
             {loader ? (
               <div className="col-span-4 flex flex-col items-center justify-center">
                 <MagnifyingGlass

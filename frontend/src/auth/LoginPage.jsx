@@ -261,7 +261,7 @@ function LoginPage() {
             value={formData.email}
             onChange={handleChange}
             required
-            placeholder="you@example.com"
+            placeholder="Enter your university email"
             className="w-full px-4 py-2.5 text-sm bg-gray-800 text-white border border-gray-700 rounded-lg focus:outline-none focus:ring-1 focus:ring-green-500"
           />
         </div>
@@ -291,7 +291,7 @@ function LoginPage() {
             onClick={handleSubmit}
             type="submit"
             disabled={loader2}
-            className="w-full py-2.5 bg-red-600 hover:bg-red-700 transition text-white font-semibold rounded-lg"
+            className="w-full p-1.5 md:py-2.5 bg-red-600 hover:bg-red-700 transition text-white font-semibold rounded-lg"
           >
             {loader2 ? "Logging in..." : "Login"}
           </button>
@@ -302,7 +302,7 @@ function LoginPage() {
             onClick={(e) => sendOtp(e, formData.email)}
             type="submit"
             disabled={loader2}
-            className="w-full py-2.5 bg-red-600 hover:bg-red-700 transition text-white font-semibold rounded-lg"
+            className="w-full py-1.5 md:py-2.5 bg-red-600 hover:bg-red-700 transition text-white font-semibold rounded-lg"
           >
             {loader2 ? "Sending OTP..." : "Send OTP"}
           </button>
