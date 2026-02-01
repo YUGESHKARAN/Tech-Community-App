@@ -260,7 +260,19 @@ useEffect(() => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 py-8">
       <div className="flex-col w-11/12 md:gap-16 flex-wrap justify-center h-auto mx-auto">
-        <div className="flex md:max-w-5xl md:w-fit mt-4 scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto">
+       
+
+         {/* Tutor Playlist grid */}
+        <section className="space-y-4 md:mt-4">
+          <h2 className="md:pl-4 pl-2 text-2xl md:text-4xl font-bold tracking-wide text-gray-200">
+            Featured Playlists
+          </h2>
+          <div className=" md:p-4 p-2 shadow-inner">
+            <TutorPlaylistGrid />
+          </div>
+        </section>
+
+         <div className="flex md:max-w-5xl md:w-fit mt-12 scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto">
           {/* All Button */}
           <div
             onClick={() => setPostCategory("")}
@@ -303,17 +315,7 @@ useEffect(() => {
           </div>
         </div>
 
-         {/* Tutor Playlist grid */}
-        <section className="space-y-4 mt-7">
-          <h2 className="md:pl-4 pl-2 text-2xl md:text-4xl font-bold tracking-wide text-gray-200">
-            Featured Playlists
-          </h2>
-          <div className=" md:p-4 p-2 shadow-inner">
-            <TutorPlaylistGrid />
-          </div>
-        </section>
-
-        <section className="space-y-6 mt-7 md:p-4">
+        <section className="w-full  mt-7 md:p-4">
           {(postCategory === ""
             ? filterdPost
             : posts.filter((post) => post.category === postCategory)
@@ -324,7 +326,7 @@ useEffect(() => {
           )}
 
           {/* Posts Grid */}
-          <div className="grid grid-cols-1 w-11/12 mx-auto md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 md:gap-16 flex-wrap justify-center md:mt-5 h-auto mx-auto">
+          <div className="md:w-full grid grid-cols-1 w-11/12 mx-auto md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 md:gap-16 mt-7 md:mt-10 h-auto ">
             {loader ? (
               <div className="col-span-4 flex flex-col items-center justify-center">
                 <MagnifyingGlass
@@ -473,10 +475,10 @@ useEffect(() => {
                 </div>
               ))
             )}
-            {loading && <p className="text-center md:col-span-2 lg:col-span-3 xl:col-span-4 py-4">Loading...</p>}
+            {loading && <p className="text-center col-span-full py-4">Loading...</p>}
 
             {!hasMore && (
-              <p className="text-center md:col-span-4 py-4 text-gray-500">No more posts</p>
+              <p className="text-center col-span-full py-4 text-gray-500">No more posts</p>
             )}
           </div>
         </section>

@@ -357,7 +357,7 @@ function NavBar() {
   `}
       >
         {/* Header */}
-        <div className="h-16 flex items-center px-6 border-b border-gray-700">
+        <div className="h-12 flex items-center px-6 border-b border-gray-700">
           <h2 className="text-lg font-semibold tracking-wide text-white">
                {/* Navigation */}
           </h2>

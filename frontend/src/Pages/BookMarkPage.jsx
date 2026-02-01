@@ -344,7 +344,7 @@ const getBookMarkPosts = async () => {
           <div className="grid grid-cols-1 w-11/12 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 md:gap-16 flex-wrap justify-center md:mt-10  mt-7 h-auto mx-auto">
             {/* Posts Grid */}
             {loader ? (
-              <div className="col-span-4 flex flex-col items-center justify-center">
+              <div className="col-span-full flex flex-col items-center justify-center">
                 <MagnifyingGlass
                   visible={true}
                   height="100"
