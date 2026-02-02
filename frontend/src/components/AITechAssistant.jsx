@@ -185,7 +185,8 @@ export default function AITechAssistant({ currentPostId }) {
                 <div className="space-y-6 transition-all ">
                   {/* Content */}
                   {msg.content && (
-                    <div className="bg-[#1a1a1a] border border-neutral-800 p-4 rounded-2xl">
+                    // <div className="md:bg-[#1a1a1a] md:border border-neutral-800 md:p-4 rounded-2xl">
+                    <div className="md:p-2">
                       <div className="prose prose-invert  max-w-none text-sm leading-loose space-y-2">
                         <ReactMarkdown
                           remarkPlugins={[remarkGfm, remarkBreaks]}
@@ -268,7 +269,7 @@ export default function AITechAssistant({ currentPostId }) {
                         Related posts
                       </h3>
 
-                      <div className="overflow-x-auto  pb-2 scrollbar-hide flex gap-4">
+                      <div className="overflow-x-auto  pb-2 scrollbar-hide flex gap-2">
                         {msg.posts.map((p, i) => (
                           <Link
                             key={i}
@@ -278,7 +279,7 @@ export default function AITechAssistant({ currentPostId }) {
                             // border border-neutral-800
                             //   hover:border-neutral-700
                             className="
-                              group min-w-48 max-w-48
+                              group min-w-40 max-w-40
                               rounded-2xl
                               overflow-hidden
                               transition-all duration-300
@@ -294,7 +295,8 @@ export default function AITechAssistant({ currentPostId }) {
                                     ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${p.image}`
                                     : blog1
                                 }
-                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                // className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                className="w-full h-full object-cover"
                               />
 
                               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
@@ -304,7 +306,7 @@ export default function AITechAssistant({ currentPostId }) {
                               </div> */}
                             </div>
 
-                            <div className="pl-2 mt-1 space-y-1">
+                            <div className="pl-2 mt-2 space-y-1">
                               <p className="text-sm font-semibold leading-snug line-clamp-2 text-neutral-100">
                                 {p.title}
                               </p>
@@ -318,7 +320,7 @@ export default function AITechAssistant({ currentPostId }) {
                                       ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${p.profile}`
                                       : user
                                   }
-                                  className="w-9 h-9 rounded-full object-cover bg-white border border-neutral-700"
+                                  className="w-7 h-7 rounded-full object-cover bg-white border border-neutral-700"
                                 />
 
                                 <div className="min-w-0 flex-col">
