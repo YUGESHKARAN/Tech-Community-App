@@ -402,7 +402,7 @@ export default function AITechAssistant({ currentPostId }) {
             onKeyDown={(e) => e.key === "Enter" && askAI()}
             placeholder="Ask your query..."
             className="flex-1 bg-neutral-800 border border-neutral-800 rounded-xl px-4 py-2 text-sm text-white placeholder-neutral-500 outline-none"
-          />
+          /> 
 
           <button
             onClick={askAI}
