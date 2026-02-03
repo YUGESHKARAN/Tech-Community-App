@@ -346,7 +346,7 @@ const postComment = () => {
 
           {/* RIGHT COLUMN */}
           <div
-           className='text-4xl text-white cursor-pointer md:hidden'
+           className='text-4xl text-white md:hidden'
            >
             <AITechAssistant currentPostId={singlePostData._id}/>
            </div>
@@ -355,7 +355,7 @@ const postComment = () => {
              
              {/* Personal Assistant */}
             <div
-            className='text-4xl text-white hidden md:block cursor-pointer '
+            className='text-4xl text-white hidden md:block '
             >
               <AITechAssistant currentPostId={singlePostData._id}/>
             </div>

@@ -7,6 +7,8 @@ import remarkBreaks from "remark-breaks";
 import { SiGooglegemini } from "react-icons/si";
 import user from "../images/user.png";
 import blog1 from "../images/img_not_found.png";
+import { VscSend } from "react-icons/vsc";
+import { IoSendSharp } from "react-icons/io5";
 export default function AITechAssistant({ currentPostId }) {
   const username = localStorage.getItem("username");
   const [open, setOpen] = useState(false);
@@ -54,8 +56,14 @@ export default function AITechAssistant({ currentPostId }) {
         suggestedQueries: res.data.suggestions || [],
       };
 
+      console.log("AI response", aiMessage)
+
       setMessages((prev) => [...prev, aiMessage]);
-    } finally {
+    } 
+    catch(err){
+      console.log("Error asking AI:", err.message);
+    }
+    finally {
       setLoading(false);
     }
   };
@@ -111,7 +119,7 @@ export default function AITechAssistant({ currentPostId }) {
   const bottomRef = useRef(null);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    bottomRef.current?.scrollIntoView({ behavior: "smooth"});
   }, [messages, loading]);
 
   const handleQueryClick = async (e) => {
@@ -279,7 +287,7 @@ export default function AITechAssistant({ currentPostId }) {
                             // border border-neutral-800
                             //   hover:border-neutral-700
                             className="
-                              group min-w-40 max-w-40
+                              group min-w-48 max-w-48
                               rounded-2xl
                               overflow-hidden
                               transition-all duration-300
@@ -301,13 +309,13 @@ export default function AITechAssistant({ currentPostId }) {
 
                               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
 
-                              {/* <div className="absolute top-2 left-3 bg-black/80 text-[11px] px-2 py-0.5 rounded-full border border-neutral-700">
+                              <div className="absolute top-2 left-3 bg-black/70 text-[11px] px-2 py-0.5 rounded-full border border-neutral-700">
                                 {p.category}
-                              </div> */}
+                              </div>
                             </div>
 
                             <div className="pl-2 mt-2 space-y-1">
-                              <p className="text-sm font-semibold leading-snug line-clamp-2 text-neutral-100">
+                              <p className="text-sm font-semibold leading-snug line-clamp-1 text-neutral-100">
                                 {p.title}
                               </p>
 
@@ -354,7 +362,8 @@ export default function AITechAssistant({ currentPostId }) {
                             setQuery(s);
                             await handleQueryClick(e);
                           }}
-                          className="bg-neutral-800 hover:bg-neutral-700 px-3 py-1.5 rounded-full text-sm"
+                          // className="bg-neutral-800 hover:bg-neutral-700 px-3 py-1.5 rounded-full text-sm"
+                          className="border border-neutral-600 hover:bg-neutral-700 px-3 py-1.5 rounded-full text-sm"
                         >
                           {s}
                         </button>
@@ -379,7 +388,7 @@ export default function AITechAssistant({ currentPostId }) {
                 <div className="h-3 w-full rounded-full bg-gradient-to-r from-neutral-800 via-neutral-700 to-neutral-800 animate-shimmer" />
 
                 {/* Line 2 */}
-                <div className="h-3 w-[95%] rounded-full bg-gradient-to-r from-neutral-800 via-neutral-700 to-neutral-800 animate-shimmer" />
+                {/* <div className="h-3 w-[95%] rounded-full bg-gradient-to-r from-neutral-800 via-neutral-700 to-neutral-800 animate-shimmer" /> */}
               </div>
             </div>
           )}
@@ -391,15 +400,17 @@ export default function AITechAssistant({ currentPostId }) {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && askAI()}
-            placeholder="Ask something..."
-            className="flex-1 bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-2 text-sm text-white placeholder-neutral-500 outline-none"
+            placeholder="Ask your query..."
+            className="flex-1 bg-neutral-800 border border-neutral-800 rounded-xl px-4 py-2 text-sm text-white placeholder-neutral-500 outline-none"
           />
 
           <button
             onClick={askAI}
-            className="bg-white text-black px-4 rounded-xl text-sm text-base block"
+            // className="bg-white text-black px-4 rounded-xl text-sm text-base block"
+            className="text-2xl md:text-2xl transition-all duration-300 hover:text-gray-400 text-gray-500 block"
           >
-            Send
+            {/* Send */}
+            <VscSend/>
           </button>
         </div>
       </div>

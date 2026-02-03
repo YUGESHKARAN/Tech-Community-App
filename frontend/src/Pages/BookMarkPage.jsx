@@ -279,11 +279,13 @@ const getBookMarkPosts = async () => {
           <BiBookmarkAlt />
           <span className="group text-white"> My Bookmarks </span>{" "}
         </h1>
+         <div className="w-11/12 mx-auto">
+         <TutorBookMarkPlaylist />
+         </div>
+         
 
         <div className="w-11/12 mt-10 mx-auto">
-          {/* <h1 className="text-center text-white font-bold text-xl mt-2 md:mt-10">
-            Domains
-          </h1> */}
+    
           <div className="mx-auto w-11/12 md:w-fit flex flex-wrap mt-4 scrollbar-hide  items-center justify-center gap-3 mb-2 md:mb-5 md:overflow-x-auto">
             {/* All Button */}
             <div
@@ -330,12 +332,12 @@ const getBookMarkPosts = async () => {
           </div>
 
           <div className="w-11/12 mx-auto">
-            <TutorBookMarkPlaylist />
+            {/* <TutorBookMarkPlaylist /> */}
             {(postCategory === ""
               ? filterdPost
               : posts.filter((post) => post.category === postCategory)
             ).length > 0 && (
-              <h2 className="md:pl-4 pl-2  mt-9  text-2xl md:text-4xl font-bold tracking-wide text-gray-200">
+              <h2 className="md:pl-4 pl-2 mt-5 md:mt-9  text-2xl md:text-4xl font-bold tracking-wide text-gray-200">
                 Posts
               </h2>
             )}

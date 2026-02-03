@@ -15,5 +15,5 @@ export default function getTimeAgo(dateString) {
   const months = Math.floor(days / 30);
   if (months < 12) return `${months}mo${months > 1 ? "" : ""} `;
   const years = Math.floor(days / 365);
-  return `${years} y${years > 1 ? "" : ""} `;
+  return `${years}y${years > 1 ? "" : ""} `;
 }

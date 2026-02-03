@@ -453,7 +453,7 @@ function NavBar() {
         </ul>
 
         {/* Footer */}
-        <div className="absolute bottom-6 w-full px-6">
+        <div className="absolute bottom-16 w-full px-6">
           <button
             onClick={exit}
             className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-red-600/10 hover:bg-red-600/20 text-red-500 transition"
