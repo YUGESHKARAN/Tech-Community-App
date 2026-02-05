@@ -481,9 +481,17 @@ function NavBar() {
 
   {/* Header */}
   <div className="h-16 flex items-center justify-between px-8 border-b border-gray-700/60">
-    <h2 className="text-xl font-semibold tracking-wide">
-      Menu
-    </h2>
+    <div  
+    onClick={()=>{setIsSidebarOpen(!isSidebarOpen)}}
+    className="md:text-xl text-sm w-1/2 md:w-1/5 font-bold text-white">
+        <Link to="/home">
+          <img
+            src={bloglogo}
+            className="w-10 md:w-30 rounded-full"
+            alt="Blog Logo"
+          />
+        </Link>
+      </div>
       <div className="col-span-full flex justify-end  mt-3">
     <button
       onClick={exit}
