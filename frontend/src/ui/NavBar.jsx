@@ -350,22 +350,24 @@ function NavBar() {
           </li>
         </ul>
       </div> */}
-      <div
+
+
+      {/* <div
         ref={sidebarRef}
         className={`fixed top-0 right-0 h-screen w-72 bg-gradient-to-b from-gray-900 to-gray-800 text-white shadow-2xl z-50 transition-transform duration-1000 ease-in-out
     ${isSidebarOpen ? "translate-x-0" : "translate-x-full"}
   `}
       >
-        {/* Header */}
+       
         <div className="h-12 flex items-center px-6 border-b border-gray-700">
           <h2 className="text-lg font-semibold tracking-wide text-white">
-               {/* Navigation */}
+             
           </h2>
         </div>
 
-        {/* Menu */}
+       
         <ul className="flex flex-col gap-1 mt-4 px-4 text-sm font-medium">
-          {/* Home */}
+         
           <li>
             <Link
               to="/home"
@@ -376,7 +378,7 @@ function NavBar() {
             </Link>
           </li>
 
-          {/* Community */}
+        
           <li>
             <Link
               to="/community"
@@ -387,7 +389,7 @@ function NavBar() {
             </Link>
           </li>
 
-          {/* Coordinator Only */}
+         
           {role === "coordinator" && (
             <li>
               <Link
@@ -400,7 +402,7 @@ function NavBar() {
             </li>
           )}
 
-          {/* Authors */}
+        
           <li>
             <Link
               to="/authors"
@@ -411,7 +413,7 @@ function NavBar() {
             </Link>
           </li>
 
-          {/* Add Post */}
+          
           {role === "coordinator" && (
             <li>
               <Link
@@ -424,7 +426,7 @@ function NavBar() {
             </li>
           )}
 
-          {/* Profile */}
+         
           <li>
             <Link
               to="/profile"
@@ -435,7 +437,7 @@ function NavBar() {
             </Link>
           </li>
 
-          {/* Announcement */}
+          
           <li>
             <Link
               to="/announcement"
@@ -452,7 +454,7 @@ function NavBar() {
           </li>
         </ul>
 
-        {/* Footer */}
+       
         <div className="absolute bottom-16 w-full px-6">
           <button
             onClick={exit}
@@ -462,7 +464,131 @@ function NavBar() {
             Logout
           </button>
         </div>
-      </div>
+      </div> */}
+
+<div
+  ref={sidebarRef}
+  className={`fixed top-0 left-0 w-full h-fit
+  bg-zinc-900/90
+  backdrop-blur-lg text-white
+  shadow-xl z-50 transition-transform border-b border-white/50 border-neutral-800 rounded-b-xl duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]
+  ${isSidebarOpen ? "translate-y-0" : "-translate-y-full"}
+`}
+>
+
+
+
+
+  {/* Header */}
+  <div className="h-16 flex items-center justify-between px-8 border-b border-gray-700/60">
+    <h2 className="text-xl font-semibold tracking-wide">
+      Menu
+    </h2>
+      <div className="col-span-full flex justify-end  mt-3">
+    <button
+      onClick={exit}
+      className="w-fit mx-auto flex items-center justify-center text-xs gap-2 px-6 py-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 transition"
+    >
+      <IoLogOutOutline className="text-sm" />
+      Logout
+    </button>
+  </div>
+  </div>
+
+  {/* Menu */}
+  <ul className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2 px-5 py-6 text-xs font-medium">
+    <li>
+      <Link
+        to="/home"
+        className="flex items-center gap-3 px-2 py-2.5 rounded-xl bg-gray-800/40 hover:bg-gray-700/60 transition"
+      >
+        <IoHome className="text-lg text-green-400" />
+        Home
+      </Link>
+    </li>
+
+    <li>
+      <Link
+        to="/community"
+        className="flex items-center gap-3 px-2 py-2.5 rounded-xl bg-gray-800/40 hover:bg-gray-700/60 transition"
+      >
+        <MdGroups className="text-lg text-green-400" />
+        Tech Communities
+      </Link>
+    </li>
+
+    {role === "coordinator" && (
+      <li>
+        <Link
+          to="/yourposts"
+          className="flex items-center gap-3 px-2 py-2.5 rounded-xl bg-gray-800/40 hover:bg-gray-700/60 transition"
+        >
+          <MdDataObject className="text-lg text-green-400" />
+          My Posts
+        </Link>
+      </li>
+    )}
+
+    <li>
+      <Link
+        to="/authors"
+        className="flex items-center gap-3 px-2 py-2.5 rounded-xl bg-gray-800/40 hover:bg-gray-700/60 transition"
+      >
+        <IoPeople className="text-lg text-green-400" />
+        Authors
+      </Link>
+    </li>
+
+    {role === "coordinator" && (
+      <li>
+        <Link
+          to="/addPost"
+          className="flex items-center gap-3 px-2 py-2.5 rounded-xl bg-gray-800/40 hover:bg-gray-700/60 transition"
+        >
+          <MdPostAdd className="text-lg text-green-400" />
+          Add Post
+        </Link>
+      </li>
+    )}
+
+    <li>
+      <Link
+        to="/profile"
+        className="flex items-center gap-3 px-2 py-2.5 rounded-xl bg-gray-800/40 hover:bg-gray-700/60 transition"
+      >
+        <FaUserAlt className="text-lg text-green-400" />
+        My Profile
+      </Link>
+    </li>
+
+    <li className="sm:col-span-2 lg:col-span-3">
+      <Link
+        to="/announcement"
+        className="flex items-center gap-3 px-2 py-2.5 rounded-xl bg-gray-800/40 hover:bg-gray-700/60 transition"
+      >
+        <MdAnnouncement className="text-xl text-green-400" />
+        Announcements
+        {announcement.length > 0 && (
+          <span className="ml-auto text-[11px] bg-green-600 px-2 py-0.5 rounded-full">
+            {announcement.length}
+          </span>
+        )}
+      </Link>
+    </li>
+  </ul>
+
+  {/* Footer */}
+  {/* <div className="col-span-full flex justify-end  mt-3">
+    <button
+      onClick={exit}
+      className="w-fit mx-auto flex items-center justify-center text-sm gap-2 px-6 py-1.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 transition"
+    >
+      <IoLogOutOutline className="text-sm" />
+      Logout
+    </button>
+  </div> */}
+</div>
+
 
       <div
         ref={notificationRef}
