@@ -471,7 +471,7 @@ function NavBar() {
   className={`fixed top-0 left-0 w-full h-fit
   bg-zinc-900/90
   backdrop-blur-lg text-white
-  shadow-xl z-50 transition-transform border-b border-white/50 border-neutral-800 rounded-b-xl duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]
+  shadow-xl z-50 transition-transform border-b border-white/30 border-neutral-800 rounded-b-xl duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]
   ${isSidebarOpen ? "translate-y-0" : "-translate-y-full"}
 `}
 >

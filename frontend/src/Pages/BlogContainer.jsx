@@ -326,7 +326,7 @@ useEffect(() => {
           )}
 
           {/* Posts Grid */}
-          <div className="md:w-full grid grid-cols-1 w-11/12 mx-auto md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 md:gap-16 mt-7 md:mt-10 h-auto ">
+          {/* <div className="md:w-full grid grid-cols-1 w-11/12 mx-auto md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 md:gap-16 mt-7 md:mt-10 h-auto ">
             {loader ? (
               <div className="col-span-4 flex flex-col items-center justify-center">
                 <MagnifyingGlass
@@ -373,8 +373,7 @@ useEffect(() => {
                         {data.authorname}
                       </p>
                       <p className="text-xs text-gray-400 font-semibold">
-                        {/* {data.timestamp.slice(0, 10)}
-                         */}
+                    
                         {getTimeAgo(data.timestamp)}
                       </p>
                     </div>
@@ -406,6 +405,167 @@ useEffect(() => {
                   </div>
 
                   <div className="flex justify-between items-center mb-2">
+                    <div className="flex gap-3 items-center">
+                      <div className="flex items-center gap-2">
+                        <Link
+                          to={`/viewpage/${data.authoremail}/${data._id}`}
+                          onClick={() => postViews(data.authoremail, data._id)}
+                          className="cursor-pointer flex items-center gap-1 hover:text-blue-300"
+                        >
+                          <IoEye className="text-sm text-blue-400" />
+                          <span className="text-[9px]">
+                            {data.views.length || ""}
+                          </span>
+                        </Link>
+
+                        <button
+                          type="button"
+                          onClick={(e) =>
+                            postLikes(data.authoremail, data._id, e)
+                          }
+                          className="cursor-pointer flex items-center gap-1 hover:text-blue-300 bg-transparent border-0 disabled:opacity-50"
+                        >
+                          {(data.likes || []).includes(email) ? (
+                            <BiSolidLike className="text-sm text-blue-400" />
+                          ) : (
+                            <BiLike className="text-sm text-blue-400" />
+                          )}
+                          <span className="text-[9px] text-white">
+                            {data.likes && data.likes.length > 0
+                              ? data.likes.length
+                              : ""}
+                          </span>
+                        </button>
+                        <div
+                          onClick={() =>
+                            sharePost(data.title, data.authoremail, data._id)
+                          }
+                          className="cursor-pointer flex items-center gap-1 hover:text-blue-300"
+                        >
+                          <IoShareSocial className="text-sm text-blue-400" />
+                        </div>
+                        <div
+                          onClick={() => {
+                            addBookMarkPostId(data._id);
+                          }}
+                          className="cursor-pointer flex items-center gap-1 hover:text-blue-300"
+                        >
+                          
+                          {
+                          
+                          Array.isArray(bookMarkId) &&
+                          bookMarkId.includes(data._id) ? (
+                            <PiBookmarksSimpleFill className="text-blue-500" />
+                          ) : (
+                            <PiBookmarksSimpleLight />
+                          )}
+                     
+
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => setPostCategory(data.category)}
+                      className="px-2 py-1 rounded-full bg-gray-600 text-gray-300 text-sm font-medium transition-colors duration-200"
+                    >
+                      {data.category}
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
+            {loading && <p className="text-center col-span-full py-4">Loading...</p>}
+
+            {!hasMore && (
+              <p className="text-center col-span-full py-4 text-gray-500">No more posts</p>
+            )}
+          </div> */}
+
+            <div className="md:w-full grid grid-cols-1 w-full mx-auto md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7 md:gap-16 mt-7 md:mt-10 h-auto ">
+            {loader ? (
+              <div className="col-span-4 flex flex-col items-center justify-center">
+                <MagnifyingGlass
+                  visible={true}
+                  height="100"
+                  width="100"
+                  ariaLabel="loading"
+                  wrapperStyle={{ marginTop: "20px" }}
+                  wrapperClass="magnifying-glass-wrapper"
+                  glassColor="#4B5563"
+                  color="#60A5FA"
+                />
+                <p className="text-sm md:text-lg font-semibold text-gray-400">
+                  Loading Posts...
+                </p>
+              </div>
+            ) : (
+              (postCategory === ""
+                ? filterdPost
+                : posts.filter((post) => post.category === postCategory)
+              ).map((data, index) => (
+               
+
+                <div
+                  key={index}
+                  className="w-full mx-auto md:w-full bg-gray-800 md:pb-2 flex flex-col shadow-xl hover:shadow-2xl transition-all duration-300 h-auto md:mb-10 md:mb-0 md:p-4 py-4 md:rounded-xl"
+                  // className="group bg-gray-800/90 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300"
+                >
+                  <div className="flex mb-2 gap-2 px-4 items-center">
+                    <Link to={`/viewProfile/${data.authoremail}`}>
+                      <img
+                        src={
+                          data.profile
+                            ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.profile}`
+                            : user
+                        }
+                        className="w-8 max-h-10 bg-white object-cover rounded-full border border-white/50"
+                        alt={data.authorname}
+                      />
+                    </Link>
+
+                    <div className="flex flex-col">
+                      <p className="text-xs text-white font-semibold">
+                        {data.authorname}
+                      </p>
+                      <p className="text-xs text-gray-400 font-semibold">
+                        {/* {data.timestamp.slice(0, 10)}
+                         */}
+                        {getTimeAgo(data.timestamp)}
+                      </p>
+                    </div>
+                  </div>
+
+                  <Link
+                    to={`/viewpage/${data.authoremail}/${data._id}`}
+                    onClick={() => postViews(data.authoremail, data._id)}
+                    // className="cursor-pointer flex items-center gap-1 hover:text-blue-300"
+                  >
+                    <img
+                      src={
+                        data.image
+                          ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.image}`
+                          : blog1
+                      }
+                      className="w-full
+              h-44 md:h-36
+            
+              object-cover
+              hover:opacity-90
+              transition"
+                      alt={data.title}
+                    />
+                  </Link>
+
+                  <div className="min-h-28 px-4 h-auto pt-4">
+                    <h2 className="md:text-xl text-lg text-white font-bold">
+                      {data.title && data.title.slice(0, 20)}...
+                    </h2>
+                    <p className="text-xs text-gray-400 mt-2">
+                      {renderTextWithHashtags(data.description.slice(0, 50))}...
+                    </p>
+                  </div>
+
+                  <div className="flex px-4 justify-between items-center mb-2">
                     <div className="flex gap-3 items-center">
                       <div className="flex items-center gap-2">
                         <Link
