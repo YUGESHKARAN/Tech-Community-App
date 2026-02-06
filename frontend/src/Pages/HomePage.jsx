@@ -195,7 +195,8 @@ function HomePage() {
 
   return (
    
-    <div className="min-h-screen h-auto  relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white flex flex-col">
+    // <div className="min-h-screen h-auto  relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white flex flex-col">
+    <div className="min-h-screen h-auto  relative bg-gradient-to-br from-gray-900 to-gray-800 text-white flex flex-col">
       <NavBar />
 
       {/* Page Title */}
