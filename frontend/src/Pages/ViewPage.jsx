@@ -200,7 +200,7 @@ function ViewPage() {
     return cleanedText.split("\n").map((line, lineIndex) => (
       <React.Fragment key={lineIndex}>
         {line.split(/(\s+#\w+)/g).map((word, index) =>
-          word.startsWith(" #") ? (
+          word.startsWith("#") || word.startsWith(" #") ? (
             <span
               key={index}
               className="text-md text-white font-italy font-bold"
@@ -308,7 +308,7 @@ function ViewPage() {
             </div>
 
             {/* Description */}
-            <div className="bg-gray-800/60 border border-gray-700 rounded-2xl p-5">
+            <div className="bg-gray-800/60 border border-neutral-700 md:rounded-2xl rounded-lg p-2 md:p-5">
               {singlePostData.description && showContent ? (
                 <>
                   <p className="text-sm md:text-base text-gray-300 leading-relaxed break-words">
@@ -350,7 +350,7 @@ function ViewPage() {
             {/* Documents */}
             {(singlePostData.documents?.length > 0 ||
               singlePostData.links?.length > 0) && (
-              <div className="rounded-2xl border border-slate-700/60 bg-gradient-to-b from-slate-900/80 to-slate-800/80 p-6 backdrop-blur-xl">
+              <div className="md:rounded-2xl rounded-lg border border-slate-700/60 bg-gradient-to-b from-slate-900/80 to-slate-800/80 p-6 backdrop-blur-xl">
                 {/* Header */}
                 <div className="flex items-center gap-2 mb-5">
                   {/* <div className="w-9 h-9 flex items-center justify-center rounded-lg bg-blue-600/15 border border-blue-500/20">
@@ -377,9 +377,9 @@ function ViewPage() {
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-3 px-4 py-2.5
-              rounded-xl border border-slate-600/40
-              bg-slate-800/60 hover:bg-slate-700/70
-              transition"
+                            rounded-xl border border-slate-600/40
+                            bg-slate-800/60 hover:bg-slate-700/70
+                            transition"
                         >
                           <div className="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-700/70">
                             <MdOutlineDescription className="text-slate-200 text-lg" />
@@ -414,10 +414,10 @@ function ViewPage() {
                             target="_blank"
                             rel="noopener noreferrer"
                             className="group flex items-center gap-3 px-4 py-2.5
-                rounded-xl border border-blue-500/20
-                bg-gradient-to-r from-blue-600/10 to-blue-400/5
-                hover:from-blue-600/20 hover:to-blue-400/10
-                transition"
+                            rounded-xl border border-blue-500/20
+                            bg-gradient-to-r from-blue-600/10 to-blue-400/5
+                            hover:from-blue-600/20 hover:to-blue-400/10
+                            transition"
                           >
                             <div className="w-8 h-8 flex items-center justify-center rounded-lg bg-blue-600/20">
                               {link.title === "GitHub" ? (
@@ -442,7 +442,7 @@ function ViewPage() {
 
             {/* Videos */}
             {youtubeVideo?.length > 0 && (
-              <div className="bg-gray-800/60 border border-gray-700 rounded-2xl p-5">
+              <div className="bg-gray-800/60 border border-gray-700 rounded-lg md:rounded-2xl p-5">
                 <h3 className="text-base font-semibold text-white mb-3">
                   🎥 Video Sources
                 </h3>
@@ -500,7 +500,8 @@ function ViewPage() {
               className="
                 bg-gradient-to-br from-gray-800 to-gray-900
                 border border-gray-700
-                rounded-2xl
+                md:rounded-2xl
+                rounded-lg
                 p-5
                 text-white
                 flex flex-col
