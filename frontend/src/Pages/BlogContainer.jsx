@@ -173,10 +173,10 @@ const fetchPosts = async () => {
     return cleanedText.split("\n").map((line, lineIndex) => (
       <React.Fragment key={lineIndex}>
         {line.split(/(\s+#\w+)/g).map((word, index) =>
-          word.startsWith(" #") ? (
+          word.startsWith(" # ") ? (
             <span
               key={index}
-              className="text-md text-white font-italy font-bold"
+              className="text-md text-white font-italy"
             >
               {word}
             </span>
@@ -547,11 +547,10 @@ useEffect(() => {
                           : blog1
                       }
                       className="w-full
-              h-44 md:h-36
-            
-              object-cover
-              hover:opacity-90
-              transition"
+                        h-44 md:h-36
+                        object-cover
+                        hover:opacity-90
+                        transition"
                       alt={data.title}
                     />
                   </Link>
@@ -560,8 +559,9 @@ useEffect(() => {
                     <h2 className="md:text-xl text-lg text-white font-bold">
                       {data.title && data.title.slice(0, 20)}...
                     </h2>
-                    <p className="text-xs text-gray-400 mt-2">
-                      {renderTextWithHashtags(data.description.slice(0, 50))}...
+                    <p className="text-xs text-gray-400 mt-2 line-clamp-2 md:line-clamp-1">
+                      {/* {renderTextWithHashtags(data.description.slice(0, 50))}... */}
+                      {renderTextWithHashtags(data.description)}
                     </p>
                   </div>
 

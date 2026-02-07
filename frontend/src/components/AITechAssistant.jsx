@@ -195,7 +195,7 @@ export default function AITechAssistant({ currentPostId }) {
                   {msg.content && (
                     // <div className="md:bg-[#1a1a1a] md:border border-neutral-800 md:p-4 rounded-2xl">
                     <div className="md:p-2">
-                      <div className="prose prose-invert  max-w-none text-sm leading-loose space-y-2">
+                      <div className="prose prose-invert break-words  max-w-none text-sm leading-loose space-y-2">
                         <ReactMarkdown
                           remarkPlugins={[remarkGfm, remarkBreaks]}
                           components={{

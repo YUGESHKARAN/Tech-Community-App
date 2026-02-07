@@ -6,7 +6,15 @@ import getTimeAgo from "../components/DateCovertion.jsx";
 import "react-toastify/dist/ReactToastify.css";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Footer from "../ui/Footer";
-import { MdOutlineInsertComment, MdVideoLibrary } from "react-icons/md";
+import {
+  MdOutlineAttachFile,
+  MdOutlineDescription,
+  MdOutlineInsertComment,
+  MdOutlineLibraryBooks,
+  MdOutlineLink,
+  MdPlayCircleOutline,
+  MdVideoLibrary,
+} from "react-icons/md";
 import { io } from "socket.io-client";
 import { ReactTyped } from "react-typed";
 import { IoClose } from "react-icons/io5";
@@ -14,7 +22,7 @@ import { GlobalStateContext } from "../GlobalStateContext";
 import axiosInstance from "../instances/Axiosinstances";
 import CommentsBox from "../components/CommentsBox ";
 import { FaSquareGithub } from "react-icons/fa6";
-import { FaYoutube } from "react-icons/fa";
+import { FaGithub, FaYoutube } from "react-icons/fa";
 import userImg from "../images/user.png";
 import { SiGooglegemini } from "react-icons/si";
 import AITechAssistant from "../components/AITechAssistant.jsx";
@@ -53,7 +61,6 @@ function ViewPage() {
     };
     getSinglePost();
   }, [email, id]);
-  
 
   // useEffect(() => {
   //   const getComments = async () => {
@@ -67,7 +74,6 @@ function ViewPage() {
   //   };
   //   getComments();
   // }, [messages]);
-
 
   // useEffect(() => {
   //   const socketUrl = import.meta.env.VITE_WEBSOCKET_URL;
@@ -94,7 +100,6 @@ function ViewPage() {
   //   };
   // }, [postId, userEmail]);
 
-
   // const postComment = () => {
   //   setViewComments(true);
   //   if (newMessage.trim() === "") return;
@@ -112,79 +117,71 @@ function ViewPage() {
   //   setNewMessage("");
   // };
 
+  useEffect(() => {
+    const getComments = async () => {
+      try {
+        const response = await axiosInstance.get(`/blog/posts/${email}/${id}`);
+        setMessages(response.data.data.messages);
+      } catch (err) {
+        console.error("Error fetching comments", err);
+      }
+    };
 
+    getComments();
+  }, [id, email]);
 
   useEffect(() => {
-  const getComments = async () => {
-    try {
-      const response = await axiosInstance.get(
-        `/blog/posts/${email}/${id}`
-      );
-      setMessages(response.data.data.messages);
-    } catch (err) {
-      console.error("Error fetching comments", err);
-    }
+    const socketUrl = import.meta.env.VITE_WEBSOCKET_URL;
+
+    const newSocket = io(socketUrl, {
+      transports: ["polling"],
+    });
+
+    setSocket(newSocket);
+
+    newSocket.emit("registerUser", userEmail);
+    newSocket.emit("joinPostRoom", postId);
+
+    // 🔥 LIVE COMMENT UPDATE
+    newSocket.on("newMessage", (comment) => {
+      setMessages((prev) => [...prev, comment]);
+    });
+
+    // Optional: notifications
+    newSocket.on("notification", (notification) => {
+      setNotification((prev) => [notification, ...prev]);
+    });
+
+    return () => {
+      newSocket.off("newMessage");
+      newSocket.off("notification");
+      newSocket.disconnect();
+    };
+  }, [postId, userEmail]);
+
+  const postComment = () => {
+    if (newMessage.trim() === "") return;
+
+    setViewComments(true);
+
+    const messageData = {
+      postId,
+      user,
+      email: userEmail,
+      message: newMessage,
+      url: `${window.location.origin}/viewpage/${singlePostData.authoremail}/${postId}`,
+      profile,
+      createdAt: new Date(), // optional but useful
+    };
+
+    // ✅ OPTIMISTIC UPDATE (instant UI)
+    setMessages((prev) => [...prev, messageData]);
+
+    // Emit to backend (others will receive via socket)
+    socket.emit("newMessage", messageData);
+
+    setNewMessage("");
   };
-
-  getComments();
-}, [id, email]);
-
-
-useEffect(() => {
-  const socketUrl = import.meta.env.VITE_WEBSOCKET_URL;
-
-  const newSocket = io(socketUrl, {
-    transports: ["polling"],
-  });
-
-  setSocket(newSocket);
-
-  newSocket.emit("registerUser", userEmail);
-  newSocket.emit("joinPostRoom", postId);
-
-  // 🔥 LIVE COMMENT UPDATE
-  newSocket.on("newMessage", (comment) => {
-    setMessages((prev) => [...prev, comment]);
-  });
-
-  // Optional: notifications
-  newSocket.on("notification", (notification) => {
-    setNotification((prev) => [notification, ...prev]);
-  });
-
-  return () => {
-    newSocket.off("newMessage");
-    newSocket.off("notification");
-    newSocket.disconnect();
-  };
-}, [postId, userEmail]);
-
-
-const postComment = () => {
-  if (newMessage.trim() === "") return;
-
-  setViewComments(true);
-
-  const messageData = {
-    postId,
-    user,
-    email: userEmail,
-    message: newMessage,
-    url: `${window.location.origin}/viewpage/${singlePostData.authoremail}/${postId}`,
-    profile,
-    createdAt: new Date(), // optional but useful
-  };
-
-  // ✅ OPTIMISTIC UPDATE (instant UI)
-  setMessages((prev) => [...prev, messageData]);
-
-  // Emit to backend (others will receive via socket)
-  socket.emit("newMessage", messageData);
-
-  setNewMessage("");
-};
-
-
 
   const handleImageClick = (image) => {
     setSelectedImage(image);
@@ -212,7 +209,7 @@ const postComment = () => {
             </span>
           ) : (
             <React.Fragment key={index}>{word}</React.Fragment>
-          )
+          ),
         )}
         <br />
       </React.Fragment>
@@ -222,30 +219,26 @@ const postComment = () => {
   // console.log("profile",profile)
   const getYouTubeId = (url) => {
     const match = url.match(
-      /(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([^&?/]+)/
+      /(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([^&?/]+)/,
     );
     return match ? match[1] : null;
   };
   const youtubeVideo = singlePostData.links?.filter(
-    (link) => (link.title || "").toLowerCase() === "youtube"
+    (link) => (link.title || "").toLowerCase() === "youtube",
   );
 
   const commentWrapperRef = useRef(null);
 
   useEffect(() => {
-  if (viewComments && commentWrapperRef.current) {
-    commentWrapperRef.current.scrollIntoView({
-      behavior: "smooth",
-      block: "start", // 👈 aligns to top of viewport
-    });
-  }
-}, [viewComments]);
-
-
-
+    if (viewComments && commentWrapperRef.current) {
+      commentWrapperRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start", // 👈 aligns to top of viewport
+      });
+    }
+  }, [viewComments]);
 
   return (
-
     <div className="w-full min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 relative">
       <NavBar />
 
@@ -308,7 +301,7 @@ const postComment = () => {
                   handleImageClick(
                     singlePostData.image
                       ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${singlePostData.image}`
-                      : blog1
+                      : blog1,
                   )
                 }
               />
@@ -345,73 +338,108 @@ const postComment = () => {
           </div>
 
           {/* RIGHT COLUMN */}
-          <div
-           className='text-4xl text-white md:hidden'
-           >
-            <AITechAssistant currentPostId={singlePostData._id}/>
-           </div>
-          
+          <div className="text-4xl text-white md:hidden">
+            <AITechAssistant currentPostId={singlePostData._id} />
+          </div>
+
           <div className="md:col-span-2 space-y-6 md:sticky md:top-24 h-fit">
-             
-             {/* Personal Assistant */}
-            <div
-            className='text-4xl text-white hidden md:block '
-            >
-              <AITechAssistant currentPostId={singlePostData._id}/>
+            {/* Personal Assistant */}
+            <div className="text-4xl text-white hidden md:block ">
+              <AITechAssistant currentPostId={singlePostData._id} />
             </div>
             {/* Documents */}
             {(singlePostData.documents?.length > 0 ||
               singlePostData.links?.length > 0) && (
-              <div className="bg-gray-800/60 border border-gray-700 rounded-2xl p-5">
-                <h3 className="text-base font-semibold text-white mb-4">
-                  📎 Resources
-                </h3>
+              <div className="rounded-2xl border border-slate-700/60 bg-gradient-to-b from-slate-900/80 to-slate-800/80 p-6 backdrop-blur-xl">
+                {/* Header */}
+                <div className="flex items-center gap-2 mb-5">
+                  {/* <div className="w-9 h-9 flex items-center justify-center rounded-lg bg-blue-600/15 border border-blue-500/20">
+                    
+                  </div> */}
+                  <MdOutlineLibraryBooks className="text-white/90 text-xl" />
+                  <h3 className="text-xl font-semibold tracking-wide text-slate-100">
+                    Resources
+                  </h3>
+                </div>
 
                 {/* Documents */}
-                <div className="flex flex-wrap gap-3 mb-3">
-                  {singlePostData.documents?.map((doc, index) => (
-                    <a
-                      key={index}
-                      href={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${doc}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-3 py-2 bg-white/10 rounded-xl border border-white/10 hover:bg-white/20 transition text-xs text-white"
-                    >
-                      📄 {doc.split("-").slice(5).join("-")}
-                    </a>
-                  ))}
-                </div>
+                {singlePostData.documents?.length > 0 && (
+                  <div className="mb-4">
+                    <p className="text-[11px] uppercase tracking-wider text-slate-400 mb-2">
+                      Documents
+                    </p>
 
-                
+                    <div className="flex flex-wrap gap-3">
+                      {singlePostData.documents.map((doc, index) => (
+                        <a
+                          key={index}
+                          href={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${doc}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="group flex items-center gap-3 px-4 py-2.5
+              rounded-xl border border-slate-600/40
+              bg-slate-800/60 hover:bg-slate-700/70
+              transition"
+                        >
+                          <div className="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-700/70">
+                            <MdOutlineDescription className="text-slate-200 text-lg" />
+                          </div>
 
-                {/* Non YouTube Links */}
-                <div className="flex flex-wrap gap-3">
-                  {singlePostData.links
-                    ?.filter(
-                      (link) => (link.title || "").toLowerCase() !== "youtube"
-                    )
-                    .map((link, index) => (
-                      <a
-                        key={index}
-                        href={link.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-blue-600/30 to-blue-400/20 rounded-xl border border-blue-500/20 hover:scale-[1.03] transition text-xs text-blue-200"
-                      >
-                        {link.title === "GitHub" ? (
-                          <FaSquareGithub />
-                        ) : link.title === "Demo" ? (
-                          <MdVideoLibrary />
-                        ) : (
-                          "🔗"
-                        )}
-                        {link.title}
-                      </a>
-                    ))}
-                </div>
+                          <span className="text-xs text-slate-200 max-w-[180px] truncate">
+                            {doc.split("-").slice(5).join("-")}
+                          </span>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* External Links */}
+                {singlePostData.links?.length > 0 && (
+                  <div>
+                    <p className="text-[11px] uppercase tracking-wider text-slate-400 mb-2">
+                      External Links
+                    </p>
+
+                    <div className="flex flex-wrap gap-3">
+                      {singlePostData.links
+                        ?.filter(
+                          (link) =>
+                            (link.title || "").toLowerCase() !== "youtube",
+                        )
+                        .map((link, index) => (
+                          <a
+                            key={index}
+                            href={link.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="group flex items-center gap-3 px-4 py-2.5
+                rounded-xl border border-blue-500/20
+                bg-gradient-to-r from-blue-600/10 to-blue-400/5
+                hover:from-blue-600/20 hover:to-blue-400/10
+                transition"
+                          >
+                            <div className="w-8 h-8 flex items-center justify-center rounded-lg bg-blue-600/20">
+                              {link.title === "GitHub" ? (
+                                <FaGithub className="text-blue-300 text-lg" />
+                              ) : link.title === "Demo" ? (
+                                <MdPlayCircleOutline className="text-blue-300 text-lg" />
+                              ) : (
+                                <MdOutlineLink className="text-blue-300 text-lg" />
+                              )}
+                            </div>
+
+                            <span className="text-xs font-medium text-blue-200">
+                              {link.title}
+                            </span>
+                          </a>
+                        ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
- 
+
             {/* Videos */}
             {youtubeVideo?.length > 0 && (
               <div className="bg-gray-800/60 border border-gray-700 rounded-2xl p-5">
@@ -422,7 +450,7 @@ const postComment = () => {
                 <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
                   {singlePostData.links
                     ?.filter(
-                      (link) => (link.title || "").toLowerCase() === "youtube"
+                      (link) => (link.title || "").toLowerCase() === "youtube",
                     )
                     .map((link, index) => {
                       const videoId = getYouTubeId(link.url);
@@ -462,10 +490,7 @@ const postComment = () => {
               </div>
             )}
 
-            
-
-           
-           {/* <div
+            {/* <div
            className='text-4xl text-white cursor-pointer md:hidden'
            >
             <AITechAssistant currentPostId={singlePostData._id}/>
@@ -511,8 +536,6 @@ const postComment = () => {
                 <CommentsBox messages={messages} viewComments={viewComments} />
               </div>
 
-
-              
               <input
                 type="text"
                 value={newMessage}
@@ -524,16 +547,16 @@ const postComment = () => {
 
               <button
                 onClick={postComment}
-               
                 className=" hidden md:block mt-3 md:w-fit px-4 py-2 rounded-lg bg-gradient-to-r from-orange-500 to-yellow-500 text-sm font-medium text-gray-900"
               >
                 Post Comment
               </button>
-
             </div>
 
             {/* Fixed Comment Input Bar */}
-            <div className={`${showAssistant?"hidden":"fixed md:hidden bottom-0 left-0 right-0 z-30 bg-gradient-to-r from-gray-900 to-gray-800 border-t border-gray-700 backdrop-blur-md"}`}>
+            <div
+              className={`${showAssistant ? "hidden" : "fixed md:hidden bottom-0 left-0 right-0 z-30 bg-gradient-to-r from-gray-900 to-gray-800 border-t border-gray-700 backdrop-blur-md"}`}
+            >
               <div className="max-w-7xl mx-auto px-3 md:px-8 py-3 flex items-center gap-3">
                 {/* Input */}
                 <input
@@ -574,9 +597,6 @@ const postComment = () => {
                 </button>
               </div>
             </div>
-
-      
-
           </div>
         </div>
       </div>
@@ -598,7 +618,6 @@ const postComment = () => {
         </div>
       )}
     </div>
-
   );
 }
 
