@@ -137,16 +137,7 @@ function NavBar() {
   // console.log("profile",profile)
 
   return (
-    <div className="
-  
-  flex items-center justify-between
-  w-full h-16 px-6
-  bg-slate-900/95 backdrop-blur
-  border-b border-slate-700/50
-  shadow-sm
- 
-"
->
+    <div className="flex border-b border-gray-700/60 relative justify-between items-center  h-16 bg-gray-900 mb-2 px-5">
       <div className="md:text-xl text-sm w-1/2 md:w-1/5 font-bold text-white">
         <Link to="/home">
           <img
@@ -158,7 +149,7 @@ function NavBar() {
       </div>
 
       {/* Desktop Menu */}
-      <ul className="lg:flex justify-center text-xs hidden font-semibold text-gray-300 w-3/5  items-center gap-10">
+      <ul className="lg:flex justify-center text-sm hidden font-semibold text-gray-300 w-3/5  items-center gap-10">
         <li className="transition-all duration-200  hover:text-white">
           <Link to="/home" className="flex items-center gap-1">
             <IoHome className="text-xl" />

@@ -16,7 +16,6 @@ import axiosInstance from "../instances/Axiosinstances";
 import user from "../images/user.png";
 import { useParams } from "react-router-dom";
 import getTimeAgo from "../components/DateCovertion";
-import { PiBookmarksSimpleFill, PiBookmarksSimpleLight } from "react-icons/pi";
 function SingleAuthorPosts() {
   const [searchTerm, setSearchTerm] = useState("");
   const [posts, setPosts] = useState([]);
@@ -98,8 +97,8 @@ function SingleAuthorPosts() {
                   ? post.likes.filter((like) => like !== email) // Unlike the post
                   : [...post.likes, email], // Like the post
               }
-            : post,
-        ),
+            : post
+        )
       );
     } catch (err) {
       console.error("Error updating views:", err);
@@ -110,7 +109,7 @@ function SingleAuthorPosts() {
   const filterdPost = posts.filter(
     (post) =>
       post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      post.category.toLowerCase().includes(searchTerm.toLowerCase()),
+      post.category.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // console.log("local email", email);
@@ -125,16 +124,16 @@ function SingleAuthorPosts() {
     return cleanedText.split("\n").map((line, lineIndex) => (
       <React.Fragment key={lineIndex}>
         {line.split(/(\s+#\w+)/g).map((word, index) =>
-          word.startsWith(" # ") ? (
+          word.startsWith(" #") ? (
             <span
               key={index}
-              className="text-md text-white font-italy"
+              className="text-md text-white font-italy font-bold"
             >
               {word}
             </span>
           ) : (
             <React.Fragment key={index}>{word}</React.Fragment>
-          ),
+          )
         )}
         <br />
       </React.Fragment>
@@ -161,7 +160,9 @@ function SingleAuthorPosts() {
                 }
                 alt="Author Profile"
                 className={`rounded-full object-cover w-full h-full border-4 ${
-                  authorProfile ? "border-teal-500" : "border-gray-500 bg-white"
+                  authorProfile
+                    ? "border-teal-500"
+                    : "border-gray-500 bg-white"
                 } shadow-md  transition-transform duration-300`}
               />
             </Link>
@@ -222,7 +223,8 @@ function SingleAuthorPosts() {
             </div>
           </div>
 
-          <div className="md:w-full grid grid-cols-1 w-full mx-auto md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7 md:gap-16 mt-7 md:mt-10 h-auto ">
+          <div className="grid grid-cols-1 w-11/12 md:grid-cols-2 lg:grid-cols-4 md:gap-16 flex-wrap justify-center md:mt-10  mt-7 h-auto mx-auto">
+            {/* Posts Grid */}
             {loader ? (
               <div className="col-span-4 flex flex-col items-center justify-center">
                 <MagnifyingGlass
@@ -246,38 +248,40 @@ function SingleAuthorPosts() {
               ).map((data, index) => (
                 <div
                   key={index}
-                  className="w-full mx-auto md:w-full bg-gray-800 md:pb-2 flex flex-col shadow-xl hover:shadow-2xl transition-all duration-300 h-auto md:mb-10 md:mb-0 md:p-4 py-4 md:rounded-xl"
-                  // className="group bg-gray-800/90 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300"
+                  className="w-11/12 mx-auto md:w-full bg-gray-800  flex flex-col shadow-xl hover:shadow-2xl transition-all duration-300 h-auto mb-10 md:mb-0 p-4 rounded-xl"
                 >
-                  <div className="flex mb-2 gap-2 px-4 items-center">
-                    <Link to={`/viewProfile/${data.authoremail}`}>
-                      <img
-                        src={
-                          data.profile
-                            ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.profile}`
-                            : user
-                        }
-                        className="w-8 max-h-10 bg-white object-cover rounded-full border border-white/50"
-                        alt={data.authorname}
-                      />
-                    </Link>
-
+                  <div className="flex mb-2 gap-2 items-center">
+                    {data.profile ? (
+                      <Link to={`/viewProfile/${data.authoremail}`}>
+                        {" "}
+                        <img
+                          src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.profile}`}
+                          className="rounded-full w-10 h-10 mx-auto border border-white/50 object-cover"
+                          alt=""
+                        />
+                      </Link>
+                    ) : (
+                      <Link to={`/viewProfile/${data.authoremail}`}>
+                        <img
+                          src={user}
+                          className="rounded-full w-10 h-10 bg-white border-2 border-black mx-auto object-cover"
+                        />
+                      </Link>
+                    )}
                     <div className="flex flex-col">
-                      <p className="text-xs text-white font-semibold">
-                        {data.authorname}
+                      <p className="text-sm text-white font-semibold">
+                        {data.authorName}
                       </p>
                       <p className="text-xs text-gray-400 font-semibold">
-                        {/* {data.timestamp.slice(0, 10)}
-                         */}
+                        {/* {data.timestamp.slice(0, 10)} */}
                         {getTimeAgo(data.timestamp)}
                       </p>
                     </div>
                   </div>
-
                   <Link
                     to={`/viewpage/${data.authoremail}/${data._id}`}
                     onClick={() => postViews(data.authoremail, data._id)}
-                    // className="cursor-pointer flex items-center gap-1 hover:text-blue-300"
+                    // className="cursor-pointer flex items-center gap-1  hover:text-blue-300"
                   >
                     <img
                       src={
@@ -285,39 +289,39 @@ function SingleAuthorPosts() {
                           ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.image}`
                           : blog1
                       }
-                      className="w-full
-                                h-44 md:h-36
-                                object-cover
-                                hover:opacity-90
-                                transition"
+                      className="w-full h-36  rounded-xl object-cover bg-center  hover:opacity-90 transition-all duration-300"
                       alt={data.title}
+                      // onClick={() =>
+                      //   handleImageClick(
+                      //     data.image
+                      //       ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.image}`
+                      //       : blog1
+                      //   )
+                      // }
                     />
                   </Link>
-
-                  <div className="min-h-28 px-4 h-auto pt-4">
+                  <div className="min-h-28 h-auto pt-4">
                     <h2 className="md:text-xl text-lg text-white font-bold">
                       {data.title && data.title.slice(0, 20)}...
                     </h2>
-                    <p className="text-xs text-gray-400 mt-2 line-clamp-2 md:line-clamp-1">
-                      {/* {renderTextWithHashtags(data.description.slice(0, 50))}... */}
-                      {renderTextWithHashtags(data.description)}
+                    <p className="text-xs text-gray-400 mt-2">
+                      {renderTextWithHashtags(data.description.slice(0, 50))}...
                     </p>
                   </div>
 
-                  <div className="flex px-4 justify-between items-center mb-2">
+                  <div className="flex justify-between items-center mb-2 ">
                     <div className="flex gap-3 items-center">
                       <div className="flex items-center gap-2">
                         <Link
                           to={`/viewpage/${data.authoremail}/${data._id}`}
                           onClick={() => postViews(data.authoremail, data._id)}
-                          className="cursor-pointer flex items-center gap-1 hover:text-blue-300"
+                          className="cursor-pointer flex items-center gap-1  hover:text-blue-300"
                         >
                           <IoEye className="text-sm text-blue-400" />
-                          <span className="text-[9px]">
+                          <span className="text-[9px] text-white">
                             {data.views.length || ""}
                           </span>
                         </Link>
-
                         <button
                           type="button"
                           onClick={(e) =>
@@ -336,37 +340,22 @@ function SingleAuthorPosts() {
                               : ""}
                           </span>
                         </button>
+
                         <div
+                          to={`/viewpage/${data.authoremail}/${data._id}`}
                           onClick={() =>
                             sharePost(data.title, data.authoremail, data._id)
                           }
-                          className="cursor-pointer flex items-center gap-1 hover:text-blue-300"
+                          className="cursor-pointer flex items-center gap-1  hover:text-blue-300"
                         >
                           <IoShareSocial className="text-sm text-blue-400" />
                         </div>
-                        {/* <div
-                                  onClick={() => {
-                                    addBookMarkPostId(data._id);
-                                  }}
-                                  className="cursor-pointer flex items-center gap-1 hover:text-blue-300"
-                                >
-                                  
-                                  {
-                                  
-                                  Array.isArray(bookMarkId) &&
-                                  bookMarkId.includes(data._id) ? (
-                                    <PiBookmarksSimpleFill className="text-blue-500" />
-                                  ) : (
-                                    <PiBookmarksSimpleLight />
-                                  )}
-                             
-        
-                                </div> */}
                       </div>
                     </div>
                     <button
                       onClick={() => setPostCategory(data.category)}
-                      className="px-2 py-1 rounded-full bg-gray-600 text-gray-300 text-sm font-medium transition-colors duration-200"
+                      className="px-2 py-1 rounded-full bg-gray-600 text-gray-300 text-sm font-medium
+                     transition-colors duration-200"
                     >
                       {data.category}
                     </button>
@@ -374,11 +363,6 @@ function SingleAuthorPosts() {
                 </div>
               ))
             )}
-            {/* {loading && <p className="text-center col-span-full py-4">Loading...</p>}
-        
-                    {!hasMore && (
-                      <p className="text-center col-span-full py-4 text-gray-500">No more posts</p>
-                    )} */}
           </div>
         </div>
       </div>

@@ -331,7 +331,7 @@ const getBookMarkPosts = async () => {
             </div>
           </div>
 
-          <div className="w-full mx-auto">
+          <div className="w-11/12 mx-auto">
             {/* <TutorBookMarkPlaylist /> */}
             {(postCategory === ""
               ? filterdPost
@@ -343,7 +343,7 @@ const getBookMarkPosts = async () => {
             )}
           </div>
 
-          <div className="md:w-full grid grid-cols-1 w-full mx-auto md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7 md:gap-16 mt-7 md:mt-10 h-auto">
+          <div className="grid grid-cols-1 w-11/12 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 md:gap-16 flex-wrap justify-center md:mt-10  mt-7 h-auto mx-auto">
             {/* Posts Grid */}
             {loader ? (
               <div className="col-span-full flex flex-col items-center justify-center">
@@ -368,9 +368,9 @@ const getBookMarkPosts = async () => {
               ).map((data, index) => (
                 <div
                   key={index}
-                  className="w-full mx-auto md:w-full bg-gray-800 md:pb-2 flex flex-col shadow-xl hover:shadow-2xl transition-all duration-300 h-auto  md:mb-0 md:p-4 py-4 md:rounded-xl"
+                  className="w-11/12 mx-auto md:w-full bg-gray-800  flex flex-col shadow-xl hover:shadow-2xl transition-all duration-300 h-auto mb-10 md:mb-0 p-4 rounded-xl"
                 >
-                  <div className="flex px-4 mb-2 gap-2 items-center">
+                  <div className="flex mb-2 gap-2 items-center">
                     {data.profile ? (
                       <Link to={`/viewProfile/${data.authoremail}`}>
                         {" "}
@@ -409,15 +409,11 @@ const getBookMarkPosts = async () => {
                           ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.image}`
                           : blog1
                       }
-                      className="w-full
-                        h-44 md:h-36
-                        object-cover
-                        hover:opacity-90
-                        transition"
+                      className="w-full h-36  rounded-xl object-cover bg-center  hover:opacity-90 transition-all duration-300"
                       alt={data.title}
                     />
                   </Link>
-                  <div className="min-h-28 px-4 h-auto pt-4">
+                  <div className="min-h-28 h-auto pt-4">
                     <h2 className="md:text-xl text-lg text-white font-bold">
                       {data.title && data.title.slice(0, 20)}...
                     </h2>
@@ -426,7 +422,7 @@ const getBookMarkPosts = async () => {
                     </p>
                   </div>
 
-                  <div className="flex justify-between px-4 items-center mb-2 ">
+                  <div className="flex justify-between items-center mb-2 ">
                     <div className="flex gap-3 items-center">
                       <div className="flex items-center gap-2">
                         <Link

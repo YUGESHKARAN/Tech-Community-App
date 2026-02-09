@@ -303,7 +303,7 @@ useEffect(() => {
 
         {/* ================= SEARCH ================= */}
         <div className="flex justify-center my-9 md:my-4">
-          <div className="w-11/12 mx-auto max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-2xl px-4 py-3 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
+          <div className="w-full max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-2xl px-4 py-3 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
             <IoSearchOutline className="text-xl text-gray-400" />
             <input
               type="text"
@@ -481,7 +481,7 @@ useEffect(() => {
             )}
           </div> */}
 
-            <div className="md:w-full grid grid-cols-1 w-full mx-auto md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7 md:gap-16 mt-7 md:mt-10 h-auto">
+            <div className="md:w-full grid grid-cols-1 w-full mx-auto md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7 md:gap-16 mt-7 md:mt-10 h-auto ">
             {loader ? (
               <div className="col-span-4 flex flex-col items-center justify-center">
                 <MagnifyingGlass
@@ -507,7 +507,7 @@ useEffect(() => {
 
                 <div
                   key={index}
-                  className="w-full mx-auto md:w-full bg-gray-800 md:pb-2 flex flex-col shadow-xl hover:shadow-2xl transition-all duration-300 h-auto  md:mb-0 md:p-4 py-4 md:rounded-xl"
+                  className="w-full mx-auto md:w-full bg-gray-800 md:pb-2 flex flex-col shadow-xl hover:shadow-2xl transition-all duration-300 h-auto md:mb-10 md:mb-0 md:p-4 py-4 md:rounded-xl"
                   // className="group bg-gray-800/90 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300"
                 >
                   <div className="flex mb-2 gap-2 px-4 items-center">

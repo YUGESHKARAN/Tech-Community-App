@@ -10,21 +10,20 @@ import {
 } from "react-icons/fi";
 import NavBar from "../ui/NavBar";
 import { BsPersonWorkspace } from "react-icons/bs";
-import Footer from "../ui/Footer";
 
 function Workspace() {
   return (
-    <div className="w-full relative min-h-screen bg-gradient-to-br from-gray-900 to-gray-800">
+    <div className="w-full min-h-screen bg-gradient-to-br from-gray-900 to-gray-800">
       <NavBar />
 
-      <div className="max-w-7xl mx-auto px-4 h-screen md:px-8 pt-4 text-white">
+      <div className="max-w-7xl mx-auto px-4 md:px-8 py-10 text-white">
         {/* Header */}
         <div className="mb-10">
           <h1 className="text-2xl flex items-center gap-4 md:text-4xl font-bold tracking-wide">
             <BsPersonWorkspace /> Workspace
           </h1>
           <p className="text-gray-400 mt-2 text-sm md:text-base">
-            Manage your posts and playlists content efficiently
+            Manage your posts, playlists and content efficiently
           </p>
         </div>
 
@@ -99,12 +98,7 @@ function Workspace() {
             />
           </div>
         </section>
-        
       </div>
-
-      <Footer/>
-     
-     
     </div>
   );
 }
