@@ -123,10 +123,10 @@ function YourPost() {
     return cleanedText.split("\n").map((line, lineIndex) => (
       <React.Fragment key={lineIndex}>
         {line.split(/(\s+#\w+)/g).map((word, index) =>
-          word.startsWith(" #") ? (
+          word.startsWith(" # ") ? (
             <span
               key={index}
-              className="text-md text-white font-italy font-bold"
+              className="text-md text-white font-italy"
             >
               {word}
             </span>
@@ -199,11 +199,11 @@ function YourPost() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 w-11/12 md:grid-cols-2 lg:grid-cols-4 md:gap-16 flex-wrap justify-center md:mt-10 mt-7 h-auto mx-auto">
+          <div className="md:w-full grid grid-cols-1 w-full mx-auto md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7 md:gap-16 mt-7 md:mt-10 h-auto">
             {/* Posts Grid */}
             {loader ? (
               <div className="col-span-4 flex flex-col items-center justify-center">
-                <MagnifyingGlass
+                {/* <MagnifyingGlass
                   visible={true}
                   height="100"
                   width="100"
@@ -212,7 +212,7 @@ function YourPost() {
                   wrapperClass="magnifying-glass-wrapper"
                   glassColor="#4B5563"
                   color="#60A5FA"
-                />
+                /> */}
                 <p className="text-sm md:text-lg font-semibold text-gray-400">
                   Loading Posts...
                 </p>
@@ -224,9 +224,9 @@ function YourPost() {
               ).map((data, index) => (
                 <div
                   key={index}
-                  className="w-11/12 mx-auto md:w-full bg-gray-800  flex flex-col shadow-xl hover:shadow-2xl transition-all duration-300 h-auto mb-10 md:mb-0 p-4 rounded-xl"
+                  className="w-full mx-auto md:w-full bg-gray-800  flex flex-col shadow-xl hover:shadow-2xl transition-all duration-300 h-auto md:mb-0 md:mb-0 md:p-4 py-4 md:rounded-xl"
                 >
-                  <div className="flex mb-2 gap-2 items-center">
+                  <div className="flex mb-2 px-4 gap-2 items-center">
                     <img
                       src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${authorProfile}`}
                       className="w-8 max-h-10 object-cover rounded-full border border-gray-600"
@@ -254,7 +254,11 @@ function YourPost() {
                         ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.image}`
                         : blog1
                     }
-                    className="w-full h-36  rounded-xl object-cover bg-center  hover:opacity-90 transition-all duration-300"
+                    className="w-full
+                                h-44 md:h-36
+                                object-cover
+                                hover:opacity-90
+                                transition"
                     alt={data.title}
                     // onClick={() =>
                     //   handleImageClick(
@@ -266,16 +270,16 @@ function YourPost() {
                   />
 
                   </Link>
-                  <div className="min-h-28 h-auto pt-4">
-                    <h2 className="md:text-xl text-lg text-white font-bold">
-                      {data.title && data.title.slice(0, 20)}...
+                  <div className="min-h-28 h-auto px-4 pt-4">
+                    <h2 className="md:text-xl text-lg text-white line-clamp-1 font-bold">
+                      {data.title}
                     </h2>
-                    <p className="text-xs text-gray-400 mt-2">
-                      {renderTextWithHashtags(data.description.slice(0, 50))}...
+                    <p className="text-xs text-gray-400 mt-2 line-clamp-2">
+                      {renderTextWithHashtags(data.description)}
                     </p>
                   </div>
 
-                  <div className="flex justify-between items-center mb-2 ">
+                  <div className="flex px-4 justify-between items-center mb-2 ">
                     <div className="flex gap-3 items-center">
                       <div className="flex items-center gap-2">
                         <Link
