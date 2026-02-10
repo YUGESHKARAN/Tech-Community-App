@@ -340,17 +340,19 @@ function SingleTechDomainDetails() {
     //   <Footer />
     // </div>
 
-    <div className="w-full min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 relative text-white">
+    <div className="w-full h-auto  bg-gradient-to-r from-gray-900 to-gray-800 relative text-white">
       <NavBar />
 
+      <div className="min-h-screen">
+
       {/* Page Header */}
-      <section className="w-11/12 mx-auto mt-14">
+      <section className="w-11/12 mx-auto mt-7  md:mt-14">
         <h1 className="text-center md:text-left text-3xl md:text-5xl font-extrabold bg-gradient-to-r from-blue-400 via-yellow-400 to-pink-400 bg-clip-text text-transparent tracking-tight drop-shadow-lg">
           {decodedCategory} Tech Community
         </h1>
 
         {/* Join / Role Badge */}
-        <div className="flex justify-center md:justify-start mt-6">
+        <div className="flex justify-center md:justify-start md:mt-6">
           {role === "coordinator" || role === "admin" ? (
             authorCommunity.includes(decodedCategory) && (
               <span className="px-6 py-2 text-lg font-semibold rounded-xl bg-gradient-to-r from-orange-500 to-yellow-400 text-black shadow-lg">
@@ -376,11 +378,11 @@ function SingleTechDomainDetails() {
       </section>
 
       {/* Content */}
-      <section className="w-11/12 mx-auto mt-16 space-y-20">
+      <section className="w-11/12 mx-auto mt-10 md:mt-16 space-y-10 md:space-y-20">
         {/* Coordinators */}
         {authors.filter((a) => a.role === "coordinator").length > 0 && (
           <div>
-            <h2 className="text-center text-2xl md:text-4xl font-bold text-white/90 mb-10">
+            <h2 className="text-center text-2xl md:text-4xl font-bold text-white/90 mb-7 md:mb-10">
               Community Coordinators (
               {authors.filter((a) => a.role === "coordinator").length})
             </h2>
@@ -476,7 +478,7 @@ function SingleTechDomainDetails() {
         {/* Students */}
         {authors.filter((a) => a.role === "student").length > 0 && (
           <div>
-            <h2 className="text-center text-2xl md:text-4xl font-bold text-white/90 mb-10">
+            <h2 className="text-center text-2xl md:text-4xl font-bold text-white/90 mb-7 md:mb-10">
               Community Members (
               {authors.filter((a) => a.role === "student").length})
             </h2>
@@ -543,6 +545,7 @@ function SingleTechDomainDetails() {
           </div>
         )}
       </section>
+      </div>
 
       <Footer />
     </div>

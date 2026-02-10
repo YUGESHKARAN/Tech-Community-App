@@ -19,7 +19,7 @@ function Workspace() {
 
       <div className="max-w-7xl mx-auto px-4 h-screen md:px-8 pt-4 text-white">
         {/* Header */}
-        <div className="mb-10">
+        <div className="md:mb-10 mb-7">
           <h1 className="text-2xl flex items-center gap-4 md:text-4xl font-bold tracking-wide">
             <BsPersonWorkspace /> Workspace
           </h1>
@@ -55,7 +55,7 @@ function Workspace() {
         </div> */}
 
         {/* Quick Actions */}
-        <section className="mb-12">
+        <section className="md:mb-12 mb-7">
           <h2 className="text-lg md:text-xl font-semibold mb-4">
             Quick Actions
           </h2>

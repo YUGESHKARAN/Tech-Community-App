@@ -137,15 +137,18 @@ function NavBar() {
   // console.log("profile",profile)
 
   return (
-    <div className="
+    <div 
+    className="
   
   flex items-center justify-between
   w-full h-16 px-6
-  bg-slate-900/95 backdrop-blur
+  bg-slate-900/95 
   border-b border-slate-700/50
   shadow-sm
+  z-100
  
 "
+// className="flex border-b border-slate-700/50 relative justify-between items-center  h-16 bg-gray-900 mb-2 px-5"
 >
       <div className="md:text-xl text-sm w-1/2 md:w-1/5 font-bold text-white">
         <Link to="/home">
