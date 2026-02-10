@@ -17,7 +17,7 @@ function Workspace() {
     <div className="w-full relative min-h-screen bg-gradient-to-br from-gray-900 to-gray-800">
       <NavBar />
 
-      <div className="max-w-7xl mx-auto px-4 h-screen md:px-8 pt-4 text-white">
+      <div className="max-w-7xl mx-auto px-4 h-screen md:px-8 pt-10 text-white">
         {/* Header */}
         <div className="md:mb-10 mb-7">
           <h1 className="text-2xl flex items-center gap-4 md:text-4xl font-bold tracking-wide">
