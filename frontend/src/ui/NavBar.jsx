@@ -11,13 +11,15 @@ import {
 import { IoHome, IoLogOut, IoLogOutOutline, IoPeople } from "react-icons/io5";
 import { FaUserAlt } from "react-icons/fa";
 import bloglogo from "../assets/bloglogo.png";
-import { RiUser3Line } from "react-icons/ri";
+import { RiMenuFold3Fill, RiMenuFoldFill, RiMenuFoldLine, RiUser3Line } from "react-icons/ri";
 import { IoIosClose, IoMdNotifications } from "react-icons/io";
 import { GlobalStateContext } from "../GlobalStateContext";
-import { TfiAnnouncement } from "react-icons/tfi";
+import { TfiAnnouncement, TfiMenuAlt } from "react-icons/tfi";
+import { VscMenu } from "react-icons/vsc";
 import axiosInstance from "../instances/Axiosinstances";
 import user from "../images/user.png";
-
+import { CiMenuKebab } from "react-icons/ci";
+import { BsFillMenuButtonWideFill } from "react-icons/bs";
 function NavBar() {
   const { logout } = useAuth();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -143,7 +145,7 @@ function NavBar() {
   flex items-center justify-between
   w-full h-16 px-6
   bg-slate-900/95 
-  border-b border-slate-700/50
+  border-b border-slate-600/70 border-neutral-700
   shadow-sm
   z-100
  
@@ -262,7 +264,9 @@ function NavBar() {
       </div>
 
       <button onClick={toggleSidebar} className="lg:hidden ml-2 text-white">
-        ☰
+        {/* ☰ */}
+        <RiMenuFoldFill className="text-xl" />
+
       </button>
 
       {/* Sidebar */}

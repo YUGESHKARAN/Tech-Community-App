@@ -352,7 +352,7 @@ function SingleTechDomainDetails() {
         </h1>
 
         {/* Join / Role Badge */}
-        <div className="flex justify-center md:justify-start md:mt-6">
+        <div className="flex justify-center md:justify-start mt-6">
           {role === "coordinator" || role === "admin" ? (
             authorCommunity.includes(decodedCategory) && (
               <span className="px-6 py-2 text-lg font-semibold rounded-xl bg-gradient-to-r from-orange-500 to-yellow-400 text-black shadow-lg">
@@ -383,8 +383,8 @@ function SingleTechDomainDetails() {
         {authors.filter((a) => a.role === "coordinator").length > 0 && (
           <div>
             <h2 className="text-center text-2xl md:text-4xl font-bold text-white/90 mb-7 md:mb-10">
-              Community Coordinators (
-              {authors.filter((a) => a.role === "coordinator").length})
+              Community Coordinators 
+              {/* ({authors.filter((a) => a.role === "coordinator").length}) */}
             </h2>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
@@ -415,7 +415,7 @@ function SingleTechDomainDetails() {
                     </p>
 
                     {/* Social */}
-                    {author.profileLinks?.length > 0 && (
+                    {/* {author.profileLinks?.length > 0 && (
                       <div className="flex gap-4 mt-4">
                         {author.profileLinks.map((link, i) => (
                           <Link key={i} to={link.url} target="_blank">
@@ -431,7 +431,7 @@ function SingleTechDomainDetails() {
                           </Link>
                         ))}
                       </div>
-                    )}
+                    )} */}
 
                     {/* Follow / Status */}
                     {author.email !== email ? (
@@ -479,8 +479,8 @@ function SingleTechDomainDetails() {
         {authors.filter((a) => a.role === "student").length > 0 && (
           <div>
             <h2 className="text-center text-2xl md:text-4xl font-bold text-white/90 mb-7 md:mb-10">
-              Community Members (
-              {authors.filter((a) => a.role === "student").length})
+              Community Members 
+              {/* ({authors.filter((a) => a.role === "student").length}) */}
             </h2>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
@@ -510,7 +510,9 @@ function SingleTechDomainDetails() {
                       {author.email}
                     </p>
 
-                    {author.profileLinks?.length > 0 && (
+                    
+                    {/* Social links */}
+                    {/* {author.profileLinks?.length > 0 && (
                       <div className="flex gap-3 mt-3">
                         {author.profileLinks.map((link, i) => (
                           <Link key={i} to={link.url} target="_blank">
@@ -526,7 +528,7 @@ function SingleTechDomainDetails() {
                           </Link>
                         ))}
                       </div>
-                    )}
+                    )} */}
                   </div>
                 ))}
 

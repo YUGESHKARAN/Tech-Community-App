@@ -508,7 +508,9 @@ const authorsDetails = async () => {
                   </span>
                 </div>
 
-                {author.profileLinks?.length > 0 && (
+                {/* Social media components */}
+
+                {/* {author.profileLinks?.length > 0 && (
                   <div className="flex justify-center gap-3 mt-4">
                     {author.profileLinks.map((link, i) => (
                       <Link key={i} to={link.url} target="_blank">
@@ -522,7 +524,7 @@ const authorsDetails = async () => {
                       </Link>
                     ))}
                   </div>
-                )}
+                )} */}
 
                 <div className="mt-5">
                   {author.followers.includes(email) ? (
@@ -670,7 +672,8 @@ const authorsDetails = async () => {
                 </p>
 
                 {/* Social Links */}
-                {author.profileLinks?.length > 0 && (
+                
+                {/* {author.profileLinks?.length > 0 && (
                   <div className="flex justify-center gap-4 mt-4">
                     {author.profileLinks.map((link, i) => (
                       <Link
@@ -692,7 +695,7 @@ const authorsDetails = async () => {
                       </Link>
                     ))}
                   </div>
-                )}
+                )} */}
               </div>
             ))}
 
