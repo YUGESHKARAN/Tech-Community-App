@@ -27,11 +27,14 @@ import ViewPostPlaylist from "./Pages/ViewPostPlaylist.jsx";
 import Workspace from "./Pages/Workspace.jsx";
 import YourPlaylist from "./Pages/YourPlaylists.jsx";
 import EditTutorPlaylist from "./Pages/EditTutoPlaylist.jsx";
+import ScrollToTop from "./components/ScrollTop.jsx";
 function App() {
   return (
     <AuthProvider>
       <GlobalStateProvider>
         <Router>
+          <ScrollToTop/>
+
           <Routes>
             {/* Public Routes for Login & Register */}
             <Route path="/" element={<Login />} />
@@ -137,6 +140,7 @@ function App() {
               element={<ProtectedRoute element={<TechCommunity />} />}
             />
           </Routes>
+          
         </Router>
       </GlobalStateProvider>
     </AuthProvider>

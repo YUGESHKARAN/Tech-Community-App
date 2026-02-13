@@ -144,8 +144,7 @@ function NavBar() {
   
   flex items-center justify-between
   w-full h-16 px-6
-  bg-slate-900/95 
-  border-b border-slate-600/70 border-neutral-700
+  border-b border-slate-700/50
   shadow-sm
   z-100
  
