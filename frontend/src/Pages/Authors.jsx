@@ -696,6 +696,8 @@ const authorsDetails = async () => {
                     ))}
                   </div>
                 )} */}
+
+                
               </div>
             ))}
 

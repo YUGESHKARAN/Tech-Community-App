@@ -48,7 +48,7 @@ export default function AITechAssistant({ currentPostId }) {
         query,
         current_post_id: currentPostId,
       });
-      const aiMessage = {
+      let aiMessage = {
         role: "assistant",
         content: res.data.content,
         videos: res.data.videos,
@@ -56,14 +56,40 @@ export default function AITechAssistant({ currentPostId }) {
         suggestedQueries: res.data.suggestions || [],
       };
 
-      console.log("AI response", aiMessage)
+      console.log("AI response", aiMessage);
 
       setMessages((prev) => [...prev, aiMessage]);
     } 
-    catch(err){
-      console.log("Error asking AI:", err.message);
+    
+   catch (err) {
+
+  console.log("Full error:", err);
+
+  let content = "Something went wrong. Please try again.";
+
+  if (err.response) {
+    console.log("Status:", err.response.status);
+    console.log("Response data:", err.response.data);
+
+    if (err.response.status === 429) {
+      content = "Too many requests. Please slow down.";
+
+    } else if (err.response.status === 400) {
+      content = err.response.data?.content || "Invalid request.";
     }
-    finally {
+  }
+
+  const aiMessage = {
+    role: "assistant",
+    content,
+    videos: null,
+    posts: null,
+    suggestedQueries: [],
+  };
+
+  setMessages((prev) => [...prev, aiMessage]);
+}
+ finally {
       setLoading(false);
     }
   };
@@ -119,13 +145,13 @@ export default function AITechAssistant({ currentPostId }) {
   const bottomRef = useRef(null);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth"});
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
   const handleQueryClick = async (e) => {
     e.preventDefault();
-   
-     setTimeout(() =>askAI(), 1);
+
+    setTimeout(() => askAI(), 1);
   };
 
   return (
@@ -136,7 +162,7 @@ export default function AITechAssistant({ currentPostId }) {
           onClick={() => setOpen(true)}
           className=" bottom-4 flex items-center gap-2 right-4 bg-white text-black text-sm px-5 py-2 rounded-full md:hidden z-50 shadow-xl"
         >
-          Ask AI  <SiGooglegemini />
+          Ask AI <SiGooglegemini />
         </button>
       )}
 
@@ -358,7 +384,7 @@ export default function AITechAssistant({ currentPostId }) {
                       {msg.suggestedQueries.map((s, i) => (
                         <button
                           key={i}
-                          onClick={async(e) => {
+                          onClick={async (e) => {
                             setQuery(s);
                             await handleQueryClick(e);
                           }}
@@ -402,7 +428,7 @@ export default function AITechAssistant({ currentPostId }) {
             onKeyDown={(e) => e.key === "Enter" && askAI()}
             placeholder="Ask your query..."
             className="flex-1 bg-neutral-800 border border-neutral-800 rounded-xl px-4 py-2 text-sm text-white placeholder-neutral-500 outline-none"
-          /> 
+          />
 
           <button
             onClick={askAI}
@@ -410,7 +436,7 @@ export default function AITechAssistant({ currentPostId }) {
             className="text-2xl md:text-2xl transition-all duration-300 hover:text-gray-400 text-gray-500 block"
           >
             {/* Send */}
-            <VscSend/>
+            <VscSend />
           </button>
         </div>
       </div>
