@@ -12,6 +12,6 @@ const loginLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute
   max: 10, // 10 login attempts per minute
   message: "Too many login attempts. Try again later."
-});
+});   
 
 module.exports ={ limiter,loginLimiter}

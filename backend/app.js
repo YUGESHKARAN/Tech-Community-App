@@ -5,7 +5,7 @@ const path = require("path");
 const serverless = require("serverless-http");
 const connectToDatabase = require("./db");
 const bodyParser = require("body-parser");
-const {limiter} = require("./middleware/rateLimitter")
+const {limiter, loginLimiter} = require("./middleware/rateLimitter")
 require("dotenv").config();
 
 const app = express();
