@@ -427,8 +427,8 @@ function TutorPlaylist() {
     className="md:w-11/12 w-full mx-auto px-4 py-10 md:grid gap-10 lg:grid-cols-3"
   >
     {/* LEFT — PLAYLIST DETAILS */}
-    <div className="lg:col-span-1 bg-gray-900/70  backdrop-blur-xl border border-gray-800 rounded-2xl space-y-8">
-      <div className=" p-6 space-y-8 shadow-lg">
+    <div className="lg:col-span-1 md:bg-gray-900/70  backdrop-blur-xl md:border border-gray-800 rounded-2xl space-y-8">
+      <div className=" md:p-6 p-2 space-y-8 shadow-lg">
 
         <h2 className="text-xl font-semibold text-white">
           Playlist Details
@@ -626,7 +626,7 @@ function TutorPlaylist() {
            <div className="flex items-center gap-2 mb-3">
             
               <div>
-                <p className="md:text-sm text-xs font-medium text-white">
+                <p className="md:text-sm text-xs line-clamp-1 font-medium text-white">
                   {data.title}
                 </p>
                 <p className="text-xs text-gray-400">
@@ -661,7 +661,7 @@ function TutorPlaylist() {
       </div>
     )
   :
-   <div className="flex items-center md:mt-20 w-11/12 mx-auto text-center  justify-center md:w-full col-span-2 text-white  ">
+   <div className="flex items-center md:mt-20 mt-10 md: w-11/12 mx-auto text-center  justify-center md:w-full col-span-2 text-white  ">
     Select domain to see posts available for playlist creation.
     </div>}
 

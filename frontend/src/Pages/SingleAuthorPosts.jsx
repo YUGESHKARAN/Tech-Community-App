@@ -17,6 +17,7 @@ import user from "../images/user.png";
 import { useParams } from "react-router-dom";
 import getTimeAgo from "../components/DateCovertion";
 import { PiBookmarksSimpleFill, PiBookmarksSimpleLight } from "react-icons/pi";
+import BlogSkeleton from "../components/BlogSkeleton";
 function SingleAuthorPosts() {
   const [searchTerm, setSearchTerm] = useState("");
   const [posts, setPosts] = useState([]);
@@ -223,23 +224,25 @@ function SingleAuthorPosts() {
           </div>
 
           <div className="md:w-full grid grid-cols-1 w-full mx-auto md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7 md:gap-16 mt-7 md:mt-10 h-auto ">
-            {loader ? (
-              <div className="col-span-4 flex flex-col items-center justify-center">
-                <MagnifyingGlass
-                  visible={true}
-                  height="100"
-                  width="100"
-                  ariaLabel="loading"
-                  wrapperStyle={{ marginTop: "20px" }}
-                  wrapperClass="magnifying-glass-wrapper"
-                  glassColor="#4B5563"
-                  color="#60A5FA"
-                />
-                <p className="text-sm md:text-lg font-semibold text-gray-400">
-                  Loading Posts...
-                </p>
-              </div>
-            ) : (
+            {
+            // loader ? (
+            //   <div className="col-span-4 flex flex-col items-center justify-center">
+            //     <MagnifyingGlass
+            //       visible={true}
+            //       height="100"
+            //       width="100"
+            //       ariaLabel="loading"
+            //       wrapperStyle={{ marginTop: "20px" }}
+            //       wrapperClass="magnifying-glass-wrapper"
+            //       glassColor="#4B5563"
+            //       color="#60A5FA"
+            //     />
+            //     <p className="text-sm md:text-lg font-semibold text-gray-400">
+            //       Loading Posts...
+            //     </p>
+            //   </div>
+            // ) :
+             
               (postCategory === ""
                 ? filterdPost
                 : posts.filter((post) => post.category === postCategory)
@@ -373,12 +376,15 @@ function SingleAuthorPosts() {
                   </div>
                 </div>
               ))
-            )}
+            }
             {/* {loading && <p className="text-center col-span-full py-4">Loading...</p>}
-        
+            
+              
                     {!hasMore && (
                       <p className="text-center col-span-full py-4 text-gray-500">No more posts</p>
                     )} */}
+
+                    {loader && <BlogSkeleton/>}
           </div>
         </div>
       </div>

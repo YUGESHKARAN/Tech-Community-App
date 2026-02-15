@@ -18,6 +18,7 @@ import { ToastContainer, toast } from "react-toastify";
 
 import useTutorPlaylist from "../hooks/useTutorPlaylist";
 import TutorPlaylistGrid from "../components/TutorPlaylistGrid.jsx";
+import BlogSkeleton from "../components/BlogSkeleton.jsx";
 function BlogContainer() {
   const [searchTerm, setSearchTerm] = useState("");
   const [posts, setPosts] = useState([]);
@@ -635,7 +636,8 @@ useEffect(() => {
                 </div>
               ))
             )}
-            {loading && <p className="text-center col-span-full py-4">Loading...</p>}
+            {/* {loading && <p className="text-center col-span-full py-4">Loading...</p>} */}
+            {loading && <BlogSkeleton/>}
 
             {!hasMore && (
               <p className="text-center col-span-full py-4 text-gray-500">No more posts</p>

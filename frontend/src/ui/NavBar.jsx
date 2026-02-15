@@ -143,7 +143,7 @@ function NavBar() {
     className="
   
   flex items-center justify-between
-  w-full h-16 px-6
+  w-full h-16 px-3 md:px-6
   border-b border-slate-700/50
   shadow-sm
   z-100
@@ -495,7 +495,7 @@ function NavBar() {
 
 
   {/* Header */}
-  <div className="h-16 flex items-center justify-between px-8 border-b border-gray-700/60">
+  <div className="h-16 flex items-center justify-between px-3 border-b border-gray-700/60">
     <div  
     onClick={()=>{setIsSidebarOpen(!isSidebarOpen)}}
     className="md:text-xl text-sm w-1/2 md:w-1/5 font-bold text-white">
