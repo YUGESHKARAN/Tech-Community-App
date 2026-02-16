@@ -18,6 +18,7 @@ import { useParams } from "react-router-dom";
 import getTimeAgo from "../components/DateCovertion";
 import { PiBookmarksSimpleFill, PiBookmarksSimpleLight } from "react-icons/pi";
 import BlogSkeleton from "../components/BlogSkeleton";
+import PillLoader from "../components/PillSkeleton";
 function SingleAuthorPosts() {
   const [searchTerm, setSearchTerm] = useState("");
   const [posts, setPosts] = useState([]);
@@ -178,7 +179,7 @@ function SingleAuthorPosts() {
           <h1 className="text-center text-white font-bold text-xl mt-2 md:mt-10">
             Domains
           </h1>
-          <div className="mx-auto w-11/12 md:w-fit flex flex-wrap mt-4 scrollbar-hide  items-center justify-center gap-3 mb-2 md:mb-5 md:overflow-x-auto">
+         {!loader && <div className="flex md:max-w-5xl md:w-fit mt-12 scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto">
             {/* All Button */}
             <div
               onClick={() => setPostCategory("")}
@@ -205,7 +206,9 @@ function SingleAuthorPosts() {
                 {data}
               </div>
             ))}
-          </div>
+          </div>}
+
+          {loader && <PillLoader/>}
         </div>
 
         <div className="flex relative backdrop-blur-md w-11/12 flex-wrap justify-center h-auto mx-auto">
@@ -369,7 +372,7 @@ function SingleAuthorPosts() {
                     </div>
                     <button
                       onClick={() => setPostCategory(data.category)}
-                      className="px-2 py-1 rounded-full bg-gray-600 text-gray-300 text-sm font-medium transition-colors duration-200"
+                      className="px-2 py-1 rounded-full bg-gray-600 text-gray-300 text-sm md:text-xs font-medium transition-colors duration-200"
                     >
                       {data.category}
                     </button>

@@ -16,6 +16,7 @@ import axiosInstance from "../instances/Axiosinstances";
 import { BsPersonWorkspace } from "react-icons/bs";
 import getTimeAgo from "../components/DateCovertion";
 import BlogSkeleton from "../components/BlogSkeleton";
+import PillLoader from "../components/PillSkeleton";
 
 function YourPost() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -157,7 +158,8 @@ function YourPost() {
         {/* <p className="text-lg text-white w-11/12 mx-auto">Posts {posts.length>0 && posts.length}</p> */}
 
         <div className="flex w-11/12  flex-wrap justify-center h-auto mx-auto">
-          <div className="flex md:max-w-5xl md:w-fit mt-4 scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto">
+
+          {!loader &&<div className="flex md:max-w-5xl md:w-fit mt-4 scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto">
             {/* All Button */}
             <div
               onClick={() => setPostCategory("")}
@@ -184,7 +186,9 @@ function YourPost() {
                 {data}
               </div>
             ))}
-          </div>
+          </div>}
+
+           {loader && <PillLoader/>}
 
           {/* Search and Filter Section */}
           <div className="w-full flex items-center gap-2 justify-center">
@@ -337,7 +341,7 @@ function YourPost() {
                     </div>
                     <button
                       onClick={() => setPostCategory(data.category)}
-                      className="px-2 py-1 rounded-full bg-gray-600 text-gray-300 text-sm font-medium
+                      className="px-2 py-1 rounded-full bg-gray-600 text-gray-300 text-sm md:text-xs font-medium
                      transition-colors duration-200"
                     >
                       {data.category}

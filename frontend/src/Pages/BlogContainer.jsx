@@ -19,6 +19,8 @@ import { ToastContainer, toast } from "react-toastify";
 import useTutorPlaylist from "../hooks/useTutorPlaylist";
 import TutorPlaylistGrid from "../components/TutorPlaylistGrid.jsx";
 import BlogSkeleton from "../components/BlogSkeleton.jsx";
+import PillLoader from "../components/PillSkeleton.jsx";
+import TutorPlaylistGridSkeleton from "../components/TutorPlaylistGridSkeleton.jsx";
 function BlogContainer() {
   const [searchTerm, setSearchTerm] = useState("");
   const [posts, setPosts] = useState([]);
@@ -269,11 +271,11 @@ useEffect(() => {
             Featured Playlists
           </h2>
           <div className=" md:p-4 p-2 shadow-inner">
-            <TutorPlaylistGrid />
+            {loading? <TutorPlaylistGridSkeleton/>: <TutorPlaylistGrid />}
           </div>
         </section>
 
-         <div className="flex md:max-w-5xl md:w-fit mt-12 scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto">
+        {!loading && <div className="flex md:max-w-5xl md:w-fit mt-12 scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto">
           {/* All Button */}
           <div
             onClick={() => setPostCategory("")}
@@ -300,7 +302,9 @@ useEffect(() => {
               {data}
             </div>
           ))}
-        </div>
+        </div>}
+
+        {loading && <PillLoader/>}
 
         {/* ================= SEARCH ================= */}
         <div className="flex justify-center my-9 md:my-4">
@@ -480,7 +484,7 @@ useEffect(() => {
             {!hasMore && (
               <p className="text-center col-span-full py-4 text-gray-500">No more posts</p>
             )}
-          </div> */}
+          </div> */} 
 
             <div className="md:w-full grid grid-cols-1 w-full mx-auto md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7 md:gap-16 mt-7 md:mt-10 h-auto">
             {loader ? (
@@ -628,7 +632,7 @@ useEffect(() => {
                     </div>
                     <button
                       onClick={() => setPostCategory(data.category)}
-                      className="px-2 py-1 rounded-full bg-gray-600 text-gray-300 text-sm font-medium transition-colors duration-200"
+                      className="px-2 py-1 rounded-full bg-gray-600 text-gray-300 text-sm md:text-xs font-medium transition-colors duration-200"
                     >
                       {data.category}
                     </button>

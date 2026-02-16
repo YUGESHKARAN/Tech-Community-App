@@ -20,6 +20,8 @@ import { PiBookmarksSimpleFill, PiBookmarksSimpleLight } from "react-icons/pi";
 import { ToastContainer, toast } from "react-toastify";
 import TutorBookMarkPlaylist from "../components/TutorBookMarkPlaylist.jsx";
 import BlogSkeleton from "../components/BlogSkeleton.jsx";
+import PillLoader from "../components/PillSkeleton.jsx";
+import TutorPlaylistGridSkeleton from "../components/TutorPlaylistGridSkeleton.jsx";
 function BookMarkPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [posts, setPosts] = useState([]);
@@ -276,18 +278,19 @@ const getBookMarkPosts = async () => {
     <div className="w-full min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 h-auto reltive  ">
       <NavBar />
       <div className="relative min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 py-4">
-        <h1 className=" text-2xl  w-11/12 flex items-center gap-2 mx-auto md:text-3xl font-bold text-white tracking-wide">
+        <h1 className=" text-2xl mb-4  w-11/12 flex items-center gap-2 mx-auto md:text-3xl font-bold text-white tracking-wide">
           <BiBookmarkAlt />
           <span className="group text-white"> My Bookmarks </span>{" "}
         </h1>
          <div className="w-11/12 mx-auto">
-         <TutorBookMarkPlaylist />
+         {/* <TutorBookMarkPlaylist/> */}
+          {loading? <TutorPlaylistGridSkeleton/>: <TutorBookMarkPlaylist />}
          </div>
          
 
         <div className="w-11/12 mt-10 mx-auto">
     
-          <div className="mx-auto w-11/12 md:w-fit flex flex-wrap mt-4 scrollbar-hide  items-center justify-center gap-3 mb-2 md:mb-5 md:overflow-x-auto">
+         {!loading && <div className="flex md:max-w-5xl md:w-fit mt-12 scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto">
             {/* All Button */}
             <div
               onClick={() => setPostCategory("")}
@@ -314,7 +317,9 @@ const getBookMarkPosts = async () => {
                 {data}
               </div>
             ))}
-          </div>
+          </div>}
+
+          {loading && <PillLoader/>}
         </div>
 
         <div className="flex relative backdrop-blur-md w-11/12 flex-wrap justify-center h-auto mx-auto">
@@ -338,7 +343,7 @@ const getBookMarkPosts = async () => {
               ? filterdPost
               : posts.filter((post) => post.category === postCategory)
             ).length > 0 && (
-              <h2 className="md:pl-4 pl-2 mt-5 md:mt-9  text-2xl md:text-4xl font-bold tracking-wide text-gray-200">
+              <h2 className="md:pl-4 pl-2 mt-0 md:mt-10  text-2xl md:text-4xl font-bold tracking-wide text-gray-200">
                 Posts
               </h2>
             )}
@@ -487,7 +492,7 @@ const getBookMarkPosts = async () => {
                     </div>
                     <button
                       onClick={() => setPostCategory(data.category)}
-                      className="px-2 py-1 rounded-full bg-gray-600 text-gray-300 text-sm font-medium
+                      className="px-2 py-1 rounded-full bg-gray-600 text-gray-300 text-sm md:text-xs font-medium
                      transition-colors duration-200"
                     >
                       {data.category}

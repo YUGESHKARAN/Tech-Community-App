@@ -290,7 +290,7 @@ function ViewEditPost() {
           </div>
 
           {/* Description */}
-          <p className="w-full text-justify text-gray-300 text-sm md:text-base leading-relaxed">
+          <p className="w-full text-justify break-words text-gray-300 text-sm md:text-base leading-relaxed">
             {singlePostData.description}
           </p>
         </div>
