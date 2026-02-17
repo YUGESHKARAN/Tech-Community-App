@@ -14,6 +14,9 @@ import { PiLinkSimpleFill } from "react-icons/pi";
 import { BsPersonSquare } from "react-icons/bs";
 import { IoSearch } from "react-icons/io5";
 import { IoIosGitNetwork } from "react-icons/io";
+import RecommendedAuthorsSkeleton from "../components/loaders/RecommendedAuthorsSkeleton ";
+import CoordinatorGridSkeleton from "../components/loaders/CoordinatorGridSkeleton ";
+import StudentGridSkeleton from "../components/loaders/StudentGridSkeleton ";
 function Authors() {
   const [authors, setAuthors] = useState([]);
   const email = localStorage.getItem("email");
@@ -40,34 +43,34 @@ function Authors() {
   //     console.error("error", err);
   //   }
   // };
-const authorsDetails = async () => {
-  if (!hasMore || isFetching.current) return; // IMPORTANT
+  const authorsDetails = async () => {
+    if (!hasMore || isFetching.current) return; // IMPORTANT
 
-  isFetching.current = true;
-  setLoading(true);
+    isFetching.current = true;
+    setLoading(true);
 
-  try {
-    const response = await axiosInstance.get(
-      `/blog/author/profiles?page=${page}&limit=${limit}`
-    );
+    try {
+      const response = await axiosInstance.get(
+        `/blog/author/profiles?page=${page}&limit=${limit}`,
+      );
 
-    const newAuthors = response.data.data.filter(
-      (author) => author.email !== email
-    );
+      const newAuthors = response.data.data.filter(
+        (author) => author.email !== email,
+      );
 
-    if (newAuthors.length === 0) {
-      setHasMore(false);
-    } else {
-      setAuthors((prev) => [...prev, ...newAuthors]);
-      setPage((prev) => prev + 1);
+      if (newAuthors.length === 0) {
+        setHasMore(false);
+      } else {
+        setAuthors((prev) => [...prev, ...newAuthors]);
+        setPage((prev) => prev + 1);
+      }
+    } catch (err) {
+      console.error("error", err);
+    } finally {
+      isFetching.current = false;
+      setLoading(false);
     }
-  } catch (err) {
-    console.error("error", err);
-  } finally {
-    isFetching.current = false;
-    setLoading(false);
-  }
-};
+  };
 
   useEffect(() => {
     authorsDetails();
@@ -145,35 +148,34 @@ const authorsDetails = async () => {
   //     console.log("error", err);
   //   }
   // };
-   const addFollower = async (userEmail) => {
-  try {
-    const response = await axiosInstance.put(
-      `/blog/author/follow/${userEmail}`,
-      { emailAuthor: email }
-    );
-
-    if (response.status === 200) {
-      setAuthors((prev) =>
-        prev.map((author) => {
-          if (author.email === userEmail) {
-            const isFollowing = author.followers?.includes(email);
-
-            return {
-              ...author,
-              followers: isFollowing
-                ? author.followers.filter((f) => f !== email)
-                : [...(author.followers || []), email],
-            };
-          }
-          return author;
-        })
+  const addFollower = async (userEmail) => {
+    try {
+      const response = await axiosInstance.put(
+        `/blog/author/follow/${userEmail}`,
+        { emailAuthor: email },
       );
-    }
-  } catch (err) {
-    console.log("error", err);
-  }
-};
 
+      if (response.status === 200) {
+        setAuthors((prev) =>
+          prev.map((author) => {
+            if (author.email === userEmail) {
+              const isFollowing = author.followers?.includes(email);
+
+              return {
+                ...author,
+                followers: isFollowing
+                  ? author.followers.filter((f) => f !== email)
+                  : [...(author.followers || []), email],
+              };
+            }
+            return author;
+          }),
+        );
+      }
+    } catch (err) {
+      console.log("error", err);
+    }
+  };
 
   const recommendaedAutors = authors
     .filter((author) => recommendation.includes(author.email))
@@ -275,6 +277,12 @@ const authorsDetails = async () => {
         </div>
       )} */}
 
+      {recommendaedAutors?.length > 0 && (
+        <h2 className="w-11/12 mx-auto  text-left text-xl text-green-400 md:text-3xl font-bold">
+          Recommended
+        </h2>
+      )}
+
       <div
         className={`${recommendaedAutors?.length > 0 ? "flex w-11/12 mx-auto gap-5 overflow-x-auto scrollbar-hide mt-5 pb-2" : "hidden"}`}
       >
@@ -338,6 +346,14 @@ const authorsDetails = async () => {
           </div>
         ))}
       </div>
+      {recommendaedAutors?.length == 0 && (
+        <>
+          <h2 className="w-11/12 mx-auto  text-left text-xl text-green-400 md:text-3xl font-bold">
+            Recommended
+          </h2>
+          <RecommendedAuthorsSkeleton />
+        </>
+      )}
 
       {/* Search and Filter */}
       <div className="w-11/12 mx-auto flex mt-7   md:flex-row justify-between items-center gap-4 md:mt-10 mb-6">
@@ -548,7 +564,21 @@ const authorsDetails = async () => {
 
           {filteredAuthors.filter((author) => author.role === "coordinator")
             .length > 0 &&
-            loading && <p className="text-center col-span-2 sm:col-span-3 lg:col-span-5 py-4">Loading...</p>}
+            loading && (
+              <p className="text-center col-span-2 sm:col-span-3 lg:col-span-5 py-4">
+                loading..
+              </p>
+            )}
+
+          {!filteredAuthors.filter((author) => author.role === "coordinator")
+            .length > 0 && loading && (
+            <div className="col-span-full">
+              <h2 className="md:text-left text-center w-full text-2xl md:text-4xl font-bold my-6 text-white">
+                Student Coordinators
+              </h2>
+              <CoordinatorGridSkeleton />
+            </div>
+          )}
 
           {filteredAuthors.filter((author) => author.role === "coordinator")
             .length > 0 &&
@@ -672,7 +702,7 @@ const authorsDetails = async () => {
                 </p>
 
                 {/* Social Links */}
-                
+
                 {/* {author.profileLinks?.length > 0 && (
                   <div className="flex justify-center gap-4 mt-4">
                     {author.profileLinks.map((link, i) => (
@@ -696,14 +726,26 @@ const authorsDetails = async () => {
                     ))}
                   </div>
                 )} */}
-
-                
               </div>
             ))}
 
           {filteredAuthors.filter((author) => author.role === "student")
             .length > 0 &&
-            loading && <p className="text-center w-full col-span-2  sm:col-span-3 lg:col-span-5 py-4">Loading...</p>}
+            loading && (
+              <p className="text-center w-full col-span-2  sm:col-span-3 lg:col-span-5 py-4">
+               loading...
+              </p>
+            )}
+       
+         {!filteredAuthors.filter((author) => author.role === "student")
+            .length > 0 && loading && (
+            <div className="col-span-full">
+              <h2 className="md:text-left text-center w-full text-2xl md:text-4xl font-bold my-6 text-white">
+                Student
+              </h2>
+              <StudentGridSkeleton />
+            </div>
+          )}
 
           {filteredAuthors.filter((author) => author.role === "student")
             .length > 0 &&
