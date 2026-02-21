@@ -26,6 +26,7 @@ import { FaGithub, FaYoutube } from "react-icons/fa";
 import userImg from "../images/user.png";
 import { SiGooglegemini } from "react-icons/si";
 import AITechAssistant from "../components/AITechAssistant.jsx";
+import PostDetailSkeleton from "../components/loaders/PostDetailSkeleton.jsx";
 function ViewPage() {
   const user = localStorage.getItem("username");
   const userEmail = localStorage.getItem("email");
@@ -43,12 +44,14 @@ function ViewPage() {
   const [profile, setProfile] = useState("");
   const { notification, setNotification } = useContext(GlobalStateContext);
   const [showAssistant, setShowAssistant] = useState(false);
+  const [loading, setLoading] = useState(false)
   const commentsRef = useRef(null);
 
   // Fetch post data
   useEffect(() => {
     const getSinglePost = async () => {
       try {
+        setLoading(true)
         const response = await axiosInstance.get(`/blog/posts/${email}/${id}`);
         const postData = response.data.data;
         setSinglePostData(postData);
@@ -57,6 +60,9 @@ function ViewPage() {
         setProfile(postData.profile);
       } catch (err) {
         console.error("Error fetching post data", err);
+      }
+      finally{
+        setLoading(false)
       }
     };
     getSinglePost();
@@ -243,7 +249,7 @@ function ViewPage() {
       <NavBar />
 
       {/* Main Container */}
-      <div className="max-w-7xl mx-auto px-3 md:px-8 py-6 pb-20  md:py-10">
+      {!loading && <div className="max-w-7xl mx-auto px-3 md:px-8 py-6 pb-20  md:py-10">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
@@ -601,6 +607,9 @@ function ViewPage() {
           </div>
         </div>
       </div>
+      }
+
+      {loading && <PostDetailSkeleton/>}
 
       {/* <Footer /> */}
 

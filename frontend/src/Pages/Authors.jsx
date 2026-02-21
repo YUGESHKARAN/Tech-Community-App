@@ -346,7 +346,8 @@ function Authors() {
           </div>
         ))}
       </div>
-      {recommendaedAutors?.length == 0 && (
+      {recommendaedAutors?.length == 0 && filteredAuthors?.filter((author) => author.role === "coordinator")
+          .length ==0  && (
         <>
           <h2 className="w-11/12 mx-auto  text-left text-xl text-green-400 md:text-3xl font-bold">
             Recommended

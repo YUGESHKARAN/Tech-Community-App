@@ -18,9 +18,9 @@ import { ToastContainer, toast } from "react-toastify";
 
 import useTutorPlaylist from "../hooks/useTutorPlaylist";
 import TutorPlaylistGrid from "../components/TutorPlaylistGrid.jsx";
-import BlogSkeleton from "../components/BlogSkeleton.jsx";
-import PillLoader from "../components/PillSkeleton.jsx";
-import TutorPlaylistGridSkeleton from "../components/TutorPlaylistGridSkeleton.jsx";
+import BlogSkeleton from "../components/loaders/BlogSkeleton.jsx";
+import PillLoader from "../components/loaders/PillSkeleton.jsx";
+import TutorPlaylistGridSkeleton from "../components/loaders/TutorPlaylistGridSkeleton.jsx";
 function BlogContainer() {
   const [searchTerm, setSearchTerm] = useState("");
   const [posts, setPosts] = useState([]);

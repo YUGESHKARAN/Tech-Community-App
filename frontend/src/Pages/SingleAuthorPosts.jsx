@@ -17,8 +17,8 @@ import user from "../images/user.png";
 import { useParams } from "react-router-dom";
 import getTimeAgo from "../components/DateCovertion";
 import { PiBookmarksSimpleFill, PiBookmarksSimpleLight } from "react-icons/pi";
-import BlogSkeleton from "../components/BlogSkeleton";
-import PillLoader from "../components/PillSkeleton";
+import BlogSkeleton from "../components/loaders/BlogSkeleton";
+import PillLoader from "../components/loaders/PillSkeleton";
 function SingleAuthorPosts() {
   const [searchTerm, setSearchTerm] = useState("");
   const [posts, setPosts] = useState([]);

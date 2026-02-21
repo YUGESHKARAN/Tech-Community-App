@@ -15,8 +15,8 @@ import { BiBookmarkAlt, BiLike, BiSolidLike } from "react-icons/bi";
 import axiosInstance from "../instances/Axiosinstances";
 import { BsPersonWorkspace } from "react-icons/bs";
 import getTimeAgo from "../components/DateCovertion";
-import BlogSkeleton from "../components/BlogSkeleton";
-import PillLoader from "../components/PillSkeleton";
+import BlogSkeleton from "../components/loaders/BlogSkeleton";
+import PillLoader from "../components/loaders/PillSkeleton";
 
 function YourPost() {
   const [searchTerm, setSearchTerm] = useState("");

@@ -19,9 +19,9 @@ import { useParams } from "react-router-dom";
 import { PiBookmarksSimpleFill, PiBookmarksSimpleLight } from "react-icons/pi";
 import { ToastContainer, toast } from "react-toastify";
 import TutorBookMarkPlaylist from "../components/TutorBookMarkPlaylist.jsx";
-import BlogSkeleton from "../components/BlogSkeleton.jsx";
-import PillLoader from "../components/PillSkeleton.jsx";
-import TutorPlaylistGridSkeleton from "../components/TutorPlaylistGridSkeleton.jsx";
+import BlogSkeleton from "../components/loaders/BlogSkeleton.jsx";
+import PillLoader from "../components/loaders/PillSkeleton.jsx";
+import TutorPlaylistGridSkeleton from "../components/loaders/TutorPlaylistGridSkeleton.jsx";
 function BookMarkPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [posts, setPosts] = useState([]);

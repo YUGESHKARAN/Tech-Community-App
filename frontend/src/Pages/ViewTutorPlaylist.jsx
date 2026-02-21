@@ -10,16 +10,20 @@ import { MdArrowDropDown } from "react-icons/md";
 import { IoMdArrowDropup } from "react-icons/io";
 import { BiLike, BiSolidLike } from "react-icons/bi";
 import { ToastContainer, toast } from "react-toastify";
+import PlaylistDetailSkeleton from "../components/loaders/PlaylistDetailSkeleton";
+
 function ViewTutorPlaylist() {
   const email = localStorage.getItem("email");
   const { playlistId } = useParams();
   const [playlistData, setPlaylistData] = useState({});
   const [playlistPosts, setPlaylistPosts] = useState([]);
   const [showContributors, setShowContributors] = useState(false);
+  const [loading, setLoading] = useState(false);
   // console.log("playlist Id", playlistId);
 
   const getTutorPlaylist = async () => {
     try {
+      setLoading(true);
       const response = await axiosInstance.get(`/blog/playlist/${playlistId}`);
       if (response.status === 200) {
         setPlaylistData(response.data.data);
@@ -28,10 +32,14 @@ function ViewTutorPlaylist() {
     } catch (err) {
       console.log("error", err.message);
     }
+    finally{
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
     getTutorPlaylist();
+    
   }, [playlistId]);
 
   // console.log("playlist data", playlistData);
@@ -150,12 +158,16 @@ function ViewTutorPlaylist() {
     }
   };
 
+
+  // console.log("playlist data", playlistData);
   return (
     <div className="min-h-screen bg-gradient-to-r from-gray-900 to-gray-800 text-white">
       <NavBar />
 
       <div className="max-w-7xl mx-auto px-4 py-6">
-        <div className="grid w-full md:w-11/12 mx-auto md:h-screen grid-cols-1 lg:grid-cols-2 gap-6">
+        <h1 className="text-3xl w-11/12 mb-7 mx-auto hidden md:block font-bold">{loading? 'Playlist Loading...': playlistData?.title}</h1>
+        {!loading &&
+         <div className="grid w-full md:w-11/12 mx-auto md:h-screen grid-cols-1 lg:grid-cols-2 gap-6">
           {/* LEFT PANEL (Banner + Info) */}
           <div className="lg:col-span-1 p-2 md:p-0 space-y-4">
             {/* Banner */}
@@ -173,23 +185,12 @@ function ViewTutorPlaylist() {
 
             {/* Playlist Info */}
             <div className="space-y-2">
-              <h1 className="text-xl font-bold">{playlistData.title}</h1>
+              <h1 className="text-xl md:hidden font-bold">{playlistData.title}</h1>
               <div className="flex relative justify-between items-center ">
                 {/* left content */}
                 <div className="flex flex-col items-start gap-2">
                   {/* Author */}
-                  {/* <p className="text-sm flex items-center gap-1 text-gray-400">
-                    <img
-                      src={
-                        playlistData.profile
-                          ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.profile}`
-                          : user
-                      }
-                      className="rounded-full w-6 h-6 object-cover"
-                      alt=""
-                    />
-                    by {playlistData.name}
-                  </p> */}
+               
 
                   <div className="">
                     <h1 className="font-semibold flex items-center gap-1 mb-1 md:text-base text-gray-300 text-sm ">
@@ -416,7 +417,9 @@ function ViewTutorPlaylist() {
               </div>
             ))}
           </div>
-        </div>
+        </div>  
+        }
+        {loading && <PlaylistDetailSkeleton />}
       </div>
       <ToastContainer />
     </div>

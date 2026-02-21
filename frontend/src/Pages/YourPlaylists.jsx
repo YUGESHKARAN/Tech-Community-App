@@ -4,7 +4,8 @@ import NavBar from "../ui/NavBar";
 import { BsPersonWorkspace } from "react-icons/bs";
 import YourPlaylistCard from "../components/YourPlaylistCard";
 import useTutoPlaylistByEmail from "../hooks/useTutorPlaylistByEmail";
-import TutorPlaylistGridSkeleton from "../components/TutorPlaylistGridSkeleton";
+import TutorPlaylistGridSkeleton from "../components/loaders/TutorPlaylistGridSkeleton";
+
 
 const YourPlaylist = () => {
   const { tutorPlayListByEmail,getTutorPlayListByEmail } = useTutoPlaylistByEmail();
