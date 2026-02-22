@@ -566,7 +566,7 @@ function Authors() {
           {filteredAuthors.filter((author) => author.role === "coordinator")
             .length > 0 &&
             loading && (
-              <p className="text-center col-span-2 sm:col-span-3 lg:col-span-5 py-4">
+              <p className="text-center col-span-full py-4 text-gray-500">
                 loading..
               </p>
             )}
@@ -584,7 +584,7 @@ function Authors() {
           {filteredAuthors.filter((author) => author.role === "coordinator")
             .length > 0 &&
             !hasMore && (
-              <p className="text-center md:col-span-4 col-span-2 lg:col-span-5 py-4 text-gray-500">
+              <p className="text-center col-span-full py-4 text-gray-500">
                 No more coordinators
               </p>
             )}
@@ -733,7 +733,7 @@ function Authors() {
           {filteredAuthors.filter((author) => author.role === "student")
             .length > 0 &&
             loading && (
-              <p className="text-center w-full col-span-2  sm:col-span-3 lg:col-span-5 py-4">
+              <p className="text-center col-span-full py-4">
                loading...
               </p>
             )}
@@ -751,7 +751,7 @@ function Authors() {
           {filteredAuthors.filter((author) => author.role === "student")
             .length > 0 &&
             !hasMore && (
-              <p className="text-center md:col-span-4 col-span-2 sm-col-span-3 lg:col-span-6 w-full py-4 text-gray-500">
+              <p className="text-center col-span-full py-4 text-gray-500">
                 No more students
               </p>
             )}

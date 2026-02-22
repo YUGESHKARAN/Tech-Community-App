@@ -351,7 +351,8 @@ function YourPost() {
               ))
             )}
 
-            {loader && <BlogSkeleton/>}
+            { !posts.length>0 && loader && <BlogSkeleton/>}
+            { posts.length > 0 && loader && <p className="col-span-full py-4 text-gray-500 text-center">loading...</p>}
           </div>
           {posts.length == 0 && !loader && (
             <h1 className="flex flex-col justify-center items-center gap-5 md:gap-10 ">

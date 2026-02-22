@@ -387,7 +387,9 @@ function SingleAuthorPosts() {
                       <p className="text-center col-span-full py-4 text-gray-500">No more posts</p>
                     )} */}
 
-                    {loader && <BlogSkeleton/>}
+                    { !posts.length>0 && loader && <BlogSkeleton/>}
+            { posts.length > 0 && loader && <p className="col-span-full py-4 text-gray-500 text-center">loading...</p>}
+
           </div>
         </div>
       </div>

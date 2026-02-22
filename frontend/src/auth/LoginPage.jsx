@@ -18,7 +18,8 @@ function LoginPage() {
   const { login } = useAuth();
   const [passwordLabel, setPasswordLabel] = useState("Password");
   const[loader,setLoader] = useState(false)
-  const [loader2, setLoader2] = useState(false)
+  const [loader2, setLoader2] = useState(false);
+  const [isError, setIsError] = useState(false);
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -63,6 +64,7 @@ function LoginPage() {
       }
     } catch (error) {
       setErrors({ apiError: error.response?.data?.message || "Login failed" });
+      setIsError(true);
       console.log(error)
     }
     finally{
@@ -237,13 +239,13 @@ function LoginPage() {
           forgotPassword ? "space-y-4" : "space-y-6"
         }`}
       >
-        {success && (
+        {success && !isError && (
           <p className="text-sm text-green-500 bg-green-500/10 px-3 py-2 rounded-md">
             {success}
           </p>
         )}
 
-        {errors.apiError && (
+        {errors.apiError && isError &&(
           <p className="text-sm text-red-500 bg-red-500/10 px-3 py-2 rounded-md">
             {errors.apiError}
           </p>

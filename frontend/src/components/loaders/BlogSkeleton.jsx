@@ -2,7 +2,7 @@ const BlogSkeleton = () => {
   return (
     <div className="md:w-full col-span-full grid grid-cols-1 w-full mx-auto md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7 md:gap-16 mt-7 md:mt-10 h-auto">
         {
-            [1,2].map((_,index)=>(
+            [1,2,3,4].map((_,index)=>(
                 <div
                 key={index}
                  className="w-full mx-auto md:w-full bg-gray-800 md:pb-2 flex flex-col shadow-xl h-auto md:p-4 py-4 md:rounded-xl animate-pulse">

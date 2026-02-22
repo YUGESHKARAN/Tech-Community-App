@@ -501,7 +501,9 @@ const getBookMarkPosts = async () => {
                 </div>
               ))
             )}
-            {loading && <BlogSkeleton/>}
+            { !posts.length>0 && loading && <BlogSkeleton/>}
+            { posts.length > 0 && loading && <p className="col-span-full py-4 text-gray-500 text-center">loading...</p>}
+
           </div>
 
           { !loading && posts.length == 0 && (

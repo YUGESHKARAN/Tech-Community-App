@@ -127,6 +127,7 @@ export default function AITechAssistant({ currentPostId }) {
 
     let start = el.scrollTop;
     let end = el.scrollHeight - el.clientHeight;
+    // let end = el.scrollHeight;
     let duration = 300;
     let startTime = null;
 
@@ -171,6 +172,7 @@ export default function AITechAssistant({ currentPostId }) {
         className={`
       fixed md:static bottom-0 right-0
       w-full md:w-full
+      relative
       h-[75vh] md:h-[520px]
        text-white
        bg-[#0f0f0f]
@@ -201,13 +203,14 @@ export default function AITechAssistant({ currentPostId }) {
           {/* Messages */}
           {messages.map((msg, idx) => (
             <div
-              ref={bottomRef}
+              // ref={bottomRef}
               key={idx}
               className="space-y-4 animate-in fade-in slide-in-from-bottom-2"
             >
               {/* User bubble */}
               {msg.role === "user" && (
-                <div className="text-right">
+                <div 
+                className="text-right">
                   <div className="inline-block bg-white text-black px-4 py-2 rounded-2xl text-sm max-w-[85%]">
                     {msg.content}
                   </div>
