@@ -159,7 +159,7 @@ function YourPost() {
 
         <div className="flex w-11/12  flex-wrap justify-center h-auto mx-auto">
 
-          {!loader &&<div className="flex md:max-w-5xl md:w-fit mt-4 scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto">
+          {!loader && posts.length >0 &&<div className="flex md:max-w-5xl md:w-fit mt-4 scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto">
             {/* All Button */}
             <div
               onClick={() => setPostCategory("")}
@@ -191,7 +191,8 @@ function YourPost() {
            {loader && <PillLoader/>}
 
           {/* Search and Filter Section */}
-          <div className="w-full flex items-center gap-2 justify-center">
+          { posts.length > 0 &&
+            <div className="w-full flex items-center gap-2 justify-center">
             <div className="md:w-72 w-52 flex border border-gray-600 rounded-xl p-2 bg-gray-800 justify-center gap-2 items-center my-4">
               <IoSearchOutline className="text-2xl text-gray-400" />
               <input
@@ -202,7 +203,7 @@ function YourPost() {
                 className="bg-transparent focus:outline-none w-full text-sm text-white placeholder-gray-400"
               />
             </div>
-          </div>
+          </div>}
 
           <div className="md:w-full grid grid-cols-1 w-full mx-auto md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7 md:gap-16 mt-7 md:mt-10 h-auto">
             {/* Posts Grid */}
@@ -355,10 +356,10 @@ function YourPost() {
             { posts.length > 0 && loader && <p className="col-span-full py-4 text-gray-500 text-center">loading...</p>}
           </div>
           {posts.length == 0 && !loader && (
-            <h1 className="flex flex-col justify-center items-center gap-5 md:gap-10 ">
+            <div className="flex h-[70vh] flex-col justify-center items-center gap-5 md:gap-10 ">
               <span className="text-white/50 md:text-2xl  text-center w-full">
                 {" "}
-                Your workspace is empty! <br /> Start creating your posts.{" "}
+                Your workspace is empty! Start creating your posts.{" "}
               </span>
               <Link
                 to="/addPost"
@@ -366,10 +367,10 @@ function YourPost() {
               >
                 + Create New Post
               </Link>
-              <span className="text-white/50 md:text-2xl  text-center w-full">
+              {/* <span className="text-white/50 md:text-2xl  text-center w-full">
                Else please check your internet connection.{" "}
-              </span>
-            </h1>
+              </span> */}
+            </div>
           )}
         </div>
 

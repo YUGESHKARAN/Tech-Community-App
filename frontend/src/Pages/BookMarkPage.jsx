@@ -284,7 +284,7 @@ const getBookMarkPosts = async () => {
         </h1>
          <div className="w-11/12 mx-auto">
          {/* <TutorBookMarkPlaylist/> */}
-          {loading? <TutorPlaylistGridSkeleton/>: <TutorBookMarkPlaylist />}
+          {loading && !posts.length>0? <TutorPlaylistGridSkeleton/>: <TutorBookMarkPlaylist />}
          </div>
          
 

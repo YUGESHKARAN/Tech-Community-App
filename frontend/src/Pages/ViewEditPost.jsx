@@ -16,7 +16,8 @@ function ViewEditPost() {
   const [singlePostData, setSinglePostData] = useState([]);
   const [title, setTitle] = useState(null);
   const [description, setDescription] = useState(null);
-  const [category, setCategory] = useState("Education");
+  const [category, setCategory] = useState("");
+  const [customCategory, setCustomCategory] = useState("");
   const [image, setImage] = useState(null);
   const [edit, setEdit] = useState(false);
   const [timeStamp, setTimeStamp] = useState("");
@@ -101,14 +102,16 @@ function ViewEditPost() {
     formData.append("title", title);
 
     formData.append("description", description);
+    const finalCategory = category === "Others" ? customCategory : category;
 
-    formData.append("category", category);
+    formData.append("category", finalCategory);
 
     formData.append("links", JSON.stringify(links));
 
     if (image) {
       formData.append("image", image);
     }
+    
 
     // Handle document uploads if needed
     if (documents && documents.length > 0) {
@@ -227,7 +230,7 @@ function ViewEditPost() {
   return (
     <div className="relative w-full  bg-gradient-to-br from-gray-900 to-gray-800 h-auto min-h-[900px]">
       <NavBar />
-      <div className="h-auto md:w-11/12  flex flex-col p-2  justify-center items-center  m-auto mt-10">
+      <div className="h-auto md:w-11/12  flex flex-col p-2  justify-center items-center  m-auto md:mt-10">
         <div
           className={`${
             edit
@@ -299,7 +302,7 @@ function ViewEditPost() {
           onSubmit={handleSubmit}
           className={`${
             edit
-              ? "flex flex-col text-white rounded-lg shadow-lg space-y-6 mb-10 md:mb-12 justify-center p-6 w-11/12 gap-3 m-auto bg-gray-900"
+              ? "flex flex-col text-white rounded-lg shadow-lg space-y-6 mb-10 md:mb-12 justify-center p-6 w-full md:w-11/12 gap-3 m-auto md:bg-gray-900"
               : "hidden"
           }`}
         >
@@ -361,7 +364,7 @@ function ViewEditPost() {
                       ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${singlePostData.image}`
                       : blog1
                   }
-                  className="w-40 h-40 object-contain rounded-lg border border-gray-700"
+                  className="w-40 h-40 object-contain rounded-lg "
                   alt="Post"
                 />
                 <label className="absolute bottom-2 right-2 rounded-full bg-white p-1 cursor-pointer ">
@@ -609,15 +612,16 @@ function ViewEditPost() {
               htmlFor="category"
               className="md:text-xl text-sm font-semibold text-gray-300"
             >
-              Category
+              Selected Domain
             </label>
+            <p className="pb-2 text-sm">{category}</p>
             <select
               id="category"
               className="mt-1 block w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-sm"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
             >
-              <option value="">Select Domain</option>
+              <option value="">Update Domain</option>
               <option value="GenAI">GenAI</option>
               <option value="Design Thinking">Design Thinking</option>
               <option value="Data Science">Data Science</option>
@@ -633,6 +637,23 @@ function ViewEditPost() {
               <option value="Others">Others</option>
             </select>
           </div>
+
+          {
+            category == 'Others' &&
+             <div>
+               <input
+                type="text"
+                id="title"
+                value={customCategory}
+                onChange={(e) => setCustomCategory(e.target.value)}
+                className="mt-1 block w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                placeholder="Enter Category"
+              />
+             
+
+
+            </div>
+           }
 
           {/* Submit Button */}
           <button

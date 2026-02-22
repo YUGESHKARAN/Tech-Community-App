@@ -148,6 +148,7 @@ function AddPost() {
   const [currentLinkTitle, setCurrentLinkTitle] = useState("");
   const [currentLinkUrl, setCurrentLinkUrl] = useState("");
   const [previewImage, setPreviewImage] = useState("");
+  const [customCategory, setCustomCategory] = useState("");
   const imageInputRef = useRef(null); // Add this at the top of your component
   // const [showLinkBox, setShowLinkBox] = useState(false);
   const handleSubmit = async (e) => {
@@ -170,6 +171,10 @@ function AddPost() {
     if (!description.trim()) {
       errors.description = "Post description is required.";
     }
+    const finalCategory = category === "Others" ? customCategory : category;
+    if (category === "Others" && !customCategory.trim()) {
+      errors.finalCategory = "Please enter the category.";
+    }
 
     const hasNoImage = image.length === 0 && (!image || image.length === 0);
 
@@ -189,7 +194,7 @@ function AddPost() {
       const formData = new FormData();
       formData.append("title", title);
       formData.append("description", description);
-      formData.append("category", category);
+      formData.append("category", finalCategory);
       formData.append("image", image);
 
       // Correctly append documents
@@ -305,6 +310,7 @@ function AddPost() {
                 </p>
               )}
             </div>
+            
             <div>
               <label
                 htmlFor="category"
@@ -338,6 +344,26 @@ function AddPost() {
                 <p className="text-sm text-red-500">{fieldErrors.category}</p>
               )}
             </div>
+
+
+           {
+            category == 'Others' &&
+             <div>
+               <input
+                type="text"
+                id="title"
+                value={customCategory}
+                onChange={(e) => setCustomCategory(e.target.value)}
+                className="mt-1 block w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                placeholder="Enter Category"
+              />
+               {fieldErrors.finalCategory && (
+                <p className="text-sm text-red-500">{fieldErrors.finalCategory}</p>
+              )}
+
+
+            </div>
+           }
             <div>
               <label
                 htmlFor="image"
@@ -347,6 +373,7 @@ function AddPost() {
               </label>
               <input
                 type="file"
+                accept="image/*"
                 id="image"
                 onChange={onImageChange}
                 className="mt-1 block w-full text-sm text-gray-300 text-xs file:mr-4 file:cursor-pointer file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold hover:file:bg-gray-500 file:text-black file:bg-white "

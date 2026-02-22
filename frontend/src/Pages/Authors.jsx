@@ -733,7 +733,7 @@ function Authors() {
           {filteredAuthors.filter((author) => author.role === "student")
             .length > 0 &&
             loading && (
-              <p className="text-center col-span-full py-4">
+              <p className="text-center text-gray-500 col-span-full py-4">
                loading...
               </p>
             )}

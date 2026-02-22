@@ -255,11 +255,9 @@ useEffect(() => {
   fetchBookmarkIds();
 }, []);
 
-
-
-
   // console.log("posts", bookMarkId);
   // console.log("tutorPlayList", tutorPlayList);
+  
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 py-8">
       <div className="flex-col w-11/12 md:gap-16 flex-wrap justify-center h-auto mx-auto">
@@ -271,7 +269,7 @@ useEffect(() => {
             Featured Playlists
           </h2>
           <div className=" md:p-4 p-2 shadow-inner">
-            {loading? <TutorPlaylistGridSkeleton/>: <TutorPlaylistGrid />}
+            {loading && !posts.length>0 ? <TutorPlaylistGridSkeleton/>: <TutorPlaylistGrid />}
           </div>
         </section>
 
