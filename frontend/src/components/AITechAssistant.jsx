@@ -172,7 +172,7 @@ export default function AITechAssistant({ currentPostId }) {
         className={`
       fixed md:static bottom-0 right-0
       w-full md:w-full
-      relative
+      md:relative
       h-[75vh] md:h-[520px]
        text-white
        bg-[#0f0f0f]
