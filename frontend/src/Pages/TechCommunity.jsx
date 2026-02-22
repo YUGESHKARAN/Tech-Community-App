@@ -5,12 +5,14 @@ import Footer from "../ui/Footer";
 import axiosInstance from "../instances/Axiosinstances";
 import { Link } from "react-router-dom";
 import useAuthorCommunity from "../hooks/useAuthorCommunity";
+import CommunityCardSkeleton from "../components/loaders/CommunityCardSkeleton";
 function TechCommunity() {
   const [posts, setPosts] = useState([]);
 
   const username = localStorage.getItem("username");
   const email = localStorage.getItem("email");
   const role = localStorage.getItem("role");
+  const [loading, setLoading] = useState(false)
   // const [authorCommunity, setAuthorCommunity] = useState([]);
   const [authors, setAuthors] = useState([]);
    const { authorCommunity, getAuthorCommunity } = useAuthorCommunity(email);
@@ -28,11 +30,16 @@ function TechCommunity() {
   
   // Fetch posts from API
   const getPosts = async () => {
+    setLoading(true);
     try {
       const response = await axiosInstance.get("/blog/posts");
       setPosts(response.data.posts);
+
     } catch (err) {
       console.error("Error fetching posts:", err);
+    }
+    finally{
+       setLoading(false);
     }
   };
 
@@ -43,6 +50,7 @@ function TechCommunity() {
     } catch (err) {
       console.error("Error fetching posts:", err);
     }
+  
   };
   useEffect(() => {
     getPosts();
@@ -120,7 +128,10 @@ function TechCommunity() {
         </h1>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 px-6 pb-16">
-          {communities.map((item, index) => (
+          {
+            loading? <CommunityCardSkeleton/>:
+          
+          communities.map((item, index) => (
             <div
               key={index}
               className="relative group backdrop-blur-xl  border border-white/40 p-6 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 flex flex-col justify-between overflow-hidden"

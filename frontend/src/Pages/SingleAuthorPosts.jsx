@@ -179,7 +179,7 @@ function SingleAuthorPosts() {
           <h1 className="text-center text-white font-bold text-xl mt-2 md:mt-10">
             Domains
           </h1>
-         {!loader && <div className="flex md:max-w-5xl md:w-fit mt-12 scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto">
+         {posts.length>0  && <div className="flex md:max-w-5xl md:w-fit mt-12 scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto">
             {/* All Button */}
             <div
               onClick={() => setPostCategory("")}
@@ -208,7 +208,7 @@ function SingleAuthorPosts() {
             ))}
           </div>}
 
-          {loader && <PillLoader/>}
+           {loader &&!posts.length>0 && <PillLoader/>}
         </div>
 
         <div className="flex relative backdrop-blur-md w-11/12 flex-wrap justify-center h-auto mx-auto">

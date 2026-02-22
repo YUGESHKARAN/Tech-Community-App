@@ -273,7 +273,7 @@ useEffect(() => {
           </div>
         </section>
 
-        {!loading && <div className="flex md:max-w-5xl md:w-fit mt-12 scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto">
+        {posts.length>0 &&  <div className="flex md:max-w-5xl md:w-fit mt-12 scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto">
           {/* All Button */}
           <div
             onClick={() => setPostCategory("")}
@@ -302,7 +302,7 @@ useEffect(() => {
           ))}
         </div>}
 
-        {loading && <PillLoader/>}
+         {loading &&!posts.length>0 && <PillLoader/>}
 
         {/* ================= SEARCH ================= */}
         <div className="flex justify-center my-9 md:my-4">
