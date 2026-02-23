@@ -325,7 +325,7 @@ const getBookMarkPosts = async () => {
         <div className="flex relative backdrop-blur-md w-11/12 flex-wrap justify-center h-auto mx-auto">
           {/* Search and Filter Section */}
           <div className="w-full flex items-center gap-2 justify-center">
-            <div className="md:w-72 w-52 flex border border-gray-600 rounded-xl p-2 bg-gray-800 justify-center gap-2 items-center my-4">
+            <div className="w-11/12 mx-auto max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-2xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
               <IoSearchOutline className="text-2xl text-gray-400" />
               <input
                 type="text"

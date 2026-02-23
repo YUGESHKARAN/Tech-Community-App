@@ -13,6 +13,8 @@ import { PiLinkSimpleFill } from "react-icons/pi";
 import { BsPersonSquare } from "react-icons/bs";
 import { useParams } from "react-router-dom";
 import useAuthorCommunity from "../hooks/useAuthorCommunity";
+import CoordinatorGridSkeleton from "../components/loaders/CoordinatorGridSkeleton ";
+import StudentGridSkeleton from "../components/loaders/StudentGridSkeleton ";
 function SingleTechDomainDetails() {
   const { category } = useParams();
   const decodedCategory = decodeURIComponent(category);
@@ -344,209 +346,266 @@ function SingleTechDomainDetails() {
       <NavBar />
 
       <div className="min-h-screen">
+        {/* Page Header */}
+        <section className="w-11/12 mx-auto mt-7  md:mt-14">
+          <h1 className="text-center md:text-left text-3xl md:text-5xl font-extrabold bg-gradient-to-r from-blue-400 via-yellow-400 to-pink-400 bg-clip-text text-transparent tracking-tight drop-shadow-lg">
+            {decodedCategory} Tech Community
+          </h1>
 
-      {/* Page Header */}
-      <section className="w-11/12 mx-auto mt-7  md:mt-14">
-        <h1 className="text-center md:text-left text-3xl md:text-5xl font-extrabold bg-gradient-to-r from-blue-400 via-yellow-400 to-pink-400 bg-clip-text text-transparent tracking-tight drop-shadow-lg">
-          {decodedCategory} Tech Community
-        </h1>
-
-        {/* Join / Role Badge */}
-        <div className="flex justify-center md:justify-start mt-6">
-          {role === "coordinator" || role === "admin" ? (
-            authorCommunity.includes(decodedCategory) && (
-              <span className="px-6 py-2 text-lg font-semibold rounded-xl bg-gradient-to-r from-orange-500 to-yellow-400 text-black shadow-lg">
-                Coordinator
-              </span>
-            )
-          ) : (
-            <button
-              onClick={() => updateCommunity(email, decodedCategory)}
-              className={`px-6 py-2 text-lg font-semibold rounded-xl shadow-lg transition-all duration-300
+          {/* Join / Role Badge */}
+          <div className="flex justify-center md:justify-start mt-6">
+            {role === "coordinator" || role === "admin" ? (
+              authorCommunity.includes(decodedCategory) && (
+                <span className="px-6 py-2 text-lg font-semibold rounded-xl bg-gradient-to-r from-orange-500 to-yellow-400 text-black shadow-lg">
+                  Coordinator
+                </span>
+              )
+            ) : (
+              <button
+                onClick={() => updateCommunity(email, decodedCategory)}
+                className={`px-6 py-2 text-lg font-semibold rounded-xl shadow-lg transition-all duration-300
             ${
               authorCommunity.includes(decodedCategory)
                 ? "bg-gradient-to-r from-emerald-400 to-green-500 text-black"
                 : "bg-gradient-to-r from-gray-200 to-white text-gray-900 hover:opacity-90"
             }`}
-            >
-              {authorCommunity.includes(decodedCategory)
-                ? "Joined"
-                : "Join Community"}
-            </button>
+              >
+                {authorCommunity.includes(decodedCategory)
+                  ? "Joined"
+                  : "Join Community"}
+              </button>
+            )}
+          </div>
+        </section>
+
+        {/* Content */}
+        <section className="w-11/12 mx-auto mt-10 md:mt-16 space-y-10 md:space-y-20">
+          {/* Coordinators */}
+          {authors.filter((a) => a.role === "coordinator").length > 0 && (
+            <div>
+              <h2 className="text-left text-2xl md:text-4xl font-bold text-white/90 mb-7 md:mb-10">
+                Community Coordinators
+                {/* ({authors.filter((a) => a.role === "coordinator").length}) */}
+              </h2>
+
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
+                {authors
+                  .filter((a) => a.role === "coordinator")
+                  .map((author, index) => (
+                    <div
+                      key={index}
+                      className="bg-gray-900/70 border border-gray-700 rounded-xl p-5 text-center hover:shadow-xl transition"
+                    >
+                      <Link to={`/viewProfile/${author.email}`}>
+                        <img
+                          src={
+                            author.profile
+                              ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`
+                              : user
+                          }
+                          className="w-24 h-24 mx-auto bg-white rounded-full object-cover border border-gray-600"
+                        />
+                      </Link>
+
+                      <h3 className="mt-3 font-semibold text-white truncate">
+                        {author.authorName}
+                      </h3>
+                      <p className="text-xs text-gray-400 truncate">
+                        {author.email}
+                      </p>
+
+                      <div className="flex justify-center gap-6 mt-4 text-xs text-gray-300">
+                        <span>
+                          <b className="text-white">
+                            {author.followers.length}
+                          </b>{" "}
+                          Followers
+                        </span>
+                        <span>
+                          <b className="text-white">{author.postCount}</b> Posts
+                        </span>
+                      </div>
+
+                      {/* Social media components */}
+
+                      {/* {author.profileLinks?.length > 0 && (
+                                    <div className="flex justify-center gap-3 mt-4">
+                                      {author.profileLinks.map((link, i) => (
+                                        <Link key={i} to={link.url} target="_blank">
+                                          {link.title === "LinkedIn" ? (
+                                            <FaLinkedin className="text-gray-300 hover:text-green-400 transition" />
+                                          ) : link.title === "GitHub" ? (
+                                            <FaSquareGithub className="text-gray-300 hover:text-green-400 transition" />
+                                          ) : (
+                                            <PiLinkSimpleFill className="text-gray-300 hover:text-green-400 transition" />
+                                          )}
+                                        </Link>
+                                      ))}
+                                    </div>
+                                  )} */}
+
+                      {author.email != email ? (
+                        <div className="mt-5">
+                          {author.followers.includes(email) ? (
+                            <button
+                              onClick={() => addFollower(author.email)}
+                              className="w-full py-2 cursor-pointer rounded-lg bg-gray-700 text-gray-300 text-sm cursor-default"
+                            >
+                              Following
+                            </button>
+                          ) : (
+                            <button
+                              onClick={() => addFollower(author.email)}
+                              className="w-full py-2 rounded-lg bg-green-500 text-gray-900 text-sm font-medium hover:bg-green-400 transition"
+                            >
+                              Follow
+                            </button>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="mt-5 px-4 py-1.5 rounded-lg bg-gradient-to-r from-orange-500 to-yellow-500 text-black font-medium">
+                          Coordinating
+                        </div>
+                      )}
+                    </div>
+                  ))}
+
+                {loading && (
+                  <p className="text-center col-span-2 sm:col-span-3 lg:col-span-5 py-4">
+                    loading...
+                  </p>
+                )}
+
+                {!hasMore && (
+                  <p className="text-center col-span-2 sm:col-span-3 lg:col-span-5 py-4 text-gray-500">
+                    No More Coordinators
+                  </p>
+                )}
+              </div>
+            </div>
           )}
-        </div>
-      </section>
+          {loading &&
+            authors.filter((a) => a.role === "coordinator").length == 0 && (
+              <div className="col-span-full">
+                <h2 className="md:text-left text-center w-full text-2xl md:text-4xl font-bold my-6 text-white">
+                  Student Coordinators
+                </h2>
+                <CoordinatorGridSkeleton />
+              </div>
+            )}
 
-      {/* Content */}
-      <section className="w-11/12 mx-auto mt-10 md:mt-16 space-y-10 md:space-y-20">
-        {/* Coordinators */}
-        {authors.filter((a) => a.role === "coordinator").length > 0 && (
-          <div>
-            <h2 className="text-center text-2xl md:text-4xl font-bold text-white/90 mb-7 md:mb-10">
-              Community Coordinators 
-              {/* ({authors.filter((a) => a.role === "coordinator").length}) */}
-            </h2>
+          {/* Students */}
+          {authors.filter((a) => a.role === "student").length > 0 && (
+            <div>
+              <h2 className="text-left text-2xl md:text-4xl font-bold text-white/90 mb-7 md:mb-10">
+                Community Members
+                {/* ({authors.filter((a) => a.role === "student").length}) */}
+              </h2>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
-              {authors
-                .filter((a) => a.role === "coordinator")
-                .map((author, index) => (
-                  <div
-                    key={index}
-                    className="group backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl p-6 flex flex-col items-center shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1"
-                  >
-                    <Link to={`/viewProfile/${author.email}`}>
-                      <img
-                        src={
-                          author.profile
-                            ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`
-                            : user
-                        }
-                        alt={author.authorname}
-                        className="w-24 h-24 rounded-full bg-white object-cover border-2 border-white shadow-md group-hover:scale-105 transition"
-                      />
-                    </Link>
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
+                {authors
+                  .filter((a) => a.role === "student")
+                  .map((author, index) => (
+                    <div
+                      key={index}
+                      className="
+                                    bg-gray-900/70
+                                    border border-gray-700
+                                    rounded-xl
+                                    p-5
+                                    flex flex-col items-center
+                                    text-center
+                                    shadow
+                                    hover:shadow-xl
+                                    hover:-translate-y-1
+                                    transition-all duration-300
+                                  "
+                    >
+                      {/* Avatar */}
+                      <Link to={`/viewProfile/${author.email}`}>
+                        <img
+                          src={
+                            author.profile
+                              ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`
+                              : user
+                          }
+                          alt={author.authorName}
+                          className="
+                                          w-20 h-20
+                                          rounded-full
+                                          object-cover
+                                          border border-gray-600
+                                          shadow-sm
+                                          hover:shadow-md
+                                          transition
+                                          bg-white
+                                      "
+                        />
+                      </Link>
 
-                    <h3 className="mt-4 font-semibold text-lg truncate w-full text-center">
-                      {author.authorname}
-                    </h3>
-                    <p className="text-sm text-gray-300 truncate w-full text-center">
-                      {author.email}
-                    </p>
+                      {/* Name */}
+                      <h3 className="mt-4 font-semibold text-sm md:text-base text-white truncate w-full">
+                        {author.authorName}
+                      </h3>
 
-                    {/* Social */}
-                    {/* {author.profileLinks?.length > 0 && (
-                      <div className="flex gap-4 mt-4">
-                        {author.profileLinks.map((link, i) => (
-                          <Link key={i} to={link.url} target="_blank">
-                            {link.title === "LinkedIn" ? (
-                              <FaLinkedin className="text-xl text-white hover:text-green-400 transition" />
-                            ) : link.title === "GitHub" ? (
-                              <FaSquareGithub className="text-xl text-white hover:text-green-400 transition" />
-                            ) : link.title === "Portfolio" ? (
-                              <BsPersonSquare className="text-xl text-white hover:text-green-400 transition" />
-                            ) : (
-                              <PiLinkSimpleFill className="text-xl text-white hover:text-green-400 transition" />
-                            )}
-                          </Link>
-                        ))}
-                      </div>
-                    )} */}
+                      {/* Email */}
+                      <p className="text-xs text-gray-400 truncate w-full">
+                        {author.email}
+                      </p>
 
-                    {/* Follow / Status */}
-                    {author.email !== email ? (
-                      <div className="mt-5">
-                        {author.followers.includes(email) ? (
-                          <button
-                            onClick={() => addFollower(author.email)}
-                            className="px-4 py-1.5 rounded-lg bg-emerald-200 text-gray-900 font-medium text-sm shadow"
-                          >
-                            Following
-                          </button>
-                        ) : (
-                          <button
-                            onClick={() => addFollower(author.email)}
-                            className="px-4 py-1.5 rounded-lg bg-gradient-to-r from-emerald-400 to-green-500 text-gray-900 font-medium text-sm hover:opacity-90 transition shadow"
-                          >
-                            Follow +
-                          </button>
-                        )}
-                      </div>
-                    ) : (
-                      <div className="mt-5 px-4 py-1.5 rounded-lg bg-gradient-to-r from-orange-500 to-yellow-500 text-black font-medium">
-                        Coordinating
-                      </div>
-                    )}
-                  </div>
-                ))}
+                      {/* Social Links */}
 
-              {loading && (
-                <p className="text-center col-span-2 sm:col-span-3 lg:col-span-5 py-4">
-                  Loading...
-                </p>
-              )}
+                      {/* {author.profileLinks?.length > 0 && (
+                                    <div className="flex justify-center gap-4 mt-4">
+                                      {author.profileLinks.map((link, i) => (
+                                        <Link
+                                          key={i}
+                                          to={link.url}
+                                          title={link.title}
+                                          target="_blank"
+                                          className="text-gray-400 hover:text-green-400 transition"
+                                        >
+                                          {link.title === "LinkedIn" ? (
+                                            <FaLinkedin className="text-lg" />
+                                          ) : link.title === "GitHub" ? (
+                                            <FaSquareGithub className="text-lg" />
+                                          ) : link.title === "Portfolio" ? (
+                                            <BsPersonSquare className="text-lg" />
+                                          ) : (
+                                            <PiLinkSimpleFill className="text-lg" />
+                                          )}
+                                        </Link>
+                                      ))}
+                                    </div>
+                                  )} */}
+                    </div>
+                  ))}
 
-              {!hasMore && (
-                <p className="text-center col-span-2 sm:col-span-3 lg:col-span-5 py-4 text-gray-500">
-                  No More Coordinators
-                </p>
-              )}
+                {loading && (
+                  <p className="text-center col-span-2 sm-col-span-3 lg:col-span-6  py-4">
+                    loading...
+                  </p>
+                )}
+
+                {!hasMore && (
+                  <p className="text-center col-span-2 sm-col-span-3 lg:col-span-6 py-4 text-gray-500">
+                    No More Members
+                  </p>
+                )}
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Students */}
-        {authors.filter((a) => a.role === "student").length > 0 && (
-          <div>
-            <h2 className="text-center text-2xl md:text-4xl font-bold text-white/90 mb-7 md:mb-10">
-              Community Members 
-              {/* ({authors.filter((a) => a.role === "student").length}) */}
-            </h2>
-
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
-              {authors
-                .filter((a) => a.role === "student")
-                .map((author, index) => (
-                  <div
-                    key={index}
-                    className="group backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl p-5 flex flex-col items-center shadow-md hover:shadow-xl hover:-translate-y-1 transition-all"
-                  >
-                    <Link to={`/viewProfile/${author.email}`}>
-                      <img
-                        src={
-                          author.profile
-                            ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`
-                            : user
-                        }
-                        alt={author.authorname}
-                        className="w-20 h-20 bg-white rounded-full object-cover border-2 border-white shadow group-hover:scale-105 transition"
-                      />
-                    </Link>
-
-                    <h3 className="mt-3 text-sm md:text-base font-semibold truncate w-full text-center">
-                      {author.authorname}
-                    </h3>
-                    <p className="text-xs text-gray-300 truncate w-full text-center">
-                      {author.email}
-                    </p>
-
-                    
-                    {/* Social links */}
-                    {/* {author.profileLinks?.length > 0 && (
-                      <div className="flex gap-3 mt-3">
-                        {author.profileLinks.map((link, i) => (
-                          <Link key={i} to={link.url} target="_blank">
-                            {link.title === "LinkedIn" ? (
-                              <FaLinkedin className="text-base text-white hover:text-green-400 transition" />
-                            ) : link.title === "GitHub" ? (
-                              <FaSquareGithub className="text-base text-white hover:text-green-400 transition" />
-                            ) : link.title === "Portfolio" ? (
-                              <BsPersonSquare className="text-base text-white hover:text-green-400 transition" />
-                            ) : (
-                              <PiLinkSimpleFill className="text-base text-white hover:text-green-400 transition" />
-                            )}
-                          </Link>
-                        ))}
-                      </div>
-                    )} */}
-                  </div>
-                ))}
-
-              {loading && (
-                <p className="text-center col-span-2 sm-col-span-3 lg:col-span-6  py-4">
-                  Loading...
-                </p>
-              )}
-
-              {!hasMore && (
-                <p className="text-center col-span-2 sm-col-span-3 lg:col-span-6 py-4 text-gray-500">
-                  No More Members
-                </p>
-              )}
-            </div>
-          </div>
-        )}
-      </section>
+          {loading &&
+            authors.filter((a) => a.role === "student").length == 0 && (
+              <div className="col-span-full">
+                <h2 className="md:text-left text-center w-full text-2xl md:text-4xl font-bold my-6 text-white">
+                  Community Members
+                </h2>
+                <StudentGridSkeleton />
+              </div>
+            )}
+        </section>
       </div>
 
       <Footer />

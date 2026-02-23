@@ -346,8 +346,7 @@ function Authors() {
           </div>
         ))}
       </div>
-      {recommendaedAutors?.length == 0 && filteredAuthors?.filter((author) => author.role === "coordinator")
-          .length ==0  && (
+      {loading && recommendaedAutors?.length == 0 && filteredAuthors?.length ==0  && (
         <>
           <h2 className="w-11/12 mx-auto  text-left text-xl text-green-400 md:text-3xl font-bold">
             Recommended
@@ -571,8 +570,8 @@ function Authors() {
               </p>
             )}
 
-          {!filteredAuthors.filter((author) => author.role === "coordinator")
-            .length > 0 && loading && (
+          {filteredAuthors.filter((author) => author.role === "coordinator")
+            .length == 0 && loading && (
             <div className="col-span-full">
               <h2 className="md:text-left text-center w-full text-2xl md:text-4xl font-bold my-6 text-white">
                 Student Coordinators
@@ -738,8 +737,8 @@ function Authors() {
               </p>
             )}
        
-         {!filteredAuthors.filter((author) => author.role === "student")
-            .length > 0 && loading && (
+         {filteredAuthors.filter((author) => author.role === "student")
+            .length == 0 && loading && (
             <div className="col-span-full">
               <h2 className="md:text-left text-center w-full text-2xl md:text-4xl font-bold my-6 text-white">
                 Student

@@ -306,7 +306,7 @@ useEffect(() => {
 
         {/* ================= SEARCH ================= */}
         <div className="flex justify-center my-9 md:my-4">
-          <div className="w-11/12 mx-auto max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-2xl px-4 py-3 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
+          <div className="w-11/12 mx-auto max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-2xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
             <IoSearchOutline className="text-xl text-gray-400" />
             <input
               type="text"
