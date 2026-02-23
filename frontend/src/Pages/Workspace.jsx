@@ -24,7 +24,7 @@ function Workspace() {
             <BsPersonWorkspace /> Workspace
           </h1>
           <p className="text-gray-400 mt-2 text-sm md:text-base">
-            Manage your posts and playlists content efficiently
+            Manage your posts and playlists content effectively
           </p>
         </div>
 

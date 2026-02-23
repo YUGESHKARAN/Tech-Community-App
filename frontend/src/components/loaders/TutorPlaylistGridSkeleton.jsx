@@ -33,16 +33,23 @@ const TutorPlaylistCardSkeleton = () => {
 const TutorPlaylistGridSkeleton = () => {
   return (
     <div
-      className="
-        flex gap-6 overflow-x-auto pb-4
-        sm:grid sm:grid-cols-2
-        lg:grid-cols-3
-        xl:grid-cols-5
-        sm:overflow-visible
-      "
+      // className="
+      //   flex gap-6 overflow-x-auto pb-4
+      //   sm:grid sm:grid-cols-2
+      //   lg:grid-cols-3
+      //   xl:grid-cols-5
+      //   sm:overflow-visible
+      // "
+        className="
+    gap-6 pb-4 gap-3
+    grid grid-cols-2
+    lg:grid-cols-3
+    xl:grid-cols-5
+    overflow-visible
+  "
     >
       {[...Array(5)].map((_, index) => (
-        <div key={index} className="min-w-[200px] sm:min-w-0">
+        <div key={index} className="min-w-[150px] sm:min-w-0">
           <TutorPlaylistCardSkeleton />
         </div>
       ))}

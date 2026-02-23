@@ -58,6 +58,13 @@ const limit = 10;
 const [hasMore, setHasMore] = useState(true);
 const isFetching = useRef(false);
 const [loading, setLoading] = useState(false);
+ const [activeTab, setActiveTab] = useState(
+  localStorage.getItem("dashboardTabBookMark") || "posts"
+);
+
+useEffect(() => {
+  localStorage.setItem("dashboardTabBookMark", activeTab);
+}, [activeTab]);
 
 const getBookMarkPosts = async () => {
   if (!hasMore || isFetching.current) return;
@@ -277,20 +284,81 @@ const getBookMarkPosts = async () => {
   return (
     <div className="w-full min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 h-auto reltive  ">
       <NavBar />
-      <div className="relative min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 py-4">
-        <h1 className=" text-2xl mb-4  w-11/12 flex items-center gap-2 mx-auto md:text-3xl font-bold text-white tracking-wide">
+      <h1 className=" text-2xl mt-4  w-11/12 flex items-center gap-2 mx-auto md:text-3xl font-bold text-white tracking-wide">
           <BiBookmarkAlt />
           <span className="group text-white"> My Bookmarks </span>{" "}
         </h1>
+
+         <div
+          // className="w-11/12  mx-auto mb-10 border-b border-gray-800"
+          className="sticky top-0 z-40 mt-4 p-4 md:py-4 md:px-16 w-full   mx-auto backdrop-blur-md "
+          >
+          <div className="flex items-center gap-10">
+            {/* Posts */}
+            <button
+              onClick={() => setActiveTab("posts")}
+              className={`relative pb-3 text-sm md:text-base font-semibold transition-all duration-300
+        ${
+          activeTab === "posts"
+            ? "text-white"
+            : "text-gray-400 hover:text-gray-200"
+        }`}
+            >
+              Posts
+              {activeTab === "posts" && (
+                <span className="absolute left-0 -bottom-[1px] w-full h-[2px] bg-teal-500 rounded-full"></span>
+              )}
+            </button>
+
+            {/* Playlists */}
+            <button
+              onClick={() => setActiveTab("playlists")}
+              className={`relative pb-3 text-sm md:text-base font-semibold transition-all duration-300
+        ${
+          activeTab === "playlists"
+            ? "text-white"
+            : "text-gray-400 hover:text-gray-200"
+        }`}
+            >
+              Playlists
+              {activeTab === "playlists" && (
+                <span className="absolute left-0 -bottom-[1px] w-full h-[2px] bg-teal-500 rounded-full"></span>
+              )}
+            </button>
+          </div>
+        </div>
+      <div className="relative min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 mt-4 pb-4">
+      
+ 
+        {
+          activeTab === "playlists" &&
          <div className="w-11/12 mx-auto">
          {/* <TutorBookMarkPlaylist/> */}
-          {loading && !posts.length>0? <TutorPlaylistGridSkeleton/>: <TutorBookMarkPlaylist />}
-         </div>
+          {loading? <TutorPlaylistGridSkeleton/>: <TutorBookMarkPlaylist />}
+         </div>}
          
+      {
+          activeTab === "posts" &&
+        <>
 
-        <div className="w-11/12 mt-10 mx-auto">
+
+        {/* Search and Filter Section */}
+          <div className="w-full  flex items-center gap-2 justify-center">
+            <div className="w-11/12 mx-auto max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-2xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
+              <IoSearchOutline className="text-2xl text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search by title or category"
+                value={searchTerm}
+                onChange={handleSearch}
+                className="bg-transparent focus:outline-none w-full text-sm text-white placeholder-gray-400"
+              />
+            </div>
+          </div>
+
+        <div className="w-11/12  mx-auto">
     
-         { posts.length>0 && <div className="flex md:max-w-5xl md:w-fit mt-12 scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto">
+         { posts.length>0 && <div className="flex md:max-w-5xl md:w-fit mt-10 scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto">
             {/* All Button */}
             <div
               onClick={() => setPostCategory("")}
@@ -323,19 +391,7 @@ const getBookMarkPosts = async () => {
         </div>
 
         <div className="flex relative backdrop-blur-md w-11/12 flex-wrap justify-center h-auto mx-auto">
-          {/* Search and Filter Section */}
-          <div className="w-full flex items-center gap-2 justify-center">
-            <div className="w-11/12 mx-auto max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-2xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
-              <IoSearchOutline className="text-2xl text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search by title or category"
-                value={searchTerm}
-                onChange={handleSearch}
-                className="bg-transparent focus:outline-none w-full text-sm text-white placeholder-gray-400"
-              />
-            </div>
-          </div>
+          
 
           <div className="w-full mx-auto">
             {/* <TutorBookMarkPlaylist /> */}
@@ -512,6 +568,8 @@ const getBookMarkPosts = async () => {
             </h1>
           )}
         </div>
+
+        </>}
 
         {/* Image Modal */}
         {selectedImage && (

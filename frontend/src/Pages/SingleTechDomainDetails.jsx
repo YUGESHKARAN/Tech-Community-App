@@ -133,6 +133,8 @@ function SingleTechDomainDetails() {
     }
   };
 
+  // console.log("authors", authors)
+
   return (
     // <div className="w-full min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 h-auto reltive  ">
     //   <NavBar />
@@ -383,7 +385,7 @@ function SingleTechDomainDetails() {
           {/* Coordinators */}
           {authors.filter((a) => a.role === "coordinator").length > 0 && (
             <div>
-              <h2 className="text-left text-2xl md:text-4xl font-bold text-white/90 mb-7 md:mb-10">
+              <h2 className="md:text-left text-center text-2xl md:text-4xl font-bold text-white/90 mb-7 md:mb-10">
                 Community Coordinators
                 {/* ({authors.filter((a) => a.role === "coordinator").length}) */}
               </h2>
@@ -422,7 +424,7 @@ function SingleTechDomainDetails() {
                           Followers
                         </span>
                         <span>
-                          <b className="text-white">{author.postCount}</b> Posts
+                          <b className="text-white">{author?.posts.length}</b> Posts
                         </span>
                       </div>
 
@@ -488,7 +490,7 @@ function SingleTechDomainDetails() {
             authors.filter((a) => a.role === "coordinator").length == 0 && (
               <div className="col-span-full">
                 <h2 className="md:text-left text-center w-full text-2xl md:text-4xl font-bold my-6 text-white">
-                  Student Coordinators
+                  Community Coordinators
                 </h2>
                 <CoordinatorGridSkeleton />
               </div>
@@ -497,7 +499,7 @@ function SingleTechDomainDetails() {
           {/* Students */}
           {authors.filter((a) => a.role === "student").length > 0 && (
             <div>
-              <h2 className="text-left text-2xl md:text-4xl font-bold text-white/90 mb-7 md:mb-10">
+              <h2 className="md:text-left text-center text-2xl md:text-4xl font-bold text-white/90 mb-7 md:mb-10">
                 Community Members
                 {/* ({authors.filter((a) => a.role === "student").length}) */}
               </h2>

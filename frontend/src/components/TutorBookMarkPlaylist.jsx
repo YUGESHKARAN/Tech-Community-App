@@ -40,12 +40,19 @@ const TutorBookMarkPlaylist = () => {
 
    
     <div
-      className="
-    flex gap-6 overflow-x-auto pb-4
-    sm:grid sm:grid-cols-2
+  //     className="
+  //   flex gap-6 overflow-x-auto pb-4
+  //   sm:grid sm:grid-cols-2
+  //   lg:grid-cols-3
+  //   xl:grid-cols-5
+  //   sm:overflow-visible
+  // "
+    className="
+    gap-6 pb-4 gap-3
+    grid grid-cols-2
     lg:grid-cols-3
     xl:grid-cols-5
-    sm:overflow-visible
+    overflow-visible
   "
     >
        
@@ -53,7 +60,10 @@ const TutorBookMarkPlaylist = () => {
       {tutorPlayList
         ?.filter((playlist) => bookmakIds.includes(playlist._id))
         .map((playlist) => (
-          <div key={playlist._id} className="min-w-[200px] sm:min-w-0">
+          <div key={playlist._id}
+          //  className="min-w-[200px] sm:min-w-0"
+           className="min-w-[150px] sm:min-w-0"
+          >
             <BookmarkPlaylistCard
               playlist={playlist}
               onRemove={() => {
