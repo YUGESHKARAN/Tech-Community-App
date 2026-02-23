@@ -468,7 +468,7 @@ function SingleTechDomainDetails() {
                         </div>
                       )}
                     </div>
-                  ))}
+                  ))} 
 
                 {loading && (
                   <p className="text-center col-span-2 sm:col-span-3 lg:col-span-5 py-4">
