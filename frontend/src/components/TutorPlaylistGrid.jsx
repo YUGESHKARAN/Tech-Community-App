@@ -16,7 +16,7 @@ const TutorPlaylistGrid = () => {
   //   sm:overflow-visible
   // "
    className="
-     pb-4 gap-3 md:gap-6
+     pb-4 gap-5 md:gap-6
     grid grid-cols-2
     lg:grid-cols-3
     xl:grid-cols-5
