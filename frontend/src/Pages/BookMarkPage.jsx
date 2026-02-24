@@ -345,7 +345,9 @@ const getBookMarkPosts = async () => {
 
 
         {/* Search and Filter Section */}
-          <div className="w-full  flex items-center gap-2 justify-center">
+          {
+            posts?.length>0 &&
+            <div className="w-full  flex items-center gap-2 my-2 justify-center">
             <div className="w-11/12 mx-auto max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-2xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
               <IoSearchOutline className="text-2xl text-gray-400" />
               <input
@@ -357,6 +359,7 @@ const getBookMarkPosts = async () => {
               />
             </div>
           </div>
+          }
 
         <div className="w-11/12  mx-auto">
     
@@ -565,9 +568,7 @@ const getBookMarkPosts = async () => {
           </div>
 
           { !loading && posts.length == 0 && (
-            <h1 className="text-white/50 md:text-2xl  text-center w-full">
-              post bookmark is empty!
-            </h1>
+           <p className="text-gray-400 flex justify-center items-center h-56 text-center py-4">No posts bookmarked!</p>
           )}
         </div>
 
