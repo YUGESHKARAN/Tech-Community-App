@@ -336,7 +336,7 @@ const getBookMarkPosts = async () => {
          <div className="w-11/12 mx-auto">
          {/* <TutorBookMarkPlaylist/> */}
           {loading? <TutorPlaylistGridSkeleton/>: <TutorBookMarkPlaylist />}
-          
+
          </div>}
          
       {
@@ -566,7 +566,7 @@ const getBookMarkPosts = async () => {
 
           { !loading && posts.length == 0 && (
             <h1 className="text-white/50 md:text-2xl  text-center w-full">
-              Your Bookmark is Empty !
+              post bookmark is empty!
             </h1>
           )}
         </div>

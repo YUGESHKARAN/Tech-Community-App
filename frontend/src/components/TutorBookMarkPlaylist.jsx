@@ -37,7 +37,7 @@ const TutorBookMarkPlaylist = () => {
 
   return (
     <>
-    <section className={`${tutorPlayList?.filter((playlist) => bookmakIds.includes(playlist._id))?.length> 0 ? "space-y-4 mt-7" : "hidden"}`}>
+    <section className={`${tutorPlayList?.filter((playlist) => bookmakIds?.includes(playlist._id))?.length> 0 ? "space-y-4 mt-7" : "hidden"}`}>
           <h2 className="md:pl-4 pl-2 text-2xl md:text-4xl font-bold tracking-wide text-gray-200">
             Playlists
           </h2>
