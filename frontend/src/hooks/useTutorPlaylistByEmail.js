@@ -3,8 +3,9 @@ import axiosInstance from "../instances/Axiosinstances";
 
 function useTutoPlaylistByEmail() {
 
-    const email = localStorage.getItem("email");
+  const email = localStorage.getItem("email");
   const [tutorPlayListByEmail, setTutorPlayListByEmail] = useState([]);
+  const [playlistCountByEmail, setPlaylistCountByEmail] = useState(0);  
 
   const getTutorPlayListByEmail = useCallback(async () => {
     try {

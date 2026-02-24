@@ -22,6 +22,7 @@ import TutorBookMarkPlaylist from "../components/TutorBookMarkPlaylist.jsx";
 import BlogSkeleton from "../components/loaders/BlogSkeleton.jsx";
 import PillLoader from "../components/loaders/PillSkeleton.jsx";
 import TutorPlaylistGridSkeleton from "../components/loaders/TutorPlaylistGridSkeleton.jsx";
+import useTutorPlaylist from "../hooks/useTutorPlaylist.js";
 function BookMarkPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [posts, setPosts] = useState([]);
@@ -335,6 +336,7 @@ const getBookMarkPosts = async () => {
          <div className="w-11/12 mx-auto">
          {/* <TutorBookMarkPlaylist/> */}
           {loading? <TutorPlaylistGridSkeleton/>: <TutorBookMarkPlaylist />}
+          
          </div>}
          
       {

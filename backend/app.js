@@ -39,7 +39,7 @@ app.use("/blog/login", loginRouter);
 app.use("/blog/author", authorRouter);
 app.use("/blog/posts", postRouter);
 app.use("/blog/playlist",tutorPlaylist);
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+// app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 
 // Request timeout middleware

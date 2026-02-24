@@ -25,11 +25,12 @@ const s3 = new S3Client({
 const getAllTutorPlaylist = async (req, res) => {
   try {
     const tutorPlaylist = await TutorPlayList.find({ });
-    if (tutorPlaylist?.length == 0) {
-      return res.status(404).json({ message: "Playlist is empty" });
-    }
+    // if (tutorPlaylist?.length == 0) {
+    //   return res.status(404).json({ message: "Playlist is empty" });
+    // }
+    const count = tutorPlaylist.length;
 
-    res.status(200).json({message:"all users playlist", data: tutorPlaylist });
+    res.status(200).json({message:"all users playlist", data: tutorPlaylist, count:count });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -42,11 +43,12 @@ const getPlaylistByEmail = async (req, res) => {
 
     const tutorPlayList = await TutorPlayList.find({ email });
 
-    if (!tutorPlayList || tutorPlayList.length == 0) {
-      return res.status(204).json({ message: "Playlist is empty" });
-    }
+    // if (!tutorPlayList || tutorPlayList.length == 0) {
+    //   return res.status(204).json({ message: "Playlist is empty" });
+    // }
+    const playlistCountByEmail = tutorPlayList.length;
 
-    res.status(200).json({message:"individual user playlist", data: tutorPlayList });
+    res.status(200).json({message:"individual user playlist", data: tutorPlayList, count:playlistCountByEmail });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

@@ -31,6 +31,8 @@ function BlogContainer() {
   const [bookMarkId, setBookMarkId] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+
+  const {playlistCount} = useTutorPlaylist();
   // const [activeTab, setActiveTab] = useState("posts"); // default posts
   const [activeTab, setActiveTab] = useState(
     localStorage.getItem("dashboardTab") || "posts",
@@ -291,11 +293,12 @@ function BlogContainer() {
         {/* Tutor Playlist section starts here */}
         {activeTab === "playlists" && (
           <section className="space-y-4 mt-4 md:mt-4">
-            <h2 className="md:pl-4 pl-2 text-2xl md:text-4xl font-bold tracking-wide text-gray-200">
+            <h2 className="md:pl-4  text-2xl md:text-4xl font-bold tracking-wide text-gray-200">
               Featured Playlists
             </h2>
-            <div className=" md:p-4 p-2 shadow-inner">
-              {loading ? <TutorPlaylistGridSkeleton /> : <TutorPlaylistGrid />}
+            <div className=" md:p-4 shadow-inner">
+              {/* {  loading ? <TutorPlaylistGridSkeleton /> : <TutorPlaylistGrid />} */}
+               {playlistCount>0?  loading ? <TutorPlaylistGridSkeleton /> : <TutorPlaylistGrid />: <p className="text-gray-400 flex justify-center items-center h-56 text-center py-4">No playlists available!</p>}
             </div>
           </section>
         )}
