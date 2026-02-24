@@ -17,6 +17,7 @@ import { IoIosGitNetwork } from "react-icons/io";
 import RecommendedAuthorsSkeleton from "../components/loaders/RecommendedAuthorsSkeleton ";
 import CoordinatorGridSkeleton from "../components/loaders/CoordinatorGridSkeleton ";
 import StudentGridSkeleton from "../components/loaders/StudentGridSkeleton ";
+import Cookies from 'js-cookie';
 function Authors() {
   const [authors, setAuthors] = useState([]);
   const email = localStorage.getItem("email");
@@ -24,7 +25,7 @@ function Authors() {
   const [follow, setFollow] = useState(false);
   const [recommendation, setRecommendation] = useState([]);
   const [loading, setLoading] = useState(false);
-
+  const token = Cookies.get('token');
   // Search query
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredAuthors, setFilteredAuthors] = useState([]);
@@ -120,10 +121,16 @@ function Authors() {
 
   const recommendtion_system = async () => {
     try {
-      const response = await axios.post(`${recommendationURL}`, { email });
+      const response = await axios.post(`${recommendationURL}`,{},
+        {
+          headers:{
+            Authorization: `Bearer ${token}`,
+          }
+        }
+      );
 
       // console.log("recommedation data",response.data)
-      setRecommendation(response.data.remonneded_people);
+      setRecommendation(response.data.recommended_people);
     } catch (err) {
       console.log("error", err);
     }
@@ -177,9 +184,11 @@ function Authors() {
     }
   };
 
+
   const recommendaedAutors = authors
     .filter((author) => recommendation.includes(author.email))
     .filter((author) => author.role === "coordinator");
+
 
   return (
     <div className="w-full min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 ">

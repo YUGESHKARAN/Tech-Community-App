@@ -9,12 +9,14 @@ import user from "../images/user.png";
 import blog1 from "../images/img_not_found.png";
 import { VscSend } from "react-icons/vsc";
 import { IoSendSharp } from "react-icons/io5";
+import Cookies from "js-cookie"
 export default function AITechAssistant({ currentPostId }) {
   const username = localStorage.getItem("username");
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
+  const token = Cookies.get("token");
   const assistantURL = import.meta.env.VITE_TECH_ASSISTANT_URL;
   const [messages, setMessages] = useState([
     {
@@ -47,6 +49,11 @@ export default function AITechAssistant({ currentPostId }) {
       const res = await axios.post(`${assistantURL}/ask`, {
         query,
         current_post_id: currentPostId,
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        
       });
       let aiMessage = {
         role: "assistant",
