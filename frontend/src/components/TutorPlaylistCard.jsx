@@ -140,7 +140,7 @@ const TutorPlaylistCard = ({ playlist }) => {
                 {Array.isArray(bookMarkId) && bookMarkId.includes(_id) ? (
                   <PiBookmarksSimpleFill className="text-teal-500 cursor-pointer" />
                 ) : (
-                  <PiBookmarksSimpleLight className="text-teal-500"/>
+                  <PiBookmarksSimpleLight className="text-teal-500 cursor-pointer"/>
                 )}
               </div>
             </div>

@@ -9,7 +9,7 @@ const TutorBookMarkPlaylist = () => {
   const { tutorPlayList } = useTutorPlaylist();
   const [bookMarPlaylist, setBookMarPlaylist] = useState([]);
   const [bookmakIds, setBookMarkIds] = useState([]);
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(1);
   const email = localStorage.getItem("email");
   // console.log("playlist", tutorPlayList);
 
@@ -45,7 +45,7 @@ const TutorBookMarkPlaylist = () => {
 
    
   {  
-  count &&
+  count>0 &&
     <div
   //     className="
   //   flex gap-6 overflow-x-auto pb-4
@@ -81,7 +81,7 @@ const TutorBookMarkPlaylist = () => {
         ))}
     </div>
     
-    }
+  }
    
        </section>
         { count==0 && <p className="text-gray-400 flex justify-center items-center h-56 text-center py-4">No playlists bookmarked!</p>}
