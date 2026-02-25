@@ -335,7 +335,7 @@ const recommendedAuthors = useMemo(() => {
                 <h3 className="text-sm font-semibold text-white truncate">
                   {author.authorName}
                 </h3>
-                <p className="text-xs text-gray-400 text-[9px] w-9/12 md:w-full truncate">
+                <p className="text-xs text-gray-400 text-[9px] w-9/12 md:w-9/12 truncate">
                   {author.email}
                 </p>
               </div>
@@ -539,7 +539,7 @@ const recommendedAuthors = useMemo(() => {
                 <h3 className="mt-3 font-semibold text-white truncate">
                   {author.authorName}
                 </h3>
-                <p className="text-xs text-gray-400 truncate">{author.email}</p>
+                <p className="text-xs text-gray-400 mx-auto truncate">{author.email}</p>
 
                 <div className="flex justify-center gap-6 mt-4 text-xs text-gray-300">
                   <span>
