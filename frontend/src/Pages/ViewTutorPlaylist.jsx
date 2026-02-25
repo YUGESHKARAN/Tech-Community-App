@@ -5,7 +5,7 @@ import NavBar from "../ui/NavBar";
 import user from "../images/user.png";
 import blog1 from "../images/img_not_found.png";
 import { PiBookmarksSimpleFill, PiBookmarksSimpleLight } from "react-icons/pi";
-import { IoShareSocial } from "react-icons/io5";
+import { IoClose, IoShareSocial } from "react-icons/io5";
 import { MdArrowDropDown } from "react-icons/md";
 import { IoMdArrowDropup } from "react-icons/io";
 import { BiLike, BiSolidLike } from "react-icons/bi";
@@ -18,6 +18,7 @@ function ViewTutorPlaylist() {
   const [playlistData, setPlaylistData] = useState({});
   const [playlistPosts, setPlaylistPosts] = useState([]);
   const [showContributors, setShowContributors] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
   const [loading, setLoading] = useState(false);
   // console.log("playlist Id", playlistId);
 
@@ -158,13 +159,21 @@ function ViewTutorPlaylist() {
     }
   };
 
+  const handleImageClick = (image) => {
+    setSelectedImage(image);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedImage(null);
+  };
+
 
   // console.log("playlist data", playlistData);
   return (
     <div className="min-h-screen bg-gradient-to-r from-gray-900 to-gray-800 text-white">
       <NavBar />
 
-      <div className="max-w-7xl mx-auto px-4 py-6">
+      <div className="max-w-7xl mx-auto px-2.5 md:px-4 py-6">
         <h1 className="text-3xl w-11/12 mb-7 mx-auto hidden md:block font-bold">{loading? 'Playlist Loading...': playlistData?.title}</h1>
         {!loading &&
          <div className="grid w-full md:w-11/12 mx-auto md:h-screen grid-cols-1 lg:grid-cols-2 gap-6">
@@ -178,6 +187,13 @@ function ViewTutorPlaylist() {
                     ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.thumbnail}`
                     : blog1
                 }
+                 onClick={() =>
+                   handleImageClick(
+                     playlistData.thumbnail
+                       ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.thumbnail}`
+                       : blog1,
+                   )
+                 }
                 alt="Playlist Banner"
                 className="w-full h-72 md:h-96 object-cover"
               />
@@ -422,6 +438,21 @@ function ViewTutorPlaylist() {
         {loading && <PlaylistDetailSkeleton />}
       </div>
       <ToastContainer />
+
+         {/* Image Modal */}
+            {selectedImage && (
+              <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center">
+                <img
+                  src={selectedImage}
+                  className="max-w-5xl w-11/12"
+                  alt="Preview"
+                />
+                <IoClose
+                  onClick={handleCloseModal}
+                  className="absolute top-6 right-6 text-white text-2xl cursor-pointer"
+                />
+              </div>
+            )}
     </div>
   );
 }

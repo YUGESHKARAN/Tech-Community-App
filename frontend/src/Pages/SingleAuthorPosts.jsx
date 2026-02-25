@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import {
   IoSearchOutline,
@@ -27,23 +27,88 @@ function SingleAuthorPosts() {
   const [authorName, setAuthorName] = useState("");
   const [authorProfile, setAuthorProfile] = useState("");
   const { email } = useParams();
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const limit = 50;
+  const isFetching = useRef(false);
 
   // Fetch posts from API
-  const fetchPosts = async () => {
-    setLoader(true);
-    try {
-      const response = await axiosInstance.get(`/blog/posts/${email}`);
-      setPosts(response.data.data);
-      setAuthorName(response.data.authorName);
-      setAuthorProfile(response.data.profile);
-    } catch (err) {
-      console.error("Error fetching posts:", err);
+  // const fetchPosts = async () => {
+  //   setLoader(true);
+  //   try {
+  //     const response = await axiosInstance.get(`/blog/posts/${email}`);
+  //     setPosts(response.data.data);
+  //     setAuthorName(response.data.authorName);
+  //     setAuthorProfile(response.data.profile);
+  //   } catch (err) {
+  //     console.error("Error fetching posts:", err);
+  //   }
+  //   setLoader(false);
+  // };
+  // useEffect(() => {
+  //   fetchPosts();
+  // }, []);
+
+
+// -------------------------------------------------------
+const fetchPosts = async () => {
+  if (!hasMore || isFetching.current) return;
+
+  isFetching.current = true;
+  setLoader(true);
+
+  try {
+    const response = await axiosInstance.get(
+      `/blog/posts/${email}?page=${page}&limit=${limit}`
+    );
+
+    const newPosts = response.data.data;
+
+    if (!newPosts || newPosts.length === 0) {
+      setHasMore(false);
+      return;
     }
+
+    // 🔥 Remove duplicates safely
+    setPosts(prev => {
+      const existingIds = new Set(prev.map(p => p._id));
+      const filtered = newPosts.filter(p => !existingIds.has(p._id));
+      return [...prev, ...filtered];
+    });
+
+    setAuthorName(response.data.authorName);
+    setAuthorProfile(response.data.profile);
+
+  } catch (err) {
+    console.error("Error fetching posts:", err);
+  } finally {
     setLoader(false);
+    isFetching.current = false;
+  }
+};
+
+useEffect(() => {
+  fetchPosts();
+}, [page]);
+
+useEffect(() => {
+  const handleScroll = () => {
+    if (
+      window.innerHeight + window.scrollY >= document.body.offsetHeight - 200 &&
+      !loader &&
+      hasMore &&
+      !isFetching.current
+    ) {
+      setPage(prev => prev + 1);
+    }
   };
-  useEffect(() => {
-    fetchPosts();
-  }, []);
+
+  window.addEventListener("scroll", handleScroll);
+  return () => window.removeEventListener("scroll", handleScroll);
+}, [page, loader, hasMore]);
+// -------------------------------------------------------
+
+
 
   // Search handler
   const handleSearch = (e) => {
@@ -389,6 +454,12 @@ function SingleAuthorPosts() {
 
                     { !posts.length>0 && loader && <BlogSkeleton/>}
             { posts.length > 0 && loader && <p className="col-span-full py-4 text-gray-500 text-center">loading...</p>}
+          
+                {!hasMore && (
+                  <p className="text-center col-span-full py-4 text-gray-500">
+                    No more posts
+                  </p>
+                )}
 
           </div>
         </div>

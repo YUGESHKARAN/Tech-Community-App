@@ -31,6 +31,7 @@ function BlogContainer() {
   const [bookMarkId, setBookMarkId] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const limit = 50
 
   const {playlistCount} = useTutorPlaylist();
   // const [activeTab, setActiveTab] = useState("posts"); // default posts
@@ -43,10 +44,6 @@ function BlogContainer() {
   }, [activeTab]);
 
 
-
-  useEffect(() => {
-    fetchPosts();
-  }, []);
   // Fetch posts from API
   // const fetchPosts = async () => {
   //   setLoader(true);
@@ -75,7 +72,7 @@ function BlogContainer() {
 
     try {
       const res = await axiosInstance.get(
-        `/blog/posts/recommended/${email}?page=${page}&limit=50`,
+        `/blog/posts/recommended/${email}?page=${page}&limit=${limit}`,
       );
 
       const newPosts = res.data.posts;
@@ -93,6 +90,10 @@ function BlogContainer() {
     setLoading(false);
     isFetching.current = false;
   };
+
+   useEffect(() => {
+    fetchPosts();
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {

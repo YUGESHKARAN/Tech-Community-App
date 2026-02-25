@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import {
   IoSearchOutline,
@@ -24,26 +24,91 @@ function YourPost() {
   const [postCategory, setPostCategory] = useState("");
   const [loader, setLoader] = useState(false);
   const email = localStorage.getItem("email");
- 
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const limit = 50;
+  const isFetching = useRef(false);
+
   const [authorProfile, setAuthorProfile] = useState("");
+
   // Fetch posts from API
+  // const fetchPosts = async () => {
+  //   setLoader(true);
+  //   try {
+  //     const response = await axiosInstance.get(`/blog/posts/${email}`);
+  //     // setPosts(
+  //     //   response.data.posts.filter((post) => post.authoremail === email)
+  //     // );
+  //     setPosts(response.data.data);
+  //     setAuthorProfile(response.data.profile);
+  //   } catch (err) {
+  //     console.error("Error fetching posts:", err);
+  //   }
+  //   setLoader(false);
+  // };
+  // useEffect(() => {
+  //   fetchPosts();
+  // }, []);
+
+  // ------------------------------------------------------------------
+
   const fetchPosts = async () => {
+    if (!hasMore || isFetching.current) return;
+
+    isFetching.current = true;
     setLoader(true);
+
     try {
-      const response = await axiosInstance.get(`/blog/posts/${email}`);
-      // setPosts(
-      //   response.data.posts.filter((post) => post.authoremail === email)
-      // );
-      setPosts(response.data.data);
+      const response = await axiosInstance.get(
+        `/blog/posts/${email}?page=${page}&limit=${limit}`,
+      );
+
+      const newPosts = response.data.data;
+
+      if (!newPosts || newPosts.length === 0) {
+        setHasMore(false);
+        return;
+      }
+
+      // 🔥 Remove duplicates safely
+      setPosts((prev) => {
+        const existingIds = new Set(prev.map((p) => p._id));
+        const filtered = newPosts.filter((p) => !existingIds.has(p._id));
+        return [...prev, ...filtered];
+      });
+
+      // setAuthorName(response.data.authorName);
       setAuthorProfile(response.data.profile);
     } catch (err) {
       console.error("Error fetching posts:", err);
+    } finally {
+      setLoader(false);
+      isFetching.current = false;
     }
-    setLoader(false);
   };
+
   useEffect(() => {
     fetchPosts();
-  }, []);
+  }, [page]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (
+        window.innerHeight + window.scrollY >=
+          document.body.offsetHeight - 200 &&
+        !loader &&
+        hasMore &&
+        !isFetching.current
+      ) {
+        setPage((prev) => prev + 1);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [page, loader, hasMore]);
+
+  // ----------------------------------------------------------------
 
   // Search handler
   const handleSearch = (e) => {
@@ -100,8 +165,8 @@ function YourPost() {
                   ? post.likes.filter((like) => like !== email) // Unlike the post
                   : [...post.likes, email], // Like the post
               }
-            : post
-        )
+            : post,
+        ),
       );
     } catch (err) {
       console.error("Error updating views:", err);
@@ -112,9 +177,8 @@ function YourPost() {
   const filterdPost = posts.filter(
     (post) =>
       post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      post.category.toLowerCase().includes(searchTerm.toLowerCase())
+      post.category.toLowerCase().includes(searchTerm.toLowerCase()),
   );
-
 
   const renderTextWithHashtags = (text) => {
     if (!text) return null;
@@ -126,15 +190,12 @@ function YourPost() {
       <React.Fragment key={lineIndex}>
         {line.split(/(\s+#\w+)/g).map((word, index) =>
           word.startsWith(" # ") ? (
-            <span
-              key={index}
-              className="text-md text-white font-italy"
-            >
+            <span key={index} className="text-md text-white font-italy">
               {word}
             </span>
           ) : (
             <React.Fragment key={index}>{word}</React.Fragment>
-          )
+          ),
         )}
         <br />
       </React.Fragment>
@@ -158,75 +219,76 @@ function YourPost() {
         {/* <p className="text-lg text-white w-11/12 mx-auto">Posts {posts.length>0 && posts.length}</p> */}
 
         <div className="flex w-11/12  flex-wrap justify-center h-auto mx-auto">
-
-          {posts.length >0 &&<div className="flex md:max-w-5xl md:w-fit mt-4 scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto">
-            {/* All Button */}
-            <div
-              onClick={() => setPostCategory("")}
-              className={`w-fit text-nowrap cursor-pointer rounded-md text-sm px-3 py-1 md:py-2 transition-all duration-200 ${
-                postCategory === ""
-                  ? "bg-teal-500 text-white shadow-md"
-                  : "bg-gray-800 text-white hover:bg-gray-700"
-              }`}
-            >
-              All
-            </div>
-
-            {/* Dynamic Categories */}
-            {getUniqueCategories(posts).map((data, index) => (
+          {posts.length > 0 && (
+            <div className="flex md:max-w-5xl md:w-fit mt-4 scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto">
+              {/* All Button */}
               <div
-                key={index}
-                onClick={() => setPostCategory(data)}
-                className={`w-fit text-nowrap cursor-pointer rounded-md text-sm px-3 py-2 transition-all duration-200 ${
-                  postCategory === data
+                onClick={() => setPostCategory("")}
+                className={`w-fit text-nowrap cursor-pointer rounded-md text-sm px-3 py-1 md:py-2 transition-all duration-200 ${
+                  postCategory === ""
                     ? "bg-teal-500 text-white shadow-md"
                     : "bg-gray-800 text-white hover:bg-gray-700"
                 }`}
               >
-                {data}
+                All
               </div>
-            ))}
-          </div>}
 
-            {loader &&!posts.length>0 && <PillLoader/>}
+              {/* Dynamic Categories */}
+              {getUniqueCategories(posts).map((data, index) => (
+                <div
+                  key={index}
+                  onClick={() => setPostCategory(data)}
+                  className={`w-fit text-nowrap cursor-pointer rounded-md text-sm px-3 py-2 transition-all duration-200 ${
+                    postCategory === data
+                      ? "bg-teal-500 text-white shadow-md"
+                      : "bg-gray-800 text-white hover:bg-gray-700"
+                  }`}
+                >
+                  {data}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {loader && !posts.length > 0 && <PillLoader />}
 
           {/* Search and Filter Section */}
-          { posts.length > 0 &&
+          {posts.length > 0 && (
             <div className="w-full flex items-center gap-2 justify-center">
-            <div className="md:w-72 w-52 flex border border-gray-600 rounded-xl p-2 bg-gray-800 justify-center gap-2 items-center my-4">
-              <IoSearchOutline className="text-2xl text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search by title or category"
-                value={searchTerm}
-                onChange={handleSearch}
-                className="bg-transparent focus:outline-none w-full text-sm text-white placeholder-gray-400"
-              />
+              <div className="md:w-72 w-52 flex border border-gray-600 rounded-xl p-2 bg-gray-800 justify-center gap-2 items-center my-4">
+                <IoSearchOutline className="text-2xl text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search by title or category"
+                  value={searchTerm}
+                  onChange={handleSearch}
+                  className="bg-transparent focus:outline-none w-full text-sm text-white placeholder-gray-400"
+                />
+              </div>
             </div>
-          </div>}
+          )}
 
           <div className="md:w-full grid grid-cols-1 w-full mx-auto md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7 md:gap-16 mt-7 md:mt-10 h-auto">
             {/* Posts Grid */}
             {
-            // loader ? (
-            //   <div className="col-span-4 flex flex-col items-center justify-center">
-            //     <MagnifyingGlass
-            //       visible={true}
-            //       height="100"
-            //       width="100"
-            //       ariaLabel="loading"
-            //       wrapperStyle={{ marginTop: "20px" }}
-            //       wrapperClass="magnifying-glass-wrapper"
-            //       glassColor="#4B5563"
-            //       color="#60A5FA"
-            //     />
-            //     <p className="text-sm md:text-lg font-semibold text-gray-400">
-            //       Loading Posts...
-            //     </p>
-                
-            //   </div>
-            // ) : 
-            (
+              // loader ? (
+              //   <div className="col-span-4 flex flex-col items-center justify-center">
+              //     <MagnifyingGlass
+              //       visible={true}
+              //       height="100"
+              //       width="100"
+              //       ariaLabel="loading"
+              //       wrapperStyle={{ marginTop: "20px" }}
+              //       wrapperClass="magnifying-glass-wrapper"
+              //       glassColor="#4B5563"
+              //       color="#60A5FA"
+              //     />
+              //     <p className="text-sm md:text-lg font-semibold text-gray-400">
+              //       Loading Posts...
+              //     </p>
+
+              //   </div>
+              // ) :
               (postCategory === ""
                 ? filterdPost
                 : posts.filter((post) => post.category === postCategory)
@@ -252,32 +314,31 @@ function YourPost() {
                     </div>
                   </div>
 
-                   <Link
-                          to={`/viewpage/${data.authoremail}/${data._id}`}
-                          onClick={() => postViews(data.authoremail, data._id)}
-                          // className="cursor-pointer flex items-center gap-1  hover:text-blue-300"
-                        >
-                  <img
-                    src={
-                      data.image
-                        ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.image}`
-                        : blog1
-                    }
-                    className="w-full
+                  <Link
+                    to={`/viewpage/${data.authoremail}/${data._id}`}
+                    onClick={() => postViews(data.authoremail, data._id)}
+                    // className="cursor-pointer flex items-center gap-1  hover:text-blue-300"
+                  >
+                    <img
+                      src={
+                        data.image
+                          ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.image}`
+                          : blog1
+                      }
+                      className="w-full
                                 h-44 md:h-36
                                 object-cover
                                 hover:opacity-90
                                 transition"
-                    alt={data.title}
-                    // onClick={() =>
-                    //   handleImageClick(
-                    //     data.image
-                    //       ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.image}`
-                    //       : blog1
-                    //   )
-                    // }
-                  />
-
+                      alt={data.title}
+                      // onClick={() =>
+                      //   handleImageClick(
+                      //     data.image
+                      //       ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.image}`
+                      //       : blog1
+                      //   )
+                      // }
+                    />
                   </Link>
                   <div className="min-h-28 h-auto px-4 pt-4">
                     <h2 className="md:text-xl text-lg text-white line-clamp-1 font-bold">
@@ -350,10 +411,20 @@ function YourPost() {
                   </div>
                 </div>
               ))
+            }
+
+            {!posts.length > 0 && loader && <BlogSkeleton />}
+            {posts.length > 0 && loader && (
+              <p className="col-span-full py-4 text-gray-500 text-center">
+                loading...
+              </p>
             )}
 
-            { !posts.length>0 && loader && <BlogSkeleton/>}
-            { posts.length > 0 && loader && <p className="col-span-full py-4 text-gray-500 text-center">loading...</p>}
+            {!hasMore && (
+              <p className="text-center col-span-full py-4 text-gray-500">
+                No more posts
+              </p>
+            )}
           </div>
           {posts.length == 0 && !loader && (
             <div className="flex h-[70vh] flex-col justify-center items-center gap-5 md:gap-10 ">
@@ -373,8 +444,6 @@ function YourPost() {
             </div>
           )}
         </div>
-
-    
       </div>
       <Footer />
     </div>

@@ -268,33 +268,75 @@ const getRecommendedPosts = async (req, res) => {
 
 
 
-const getSingleAuthorPosts = async(req,res)=>{
-  try{
+// const getSingleAuthorPosts = async(req,res)=>{
+//   try{
 
-    const {email} = req.params;
+//     const {email} = req.params;
 
-    const author = await Author.findOne({email});
-    if(!author){
-      return res.status(404).json({message:`author ${email} not found`});
+//     const author = await Author.findOne({email});
+//     if(!author){
+//       return res.status(404).json({message:`author ${email} not found`});
+//     }
+
+//     const authorPosts = author.posts.flatMap((post)=>({
+//       ...post.toObject(),
+//       authorName: author.authorname,
+//       authoremail: author.email,
+//       profile:author.profile || '',
+//       role:author.role,
+//       community:author.community,
+//     })).reverse()
+
+//     res.status(200).json({message:"author posts",data:authorPosts,authorName:author.authorname, profile:author.profile || ''} )
+
+//   }
+//   catch(err){
+//     res.status(500).json({message:err.message})
+//   }
+// }
+
+const getSingleAuthorPosts = async (req, res) => {
+  try {
+    const { email } = req.params;
+
+    let { page = 1, limit = 10 } = req.query;
+
+    page = parseInt(page);
+    limit = parseInt(limit);
+
+    const author = await Author.findOne({ email });
+    if (!author) {
+      return res.status(404).json({ message: `author ${email} not found` });
     }
 
-    const authorPosts = author.posts.flatMap((post)=>({
-      ...post.toObject(),
+    const authorPosts = author.posts
+      .flatMap((post) => ({
+        ...post.toObject(),
+        authorName: author.authorname,
+        authoremail: author.email,
+        profile: author.profile || "",
+        role: author.role,
+        community: author.community,
+      }))
+      .reverse();
+
+    const startIndex = (page - 1) * limit;
+    const paginatedPosts = authorPosts.slice(startIndex, startIndex + limit);
+
+    console.log(`author page: ${page} limit: ${limit}`);
+
+    res.status(200).json({
+      message: "author posts",
+      data: paginatedPosts,
       authorName: author.authorname,
-      authoremail: author.email,
-      profile:author.profile || '',
-      role:author.role,
-      community:author.community,
-    })).reverse()
+      profile: author.profile || "",
+      total: authorPosts.length,
+    });
 
-    res.status(200).json({message:"author posts",data:authorPosts,authorName:author.authorname, profile:author.profile || ''} )
-
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
-  catch(err){
-    res.status(500).json({message:err.message})
-  }
-}
-
+};
 
 
 const getCategoryPosts = async (req, res) => {
