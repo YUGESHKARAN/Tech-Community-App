@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import NavBar from "../ui/NavBar";
 import blog1 from "../images/blog1.jpg";
 import { AiOutlineMail } from "react-icons/ai";
@@ -17,7 +17,7 @@ import { IoIosGitNetwork } from "react-icons/io";
 import RecommendedAuthorsSkeleton from "../components/loaders/RecommendedAuthorsSkeleton ";
 import CoordinatorGridSkeleton from "../components/loaders/CoordinatorGridSkeleton ";
 import StudentGridSkeleton from "../components/loaders/StudentGridSkeleton ";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 function Authors() {
   const [authors, setAuthors] = useState([]);
   const email = localStorage.getItem("email");
@@ -25,7 +25,7 @@ function Authors() {
   const [follow, setFollow] = useState(false);
   const [recommendation, setRecommendation] = useState([]);
   const [loading, setLoading] = useState(false);
-  const token = Cookies.get('token');
+  const token = Cookies.get("token");
   // Search query
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredAuthors, setFilteredAuthors] = useState([]);
@@ -85,6 +85,7 @@ function Authors() {
       ) {
         authorsDetails();
       }
+    
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -121,12 +122,14 @@ function Authors() {
 
   const recommendtion_system = async () => {
     try {
-      const response = await axios.post(`${recommendationURL}`,{},
+      const response = await axios.post(
+        `${recommendationURL}`,
+        {},
         {
-          headers:{
+          headers: {
             Authorization: `Bearer ${token}`,
-          }
-        }
+          },
+        },
       );
 
       // console.log("recommedation data",response.data)
@@ -138,7 +141,7 @@ function Authors() {
 
   useEffect(() => {
     recommendtion_system();
-  }, [recommendation]);
+  }, []);
 
   // const addFollower = async (userEmail) => {
   //   console.log("useremail", userEmail);
@@ -155,6 +158,7 @@ function Authors() {
   //     console.log("error", err);
   //   }
   // };
+
   const addFollower = async (userEmail) => {
     try {
       const response = await axiosInstance.put(
@@ -184,10 +188,22 @@ function Authors() {
     }
   };
 
+  // const recommendedAuthors = authors
+  //   .filter((author) => recommendation.includes(author.email))
+  //   .filter((author) => author.role === "coordinator");
 
-  const recommendaedAutors = authors
-    .filter((author) => recommendation.includes(author.email))
-    .filter((author) => author.role === "coordinator");
+  const recommendationSet = useMemo(
+  () => new Set(recommendation),
+  [recommendation]
+);
+
+const recommendedAuthors = useMemo(() => {
+  return authors.filter(
+    (author) =>
+      recommendationSet.has(author.email) &&
+      author.role === "coordinator"
+  );
+}, [authors, recommendationSet]);
 
 
   return (
@@ -206,7 +222,7 @@ function Authors() {
         </h1>
       </div>
 
-      {/* {recommendaedAutors.length > 0 && (
+      {/* {recommendedAuthors.length > 0 && (
         <div className="w-11/12  h-auto mx-auto flex-col  items-center justify-center mt-5">
           <h2 className="w-full  text-left text-xl text-green-400 md:text-3xl font-bold">
             Recommended
@@ -214,7 +230,7 @@ function Authors() {
           <div
             className={`flex justify-start w-full items-center gap-6 overflow-x-auto scrollbar-hide mt-4`}
           >
-            {recommendaedAutors.map((author, index) => (
+            {recommendedAuthors.map((author, index) => (
               <div
                 key={index}
                 className="md:h-24 h-24 p-4 w-fit px-4 gap-1 md:w-fit items-start   flex justify-start items-center rounded-lg shadow-lg bg-[#fff]/20"
@@ -286,16 +302,16 @@ function Authors() {
         </div>
       )} */}
 
-      {recommendaedAutors?.length > 0 && (
+      {recommendedAuthors?.length > 0 && (
         <h2 className="w-11/12 mx-auto  text-left text-xl text-green-400 md:text-3xl font-bold">
           Recommended
         </h2>
       )}
 
       <div
-        className={`${recommendaedAutors?.length > 0 ? "flex w-11/12 mx-auto gap-5 overflow-x-auto scrollbar-hide mt-5 pb-2" : "hidden"}`}
+        className={`${recommendedAuthors?.length > 0 ? "flex w-11/12 mx-auto gap-5 overflow-x-auto scrollbar-hide mt-5 pb-2" : "hidden"}`}
       >
-        {recommendaedAutors.map((author, index) => (
+        {recommendedAuthors.map((author, index) => (
           <div
             key={index}
             className="min-w-[260px] bg-gray-900/70 border border-gray-700 rounded-xl p-4 shadow hover:shadow-xl transition"
@@ -355,14 +371,16 @@ function Authors() {
           </div>
         ))}
       </div>
-      {loading && recommendaedAutors?.length == 0 && filteredAuthors?.length ==0  && (
-        <>
-          <h2 className="w-11/12 mx-auto  text-left text-xl text-green-400 md:text-3xl font-bold">
-            Recommended
-          </h2>
-          <RecommendedAuthorsSkeleton />
-        </>
-      )}
+      {loading &&
+        recommendedAuthors?.length == 0 &&
+        filteredAuthors?.length == 0 && (
+          <>
+            <h2 className="w-11/12 mx-auto  text-left text-xl text-green-400 md:text-3xl font-bold">
+              Recommended
+            </h2>
+            <RecommendedAuthorsSkeleton />
+          </>
+        )}
 
       {/* Search and Filter */}
       <div className="w-11/12 mx-auto flex mt-7   md:flex-row justify-between items-center gap-4 md:mt-10 mb-6">
@@ -580,14 +598,15 @@ function Authors() {
             )}
 
           {filteredAuthors.filter((author) => author.role === "coordinator")
-            .length == 0 && loading && (
-            <div className="col-span-full">
-              <h2 className="md:text-left text-center w-full text-2xl md:text-4xl font-bold my-6 text-white">
-                Student Coordinators
-              </h2>
-              <CoordinatorGridSkeleton />
-            </div>
-          )}
+            .length == 0 &&
+            loading && (
+              <div className="col-span-full">
+                <h2 className="md:text-left text-center w-full text-2xl md:text-4xl font-bold my-6 text-white">
+                  Student Coordinators
+                </h2>
+                <CoordinatorGridSkeleton />
+              </div>
+            )}
 
           {filteredAuthors.filter((author) => author.role === "coordinator")
             .length > 0 &&
@@ -742,19 +761,20 @@ function Authors() {
             .length > 0 &&
             loading && (
               <p className="text-center text-gray-500 col-span-full py-4">
-               loading...
+                loading...
               </p>
             )}
-       
-         {filteredAuthors.filter((author) => author.role === "student")
-            .length == 0 && loading && (
-            <div className="col-span-full">
-              <h2 className="md:text-left text-center w-full text-2xl md:text-4xl font-bold my-6 text-white">
-                Student
-              </h2>
-              <StudentGridSkeleton />
-            </div>
-          )}
+
+          {filteredAuthors.filter((author) => author.role === "student")
+            .length == 0 &&
+            loading && (
+              <div className="col-span-full">
+                <h2 className="md:text-left text-center w-full text-2xl md:text-4xl font-bold my-6 text-white">
+                  Student
+                </h2>
+                <StudentGridSkeleton />
+              </div>
+            )}
 
           {filteredAuthors.filter((author) => author.role === "student")
             .length > 0 &&
@@ -781,14 +801,14 @@ function Authors() {
     //   </div>
 
     //   {/* Recommended */}
-    //   {recommendaedAutors.length > 0 && (
+    //   {recommendedAuthors.length > 0 && (
     //     <div className="w-11/12 mx-auto">
     //       <h2 className="text-lg md:text-xl font-semibold text-green-400 mb-4">
     //         People you may know
     //       </h2>
 
     //       <div className="flex gap-5 overflow-x-auto scrollbar-hide pb-2">
-    //         {recommendaedAutors.map((author, index) => (
+    //         {recommendedAuthors.map((author, index) => (
     //           <div
     //             key={index}
     //             className="min-w-[260px] bg-gray-900/70 border border-gray-700 rounded-xl p-4 shadow hover:shadow-xl transition"
