@@ -420,21 +420,21 @@ function YourPost() {
               </p>
             )}
 
-            {!hasMore && (
+            {!hasMore && posts.length>0 && (
               <p className="text-center col-span-full py-4 text-gray-500">
                 No more posts
               </p>
             )}
           </div>
           {posts.length == 0 && !loader && (
-            <div className="flex h-[70vh] flex-col justify-center items-center gap-5 md:gap-10 ">
-              <span className="text-white/50 md:text-2xl  text-center w-full">
+            <div className="flex h-[70vh] flex-col justify-center items-center gap-5 ">
+              <span className="text-gray-400 flex justify-center items-center text-center ">
                 {" "}
                 Your workspace is empty! Start creating your posts.{" "}
               </span>
               <Link
                 to="/addPost"
-                className="text-sm md:text-lg cursor-pointer hover:bg-green-700 bg-green-600 transition-all duration-400 text-white font-medium rounded-md px-4 p-2"
+                className="text-sm cursor-pointer hover:bg-green-700 bg-green-600 transition-all duration-400 text-white font-medium rounded-md px-4 p-2"
               >
                 + Create New Post
               </Link>

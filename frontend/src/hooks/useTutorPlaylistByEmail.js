@@ -90,7 +90,7 @@ function useTutoPlaylistByEmail() {
   }, [loading, hasMore]);
 
   // console.log("playlistby email count ", playlistCountByEmail);
-  return { tutorPlayListByEmail, getTutorPlayListByEmail, loading, hasMore, playlistCountByEmail };
+  return { tutorPlayListByEmail, setTutorPlayListByEmail, getTutorPlayListByEmail, loading, hasMore, playlistCountByEmail };
 }
 
 export default useTutoPlaylistByEmail;

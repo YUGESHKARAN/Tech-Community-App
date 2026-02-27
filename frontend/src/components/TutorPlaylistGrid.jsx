@@ -32,7 +32,7 @@ const TutorPlaylistGrid = () => {
         </div>
       ))}
 
-      {loading && (
+      {loading && tutorPlayList?.length>0 && (
         <p className="text-center py-4 col-span-full text-gray-500">
           loading...
         </p>

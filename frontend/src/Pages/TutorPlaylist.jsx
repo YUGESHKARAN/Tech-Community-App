@@ -9,6 +9,7 @@ import useFetchCoordinators from "../hooks/useFetchCoordinators";
 import getTimeAgo from "../components/DateCovertion";
 import { IoEye, IoShareSocial } from "react-icons/io5";
 import blog1 from "../images/img_not_found.png";
+import { useNavigate } from "react-router-dom";
 function TutorPlaylist() {
   const email = localStorage.getItem("email");
   const role = localStorage.getItem("role");
@@ -25,6 +26,7 @@ function TutorPlaylist() {
   const [previewThumbnail, setPreviewThumbnail] = useState(null);
   const thumbnailInputRef = useRef(null);
   const [loader,setLoader]= useState(false);
+  const navigate = useNavigate();
 
   const hanldeSubmit = async (e) => {
     e.preventDefault();
@@ -66,6 +68,7 @@ function TutorPlaylist() {
           thumbnailInputRef.current.value = null;
         }
       }
+      navigate("/yourTutorPlaylists");
     } catch (err) {
       console.log("error", err.message);
     }

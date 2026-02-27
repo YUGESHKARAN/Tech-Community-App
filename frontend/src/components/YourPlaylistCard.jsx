@@ -4,11 +4,11 @@ import { CgPlayList } from "react-icons/cg";
 import { MdDelete, MdEdit, MdOutlinePlaylistPlay } from "react-icons/md";
 import { PiBookmarksSimpleFill, PiBookmarksSimpleLight } from "react-icons/pi";
 import axiosInstance from "../instances/Axiosinstances";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 import { IoIosRemoveCircle } from "react-icons/io";
 import { IoRemoveOutline } from "react-icons/io5";
-const YourPlaylistCard = ({ playlist, onRemove }) => {
+const YourPlaylistCard = ({ playlist, onRemove, onDelete }) => {
   const {
     title,
     domain,
@@ -61,37 +61,56 @@ const YourPlaylistCard = ({ playlist, onRemove }) => {
       }
     } catch (err) {
       console.log("error", err.message);
-      toast.error("unable to bookmark");
+      // toast.error("unable to bookmark");
     }
   };
 
-  const deletePlaylist = async (e,id) => {
-    e.stopPropagation();
-    e.preventDefault();
-     let confirmDelete = window.confirm(
-        "Are you sure you want to delete this playlist?"
-      );
-      if (!confirmDelete) {
-        return;
-      }
-    try {
+  // const deletePlaylist = async (id) => {
+   
+  //    let confirmDelete = window.confirm(
+  //       "Are you sure you want to delete this playlist?"
+  //     );
+  //     if (!confirmDelete) {
+  //       return;
+  //     }
+  //   try {
      
-      const response = await axiosInstance.delete(
-        `/blog/playlist/delete/${id}`
-      );
-      console.log("response", response.status);
-      if (response.status == 200 ) {
+  //     const response = await axiosInstance.delete(
+  //       `/blog/playlist/delete/${id}`
+  //     );
+  //     console.log("response", response.status);
+  //     if (response.status == 200 ) {
          
-        toast.success("playlist deleted successfully");
-         if (onRemove) onRemove();
+  //       toast.success("playlist deleted successfully");
+  //        if (onRemove) onRemove();
         
-      }
-    } catch (err) {
-      console.log("error", err.message);
-      toast.error("unable to delete playlist");
-    }
-  };
+  //     }
+  //   } catch (err) {
+  //     console.log("error", err.message);
+  //     toast.error("unable to delete playlist");
+  //   }
+  // };
 
+  const deletePlaylist = async (id) => {
+  const confirmDelete = window.confirm(
+    "Are you sure you want to delete this playlist?"
+  );
+  if (!confirmDelete) return;
+
+  try {
+    const response = await axiosInstance.delete(
+      `/blog/playlist/delete/${id}`
+    );
+
+    if (response.status === 200) {
+      // toast.success("playlist deleted successfully");
+     if(onDelete) onDelete(id); // refresh list
+    }
+  } catch (err) {
+    console.log("error", err.message);
+    // toast.error("unable to delete playlist");
+  }
+};
   return (
     <div className="relative  w-full mt-4 max-w-sm">
       {/* STACK LAYER 3 (BACK) */}
@@ -132,8 +151,8 @@ const YourPlaylistCard = ({ playlist, onRemove }) => {
           </Link>
           {/* Delete Playlist */}
           <span
-            onClick={(e) => {
-              deletePlaylist(e,_id);
+            onClick={() => {
+              deletePlaylist(_id);
             }}
             // className="absolute top-2 cursor-pointer right-2 bg-red-500 text-white text-xs font-medium px-2 py-1 rounded"
             className="absolute top-2 cursor-pointer right-2   md:text-xl  font- text-md medium  rounded"
@@ -212,7 +231,7 @@ const YourPlaylistCard = ({ playlist, onRemove }) => {
           </div>
         </div>
       </div>
-      <ToastContainer />
+
     </div>
   );
 };

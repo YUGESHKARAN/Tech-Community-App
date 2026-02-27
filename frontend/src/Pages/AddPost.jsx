@@ -222,7 +222,8 @@ function AddPost() {
       setImage(null);
       setLinks([]);
       toast.success("Post added successfully");
-      navigate("/home");
+      // navigate("/home");
+       navigate("/yourposts");
     } catch (error) {
       console.error("Error adding post:", error);
     } finally {
@@ -240,7 +241,7 @@ function AddPost() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white">
       <NavBar />
-      <div className="container min-h-screen mx-auto md:w-1/2 mx-auto w-11/12 py-8 px-4">
+      <div className="container min-h-screen mx-auto md:w-1/2 mx-auto w-11/12 py-8 px-2 md:px-4">
         <h1 className="md:text-3xl text-xl font-bold mb-6">Add New Post</h1>
         {!chatbot ? (
           <div className="md:w-96 w-full px-4 mx-auto flex items-center mb-4 justify-center overflow-x-hidden">

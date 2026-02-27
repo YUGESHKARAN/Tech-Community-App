@@ -432,6 +432,7 @@ function ViewTutorPlaylist() {
                 </div>
               </div>
             ))}
+            
           </div>
         </div>  
         }
