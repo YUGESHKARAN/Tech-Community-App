@@ -8,7 +8,7 @@ import TutorPlaylistGridSkeleton from "../components/loaders/TutorPlaylistGridSk
 
 
 const YourPlaylist = () => {
-  const { tutorPlayListByEmail,getTutorPlayListByEmail } = useTutoPlaylistByEmail();
+  const { tutorPlayListByEmail,getTutorPlayListByEmail, loading, hasMore } = useTutoPlaylistByEmail();
 
 //   console.log("tutorPlayListByEmail", tutorPlayListByEmail);
   return (
@@ -44,6 +44,16 @@ const YourPlaylist = () => {
             />
           </div>
         ))}
+        {loading && (
+        <p className="text-center py-4 col-span-full text-gray-500">
+          loading...
+        </p>
+      )}
+      {!hasMore && (
+        <p className="text-center col-span-full py-4 text-gray-500">
+          No more playlists
+        </p>
+      )}
       </div>
       :
     <div>

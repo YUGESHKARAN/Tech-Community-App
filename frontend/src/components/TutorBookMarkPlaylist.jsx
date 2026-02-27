@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import TutorPlaylistCard from "./TutorPlaylistCard";
 import useTutorPlaylist from "../hooks/useTutorPlaylist";
 import { Link } from "react-router-dom";
@@ -12,25 +12,104 @@ const TutorBookMarkPlaylist = () => {
   const [count, setCount] = useState(1);
   const email = localStorage.getItem("email");
   // console.log("playlist", tutorPlayList);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [loading, setLoading] = useState(false);
+
+  const isFetching = useRef(false);
+  const limit = 40;
+
+// -------------------------------------------------------
+
+  // const getBookMarkPlaylist = async () => {
+  //   try {
+  //     const response = await axiosInstance.get(
+  //       `/blog/playlist/bookmark/${email}`
+  //     );
+  //     if (response.status == 200) {
+  //       setBookMarPlaylist(response.data.playlists);
+  //       setBookMarkIds(response.data.playlistIds);
+  //       setCount(response.data.count);
+  //     }
+  //   } catch (err) {
+  //     console.log("error", err.message);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   getBookMarkPlaylist();
+  // }, []);
+
 
   const getBookMarkPlaylist = async () => {
-    try {
-      const response = await axiosInstance.get(
-        `/blog/playlist/bookmark/${email}`
-      );
-      if (response.status == 200) {
-        setBookMarPlaylist(response.data.playlists);
-        setBookMarkIds(response.data.playlistIds);
-        setCount(response.data.count);
+  if (!hasMore || isFetching.current) return;
+
+  isFetching.current = true;
+  setLoading(true);
+
+  try {
+    const response = await axiosInstance.get(
+      `/blog/playlist/bookmark/${email}?page=${page}&limit=${limit}`
+    );
+
+    if (response.status === 200) {
+      const newPlaylists = response.data.playlists;
+
+      if (!newPlaylists || newPlaylists.length === 0) {
+        setHasMore(false);
+        return;
       }
-    } catch (err) {
-      console.log("error", err.message);
+
+      // 🔥 deduplicate by _id
+      setBookMarPlaylist(prev => {
+        const existing = new Set(prev.map(p => p._id));
+        const filtered = newPlaylists.filter(p => !existing.has(p._id));
+        return [...prev, ...filtered];
+      });
+
+      setBookMarkIds(prev => [
+        ...new Set([...prev, ...response.data.playlistIds])
+      ]);
+
+      setCount(response.data.count);
+    }
+  } catch (err) {
+    console.log("error", err.message);
+  } finally {
+    setLoading(false);
+    isFetching.current = false;
+  }
+};
+
+useEffect(() => {
+  getBookMarkPlaylist();
+}, [page]);
+
+useEffect(() => {
+  const handleScroll = () => {
+    if (
+      window.innerHeight + window.scrollY >=
+        document.body.offsetHeight - 200 &&
+      !loading &&
+      hasMore &&
+      !isFetching.current
+    ) {
+      setPage(prev => prev + 1);
     }
   };
 
-  useEffect(() => {
-    getBookMarkPlaylist();
-  }, []);
+  window.addEventListener("scroll", handleScroll);
+  return () => window.removeEventListener("scroll", handleScroll);
+}, [loading, hasMore]);
+
+
+useEffect(() => {
+  setBookMarPlaylist([]);
+  setBookMarkIds([]);
+  setPage(1);
+  setHasMore(true);
+}, [email]);
+  // ----------------------------------------------
 
   // console.log("bookmarked playlist", bookMarPlaylist);
   // console.log("bookmarked count", count);
@@ -65,7 +144,7 @@ const TutorBookMarkPlaylist = () => {
     >
        
      
-      {tutorPlayList
+      {/* {tutorPlayList
         ?.filter((playlist) => bookmakIds.includes(playlist._id))
         .map((playlist) => (
           <div key={playlist._id}
@@ -79,7 +158,30 @@ const TutorBookMarkPlaylist = () => {
               }}
             />
           </div>
+        ))} */}
+        {bookMarPlaylist?.map((playlist) => (
+          <div key={playlist._id}
+          //  className="min-w-[200px] sm:min-w-0"
+           className="min-w-[150px] sm:min-w-0"
+          >
+            <BookmarkPlaylistCard
+              playlist={playlist}
+              onRemove={() => {
+                getBookMarkPlaylist();
+              }}
+            />
+          </div>
         ))}
+        {loading && (
+        <p className="text-center py-4 col-span-full text-gray-500">
+          loading...
+        </p>
+      )}
+      {!hasMore && (
+        <p className="text-center col-span-full py-4 text-gray-500">
+          No more playlists
+        </p>
+      )}
     </div>
     
 

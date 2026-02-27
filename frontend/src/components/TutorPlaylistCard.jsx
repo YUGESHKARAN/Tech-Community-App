@@ -99,7 +99,8 @@ const TutorPlaylistCard = ({ playlist }) => {
 
           {/* Playlist Badge */}
           <span className="absolute top-2 left-2 bg-emerald-600 text-white text-xs font-medium px-2 py-1 rounded">
-            Playlist
+            {/* Playlist */}
+            {domain}
           </span>
 
           {/* Lessons count */}
@@ -130,7 +131,8 @@ const TutorPlaylistCard = ({ playlist }) => {
             </div> */}
             <div className="flex items-center gap-1">
               <span className="inline-block text-xs bg-emerald-600/20 text-emerald-400 px-2 py-1 rounded">
-                {domain}
+                {/* {domain} */}
+                Playlist
               </span>
               <div
                 onClick={() => {

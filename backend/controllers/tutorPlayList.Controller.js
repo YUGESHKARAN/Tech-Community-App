@@ -22,26 +22,104 @@ const s3 = new S3Client({
   region: bucketRegion,
 });
 
+// const getAllTutorPlaylist = async (req, res) => {
+//   try {
+//     const tutorPlaylist = await TutorPlayList.find({ });
+//     // if (tutorPlaylist?.length == 0) {
+//     //   return res.status(404).json({ message: "Playlist is empty" });
+//     // }
+//     const count = tutorPlaylist.length;
+
+//     res.status(200).json({message:"all users playlist", data: tutorPlaylist, count:count });
+//   } catch (err) {
+//     res.status(500).json({ message: err.message });
+//   }
+// };
+
+
+
+
+// const getAllTutorPlaylist = async (req, res) => {
+//   try {
+//     const page = parseInt(req.query.page) || 1;
+//     const limit = parseInt(req.query.limit) || 10;
+
+//     const skip = (page - 1) * limit;
+     
+//     console.log("")
+//     const tutorPlaylist = await TutorPlayList.find({})
+//       .skip(skip)
+//       .limit(limit)
+//       .lean();
+
+//     const count = await TutorPlayList.countDocuments();
+
+//     res.status(200).json({
+//       message: "all users playlist",
+//       data: tutorPlaylist,
+//       count,
+//       page,
+//       totalPages: Math.ceil(count / limit),
+//     });
+//   } catch (err) {
+//     res.status(500).json({ message: err.message });
+//   }
+// };
+
 const getAllTutorPlaylist = async (req, res) => {
   try {
-    const tutorPlaylist = await TutorPlayList.find({ });
-    // if (tutorPlaylist?.length == 0) {
-    //   return res.status(404).json({ message: "Playlist is empty" });
-    // }
-    const count = tutorPlaylist.length;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
 
-    res.status(200).json({message:"all users playlist", data: tutorPlaylist, count:count });
+    const tutorPlaylist = await TutorPlayList.find({})
+      .skip(skip)
+      .limit(limit);
+
+    const count = await TutorPlayList.countDocuments();
+
+    // console.log(`playlist page ${page} limit ${limit}`);
+
+    res.status(200).json({
+      message: "all users playlist",
+      data: tutorPlaylist,
+      count
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
 
+
+// const getPlaylistByEmail = async (req, res) => {
+//   try {
+//     const { email } = req.params;
+//     if (!email) return res.status(400).json({ message: "email required" });
+
+//     const tutorPlayList = await TutorPlayList.find({ email });
+
+//     // if (!tutorPlayList || tutorPlayList.length == 0) {
+//     //   return res.status(204).json({ message: "Playlist is empty" });
+//     // }
+//     const playlistCountByEmail = tutorPlayList.length;
+
+//     res.status(200).json({message:"individual user playlist", data: tutorPlayList, count:playlistCountByEmail });
+//   } catch (err) {
+//     res.status(500).json({ message: err.message });
+//   }
+// };
+
+
 const getPlaylistByEmail = async (req, res) => {
   try {
     const { email } = req.params;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+    // console.log(`playlist page ${page} limit ${limit}`);
     if (!email) return res.status(400).json({ message: "email required" });
 
-    const tutorPlayList = await TutorPlayList.find({ email });
+    const tutorPlayList = await TutorPlayList.find({ email }).skip(skip).limit(limit);
 
     // if (!tutorPlayList || tutorPlayList.length == 0) {
     //   return res.status(204).json({ message: "Playlist is empty" });
@@ -53,6 +131,7 @@ const getPlaylistByEmail = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
 
 const getPlaylistById = async(req,res)=>{
 
@@ -316,9 +395,48 @@ const deleteTutorPlayList = async(req,res)=>{
 }
 
 
+// const getBookmarkedPlaylists = async (req, res) => {
+//   try {
+//     const { email } = req.params;
+    
+//     if (!email) return res.status(400).json({ message: "email required" });
+
+//     // adjust "postBookmark" to the actual field name on your Author schema if different
+//     const author = await Author.findOne({ email }).select("postBookmark");
+//     if (!author) return res.status(404).json({ message: "author not found" });
+
+//     const playlistIds = (author.postBookmark || [])
+//       .map((id) => (id ? id.toString() : null))
+//       .filter(Boolean);
+
+//     if (playlistIds.length === 0) {
+//       return res.status(200).json({ message: "No playlists", playlists: [] });
+//     }
+
+//     const playlists = await TutorPlayList.find({ _id: { $in: playlistIds } }).lean();
+
+//     const map = new Map(playlists.map((p) => [p._id.toString(), p]));
+//     const orderedPlaylists = playlistIds.map((id) => map.get(id)).filter(Boolean);
+
+//     return res.status(200).json({
+//       message: "Bookmarked playlists",
+//       count: orderedPlaylists.length,
+//       playlists: orderedPlaylists,
+//       playlistIds: orderedPlaylists.map((p) => p._id.toString()),
+//     });
+//   } catch (err) {
+//     console.error("getBookmarkedPlaylists error:", err);
+//     return res.status(500).json({ message: "server error", error: err.message });
+//   }
+// };
+
 const getBookmarkedPlaylists = async (req, res) => {
   try {
     const { email } = req.params;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+    console.log(`bookmarked playlists page ${page} limit ${limit}`);
     if (!email) return res.status(400).json({ message: "email required" });
 
     // adjust "postBookmark" to the actual field name on your Author schema if different
@@ -337,12 +455,13 @@ const getBookmarkedPlaylists = async (req, res) => {
 
     const map = new Map(playlists.map((p) => [p._id.toString(), p]));
     const orderedPlaylists = playlistIds.map((id) => map.get(id)).filter(Boolean);
+    const paginatedPlaylists = orderedPlaylists.slice(skip, skip + limit);
 
     return res.status(200).json({
       message: "Bookmarked playlists",
       count: orderedPlaylists.length,
-      playlists: orderedPlaylists,
-      playlistIds: orderedPlaylists.map((p) => p._id.toString()),
+      playlists: paginatedPlaylists,
+      playlistIds: paginatedPlaylists.map((p) => p._id.toString()),
     });
   } catch (err) {
     console.error("getBookmarkedPlaylists error:", err);

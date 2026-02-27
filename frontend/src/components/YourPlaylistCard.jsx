@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import user from "../images/user.png";
 import { CgPlayList } from "react-icons/cg";
-import { MdEdit, MdOutlinePlaylistPlay } from "react-icons/md";
+import { MdDelete, MdEdit, MdOutlinePlaylistPlay } from "react-icons/md";
 import { PiBookmarksSimpleFill, PiBookmarksSimpleLight } from "react-icons/pi";
 import axiosInstance from "../instances/Axiosinstances";
 import { toast, ToastContainer } from "react-toastify";
 import { Link } from "react-router-dom";
+import { IoIosRemoveCircle } from "react-icons/io";
+import { IoRemoveOutline } from "react-icons/io5";
 const YourPlaylistCard = ({ playlist, onRemove }) => {
   const {
     title,
@@ -133,14 +135,17 @@ const YourPlaylistCard = ({ playlist, onRemove }) => {
             onClick={(e) => {
               deletePlaylist(e,_id);
             }}
-            className="absolute top-2 cursor-pointer right-2 bg-red-500 text-white text-xs font-medium px-2 py-1 rounded"
+            // className="absolute top-2 cursor-pointer right-2 bg-red-500 text-white text-xs font-medium px-2 py-1 rounded"
+            className="absolute top-2 cursor-pointer right-2   md:text-xl  font- text-md medium  rounded"
           >
-            Del
+            {/* Del */}
+            <IoRemoveOutline  className="bg-red-500 rounded-full text-white" />
           </span>
 
           {/* Playlist Badge */}
           <span className="absolute top-2 left-2 bg-emerald-600 text-white text-xs font-medium px-2 py-1 rounded">
-            Playlist
+            {/* Playlist */}
+            {domain}
           </span>
 
           {/* Lessons count */}
@@ -159,7 +164,8 @@ const YourPlaylistCard = ({ playlist, onRemove }) => {
           <div className="flex items-center justify-between ">
             <div className="flex items-center gap-1">
               <span className="inline-block text-xs bg-emerald-600/20 text-emerald-400 px-2 py-1 rounded">
-                {domain}
+                {/* {domain} */}
+                Playlist
               </span>
               <div
                 onClick={() => {
