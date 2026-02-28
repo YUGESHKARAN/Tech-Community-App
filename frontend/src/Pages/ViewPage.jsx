@@ -290,9 +290,9 @@ function ViewPage() {
         </h1>
 
         {/* Two Column Layout */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+        <div className="grid grid-cols-1  md:grid-cols-6 gap-6">
           {/* LEFT COLUMN */}
-          <div className="md:col-span-3 space-y-6">
+          <div className="md:col-span-4 space-y-6">
             {/* Banner */}
             <div className="rounded-2xl overflow-hidden border border-white/10 bg-black">
               <img

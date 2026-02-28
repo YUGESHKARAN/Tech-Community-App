@@ -18,10 +18,10 @@ const PostDetailSkeleton = () => {
       <div className="h-8 w-3/4 bg-gray-700 rounded mb-6" />
 
       {/* Two Column Layout */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-6 gap-6">
         
         {/* LEFT COLUMN */}
-        <div className="md:col-span-3 space-y-6">
+        <div className="md:col-span-4 space-y-6">
           
           {/* Banner */}
           <div className="h-72 md:h-96 bg-gray-800 rounded-2xl border border-gray-700" />

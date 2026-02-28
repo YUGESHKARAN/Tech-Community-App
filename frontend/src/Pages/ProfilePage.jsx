@@ -184,16 +184,16 @@ function ProfilePage() {
                 <img
                   src={previewImage}
                   alt="Preview"
-                  className="rounded-full object-cover border-8 border-orange-500 w-40 h-40"
+                  className="rounded-full object-cover border-2 border-orange-500 w-40 h-40"
                 />
               ) : author.profile ? (
                 <img
                   src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`}
                   alt="Profile"
-                  className="rounded-full object-cover border-8 border-orange-500 w-40 h-40"
+                  className="rounded-full object-cover border-2 border-orange-500 w-40 h-40"
                 />
               ) : (
-                <div className="w-40 h-40 flex items-center justify-center rounded-full bg-white border-8 border-orange-500 shadow-xl">
+                <div className="w-40 h-40 flex items-center justify-center rounded-full bg-white border-2 border-orange-500 shadow-xl">
                   <HiOutlineUserCircle className="text-[#786fa6] text-9xl" />
                 </div>
               )}

@@ -1,19 +1,9 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import NavBar from "../ui/NavBar";
 import BlogContainer from "./BlogContainer";
 import Footer from "../ui/Footer";
 import { Link } from "react-router-dom";
-import {
-  MainContainer,
-  ChatContainer,
-  MessageList,
-  Message,
-  MessageInput,
-  TypingIndicator,
-} from "@chatscope/chat-ui-kit-react";
-import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
-import { GoCopilot } from "react-icons/go";
+
 import { MdAnnouncement, MdAppSettingsAlt } from "react-icons/md";
 import axiosInstance from "../instances/Axiosinstances";
 import { RiBookMarkedFill, RiUser3Line } from "react-icons/ri";
@@ -58,140 +48,8 @@ function HomePage() {
     getAuthorData();
   }, []);
 
-  // Chatbot
-  const [messages, setMessages] = useState([
-    {
-      message: "Hi Chief, Blog Copilot is here. How can I help?",
-      sender: "bot",
-      direction: "incoming",
-    },
-  ]);
-  const [isTyping, setIsTyping] = useState(false);
-  const [chatbot, setChatbot] = useState(false);
-
-  const backendEndpoint = "https://mongodb-rag.onrender.com/query-rag";
-  // const backendEndpoint = "http://127.0.0.1:3000/query-rag";
-
-  // const handleSend = async (message) => {
-  //   const newMessage = {
-  //     message,
-  //     sender: "user",
-  //     direction: "outgoing",
-  //   };
-  //   setMessages((prev) => [...prev, newMessage]);
-
-  //   setIsTyping(true);
-
-  //   console.log("my query mesg",message)
-
-  //   try {
-  //     const response = await axios.post(backendEndpoint, {
-  //       query: message,
-  //     });
-
-  //     const botResponse = response.data.response || "No response received.";
-  //     console.log("bot response",response)
-  //     typewriterEffect(botResponse, "bot");
-  //   } catch (error) {
-  //     console.log("Error fetching response:", error);
-  //     const errorMessage = {
-  //       message: "An error occurred. Please try again later.",
-  //       sender: "bot",
-  //       direction: "incoming",
-  //     };
-  //     setMessages((prev) => [...prev, errorMessage]);
-  //   } finally {
-  //     setIsTyping(false);
-  //   }
-  // };
-  const handleSend = async (message) => {
-    // Sanitize input message to remove HTML tags
-    const sanitizedMessage = message.replace(/<[^>]*>/g, ""); // Removes HTML tags
-    console.log("san mesg", sanitizedMessage);
-    const newMessage = {
-      message: sanitizedMessage,
-      sender: "user",
-      direction: "outgoing",
-    };
-
-    // Add user message to the messages array
-    setMessages((prev) => [...prev, newMessage]);
-    setIsTyping(true);
-
-    // console.log("User's query message:", sanitizedMessage);
-
-    try {
-      // Send POST request to the backend
-      const response = await axios.post(backendEndpoint, {
-        query: sanitizedMessage,
-      });
-
-      // Extract bot response or use a fallback
-      const botResponse =
-        response.data?.response || "No response received from the bot.";
-      // console.log("Bot response:", response);
-
-      // Show the bot's response with a typewriter effect
-      typewriterEffect(botResponse, "bot");
-    } catch (error) {
-      console.log("Error fetching response:", error);
-
-      // Log error details for debugging
-      if (error.response) {
-        console.log("Server Response Data:", error.response.data);
-        console.log("Server Response Status:", error.response.status);
-      }
-
-      // Add error message to the messages array
-      const errorMessage = {
-        message: "An error occurred. Please try again later.",
-        sender: "bot",
-        direction: "incoming",
-      };
-      setMessages((prev) => [...prev, errorMessage]);
-    } finally {
-      // Ensure typing status is cleared
-      setIsTyping(false);
-    }
-  };
-
-  const typewriterEffect = (text, sender) => {
-    const words = text.split(" ");
-    let currentMessage = "";
-    let wordIndex = 0;
-
-    const addWord = () => {
-      if (wordIndex < words.length) {
-        currentMessage += (wordIndex > 0 ? " " : "") + words[wordIndex];
-        const newMessage = {
-          message: currentMessage,
-          sender,
-          direction: "incoming",
-        };
-        setMessages((prev) => {
-          const updatedMessages = [...prev];
-          if (
-            updatedMessages.length > 0 &&
-            updatedMessages[updatedMessages.length - 1].sender === sender
-          ) {
-            updatedMessages[updatedMessages.length - 1] = newMessage;
-          } else {
-            updatedMessages.push(newMessage);
-          }
-          return updatedMessages;
-        });
-        wordIndex++;
-        setTimeout(addWord, 200); // Adjust delay for smoother/faster typing
-      }
-    };
-
-    addWord();
-  };
-
-  // console.log('your posts', yourPost);
-  // console.log('email', email);
-  // console.log("role localstorage", role);
-  // console.log("authors", authors);
+  
+ 
 
   return (
    
@@ -283,58 +141,7 @@ function HomePage() {
         <BlogContainer/>
       </div>
 
-      {/* Chatbot Overlay */}
-      {/* <div
-        className={`${
-          chatbot
-            ? "fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50"
-            : "hidden"
-        }`}
-      >
-        <div className="w-full flex flex-col items-center">
-          <MainContainer className="rounded-xl h-96 md:w-1/2 w-10/12 mx-auto bg-gray-900/90 shadow-2xl border border-gray-700">
-            <ChatContainer>
-              <MessageList
-                typingIndicator={
-                  isTyping && (
-                    <TypingIndicator
-                      className="bg-gray-900 w-full text-gray-400"
-                      content="Copilot is typing..."
-                    />
-                  )
-                }
-                className="bg-gray-900 text-gray-200 p-4 overflow-y-auto"
-              >
-                {messages.map((msg, idx) => (
-                  <Message
-                    key={idx}
-                    className="mb-3"
-                    model={{
-                      message: msg.message,
-                      sentTime: "just now",
-                      sender: msg.sender,
-                      direction: msg.direction,
-                    }}
-                  />
-                ))}
-              </MessageList>
 
-              <MessageInput
-                placeholder="Type a message..."
-                onSend={handleSend}
-                className="bg-gray-800 text-white rounded-lg p-2 border border-gray-700"
-              />
-            </ChatContainer>
-          </MainContainer>
-
-          <button
-            onClick={() => setChatbot(!chatbot)}
-            className="mt-4 bg-gradient-to-r from-orange-500 to-pink-500 hover:opacity-90 px-5 py-2 rounded-md text-sm font-semibold transition-all duration-300"
-          >
-            Close
-          </button>
-        </div>
-      </div> */}
 
       <Footer />
     </div>
@@ -342,3 +149,186 @@ function HomePage() {
 }
 
 export default HomePage;
+
+
+
+// import React, { useState, useEffect } from "react";
+// import NavBar from "../ui/NavBar";
+// import BlogContainer from "./BlogContainer";
+// import Footer from "../ui/Footer";
+// import { Link } from "react-router-dom";
+
+// import { MdAnnouncement, MdAppSettingsAlt } from "react-icons/md";
+// import { RiBookMarkedFill } from "react-icons/ri";
+// import { IoIosGitNetwork } from "react-icons/io";
+// import { BsPersonWorkspace } from "react-icons/bs";
+// import axiosInstance from "../instances/Axiosinstances";
+
+// function HomePage() {
+//   const email = localStorage.getItem("email");
+//   const role = localStorage.getItem("role");
+
+//   const [categoryCount, setCategoryCount] = useState(0);
+//   const [announcement, setAnnouncement] = useState([]);
+
+//   const getData = async () => {
+//     try {
+//       const response = await axiosInstance.get(`/blog/posts/`);
+//       setCategoryCount(response.data.count);
+//     } catch (err) {
+//       console.log("Error", err);
+//     }
+//   };
+
+//   const getAuthorData = async () => {
+//     try {
+//       const response = await axiosInstance.get(`/blog/author/${email}`);
+//       setAnnouncement(response.data.announcement);
+//     } catch (err) {
+//       console.log("Error", err);
+//     }
+//   };
+
+//   useEffect(() => {
+//     getData();
+//     getAuthorData();
+//   }, []);
+
+//   return (
+//     <div className="min-h-screen bg-[#0b1120] text-white flex flex-col">
+//       <NavBar />
+   
+    
+//       {/* Mobile Quick Actions */}
+// <MobileQuickActions
+//   role={role}
+//   email={email}
+//   announcement={announcement}
+//   categoryCount={categoryCount}
+// />      
+
+//       {/* MAIN LAYOUT */}
+//       <main className="flex-1 max-w-[1440px] w-full mx-auto px-4 md:px-6 py-6">
+//         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+//           {/* LEFT SIDEBAR */}
+//           <aside className="hidden lg:block lg:col-span-2 sticky top-24 h-fit">
+//             <div className="bg-[#0f172a] border border-gray-800 rounded-xl p-4 space-y-4">
+
+//               {role === "admin" && (
+//                 <SidebarItem to="/control" icon={<MdAppSettingsAlt />} label="Controls" />
+//               )}
+
+//               {role === "coordinator" && (
+//                 <SidebarItem to="/workspace" icon={<BsPersonWorkspace />} label="Workspace" />
+//               )}
+
+//               {role === "student" && (
+//                 <SidebarItem
+//                   to="/announcement"
+//                   icon={<MdAnnouncement />}
+//                   label={`Announcements (${announcement.length})`}
+//                 />
+//               )}
+
+//               <SidebarItem
+//                 to={`/bookMarkPage/${email}`}
+//                 icon={<RiBookMarkedFill />}
+//                 label="Bookmarks"
+//               />
+
+//               <SidebarItem
+//                 to="/authors"
+//                 icon={<IoIosGitNetwork />}
+//                 label="My Network"
+//               />
+
+//               <SidebarItem
+//                 to="/community"
+//                 label={`Domains (${categoryCount})`}
+//               />
+//             </div>
+//           </aside>
+
+//           {/* CENTER FEED */}
+//           <section className="lg:col-span-7 space-y-6">
+//             {/* Feed stays primary */}
+//             <BlogContainer />
+//           </section>
+
+//           {/* RIGHT PANEL */}
+//           <aside className="hidden lg:block lg:col-span-3 sticky top-24 h-fit space-y-6">
+//             <div className="bg-[#0f172a] border border-gray-800 rounded-xl p-4">
+//               <h3 className="text-sm font-semibold text-gray-200 mb-3">
+//                 Trending Domains
+//               </h3>
+//               <p className="text-xs text-gray-400">
+//                 Explore popular tech communities and topics.
+//               </p>
+//             </div>
+
+//             <div className="bg-[#0f172a] border border-gray-800 rounded-xl p-4">
+//               <h3 className="text-sm font-semibold text-gray-200 mb-3">
+//                 Discover Creators
+//               </h3>
+//               <p className="text-xs text-gray-400">
+//                 Connect with authors and coordinators.
+//               </p>
+//             </div>
+//           </aside>
+
+//         </div>
+//       </main>
+
+//       <Footer />
+//     </div>
+//   );
+// }
+
+// const MobileQuickActions = ({ role, email, announcement, categoryCount }) => (
+//   <div className="lg:hidden w-full overflow-x-auto scrollbar-hide px-4 py-3 border-b border-gray-800 bg-[#0b1120]">
+//     <div className="flex gap-6 text-sm text-gray-300">
+
+//       {role === "admin" && (
+//         <MobileAction to="/control" label="Controls" />
+//       )}
+
+//       {role === "coordinator" && (
+//         <MobileAction to="/workspace" label="Workspace" />
+//       )}
+
+//       {role === "student" && (
+//         <MobileAction
+//           to="/announcement"
+//           label={`Announcements (${announcement.length})`}
+//         />
+//       )}
+
+//       <MobileAction to={`/bookMarkPage/${email}`} label="Bookmarks" />
+//       <MobileAction to="/authors" label="Network" />
+//       <MobileAction to="/community" label={`Domains (${categoryCount})`} />
+//     </div>
+//   </div>
+// );
+
+// const MobileAction = ({ to, label }) => (
+//   <Link
+//     to={to}
+//     className="whitespace-nowrap font-medium hover:text-white transition"
+//   >
+//     {label}
+//   </Link>
+// );
+// /* ---------- Sidebar Item Component ---------- */
+
+// const SidebarItem = ({ to, icon, label }) => (
+//   <Link
+//     to={to}
+//     className="flex items-center gap-3 text-sm text-gray-300 hover:text-white transition"
+//   >
+//     {icon && <span className="text-lg text-gray-400">{icon}</span>}
+//     <span className="font-medium">{label}</span>
+//   </Link>
+// );
+
+// export default HomePage;

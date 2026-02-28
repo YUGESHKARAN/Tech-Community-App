@@ -1,11 +1,11 @@
 const BlogSkeleton = () => {
   return (
-    <div className="md:w-full col-span-full grid grid-cols-1 w-full mx-auto md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7 md:gap-16 mt-7 md:mt-10 h-auto">
+    <div className="md:w-full col-span-full grid grid-cols-1 w-full mx-auto md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7 md:gap-10 mt-7 md:mt-10 h-auto">
         {
             [1,2,3,4].map((_,index)=>(
                 <div
                 key={index}
-                 className="w-full mx-auto md:w-full bg-gray-800 md:pb-2 flex flex-col shadow-xl h-auto md:p-4 py-4 md:rounded-xl animate-pulse">
+                 className="w-full mx-auto md:w-full bg-[#0f172a] md:pb-2 flex flex-col shadow-xl h-auto md:p-4 py-4 md:rounded-xl animate-pulse">
       
       {/* Author Section */}
       <div className="flex mb-2 gap-2 px-4 items-center">
@@ -17,7 +17,7 @@ const BlogSkeleton = () => {
       </div>
 
       {/* Image Section */}
-      <div className="w-full h-44 md:h-36 bg-gray-700"></div>
+      <div className="w-full h-48 md:h-40 bg-gray-700"></div>
 
       {/* Content Section */}
       <div className="min-h-28 px-4 h-auto pt-4 space-y-3">

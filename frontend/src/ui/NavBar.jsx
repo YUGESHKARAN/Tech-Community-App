@@ -148,6 +148,7 @@ function NavBar() {
   shadow-sm
   z-100
  
+ 
 "
 // className="flex border-b border-slate-700/50 relative justify-between items-center  h-16 bg-gray-900 mb-2 px-5"
 >
@@ -220,7 +221,7 @@ function NavBar() {
           {profile !== "undefined" ? (
             <img
               src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`}
-              className="w-5 h-5 border border-green-500 rounded-full object-contain"
+              className="w-5 h-5 border border-green-500 rounded-full object-cover"
             />
           ) : (
             <RiUser3Line className="text-xl text-[#0be881]" />
@@ -235,7 +236,7 @@ function NavBar() {
             {profile !== "undefined" ? (
               <img
                 src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`}
-                className="w-7 h-7 rounded-full border border-green-500  object-contain"
+                className="w-7 h-7 rounded-full border border-green-500  object-cover"
               />
             ) : (
               <RiUser3Line className="text-xl text-[#0be881]" />
