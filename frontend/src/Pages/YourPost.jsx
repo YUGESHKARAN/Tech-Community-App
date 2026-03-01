@@ -218,7 +218,7 @@ function YourPost() {
       <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 pt-4 pb-8">
         {/* <p className="text-lg text-white w-11/12 mx-auto">Posts {posts.length>0 && posts.length}</p> */}
 
-        <div className="flex flex-col w-11/12  mt-10  flex-wrap justify-center h-auto mx-auto">
+        <div className=" w-11/12  mt-10   h-auto mx-auto">
           {posts.length > 0 && (
          <div className="flex md:max-w-5xl md:w-fit scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto">
                 {/* All Button */}
@@ -254,7 +254,7 @@ function YourPost() {
 
           {/* Search and Filter Section */}
           {posts.length > 0 && (
-             <div className="flex justify-center my-5">
+             <div className="flex justify-center my-10">
                           <div className="w-11/12 mx-auto max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-2xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
                             <IoSearchOutline className="text-xl text-gray-400" />
                             <input
