@@ -172,31 +172,105 @@ function NavBar() {
 
       {/* Desktop Menu */}
       <ul className="lg:flex justify-center text-xs hidden font-semibold text-gray-300 w-3/5  items-center gap-10">
+
+
+       <NavIcon
+              to="/home"
+              icon={<IoHome />}
+              label="Home"
+              
+            />
+
+              {role === "coordinator" && (
+        <NavIcon
+              to="/workspace"
+              icon={<BsPersonWorkspace />}
+              label=" My Workspace"
+              
+            />
+        )}
+
+             {role === "admin" && 
+        <NavIcon
+              to="/control"
+              icon={<MdAppSettingsAlt />}
+              label=" Control Panel"
+              
+            />
+        }
+         <NavIcon
+              to="/community"
+              icon={<MdGroups />}
+              label="Tech Communities"
+              
+            />
+
+              <NavIcon
+              to="/authors"
+              icon={<IoIosGitNetwork />}
+              label=" My Network"
+              
+            />
+
+            
+
+            
+
+          <NavIcon
+              to={`/bookMarkPage/${email}`}
+              icon={<RiBookMarkedFill />}
+              label=" My Bookmark"
+              
+            />
+
+       
+
+{/* 
         <li className="transition-all duration-200  hover:text-white">
           <Link to="/home" className="flex items-center gap-1">
             <IoHome className="text-xl" />
             Home
           </Link>
-        </li>
+        </li> */}
 
+        {/* {role === "admin" && 
         <li className="transition-all duration-200  hover:text-white">
+          <Link to="/control" className="flex items-center gap-1">
+            <MdAppSettingsAlt className="text-xl" />
+            Control Panel
+          </Link>
+        </li>
+        } */}
+
+              
+
+        {/* <li className="transition-all duration-200  hover:text-white">
           <Link to="/community" className="flex  items-center gap-1">
             <MdGroups className="text-2xl" /> Tech Communities
           </Link>
-        </li>
+        </li> */}
+{/* 
         <li className="transition-all duration-200 hover:text-white">
           <Link to="/authors" className="flex items-center gap-1">
-            <IoPeople className="text-2xl " />
-            Authors
+            <IoIosGitNetwork className="text-2xl " />
+            My Network
           </Link>
-        </li>
-        {role === "coordinator" && (
+        </li> */}
+
+
+        {/* {role === "coordinator" && (
           <li className="transition-all  duration-200 hover:text-white">
-            <Link to="/addPost" className="flex items-center gap-1">
-              <MdPostAdd className="text-2xl" /> Add Post
+            <Link to="/workspace" className="flex items-center gap-1">
+              <BsPersonWorkspace className="text-2xl" /> My Workspace
             </Link>
           </li>
-        )}
+        )} */}
+{/* 
+        <li className="transition-all  duration-200 hover:text-white">
+            <Link to={`/bookMarkPage/${email}`} className="flex items-center gap-1">
+              <RiBookMarkedFill className="text-2xl" /> My Bookmark
+            </Link>
+          </li> */}
 
         <li className="transition-all duration-200 hover:text-white">
           <Link
@@ -277,224 +351,14 @@ function NavBar() {
       </button>
 
       {/* Sidebar */}
-      {/*       
-      <div
-        ref={sidebarRef}
-        className={`${
-          isSidebarOpen
-            ? "fixed right-0 top-0 h-full w-64 shadow-xl"
-            : "fixed right-[-300px] top-0 h-full w-64 shadow-xl"
-        } bg-gray-800 text-white transition-all duration-1000 z-50`}
-      >
-        <ul className="w-full  flex flex-col gap-10 text-center mt-10">
-          <li className="transition-all w-11/12 ml-10 duration-200 mx-auto">
-            <Link
-              to="/home"
-              className="flex items-center hover:text-gray-400 transition-all duration-200  hover:text-gray-400 transition-all duration-200 justify-start w-24"
-            >
-              <IoHome className="text-xl mr-3  text-green-500" /> Home
-            </Link>
-          </li>
-          <li className="transition-all w-11/12 ml-10  text-left duration-200 mx-auto">
-            <Link
-              to="/community"
-              className="flex items-center hover:text-gray-400 transition-all duration-200  hover:text-gray-400 transition-all duration-200 justify-start w-fit"
-            >
-              <MdGroups className="text-xl mr-3 text-green-500" /> Tech
-              Communities
-            </Link>
-          </li>
-
-          {role === "coordinator" && (
-            <li className="transition-all w-11/12 ml-10  mx-auto duration-200">
-              <Link
-                to="/yourposts"
-                className="flex items-center hover:text-gray-400 transition-all duration-200  justify-start"
-              >
-                <MdDataObject className="text-xl mr-3 text-green-500" />
-                My Posts
-              </Link>
-            </li>
-          )}
-
-          <li className="transition-all w-11/12 ml-10  mx-auto duration-200">
-            <Link
-              to="/authors"
-              className="flex items-center hover:text-gray-400 transition-all duration-200  justify-start"
-            >
-              <IoPeople className="text-xl mr-3 text-green-500" />
-              Authors
-            </Link>
-          </li>
-
-          {role === "coordinator" && (
-            <li className="transition-all w-11/12 ml-10  mx-auto duration-200">
-              <Link
-                to="/addPost"
-                className="flex items-center hover:text-gray-400 transition-all duration-200  justify-start"
-              >
-                <MdPostAdd className="text-xl mr-3 text-green-500" />
-                Add Post
-              </Link>
-            </li>
-          )}
-          <li className="transition-all w-11/12 ml-10  mx-auto duration-200">
-            <Link
-              to="/profile"
-              className="flex items-center  hover:text-gray-400 transition-all duration-200  justify-start"
-            >
-              <FaUserAlt className="text-xl mr-3 text-green-500" />
-              My Profile
-            </Link>
-          </li>
-
-          <li className="transition-all w-11/12 ml-10  mx-auto duration-200">
-            <Link
-              to="/announcement"
-              className="flex items-center hover:text-gray-400 transition-all duration-200  justify-start"
-            >
-              <MdAnnouncement className="text-2xl mr-1 text-white" />
-              <sup
-                className={`${
-                  announcement.length > 0
-                    ? "text-[10px] bg-green-600 w-4 h-4 flex items-center justify-center rounded-full text-white"
-                    : "text-[10px]  flex items-center justify-center rounded-full text-white"
-                }`}
-              >
-                {announcement.length > 0 ? announcement.length : ""}
-              </sup>
-            </Link>
-          </li>
-          <li className="mx-auto">
-            <a href="" onClick={exit}>
-              <IoLogOutOutline className="text-3xl text-red-600" />
-             
-            </a>
-          </li>
-        </ul>
-      </div> */}
-
-      {/* <div
-        ref={sidebarRef}
-        className={`fixed top-0 right-0 h-screen w-72 bg-gradient-to-b from-gray-900 to-gray-800 text-white shadow-2xl z-50 transition-transform duration-1000 ease-in-out
-    ${isSidebarOpen ? "translate-x-0" : "translate-x-full"}
-  `}
-      >
-       
-        <div className="h-12 flex items-center px-6 border-b border-gray-700">
-          <h2 className="text-lg font-semibold tracking-wide text-white">
-             
-          </h2>
-        </div>
-
-       
-        <ul className="flex flex-col gap-1 mt-4 px-4 text-sm font-medium">
-         
-          <li>
-            <Link
-              to="/home"
-              className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-700 transition"
-            >
-              <IoHome className="text-lg text-green-400" />
-              Home
-            </Link>
-          </li>
-
-        
-          <li>
-            <Link
-              to="/community"
-              className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-700 transition"
-            >
-              <MdGroups className="text-lg text-green-400" />
-              Tech Communities
-            </Link>
-          </li>
-
-         
-          {role === "coordinator" && (
-            <li>
-              <Link
-                to="/yourposts"
-                className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-700 transition"
-              >
-                <MdDataObject className="text-lg text-green-400" />
-                My Posts
-              </Link>
-            </li>
-          )}
-
-        
-          <li>
-            <Link
-              to="/authors"
-              className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-700 transition"
-            >
-              <IoPeople className="text-lg text-green-400" />
-              Authors
-            </Link>
-          </li>
-
-          
-          {role === "coordinator" && (
-            <li>
-              <Link
-                to="/addPost"
-                className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-700 transition"
-              >
-                <MdPostAdd className="text-lg text-green-400" />
-                Add Post
-              </Link>
-            </li>
-          )}
-
-         
-          <li>
-            <Link
-              to="/profile"
-              className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-700 transition"
-            >
-              <FaUserAlt className="text-lg text-green-400" />
-              My Profile
-            </Link>
-          </li>
-
-          
-          <li>
-            <Link
-              to="/announcement"
-              className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-700 transition"
-            >
-              <MdAnnouncement className="text-xl text-green-400" />
-              Announcements
-              {announcement.length > 0 && (
-                <span className="ml-auto text-[10px] bg-green-600 w-5 h-5 flex items-center justify-center rounded-full text-white">
-                  {announcement.length}
-                </span>
-              )}
-            </Link>
-          </li>
-        </ul>
-
-       
-        <div className="absolute bottom-16 w-full px-6">
-          <button
-            onClick={exit}
-            className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-red-600/10 hover:bg-red-600/20 text-red-500 transition"
-          >
-            <IoLogOutOutline className="text-xl" />
-            Logout
-          </button>
-        </div>
-      </div> */}
-
+    
       <div
         ref={sidebarRef}
         className={`fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-md
         bg-[#0b1220]
         text-white shadow-2xl z-50
         transition-transate duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]
-        rounded-3xl border border-white/10
+        rounded-b-3xl border border-white/10
         ${
           isSidebarOpen
             ? "opacity-100 translate-y-0"
@@ -510,7 +374,7 @@ function NavBar() {
             className="flex items-center gap-2"
           >
             <img src={bloglogo} alt="Logo" className="w-9 h-9 rounded-full" />
-            <span className="text-sm font-semibold tracking-wide">Home</span>
+            {/* <span className="text-sm font-semibold tracking-wide">Home</span> */}
           </Link>
 
           <button
@@ -616,7 +480,7 @@ function NavBar() {
             onClick={exit}
             className="w-full flex items-center justify-center gap-2
                      py-2.5 rounded-xl text-sm
-                     bg-red-500/10 hover:bg-red-500/20
+                     bg-red-500/20 hover:bg-red-500/20
                      text-red-400 transition"
           >
             <IoLogOutOutline />
@@ -703,6 +567,20 @@ function NavIcon({ to, icon, label, close }) {
     <Link
       to={to}
       onClick={() => close(false)}
+      className="flex flex-col items-center gap-0
+                 text-white/70 hover:text-white transition"
+    >
+      <span className="text-xl text-emerald-400">{icon}</span>
+      <span className="text-[11px]">{label}</span>
+    </Link>
+  );
+}
+
+function NavIconDesktop({ to, icon, label, }) {
+  return (
+    <Link
+      to={to}
+      // onClick={() => close(false)}
       className="flex flex-col items-center gap-1
                  text-white/70 hover:text-white transition"
     >
