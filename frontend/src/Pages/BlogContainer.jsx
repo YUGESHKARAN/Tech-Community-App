@@ -21,7 +21,7 @@ import TutorPlaylistGrid from "../components/TutorPlaylistGrid.jsx";
 import BlogSkeleton from "../components/loaders/BlogSkeleton.jsx";
 import PillLoader from "../components/loaders/PillSkeleton.jsx";
 import TutorPlaylistGridSkeleton from "../components/loaders/TutorPlaylistGridSkeleton.jsx";
-function BlogContainer() {
+function BlogContainer({activeTab, setActiveTab}) {
   const [searchTerm, setSearchTerm] = useState("");
   const [posts, setPosts] = useState([]);
   const [postCategory, setPostCategory] = useState("");
@@ -35,13 +35,13 @@ function BlogContainer() {
 
   const { playlistCount } = useTutorPlaylist();
   // const [activeTab, setActiveTab] = useState("posts"); // default posts
-  const [activeTab, setActiveTab] = useState(
-    localStorage.getItem("dashboardTab") || "posts",
-  );
+  // const [activeTab, setActiveTab] = useState(
+  //   localStorage.getItem("dashboardTab") || "posts",
+  // );
 
-  useEffect(() => {
-    localStorage.setItem("dashboardTab", activeTab);
-  }, [activeTab]);
+  // useEffect(() => {
+  //   localStorage.setItem("dashboardTab", activeTab);
+  // }, [activeTab]);
 
   // Fetch posts from API
   // const fetchPosts = async () => {
@@ -241,13 +241,13 @@ function BlogContainer() {
   // console.log("tutorPlayList", tutorPlayList);
 
   return (
-    <div className="min-h-screen relative bg-gradient-to-br from-gray-900 to-gray-800 ">
-      <div className="sticky top-0 z-40 p-4 w-full  md:w-11/12 mx-auto backdrop-blur-md ">
+    <div className="min-h-screen relative  ">
+      {/* <div className="sticky top-0 z-40 p-2  pl-4 md:pt-2 w-full  md:w-11/12 mx-auto backdrop-blur-md ">
         <div className="flex items-center gap-10">
-          {/* Posts */}
+         
           <button
             onClick={() => setActiveTab("posts")}
-            className={`relative pb-3 text-sm md:text-base font-semibold transition-all duration-300
+            className={`relative pb-1 md:pb-2 text-sm md:text-base font-semibold transition-all duration-300
         ${
           activeTab === "posts"
             ? "text-white"
@@ -260,10 +260,10 @@ function BlogContainer() {
             )}
           </button>
 
-          {/* Playlists */}
+          
           <button
             onClick={() => setActiveTab("playlists")}
-            className={`relative pb-3 text-sm md:text-base font-semibold transition-all duration-300
+            className={`relative pb-1 md:pb-2 text-sm md:text-base font-semibold transition-all duration-300
         ${
           activeTab === "playlists"
             ? "text-white"
@@ -276,7 +276,7 @@ function BlogContainer() {
             )}
           </button>
         </div>
-      </div>
+      </div> */}
       <div className="flex-col w-11/12 md:gap-16 relative flex-wrap justify-center h-auto mx-auto">
         {/* Tutor Playlist section starts here */}
         {activeTab === "playlists" && (

@@ -3,6 +3,7 @@ import { useAuth } from "../AuthContext";
 import { Link } from "react-router-dom";
 import {
   MdAnnouncement,
+  MdAppSettingsAlt,
   MdDataObject,
   MdGroups,
   MdLogout,
@@ -11,15 +12,21 @@ import {
 import { IoHome, IoLogOut, IoLogOutOutline, IoPeople } from "react-icons/io5";
 import { FaUserAlt } from "react-icons/fa";
 import bloglogo from "../assets/bloglogo.png";
-import { RiMenuFold3Fill, RiMenuFoldFill, RiMenuFoldLine, RiUser3Line } from "react-icons/ri";
-import { IoIosClose, IoMdNotifications } from "react-icons/io";
+import {
+  RiBookMarkedFill,
+  RiMenuFold3Fill,
+  RiMenuFoldFill,
+  RiMenuFoldLine,
+  RiUser3Line,
+} from "react-icons/ri";
+import { IoIosClose, IoIosGitNetwork, IoMdNotifications } from "react-icons/io";
 import { GlobalStateContext } from "../GlobalStateContext";
 import { TfiAnnouncement, TfiMenuAlt } from "react-icons/tfi";
 import { VscMenu } from "react-icons/vsc";
 import axiosInstance from "../instances/Axiosinstances";
 import user from "../images/user.png";
 import { CiMenuKebab } from "react-icons/ci";
-import { BsFillMenuButtonWideFill } from "react-icons/bs";
+import { BsFillMenuButtonWideFill, BsPersonWorkspace } from "react-icons/bs";
 function NavBar() {
   const { logout } = useAuth();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -33,6 +40,7 @@ function NavBar() {
   const [showNotefication, setShowNotification] = useState(false);
   const [announcement, setAnnouncement] = useState([]);
   const [socket, setSocket] = useState(null);
+  const email = localStorage.getItem("email");  
 
   const exit = () => {
     localStorage.removeItem("role");
@@ -93,7 +101,7 @@ function NavBar() {
   const deleteSigleNotification = async (userEmail, notificationId) => {
     try {
       const response = await axiosInstance.delete(
-        `/blog/author/notification/delete?email=${userEmail}&notificationId=${notificationId}`
+        `/blog/author/notification/delete?email=${userEmail}&notificationId=${notificationId}`,
       );
 
       fetchNotifications();
@@ -104,12 +112,12 @@ function NavBar() {
 
   const deleteAllNotification = async (userEmail) => {
     const confirm = window.confirm(
-      "Are you sure want to delete all the notifications"
+      "Are you sure want to delete all the notifications",
     );
     if (!confirm) return;
     try {
       const response = await axiosInstance.delete(
-        `/blog/author/notification/deleteall?email=${userEmail}`
+        `/blog/author/notification/deleteall?email=${userEmail}`,
       );
 
       console.log("deleted", response.data);
@@ -139,8 +147,8 @@ function NavBar() {
   // console.log("profile",profile)
 
   return (
-    <div 
-    className="
+    <div
+      className="
   
   flex items-center justify-between
   w-full h-16 px-3 md:px-6
@@ -150,8 +158,8 @@ function NavBar() {
  
  
 "
-// className="flex border-b border-slate-700/50 relative justify-between items-center  h-16 bg-gray-900 mb-2 px-5"
->
+      // className="flex border-b border-slate-700/50 relative justify-between items-center  h-16 bg-gray-900 mb-2 px-5"
+    >
       <div className="md:text-xl text-sm w-1/2 md:w-1/5 font-bold text-white">
         <Link to="/home">
           <img
@@ -189,7 +197,7 @@ function NavBar() {
             </Link>
           </li>
         )}
-        
+
         <li className="transition-all duration-200 hover:text-white">
           <Link
             to="/announcement"
@@ -266,7 +274,6 @@ function NavBar() {
       <button onClick={toggleSidebar} className="lg:hidden ml-2 text-white">
         {/* ☰ */}
         <RiMenuFoldFill className="text-xl" />
-
       </button>
 
       {/* Sidebar */}
@@ -366,7 +373,6 @@ function NavBar() {
           </li>
         </ul>
       </div> */}
-
 
       {/* <div
         ref={sidebarRef}
@@ -482,137 +488,142 @@ function NavBar() {
         </div>
       </div> */}
 
-<div
-  ref={sidebarRef}
-  className={`fixed top-0 left-0 w-full h-fit
-  bg-zinc-900/90
-  backdrop-blur-lg text-white
-  shadow-xl z-50 transition-transform border-b border-white/30 border-neutral-800 rounded-b-xl duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]
-  ${isSidebarOpen ? "translate-y-0" : "-translate-y-full"}
-`}
->
+      <div
+        ref={sidebarRef}
+        className={`fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-md
+        bg-[#0b1220]
+        text-white shadow-2xl z-50
+        transition-transate duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]
+        rounded-3xl border border-white/10
+        ${
+          isSidebarOpen
+            ? "opacity-100 translate-y-0"
+            : "opacity-0 -translate-y-6 pointer-events-none"
+        }
+      `}
+      >
+        {/* ================= HEADER ================= */}
+        <div className="flex items-center justify-between px-5 py-4">
+          <Link
+            to="/home"
+            onClick={() => setIsSidebarOpen(false)}
+            className="flex items-center gap-2"
+          >
+            <img src={bloglogo} alt="Logo" className="w-9 h-9 rounded-full" />
+            <span className="text-sm font-semibold tracking-wide">Home</span>
+          </Link>
 
+          <button
+            onClick={() => setIsSidebarOpen(false)}
+            className="text-white/50 hover:text-white transition text-lg"
+          >
+            ✕
+          </button>
+        </div>
 
-
-
-  {/* Header */}
-  <div className="h-16 flex items-center justify-between px-3 border-b border-gray-700/60">
-    <div  
-    onClick={()=>{setIsSidebarOpen(!isSidebarOpen)}}
-    className="md:text-xl text-sm w-1/2 md:w-1/5 font-bold text-white">
-        <Link to="/home">
-          <img
-            src={bloglogo}
-            className="w-10 md:w-30 rounded-full"
-            alt="Blog Logo"
+        {/* ================= PRIMARY ICON NAV ================= */}
+        <div className="flex justify-between px-6 py-3">
+          <NavIcon
+            to="/home"
+            icon={<IoHome />}
+            label="Home"
+            close={setIsSidebarOpen}
           />
-        </Link>
+
+          {/* {role === "admin" && (
+            <NavIcon
+              to="/control"
+              icon={<MdAppSettingsAlt />}
+              label="Controls"
+              close={setIsSidebarOpen}
+            />
+          )} */}
+
+          <NavIcon
+            to="/community"
+            icon={<MdGroups />}
+            label="Community"
+            close={setIsSidebarOpen}
+          />
+            <NavIcon
+              to={`/bookMarkPage/${email}`}
+              icon={<RiBookMarkedFill />}
+              label="Bookmark"
+              close={setIsSidebarOpen}
+            />
+
+             {role == 'student' && <NavIcon
+            to="/profile"
+            icon={<FaUserAlt />}
+            label="Profile"
+            close={setIsSidebarOpen}
+          />}
+ 
+        </div>
+
+        {/* ================= SECONDARY TILES ================= */}
+        <div className="grid grid-cols-2 gap-3 px-5 py-4">
+            
+            {role === "admin" && (
+            <NavTile
+              to="/control"
+              icon={<MdAppSettingsAlt />}
+              title="Control Panel"
+              subtitle="Manage Users"
+              close={setIsSidebarOpen}
+            />
+          )}
+          
+          {role === "coordinator" && (
+            <NavTile
+              to="/workspace"
+              icon={<BsPersonWorkspace />}
+              title="Workspace"
+              subtitle="Manage Content"
+              close={setIsSidebarOpen}
+            />
+          )}
+          <NavTile
+            to="/authors"
+            icon={<IoIosGitNetwork />}
+            title="Network"
+            subtitle="Connections"
+            close={setIsSidebarOpen}
+          />
+
+
+         {role!='student' && <NavTile
+            to="/profile"
+            icon={<FaUserAlt />}
+            title="Profile"
+            subtitle="Account"
+            close={setIsSidebarOpen}
+          />}
+
+          <NavTile
+            to="/announcement"
+            icon={<MdAnnouncement />}
+            title="Updates"
+            subtitle="Announcements"
+            badge={announcement?.length}
+            close={setIsSidebarOpen}
+          />
+        </div>
+
+        {/* ================= FOOTER ================= */}
+        <div className="px-5 pb-5">
+          <button
+            onClick={exit}
+            className="w-full flex items-center justify-center gap-2
+                     py-2.5 rounded-xl text-sm
+                     bg-red-500/10 hover:bg-red-500/20
+                     text-red-400 transition"
+          >
+            <IoLogOutOutline />
+            Logout
+          </button>
+        </div>
       </div>
-      <div className="col-span-full flex justify-end  mt-3">
-    <button
-      onClick={exit}
-      className="w-fit mx-auto flex items-center justify-center text-xs gap-2 px-6 py-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 transition"
-    >
-      <IoLogOutOutline className="text-sm" />
-      Logout
-    </button>
-  </div>
-  </div>
-
-  {/* Menu */}
-  <ul className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2 px-5 py-6 text-xs font-medium">
-    <li>
-      <Link
-        to="/home"
-        className="flex items-center gap-3 px-2 py-2.5 rounded-xl bg-gray-800/40 hover:bg-gray-700/60 transition"
-      >
-        <IoHome className="text-lg text-green-400" />
-        Home
-      </Link>
-    </li>
-
-    <li>
-      <Link
-        to="/community"
-        className="flex items-center gap-3 px-2 py-2.5 rounded-xl bg-gray-800/40 hover:bg-gray-700/60 transition"
-      >
-        <MdGroups className="text-lg text-green-400" />
-        Tech Communities
-      </Link>
-    </li>
-
-    {role === "coordinator" && (
-      <li>
-        <Link
-          to="/yourposts"
-          className="flex items-center gap-3 px-2 py-2.5 rounded-xl bg-gray-800/40 hover:bg-gray-700/60 transition"
-        >
-          <MdDataObject className="text-lg text-green-400" />
-          My Posts
-        </Link>
-      </li>
-    )}
-
-    <li>
-      <Link
-        to="/authors"
-        className="flex items-center gap-3 px-2 py-2.5 rounded-xl bg-gray-800/40 hover:bg-gray-700/60 transition"
-      >
-        <IoPeople className="text-lg text-green-400" />
-        Authors
-      </Link>
-    </li>
-
-    {role === "coordinator" && (
-      <li>
-        <Link
-          to="/addPost"
-          className="flex items-center gap-3 px-2 py-2.5 rounded-xl bg-gray-800/40 hover:bg-gray-700/60 transition"
-        >
-          <MdPostAdd className="text-lg text-green-400" />
-          Add Post
-        </Link>
-      </li>
-    )}
-
-    <li>
-      <Link
-        to="/profile"
-        className="flex items-center gap-3 px-2 py-2.5 rounded-xl bg-gray-800/40 hover:bg-gray-700/60 transition"
-      >
-        <FaUserAlt className="text-lg text-green-400" />
-        My Profile
-      </Link>
-    </li>
-
-    <li className="sm:col-span-2 lg:col-span-3">
-      <Link
-        to="/announcement"
-        className="flex items-center gap-3 px-2 py-2.5 rounded-xl bg-gray-800/40 hover:bg-gray-700/60 transition"
-      >
-        <MdAnnouncement className="text-xl text-green-400" />
-        Announcements
-        {announcement.length > 0 && (
-          <span className="ml-auto text-[11px] bg-green-600 px-2 py-0.5 rounded-full">
-            {announcement.length}
-          </span>
-        )}
-      </Link>
-    </li>
-  </ul>
-
-  {/* Footer */}
-  {/* <div className="col-span-full flex justify-end  mt-3">
-    <button
-      onClick={exit}
-      className="w-fit mx-auto flex items-center justify-center text-sm gap-2 px-6 py-1.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 transition"
-    >
-      <IoLogOutOutline className="text-sm" />
-      Logout
-    </button>
-  </div> */}
-</div>
-
 
       <div
         ref={notificationRef}
@@ -684,6 +695,46 @@ function NavBar() {
         )}
       </div>
     </div>
+  );
+}
+
+function NavIcon({ to, icon, label, close }) {
+  return (
+    <Link
+      to={to}
+      onClick={() => close(false)}
+      className="flex flex-col items-center gap-1
+                 text-white/70 hover:text-white transition"
+    >
+      <span className="text-xl text-emerald-400">{icon}</span>
+      <span className="text-[11px]">{label}</span>
+    </Link>
+  );
+}
+
+function NavTile({ to, icon, title, subtitle, badge, close }) {
+  return (
+    <Link
+      to={to}
+      onClick={() => close(false)}
+      className="relative rounded-2xl p-4
+                 bg-white/5 hover:bg-white/10 transition"
+    >
+      <span className="text-emerald-400 text-lg">{icon}</span>
+
+      <p className="mt-2 text-sm font-medium">{title}</p>
+      <p className="text-xs text-white/40">{subtitle}</p>
+
+      {badge > 0 && (
+        <span
+          className="absolute top-3 right-3
+                         text-[10px] px-2 py-0.5 rounded-full
+                         bg-emerald-500/20 text-emerald-300"
+        >
+          {badge}
+        </span>
+      )}
+    </Link>
   );
 }
 

@@ -339,7 +339,7 @@ function ViewTutorPlaylist() {
           </div>
 
           {/* RIGHT PANEL (Playlist Posts) */} 
-          <div className="lg:col-span-1 md:overflow-y-scroll mt-4 md:mt-0 scrollbar-hide space-y-4">
+          <div className="lg:col-span-1 md:overflow-y-scroll mt-0 scrollbar-hide space-y-4">
             {playlistPosts.map((post, index) => (
               <div
                 key={post._id}
