@@ -30,7 +30,7 @@ const PlaylistDetailSkeleton = () => {
       </div>
 
       {/* RIGHT PANEL */}
-      <div className="lg:col-span-1 space-y-4 mt-4 md:mt-0">
+      <div className="lg:col-span-1 space-y-4  md:mt-0">
         {[...Array(4)].map((_, index) => (
           <PlaylistPostSkeleton key={index} />
         ))}
