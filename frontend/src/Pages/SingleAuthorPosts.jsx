@@ -423,15 +423,13 @@ function SingleAuthorPosts() {
               <article
                 key={data._id}
                 className="
-                                      bg-[#0f172a]
-                                      overflow-hidden
-                                      
-                                      md:shadow-2xl
-                                     
-                                      transition-transform
-                                      duration-500
-                                      md:mb-4
-                                    "
+                  bg-[#0f172a]
+                  overflow-hidden
+                  md:shadow-2xl
+                  transition-transform
+                  duration-500
+                  md:mb-4
+                "
               >
                 <div className="flex items-center gap-3 px-4 py-3">
                   <Link to={`/viewProfile/${data.authoremail}`}>
@@ -442,13 +440,13 @@ function SingleAuthorPosts() {
                           : user
                       }
                       className="w-9 h-9 rounded-full bg-white object-cover border border-gray-700"
-                      alt={data.authorname}
+                      alt={data.authorName}
                     />
                   </Link>
 
                   <div className="leading-tight">
                     <p className="text-sm font-semibold text-white">
-                      {data.authorname}
+                      {data.authorName}
                     </p>
                     <p className="text-xs text-gray-400">
                       {getTimeAgo(data.timestamp)}
