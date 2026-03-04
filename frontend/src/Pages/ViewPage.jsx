@@ -136,35 +136,99 @@ function ViewPage() {
     getComments();
   }, [id, email]);
 
-  useEffect(() => {
-    const socketUrl = import.meta.env.VITE_WEBSOCKET_URL;
+//   useEffect(() => {
+//     const socketUrl = import.meta.env.VITE_WEBSOCKET_URL;
 
-    const newSocket = io(socketUrl, {
-      transports: ["polling"],
+//     const newSocket = io(socketUrl, {
+//       transports: ["polling"],
+//     });
+
+//     setSocket(newSocket);
+
+//     newSocket.emit("registerUser", userEmail);
+//     newSocket.emit("joinPostRoom", postId);
+
+//     // LIVE COMMENT UPDATE
+//     // newSocket.on("newMessage", (comment) => {
+//     //   setMessages((prev) => [...prev, comment]);
+//     // });
+//     newSocket.on("newMessage", (comment) => {
+//   setMessages((prev) => {
+//     // ✅ If message already exists (based on _id), ignore
+//     const exists = prev.some(
+//       (msg) => msg._id && msg._id === comment._id
+//     );
+
+//     if (exists) return prev;
+
+//     return [...prev, comment];
+//   });
+// });
+
+//     // Optional: notifications
+//     newSocket.on("notification", (notification) => {
+//       setNotification((prev) => [notification, ...prev]);
+//     });
+
+//     return () => {
+//       newSocket.off("newMessage");
+//       newSocket.off("notification");
+//       newSocket.disconnect();
+//     };
+//   }, [postId, userEmail]);
+
+useEffect(() => {
+  const socketUrl = import.meta.env.VITE_WEBSOCKET_URL;
+
+  const newSocket = io(socketUrl, {
+    transports: ["polling"],
+  });
+
+  setSocket(newSocket);
+
+  newSocket.emit("registerUser", userEmail);
+  newSocket.emit("joinPostRoom", postId);
+
+  // 🔥 FIXED LIVE COMMENT UPDATE
+  const handleNewMessage = (comment) => {
+    setMessages((prev) => {
+      // 1️⃣ Remove optimistic version (no _id but same content)
+      const cleaned = prev.filter((msg) => {
+        if (!msg._id) {
+          return !(
+            msg.message === comment.message &&
+            msg.user === comment.user
+          );
+        }
+        return true;
+      });
+
+      // 2️⃣ Prevent duplicate real messages
+      const exists = cleaned.some(
+        (msg) => msg._id === comment._id
+      );
+
+      if (exists) return cleaned;
+
+      return [...cleaned, comment];
     });
+  };
 
-    setSocket(newSocket);
+  newSocket.on("newMessage", handleNewMessage);
 
-    newSocket.emit("registerUser", userEmail);
-    newSocket.emit("joinPostRoom", postId);
+  // Notifications
+  const handleNotification = (notification) => {
+    setNotification((prev) => [notification, ...prev]);
+  };
 
-    // 🔥 LIVE COMMENT UPDATE
-    newSocket.on("newMessage", (comment) => {
-      setMessages((prev) => [...prev, comment]);
-    });
+  newSocket.on("notification", handleNotification);
 
-    // Optional: notifications
-    newSocket.on("notification", (notification) => {
-      setNotification((prev) => [notification, ...prev]);
-    });
-
-    return () => {
-      newSocket.off("newMessage");
-      newSocket.off("notification");
-      newSocket.disconnect();
-    };
-  }, [postId, userEmail]);
-
+  return () => {
+    newSocket.off("newMessage", handleNewMessage);
+    newSocket.off("notification", handleNotification);
+    newSocket.disconnect();
+  };
+}, [postId, userEmail]);
   const postComment = () => {
     if (newMessage.trim() === "") return;
 
@@ -182,6 +246,8 @@ function ViewPage() {
 
     // ✅ OPTIMISTIC UPDATE (instant UI)
     setMessages((prev) => [...prev, messageData]);
+
+    
 
     // Emit to backend (others will receive via socket)
     socket.emit("newMessage", messageData);
@@ -556,7 +622,7 @@ function ViewPage() {
                 onClick={postComment}
                 className=" hidden md:block mt-3 md:w-fit px-4 py-2 rounded-lg bg-gradient-to-r from-orange-500 to-yellow-500 text-sm font-medium text-gray-900"
               >
-                Post Comment
+                Post
               </button>
             </div>
 

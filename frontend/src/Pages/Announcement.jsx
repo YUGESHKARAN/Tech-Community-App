@@ -1055,10 +1055,10 @@ function Announcement() {
                         href={link.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="px-2 md:px-3 md:py-1.5 py-1 rounded-md
-                                 bg-emerald-600/20 border border-slate-700
+                        className="px-2 md:px-3 md:py-1 py-1 rounded-2xl
+                                 border border-slate-700
                                  text-xs text-emerald-400
-                                 hover:bg-emerald-600/30 transition"
+                                 hover:bg-emerald-600/10 transition"
                       >
                         {link.title}
                       </a>
