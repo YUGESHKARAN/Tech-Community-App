@@ -154,6 +154,8 @@ function Announcement() {
   };
 
   const deleteAnnouncement = async (id) => {
+    const verify = window.confirm("Are you sure you want to delete this announcement?");
+    if (!verify) return;
     try {
       const response = await axiosInstance.delete(
         `/blog/author/announcements/${id}`,
@@ -852,6 +854,7 @@ function Announcement() {
                         </label>
                         <input
                           type="file"
+                          accept="image/*"
                           id="image"
                           onChange={onChangeImage}
                           ref={imageInputRef}
@@ -1007,7 +1010,7 @@ function Announcement() {
             {reversedAnnouncements.map((item) => (
               <div
                 key={item._id}
-                className="bg-[#111827] border border-slate-800 rounded-lg p-2 md:px-6 md:py-2 space-y-6"
+                className="bg-[#111827] border border-slate-800 rounded-lg p-4 md:px-6 md:py-2 space-y-6"
               >
                 <div className="flex justify-between items-start">
                   <div>

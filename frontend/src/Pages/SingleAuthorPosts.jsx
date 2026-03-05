@@ -74,6 +74,7 @@ function SingleAuthorPosts() {
         const filtered = newPosts.filter((p) => !existingIds.has(p._id));
         return [...prev, ...filtered];
       });
+      // console.log("response data", response.data);
 
       setAuthorName(response.data.authorName);
       setAuthorProfile(response.data.profile);
@@ -205,15 +206,20 @@ function SingleAuthorPosts() {
   return (
     <div className="w-full min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 h-auto reltive  ">
       <NavBar />
-      <div className="relative min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 py-8">
-        <h1 className=" text-2xl w-11/12 mx-auto md:text-3xl font-bold text-white tracking-wide">
-          <span className=" text-white"> Posts page</span>{" "}
-        </h1>
+      <div className="relative min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 md:py-8">
+      
 
-        <div className="relative w-full mt-6  mx-auto text-center   transition-all duration-300">
-          {/* Profile Image */}
-          <div className="relative w-32 h-32 md:w-48 md:h-48 mx-auto">
-            <Link to={`/viewProfile/${email}`}>
+        <div className="w-11/12 mx-auto mt-7 md:mt-0">
+          <h1 className="text-2xl md:text-3xl mb-3 font-bold text-white w-full mx-auto">
+          Posts Page
+        </h1>
+          {/* Profile Header Card */}
+          <div className="flex items-center gap-6 bg-gradient-to-r from-slate-900 to-slate-800 border border-slate-700/50 rounded-2xl p-5 md:p-7 shadow-lg">
+            {/* Avatar */}
+            <div
+              // to={`/viewProfile/${email}`}
+              className="relative flex-shrink-0 group"
+            >
               <img
                 src={
                   authorProfile
@@ -221,17 +227,42 @@ function SingleAuthorPosts() {
                     : user
                 }
                 alt="Author Profile"
-                className={`rounded-full object-cover w-full h-full border-2 ${
-                  authorProfile ? "border-teal-500" : "border-gray-500 bg-white"
-                } shadow-md  transition-transform duration-300`}
+                className={`w-20 h-20 md:w-28 md:h-28 rounded-full object-cover border-2 transition-all duration-300 group-hover:scale-105 ${
+                  authorProfile ? "border-teal-400" : "border-gray-500 bg-white"
+                }`}
               />
-            </Link>
-          </div>
 
-          {/* Author Name */}
-          <h1 className="mt-5 text-xl text-green-500 md:text-3xl font-bold text-white tracking-wide">
-            {authorName && `${authorName}`}
-          </h1>
+              {/* Online Indicator (modern UI touch) */}
+              <span className="absolute bottom-1 right-1 w-4 h-4 bg-green-400 border-2 border-slate-900 rounded-full"></span>
+            </div>
+
+            {/* Author Info */}
+            <div className="flex flex-col">
+              {/* Name */}
+              <h2 className="text-xl md:text-2xl font-semibold text-white">
+                {authorName || "Unknown Author"}
+              </h2>
+
+              {/* Email / Username */}
+              <p className="text-sm text-slate-400 mt-1">
+                @{email?.split("@")[0]}
+              </p>
+
+              {/* Meta Row */}
+              <div className="flex items-center gap-4 mt-3 text-xs text-slate-400">
+                <span className="px-2 py-1 bg-slate-800 border border-slate-700 rounded-md">
+                  Author
+                </span>
+
+                <Link
+                  to={`/viewProfile/${email}`}
+                  className="text-slate-500 cursor-pointer hover:text-teal-500 transition-colors duration-200"
+                >
+                  View Profile →
+                </Link>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="w-11/12 mx-auto">

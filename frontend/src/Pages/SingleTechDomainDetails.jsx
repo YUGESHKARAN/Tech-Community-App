@@ -473,14 +473,14 @@ function SingleTechDomainDetails() {
                   ))} 
 
                 {loading && (
-                  <p className="text-center col-span-2 sm:col-span-3 lg:col-span-5 py-4">
+                  <p className="text-center col-span-2 text-gray-500 sm:col-span-3 lg:col-span-5 py-4">
                     loading...
                   </p>
                 )}
 
                 {!hasMore && (
                   <p className="text-center col-span-2 sm:col-span-3 lg:col-span-5 py-4 text-gray-500">
-                    No More Coordinators
+                    No more coordinators
                   </p>
                 )}
               </div>
@@ -584,14 +584,14 @@ function SingleTechDomainDetails() {
                   ))}
 
                 {loading && (
-                  <p className="text-center col-span-2 sm-col-span-3 lg:col-span-6  py-4">
+                  <p className="text-center col-span-2 text-gray-500 sm-col-span-3 lg:col-span-6  py-4">
                     loading...
                   </p>
                 )}
 
                 {!hasMore && (
                   <p className="text-center col-span-2 sm-col-span-3 lg:col-span-6 py-4 text-gray-500">
-                    No More Members
+                    No more members
                   </p>
                 )}
               </div>

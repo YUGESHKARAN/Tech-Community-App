@@ -420,9 +420,10 @@ useEffect(() => {
               <AITechAssistant currentPostId={singlePostData._id} />
             </div>
             {/* Documents */}
+            {/* bg-gradient-to-b from-slate-900/80 to-slate-800/80 */}
             {(singlePostData.documents?.length > 0 ||
               singlePostData.links?.length > 0) && (
-              <div className="md:rounded-2xl rounded-lg border border-slate-700/60 bg-gradient-to-b from-slate-900/80 to-slate-800/80 p-6 backdrop-blur-xl">
+              <div className="md:rounded-2xl rounded-lg bg-gradient-to-b from-slate-900/80 to-slate-800/80 border border-slate-700/60  p-6 backdrop-blur-xl">
                 {/* Header */}
                 <div className="flex items-center gap-2 mb-5">
                   {/* <div className="w-9 h-9 flex items-center justify-center rounded-lg bg-blue-600/15 border border-blue-500/20">
@@ -514,7 +515,7 @@ useEffect(() => {
 
             {/* Videos */}
             {youtubeVideo?.length > 0 && (
-              <div className="bg-gray-800/60 border border-gray-700 rounded-lg md:rounded-2xl p-5">
+              <div className="bg-gradient-to-b from-slate-900/80 to-slate-800/80 border border-gray-700 rounded-lg md:rounded-2xl p-5">
                 <h3 className="text-base font-semibold text-white mb-3">
                   🎥 Video Sources
                 </h3>
@@ -568,10 +569,11 @@ useEffect(() => {
             <AITechAssistant currentPostId={singlePostData._id}/>
            </div> */}
             {/* Comments */}
+            {/* bg-gradient-to-br from-gray-800 to-gray-900 */}
             <div
               className="
-                bg-gradient-to-br from-gray-800 to-gray-900
-                border border-gray-700
+                bg-gray-900
+                md:border border-gray-700
                 md:rounded-2xl
                 rounded-lg
                 p-5
@@ -604,7 +606,7 @@ useEffect(() => {
               {/* Scrollable comments list */}
               <div
                 ref={commentsRef}
-                className="flex-1 overflow-y-auto pr-1 scrollbar-hide"
+                className="flex-1 border-t border-gray-700 overflow-y-auto pr-1 scrollbar-hide"
               >
                 <CommentsBox messages={messages} viewComments={viewComments} />
               </div>
@@ -628,7 +630,7 @@ useEffect(() => {
 
             {/* Fixed Comment Input Bar */}
             <div
-              className={`${showAssistant ? "hidden" : "fixed md:hidden bottom-0 left-0 right-0 z-30 bg-gradient-to-r from-gray-900 to-gray-800 border-t border-gray-700 backdrop-blur-md"}`}
+              className={`${showAssistant ? "hidden" : "fixed md:hidden bottom-0 left-0 right-0 z-30 bg-gray-900 border-t border-gray-700 backdrop-blur-md"}`}
             >
               <div className="max-w-7xl mx-auto px-3 md:px-8 py-3 flex items-center gap-3">
                 {/* Input */}
@@ -643,12 +645,11 @@ useEffect(() => {
                     px-4 py-2.5
                     rounded-xl
                     bg-gray-800
-                    border border-gray-600
-                    focus:border-orange-400
-                    focus:ring-1 focus:ring-orange-400
                     text-sm text-white
                     placeholder-gray-400
                     transition-all
+                    border-none
+                    outline-none focus:ring-1 focus:ring-gray-600
                   "
                 />
 
