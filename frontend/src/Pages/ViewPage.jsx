@@ -606,7 +606,7 @@ useEffect(() => {
               {/* Scrollable comments list */}
               <div
                 ref={commentsRef}
-                className="flex-1 border-t border-gray-700 overflow-y-auto pr-1 scrollbar-hide"
+                className="flex-1 overflow-y-auto pr-1 scrollbar-hide"
               >
                 <CommentsBox messages={messages} viewComments={viewComments} />
               </div>

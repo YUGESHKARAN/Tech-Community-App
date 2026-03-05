@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 import { HiOutlineUserCircle } from "react-icons/hi";
 import { IoClose } from "react-icons/io5";
 import { MdAnnouncement } from "react-icons/md";
+import getTimeAgo from "../components/DateCovertion";
 function Announcement() {
   const username = localStorage.getItem("username");
   const email = localStorage.getItem("email");
@@ -1018,7 +1019,8 @@ function Announcement() {
                       {item.title}
                     </h2>
                     <div className="text-xs text-slate-400 mt-1">
-                      {item.timestamp?.slice(0, 10)}
+                      {/* {item.timestamp?.slice(0, 10)} */}
+                      {getTimeAgo(item.timestamp?.slice(0, 10))}
                     </div>
                   </div>
 

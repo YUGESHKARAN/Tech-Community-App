@@ -158,9 +158,9 @@ function ProfilePage() {
     <div className="min-h-screen relative bg-gradient-to-br pb-10 md:pb-0 from-gray-900 to-gray-800 text-white">
       <NavBar />
 
-      <div className="container mx-auto px-3 py-12 max-w-7xl">
+      <div className="container mx-auto md:px-3 py-12 max-w-7xl">
         {/* Header */}
-        <div className="flex items-center justify-between mb-10 border-b border-gray-700 pb-4">
+        <div className="flex items-center px-3 md:px-0 justify-between mb-10  pb-4">
           <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight">
             My Bio
           </h1>
@@ -177,7 +177,7 @@ function ProfilePage() {
         {/* Two Column Layout */}
         <div className="grid md:grid-cols-[350px_1fr] gap-12">
           {/* LEFT COLUMN — Profile Overview */}
-          <div className="bg-gradient-to-b from-gray-800/70 to-gray-900/60 border border-gray-700 rounded-2xl p-6 text-center shadow-lg sticky top-20 self-start">
+          <div className="bg-gradient-to-b mx-3 md:mx-0 from-gray-800/70 to-gray-900/60  rounded-2xl p-6 text-center shadow-lg sticky top-20 self-start">
             {/* Profile Picture */}
             <div className="relative w-fit mx-auto mb-6">
               {previewImage ? (
@@ -291,13 +291,13 @@ function ProfilePage() {
           {/* RIGHT COLUMN — Profile Form */}
           <form
             onSubmit={handleSubmit}
-            className="space-y-8 bg-gray-900/60 border border-gray-700 rounded-2xl shadow-md p-4 md:p-6 backdrop-blur-md"
+            className="space-y-8  bg-gray-900/60 rounded-2xl shadow-md  px-5 py-6 md:p-6 backdrop-blur-md"
           >
             {/* Author Name */}
             <div>
               <label
                 htmlFor="authorName"
-                className="block text-gray-300 font-medium mb-1"
+                className="block text-sm  text-gray-300 font-medium mb-2"
               >
                 Author Name
               </label>
@@ -309,7 +309,7 @@ function ProfilePage() {
                   setAuthorName(e.target.value);
                   setUpdateButton(true);
                 }}
-                className="mt-1 block w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md focus:ring-orange-500 focus:border-orange-500"
+                className="mt-1 block text-sm w-full px-4 py-2 border border-gray-600 rounded-md focus:ring-blue-500 focus:border-blue-500 bg-gray-800 outline-none rounded-md"
                 placeholder="Enter author name"
                 required
               />
@@ -319,7 +319,7 @@ function ProfilePage() {
             <div>
               <label
                 htmlFor="authorEmail"
-                className="block text-gray-300 font-medium mb-1"
+                className="block text-sm text-gray-300 font-medium mb-2"
               >
                 Author Email
               </label>
@@ -328,7 +328,7 @@ function ProfilePage() {
                 id="authorEmail"
                 value={authorEmail}
                 readOnly
-                className="mt-1 block w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md text-gray-400"
+                className="mt-1 text-sm outline-none block w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md text-gray-400"
               />
             </div>
 
@@ -336,7 +336,7 @@ function ProfilePage() {
             <div>
               <label
                 htmlFor="role"
-                className="block text-gray-300 font-medium mb-1"
+                className="block text-sm text-gray-300 font-medium mb-2"
               >
                 Author Role
               </label>
@@ -345,12 +345,12 @@ function ProfilePage() {
                 id="role"
                 value={role}
                 readOnly
-                className="mt-1 block w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md text-gray-400"
+                className="mt-1 block text-sm outline-none w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md text-gray-400"
               />
             </div>
 
             {/* Contact Links Section */}
-            <div className="bg-gradient-to-b from-gray-800/80 to-gray-900/70 rounded-xl shadow-md p-2 md:p-6 backdrop-blur-md border border-gray-700">
+            <div className="bg-gradient-to-b from-gray-800/80 to-gray-900/70 rounded-xl shadow-md p-2 md:p-6 backdrop-blur-md  border-gray-700">
               <h3 className="text-xl font-semibold text-center text-white mb-4">
                 Bio Links
               </h3>
@@ -360,9 +360,9 @@ function ProfilePage() {
                   {profileLinks.map((link, index) => (
                     <div
                       key={index}
-                      className="relative bg-gray-800/60 hover:bg-gray-700/60 border border-gray-700 rounded-lg p-3 transition-all duration-300 group"
+                      className="relative bg-gray-800/30 hover:bg-gray-800/90  border-gray-700 rounded-lg p-3 transition-all duration-300 group"
                     >
-                      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+                      <div className="flex flex-row md:flex-row md:items-center md:justify-between gap-2">
                         <div className="w-full flex flex-col">
                           <div className="flex gap-2 items-center">
                             {link.title === "LinkedIn" ? (
@@ -382,7 +382,7 @@ function ProfilePage() {
                             href={link.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-blue-400 text-sm font-normal hover:underline break-all"
+                            className="text-blue-400 text-[10px] font-normal hover:underline break-all"
                           >
                             {authorName}/{link.title}
                           </a>
@@ -402,19 +402,19 @@ function ProfilePage() {
                               setShowLinkBox(true);
                               setUpdateButton(true);
                             }}
-                            className="p-2  rounded-full text-sm bg-blue-600 hover:bg-blue-500 text-white transition-all duration-200"
+                            className="p-1 md:p-1.5  rounded-full text-sm bg-blue-600 hover:bg-blue-500 text-white transition-all duration-200"
                             title="Edit link"
                           >
-                            <MdEdit className="text-sm md:text-lg" />
+                            <MdEdit className="text-xs md:text-sm" />
                           </button>
 
                           <button
                             type="button"
                             onClick={() => removeLinks(authorEmail, link._id)}
-                            className="p-2  rounded-full bg-red-600 hover:bg-red-500 text-white transition-all duration-200"
+                            className="p-1 md:p-1.5  rounded-full bg-red-600 hover:bg-red-500 text-white transition-all duration-200"
                             title="Remove link"
                           >
-                            <IoIosRemoveCircleOutline className="text-sm md:text-lg" />
+                            <IoIosRemoveCircleOutline className="text-xs md:text-sm" />
                           </button>
                         </div>
                       </div>
@@ -437,7 +437,7 @@ function ProfilePage() {
               }`}
             >
               <div className="flex items-center mb-2 justify-between px-1">
-                <label className="block font-medium text-sm md:text-base text-gray-300 ">
+                <label className="block  text-xs md:text-sm text-gray-300 ">
                   {showLinkBox
                     ? "Edit Link"
                     : ` You can add ${5 - profileLinks.length} ${
@@ -501,7 +501,7 @@ function ProfilePage() {
                       onChange={(e) => {
                         setCurrentLinkTitle(e.target.value);
                       }}
-                      className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-md text-sm md:text-base focus:ring-blue-500 focus:border-blue-500 text-gray-200"
+                      className="w-full px-3 py-2 bg-gray-800 outline-none rounded-md text-xs md:text-sm  text-gray-200"
                     >
                       <option value="" disabled>
                         Select Link Title
@@ -534,7 +534,7 @@ function ProfilePage() {
                       type="text"
                       placeholder="Enter platform name"
                       onChange={(e) => setCustomTitle(e.target.value)}
-                      className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-md text-sm md:text-base focus:ring-blue-500 focus:border-blue-500 text-gray-200"
+                      className="w-full px-3 py-2 bg-gray-800 outline-none rounded-md text-xs md:text-sm focus:ring-blue-500 focus:border-blue-500 text-gray-200"
                     />
                   )}
                 </div>
@@ -543,7 +543,7 @@ function ProfilePage() {
                   value={currentLinkUrl}
                   onChange={(e) => setCurrentLinkUrl(e.target.value)}
                   placeholder="Link URL"
-                  className="w-full md:w-1/2 px-3 py-2 bg-gray-800 text-sm md:text-base border border-gray-600 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full md:w-1/2 px-3 py-2 bg-gray-800 text-sm md:text-base outline-none border border-gray-600 rounded-md focus:ring-blue-500 focus:border-blue-500"
                 />
 
                 <button
@@ -617,7 +617,7 @@ function ProfilePage() {
               <button
                 type="submit"
                 disabled={loading || !updateButton}
-                className="py-2 px-6 bg-orange-600 hover:bg-orange-700 text-sm md:text-base text-white md:font-semibold rounded-md transition duration-200"
+                className="py-2 px-6 bg-orange-600 hover:bg-orange-700 text-xs md:text-sm text-white cursor-pointer rounded-md transition duration-200"
               >
                 {loading ? "Updating..." : "Update My Profile"}
               </button>

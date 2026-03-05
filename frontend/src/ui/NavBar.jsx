@@ -299,7 +299,7 @@ function NavBar() {
 
       {/* Mobile Hamburger Button */}
       <p className="text-white flex justify-end w-full lg:hidden  font-semibold items-center gap-1 mr-3 text-sm">
-        <Link to="/profile" className="flex items-center gap-1">
+        <Link to="/profile" className="flex text-sm  items-center gap-1">
           {profile !== "undefined" ? (
             <img
               src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`}
@@ -308,22 +308,22 @@ function NavBar() {
           ) : (
             <RiUser3Line className="text-xl text-[#0be881]" />
           )}{" "}
-          Hi,{username}
+          <p className="truncate"> Hi,{username}</p> 
         </Link>
       </p>
 
       <div className="transition-all flex items-center duration-200 hover:text-white">
         <p className="text-white lg:flex justify-end w-full hidden font-semibold items-center gap-1 mr-3 text-sm">
-          <Link to="/profile" className="flex items-center gap-1">
+          <Link to="/profile" className="flex text-xs items-center gap-1">
             {profile !== "undefined" ? (
               <img
                 src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`}
-                className="w-7 h-7 rounded-full border border-green-500  object-cover"
+                className="w-6 h-6 rounded-full border border-green-500  object-cover"
               />
             ) : (
               <RiUser3Line className="text-xl text-[#0be881]" />
             )}{" "}
-            Hi,{username}
+            <p className="truncate"> Hi,{username}</p> 
           </Link>
         </p>
         <div className="flex items-center ">
