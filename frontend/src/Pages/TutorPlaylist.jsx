@@ -170,7 +170,7 @@ function TutorPlaylist() {
   };
  
   return (
-//    <div className="w-full min-h-screen bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800 relative">
+//    <div className="w-full min-h-screen bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800 relative text-sm">
 //   <NavBar />
 
 //   <form
@@ -190,7 +190,7 @@ function TutorPlaylist() {
 //           value={title}
 //           onChange={(e) => setTitle(e.target.value)}
 //           placeholder="Enter playlist title"
-//           className="bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
+//           className="bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:border focus:border-emerald-500/40 outline-none"
 //         />
 //       </div>
 
@@ -206,7 +206,7 @@ function TutorPlaylist() {
 //             setCollaboratorsData([]);
 //             setDomain(e.target.value);
 //           }}
-//           className="bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
+//           className="bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border focus:border-emerald-500/40 outline-none"
 //         >
 //           <option value="" className="text-gray-200">
 //             Choose Domain
@@ -272,7 +272,7 @@ function TutorPlaylist() {
 //           placeholder="Search collaborators"
 //           value={searchCollaborator}
 //           onChange={(e) => setSearchCollaborator(e.target.value)}
-//           className="bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
+//           className="bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:border focus:border-emerald-500/40 outline-none"
 //         />
 
 //         {/* Selected Collaborators */}
@@ -447,7 +447,7 @@ function TutorPlaylist() {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Enter playlist title"
-            className="bg-gray-950 border border-gray-700 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
+            className="bg-gray-950 border border-gray-700 rounded-lg px-4 py-2 text-white placeholder-gray-500 text-sm focus:border focus:border-emerald-500/40 outline-none"
           />
         </div>
 
@@ -463,7 +463,7 @@ function TutorPlaylist() {
               setCollaboratorsData([]);
               setDomain(e.target.value);
             }}
-            className="bg-gray-950 border border-gray-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
+            className="bg-gray-950 border border-gray-700 rounded-lg px-4 py-2 text-white text-sm focus:border focus:border-emerald-500/40 outline-none"
           >
             <option value="">Choose Domain</option>
             {categories.map((category, index) => (
@@ -485,12 +485,10 @@ function TutorPlaylist() {
             accept="image/*"
             onChange={handleChnageThumbnail}
             ref={thumbnailInputRef}
-            className="block w-fit text-sm text-gray-300
-              file:mr-4 file:px-4 file:py-2
-              file:rounded-lg file:border-0
-              file:text-sm file:font-semibold
-              file:bg-emerald-600 file:text-white
-              hover:file:bg-emerald-500"
+            className="w-full mt-2 text-xs  text-gray-300 
+    file:mr-4 file:px-2 file:py-1 file:rounded-md 
+    file:border-0 file:bg-emerald-500/20 file:hover:bg-emerald-600/20 file:text-emerald-400 
+    file:cursor-pointer"
           />
 
           {previewThumbnail && (
@@ -527,7 +525,7 @@ function TutorPlaylist() {
             placeholder="Search collaborators"
             value={searchCollaborator}
             onChange={(e) => setSearchCollaborator(e.target.value)}
-            className="bg-gray-950 border border-gray-700 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
+            className="bg-gray-950 border border-gray-700 rounded-lg px-4 py-2 text-white placeholder-gray-500 text-sm focus:border focus:border-emerald-500/40 outline-none"
           />
 
           {/* Selected */}
@@ -575,7 +573,7 @@ function TutorPlaylist() {
                       collaborator.profile
                     )
                   }
-                  className="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-800 cursor-pointer"
+                  className="flex items-center gap-3 px-4 py-2 hover:bg-gray-800 cursor-pointer"
                 >
                   <img
                     src={
@@ -595,11 +593,12 @@ function TutorPlaylist() {
           )}
         </div>
 
-         <div className="lg:col-span-3 hidden md:block flex justify-start pt-6">
+         <div className="lg:col-span-3 hidden md:block flex justify-start md:pt-0 pt-6">
       <button
         type="submit"
         disabled={loader}
-        className="px-8 py-2.5 rounded-xl bg-emerald-600 text-white font-semibold hover:bg-emerald-500 disabled:opacity-50 transition shadow-lg"
+        className="md:px-5 px-3 py-2 md:py-2 bg-emerald-600/20 hover:bg-emerald-500/20
+                         rounded-md text-xs md:text-sm   text-emerald-400 transition"
       >
         {loader ? "Creating Playlist..." : "Create Playlist"}
       </button>
@@ -675,7 +674,7 @@ function TutorPlaylist() {
       <button
         type="submit"
         disabled={loader}
-        className="px-8 py-2.5 rounded-xl bg-emerald-600 text-white font-semibold hover:bg-emerald-500 disabled:opacity-50 transition shadow-lg"
+        className="px-8 py-2 rounded-xl bg-emerald-600 text-white font-semibold hover:bg-emerald-500 disabled:opacity-50 transition shadow-lg"
       >
         {loader ? "Creating Playlist..." : "Create Playlist"}
       </button>

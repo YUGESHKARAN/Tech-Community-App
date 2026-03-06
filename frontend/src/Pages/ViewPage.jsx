@@ -471,7 +471,7 @@ useEffect(() => {
                 {singlePostData.links?.length > 0 && (
                   <div>
                     <p className="text-[11px] uppercase tracking-wider text-slate-400 mb-2">
-                      External Links
+                      Resource Links
                     </p>
 
                     <div className="flex flex-wrap gap-3">

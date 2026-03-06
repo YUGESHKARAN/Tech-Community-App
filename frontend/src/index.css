@@ -44,4 +44,26 @@
   }
 
 
-  
+  /* Modern Emerald Scrollbar (Dark Theme Compatible) */
+
+.emerald-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.emerald-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.emerald-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(16, 185, 129, 0.35); /* emerald glass */
+  border-radius: 999px;
+  transition: all 0.25s ease;
+}
+
+.emerald-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(16, 185, 129, 0.65);
+}
+
+.emerald-scrollbar::-webkit-scrollbar-thumb:active {
+  background: rgba(16, 185, 129, 0.9);
+}
