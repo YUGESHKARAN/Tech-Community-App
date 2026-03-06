@@ -674,7 +674,7 @@ function TutorPlaylist() {
       <button
         type="submit"
         disabled={loader}
-        className="md:px-5 px-3 py-2 md:py-2 bg-emerald-600/20 hover:bg-emerald-500/20
+        className="md:px-5 px-5 py-2 md:py-2 bg-emerald-600/20 hover:bg-emerald-500/20
                          rounded-md text-xs md:text-sm   text-emerald-400 transition"
       >
         {loader ? "Creating Playlist..." : "Create Playlist"}
