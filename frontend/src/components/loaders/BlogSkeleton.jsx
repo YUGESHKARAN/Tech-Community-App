@@ -5,7 +5,7 @@ const BlogSkeleton = () => {
             [1,2,3,4].map((_,index)=>(
                 <div
                 key={index}
-                 className="w-full mx-auto md:w-full bg-[#0f172a] md:pb-2 flex flex-col shadow-xl h-auto md:p-4 py-4 md:rounded-xl animate-pulse">
+                 className="w-full mx-auto md:w-full bg-[#0f172a] md:pb-2 flex flex-col shadow-xl h-auto  py-4 md:rounded-xl animate-pulse">
       
       {/* Author Section */}
       <div className="flex mb-2 gap-2 px-4 items-center">

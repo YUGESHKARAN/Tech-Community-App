@@ -34,6 +34,20 @@ function BlogContainer({activeTab, setActiveTab}) {
   const limit = 50;
 
   const { playlistCount } = useTutorPlaylist();
+  const [isStickyActive, setIsStickyActive] = useState(false);
+  useEffect(() => {
+  const handleScroll = () => {
+    if (window.scrollY > 40) {
+      setIsStickyActive(true);
+    } else {
+      setIsStickyActive(false);
+    }
+  };
+
+  window.addEventListener("scroll", handleScroll);
+
+  return () => window.removeEventListener("scroll", handleScroll);
+}, []);
   // const [activeTab, setActiveTab] = useState("posts"); // default posts
   // const [activeTab, setActiveTab] = useState(
   //   localStorage.getItem("dashboardTab") || "posts",
@@ -277,11 +291,11 @@ function BlogContainer({activeTab, setActiveTab}) {
           </button>
         </div>
       </div> */}
-      <div className="flex-col w-11/12 md:gap-16 relative flex-wrap justify-center h-auto mx-auto">
+      <div className="flex-col w-full md:gap-16 relative flex-wrap justify-center h-auto mx-auto">
         {/* Tutor Playlist section starts here */}
         {activeTab === "playlists" && (
-          <section className="space-y-4 mt-4 md:mt-4">
-            <h2 className="md:pl-4  text-2xl md:text-4xl font-bold tracking-wide text-gray-200">
+          <section className="space-y-4 mt-4 mx-4 md:mx-auto w-11/12 md:w-full ">
+            <h2 className="md:pl-5  text-2xl md:text-4xl font-bold tracking-wide text-gray-200">
               Featured Playlists
             </h2>
             <div className=" md:p-4 shadow-inner">
@@ -305,8 +319,8 @@ function BlogContainer({activeTab, setActiveTab}) {
         {activeTab === "posts" && (
           <>
             {/* ================= SEARCH ================= */}
-            <div className="flex justify-center mt-4">
-              <div className="w-11/12 mx-auto max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-2xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
+            <div className="flex mx-4 md:mx-0 justify-center mt-7">
+              <div className="w-full mx-auto max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-2xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
                 <IoSearchOutline className="text-xl text-gray-400" />
                 <input
                   type="text"
@@ -317,12 +331,22 @@ function BlogContainer({activeTab, setActiveTab}) {
                 />
               </div>
             </div>
+            
             {posts.length > 0 && (
-              <div className="flex md:max-w-5xl md:w-fit mt-10 scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto">
+            <div
+                className={`w-full sticky top-0 z-40
+                ${isStickyActive ? "bg-gray-900 " : "bg-transparent"}`}
+              >
+
+      
+              <div 
+              // className="flex md:max-w-5xl md:w-fit mt-10 scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto"
+              className="flex w-11/12  md:w-fit md:max-w-7xl  mt-2 py-5 z-50 scrollbar-hide mx-auto items-center justify-start gap-3 md:mb-5 overflow-x-auto"
+              >
                 {/* All Button */}
                 <div
                   onClick={() => setPostCategory("")}
-                  className={`w-fit text-nowrap cursor-pointer rounded-md md:text-sm text-xs px-3 py-1 md:py-2 transition-all duration-200 ${
+                  className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1.5 md:py-2 transition-all duration-200 ${
                     postCategory === ""
                       ? "bg-emerald-600/20 text-emerald-400"
                       : "bg-gray-800 text-white"
@@ -330,13 +354,15 @@ function BlogContainer({activeTab, setActiveTab}) {
                 >
                   All
                 </div>
+                
+
 
                 {/* Dynamic Categories */}
                 {getUniqueCategories(posts).map((data, index) => (
                   <div
                     key={index}
                     onClick={() => setPostCategory(data)}
-                    className={`w-fit text-nowrap cursor-pointer rounded-md md:text-sm text-xs px-3 py-1 md:py-2 transition-all duration-200 ${
+                    className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1.5 md:py-2 transition-all duration-200 ${
                       postCategory === data
                         ? "bg-emerald-600/20 text-emerald-400"
                         : "bg-gray-800 text-white"
@@ -346,17 +372,19 @@ function BlogContainer({activeTab, setActiveTab}) {
                   </div>
                 ))}
               </div>
+             
+                    </div>
             )}
 
             {loading && !posts.length > 0 && <PillLoader />}
 
-            <section className="w-full  mt-7 md:p-4">
+            <section className="w-full  mx-auto">
             
-              <h2 className="text-2xl md:text-4xl font-bold tracking-wide text-gray-200">
+              {/* <h2 className="text-2xl mx-4 md:mx-0 md:text-4xl font-bold tracking-wide text-gray-200">
                   Recommended Posts
-                </h2>
+                </h2> */}
 
-              <div className="md:w-full grid grid-cols-1 w-full mx-auto md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7 md:gap-10 mt-7 md:mt-10 h-auto">
+              <div className="mx-auto grid grid-cols-1 md:px-2 w-full  mx-auto  md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7 md:gap-10 mt-5 md:mt-10 h-auto">
                 {
                 
                  (

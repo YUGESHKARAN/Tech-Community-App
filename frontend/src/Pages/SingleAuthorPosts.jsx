@@ -203,18 +203,31 @@ function SingleAuthorPosts() {
     ));
   };
 
-  return (
-    <div className="w-full min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 h-auto reltive  ">
-      <NavBar />
-      <div className="relative min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 md:py-8">
-      
+  const [isStickyActive, setIsStickyActive] = useState(false);
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 40) {
+        setIsStickyActive(true);
+      } else {
+        setIsStickyActive(false);
+      }
+    };
 
-        <div className="w-11/12 mx-auto mt-7 md:mt-0">
-          <h1 className="text-2xl md:text-3xl mb-3 font-bold text-white w-full mx-auto">
-          Posts Page
-        </h1>
+    window.addEventListener("scroll", handleScroll);
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  return (
+    <div className="w-full reltive min-h-screen  bg-gray-900  h-auto reltive  ">
+      <NavBar />
+      <div className="relative min-h-screen   md:py-8">
+        <div className="w-full mx-auto mt-7 md:mt-0">
+          <h1 className="text-2xl px-2 md:text-3xl mb-3 font-bold text-white w-full mx-auto">
+            Posts Page
+          </h1>
           {/* Profile Header Card */}
-          <div className="flex items-center gap-6 bg-gradient-to-r from-slate-900 to-slate-800 border border-slate-700/50 rounded-2xl p-5 md:p-7 shadow-lg">
+          <div className="flex items-center mx-2 gap-6 bg-gradient-to-r from-slate-900 to-slate-800 border border-slate-700/50 rounded-2xl p-5 md:p-7 shadow-lg">
             {/* Avatar */}
             <div
               // to={`/viewProfile/${email}`}
@@ -265,16 +278,32 @@ function SingleAuthorPosts() {
           </div>
         </div>
 
-        <div className="w-11/12 mx-auto">
-          {/* <h1 className="text-center text-white font-bold text-xl mt-2 md:mt-10">
-            Domains
-          </h1> */}
-          {posts.length > 0 && (
-            <div className="flex md:max-w-5xl md:w-fit mt-10 scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto">
+       {/* Search and Filter Section */}
+        <div className="w-11/12 mt-9 mx-auto max-w-md flex items-center gap-2 justify-center">
+            <div className="w-full flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-2xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
+              <IoSearchOutline className="text-2xl text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search by title or category"
+                value={searchTerm}
+                onChange={handleSearch}
+                className="bg-transparent focus:outline-none w-full text-sm text-white placeholder-gray-400"
+              />
+            </div>
+          </div>
+        {posts.length > 0 && (
+          <div
+            className={`w-full sticky top-0 z-40
+                ${isStickyActive ? "bg-gray-900 " : "bg-transparent"}`}
+          >
+            <div
+              // className="flex md:max-w-5xl md:w-fit mt-10 scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto"
+              className="flex w-11/12  md:w-fit md:max-w-7xl  mt-2 py-5 z-50 scrollbar-hide mx-auto items-center justify-start gap-3 md:mb-5 overflow-x-auto"
+            >
               {/* All Button */}
               <div
                 onClick={() => setPostCategory("")}
-                className={`w-fit text-nowrap cursor-pointer rounded-md md:text-sm text-xs px-3 py-1 md:py-2 transition-all duration-200 ${
+                className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1.5 md:py-2 transition-all duration-200 ${
                   postCategory === ""
                     ? "bg-emerald-600/20 text-emerald-400"
                     : "bg-gray-800 text-white"
@@ -288,7 +317,7 @@ function SingleAuthorPosts() {
                 <div
                   key={index}
                   onClick={() => setPostCategory(data)}
-                  className={`w-fit text-nowrap cursor-pointer rounded-md md:text-sm text-xs px-3 py-1 md:py-2 transition-all duration-200 ${
+                  className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1.5 md:py-2 transition-all duration-200 ${
                     postCategory === data
                       ? "bg-emerald-600/20 text-emerald-400"
                       : "bg-gray-800 text-white"
@@ -298,25 +327,19 @@ function SingleAuthorPosts() {
                 </div>
               ))}
             </div>
-          )}
+          </div>
+        )}
+        <div className="w-full relative mx-auto">
+          {/* <h1 className="text-center text-white font-bold text-xl mt-2 md:mt-10">
+            Domains
+          </h1> */}
 
           {loader && !posts.length > 0 && <PillLoader />}
         </div>
 
-        <div className="flex relative backdrop-blur-md w-11/12 flex-wrap justify-center h-auto mx-auto">
-          {/* Search and Filter Section */}
-          <div className="w-11/12 mx-auto max-w-md flex items-center gap-2 justify-center">
-            <div className="w-full flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-2xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
-              <IoSearchOutline className="text-2xl text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search by title or category"
-                value={searchTerm}
-                onChange={handleSearch}
-                className="bg-transparent focus:outline-none w-full text-sm text-white placeholder-gray-400"
-              />
-            </div>
-          </div>
+        <div className="flex relative  w-full md:mx-2 flex-wrap justify-center h-auto mx-auto">
+          
+          
 
           <div className="md:w-full grid grid-cols-1 w-full mx-auto md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7 md:gap-10 mt-7 md:mt-10 h-auto">
             {(postCategory === ""

@@ -101,7 +101,7 @@ function HomePage() {
 
   return (
     // <div className="min-h-screen h-auto  relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white flex flex-col">
-    <div className="min-h-screen h-auto  relative bg-gradient-to-br from-gray-900 to-gray-800 text-white flex flex-col">
+    <div className="min-h-screen h-auto  relative bg-gray-900 text-white flex flex-col">
       <NavBar />
 
       {/* Page Title */}
@@ -415,8 +415,8 @@ function HomePage() {
       </AnimatePresence> */}
 {/* Dashboard Dropdown Panel */}
 
-      <div className="sticky flex items-center justify-between top-0 z-40 p-2  pl-4 md:pt-2 w-full  md:w-11/12 mx-auto backdrop-blur-md ">
-        <div className="flex items-center gap-10">
+      <div className=" flex items-center justify-between top-0 z-40 p-2 pl-3 md:p-0  md:pt-2 w-fit   md:ml-4 md:mx-auto">
+        <div className="flex items-center gap-5">
           <button
             onClick={() => setActiveTab("posts")}
             className={`relative pb-1 md:pb-2 text-sm md:text-base font-semibold transition-all duration-300

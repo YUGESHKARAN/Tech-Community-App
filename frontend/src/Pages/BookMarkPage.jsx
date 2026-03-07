@@ -247,6 +247,21 @@ function BookMarkPage() {
     setSelectedImage(null);
   };
 
+
+    const [isStickyActive, setIsStickyActive] = useState(false);
+    useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 40) {
+        setIsStickyActive(true);
+      } else {
+        setIsStickyActive(false);
+      }
+    };
+  
+    window.addEventListener("scroll", handleScroll);
+  
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
   // console.log("local email", email);
   // console.log("your post",filterdPost)
 
@@ -276,18 +291,18 @@ function BookMarkPage() {
   };
 
   return (
-    <div className="w-full min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 h-auto reltive  ">
+    <div className="w-full  bg-gray-900 h-auto reltive  ">
       <NavBar />
-      <h1 className=" text-2xl mt-4  w-11/12 flex items-center gap-2 mx-auto md:text-3xl font-bold text-white tracking-wide">
+      <h1 className=" text-2xl mt-4 px-2  md:w-full flex items-center gap-2 mx-auto md:text-3xl font-bold text-white tracking-wide">
         <BiBookmarkAlt />
         <span className="group text-white"> My Bookmarks </span>{" "}
       </h1>
 
       <div
         // className="w-11/12  mx-auto mb-10 border-b border-gray-800"
-        className="sticky top-0 z-40 mt-4 p-4 md:py-4 md:px-16 w-full   mx-auto backdrop-blur-md "
+        className=" flex items-center justify-between top-0 z-40 p-2 pl-3 md:p-0  md:pt-2 w-screen  md:w-fit md:ml-4 mx-auto "
       >
-        <div className="flex items-center gap-10">
+        <div className="flex items-center gap-5">
           {/* Posts */}
           <button
             onClick={() => setActiveTab("posts")}
@@ -321,9 +336,10 @@ function BookMarkPage() {
           </button>
         </div>
       </div>
-      <div className="relative min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 mt-4 pb-4">
+      
+      <div className="flex-col w-full md:gap-16 relative flex-wrap min-h-screen justify-center h-auto mx-auto">
         {activeTab === "playlists" && (
-          <div className="w-11/12 mx-auto">
+          <div className="md:p-4 w-11/12 mx-auto shadow-inner ">
             {/* <TutorBookMarkPlaylist/> */}
             {loading ? (
               <TutorPlaylistGridSkeleton />
@@ -336,9 +352,9 @@ function BookMarkPage() {
         {activeTab === "posts" && (
           <>
             {/* Search and Filter Section */}
-            {posts?.length > 0 && (
-              <div className="w-full  flex items-center gap-2 my-2 justify-center">
-                <div className="w-11/12 mx-auto max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-2xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
+            {/* {posts?.length > 0 && (
+              <div className="w-full  px-4 mx-auto items-center gap-2 mt-7 justify-center">
+                <div className="w-full mx-auto max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-2xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
                   <IoSearchOutline className="text-2xl text-gray-400" />
                   <input
                     type="text"
@@ -349,57 +365,175 @@ function BookMarkPage() {
                   />
                 </div>
               </div>
-            )}
+            )} */}
 
-            <div className="w-11/12  mx-auto">
-              {posts.length > 0 && (
-                <div className="flex md:max-w-5xl md:w-fit mt-10 scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto">
-                  {/* All Button */}
-                  <div
-                    onClick={() => setPostCategory("")}
-                    className={`w-fit text-nowrap cursor-pointer rounded-md md:text-sm text-xs px-3 py-1 md:py-2 transition-all duration-200 ${
-                      postCategory === ""
-                         ? "bg-emerald-600/20 text-emerald-400"
+             {posts.length > 0 && (
+               <div
+                className={`w-full sticky top-0 z-40
+                ${isStickyActive ? "bg-gray-900 " : "bg-transparent"}`}
+              >
+
+      
+              <div 
+              // className="flex md:max-w-5xl md:w-fit mt-10 scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto"
+              className="flex w-11/12  md:w-fit md:max-w-7xl  mt-2 py-5 z-50 scrollbar-hide mx-auto items-center justify-start gap-3 md:mb-5 overflow-x-auto"
+              >
+                {/* All Button */}
+                <div
+                  onClick={() => setPostCategory("")}
+                  className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1.5 md:py-2 transition-all duration-200 ${
+                    postCategory === ""
+                      ? "bg-emerald-600/20 text-emerald-400"
                       : "bg-gray-800 text-white"
+                  }`}
+                >
+                  All
+                </div>
+                 {/* <div
+                  onClick={() => setPostCategory("")}
+                  className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1 md:py-2 transition-all duration-200 ${
+                    postCategory === ""
+                      ? "bg-emerald-600/20 text-emerald-400"
+                      : "bg-gray-800 text-white"
+                  }`}
+                >
+                  domain 2
+                </div>
+                 <div
+                  onClick={() => setPostCategory("")}
+                  className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1 md:py-2 transition-all duration-200 ${
+                    postCategory === ""
+                      ? "bg-emerald-600/20 text-emerald-400"
+                      : "bg-gray-800 text-white"
+                  }`}
+                >
+                  domain  3
+                </div>
+                 <div
+                  onClick={() => setPostCategory("")}
+                  className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1 md:py-2 transition-all duration-200 ${
+                    postCategory === ""
+                      ? "bg-emerald-600/20 text-emerald-400"
+                      : "bg-gray-800 text-white"
+                  }`}
+                >
+                  domain  3
+                </div>
+                 <div
+                  onClick={() => setPostCategory("")}
+                  className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1 md:py-2 transition-all duration-200 ${
+                    postCategory === ""
+                      ? "bg-emerald-600/20 text-emerald-400"
+                      : "bg-gray-800 text-white"
+                  }`}
+                >
+                  domain  3
+                </div>
+                 <div
+                  onClick={() => setPostCategory("")}
+                  className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1 md:py-2 transition-all duration-200 ${
+                    postCategory === ""
+                      ? "bg-emerald-600/20 text-emerald-400"
+                      : "bg-gray-800 text-white"
+                  }`}
+                >
+                  domain  3
+                </div>
+                 <div
+                  onClick={() => setPostCategory("")}
+                  className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1 md:py-2 transition-all duration-200 ${
+                    postCategory === ""
+                      ? "bg-emerald-600/20 text-emerald-400"
+                      : "bg-gray-800 text-white"
+                  }`}
+                >
+                  domain  3
+                </div>
+                 <div
+                  onClick={() => setPostCategory("")}
+                  className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1 md:py-2 transition-all duration-200 ${
+                    postCategory === ""
+                      ? "bg-emerald-600/20 text-emerald-400"
+                      : "bg-gray-800 text-white"
+                  }`}
+                >
+                  domain  3
+                </div>
+                 <div
+                  onClick={() => setPostCategory("")}
+                  className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1 md:py-2 transition-all duration-200 ${
+                    postCategory === ""
+                      ? "bg-emerald-600/20 text-emerald-400"
+                      : "bg-gray-800 text-white"
+                  }`}
+                >
+                  domain  3
+                </div>
+                 <div
+                  onClick={() => setPostCategory("")}
+                  className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1 md:py-2 transition-all duration-200 ${
+                    postCategory === ""
+                      ? "bg-emerald-600/20 text-emerald-400"
+                      : "bg-gray-800 text-white"
+                  }`}
+                >
+                  domain  3
+                </div>
+                 <div
+                  onClick={() => setPostCategory("")}
+                  className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1 md:py-2 transition-all duration-200 ${
+                    postCategory === ""
+                      ? "bg-emerald-600/20 text-emerald-400"
+                      : "bg-gray-800 text-white"
+                  }`}
+                >
+                  domain  3
+                </div>
+                 <div
+                  onClick={() => setPostCategory("")}
+                  className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1 md:py-2 transition-all duration-200 ${
+                    postCategory === ""
+                      ? "bg-emerald-600/20 text-emerald-400"
+                      : "bg-gray-800 text-white"
+                  }`}
+                >
+                  domain  3
+                </div>
+                 <div
+                  onClick={() => setPostCategory("")}
+                  className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1 md:py-2 transition-all duration-200 ${
+                    postCategory === ""
+                      ? "bg-emerald-600/20 text-emerald-400"
+                      : "bg-gray-800 text-white"
+                  }`}
+                >
+                  domain  3
+                </div> */}
+
+
+                {/* Dynamic Categories */}
+                {getUniqueCategories(posts).map((data, index) => (
+                  <div
+                    key={index}
+                    onClick={() => setPostCategory(data)}
+                    className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1.5 md:py-2 transition-all duration-200 ${
+                      postCategory === data
+                        ? "bg-emerald-600/20 text-emerald-400"
+                        : "bg-gray-800 text-white"
                     }`}
                   >
-                    All
+                    {data}
                   </div>
-
-                  {/* Dynamic Categories */}
-                  {getUniqueCategories(posts).map((data, index) => (
-                    <div
-                      key={index}
-                      onClick={() => setPostCategory(data)}
-                      className={`w-fit text-nowrap cursor-pointer rounded-md md:text-sm text-xs px-3 py-1 md:py-2 transition-all duration-200 ${
-                        postCategory === data
-                           ? "bg-emerald-600/20 text-emerald-400"
-                      : "bg-gray-800 text-white"
-                      }`}
-                    >
-                      {data}
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {loading && !posts.length > 0 && <PillLoader />}
-            </div>
-
-            <div className="flex relative backdrop-blur-md w-11/12 flex-wrap justify-center h-auto mx-auto">
-              <div className="w-full mx-auto">
-                {/* <TutorBookMarkPlaylist /> */}
-                {(postCategory === ""
-                  ? filterdPost
-                  : posts.filter((post) => post.category === postCategory)
-                ).length > 0 && (
-                  <h2 className="md:pl-4 pl-2 mt-0 md:mt-10  text-2xl md:text-4xl font-bold tracking-wide text-gray-200">
-                    Posts
-                  </h2>
-                )}
+                ))}
               </div>
+             
+                    </div>
+            )}
 
-              <div className="md:w-full grid grid-cols-1 w-full mx-auto md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7 md:gap-10 mt-7 md:mt-10 h-auto">
+            <div className="flex relative  w-full flex-wrap justify-center h-auto mx-auto">
+              
+
+              <div className="mx-auto grid grid-cols-1 w-full  md:px-2 mx-auto md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7 md:gap-10 mt-5 md:mt-10 h-auto">
                 {/* Posts Grid */}
                 {
                   // loader ? (
