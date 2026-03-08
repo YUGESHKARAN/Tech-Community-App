@@ -6,6 +6,7 @@ import YourPlaylistCard from "../components/YourPlaylistCard";
 import useTutoPlaylistByEmail from "../hooks/useTutorPlaylistByEmail";
 import TutorPlaylistGridSkeleton from "../components/loaders/TutorPlaylistGridSkeleton";
 import { Link } from "react-router-dom";
+import Footer from "../ui/Footer";
 
 const YourPlaylist = () => {
   const {
@@ -21,15 +22,15 @@ const YourPlaylist = () => {
     <div className="w-full min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 h-auto reltive  ">
       <NavBar />
 
-      <h1 className=" text-2xl  w-11/12 flex items-center gap-2 mt-4 mx-auto md:text-3xl font-bold text-white tracking-wide">
+      <h1 className=" text-2xl w-full px-4 flex items-center gap-2 mt-4 mx-auto md:text-3xl font-semibold text-white tracking-wide">
         <BsPersonWorkspace />
         <span className="group text-white"> My Tutor Playlist</span>{" "}
       </h1>
-      <div className="min-h-screen  w-11/12 mx-auto bg-gradient-to-br from-gray-900 to-gray-800 pt-4 pb-8">
+      <div className="min-h-screen w-full px-4 mt-4 mx-auto bg-gradient-to-br from-gray-900 to-gray-800 pb-8">
         {tutorPlayListByEmail.length > 0 && (
           <div
             className="
-             md:gap-12 gap-6 mt-10  pb-4
+             md:gap-12 gap-6   pb-4
             grid grid-cols-2
             lg:grid-cols-3
             xl:grid-cols-5
@@ -81,6 +82,7 @@ const YourPlaylist = () => {
           </div>
         )}
       </div>
+      <Footer />
     </div>
   );
 };

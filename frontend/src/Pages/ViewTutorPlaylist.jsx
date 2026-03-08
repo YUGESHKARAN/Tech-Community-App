@@ -11,6 +11,7 @@ import { IoMdArrowDropup } from "react-icons/io";
 import { BiLike, BiSolidLike } from "react-icons/bi";
 import { ToastContainer, toast } from "react-toastify";
 import PlaylistDetailSkeleton from "../components/loaders/PlaylistDetailSkeleton";
+import Footer from "../ui/Footer";
 
 function ViewTutorPlaylist() {
   const email = localStorage.getItem("email");
@@ -170,15 +171,15 @@ function ViewTutorPlaylist() {
 
   // console.log("playlist data", playlistData);
   return (
-    <div className="min-h-screen bg-gradient-to-r from-gray-900 to-gray-800 text-white">
+    <div className="min-h-screen bg-gray-900 text-white">
       <NavBar />
 
-      <div className="max-w-7xl mx-auto px-2.5 md:px-4 py-6">
-        <h1 className="text-3xl w-11/12 mb-7 mx-auto hidden md:block font-bold">{loading? 'Playlist Loading...': playlistData?.title}</h1>
+      <div className="w-full mx-auto px-2 md:px-4 py-6">
+        <h1 className="text-3xl w-full mb-7 mx-auto hidden md:block font-semibold">{loading? 'Loading Playlist...': playlistData?.title}</h1>
         {!loading &&
-         <div className="grid w-full md:w-11/12 mx-auto md:h-screen grid-cols-1 lg:grid-cols-2 gap-6">
+         <div className="grid w-full mx-auto md:h-screen grid-cols-1 lg:grid-cols-2 lg:gap-4 gap-6">
           {/* LEFT PANEL (Banner + Info) */}
-          <div className="lg:col-span-1 p-2 md:p-0 space-y-4">
+          <div className="lg:col-span-1  p-2 md:sticky top-4 self-start  md:p-0 space-y-4">
             {/* Banner */}
             <div className="relative rounded-xl overflow-hidden border border-gray-700">
               <img
@@ -195,13 +196,13 @@ function ViewTutorPlaylist() {
                    )
                  }
                 alt="Playlist Banner"
-                className="w-full h-72 md:h-96 object-cover"
+                className="w-full h-72 md:h-[70vh] object-cover"
               />
             </div>
 
             {/* Playlist Info */}
             <div className="space-y-2">
-              <h1 className="text-xl md:hidden font-bold">{playlistData.title}</h1>
+              <h1 className="text-xl md:hidden font-semibold">{playlistData.title}</h1>
               <div className="flex relative justify-between items-center ">
                 {/* left content */}
                 <div className="flex flex-col items-start gap-2">
@@ -339,11 +340,11 @@ function ViewTutorPlaylist() {
           </div>
 
           {/* RIGHT PANEL (Playlist Posts) */} 
-          <div className="lg:col-span-1 md:overflow-y-scroll mt-0 scrollbar-hide space-y-4">
+          <div className="lg:col-span-1 lg:w-11/12 md:overflow-y-scroll mt-0 scrollbar-hide space-y-2 md:space-y-4">
             {playlistPosts.map((post, index) => (
               <div
                 key={post._id}
-                className="flex gap-4 md:p-2 p-2 md:bg-white/5 rounded-lg hover:bg-white/10 transition"
+                className="flex gap-4 md:p-4 p-2  bg-gray-900 rounded-lg border md:border-neutral-700 border-neutral-800 transition"
               >
                 {/* Video Thumbnail */}
                 <Link
@@ -433,6 +434,7 @@ function ViewTutorPlaylist() {
               </div>
             ))}
             
+            
           </div>
         </div>  
         }
@@ -454,6 +456,7 @@ function ViewTutorPlaylist() {
                 />
               </div>
             )}
+            <Footer/>
     </div>
   );
 }

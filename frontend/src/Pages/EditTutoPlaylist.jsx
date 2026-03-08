@@ -454,13 +454,23 @@ function EditTutorPlaylist() {
 
 <div className="w-full min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 relative">
   <NavBar />
+   <div className="mb-8 mt-4 px-4 flex items-center justify-between">
+      <div>
+        <h1 className="md:text-3xl text-2xl font-bold font-bold text-white tracking-tight">
+          Update  Playlist
+        </h1>
+        <p className="text-xs text-gray-400 mt-1">
+          you have complete control over your content, update your playlist here.
+        </p>
+      </div>
+      </div>
 
   <form
     onSubmit={hanldeSubmit}
-    className="md:w-11/12 w-full mx-auto px-4 py-10 md:grid gap-10 lg:grid-cols-3"
+    className="w-full mx-auto px-4 pb-10 md:grid gap-10 lg:gap-4 lg:grid-cols-3"
   >
     {/* LEFT — PLAYLIST DETAILS */}
-    <div className="lg:col-span-1 md:bg-gray-900/70  backdrop-blur-xl md:border border-gray-800 rounded-2xl space-y-8">
+    <div className="lg:col-span-1 lg:w-11/12 md:bg-gray-900/70  backdrop-blur-xl md:border border-gray-800 rounded-2xl space-y-8">
       <div className="p-2 md:p-6 space-y-8 shadow-lg">
 
         <h2 className="text-xl font-semibold text-white">
@@ -639,7 +649,7 @@ function EditTutorPlaylist() {
 
     {/* RIGHT — POSTS */}
     {filteredPosts.length > 0 ? (
-      <div className="lg:col-span-2 space-y-6 h-fit">
+      <div className="lg:col-span-2 mt-7 md:mt-0 lg:w-11/12 space-y-6 h-fit">
         <h2 className="text-xl text-center mt-7 md:mt-0 md:text-left font-semibold text-white">
           Select Posts for Playlist
         </h2>

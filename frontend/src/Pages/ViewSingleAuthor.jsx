@@ -66,14 +66,14 @@ function ViewSingleAuthor() {
     <div className="min-h-screen relative bg-gradient-to-br pb-10 md:pb-0 from-gray-900 to-gray-800 text-white">
       <NavBar />
 
-      <div className="container mx-auto px-3 md:py-12 py-6 max-w-7xl">
+      <div className="mx-auto px-3 md:pb-12 md:px-4 py-6 w-full">
         {/* Header */}
-         <h1 className="text-2xl md:text-3xl mb-3 font-bold text-white w-full mx-auto">
+         <h1 className="text-2xl md:text-3xl mb-3 font-semibold text-white w-full mx-auto">
           Profile Page
         </h1>
 
         {/* Two Column Layout */}
-        <div className="grid md:grid-cols-[350px_1fr] md:mt-7 mt-4 gap-12">
+        <div className="grid md:grid-cols-[350px_1fr] md:mt-7 mt-4 gap-4">
           {/* LEFT COLUMN — Profile Overview */}
           <div className="bg-gradient-to-b from-gray-800/70 to-gray-900/60 rounded-2xl p-6 text-center shadow-lg  self-start">
             {/* Profile Picture */}
@@ -177,7 +177,7 @@ function ViewSingleAuthor() {
           </div>
 
           {/* RIGHT COLUMN — Profile Form */}
-          <div className="space-y-8 bg-gray-900/60 rounded-2xl shadow-md p-4 md:p-6 backdrop-blur-md">
+          <div className="space-y-4  bg-gray-900/60 rounded-2xl gap-3 grid xl:grid-cols-2 shadow-md  px-5 py-6 md:p-10 md:px-16 backdrop-blur-md">
             {/* Author Name */}
             {/* <div>
               <label
@@ -198,6 +198,25 @@ function ViewSingleAuthor() {
             </div> */}
 
             {/* Author Email */}
+            <div className="space-y-8">
+                  <div>
+              <label
+                htmlFor="authorName"
+                className="block text-gray-300 font-medium mb-1"
+              >
+                Author Name
+              </label>
+              <input
+                type="text"
+                id="authorName"
+                value={authorName}
+                readOnly
+                onChange={(e) =>{ setAuthorName(e.target.value); setUpdateButton(true);}}
+                className="mt-1 text-sm outline-none block w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md text-gray-400"
+                placeholder="Enter author name"
+                required
+              />
+            </div>
             <div>
               <label
                 htmlFor="email"
@@ -230,9 +249,10 @@ function ViewSingleAuthor() {
                 className="mt-1 block text-sm w-full outline-none px-4 py-2 bg-gray-700  rounded-md text-gray-400"
               />
             </div>
+            </div>
 
             {/* Contact Links Section */}
-            <div className="bg-gradient-to-b from-gray-800/80 to-gray-900/70 rounded-xl shadow-md p-2 md:p-6 backdrop-blur-md ">
+            <div className="bg-gradient-to-b from-gray-800/80 to-gray-900/70 rounded-xl h-fit shadow-md p-2 md:p-6 backdrop-blur-md ">
               <h3 className="text-xl font-semibold text-center text-white mb-4">
                 Bio Links
               </h3>

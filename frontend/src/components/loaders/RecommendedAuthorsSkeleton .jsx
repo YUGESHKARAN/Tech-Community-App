@@ -1,8 +1,8 @@
 const RecommendedAuthorsSkeleton = () => {
   return (
-    <div className="flex w-11/12 mx-auto gap-5 overflow-x-auto scrollbar-hide mt-5 pb-2 animate-pulse">
+    <div className="flex w-full px-4 mx-auto gap-2 overflow-x-auto scrollbar-hide mt-5 pb-2 animate-pulse">
      
-      {[...Array(4)].map((_, index) => (
+      {[...Array(6)].map((_, index) => (
         <div
           key={index}
           className="min-w-[260px] bg-gray-900/70 border border-gray-700 rounded-xl p-4 shadow"

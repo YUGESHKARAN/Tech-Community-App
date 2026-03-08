@@ -314,7 +314,7 @@ function NavBar() {
 
       <div className="transition-all flex items-center duration-200 hover:text-white">
         <p className="text-white lg:flex justify-end w-full hidden font-semibold items-center gap-1 mr-3 text-sm">
-          <Link to="/profile" className="flex text-xs items-center gap-1">
+          <Link to="/profile" className="flex  items-center gap-1">
             {profile !== "undefined" ? (
               <img
                 src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`}

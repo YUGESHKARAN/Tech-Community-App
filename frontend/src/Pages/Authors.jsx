@@ -215,7 +215,7 @@ const recommendedAuthors = useMemo(() => {
         <span className="group text-white">My Network </span>{" "}
       </h1> */}
 
-      <div className="w-11/12 mx-auto flex items-center gap-3 py-6">
+      <div className="w-full px-4 mx-auto flex items-center gap-3 py-6">
         <IoIosGitNetwork className="text-green-400 text-3xl" />
         <h1 className="text-2xl md:text-3xl font-semibold text-white">
           My Network
@@ -303,13 +303,13 @@ const recommendedAuthors = useMemo(() => {
       )} */}
 
       {recommendedAuthors?.length > 0 && (
-        <h2 className="w-11/12 mx-auto  text-left text-xl text-green-400 md:text-3xl font-bold">
+        <h2 className="w-full px-4 mx-auto  text-left text-xl text-green-400 md:text-3xl font-semibold">
           Recommended
         </h2>
       )}
 
       <div
-        className={`${recommendedAuthors?.length > 0 ? "flex w-11/12 mx-auto gap-5 overflow-x-auto scrollbar-hide mt-5 pb-2" : "hidden"}`}
+        className={`${recommendedAuthors?.length > 0 ? "flex w-full px-4 mx-auto gap-2 overflow-x-auto scrollbar-hide mt-5 pb-2" : "hidden"}`}
       >
         {recommendedAuthors.map((author, index) => (
           <div
@@ -375,7 +375,7 @@ const recommendedAuthors = useMemo(() => {
         recommendedAuthors?.length == 0 &&
         filteredAuthors?.length == 0 && (
           <>
-            <h2 className="w-11/12 mx-auto  text-left text-xl text-green-400 md:text-3xl font-bold">
+            <h2 className="w-full px-4 mx-auto  text-left text-xl text-green-400 md:text-3xl font-semibold">
               Recommended
             </h2>
             <RecommendedAuthorsSkeleton />
@@ -383,10 +383,10 @@ const recommendedAuthors = useMemo(() => {
         )}
 
       {/* Search and Filter */}
-      <div className="w-11/12 mx-auto flex mt-7   md:flex-row justify-between items-center gap-4 md:mt-10 mb-6">
+      <div className="w-full px-4 mx-auto flex mt-7   md:flex-row justify-between items-center gap-4 md:mt-10 mb-6">
         <div
           // className="md:w-1/3 w-3/5 px-4 py-2 flex items-center gap-2 justify-center rounded-md bg-gray-600 border border-white text-xs md:text-base text-white placeholder-gray-400"
-          className="w-full max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-2xl px-4 py-3 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition"
+          className="w-full max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-2xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition"
         >
           <IoSearch className="text-white" />
           <input
@@ -404,18 +404,18 @@ const recommendedAuthors = useMemo(() => {
           onChange={(e) => setRoleFilter(e.target.value)}
           className="
             w-32 md:w-64
-            px-3 py-2 md:px-5 md:py-2.5
+            px-3 py-2
             rounded-full
-            bg-gray-800/80 backdrop-blur-md
+            bg-gray-800 backdrop-blur-md
             border border-gray-600
-            text-xs md:text-sm
+            text-xs 
             text-white
             shadow-md
             cursor-pointer
             transition-all duration-200
             focus:outline-none
             focus:ring-1 focus:ring-teal-500/50
-            hover:bg-gray-700
+            hover:bg-gray-900
           "
         >
           <option value="">All Roles</option>
@@ -424,12 +424,12 @@ const recommendedAuthors = useMemo(() => {
         </select>
       </div>
 
-      <div className="w-11/12 mx-auto min-h-screen flex flex-col items-center text-white">
+      <div className="w-full px-4 mx-auto min-h-screen flex flex-col items-center text-white">
         {/* Coordinators Section */}
         {filteredAuthors.filter((author) => author.role === "coordinator")
           .length > 0 && (
-          // <h2 className="text-center text-2xl md:text-4xl font-bold mb-6 bg-gradient-to-r from-orange-400 to-yellow-300 bg-clip-text text-transparent">
-          <h2 className="md:text-left text-center w-full text-2xl md:text-4xl font-bold my-6 text-white">
+          // <h2 className="text-center text-2xl md:text-4xl font-semibold mb-6 bg-gradient-to-r from-orange-400 to-yellow-300 bg-clip-text text-transparent">
+          <h2 className="md:text-left text-center w-full text-2xl md:text-4xl font-semibold my-6 text-white">
             Student Coordinators
           </h2>
         )}
@@ -517,7 +517,7 @@ const recommendedAuthors = useMemo(() => {
               </div>
             ))}
         </div> */}
-        <div className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
+        <div className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-2 md:gap-4">
           {filteredAuthors
             .filter((author) => author.role === "coordinator")
             .map((author, index) => (
@@ -601,7 +601,7 @@ const recommendedAuthors = useMemo(() => {
             .length == 0 &&
             loading && (
               <div className="col-span-full">
-                <h2 className="md:text-left text-center w-full text-2xl md:text-4xl font-bold my-6 text-white">
+                <h2 className="md:text-left text-center w-full text-2xl md:text-4xl font-semibold my-6 text-white">
                   Student Coordinators
                 </h2>
                 <CoordinatorGridSkeleton />
@@ -620,7 +620,7 @@ const recommendedAuthors = useMemo(() => {
         {/* Students Section */}
         {filteredAuthors.filter((author) => author.role === "student").length >
           0 && (
-          <h2 className="md:text-left text-center w-full mt-16 text-2xl md:text-4xl font-bold text-white">
+          <h2 className="md:text-left text-center w-full mt-16 text-2xl md:text-4xl font-semibold text-white">
             Students
           </h2>
         )}
@@ -678,7 +678,7 @@ const recommendedAuthors = useMemo(() => {
             ))}
         </div> */}
 
-        <div className="w-full grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6 md:gap-8 mt-8">
+        <div className="w-full grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-7 gap-2 md:gap-4 mt-8">
           {filteredAuthors
             .filter((author) => author.role === "student")
             .map((author, index) => (
@@ -769,7 +769,7 @@ const recommendedAuthors = useMemo(() => {
             .length == 0 &&
             loading && (
               <div className="col-span-full">
-                <h2 className="md:text-left text-center w-full text-2xl md:text-4xl font-bold my-6 text-white">
+                <h2 className="md:text-left text-center w-full text-2xl md:text-4xl font-semibold my-6 text-white">
                   Student
                 </h2>
                 <StudentGridSkeleton />

@@ -424,13 +424,23 @@ function TutorPlaylist() {
 
 <div className="w-full min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 relative">
   <NavBar />
+  <div className="mb-8 mt-4 px-4 flex items-center justify-between">
+      <div>
+        <h1 className="md:text-3xl text-2xl font-bold font-bold text-white tracking-tight">
+          Create  Playlist
+        </h1>
+        <p className="text-xs text-gray-400 mt-1">
+          Group posts to organize and publish domain-specific content for fellow developers.
+        </p>
+      </div>
+      </div>
 
   <form
     onSubmit={hanldeSubmit}
-    className="md:w-11/12 w-full mx-auto px-4 py-10 md:grid gap-10 lg:grid-cols-3"
+    className="w-full mx-auto px-4 pb-10 md:grid gap-10 lg:gap-0 lg:grid-cols-3"
   >
     {/* LEFT — PLAYLIST DETAILS */}
-    <div className="lg:col-span-1 md:bg-gray-900/70  backdrop-blur-xl md:border border-gray-800 rounded-2xl space-y-8">
+    <div className="lg:col-span-1 md:bg-gray-900/70 lg:w-11/12  backdrop-blur-xl md:border border-gray-800 rounded-2xl space-y-8">
       <div className=" md:p-6 p-2 space-y-8 shadow-lg">
 
         <h2 className="text-xl font-semibold text-white">
@@ -453,7 +463,7 @@ function TutorPlaylist() {
 
         {/* Domain */}
         <div className="flex flex-col gap-2">
-          <label className="text-sm text-gray-300 font-medium">
+          <label className="text-sm  text-gray-300 font-medium">
             Select Domain <span className="text-red-500">*</span>
           </label>
           <select
@@ -463,7 +473,7 @@ function TutorPlaylist() {
               setCollaboratorsData([]);
               setDomain(e.target.value);
             }}
-            className="bg-gray-950 border border-gray-700 rounded-lg px-4 py-2 text-white text-sm focus:border focus:border-emerald-500/40 outline-none"
+            className="bg-gray-950 cursor-pointer border border-gray-700 rounded-lg px-4 py-2 text-white text-sm focus:border focus:border-emerald-500/40 outline-none"
           >
             <option value="">Choose Domain</option>
             {categories.map((category, index) => (
@@ -608,7 +618,7 @@ function TutorPlaylist() {
 
     {/* RIGHT — POSTS */}
     {filteredPosts.length > 0 ? (
-      <div className="lg:col-span-2 mt-7 md:mt-0 space-y-6 h-fit">
+      <div className="lg:col-span-2 mt-7 md:mt-0 lg:w-11/12 space-y-6 h-fit">
         <h2 className="text-xl text-center md:text-left font-semibold text-white">
           Select Posts for Playlist
         </h2>
@@ -663,7 +673,7 @@ function TutorPlaylist() {
       </div>
     )
   :
-   <div className="flex items-center md:mt-20 mt-10 md: w-11/12 mx-auto text-center  justify-center md:w-full col-span-2 text-white  ">
+   <div className="flex items-center md:mt-0 my-16 lg:w-11/12 mx-auto text-center  justify-center md:w-full col-span-2 text-white  ">
     Select domain to see posts available for playlist creation.
     </div>}
 

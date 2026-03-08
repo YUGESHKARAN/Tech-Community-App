@@ -349,7 +349,7 @@ function SingleTechDomainDetails() {
 
       <div className="min-h-screen">
         {/* Page Header */}
-        <section className="w-11/12 mx-auto mt-7  md:mt-14">
+        <section className="w-full px-4 mx-auto mt-7  md:mt-14">
           <h1 className="text-center md:text-left text-3xl md:text-5xl font-extrabold bg-gradient-to-r from-blue-400 via-yellow-400 to-pink-400 bg-clip-text text-transparent tracking-tight drop-shadow-lg">
             {decodedCategory} Tech Community
           </h1>
@@ -381,7 +381,7 @@ function SingleTechDomainDetails() {
         </section>
 
         {/* Content */}
-        <section className="w-11/12 mx-auto mt-10 md:mt-16 space-y-10 md:space-y-20">
+        <section className="w-full px-4 mx-auto mt-10 md:mt-16 space-y-10 md:space-y-20">
           {/* Coordinators */}
           {authors.filter((a) => a.role === "coordinator").length > 0 && (
             <div>
@@ -390,7 +390,7 @@ function SingleTechDomainDetails() {
                 {/* ({authors.filter((a) => a.role === "coordinator").length}) */}
               </h2>
 
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
+              <div className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-2 md:gap-4">
                 {authors
                   .filter((a) => a.role === "coordinator")
                   .map((author, index) => (
@@ -504,7 +504,7 @@ function SingleTechDomainDetails() {
                 {/* ({authors.filter((a) => a.role === "student").length}) */}
               </h2>
 
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
+              <div className="w-full grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-7 gap-2 md:gap-4 mt-8">
                 {authors
                   .filter((a) => a.role === "student")
                   .map((author, index) => (

@@ -2,7 +2,7 @@ import PlaylistPostSkeleton from "./PlaylistPostSkeleton";
 
 const PlaylistDetailSkeleton = () => {
   return (
-    <div className="grid w-full md:w-11/12 mx-auto md:h-screen grid-cols-1 lg:grid-cols-2 gap-6">
+    <div className="grid w-full mx-4 mx-auto md:h-screen grid-cols-1 lg:grid-cols-2 gap-6">
       
       {/* LEFT PANEL */}
       <div className="lg:col-span-1 p-2 md:p-0 space-y-4 animate-pulse">

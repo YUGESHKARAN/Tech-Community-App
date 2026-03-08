@@ -1,7 +1,7 @@
 const CoordinatorGridSkeleton = () => {
   return (
-    <div className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6 animate-pulse">
-      {[...Array(4)].map((_, index) => (
+    <div className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-2 md:gap-4 animate-pulse">
+      {[...Array(6)].map((_, index) => (
         <div
           key={index}
           className="bg-gray-900/70 border border-gray-700 rounded-xl p-5 text-center"

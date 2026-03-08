@@ -679,8 +679,8 @@ function Announcement() {
       <NavBar />
       <div className="min-h-screen">
         {/* ================= HEADER ================= */}
-        <div className="">
-          <div className="max-w-7xl mx-auto px-4 md:px-6 py-8 flex justify-between items-center">
+        <div className="w-full">
+          <div className="w-full mx-auto px-4 md:px-6 py-8 flex justify-between items-center">
             <div>
               <h1 className="md:text-3xl text-2xl font-bold  flex items-center gap-1 justify-center"><MdAnnouncement className="text-3xl "/> Announcements</h1>
             </div>
@@ -698,10 +698,10 @@ function Announcement() {
         </div>
 
         {/* ================= MAIN GRID ================= */}
-        <div className="max-w-7xl mx-auto px-3 py-2 md:px-6 md:py-10 grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-10">
+        <div className="w-full mx-auto px-3 py-2 md:px-6 md:pb-10 grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-5">
           {/* ================= LEFT RAIL ================= */}
 
-          <aside className="space-y-8 ">
+          <aside className="space-y-8 md:sticky top-7 self-start ">
             {/* OVERVIEW */}
             <div className="bg-[#111827] border border-slate-800 rounded-lg p-5">
               <h3 className="text-xs uppercase tracking-wide text-slate-400 mb-4">
@@ -785,7 +785,7 @@ function Announcement() {
                             }
                             placeholder="Link Title"
                             className="w-1/2 px-3 py-2 bg-[#0f172a] border border-slate-700
-                       rounded-md text-sm"
+                     rounded-md focus:outline-none focus:border-emerald-500/20 text-xs"
                           />
                           <input
                             type="url"
@@ -793,7 +793,7 @@ function Announcement() {
                             onChange={(e) => setCurrentLinkUrl(e.target.value)}
                             placeholder="Link URL"
                             className="w-1/2 px-3 py-2 bg-[#0f172a] border border-slate-700
-                       rounded-md text-sm"
+                     rounded-md focus:outline-none focus:border-emerald-500/20 text-xs"
                           />
                           <button
                             type="button"
@@ -814,8 +814,7 @@ function Announcement() {
                                 setCurrentLinkUrl("");
                               }
                             }}
-                            className="px-3 py-2 text-sm bg-emerald-600/20 hover:bg-emerald-500/20
-                       text-emerald-400 rounded-md transition"
+                            className="px-4 bg-emerald-500/20 w-fit py-1 md:py-2   text-black text-emerald-400  text-xs rounded-md hover:bg-emerald-600/20"
                           >
                             Add
                           </button>
@@ -859,12 +858,10 @@ function Announcement() {
                           id="image"
                           onChange={onChangeImage}
                           ref={imageInputRef}
-                          className="mt-2 block w-full text-sm text-slate-300
-                     file:mr-4 file:cursor-pointer file:px-4
-                     file:rounded-md file:border-0
-                     file:text-sm file:font-medium
-                     file:bg-slate-200 file:text-black
-                     hover:file:bg-slate-300"
+                          className="w-full mt-2 text-xs  text-gray-300 
+    file:mr-4 file:px-2 file:py-1 file:rounded-md 
+    file:border-0 file:bg-emerald-500/20 file:hover:bg-emerald-600/20 file:text-emerald-400 
+    file:cursor-pointer"
                         />
 
                         {image && (
@@ -971,7 +968,7 @@ function Announcement() {
                         type="submit"
                         disabled={loading}
                         className="w-full py-2.5 bg-emerald-600/20 hover:bg-emerald-500/20
-                   text-emerald-400 text-sm font-medium rounded-md transition"
+                   text-emerald-400 text-sm  rounded-md transition"
                       >
                         {loading ? "Submitting..." : "Submit Announcement"}
                       </button>
@@ -1011,7 +1008,7 @@ function Announcement() {
             {reversedAnnouncements.map((item) => (
               <div
                 key={item._id}
-                className="bg-[#111827] border border-slate-800 rounded-lg p-4 md:px-6 md:py-2 space-y-6"
+                className="bg-[#111827] border border-slate-800 rounded-lg p-4 md:p-7 space-y-6"
               >
                 <div className="flex justify-between items-start">
                   <div>

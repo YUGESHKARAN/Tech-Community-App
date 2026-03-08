@@ -17,10 +17,10 @@ function Workspace() {
     <div className="w-full relative min-h-screen bg-gradient-to-br from-gray-900 to-gray-800">
       <NavBar />
 
-      <div className="max-w-7xl mx-auto px-4 h-screen md:px-8 pt-10 text-white">
+      <div className="w-ful mx-auto px-4 h-screen md:px-8 pt-4 text-white">
         {/* Header */}
         <div className="md:mb-10 mb-7">
-          <h1 className="text-2xl flex items-center gap-4 md:text-4xl font-bold tracking-wide">
+          <h1 className="text-2xl flex items-center gap-4 md:text-4xl font-semibold tracking-wide">
             <BsPersonWorkspace /> Workspace
           </h1>
           <p className="text-gray-400 mt-2 text-sm md:text-base">
@@ -129,7 +129,7 @@ const StatCard = ({ icon, title, value }) => (
 const ActionCard = ({ to, icon, title, description }) => (
   <Link
     to={to}
-    className="group bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700 rounded-2xl p-6 flex items-center gap-4 hover:border-teal-500/40 hover:shadow-xl transition-all"
+    className="group md:w-11/12 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700 rounded-2xl p-6 flex items-center gap-4 hover:border-teal-500/40 hover:shadow-xl transition-all"
   >
     <div className="p-4 rounded-xl bg-teal-500/10 text-teal-400 text-2xl group-hover:scale-110 transition-transform">
       {icon}

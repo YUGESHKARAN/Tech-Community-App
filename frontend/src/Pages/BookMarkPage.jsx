@@ -293,7 +293,7 @@ function BookMarkPage() {
   return (
     <div className="w-full  bg-gray-900 h-auto reltive  ">
       <NavBar />
-      <h1 className=" text-2xl mt-4 px-2  md:w-full flex items-center gap-2 mx-auto md:text-3xl font-bold text-white tracking-wide">
+      <h1 className=" text-2xl mt-4 px-2  md:w-full flex items-center gap-2 mx-auto md:text-3xl font-semibold text-white tracking-wide">
         <BiBookmarkAlt />
         <span className="group text-white"> My Bookmarks </span>{" "}
       </h1>
@@ -339,7 +339,7 @@ function BookMarkPage() {
       
       <div className="flex-col w-full md:gap-16 relative flex-wrap min-h-screen justify-center h-auto mx-auto">
         {activeTab === "playlists" && (
-          <div className="md:p-4 w-11/12 mx-auto shadow-inner ">
+          <div className="p-4 w-full  mx-auto shadow-inner ">
             {/* <TutorBookMarkPlaylist/> */}
             {loading ? (
               <TutorPlaylistGridSkeleton />

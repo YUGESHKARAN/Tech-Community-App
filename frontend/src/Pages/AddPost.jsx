@@ -622,13 +622,13 @@ function AddPost() {
     <div className="min-h-screen relative bg-gradient-to-br from-gray-900 to-gray-800 text-white">
       <NavBar />
       
-       <div className="min-h-screen   w-full  py-8">
+       <div className="min-h-screen   w-full pt-4 pb-8">
 
-  <div className="max-w-7xl  mx-auto px-4">
+  <div className="w-full  mx-auto  px-4">
 
     <div className="mb-8 flex items-center justify-between">
       <div>
-        <h1 className="md:text-3xl text-2xl font-bold font-bold text-white tracking-tight">
+        <h1 className="md:text-3xl text-2xl font-bold font-semibold text-white tracking-tight">
           Create New Post
         </h1>
         <p className="text-xs text-gray-400 mt-1">
@@ -657,13 +657,13 @@ function AddPost() {
       </div>
     </div>
 
-    <div className="grid grid-cols-1   lg:grid-cols-3 gap-7">
+    <div className="grid grid-cols-1   lg:grid-cols-3 gap-4 lg:gap-0">
 
       {/* LEFT COLUMN */}
       <div className="space-y-4 md:sticky top-7 self-start md:col-span-1">
 
         {/* Description / Tips */}
-        <div className="bg-[#0f172a]/80 border border-gray-800 rounded-2xl p-6 text-gray-300">
+        <div className="bg-[#0f172a]/80 lg:w-11/12 border border-gray-800 rounded-2xl p-6 text-gray-300">
           <h2 className="text-lg font-semibold text-white mb-3">
             Writing Tips
           </h2>
@@ -681,7 +681,7 @@ function AddPost() {
 
         {/* AI Assistant (Always visible on desktop) */}
         <div
-          className={`bg-[#0f172a]/80 border border-gray-800 rounded-2xl p-6 flex flex-col
+          className={`bg-[#0f172a]/80 border lg:w-11/12 border-gray-800 rounded-2xl p-6 flex flex-col
           ${!chatbot ? "hidden lg:flex" : "flex"}`}
         >
 
@@ -748,7 +748,7 @@ function AddPost() {
 
       {/* RIGHT COLUMN FORM */}
       <div
-        className={`bg-[#0f172a]/80 md:col-span-2 backdrop-blur-md border  border-gray-800 rounded-lg p-6 md:p-8 shadow-xl
+        className={`bg-[#0f172a]/80 md:col-span-2  backdrop-blur-md border  border-gray-800 rounded-lg px-4 py-6  md:p-8 shadow-xl
         ${chatbot ? "hidden lg:block" : "block"}`}
       >
 
@@ -1044,7 +1044,7 @@ function AddPost() {
               type="submit"
               disabled={loading}
               className="md:px-5 px-3 py-2 md:py-2.5 bg-emerald-600/20 hover:bg-emerald-500/20
-                         rounded-md text-xs md:text-sm  text-emerald-400 transition"
+                         rounded-md text-xs md:text-sm  text-emerald-400 transition-all duration-300 disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed"
             >
               {loading ? "Submitting..." : "Publish Post"}
             </button>

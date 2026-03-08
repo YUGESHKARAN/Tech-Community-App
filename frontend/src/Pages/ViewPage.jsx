@@ -315,7 +315,7 @@ useEffect(() => {
       <NavBar />
 
       {/* Main Container */}
-      {!loading && <div className="max-w-7xl mx-auto px-3 md:px-8 py-6 pb-20  md:py-10">
+      {!loading && <div className="w-full mx-auto px-4 md:px-8 py-6 pb-20  md:py-10">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
@@ -351,14 +351,14 @@ useEffect(() => {
         </div>
 
         {/* Title */}
-        <h1 className="text-xl md:text-3xl font-bold text-white mb-6">
+        <h1 className="text-xl md:text-3xl font-semibold text-white mb-6">
           {singlePostData.title}
         </h1>
 
         {/* Two Column Layout */}
         <div className="grid grid-cols-1  md:grid-cols-6 gap-6">
           {/* LEFT COLUMN */}
-          <div className="md:col-span-4 space-y-6">
+          <div className="md:col-span-4  space-y-6">
             {/* Banner */}
             <div className="rounded-2xl overflow-hidden border border-white/10 bg-black">
               <img
