@@ -805,7 +805,7 @@ function AddPost() {
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="w-full mt-2 px-4 py-2 cursor-pointer focus:border focus:border-emerald-500/40 rounded-xl bg-gray-900 border border-gray-700 outline-none text-sm text-white  "
+              className="w-full mt-2 px-4 py-2 cursor-pointer focus:border focus:border-emerald-500/40 rounded-md bg-gray-900 border border-gray-700 outline-none text-sm text-white  "
             >
               <option value="">Select Domain</option>
               <option value="GenAI">GenAI</option>

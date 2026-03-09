@@ -368,10 +368,16 @@ const getCategoryPosts = async (req, res) => {
 
 const axios = require("axios");
 
-async function notifyAIIngestion(post) {
+async function notifyAIIngestion(post, token) {
  try{
    console.log("post to ingest", post)
-  res = await axios.post(`${process.env.TECH_ASSISTANT_URL}/ingest`, post);
+  res = await axios.post(`${process.env.TECH_ASSISTANT_URL}/ingest`,
+   post,
+  {
+    headers:{
+      "Authorization": `Bearer ${token}`
+    }
+  });
   console.log("AI ingestion notified:", res.data);
  }
  catch(err){
@@ -379,10 +385,17 @@ async function notifyAIIngestion(post) {
  }
 }
 
-async function deleteFromAIIngestion(post_id) {
+async function deleteFromAIIngestion(post_id, token) {
   try{
 
-     res = await axios.delete(`${process.env.TECH_ASSISTANT_URL}/delete/${post_id}`);
+     res = await axios.delete(`${process.env.TECH_ASSISTANT_URL}/delete/${post_id}`,
+      {
+        header:{
+          "Authorization": `Bearer ${token}`
+        }
+      }
+
+     );
   }
   catch(err){
     console.error("Error notifying AI deletion:", err.message); 
@@ -516,7 +529,7 @@ const addPosts = async (req, res) => {
     postData['profile'] = author.profile || '';
     postData['authorEmail'] = author.email;
 
-    await notifyAIIngestion(postData).catch(err => {
+    await notifyAIIngestion(postData, req.token).catch(err => {
       console.error("AI ingestion error:", err.message);
     }); 
 
@@ -684,7 +697,7 @@ let parsedLinks = post.links || [];
 
     // console.log("updated post for AI", updatedToAI)
 
-     await notifyAIIngestion(updatedToAI).catch(err => {
+     await notifyAIIngestion(updatedToAI, req.token).catch(err => {
       console.error("AI update ingestion error:", err.message);
     }); 
   } catch (err) {
@@ -789,7 +802,7 @@ const deletePost = async (req, res) => {
 
     //  console.log("deleted post from pinecone", postId)
 
-     await deleteFromAIIngestion(postId).catch(err => {
+     await deleteFromAIIngestion(postId, req.token).catch(err => {
       console.error("AI update ingestion error:", err.message);
     }); 
 

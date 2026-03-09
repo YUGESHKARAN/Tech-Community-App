@@ -16,6 +16,8 @@ const authencateToken = (req, res, next) => {
 
     // decoded is the token payload (claims). Attach for downstream handlers.
     req.user = decoded;
+    req.token = token;   // ✅ store token for later use
+
     next();
   });
 };

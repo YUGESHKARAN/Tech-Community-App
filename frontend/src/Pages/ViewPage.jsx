@@ -310,6 +310,8 @@ useEffect(() => {
     }
   }, [viewComments]);
 
+  console.log("post id", postId);
+
   return (
     <div className="w-full min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 relative">
       <NavBar />

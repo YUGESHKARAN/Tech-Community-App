@@ -117,7 +117,7 @@ useEffect(() => {
   return (
     <>
     {  
-  count>0 ?
+  bookmakIds?.length > 0 ?
     <section className={`${tutorPlayList?.filter((playlist) => bookmakIds?.includes(playlist._id))?.length> 0 ? "space-y-4 mt-2" : "hidden"}`}>
           <h2 className="  text-2xl md:text-4xl font-bold tracking-wide text-gray-200">
             Playlists
@@ -166,9 +166,10 @@ useEffect(() => {
           >
             <BookmarkPlaylistCard
               playlist={playlist}
-              onRemove={() => {
-                getBookMarkPlaylist();
-              }}
+              // onRemove={() => {
+              //   getBookMarkPlaylist();
+              // }}
+              setBookMarkIds = {setBookMarkIds}
             />
           </div>
         ))}

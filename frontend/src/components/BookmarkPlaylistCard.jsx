@@ -6,7 +6,7 @@ import { PiBookmarksSimpleFill, PiBookmarksSimpleLight } from "react-icons/pi";
 import axiosInstance from "../instances/Axiosinstances";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-const BookmarkPlaylistCard = ({ playlist,onRemove }) => {
+const BookmarkPlaylistCard = ({ playlist,setBookMarkIds }) => {
 
   const {
     title,
@@ -35,7 +35,9 @@ const BookmarkPlaylistCard = ({ playlist,onRemove }) => {
         // getTutorPlayList();
         toast.success("Playlist removed from the bookmarks")
                     
-         if (onRemove) onRemove();
+        //  if (onRemove) onRemove();
+         setBookMarkIds((prevIds) => prevIds.filter((id) => id !== _id));
+        
       }
     } catch (err) {
       console.log("error", err.message);

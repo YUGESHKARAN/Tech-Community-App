@@ -127,8 +127,8 @@ function BookMarkPage() {
   //   }
   // };
 
-  const addBookMarkPostId = async (e, postId) => {
-    e.preventDefault();
+  const addBookMarkPostId = async (postId) => {
+    // e.preventDefault();
 
     try {
       const response = await axiosInstance.post(
