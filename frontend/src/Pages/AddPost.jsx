@@ -624,9 +624,9 @@ function AddPost() {
       
        <div className="min-h-screen   w-full pt-4 pb-8">
 
-  <div className="w-full  mx-auto  px-4">
+  <div className="w-full  mx-auto  md:px-4">
 
-    <div className="mb-8 flex items-center justify-between">
+    <div className="mb-8 flex px-4 items-center justify-between">
       <div>
         <h1 className="md:text-3xl text-2xl font-bold font-semibold text-white tracking-tight">
           Create New Post
@@ -657,13 +657,13 @@ function AddPost() {
       </div>
     </div>
 
-    <div className="grid grid-cols-1   lg:grid-cols-3 gap-4 lg:gap-0">
+    <div className="grid grid-cols-1 px-2 md:px-0  lg:grid-cols-3 gap-4 lg:gap-0">
 
       {/* LEFT COLUMN */}
-      <div className="space-y-4 md:sticky top-7 self-start md:col-span-1">
+      <div className="space-y-4 md:sticky top-7  self-start md:col-span-1">
 
         {/* Description / Tips */}
-        <div className="bg-[#0f172a]/80 lg:w-11/12 border border-gray-800 rounded-2xl p-6 text-gray-300">
+        <div className="bg-[#0f172a]/80 lg:w-11/12 border border-gray-800 rounded-lg md:rounded-xl px-4 py-6 md:p-6 text-gray-300">
           <h2 className="text-lg font-semibold text-white mb-3">
             Writing Tips
           </h2>
@@ -681,7 +681,7 @@ function AddPost() {
 
         {/* AI Assistant (Always visible on desktop) */}
         <div
-          className={`bg-[#0f172a]/80 border lg:w-11/12 border-gray-800 rounded-2xl p-6 flex flex-col
+          className={`bg-[#0f172a]/80 border lg:w-11/12 border-gray-800 rounded-lg md:rounded-xl px-4 py-6 md:p-6 flex flex-col
           ${!chatbot ? "hidden lg:flex" : "flex"}`}
         >
 
@@ -748,11 +748,11 @@ function AddPost() {
 
       {/* RIGHT COLUMN FORM */}
       <div
-        className={`bg-[#0f172a]/80 md:col-span-2  backdrop-blur-md border  border-gray-800 rounded-lg px-4 py-6  md:p-8 shadow-xl
+        className={`bg-[#0f172a]/80 md:col-span-2   border  border-gray-800 rounded-lg px-4 py-6  md:p-8 shadow-xl
         ${chatbot ? "hidden lg:block" : "block"}`}
       >
 
-        <form onSubmit={handleSubmit} className="space-y-7">
+        <form onSubmit={handleSubmit} className="space-y-9 md:space-y-7">
 
           {/* TITLE */}
           <div>
