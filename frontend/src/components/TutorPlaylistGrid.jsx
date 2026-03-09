@@ -3,10 +3,12 @@ import TutorPlaylistCard from "./TutorPlaylistCard";
 import useTutorPlaylist from "../hooks/useTutorPlaylist";
 
 const TutorPlaylistGrid = () => {
-  const { tutorPlayList, loading, hasMore } = useTutorPlaylist();
+  const { tutorPlayList, playlistCount, loading, hasMore } = useTutorPlaylist();
   // console.log("playlist", tutorPlayList)
-  return (
-    <div
+  return ( 
+    <>
+    
+{   playlistCount>0 ? <div
       // className="
       //   flex gap-6 overflow-x-auto pb-4
       //   sm:grid sm:grid-cols-2
@@ -42,7 +44,13 @@ const TutorPlaylistGrid = () => {
           No more playlists
         </p>
       )}
-    </div>
+    </div>:
+    <p className="text-gray-400 flex justify-center items-center h-56 text-center py-4">
+                  No playlists available!
+                </p>
+    }
+
+    </>
   );
 };
 

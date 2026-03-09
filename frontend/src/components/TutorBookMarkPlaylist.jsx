@@ -83,7 +83,7 @@ const TutorBookMarkPlaylist = () => {
 
 useEffect(() => {
   getBookMarkPlaylist();
-}, [page]);
+}, [page ]);
 
 useEffect(() => {
   const handleScroll = () => {
@@ -166,10 +166,8 @@ useEffect(() => {
           >
             <BookmarkPlaylistCard
               playlist={playlist}
-              // onRemove={() => {
-              //   getBookMarkPlaylist();
-              // }}
-              setBookMarkIds = {setBookMarkIds}
+            
+              setBookMarPlaylist = {setBookMarPlaylist}
             />
           </div>
         ))}

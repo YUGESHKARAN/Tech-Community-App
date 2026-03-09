@@ -300,17 +300,11 @@ function BlogContainer({activeTab, setActiveTab}) {
             </h2>
             <div className=" md:p-4 shadow-inner">
               {/* {  loading ? <TutorPlaylistGridSkeleton /> : <TutorPlaylistGrid />} */}
-              {playlistCount > 0 ? (
-                loading ? (
+              {loading ? (
                   <TutorPlaylistGridSkeleton />
                 ) : (
                   <TutorPlaylistGrid />
-                )
-              ) : (
-                <p className="text-gray-400 flex justify-center items-center h-56 text-center py-4">
-                  No playlists available!
-                </p>
-              )}
+                )}
             </div>
           </section>
         )}
