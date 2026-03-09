@@ -313,11 +313,11 @@ useEffect(() => {
   console.log("post id", postId);
 
   return (
-    <div className="w-full min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 relative">
+    <div className="w-full min-h-screen bg-gray-900 relative">
       <NavBar />
 
       {/* Main Container */}
-      {!loading && <div className="w-full mx-auto px-4 md:px-8 py-6 pb-20  md:py-10">
+      {!loading && <div className="w-full mx-auto px-3 md:px-4 md:px-8 py-6 pb-20  md:py-10">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
@@ -328,7 +328,7 @@ useEffect(() => {
                     ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`
                     : userImg
                 }
-                className="w-10 h-10 rounded-full object-cover bg-white border border-white/30"
+                className="w-10 h-10 rounded-full object-cover bg-white border border-neutral-700/40"
                 alt="Author"
               />
             </Link>
@@ -346,23 +346,23 @@ useEffect(() => {
 
           <button
             onClick={() => navigate(-1)}
-            className="px-3 py-1.5 rounded-md bg-[#F8EFBA] text-[#182C61] text-sm font-medium"
+            className="px-3 py-1.5 rounded-md bg-[#F8EFBA] text-[#182C61] text-xs md:text-sm font-medium"
           >
             Back
           </button>
         </div>
 
         {/* Title */}
-        <h1 className="text-xl md:text-3xl font-semibold text-white mb-6">
+        <h1 className="text-xl md:text-3xl font-semibold text-white mb-4 md:mb-6">
           {singlePostData.title}
         </h1>
 
         {/* Two Column Layout */}
         <div className="grid grid-cols-1  md:grid-cols-6 gap-6">
           {/* LEFT COLUMN */}
-          <div className="md:col-span-4  space-y-6">
+          <div className="md:col-span-4  space-y-2 md:space-y-6">
             {/* Banner */}
-            <div className="rounded-2xl overflow-hidden border border-white/10 bg-black">
+            <div className="md:rounded-xl rounded-md overflow-hidden border border-white/10 bg-black">
               <img
                 src={
                   singlePostData.image
@@ -382,10 +382,10 @@ useEffect(() => {
             </div>
 
             {/* Description */}
-            <div className="bg-gray-800/60 border border-neutral-700 md:rounded-2xl rounded-lg p-2 md:p-5">
+            <div className=" border border-neutral-700/40 md:rounded-xl rounded-lg p-2 md:p-5">
               {singlePostData.description && showContent ? (
                 <>
-                  <p className="text-sm md:text-base text-gray-300 leading-relaxed break-words">
+                  <p className="text-sm md:text-sm text-gray-300 leading-relaxed break-words">
                     {renderTextWithHashtags(singlePostData.description)}
                   </p>
                   <span
@@ -397,7 +397,7 @@ useEffect(() => {
                 </>
               ) : (
                 <>
-                  <p className="text-sm md:text-base text-gray-300 line-clamp-5 leading-relaxed break-words">
+                  <p className="text-sm md:text-sm text-gray-300 line-clamp-5 leading-relaxed break-words">
                     {renderTextWithHashtags(singlePostData.description)}
                   </p>
                   <span
@@ -416,7 +416,7 @@ useEffect(() => {
             <AITechAssistant currentPostId={singlePostData._id} />
           </div>
 
-          <div className="md:col-span-2 space-y-6 md:sticky md:top-24 h-fit">
+          <div className="md:col-span-2 space-y-2 md:space-y-6 md:sticky md:top-24 h-fit">
             {/* Personal Assistant */}
             <div className="text-4xl text-white hidden md:block ">
               <AITechAssistant currentPostId={singlePostData._id} />
@@ -425,7 +425,7 @@ useEffect(() => {
             {/* bg-gradient-to-b from-slate-900/80 to-slate-800/80 */}
             {(singlePostData.documents?.length > 0 ||
               singlePostData.links?.length > 0) && (
-              <div className="md:rounded-2xl rounded-lg bg-gradient-to-b from-slate-900/80 to-slate-800/80 border border-slate-700/60  p-6 backdrop-blur-xl">
+              <div className="md:rounded-xl rounded-lg  border border-neutral-700/50  p-6">
                 {/* Header */}
                 <div className="flex items-center gap-2 mb-5">
                   {/* <div className="w-9 h-9 flex items-center justify-center rounded-lg bg-blue-600/15 border border-blue-500/20">
@@ -453,7 +453,7 @@ useEffect(() => {
                           rel="noopener noreferrer"
                           className="group flex items-center gap-3 px-4 py-2.5
                             rounded-xl border border-slate-600/40
-                            bg-slate-800/60 hover:bg-slate-700/70
+                            bg-slate-800/60 hover:bg-slate-800
                             transition"
                         >
                           <div className="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-700/70">
@@ -517,7 +517,7 @@ useEffect(() => {
 
             {/* Videos */}
             {youtubeVideo?.length > 0 && (
-              <div className="bg-gradient-to-b from-slate-900/80 to-slate-800/80 border border-gray-700 rounded-lg md:rounded-2xl p-5">
+              <div className=" border border-neutral-700/50 rounded-lg md:rounded-xl p-5">
                 <h3 className="text-base font-semibold text-white mb-3">
                   🎥 Video Sources
                 </h3>
@@ -575,8 +575,8 @@ useEffect(() => {
             <div
               className="
                 bg-gray-900
-                md:border border-gray-700
-                md:rounded-2xl
+                border border-neutral-700/50
+                md:rounded-xl
                 rounded-lg
                 p-5
                 text-white

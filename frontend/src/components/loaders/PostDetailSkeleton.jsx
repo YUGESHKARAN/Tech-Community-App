@@ -1,6 +1,6 @@
 const PostDetailSkeleton = () => {
   return (
-    <div className="w-full mx-auto px-4 md:px-8 py-6 pb-20 md:py-10 animate-pulse">
+    <div className="w-full mx-auto px-3 md:px-4 md:px-8 py-6 pb-20 md:py-10 animate-pulse">
       
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
@@ -15,19 +15,19 @@ const PostDetailSkeleton = () => {
       </div>
 
       {/* Title */}
-      <div className="h-8 w-3/4 bg-gray-700 rounded mb-6" />
+      <div className="h-8 w-3/4 bg-gray-700 rounded mb-4 md:mb-6" />
 
       {/* Two Column Layout */}
       <div className="grid grid-cols-1 md:grid-cols-6 gap-6">
         
         {/* LEFT COLUMN */}
-        <div className="md:col-span-4 space-y-6">
+        <div className="md:col-span-4 space-y-2 md:space-y-6">
           
           {/* Banner */}
-          <div className="h-72 md:h-96 bg-gray-800 rounded-2xl border border-gray-700" />
+          <div className="h-72 md:h-96 bg-gray-800 rounded-xl border border-gray-700" />
 
           {/* Description */}
-          <div className="bg-gray-800/60 border border-gray-700 rounded-2xl p-5 space-y-3">
+          <div className="bg-gray-800/60 border border-gray-700 rounded-xl p-5 space-y-3">
             <div className="h-4 w-full bg-gray-700 rounded" />
             <div className="h-4 w-full bg-gray-700 rounded" />
             <div className="h-4 w-5/6 bg-gray-700 rounded" />
@@ -35,14 +35,21 @@ const PostDetailSkeleton = () => {
           </div>
         </div>
 
+        <button
+                  // onClick={() => setOpen(true)}
+                  className=" bottom-4 flex items-center gap-2 bg-gray-700 w-20 h-7 right-4 bg text-black text-sm px-5 py-2 rounded-full animate-pulse md:hidden shadow-xl"
+                >
+                 
+                </button>
+
         {/* RIGHT COLUMN */}
-        <div className="md:col-span-2 space-y-6">
+        <div className="md:col-span-2 space-y-2 md:space-y-6">
           
           {/* Assistant Box */}
-          <div className="h-40 bg-gray-800 rounded-2xl border border-gray-700" />
+          <div className="h-40 bg-gray-800 rounded-xl border border-gray-700" />
 
           {/* Resources Box */}
-          <div className="bg-gray-800 rounded-2xl border border-gray-700 p-6 space-y-4">
+          <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 space-y-4">
             <div className="h-5 w-32 bg-gray-700 rounded" />
             <div className="flex gap-3">
               <div className="h-10 w-28 bg-gray-700 rounded-xl" />
@@ -51,7 +58,7 @@ const PostDetailSkeleton = () => {
           </div>
 
           {/* Comments */}
-          <div className="bg-gray-800 rounded-2xl border border-gray-700 p-5 space-y-4">
+          <div className="bg-gray-800 rounded-xl border border-gray-700 p-5 space-y-4">
             <div className="h-5 w-24 bg-gray-700 rounded" />
             {[...Array(3)].map((_, i) => (
               <div key={i} className="flex gap-3">
