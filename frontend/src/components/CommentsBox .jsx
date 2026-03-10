@@ -81,7 +81,7 @@ const CommentsBox = ({ messages, viewComments }) => {
           </div>
 
           {/* Message */}
-          <p className="text-xs text-white leading-relaxed break-words">
+          <p className={`text-xs text-white leading-relaxed break-words ${!viewComments && 'line-clamp-2' }`}>
             {msg.message}
           </p>
 
