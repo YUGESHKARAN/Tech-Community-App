@@ -27,6 +27,7 @@ import axiosInstance from "../instances/Axiosinstances";
 import user from "../images/user.png";
 import { CiMenuKebab } from "react-icons/ci";
 import { BsFillMenuButtonWideFill, BsPersonWorkspace } from "react-icons/bs";
+import getTimeAgo from "../components/DateCovertion";
 function NavBar() {
   const { logout } = useAuth();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -119,6 +120,7 @@ function NavBar() {
       const response = await axiosInstance.delete(
         `/blog/author/notification/deleteall?email=${userEmail}`,
       );
+      fetchNotifications();
 
       console.log("deleted", response.data);
     } catch (err) {
@@ -145,6 +147,7 @@ function NavBar() {
   }, []);
 
   // console.log("profile",profile)
+  console.log("notification", note)
 
   return (
     <div
@@ -489,75 +492,93 @@ function NavBar() {
         </div>
       </div>
 
+     <div
+  ref={notificationRef}
+  className={`${
+    showNotefication
+      ? "fixed top-16 right-2 z-50 md:w-[320px]  w-72  pb-4 bg-gray-900  border border-gray-700 shadow-2xl rounded-xl md:rounded-2xl transition-all duration-300"
+      : "hidden"
+  }`}
+>
+  {/* Header */}
+  <div className="flex items-center justify-between px-4 py-3 border-b border-gray-700 sticky top-0 bg-gray-900 z-40 rounded-t-2xl">
+    <h2 className="text-sm font-semibold text-white tracking-wide flex items-center ">
+      🔔 Notifications
+    </h2>
+
+    <button
+      onClick={() => deleteAllNotification(userEmail)}
+      className="text-xs text-gray-300 hover:text-white transition"
+    >
+      Clear all
+    </button>
+  </div>
+
+  {/* Notification List */}
+  <div className="flex flex-col divide-y max-h-[440px] overflow-y-auto emerald-scrollbar divide-gray-800">
+    {[...note].reverse().map((data, index) => (
       <div
-        ref={notificationRef}
-        className={`${
-          showNotefication
-            ? "fixed top-14 right-2 z-50 w-52 md:w-80 max-h-72 overflow-y-auto bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700 shadow-2xl rounded-xl p-4 pt-0 space-y-3 transition-all duration-300 scrollbar-hide"
-            : "hidden"
-        }`}
+        key={index}
+        className="group relative px-4 py-3 hover:bg-gray-800 transition duration-200"
       >
-        {/* Header */}
-        <div className="flex items-center pt-3 justify-between sticky top-0 bg-gradient-to-br from-gray-800 to-gray-900 z-40 pb-2 border-b border-gray-700">
-          <h2 className="md:text-sm text-xs font-semibold text-white tracking-wide">
-            🔔 Notifications
-          </h2>
-          <button
-            onClick={() => deleteAllNotification(userEmail)}
-            className="text-xs font-medium text-gray-900 bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded-md transition duration-200"
-          >
-            Clear All
-          </button>
-        </div>
+        <Link to={data.url} className="flex gap-3 items-start">
+          
+          {/* Avatar */}
+          <div className="relative flex-shrink-0">
+            <img
+              src={
+                data.profile
+                  ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.profile}`
+                  : user
+              }
+              alt="Profile"
+              className="w-9 h-9 rounded-full object-cover bg-white border border-gray-600"
+            />
 
-        <div className="flex flex-col space-y-2 md:space-y-4">
-          {[...note].reverse().map((data, index) => (
-            <div
-              key={index}
-              className="relative flex items-start gap-3 p-2 bg-gray-800 rounded-md hover:bg-gray-700 transition-all duration-200 group"
-            >
-              {/* Profile */}
-              <img
-                src={
-                  data.profile
-                    ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.profile}`
-                    : user
-                }
-                alt="Profile"
-                className="w-7 h-7 bg-white rounded-full border-2 border-green-500 object-cover shadow-sm"
-              />
-
-              {/* Content */}
-              <Link
-                to={data.url}
-                className="flex-1 flex flex-col overflow-hidden"
-              >
-                <p className="text-sm text-white font-semibold truncate">
-                  {data.user}
-                </p>
-                <p className="text-[10px] text-gray-300 truncate max-w-[200px]">
-                  {data.message || "You got a notification"}...
-                </p>
-              </Link>
-
-              {/* Delete Icon */}
-              <div
-                onClick={() => deleteSigleNotification(userEmail, data._id)}
-                className="absolute top-1 right-1 text-gray-400 hover:text-red-500 cursor-pointer transition duration-200"
-              >
-                <IoIosClose size={18} />
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Optional: No Notifications State */}
-        {note.length === 0 && (
-          <div className="text-center text-gray-400 text-sm py-4">
-            No notifications
+            {/* Activity indicator */}
+            <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 rounded-full border border-gray-900"></span>
           </div>
-        )}
+
+          {/* Content */}
+          <div className="flex flex-col flex-1 min-w-0">
+            <p className="text-sm text-white font-medium truncate">
+              {data.user}
+            </p>
+
+            <p className="text-xs text-gray-400 line-clamp-2">
+              {data.message || "You got a notification"}
+            </p>
+
+            <span className="text-[10px] text-gray-500 mt-1">
+              {getTimeAgo(data.timestamp)}
+            </span>
+          </div>
+        </Link>
+
+        {/* Delete Button */}
+        <button
+          onClick={() => deleteSigleNotification(userEmail, data._id)}
+          className="absolute top-3 right-3 md:opacity-0 group-hover:opacity-50 transition text-gray-500 hover:text-red-300"
+        >
+          <IoIosClose size={18} />
+        </button>
       </div>
+    ))}
+        
+  
+  
+  </div>
+
+  {/* Empty State */}
+  {note.length === 0 && (
+    <div className="flex flex-col items-center justify-center py-10 text-gray-400 text-sm">
+      {/* <span className="text-2xl mb-2">🔔</span> */}
+      No notifications yet
+    </div>
+  )}
+</div>
+
+      
     </div>
   );
 }
