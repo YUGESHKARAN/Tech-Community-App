@@ -51,7 +51,8 @@ const CommentsBox = ({ messages, viewComments }) => {
   {messages.length > 0 ? (
     (viewComments ? messages : messages.slice(0, 1)).map((msg, index) => (
       <div
-        key={msg._id}
+        // key={msg._id}
+        key={(msg._id || `temp-${index}`)}
         
         className="flex items-start gap-4 py-4 last:border-none hover:bg-slate-800/40 transition"
       >

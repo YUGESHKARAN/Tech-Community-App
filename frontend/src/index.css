@@ -67,3 +67,26 @@
 .emerald-scrollbar::-webkit-scrollbar-thumb:active {
   background: rgba(16, 185, 129, 0.9);
 }
+
+
+.white-scrollbar::-webkit-scrollbar {
+  width: 3px;
+}
+
+.white-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.white-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(211, 210, 255, 0.96); /* white glass */
+  border-radius: 999px;
+  transition: all 0.25s ease;
+}
+
+.white-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(16, 185, 129, 0.65);
+}
+
+.white-scrollbar::-webkit-scrollbar-thumb:active {
+  background: rgba(16, 185, 129, 0.9);
+}

@@ -27,6 +27,7 @@ import userImg from "../images/user.png";
 import { SiGooglegemini } from "react-icons/si";
 import AITechAssistant from "../components/AITechAssistant.jsx";
 import PostDetailSkeleton from "../components/loaders/PostDetailSkeleton.jsx";
+import { VscSend } from "react-icons/vsc";
 function ViewPage() {
   const user = localStorage.getItem("username");
   const userEmail = localStorage.getItem("email");
@@ -180,9 +181,10 @@ function ViewPage() {
 useEffect(() => {
   const socketUrl = import.meta.env.VITE_WEBSOCKET_URL;
 
-  const newSocket = io(socketUrl, {
-    transports: ["polling"],
-  });
+  // const newSocket = io(socketUrl, {
+  //   transports: ["polling"],
+  // });
+  const newSocket = io(socketUrl);
 
   setSocket(newSocket);
 
@@ -190,29 +192,49 @@ useEffect(() => {
   newSocket.emit("joinPostRoom", postId);
 
   // 🔥 FIXED LIVE COMMENT UPDATE
+  // const handleNewMessage = (comment) => {
+  //   setMessages((prev) => {
+  //     // 1️⃣ Remove optimistic version (no _id but same content)
+  //     const cleaned = prev.filter((msg) => {
+  //       if (!msg._id) {
+  //         return !(
+  //           msg.message === comment.message &&
+  //           msg.user === comment.user
+  //         );
+  //       }
+  //       return true;
+  //     });
+
+  //     // 2️⃣ Prevent duplicate real messages
+  //     const exists = cleaned.some(
+  //       (msg) => msg._id === comment._id
+  //     );
+
+  //     if (exists) return cleaned;
+
+  //     return [...cleaned, comment];
+  //   });
+  // };
+
   const handleNewMessage = (comment) => {
-    setMessages((prev) => {
-      // 1️⃣ Remove optimistic version (no _id but same content)
-      const cleaned = prev.filter((msg) => {
-        if (!msg._id) {
-          return !(
-            msg.message === comment.message &&
-            msg.user === comment.user
-          );
-        }
-        return true;
-      });
+  setMessages((prev) => {
 
-      // 2️⃣ Prevent duplicate real messages
-      const exists = cleaned.some(
-        (msg) => msg._id === comment._id
-      );
-
-      if (exists) return cleaned;
-
-      return [...cleaned, comment];
+    const cleaned = prev.filter((msg) => {
+      if (msg._id?.startsWith("temp")) {
+        return !(
+          msg.message === comment.message &&
+          msg.email === comment.email
+        );
+      }
+      return true;
     });
-  };
+
+    const exists = cleaned.some((msg) => msg._id === comment._id);
+    if (exists) return cleaned;
+
+    return [...cleaned, comment];
+  });
+};
 
   newSocket.on("newMessage", handleNewMessage);
 
@@ -244,10 +266,14 @@ useEffect(() => {
       createdAt: new Date(), // optional but useful
     };
 
-    // ✅ OPTIMISTIC UPDATE (instant UI)
-    setMessages((prev) => [...prev, messageData]);
+    const optimisticMessage = {
+  ...messageData,
+  _id: `temp-${Date.now()}`
+};
 
-    
+    // ✅ OPTIMISTIC UPDATE (instant UI)
+    setMessages((prev) => [...prev, optimisticMessage]);
+
 
     // Emit to backend (others will receive via socket)
     socket.emit("newMessage", messageData);
@@ -619,20 +645,21 @@ useEffect(() => {
                 onChange={(e) => setNewMessage(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && postComment()}
                 placeholder="Write a comment..."
-                className="w-full hidden md:block mt-3 p-2 rounded-lg bg-gray-800 border border-gray-600 text-sm"
+                className="w-full hidden md:block mt-3 p-2 rounded-lg outline-none bg-gray-900/80 focus:border-neutral-600 border border-neutral-700/70 text-xs md:text-sm"
               />
 
               <button
                 onClick={postComment}
-                className=" hidden md:block mt-3 md:w-fit px-4 py-2 rounded-lg bg-gradient-to-r from-orange-500 to-yellow-500 text-sm font-medium text-gray-900"
+                className=" md:px-5 px-3 py-2 md:py-2 bg-emerald-600/20 hover:bg-emerald-500/20
+                         rounded-md text-xs md:text-sm  text-emerald-400 transition-all duration-300 w-fit mt-3"
               >
-                Post
+                Post It
               </button>
             </div>
 
             {/* Fixed Comment Input Bar */}
             <div
-              className={`${showAssistant ? "hidden" : "fixed md:hidden bottom-0 left-0 right-0 z-30 bg-gray-900 border-t border-gray-700 backdrop-blur-md"}`}
+              className={`${showAssistant ? "hidden" : "fixed md:hidden bottom-0 left-0 right-0 z-30 bg-gray-900  backdrop-blur-md"}`}
             >
               <div className="max-w-7xl mx-auto px-3 md:px-8 py-3 flex items-center gap-3">
                 {/* Input */}
@@ -646,17 +673,12 @@ useEffect(() => {
                     flex-1
                     px-4 py-2.5
                     rounded-xl
-                    bg-gray-800
-                    text-sm text-white
-                    placeholder-gray-400
-                    transition-all
-                    border-none
-                    outline-none focus:ring-1 focus:ring-gray-600
+                    outline-none bg-gray-900/80 focus:border-white/50 border border-neutral-700/70 text-sm
                   "
                 />
 
                 {/* Button */}
-                <button
+                {/* <button
                   onClick={postComment}
                   className="
                       px-5 py-2.5
@@ -670,7 +692,16 @@ useEffect(() => {
                     "
                 >
                   Post
-                </button>
+                </button> */}
+
+                <button
+                            onClick={postComment}
+                            // className="bg-white text-black px-4 rounded-xl text-sm text-base block"
+                            className="text-2xl md:text-2xl transition-all duration-300 hover:text-gray-400 text-gray-500 block"
+                          >
+                            {/* Send */}
+                            <VscSend/>
+                          </button>
               </div>
             </div>
           </div>
