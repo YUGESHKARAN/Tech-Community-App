@@ -1,6 +1,6 @@
 const TutorPlaylistCardSkeleton = () => {
   return (
-    <div className="relative w-full mt-4 max-w-sm animate-pulse">
+    <div className="relative w-full mt-7 max-w-sm animate-pulse">
       {/* STACK LAYER 3 */}
       <div className="absolute bottom-2 left-3 w-[95%] h-full bg-zinc-700 rounded-xl z-0" />
 
@@ -8,10 +8,10 @@ const TutorPlaylistCardSkeleton = () => {
       <div className="absolute bottom-1 left-1.5 w-[97%] h-full bg-zinc-800 rounded-xl z-10" />
 
       {/* MAIN CARD */}
-      <div className="relative z-20 bg-zinc-900 rounded-xl overflow-hidden shadow-xl">
+      <div className="relative z-20 bg-gray-900 rounded-xl overflow-hidden ">
         
         {/* Thumbnail */}
-        <div className="h-24 md:h-28 bg-zinc-700" />
+        <div className=" h-48 md:h-44 bg-zinc-700" />
 
         {/* Content */}
         <div className="md:p-4 p-2 space-y-3">
@@ -41,14 +41,19 @@ const TutorPlaylistGridSkeleton = () => {
       //   sm:overflow-visible
       // "
         className="
-    gap-6 pb-4 gap-3
-    grid grid-cols-2
+        pb-4 gap-5 md:gap-6
+    grid grid-cols-1
+    md:grid-cols-2
     lg:grid-cols-3
-    xl:grid-cols-5
+    xl:grid-cols-4
+    2xl:grid-cols-5
     overflow-visible
+    space-y-5
+    md:space-y-0
+    mt-0
   "
     >
-      {[...Array(5)].map((_, index) => (
+      {[...Array(4)].map((_, index) => (
         <div key={index} className="min-w-[150px] sm:min-w-0">
           <TutorPlaylistCardSkeleton />
         </div>

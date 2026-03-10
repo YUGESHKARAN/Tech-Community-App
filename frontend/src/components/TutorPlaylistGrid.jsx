@@ -4,11 +4,12 @@ import useTutorPlaylist from "../hooks/useTutorPlaylist";
 
 const TutorPlaylistGrid = () => {
   const { tutorPlayList, playlistCount, loading, hasMore } = useTutorPlaylist();
-  // console.log("playlist", tutorPlayList)
+  console.log("playlist", tutorPlayList)
   return ( 
     <>
     
-{   playlistCount>0 ? <div
+{   tutorPlayList?.length>0 ?
+ <div
       // className="
       //   flex gap-6 overflow-x-auto pb-4
       //   sm:grid sm:grid-cols-2
@@ -18,10 +19,15 @@ const TutorPlaylistGrid = () => {
       // "
       className="
      pb-4 gap-5 md:gap-6
-    grid grid-cols-2
+    grid grid-cols-1
+    md:grid-cols-2
     lg:grid-cols-3
-    xl:grid-cols-5
+    xl:grid-cols-4
+    2xl:grid-cols-5
     overflow-visible
+    space-y-5
+    md:space-y-0
+    mt-7
   "
     >
       {tutorPlayList?.map((playlist) => (
@@ -33,6 +39,16 @@ const TutorPlaylistGrid = () => {
           <TutorPlaylistCard playlist={playlist} />
         </div>
       ))}
+       {tutorPlayList?.map((playlist) => (
+        <div
+          key={playlist._id}
+          // className="min-w-[200px]  sm:min-w-0 "
+          className="min-w-[150px]  sm:min-w-0 "
+        >
+          <TutorPlaylistCard playlist={playlist} />
+        </div>
+      ))}
+      
 
       {loading && tutorPlayList?.length>0 && (
         <p className="text-center py-4 col-span-full text-gray-500">

@@ -178,7 +178,7 @@ function ProfilePage() {
         {/* Two Column Layout */}
         <div className="grid md:grid-cols-[350px_1fr] gap-4">
           {/* LEFT COLUMN — Profile Overview */}
-          <div className="bg-gradient-to-b mx-3 md:mx-0 from-gray-800/70 to-gray-900/60  rounded-2xl p-6 text-center shadow-lg sticky top-7 self-start">
+          <div className="bg-gradient-to-b mx-3 md:mx-0 from-gray-800/70 to-gray-900/60  rounded-2xl p-6 text-center shadow-lg md:sticky top-7 self-start">
             {/* Profile Picture */}
             <div className="relative w-fit mx-auto mb-6">
               {previewImage ? (

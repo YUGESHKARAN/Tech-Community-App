@@ -67,18 +67,18 @@ const BookmarkPlaylistCard = ({ playlist,setBookMarPlaylist }) => {
 
       {/* MAIN CARD */}
       <div
-        className="relative z-20 bg-zinc-800 rounded-xl 
+        className="relative z-20 bg-gray-900 rounded-xl 
         border border-zinc-900 overflow-hidden 
         shadow-xl transition-transform duration-300 hover:-translate-y-1"
       >
         {/* Thumbnail */}
         <Link to={`/viewplaylist/${playlist._id}`}>     
-        <div className="relative h-24 md:h-28 bg-zinc-800">
+        <div className="relative  h-48 md:h-44 bg-zinc-800">
           {thumbnail ? (
             <img
               src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${thumbnail}`}
               alt={title}
-              className="h-full w-full object-cover"
+              className="h-full w-full rounded-xl object-cover"
             />
           ) : (
             <div className="flex h-full items-center justify-center text-zinc-400 text-sm">
@@ -88,9 +88,9 @@ const BookmarkPlaylistCard = ({ playlist,setBookMarPlaylist }) => {
          
 
           {/* Playlist Badge */}
-          <span className="absolute top-2 left-2 bg-emerald-600 text-white text-xs font-medium px-2 py-1 rounded">
-            {/* Playlist */}
-            {domain}
+          <span className="absolute top-3 left-3 bg-emerald-600 text-white text-xs font-medium px-2 py-1 rounded">
+            Playlist
+            {/* {domain} */}
           </span>
 
           {/* Lessons count */}
@@ -101,24 +101,24 @@ const BookmarkPlaylistCard = ({ playlist,setBookMarPlaylist }) => {
         </Link> 
 
         {/* Content */}
-        <div className="md:p-4 p-2 space-y-1 md:space-y-3">
-          <h3 className="text-white md:text-base text-sm terminate font-semibold line-clamp-1">
+        <div className="space-y-2 mt-4 px-2 md:space-y-2">
+          <h3 className="text-base text-slate-200 terminate font-medium line-clamp-1">
             {title}
           </h3>
 
           <div className="flex items-center justify-between ">
           
-            <div className="flex items-center gap-1">
-              <span className="inline-block text-xs bg-emerald-600/20 text-emerald-400 px-2 py-1 line-clamp-1 rounded">
-                {/* {domain} */}
-                Playlist
+            <div className="flex items-center md:gap-3 gap-3">
+              <span className="inline-block text-xs md:text-xs bg-emerald-600/20 text-emerald-400 px-3 py-2 rounded-md">
+                {domain}
+                {/* Playlist */}
               </span>
               <div
                 onClick={() => {
                   addBookMarkPostId(_id);
                 }}
               >
-                <PiBookmarksSimpleFill className="text-teal-500" />
+                <PiBookmarksSimpleFill className="text-teal-500 md:text-lg cursor-pointer" />
               </div>
             </div>
 
@@ -131,7 +131,7 @@ const BookmarkPlaylistCard = ({ playlist,setBookMarPlaylist }) => {
                       : user
                   }
                   // alt={collab.name}
-                  className="h-4 md:h-7 w-4 md:w-7 rounded-full border-2 border-teal-600 bg-white"
+                  className="h-7 w-7 rounded-full border-2 border-teal-600 bg-white"
                 />
                 {collaborators.slice(0, 3).map((collab) => (
                   <img
@@ -142,7 +142,7 @@ const BookmarkPlaylistCard = ({ playlist,setBookMarPlaylist }) => {
                         : user
                     }
                     alt={collab.name}
-                    className="h-4 md:h-7 w-4 md:w-7 rounded-full border-2 border-teal-600 bg-white"
+                    className="h-7 w-7 rounded-full border-2 border-teal-600 bg-white"
                   />
                 ))}
               </div>

@@ -118,10 +118,10 @@ useEffect(() => {
     <>
     {  
   bookmakIds?.length > 0 ?
-    <section className={`${tutorPlayList?.filter((playlist) => bookmakIds?.includes(playlist._id))?.length> 0 ? "space-y-4 mt-2" : "hidden"}`}>
-          <h2 className="  text-2xl md:text-4xl font-bold tracking-wide text-gray-200">
+    <section className={`${tutorPlayList?.filter((playlist) => bookmakIds?.includes(playlist._id))?.length> 0 ? "block" : "hidden"}`}>
+          {/* <h2 className="  text-2xl md:text-4xl font-bold tracking-wide text-gray-200">
             Playlists
-          </h2>
+          </h2> */}
 
 
    
@@ -135,11 +135,16 @@ useEffect(() => {
   //   sm:overflow-visible
   // "
     className="
-    gap-6 pb-4 
-    grid grid-cols-2
+    pb-4 gap-5 md:gap-6
+    grid grid-cols-1
+    md:grid-cols-2
     lg:grid-cols-3
-    xl:grid-cols-5
+    xl:grid-cols-4
+    2xl:grid-cols-5
     overflow-visible
+    space-y-5
+    md:space-y-0
+    mt-3
   "
     >
        

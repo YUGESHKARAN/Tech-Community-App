@@ -295,9 +295,7 @@ function BlogContainer({activeTab, setActiveTab}) {
         {/* Tutor Playlist section starts here */}
         {activeTab === "playlists" && (
           <section className="space-y-4 mt-4 mx-4 md:mx-auto w-11/12 md:w-full ">
-            <h2 className="md:pl-5  text-2xl md:text-4xl font-bold tracking-wide text-gray-200">
-              Featured Playlists
-            </h2>
+       
             <div className=" md:p-4 shadow-inner">
               {/* {  loading ? <TutorPlaylistGridSkeleton /> : <TutorPlaylistGrid />} */}
               {loading ? (
@@ -628,7 +626,7 @@ function BlogContainer({activeTab, setActiveTab}) {
                           >
                             {Array.isArray(bookMarkId) &&
                             bookMarkId.includes(data._id) ? (
-                              <PiBookmarksSimpleFill className="text-teal-600 text-xs" />
+                              <PiBookmarksSimpleFill className="text-teal-600" />
                             ) : (
                               <PiBookmarksSimpleLight />
                             )}

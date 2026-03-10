@@ -129,13 +129,13 @@ const YourPlaylistCard = ({ playlist, onRemove, onDelete }) => {
 
       {/* MAIN CARD */}
       <div
-        className="relative z-20 bg-zinc-800 rounded-xl 
+        className="relative z-20 bg-gray-900 rounded-xl 
         border border-zinc-900 overflow-hidden 
-        shadow-xl transition-transform duration-300 hover:-translate-y-1"
+         transition-transform duration-300 hover:-translate-y-1"
       >
         {/* Thumbnail */}
         {/* <Link to={`/viewplaylist/${_id}`}> */}
-        <div className="cursor-pointer relative h-24 md:h-28 bg-zinc-800">
+        <div className="cursor-pointer relative h-48 md:h-44 bg-zinc-800">
           <Link to={`/viewplaylist/${_id}`}>
             {thumbnail ? (
               <img
@@ -155,16 +155,16 @@ const YourPlaylistCard = ({ playlist, onRemove, onDelete }) => {
               deletePlaylist(_id);
             }}
             // className="absolute top-2 cursor-pointer right-2 bg-red-500 text-white text-xs font-medium px-2 py-1 rounded"
-            className="absolute top-2 cursor-pointer right-2   md:text-xl  font- text-md medium  rounded"
+            className="absolute top-3 cursor-pointer right-3   md:text-xl  font- text-md medium  rounded"
           >
             {/* Del */}
             <IoRemoveOutline  className="bg-red-500 rounded-full text-white" />
           </span>
 
           {/* Playlist Badge */}
-          <span className="absolute top-2 left-2 bg-emerald-600 text-white text-xs font-medium px-2 py-1 rounded">
-            {/* Playlist */}
-            {domain}
+          <span className="absolute top-3 left-3 bg-emerald-600 text-white text-xs font-medium px-2 py-1 rounded">
+            Playlist
+            {/* {domain} */}
           </span>
 
           {/* Lessons count */}
@@ -175,16 +175,16 @@ const YourPlaylistCard = ({ playlist, onRemove, onDelete }) => {
         {/* </Link> */}
 
         {/* Content */}
-        <div className="md:p-4 p-2 space-y-1 md:space-y-3">
-          <h3 className="text-white md:text-base text-sm terminate font-semibold line-clamp-1">
+        <div className="space-y-2 mt-4 px-2 md:space-y-2">
+          <h3 className="text-base text-slate-200 terminate font-medium line-clamp-1">
             {title}
           </h3>
 
           <div className="flex items-center justify-between ">
-            <div className="flex items-center gap-1">
-              <span className="inline-block text-xs bg-emerald-600/20 text-emerald-400 px-2 py-1 rounded">
-                {/* {domain} */}
-                Playlist
+            <div className="flex items-center gap-3">
+              <span className="inline-block text-xs md:text-xs bg-emerald-600/20 text-emerald-400 px-3 py-2 rounded-md">
+                {domain}
+                {/* Playlist */}
               </span>
               <div
                 onClick={() => {
@@ -193,9 +193,9 @@ const YourPlaylistCard = ({ playlist, onRemove, onDelete }) => {
                 className="cursor-pointer"
               >
                 {Array.isArray(bookMarkId) && bookMarkId.includes(_id) ? (
-                  <PiBookmarksSimpleFill className="text-teal-500" />
+                  <PiBookmarksSimpleFill className="text-teal-500 md:text-lg cursor-pointer" />
                 ) : (
-                  <PiBookmarksSimpleLight className="text-teal-500" />
+                  <PiBookmarksSimpleLight className="text-teal-500 md:text-lg cursor-pointer" />
                 )}
               </div>
               <Link to={`/editPlaylist/${_id}`}>
@@ -212,7 +212,7 @@ const YourPlaylistCard = ({ playlist, onRemove, onDelete }) => {
                       : user
                   }
                   // alt={collab.name}
-                  className="h-4 md:h-7 w-4 md:w-7 rounded-full border-2 border-teal-600 bg-white"
+                  className="h-7 w-7 rounded-full border-2 border-teal-600 bg-white"
                 />
                 {collaborators.slice(0, 2).map((collab) => (
                   <img
@@ -223,7 +223,7 @@ const YourPlaylistCard = ({ playlist, onRemove, onDelete }) => {
                         : user
                     }
                     alt={collab.name}
-                    className="h-4 md:h-7 w-4 md:w-7 rounded-full border-2 border-teal-600 bg-white"
+                    className="h-7 w-7 rounded-full border-2 border-teal-600 bg-white"
                   />
                 ))}
               </div>

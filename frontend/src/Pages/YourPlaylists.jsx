@@ -19,22 +19,27 @@ const YourPlaylist = () => {
 
   //   console.log("tutorPlayListByEmail", tutorPlayListByEmail);
   return (
-    <div className="w-full min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 h-auto reltive  ">
+    <div className="w-full min-h-screen bg-gray-900 h-auto reltive  ">
       <NavBar />
 
       <h1 className=" text-2xl w-full px-4 flex items-center gap-2 mt-4 mx-auto md:text-3xl font-semibold text-white tracking-wide">
         <BsPersonWorkspace />
         <span className="group text-white"> My Tutor Playlist</span>{" "}
       </h1>
-      <div className="min-h-screen w-full px-4 mt-4 mx-auto bg-gradient-to-br from-gray-900 to-gray-800 pb-8">
+      <div className="min-h-screen w-full px-4 mt-4 mx-auto bg-gray-900 pb-8">
         {tutorPlayListByEmail.length > 0 && (
           <div
             className="
-             md:gap-12 gap-6   pb-4
-            grid grid-cols-2
-            lg:grid-cols-3
-            xl:grid-cols-5
-            overflow-visible
+              pb-4 gap-5 md:gap-6
+    grid grid-cols-1
+    md:grid-cols-2
+    lg:grid-cols-3
+    xl:grid-cols-4
+    2xl:grid-cols-5
+    overflow-visible
+    space-y-5
+    md:space-y-0
+    mt-7
         "
           >
             {tutorPlayListByEmail?.map((playlist) => (
