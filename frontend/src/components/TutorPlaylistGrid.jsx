@@ -39,15 +39,7 @@ const TutorPlaylistGrid = () => {
           <TutorPlaylistCard playlist={playlist} />
         </div>
       ))}
-       {tutorPlayList?.map((playlist) => (
-        <div
-          key={playlist._id}
-          // className="min-w-[200px]  sm:min-w-0 "
-          className="min-w-[150px]  sm:min-w-0 "
-        >
-          <TutorPlaylistCard playlist={playlist} />
-        </div>
-      ))}
+    
       
 
       {loading && tutorPlayList?.length>0 && (
