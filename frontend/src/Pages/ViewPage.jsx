@@ -673,7 +673,7 @@ useEffect(() => {
                     flex-1
                     px-4 py-2.5
                     rounded-xl
-                    outline-none bg-gray-900/80 focus:border-white/50 border border-neutral-700/70 text-sm
+                    outline-none bg-gray-900/80 text-white focus:border-white/50 border border-neutral-700/70 text-sm
                   "
                 />
 
