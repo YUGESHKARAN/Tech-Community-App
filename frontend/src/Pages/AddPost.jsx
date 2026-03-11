@@ -32,15 +32,17 @@ function AddPost() {
     description: "",
     image: "",
   });
+
+
   const [messages, setMessages] = useState([
     {
-      message: `Hello ${user}, I’m here to transform your text into compelling post-ready content.`,
+      message: `Hi ${user}! I'm DraftMate AI, your assistant for refining post descriptions. Share your draft and I’ll help transform it into clear, engaging, publish-ready content.`,
       sender: "bot",
       direction: "incoming",
     },
     {
       message:
-        "After generating the content, click 'Back to Post' button. Your content will be automatically copied to the Description tab, feel free to edit it.",
+        "Your enhanced content will automatically appear in the Description tab, where you can review or edit it",
       sender: "bot",
       direction: "incoming",
     },
@@ -245,6 +247,8 @@ function AddPost() {
     const files = Array.from(e.target.files); // Convert FileList to Array
     setDocuments(files);
   };
+
+
 
   // console.log("links",links)
   // <div className="container min-h-screen mx-auto md:w-1/2 mx-auto w-11/12 py-8 px-2 md:px-4">
@@ -696,7 +700,7 @@ function AddPost() {
 
           <h2 className="text-lg font-semibold text-white flex items-center gap-2 mb-4">
             <img src={glow} className="w-5 h-5" />
-            AI Assistant
+            DraftMate AI
           </h2>
 
           <div className="flex-1 overflow-y-auto scrollbar-hide space-y-4 max-h-[400px] pr-2">
@@ -711,10 +715,10 @@ function AddPost() {
                 }`}
               >
                 <div
-                  className={`px-4 py-2 rounded-lg  text-xs text-left leading-relaxed max-w-md ${
+                  className={`px-3 py-2 rounded-lg  text-xs text-left leading-relaxed max-w-md ${
                     msg.direction === "outgoing"
-                      ? "bg-gray-800  ml-5 text-white"
-                      : "bg-gray-900 break-all mr-5 text-white"
+                      ? "bg-gray-800  md:ml-5 text-white"
+                      : "bg-gray-900 break-all md:mr-5 text-white"
                   }`}
                 >
                   {msg.message}
@@ -724,7 +728,7 @@ function AddPost() {
 
             {isTyping && (
               <div className="text-xs animate-pulse text-gray-400 italic">
-                Assistant is typing...
+              DraftMate AI is improving your content...
               </div>
             )}
           </div>
