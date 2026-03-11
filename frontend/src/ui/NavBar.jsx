@@ -147,7 +147,7 @@ function NavBar() {
   }, []);
 
   // console.log("profile",profile)
-  console.log("notification", note)
+  // console.log("notification", note)
 
   return (
     <div

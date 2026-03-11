@@ -336,7 +336,8 @@ useEffect(() => {
     }
   }, [viewComments]);
 
-  console.log("post id", postId);
+  // console.log("post id", postId);
+  // console.log("singlepost data", singlePostData);
 
   return (
     <div className="w-full min-h-screen bg-gray-900 relative">
@@ -439,13 +440,13 @@ useEffect(() => {
 
           {/* RIGHT COLUMN */}
           <div className="text-4xl text-white md:hidden">
-            <AITechAssistant currentPostId={singlePostData._id} />
+            <AITechAssistant currentPostId={singlePostData._id} category={singlePostData.category} />
           </div>
 
           <div className="md:col-span-2 space-y-2 md:space-y-6 md:sticky md:top-24 h-fit">
             {/* Personal Assistant */}
             <div className="text-4xl text-white hidden md:block ">
-              <AITechAssistant currentPostId={singlePostData._id} />
+              <AITechAssistant currentPostId={singlePostData._id} category={singlePostData.category} />
             </div>
             {/* Documents */}
             {/* bg-gradient-to-b from-slate-900/80 to-slate-800/80 */}

@@ -174,14 +174,14 @@ function ViewTutorPlaylist() {
     <div className="min-h-screen bg-gray-900 text-white">
       <NavBar />
 
-      <div className="w-full mx-auto px-2 md:px-4 py-6">
+      <div className="w-full mx-auto px-2 min-h-screen md:h-auto md:px-4 py-6">
         <h1 className="text-3xl w-full mb-7 mx-auto hidden md:block font-semibold">{loading? 'Loading Playlist...': playlistData?.title}</h1>
         {!loading &&
          <div className="grid w-full mx-auto md:h-screen grid-cols-1 lg:grid-cols-2 lg:gap-4 gap-6">
           {/* LEFT PANEL (Banner + Info) */}
           <div className="lg:col-span-1  p-2 md:sticky top-4 self-start  md:p-0 space-y-4">
             {/* Banner */}
-            <div className="relative rounded-xl overflow-hidden border border-gray-700">
+            <div className="relative rounded-xl   overflow-hidden bg-black border border-gray-700">
               <img
                 src={
                   playlistData.thumbnail
@@ -196,7 +196,7 @@ function ViewTutorPlaylist() {
                    )
                  }
                 alt="Playlist Banner"
-                className="w-full h-72 md:h-[70vh] object-cover"
+                className="w-full h-48 md:h-[60vh]  object-cover md:object-contain"
               />
             </div>
 

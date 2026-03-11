@@ -10,7 +10,7 @@ import blog1 from "../images/img_not_found.png";
 import { VscSend } from "react-icons/vsc";
 import { IoSendSharp } from "react-icons/io5";
 import Cookies from "js-cookie"
-export default function AITechAssistant({ currentPostId }) {
+export default function AITechAssistant({ currentPostId, category }) {
   const username = localStorage.getItem("username");
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -49,6 +49,7 @@ export default function AITechAssistant({ currentPostId }) {
       const res = await axios.post(`${assistantURL}/ask`, {
         query,
         current_post_id: currentPostId,
+        category
       }, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -162,6 +163,7 @@ export default function AITechAssistant({ currentPostId }) {
     setTimeout(() => askAI(), 1);
   };
 
+  console.log("messages", messages )
   return (
     <>
       {/* Floating Ask Button (Mobile) */}

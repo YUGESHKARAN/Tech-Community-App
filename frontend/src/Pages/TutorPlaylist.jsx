@@ -422,7 +422,9 @@ function TutorPlaylist() {
 //   </form>
 // </div>
 
-<div className="w-full min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 relative">
+// bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800
+
+<div className="w-full min-h-screen bg-gray-900 relative">
   <NavBar />
   <div className="mb-8 mt-4 px-4 flex items-center justify-between">
       <div>

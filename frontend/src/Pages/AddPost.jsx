@@ -619,7 +619,7 @@ function AddPost() {
   //     </div>
 
   return (
-    <div className="min-h-screen relative bg-gradient-to-br from-gray-900 to-gray-800 text-white">
+    <div className="min-h-screen relative bg-gray-900 text-white">
       <NavBar />
       
        <div className="min-h-screen   w-full pt-4 pb-8">
@@ -714,7 +714,7 @@ function AddPost() {
             ))}
 
             {isTyping && (
-              <div className="text-xs text-gray-400 italic">
+              <div className="text-xs animate-pulse text-gray-400 italic">
                 Assistant is typing...
               </div>
             )}
