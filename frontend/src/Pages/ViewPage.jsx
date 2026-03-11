@@ -397,7 +397,7 @@ useEffect(() => {
                     : blog1
                 }
                 alt="Post"
-                className="w-full object-cover cursor-pointer"
+                className="w-full  md:h-96 objct-cover md:object-contain cursor-pointer"
                 onClick={() =>
                   handleImageClick(
                     singlePostData.image
@@ -451,7 +451,11 @@ useEffect(() => {
             {/* Documents */}
             {/* bg-gradient-to-b from-slate-900/80 to-slate-800/80 */}
             {(singlePostData.documents?.length > 0 ||
-              singlePostData.links?.length > 0) && (
+            singlePostData.links
+                        ?.filter(
+                          (link) =>
+                            (link.title || "").toLowerCase() !== "youtube"
+                        ).length > 0) && (
               <div className="md:rounded-xl rounded-lg  border border-neutral-700/50  p-6">
                 {/* Header */}
                 <div className="flex items-center gap-2 mb-5">
