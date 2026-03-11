@@ -11,6 +11,7 @@ import axiosInstance from "../instances/Axiosinstances";
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 import glow from "../assets/glow.png";
 import { VscSend } from "react-icons/vsc";
+import Cookies from "js-cookie"
 
 function AddPost() {
   const [title, setTitle] = useState("");
@@ -21,7 +22,9 @@ function AddPost() {
   const user = localStorage.getItem("username");
   const [loading, setLoading] = useState(false);
   const [ customTitle ,setCustomTitle]  = useState("");
+  const token = Cookies.get("token")
   const navigate = useNavigate();
+
 
   const [fieldErrors, setFieldErrors] = useState({
     title: "",
@@ -68,10 +71,16 @@ function AddPost() {
     try {
       const response = await axios.post(`${backendEndpoint}`, {
         description: message,
-      });
+      },
+      {
+        headers:{
+          Authorization: `Bearer ${token}`
+        }
+      }      
+    );
 
-      const botResponse = response.data.content || "No response received.";
-      console.log("botResponse", botResponse);
+      const botResponse = response.data.content || "Something went wrong, try agein later.";
+      // console.log("botResponse", botResponse);
       typewriterEffect(botResponse, "bot");
     } catch (error) {
       console.error("Error fetching response:", error);
