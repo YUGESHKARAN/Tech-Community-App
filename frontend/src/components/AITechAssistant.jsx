@@ -127,16 +127,43 @@ export default function AITechAssistant({ currentPostId, category }) {
     );
     return match ? match[1] : null;
   };
+  const lastUserRef = useRef(null);
 
   const containerRef = useRef(null);
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
+  // useEffect(() => {
+  //   const el = containerRef.current;
+  //   if (!el) return;
 
-    let start = el.scrollTop;
-    let end = el.scrollHeight - el.clientHeight;
-    // let end = el.scrollHeight;
-    let duration = 300;
+  //   let start = el.scrollTop;
+  //   let end = el.scrollHeight - el.clientHeight;
+  //   // let end = el.scrollHeight;
+  //   let duration = 300;
+  //   let startTime = null;
+
+  //   function animate(time) {
+  //     if (!startTime) startTime = time;
+  //     const progress = Math.min((time - startTime) / duration, 1);
+
+  //     el.scrollTop = start + (end - start) * progress;
+
+  //     if (progress < 1) requestAnimationFrame(animate);
+  //   }
+
+  //   requestAnimationFrame(animate);
+  // }, [messages, loading]);
+
+  useEffect(() => {
+  const el = containerRef.current;
+  if (!el || messages.length === 0) return;
+
+  const lastMessage = messages[messages.length - 1];
+
+  // Scroll only when user sends message
+  if (lastMessage.role === "user") {
+    const start = el.scrollTop;
+    const end = el.scrollHeight - el.clientHeight;
+
+    let duration = 250;
     let startTime = null;
 
     function animate(time) {
@@ -149,8 +176,8 @@ export default function AITechAssistant({ currentPostId, category }) {
     }
 
     requestAnimationFrame(animate);
-  }, [messages, loading]);
-
+  }
+}, [messages]);
   const bottomRef = useRef(null);
 
   useEffect(() => {
@@ -162,8 +189,57 @@ export default function AITechAssistant({ currentPostId, category }) {
 
     setTimeout(() => askAI(), 1);
   };
+  
 
-  console.log("messages", messages )
+const lastUserIndex = [...messages]
+  .map((m, i) => (m.role === "user" ? i : -1))
+  .filter((i) => i !== -1)
+  .pop();
+
+// useEffect(() => {
+//   const container = containerRef.current;
+//   const userMessage = lastUserRef.current;
+
+//   if (!container || !userMessage) return;
+
+//   const offsetTop = userMessage.offsetTop;
+
+//   container.scrollTo({
+//     top: offsetTop,
+//     behavior: "smooth",
+//   });
+// }, [messages]);
+
+useEffect(() => {
+  const container = containerRef.current;
+  const userMessage = lastUserRef.current;
+
+  if (!container || !userMessage) return;
+
+  const start = container.scrollTop;
+  const end = userMessage.offsetTop - 10; // slight padding
+  const duration = 350;
+
+  let startTime = null;
+
+  function animateScroll(time) {
+    if (!startTime) startTime = time;
+
+    const progress = Math.min((time - startTime) / duration, 1);
+
+    container.scrollTop = start + (end - start) * progress;
+
+    if (progress < 1) {
+      requestAnimationFrame(animateScroll);
+    }
+  }
+
+  requestAnimationFrame(animateScroll);
+
+}, [messages]);
+  
+
+// console.log("messages", messages )
   return (
     <>
       {/* Floating Ask Button (Mobile) */}
@@ -219,8 +295,9 @@ export default function AITechAssistant({ currentPostId, category }) {
               {/* User bubble */}
               {msg.role === "user" && (
                 <div 
+                  ref={idx === lastUserIndex ? lastUserRef : null}
                 className="text-right">
-                  <div className="inline-block bg-white text-black px-4 py-2 rounded-2xl text-sm max-w-[85%]">
+                  <div className="inline-block text-left bg-white text-black px-4 py-2 rounded-2xl text-sm max-w-[85%]">
                     {msg.content}
                   </div>
                 </div>
@@ -297,7 +374,7 @@ export default function AITechAssistant({ currentPostId, category }) {
 
                               {/* Title */}
                               <div className="p-2">
-                                <p className="text-sm font-medium line-clamp-2 text-neutral-200">
+                                <p className="text-xs md:text-sm md:font-medium line-clamp-2 text-neutral-200">
                                   {v.title || "YouTube video"}
                                 </p>
                               </div>
@@ -315,7 +392,7 @@ export default function AITechAssistant({ currentPostId, category }) {
                         Related posts
                       </h3>
 
-                      <div className="overflow-x-auto  pb-2 scrollbar-hide flex gap-2">
+                      <div className="overflow-x-auto  pb-2 scrollbar-hide flex gap-4">
                         {msg.posts.map((p, i) => (
                           <Link
                             key={i}
@@ -326,11 +403,11 @@ export default function AITechAssistant({ currentPostId, category }) {
                             //   hover:border-neutral-700
                             className="
                               group min-w-48 max-w-48
-                              rounded-2xl
+                              rounded-lg
                               overflow-hidden
                               transition-all duration-300
-                              h-fit
-                              hover:shadow-xl hover:shadow-black/40
+                              
+                              
                             "
                           >
                             <div className="relative aspect-video overflow-hidden">
@@ -342,18 +419,18 @@ export default function AITechAssistant({ currentPostId, category }) {
                                     : blog1
                                 }
                                 // className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                className="w-full h-full object-cover"
+                                className="w-full h-full rounded-lg object-cover"
                               />
 
-                              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                            <div className="absolute inset-0 " />
 
-                              <div className="absolute top-2 left-3 bg-black/70 text-[11px] px-2 py-0.5 rounded-full border border-neutral-700">
+                              <div className="absolute top-2 left-3 bg-black/70 text-[11px] px-2 py-0.5 text-xs rounded-full border border-neutral-700">
                                 {p.category}
                               </div>
                             </div>
 
                             <div className="pl-2 mt-2 space-y-1">
-                              <p className="text-sm font-semibold leading-snug line-clamp-1 text-neutral-100">
+                              <p className="text-xs font-semibold leading-snug line-clamp-1 text-neutral-100">
                                 {p.title}
                               </p>
 
@@ -366,7 +443,7 @@ export default function AITechAssistant({ currentPostId, category }) {
                                       ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${p.profile}`
                                       : user
                                   }
-                                  className="w-7 h-7 rounded-full object-cover bg-white border border-neutral-700"
+                                  className="w-5 h-5 rounded-full object-cover bg-white border border-neutral-700"
                                 />
 
                                 <div className="min-w-0 flex-col">
