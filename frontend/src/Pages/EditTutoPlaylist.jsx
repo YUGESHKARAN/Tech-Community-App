@@ -487,7 +487,7 @@ function EditTutorPlaylist() {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Enter playlist title"
-            className="bg-gray-950 border border-gray-700 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
+            className="bg-gray-950 border border-gray-700 text-sm rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
           />
         </div>
 
@@ -503,7 +503,7 @@ function EditTutorPlaylist() {
               setCollaboratorsData([]);
               setDomain(e.target.value);
             }}
-            className="bg-gray-950 border border-gray-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
+            className="bg-gray-950 text-sm border border-gray-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
           >
             <option value="">Choose Domain</option>
             {categories.map((category, index) => (
@@ -525,12 +525,10 @@ function EditTutorPlaylist() {
             accept="image/*"
             onChange={handleChnageThumbnail}
             ref={thumbnailInputRef}
-            className="block w-fit text-sm text-gray-300
-              file:mr-4 file:px-4 file:py-2
-              file:rounded-lg file:border-0
-              file:text-sm file:font-semibold
-              file:bg-emerald-600 file:text-white
-              hover:file:bg-emerald-500"
+            className="w-full mt-2 text-xs  text-gray-300 
+    file:mr-4 file:px-2 file:py-1 file:rounded-md 
+    file:border-0 file:bg-emerald-500/20 file:hover:bg-emerald-600/20 file:text-emerald-400 
+    file:cursor-pointer"
           />
 
           {previewThumbnail && (
@@ -654,7 +652,7 @@ function EditTutorPlaylist() {
           Select Posts for Playlist
         </h2>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 h-fit md:overflow-y-auto gap-3 md:gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-3 h-fit md:overflow-y-auto gap-3 md:gap-5">
           {filteredPosts.map((data, index) => (
             <div
               key={index}
@@ -663,7 +661,7 @@ function EditTutorPlaylist() {
                 ${
                   postIds.includes(data._id)
                     ? "border-emerald-500 bg-emerald-500/10"
-                    : "border-gray-700 bg-gray-900 hover:bg-gray-800"
+                    : "border-gray-700 bg-gray-900 "
                 }`}
             >
            <div className="flex items-center gap-2 mb-3">
@@ -685,7 +683,7 @@ function EditTutorPlaylist() {
                     ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.image}`
                     : blog1
                 }
-                className="w-full h-20 md:h-36 rounded-xl object-cover mb-3"
+                className="w-full h-40 md:h-36 rounded-xl object-cover mb-3"
                 alt=""
               />
 
@@ -694,7 +692,7 @@ function EditTutorPlaylist() {
                 <span className="text-gray-400">
                   {data.views.length} views
                 </span>
-                <span className="px-2 py-1 rounded-full bg-gray-700 text-gray-300">
+                <span className="px-2 py-1 inline-block rounded-full text-emerald-400 bg-emerald-600/20">
                   {data.category}
                 </span>
               </div>
@@ -715,7 +713,8 @@ function EditTutorPlaylist() {
       <button
         type="submit"
         disabled={loader}
-        className="px-8 py-2.5 rounded-xl bg-emerald-600 text-white font-semibold hover:bg-emerald-500 disabled:opacity-50 transition shadow-lg"
+        className="md:px-5 px-3 py-2 md:py-2.5 bg-emerald-600/20 hover:bg-emerald-500/20
+                         rounded-md text-xs md:text-sm  text-emerald-400 transition-all duration-300 disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed"
       >
         {loader ? "Updating Playlist..." : "Update Playlist"}
       </button>

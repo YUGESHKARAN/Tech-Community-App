@@ -66,14 +66,14 @@ const TutorPlaylistCard = ({ playlist }) => {
       <div
         className="absolute bottom-2 left-3 w-[95%] h-full 
         bg-zinc-600 rounded-xl border border-zinc-700 
-        shadow-md z-0"
+         z-0"
       />
 
       {/* STACK LAYER 2 (MIDDLE) */}
       <div
         className="absolute bottom-1 left-1.5 w-[97%] h-full 
         bg-zinc-700 rounded-xl border border-zinc-800 
-        shadow-lg z-10"
+         z-10"
       />
 
       {/* MAIN CARD */}
@@ -130,7 +130,7 @@ const TutorPlaylistCard = ({ playlist }) => {
               <span className="text-sm text-zinc-300">{name}</span>
             </div> */}
             <div className="flex items-center  gap-3">
-              <span className="inline-block text-xs md:text-xs bg-emerald-600/20 text-emerald-400 px-3 py-2 rounded-md">
+              <span className="inline-block text-xs  bg-emerald-600/20 text-emerald-400 px-3 py-1  rounded-lg">
                 {domain}
                 {/* Playlist */}
               </span>

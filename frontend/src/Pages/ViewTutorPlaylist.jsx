@@ -447,7 +447,7 @@ function ViewTutorPlaylist() {
               <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center">
                 <img
                   src={selectedImage}
-                  className="max-w-5xl w-11/12"
+                  className="max-w-5xl md:h-96 object-contain w-11/12"
                   alt="Preview"
                 />
                 <IoClose

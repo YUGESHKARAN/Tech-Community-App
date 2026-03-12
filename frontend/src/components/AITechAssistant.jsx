@@ -375,7 +375,7 @@ useEffect(() => {
                               {/* Title */}
                               <div className="p-2">
                                 <p className="text-xs md:text-sm md:font-medium line-clamp-2 text-neutral-200">
-                                  {v.title || "YouTube video"}
+                                 Video Source {i+1}
                                 </p>
                               </div>
                             </a>

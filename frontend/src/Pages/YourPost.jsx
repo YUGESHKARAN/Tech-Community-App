@@ -294,7 +294,7 @@ function YourPost() {
 
          
 
-          <div className="md:w-full md:px-2 grid grid-cols-1 w-full mx-auto md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7 md:gap-10 mt-7 md:mt-10 h-auto">
+          <div className="md:w-full md:px-2 grid grid-cols-1 w-full mx-auto md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-10 mt-7 md:mt-10 h-auto">
             {/* Posts Grid */}
             {(postCategory === ""
               ? filterdPost
@@ -420,12 +420,12 @@ function YourPost() {
               <article
                 key={data._id}
                 className="
-                  bg-[#0f172a]
-                  overflow-hidden
-                  md:shadow-2xl
-                  transition-transform
-                  duration-500
-                  md:mb-4
+                   bg-[#0f172a]
+                   overflow-hidden
+                   shadow-2xl
+                   transition-transform
+                   duration-500
+                   md:mb-4
                 "
               >
                 <div className="flex items-center gap-3 px-4 py-3">

@@ -26,7 +26,7 @@ const YourPlaylist = () => {
         <BsPersonWorkspace />
         <span className="group text-white"> My Tutor Playlist</span>{" "}
       </h1>
-      <div className="min-h-screen w-full px-4 mt-4 mx-auto bg-gray-900 pb-8">
+      <div className="min-h-screen w-full px-3 md:px-4 mt-4 mx-auto bg-gray-900 pb-8">
         {tutorPlayListByEmail.length > 0 && (
           <div
             className="
