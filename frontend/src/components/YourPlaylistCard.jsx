@@ -135,13 +135,13 @@ const YourPlaylistCard = ({ playlist, onRemove, onDelete }) => {
       >
         {/* Thumbnail */}
         {/* <Link to={`/viewplaylist/${_id}`}> */}
-        <div className="cursor-pointer relative h-48 md:h-44 bg-zinc-800">
+        <div className="cursor-pointer rounded-xl relative h-48 md:h-44 bg-zinc-800">
           <Link to={`/viewplaylist/${_id}`}>
             {thumbnail ? (
               <img
                 src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${thumbnail}`}
                 alt={title}
-                className="h-full w-full object-cover"
+                className="h-full w-full rounded-xl object-cover"
               />
             ) : (
               <div className="flex h-full items-center justify-center text-zinc-400 text-sm">
@@ -175,17 +175,41 @@ const YourPlaylistCard = ({ playlist, onRemove, onDelete }) => {
         {/* </Link> */}
 
         {/* Content */}
-        <div className="space-y-2 mt-4 px-2 md:space-y-2">
-          <h3 className="text-base text-slate-200 terminate font-medium line-clamp-1">
+        <div className="space-y-2 mt-2 md:mt-4 px-2 ">
+          <h3 className="text-base md:text-sm text-slate-200 terminate font-medium line-clamp-1">
             {title}
           </h3>
 
           <div className="flex items-center justify-between ">
             <div className="flex items-center gap-3">
-              <span className="inline-block text-xs md:text-xs bg-emerald-600/20 text-emerald-400 px-3 py-1 rounded-lg">
+              {/* <span className="inline-block text-xs md:text-xs bg-emerald-600/20 text-emerald-400 px-3 py-1 rounded-lg">
                 {domain}
-                {/* Playlist */}
-              </span>
+              </span> */}
+
+              <div className="flex -space-x-2">
+                              
+                              {collaborators.length>0 && collaborators.slice(0, 3).map((collab) => (
+                                <img
+                                  key={collab._id}
+                                  src={
+                                    collab.profile
+                                      ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${collab.profile}`
+                                      : user
+                                  }
+                                  alt={collab.name}
+                                  className="h-6 w-6 rounded-full border-2 border-teal-600 bg-white"
+                                />
+                              ))}
+                              <img
+                                src={
+                                  profile
+                                    ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`
+                                    : user
+                                }
+                                // alt={collab.name}
+                                className="h-6 w-6 rounded-full border-2 border-teal-600 bg-white"
+                              />
+                            </div>
               <div
                 onClick={() => {
                   addBookMarkPostId(_id);
@@ -193,9 +217,9 @@ const YourPlaylistCard = ({ playlist, onRemove, onDelete }) => {
                 className="cursor-pointer"
               >
                 {Array.isArray(bookMarkId) && bookMarkId.includes(_id) ? (
-                  <PiBookmarksSimpleFill className="text-teal-500 md:text-lg cursor-pointer" />
+                  <PiBookmarksSimpleFill className="text-teal-500 text-base cursor-pointer" />
                 ) : (
-                  <PiBookmarksSimpleLight className="text-teal-500 md:text-lg cursor-pointer" />
+                  <PiBookmarksSimpleLight className="text-teal-500 text-base cursor-pointer" />
                 )}
               </div>
               <Link to={`/editPlaylist/${_id}`}>
@@ -203,18 +227,14 @@ const YourPlaylistCard = ({ playlist, onRemove, onDelete }) => {
               </Link>
             </div>
 
-            {collaborators?.length > 0 && (
-              <div className="flex -space-x-2">
-                <img
-                  src={
-                    profile
-                      ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`
-                      : user
-                  }
-                  // alt={collab.name}
-                  className="h-7 w-7 rounded-full border-2 border-teal-600 bg-white"
-                />
-                {collaborators.slice(0, 2).map((collab) => (
+            <span className="inline-block text-[10px] md:text-xs  bg-emerald-600/20 text-emerald-400 px-2 py-1  rounded">
+                {domain}
+             
+              </span>
+
+            {/* <div className="flex -space-x-2">
+                
+                {collaborators.length>0 && collaborators.slice(0, 3).map((collab) => (
                   <img
                     key={collab._id}
                     src={
@@ -223,11 +243,19 @@ const YourPlaylistCard = ({ playlist, onRemove, onDelete }) => {
                         : user
                     }
                     alt={collab.name}
-                    className="h-7 w-7 rounded-full border-2 border-teal-600 bg-white"
+                    className="h-6 w-6 rounded-full border-2 border-teal-600 bg-white"
                   />
                 ))}
-              </div>
-            )}
+                  <img
+                  src={
+                    profile
+                      ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`
+                      : user
+                  }
+                  // alt={collab.name}
+                  className="h-6 w-6 rounded-full border-2 border-teal-600 bg-white"
+                />
+              </div> */}
           </div>
         </div>
       </div>

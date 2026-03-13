@@ -4,7 +4,7 @@ import useTutorPlaylist from "../hooks/useTutorPlaylist";
 
 const TutorPlaylistGrid = () => {
   const { tutorPlayList, playlistCount, loading, hasMore } = useTutorPlaylist();
-  console.log("playlist", tutorPlayList)
+  // console.log("playlist", tutorPlayList)
   return ( 
     <>
     

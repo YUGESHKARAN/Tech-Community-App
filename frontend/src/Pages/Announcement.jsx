@@ -1092,7 +1092,7 @@ function Announcement() {
             ))}
           </main>
         </div>
-        {selectedImage && (
+        {/* {selectedImage && (
           <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
             <div className="">
               <img
@@ -1108,7 +1108,57 @@ function Announcement() {
               </button>
             </div>
           </div>
-        )}
+        )} */}
+         {selectedImage && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
+                  {/* Modal Container */}
+                  <div className="relative max-w-6xl w-full flex items-center justify-center">
+                    {/* Image */}
+                    <img
+                      src={selectedImage}
+                      alt="Preview"
+                      className="
+                        max-h-[80vh]
+                        w-auto
+                        rounded-2xl
+                        shadow-2xl
+                        border border-gray-700
+                        object-contain
+                        transition-transform duration-300
+                   
+                      "
+                    />
+        
+                    {/* Close Button */}
+                    <button
+                      onClick={handleCloseModal}
+                      className="
+                        absolute
+                        md:-top-4
+                        md:-right-4
+                        -top-3
+                        -right-3
+                        md:w-10
+                        md:h-10
+                        h-8
+                        w-8
+                        flex
+                        items-center
+                        justify-center
+                        rounded-full
+                        bg-gray-900
+                        border border-gray-700
+                        text-white
+                        shadow-lg
+                        md:hover:bg-red-500
+                        transition-all
+                      "
+                    >
+                      <IoClose className="text-sm" />
+                    </button>
+                  </div>
+                </div>
+              )}
       </div>
       <Footer />
     </div>

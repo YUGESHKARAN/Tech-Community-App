@@ -306,7 +306,7 @@ function BookMarkPage() {
           {/* Posts */}
           <button
             onClick={() => setActiveTab("posts")}
-            className={`relative pb-3 text-sm md:text-base font-semibold transition-all duration-300
+            className={`relative pb-3 text-sm  font-semibold transition-all duration-300
         ${
           activeTab === "posts"
             ? "text-white"
@@ -322,7 +322,7 @@ function BookMarkPage() {
           {/* Playlists */}
           <button
             onClick={() => setActiveTab("playlists")}
-            className={`relative pb-3 text-sm md:text-base font-semibold transition-all duration-300
+            className={`relative pb-3 text-sm  font-semibold transition-all duration-300
         ${
           activeTab === "playlists"
             ? "text-white"

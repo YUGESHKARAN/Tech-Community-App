@@ -6,8 +6,7 @@ import { PiBookmarksSimpleFill, PiBookmarksSimpleLight } from "react-icons/pi";
 import axiosInstance from "../instances/Axiosinstances";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-const BookmarkPlaylistCard = ({ playlist,setBookMarPlaylist }) => {
-
+const BookmarkPlaylistCard = ({ playlist, setBookMarPlaylist }) => {
   const {
     title,
     domain,
@@ -19,27 +18,21 @@ const BookmarkPlaylistCard = ({ playlist,setBookMarPlaylist }) => {
     _id,
   } = playlist;
 
-//   const [bookMarkId, setBookMarkId] = useState([]);
- const email = localStorage.getItem("email");
- 
+  //   const [bookMarkId, setBookMarkId] = useState([]);
+  const email = localStorage.getItem("email");
 
   const addBookMarkPostId = async (_id) => {
     // e.preventDefault()
     try {
       const response = await axiosInstance.post(
         `/blog/posts/bookmarkPosts/${email}`,
-        { postId:_id }
+        { postId: _id },
       );
       if (response.status == 200) {
-    
         // getTutorPlayList();
-        toast.success("Playlist removed from the bookmarks")
-                    
-         
+        toast.success("Playlist removed from the bookmarks");
 
-        setBookMarPlaylist(prev => prev.filter(p => p._id !== _id));
-         
-        
+        setBookMarPlaylist((prev) => prev.filter((p) => p._id !== _id));
       }
     } catch (err) {
       console.log("error", err.message);
@@ -47,9 +40,7 @@ const BookmarkPlaylistCard = ({ playlist,setBookMarPlaylist }) => {
     }
   };
 
-
   return (
-    
     <div className="relative cursor-pointer w-full mt-4 max-w-sm">
       {/* STACK LAYER 3 (BACK) */}
       <div
@@ -72,58 +63,61 @@ const BookmarkPlaylistCard = ({ playlist,setBookMarPlaylist }) => {
          transition-transform duration-300 hover:-translate-y-1"
       >
         {/* Thumbnail */}
-        <Link to={`/viewplaylist/${playlist._id}`}>     
-        <div className="relative  h-48 md:h-44 bg-zinc-800">
-          {thumbnail ? (
-            <img
-              src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${thumbnail}`}
-              alt={title}
-              className="h-full w-full rounded-xl object-cover"
-            />
-          ) : (
-            <div className="flex h-full items-center justify-center text-zinc-400 text-sm">
-              No Thumbnail
-            </div>
-          )}
-         
+        <Link to={`/viewplaylist/${playlist._id}`}>
+          <div className="relative rounded-xl  h-48 md:h-44 bg-zinc-800">
+            {thumbnail ? (
+              <img
+                src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${thumbnail}`}
+                alt={title}
+                className="h-full w-full rounded-xl object-cover"
+              />
+            ) : (
+              <div className="flex h-full items-center justify-center text-zinc-400 text-sm">
+                No Thumbnail
+              </div>
+            )}
 
-          {/* Playlist Badge */}
-          <span className="absolute top-3 left-3 bg-emerald-600 text-white text-xs font-medium px-2 py-1 rounded">
-            Playlist
-            {/* {domain} */}
-          </span>
+            {/* Playlist Badge */}
+            <span className="absolute top-3 left-3 bg-emerald-600 text-white text-xs font-medium px-2 py-1 rounded">
+              Playlist
+              {/* {domain} */}
+            </span>
 
-          {/* Lessons count */}
-          <span className="absolute bottom-2 right-2 bg-black/80 text-white flex items-center gap-0.5 text-xs px-2 py-1 rounded">
-            <MdOutlinePlaylistPlay className="text-sm" /> {post_ids.length}
-          </span>
-        </div>
-        </Link> 
+            {/* Lessons count */}
+            <span className="absolute bottom-2 right-2 bg-black/80 text-white flex items-center gap-0.5 text-xs px-2 py-1 rounded">
+              <MdOutlinePlaylistPlay className="text-sm" /> {post_ids.length}
+            </span>
+          </div>
+        </Link>
 
         {/* Content */}
-        <div className="space-y-2 mt-4 px-2 md:space-y-2">
-          <h3 className="text-base text-slate-200 terminate font-medium line-clamp-1">
+        <div className="space-y-2 md:mt-4 mt-2 px-2 ">
+          <h3 className="text-base md:text-sm text-slate-200 terminate font-medium line-clamp-1">
             {title}
           </h3>
 
           <div className="flex items-center justify-between ">
-          
             <div className="flex items-center md:gap-3 gap-3">
-              <span className="inline-block text-xs md:text-xs bg-emerald-600/20 text-emerald-400 px-3 py-1 rounded-lg">
+              {/* <span className="inline-block text-xs md:text-xs bg-emerald-600/20 text-emerald-400 px-3 py-1 rounded-lg">
                 {domain}
-                {/* Playlist */}
-              </span>
-              <div
-                onClick={() => {
-                  addBookMarkPostId(_id);
-                }}
-              >
-                <PiBookmarksSimpleFill className="text-teal-500 md:text-lg cursor-pointer" />
-              </div>
-            </div>
+              </span> */}
 
-            {collaborators?.length > 0 && (
-              <div className="flex  -space-x-2">
+              <div className="flex -space-x-2">
+                {collaborators.length > 0 &&
+                  collaborators
+                    .slice(0, 3)
+                    .map((collab) => (
+                      <img
+                        key={collab._id}
+                        src={
+                          collab.profile
+                            ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${collab.profile}`
+                            : user
+                        }
+                        alt={collab.name}
+                        className="h-6 w-6 rounded-full border-2 border-teal-600 bg-white"
+                      />
+                    ))}
                 <img
                   src={
                     profile
@@ -131,9 +125,25 @@ const BookmarkPlaylistCard = ({ playlist,setBookMarPlaylist }) => {
                       : user
                   }
                   // alt={collab.name}
-                  className="h-7 w-7 rounded-full border-2 border-teal-600 bg-white"
+                  className="h-6 w-6 rounded-full border-2 border-teal-600 bg-white"
                 />
-                {collaborators.slice(0, 3).map((collab) => (
+              </div>
+              <div
+                onClick={() => {
+                  addBookMarkPostId(_id);
+                }}
+              >
+                <PiBookmarksSimpleFill className="text-teal-500 text-base cursor-pointer" />
+              </div>
+            </div>
+
+            <span className="inline-block text-[10px] md:text-xs  bg-emerald-600/20 text-emerald-400 px-2 py-1  rounded">
+              {domain}
+            </span>
+
+            {/* <div className="flex -space-x-2">
+                
+                {collaborators.length>0 && collaborators.slice(0, 3).map((collab) => (
                   <img
                     key={collab._id}
                     src={
@@ -142,11 +152,19 @@ const BookmarkPlaylistCard = ({ playlist,setBookMarPlaylist }) => {
                         : user
                     }
                     alt={collab.name}
-                    className="h-7 w-7 rounded-full border-2 border-teal-600 bg-white"
+                    className="h-6 w-6 rounded-full border-2 border-teal-600 bg-white"
                   />
                 ))}
-              </div>
-            )}
+                  <img
+                  src={
+                    profile
+                      ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`
+                      : user
+                  }
+                  // alt={collab.name}
+                  className="h-6 w-6 rounded-full border-2 border-teal-600 bg-white"
+                />
+              </div> */}
           </div>
         </div>
       </div>

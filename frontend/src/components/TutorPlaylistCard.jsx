@@ -84,7 +84,7 @@ const TutorPlaylistCard = ({ playlist }) => {
       >
         {/* Thumbnail */}
         <Link to={`/viewplaylist/${_id}`}>
-        <div className="cursor-pointer relative h-48 md:h-44 bg-zinc-800">
+        <div className="cursor-pointer rounded-xl relative h-48 md:h-44 bg-zinc-800">
           {thumbnail ? (
             <img
               src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${thumbnail}`}
@@ -111,54 +111,21 @@ const TutorPlaylistCard = ({ playlist }) => {
         </Link>
 
         {/* Content */}
-        <div className=" space-y-2 mt-4 px-2 md:space-y-2">
-          <h3 className=" text-base text-slate-200 terminate font-medium line-clamp-1">
+        <div className="mt-2 md:mt-4 px-2 space-y-2">
+          <h3 className=" text-base md:text-sm text-slate-200 terminate font-medium line-clamp-1">
             {title}
           </h3>
 
           <div className="flex items-center justify-between ">
-            {/* <div className="flex items-center gap-2">
-              <img
-                src={
-                  profile
-                    ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`
-                    : user
-                }
-                alt={name}
-                className="h-8 w-8 rounded-full object-cover bg-white"
-              />
-              <span className="text-sm text-zinc-300">{name}</span>
-            </div> */}
+            
             <div className="flex items-center  gap-3">
-              <span className="inline-block text-xs  bg-emerald-600/20 text-emerald-400 px-3 py-1  rounded-lg">
+              {/* <span className="inline-block text-[10px]  bg-emerald-600/20 text-emerald-400 px-2 py-1  rounded-lg">
                 {domain}
-                {/* Playlist */}
-              </span>
-              <div
-                onClick={() => {
-                  addBookMarkPostId(_id);
-                }}
-              >
-                {Array.isArray(bookMarkId) && bookMarkId.includes(_id) ? (
-                  <PiBookmarksSimpleFill className="text-teal-500 text-lg cursor-pointer" />
-                ) : (
-                  <PiBookmarksSimpleLight className="text-teal-500 text-lg cursor-pointer"/>
-                )}
-              </div>
-            </div>
-
-            {collaborators?.length > 0 && (
+             
+              </span> */}
               <div className="flex -space-x-2">
-                <img
-                  src={
-                    profile
-                      ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`
-                      : user
-                  }
-                  // alt={collab.name}
-                  className="h-7 w-7 rounded-full border-2 border-teal-600 bg-white"
-                />
-                {collaborators.slice(0, 3).map((collab) => (
+                
+                {collaborators.length>0 && collaborators.slice(0, 3).map((collab) => (
                   <img
                     key={collab._id}
                     src={
@@ -167,11 +134,62 @@ const TutorPlaylistCard = ({ playlist }) => {
                         : user
                     }
                     alt={collab.name}
-                    className="h-7 w-7 rounded-full border-2 border-teal-600 bg-white"
+                    className="h-6 w-6 rounded-full border-2 border-teal-600 bg-white"
                   />
                 ))}
+                <img
+                  src={
+                    profile
+                      ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`
+                      : user
+                  }
+                  // alt={collab.name}
+                  className="h-6 w-6 rounded-full border-2 border-teal-600 bg-white"
+                />
               </div>
-            )}
+              <div
+                onClick={() => {
+                  addBookMarkPostId(_id);
+                }}
+              >
+                {Array.isArray(bookMarkId) && bookMarkId.includes(_id) ? (
+                  <PiBookmarksSimpleFill className="text-teal-500 text-base cursor-pointer" />
+                ) : (
+                  <PiBookmarksSimpleLight className="text-teal-500 text-base cursor-pointer"/>
+                )}
+              </div>
+            </div>
+
+
+              <span className="inline-block text-[10px] md:text-xs  bg-emerald-600/20 text-emerald-400 px-2 py-1  rounded">
+                {domain}
+             
+              </span>
+
+            {/* <div className="flex -space-x-2">
+                
+                {collaborators.length>0 && collaborators.slice(0, 3).map((collab) => (
+                  <img
+                    key={collab._id}
+                    src={
+                      collab.profile
+                        ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${collab.profile}`
+                        : user
+                    }
+                    alt={collab.name}
+                    className="h-6 w-6 rounded-full border-2 border-teal-600 bg-white"
+                  />
+                ))}
+                  <img
+                  src={
+                    profile
+                      ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`
+                      : user
+                  }
+                  // alt={collab.name}
+                  className="h-6 w-6 rounded-full border-2 border-teal-600 bg-white"
+                />
+              </div> */}
           </div>
         </div>
       </div>

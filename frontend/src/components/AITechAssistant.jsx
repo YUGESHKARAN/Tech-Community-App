@@ -265,6 +265,7 @@ useEffect(() => {
       transform transition-transform duration-300
       ${open ? "translate-y-0" : "translate-y-full md:translate-y-0"}
       z-40 flex flex-col  md:rounded-xl
+      md:py-4
     `}
       >
         {/* Header */}

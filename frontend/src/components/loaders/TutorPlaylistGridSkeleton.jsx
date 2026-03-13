@@ -11,18 +11,28 @@ const TutorPlaylistCardSkeleton = () => {
       <div className="relative z-20 bg-gray-900 rounded-xl overflow-hidden ">
         
         {/* Thumbnail */}
-        <div className=" h-48 md:h-44 bg-zinc-700" />
+        <div className=" h-48 md:h-44 rounded-xl bg-zinc-700" />
 
         {/* Content */}
-        <div className="md:p-4 p-2 space-y-3">
+        <div className="md:p-4 md:px-2 p-2 space-y-3">
           
           {/* Title */}
           <div className="h-4 w-3/4 bg-zinc-700 rounded" />
 
           {/* Bottom Row */}
           <div className="flex items-center justify-between">
-            <div className="h-5 w-16 bg-zinc-700 rounded" />
-            <div className="h-5 w-5 bg-zinc-700 rounded-full" />
+            
+            <div className="flex -space-x-2">
+               <div className="h-6 w-6 bg-zinc-700 rounded-full" />
+               <div className="h-6 w-6 bg-zinc-700 rounded-full" />
+               <div className="h-6 w-6 bg-zinc-700 rounded-full" />
+
+            </div>
+              <div className="h-5 w-16 bg-zinc-700 rounded" />
+
+           
+            
+            
           </div>
         </div>
       </div>

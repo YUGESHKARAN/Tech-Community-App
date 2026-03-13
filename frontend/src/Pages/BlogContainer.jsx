@@ -391,11 +391,8 @@ function BlogContainer({activeTab, setActiveTab}) {
                       key={data._id}
                       className="
                       bg-[#0f172a]
-                      
                       overflow-hidden
-                      
                       shadow-2xl
-                     
                       transition-transform
                       duration-500
                       md:mb-4

@@ -419,7 +419,7 @@ function HomePage() {
         <div className="flex items-center gap-5">
           <button
             onClick={() => setActiveTab("posts")}
-            className={`relative pb-1 md:pb-2 text-sm md:text-base font-semibold transition-all duration-300
+            className={`relative pb-1 md:pb-2 text-sm font-medium transition-all duration-300
         ${
           activeTab === "posts"
             ? "text-white"
@@ -434,7 +434,7 @@ function HomePage() {
 
           <button
             onClick={() => setActiveTab("playlists")}
-            className={`relative pb-1 md:pb-2 text-sm md:text-base font-semibold transition-all duration-300
+            className={`relative pb-1 md:pb-2 text-sm font-medium transition-all duration-300
         ${
           activeTab === "playlists"
             ? "text-white"
