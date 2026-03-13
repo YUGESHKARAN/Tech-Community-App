@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { Link } from "react-router-dom";
 import {
   IoSearchOutline,
@@ -32,22 +32,6 @@ function SingleAuthorPosts() {
   const limit = 50;
   const isFetching = useRef(false);
 
-  // Fetch posts from API
-  // const fetchPosts = async () => {
-  //   setLoader(true);
-  //   try {
-  //     const response = await axiosInstance.get(`/blog/posts/${email}`);
-  //     setPosts(response.data.data);
-  //     setAuthorName(response.data.authorName);
-  //     setAuthorProfile(response.data.profile);
-  //   } catch (err) {
-  //     console.error("Error fetching posts:", err);
-  //   }
-  //   setLoader(false);
-  // };
-  // useEffect(() => {
-  //   fetchPosts();
-  // }, []);
 
   // -------------------------------------------------------
   const fetchPosts = async () => {
@@ -172,11 +156,29 @@ function SingleAuthorPosts() {
   };
 
   // Filter posts based on search
-  const filterdPost = posts.filter(
-    (post) =>
-      post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      post.category.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
+const filteredPosts = useMemo(() => {
+  let filtered =[...posts];
+
+  if (searchTerm.trim() !== "") {
+    const query = searchTerm.toLowerCase();
+
+    filtered = filtered.filter(
+      (post) =>
+        post.title?.toLowerCase().includes(query) ||
+        post.description?.toLowerCase().includes(query) ||
+        post.category?.toLowerCase().includes(query) ||
+        post.authorname?.toLowerCase().includes(query)
+    );
+  }
+
+  if (postCategory !== "") {
+    filtered = filtered.filter(
+      (post) => post.category === postCategory
+    );
+  }
+
+  return filtered;
+}, [posts, searchTerm, postCategory]);
 
   // console.log("local email", email);
   // console.log("your post",filterdPost)
@@ -286,7 +288,7 @@ function SingleAuthorPosts() {
                 type="text"
                 placeholder="Search by title or category"
                 value={searchTerm}
-                onChange={handleSearch}
+                onChange={(e)=>{setSearchTerm(e.target.value)}}
                 className="bg-transparent focus:outline-none w-full text-sm text-white placeholder-gray-400"
               />
             </div>
@@ -342,10 +344,7 @@ function SingleAuthorPosts() {
           
 
           <div className="md:w-full grid grid-cols-1 w-full mx-auto md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-10 mt-7 md:mt-10 h-auto">
-            {(postCategory === ""
-              ? filterdPost
-              : posts.filter((post) => post.category === postCategory)
-            ).map((data, index) => (
+            {filteredPosts?.map((data, index) => (
               
 
               <article

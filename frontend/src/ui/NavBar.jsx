@@ -228,52 +228,6 @@ function NavBar() {
 
        
 
-{/* 
-        <li className="transition-all duration-200  hover:text-white">
-          <Link to="/home" className="flex items-center gap-1">
-            <IoHome className="text-xl" />
-            Home
-          </Link>
-        </li> */}
-
-        {/* {role === "admin" && 
-        <li className="transition-all duration-200  hover:text-white">
-          <Link to="/control" className="flex items-center gap-1">
-            <MdAppSettingsAlt className="text-xl" />
-            Control Panel
-          </Link>
-        </li>
-        } */}
-
-              
-
-        {/* <li className="transition-all duration-200  hover:text-white">
-          <Link to="/community" className="flex  items-center gap-1">
-            <MdGroups className="text-2xl" /> Tech Communities
-          </Link>
-        </li> */}
-{/* 
-        <li className="transition-all duration-200 hover:text-white">
-          <Link to="/authors" className="flex items-center gap-1">
-            <IoIosGitNetwork className="text-2xl " />
-            My Network
-          </Link>
-        </li> */}
-
-
-        {/* {role === "coordinator" && (
-          <li className="transition-all  duration-200 hover:text-white">
-            <Link to="/workspace" className="flex items-center gap-1">
-              <BsPersonWorkspace className="text-2xl" /> My Workspace
-            </Link>
-          </li>
-        )} */}
-{/* 
-        <li className="transition-all  duration-200 hover:text-white">
-            <Link to={`/bookMarkPage/${email}`} className="flex items-center gap-1">
-              <RiBookMarkedFill className="text-2xl" /> My Bookmark
-            </Link>
-          </li> */}
 
         <li className="transition-all duration-200 hover:text-white">
           <Link
@@ -425,11 +379,20 @@ function NavBar() {
             label="Profile"
             close={setIsSidebarOpen}
           />}
+
+          <div
+      onClick={exit}
+      className="flex flex-col items-center gap-0
+                 text-white/70 hover:text-white transition"
+    >
+      <span className="text-xl text-red-400"><IoLogOutOutline /></span>
+      <span className="text-[11px]">Logout</span>
+    </div>
  
         </div>
 
         {/* ================= SECONDARY TILES ================= */}
-        <div className="grid grid-cols-2 gap-3 px-5 py-4">
+        <div className="grid grid-cols-2 gap-3 px-5 py-4 pb-6">
             
             {role === "admin" && (
             <NavTile
@@ -477,8 +440,10 @@ function NavBar() {
           />
         </div>
 
+
+
         {/* ================= FOOTER ================= */}
-        <div className="px-5 pb-5">
+        {/* <div className="px-5 pb-5">
           <button
             onClick={exit}
             className="w-full flex items-center justify-center gap-2
@@ -489,7 +454,7 @@ function NavBar() {
             <IoLogOutOutline />
             Logout
           </button>
-        </div>
+        </div> */}
       </div>
 
      <div

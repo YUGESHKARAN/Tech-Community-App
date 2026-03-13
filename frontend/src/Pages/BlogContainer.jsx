@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { Link } from "react-router-dom";
 import {
   IoSearchOutline,
@@ -21,6 +21,8 @@ import TutorPlaylistGrid from "../components/TutorPlaylistGrid.jsx";
 import BlogSkeleton from "../components/loaders/BlogSkeleton.jsx";
 import PillLoader from "../components/loaders/PillSkeleton.jsx";
 import TutorPlaylistGridSkeleton from "../components/loaders/TutorPlaylistGridSkeleton.jsx";
+
+
 function BlogContainer({activeTab, setActiveTab}) {
   const [searchTerm, setSearchTerm] = useState("");
   const [posts, setPosts] = useState([]);
@@ -31,6 +33,7 @@ function BlogContainer({activeTab, setActiveTab}) {
   const [bookMarkId, setBookMarkId] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  // const [filterdPost, setFilterdPost] = useState([])
   const limit = 50;
 
   const { playlistCount } = useTutorPlaylist();
@@ -48,31 +51,7 @@ function BlogContainer({activeTab, setActiveTab}) {
 
   return () => window.removeEventListener("scroll", handleScroll);
 }, []);
-  // const [activeTab, setActiveTab] = useState("posts"); // default posts
-  // const [activeTab, setActiveTab] = useState(
-  //   localStorage.getItem("dashboardTab") || "posts",
-  // );
 
-  // useEffect(() => {
-  //   localStorage.setItem("dashboardTab", activeTab);
-  // }, [activeTab]);
-
-  // Fetch posts from API
-  // const fetchPosts = async () => {
-  //   setLoader(true);
-  //   try {
-  //     const response = await axiosInstance.get(
-  //       `/blog/posts/recommended/${email}`
-  //     );
-  //     // setPosts(
-  //     //   response.data.posts.filter((post) => post.authoremail !== email)
-  //     // );
-  //     setPosts(response.data.posts);
-  //   } catch (err) {
-  //     console.error("Error fetching posts:", err);
-  //   }
-  //   setLoader(false);
-  // };
 
   // ------------------------------------------------------------------------------------------------------------
   const isFetching = useRef(false);
@@ -141,9 +120,9 @@ function BlogContainer({activeTab, setActiveTab}) {
   };
 
   // Search handler
-  const handleSearch = (e) => {
-    setSearchTerm(e.target.value);
-  };
+  // const handleSearch = (e) => {
+  //   setSearchTerm(e.target.value);
+  // };
 
   // Get unique categories
   const getUniqueCategories = (posts) => {
@@ -184,12 +163,7 @@ function BlogContainer({activeTab, setActiveTab}) {
     }
   };
 
-  // Filter posts based on search
-  const filterdPost = posts.filter(
-    (post) =>
-      post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      post.category.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
+ 
 
   const renderTextWithHashtags = (text) => {
     if (!text) return null;
@@ -251,6 +225,33 @@ function BlogContainer({activeTab, setActiveTab}) {
     fetchBookmarkIds();
   }, []);
 
+
+  // Search quary
+const filteredPosts = useMemo(() => {
+  let filtered =[...posts];
+
+  if (searchTerm.trim() !== "") {
+    const query = searchTerm.toLowerCase();
+
+    filtered = filtered.filter(
+      (post) =>
+        post.title?.toLowerCase().includes(query) ||
+        post.description?.toLowerCase().includes(query) ||
+        post.category?.toLowerCase().includes(query) ||
+        post.authorname?.toLowerCase().includes(query)
+    );
+  }
+
+  if (postCategory !== "") {
+    filtered = filtered.filter(
+      (post) => post.category === postCategory
+    );
+  }
+
+  return filtered;
+}, [posts, searchTerm, postCategory]);
+
+// console.log("filteredposts", filteredPosts)
   // console.log("posts", bookMarkId);
   // console.log("tutorPlayList", tutorPlayList);
 
@@ -318,7 +319,8 @@ function BlogContainer({activeTab, setActiveTab}) {
                   type="text"
                   placeholder="Search posts, topics, or categories"
                   value={searchTerm}
-                  onChange={handleSearch}
+                  // onChange={handleSearch}
+                  onChange={(e)=>{setSearchTerm(e.target.value)}}
                   className="bg-transparent w-full focus:outline-none text-sm text-white placeholder-gray-400"
                 />
               </div>
@@ -380,10 +382,7 @@ function BlogContainer({activeTab, setActiveTab}) {
                 {
                 
                  (
-                  (postCategory === ""
-                    ? filterdPost
-                    : posts.filter((post) => post.category === postCategory)
-                  ).map((data, index) => (
+                  filteredPosts?.map((data, index) => (
     
               
               

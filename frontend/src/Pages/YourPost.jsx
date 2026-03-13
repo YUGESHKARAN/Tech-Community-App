@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { Link } from "react-router-dom";
 import {
   IoSearchOutline,
@@ -31,24 +31,7 @@ function YourPost() {
 
   const [authorProfile, setAuthorProfile] = useState("");
 
-  // Fetch posts from API
-  // const fetchPosts = async () => {
-  //   setLoader(true);
-  //   try {
-  //     const response = await axiosInstance.get(`/blog/posts/${email}`);
-  //     // setPosts(
-  //     //   response.data.posts.filter((post) => post.authoremail === email)
-  //     // );
-  //     setPosts(response.data.data);
-  //     setAuthorProfile(response.data.profile);
-  //   } catch (err) {
-  //     console.error("Error fetching posts:", err);
-  //   }
-  //   setLoader(false);
-  // };
-  // useEffect(() => {
-  //   fetchPosts();
-  // }, []);
+
 
   // ------------------------------------------------------------------
 
@@ -174,11 +157,29 @@ function YourPost() {
   };
 
   // Filter posts based on search
-  const filterdPost = posts.filter(
-    (post) =>
-      post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      post.category.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
+const filteredPosts = useMemo(() => {
+  let filtered =[...posts];
+
+  if (searchTerm.trim() !== "") {
+    const query = searchTerm.toLowerCase();
+
+    filtered = filtered.filter(
+      (post) =>
+        post.title?.toLowerCase().includes(query) ||
+        post.description?.toLowerCase().includes(query) ||
+        post.category?.toLowerCase().includes(query) ||
+        post.authorname?.toLowerCase().includes(query)
+    );
+  }
+
+  if (postCategory !== "") {
+    filtered = filtered.filter(
+      (post) => post.category === postCategory
+    );
+  }
+
+  return filtered;
+}, [posts, searchTerm, postCategory]);
 
   const renderTextWithHashtags = (text) => {
     if (!text) return null;
@@ -218,7 +219,7 @@ function YourPost() {
 }, []);
 
   return (
-    <div className="w-full min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 h-auto reltive  ">
+    <div className="w-full min-h-screen bg-gray-900 h-auto reltive  ">
       <NavBar />
 
       {posts.length > 0 && (
@@ -227,7 +228,7 @@ function YourPost() {
           <span className="group text-white"> My Posts</span>{" "}
         </h1>
       )}
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 pt-2 pb-8">
+      <div className="min-h-screen  pt-2 pb-8">
         {/* <p className="text-lg text-white w-11/12 mx-auto">Posts {posts.length>0 && posts.length}</p> */}
 
         <div className=" w-full  mt-10   h-auto mx-auto">
@@ -240,7 +241,7 @@ function YourPost() {
                   type="text"
                   placeholder="Search posts, topics, or categories"
                   value={searchTerm}
-                  onChange={handleSearch}
+                  onChange={(e)=>{setSearchTerm(e.target.value)}}
                   className="bg-transparent w-full focus:outline-none text-sm text-white placeholder-gray-400"
                 />
               </div>
@@ -296,10 +297,7 @@ function YourPost() {
 
           <div className="md:w-full md:px-2 grid grid-cols-1 w-full mx-auto md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-10 mt-7 md:mt-10 h-auto">
             {/* Posts Grid */}
-            {(postCategory === ""
-              ? filterdPost
-              : posts.filter((post) => post.category === postCategory)
-            ).map((data, index) => (
+            {filteredPosts?.map((data, index) => (
               // <div
               //   key={index}
               //   className="w-full mx-auto md:w-full bg-gray-800  flex flex-col shadow-xl hover:shadow-2xl transition-all duration-300 h-auto md:mb-0 md:mb-0 md:p-4 py-4 md:rounded-xl"

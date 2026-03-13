@@ -222,86 +222,8 @@ const recommendedAuthors = useMemo(() => {
         </h1>
       </div>
 
-      {/* {recommendedAuthors.length > 0 && (
-        <div className="w-11/12  h-auto mx-auto flex-col  items-center justify-center mt-5">
-          <h2 className="w-full  text-left text-xl text-green-400 md:text-3xl font-bold">
-            Recommended
-          </h2>
-          <div
-            className={`flex justify-start w-full items-center gap-6 overflow-x-auto scrollbar-hide mt-4`}
-          >
-            {recommendedAuthors.map((author, index) => (
-              <div
-                key={index}
-                className="md:h-24 h-24 p-4 w-fit px-4 gap-1 md:w-fit items-start   flex justify-start items-center rounded-lg shadow-lg bg-[#fff]/20"
-              >
-                <div className="w-fit  flex-col items-start justify-start md:w-1/3  ">
-                  {author.profile ? (
-                    <Link to={`/viewProfile/${author.email}`}>
-                      {" "}
-                      <img
-                        src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`}
-                        className="rounded-full border-2 border-green-500 w-10 h-10 mx-auto object-cover"
-                        alt=""
-                      />
-                    </Link>
-                  ) : (
-                    <Link to={`/viewProfile/${author.email}`}>
-                      <img
-                        src={user}
-                        className="rounded-full w-10 h-10 bg-white border-2 border-black mx-auto object-cover"
-                      />
-                    </Link>
-                  )}
-
-                  <div className="flex items-center justify-center mt-2">
-                    {author.followers.includes(email) ? (
-                      <button
-                        onClick={() => {
-                          addFollower(author.email);
-                        }}
-                        className="w-fit mx-auto px-4 py-0.5 cursor-pointer  rounded-lg shadow-lg bg-gray-200 text-[#000]"
-                      >
-                        Following...
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => {
-                          addFollower(author.email);
-                        }}
-                        className="w-fit mx-auto cursor-pointer px-4 py-0.5 rounded-lg text-xs text-nowrap bg-gray-800 text-white"
-                      >
-                        Follow +
-                      </button>
-                    )}
-                  </div>
-                </div>
-                <div className=" md:w-2/3 w-3/5   flex-col items-start justify-start">
-                  <h1 className="text-center font-semibold text-white text-wrap w-full scrollbar-hide overflow-x-auto md:text-base">
-                \
-                    {author.authorName}
-                  </h1>
-                  <h1 className="text-center  mt-0.5 text-[9px] truncate text-white md:text-xs">
-                \
-                    {author.email}
-                  </h1>
-                  <div className="flex mx-auto items-center justify-between mt-0.5 gap-5 px-5">
-                    <span className="text-center text-green-400 text-[10px] mt-0.5 font-semibold">
-                      Followers{" "}
-                      <p className="text-white">{author.followers.length}</p>
-                    </span>
-             
-                    <span className="text-center text-green-400  text-[10px] mt-0.5 font-semibold">
-                      Posts <p className="text-white">{author.postCount}</p>
-                    </span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )} */}
-
+  
+      {/* Recommended authors */}
       {recommendedAuthors?.length > 0 && (
         <h2 className="w-full px-4 mx-auto  text-left text-xl text-green-400 md:text-3xl font-semibold">
           Recommended
