@@ -11,7 +11,7 @@
 
 **Welcome to the Tech. Community App!**
 
-A modern, full-stack E-Learning platform **specifically designed for universities and colleges**, focusing on knowledge sharing and community building. This app empowers students and developers to connect, collaborate, and engage through technical content and discussions, all within their institution. Developers can interact, clarify doubts via comment system. The platform includes role-based interfaces for Students, Coordinators, and Admins to manage content, moderation, and community participation.
+E-Learning platform specifically designed for universities and colleges, focusing on knowledge sharing and community building. This app empowers student developers to connect, collaborate, and engage through technical content and discussions, all within their institution. Developers can interact, clarify doubts via comment system. The platform includes role-based interfaces for Students, Coordinators, and Admins to manage content, moderation, and community participation.
 
 ---
 
