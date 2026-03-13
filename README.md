@@ -40,7 +40,7 @@ E-Learning platform specifically designed for universities and colleges, focusin
 
 * **User Authentication** – Secure registration and login with role-based access.
 * **Post Management** – Create, edit, and publish technical posts within the community.
-* **DraftMate AI** – Content drafting assistant to refine and structure post descriptions before publishing [DraftMate AI]([https://www.mongodb.com/](https://github.com/YUGESHKARAN/blogChat-backend)).
+* **DraftMate AI** – Content drafting assistant to refine and structure post descriptions before publishing [DraftMate AI](https://github.com/YUGESHKARAN/blogChat-backend).
 * **Knowledge Hub Assistant** – In-post AI assistant that provides contextual explanations, related posts, videos, and suggested follow-up queries [Knowledge_Hub_Assistant](https://github.com/YUGESHKARAN/Assistant_Knowledge_Hub).
 * **Playlists** – Organize and save curated collections of posts for structured learning.
 * **Comments & Discussions** – Engage with the community through threaded discussions on posts.
