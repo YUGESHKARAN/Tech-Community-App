@@ -685,7 +685,7 @@ function AddPost() {
             <li>• Use a clear descriptive title</li>
             <li>• Use a contextual description</li>
             <li>• Add useful resources like links and documents...</li>
-            <li>• Include suitable thumbnail poster</li>
+            <li>• Include suitable thumbnail poster (1280×720 px)</li>
             <li>Note: Youtube links supports video frame</li>
             
             
@@ -706,24 +706,49 @@ function AddPost() {
           <div className="flex-1 overflow-y-auto scrollbar-hide space-y-4 max-h-[400px] pr-2">
 
             {messages.map((msg, idx) => (
+              // <div
+              //   key={idx}
+              //   className={`flex ${
+              //     msg.direction === "outgoing"
+              //       ? "justify-end "
+              //       : "justify-start"
+              //   }`}
+              // >
+              //   <div
+              //     className={`px-3 py-2 rounded-lg break-words whitespace-pre-wrap text-sm text-left leading-relaxed  ${
+              //       msg.direction === "outgoing"
+              //         ? "bg-gray-800  md:ml-5 text-white"
+              //         : "bg-gray-900 break-all md:mr-5 text-white"
+              //     }   `}
+              //   >
+              //    <p className=" inline-block"> {msg.message}</p>
+              //   </div>
+              // </div>
               <div
-                key={idx}
-                className={`flex ${
-                  msg.direction === "outgoing"
-                    ? "justify-end"
-                    : "justify-start"
-                }`}
-              >
-                <div
-                  className={`px-3 py-2 rounded-lg  text-xs text-left leading-relaxed max-w-md ${
-                    msg.direction === "outgoing"
-                      ? "bg-gray-800  md:ml-5 text-white"
-                      : "bg-gray-900 break-all md:mr-5 text-white"
-                  }`}
-                >
-                  {msg.message}
-                </div>
-              </div>
+  className={`flex ${
+    msg.direction === "outgoing" ? "justify-end" : "justify-start"
+  }`}
+>
+  <div
+    className={`
+      max-w-md
+      px-4
+      py-2.5
+      rounded-2xl
+      text-xs
+      leading-relaxed
+      break-words
+      whitespace-pre-wrap
+      ${
+        msg.direction === "outgoing"
+          ? "bg-gray-800 md:ml-5  text-white rounded-br-md"
+          : "bg-emerald-700/20 text-gray-200 md:mr-5 rounded-bl-md"
+      }
+    `}
+  >
+    {msg.message}
+  </div>
+</div>
             ))}
 
             {isTyping && (

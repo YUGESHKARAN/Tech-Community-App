@@ -19,6 +19,8 @@ import getTimeAgo from "../components/DateCovertion";
 import { PiBookmarksSimpleFill, PiBookmarksSimpleLight } from "react-icons/pi";
 import BlogSkeleton from "../components/loaders/BlogSkeleton";
 import PillLoader from "../components/loaders/PillSkeleton";
+import Fuse from "fuse.js";
+import highlightText from "../hooks/highlightText";
 function SingleAuthorPosts() {
   const [searchTerm, setSearchTerm] = useState("");
   const [posts, setPosts] = useState([]);
@@ -155,20 +157,46 @@ function SingleAuthorPosts() {
     }
   };
 
+  const [debouncedSearch, setDebouncedSearch] = useState(searchTerm);
+
+useEffect(() => {
+  const timer = setTimeout(() => {
+    setDebouncedSearch(searchTerm);
+  }, 300); // 300ms delay
+
+  return () => clearTimeout(timer);
+}, [searchTerm]);
+
+  const fuse = useMemo(() => {
+  return new Fuse(posts, {
+    keys: [
+      "title",
+      "description",
+      "category",
+      "community"
+    ],
+    threshold: 0.3, // lower = stricter search
+  });
+}, [posts]);
+
   // Filter posts based on search
 const filteredPosts = useMemo(() => {
   let filtered =[...posts];
 
-  if (searchTerm.trim() !== "") {
-    const query = searchTerm.toLowerCase();
+  // if (searchTerm.trim() !== "") {
+  //   const query = searchTerm.toLowerCase();
 
-    filtered = filtered.filter(
-      (post) =>
-        post.title?.toLowerCase().includes(query) ||
-        post.description?.toLowerCase().includes(query) ||
-        post.category?.toLowerCase().includes(query) ||
-        post.authorname?.toLowerCase().includes(query)
-    );
+  //   filtered = filtered.filter(
+  //     (post) =>
+  //       post.title?.toLowerCase().includes(query) ||
+  //       post.description?.toLowerCase().includes(query) ||
+  //       post.category?.toLowerCase().includes(query) ||
+  //       post.authorname?.toLowerCase().includes(query)
+  //   );
+  // }
+
+    if (debouncedSearch.trim() !== "") {
+    filtered = fuse.search(debouncedSearch).map((r) => r.item);
   }
 
   if (postCategory !== "") {
@@ -178,7 +206,7 @@ const filteredPosts = useMemo(() => {
   }
 
   return filtered;
-}, [posts, searchTerm, postCategory]);
+}, [posts, searchTerm, postCategory, debouncedSearch]);
 
   // console.log("local email", email);
   // console.log("your post",filterdPost)
@@ -374,6 +402,7 @@ const filteredPosts = useMemo(() => {
                   <div className="leading-tight">
                     <p className="text-sm font-semibold text-white">
                       {data.authorName}
+                       
                     </p>
                     <p className="text-xs text-gray-400">
                       {getTimeAgo(data.timestamp)}
@@ -400,7 +429,8 @@ const filteredPosts = useMemo(() => {
 
                 <div className="px-4 py-4 space-y-2">
                   <h3 className="text-base font-semibold text-white line-clamp-1">
-                    {data.title}
+                    {/* {data.title} */}
+                     {highlightText(data.title, debouncedSearch)}
                   </h3>
 
                   <p className="text-xs text-gray-400  line-clamp-2  md:line-clamp-1 ">

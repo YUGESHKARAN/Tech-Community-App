@@ -22,8 +22,12 @@ import BlogSkeleton from "../components/loaders/BlogSkeleton.jsx";
 import PillLoader from "../components/loaders/PillSkeleton.jsx";
 import TutorPlaylistGridSkeleton from "../components/loaders/TutorPlaylistGridSkeleton.jsx";
 
+import Fuse from "fuse.js";
+import highlightText from "../hooks/highlightText.jsx";
+
 
 function BlogContainer({activeTab, setActiveTab}) {
+  
   const [searchTerm, setSearchTerm] = useState("");
   const [posts, setPosts] = useState([]);
   const [postCategory, setPostCategory] = useState("");
@@ -226,20 +230,47 @@ function BlogContainer({activeTab, setActiveTab}) {
   }, []);
 
 
+const [debouncedSearch, setDebouncedSearch] = useState(searchTerm);
+
+useEffect(() => {
+  const timer = setTimeout(() => {
+    setDebouncedSearch(searchTerm);
+  }, 300); // 300ms delay
+
+  return () => clearTimeout(timer);
+}, [searchTerm]);
+
+  const fuse = useMemo(() => {
+  return new Fuse(posts, {
+    keys: [
+      "title",
+      "description",
+      "category",
+      "authorname",
+      "community"
+    ],
+    threshold: 0.3, // lower = stricter search
+  });
+}, [posts]);
+
   // Search quary
 const filteredPosts = useMemo(() => {
   let filtered =[...posts];
 
-  if (searchTerm.trim() !== "") {
-    const query = searchTerm.toLowerCase();
+  // if (searchTerm.trim() !== "") {
+  //   const query = searchTerm.toLowerCase();
 
-    filtered = filtered.filter(
-      (post) =>
-        post.title?.toLowerCase().includes(query) ||
-        post.description?.toLowerCase().includes(query) ||
-        post.category?.toLowerCase().includes(query) ||
-        post.authorname?.toLowerCase().includes(query)
-    );
+  //   filtered = filtered.filter(
+  //     (post) =>
+  //       post.title?.toLowerCase().includes(query) ||
+  //       post.description?.toLowerCase().includes(query) ||
+  //       post.category?.toLowerCase().includes(query) ||
+  //       post.authorname?.toLowerCase().includes(query)
+  //   );
+  // }
+
+    if (debouncedSearch.trim() !== "") {
+    filtered = fuse.search(debouncedSearch).map((r) => r.item);
   }
 
   if (postCategory !== "") {
@@ -249,11 +280,30 @@ const filteredPosts = useMemo(() => {
   }
 
   return filtered;
-}, [posts, searchTerm, postCategory]);
+}, [posts, searchTerm, postCategory, debouncedSearch]);
 
 // console.log("filteredposts", filteredPosts)
   // console.log("posts", bookMarkId);
   // console.log("tutorPlayList", tutorPlayList);
+
+
+
+// const highlightText = (text, query) => {
+//   if (!query) return text;
+
+//   const regex = new RegExp(`(${query})`, "gi");
+//   const parts = text.split(regex);
+
+//   return parts.map((part, i) =>
+//     part.toLowerCase() === query.toLowerCase() ? (
+//       <mark key={i} className="bg-yellow-400 text-black">
+//         {part}
+//       </mark>
+//     ) : (
+//       part
+//     )
+//   );
+// };
 
   return (
     <div className="min-h-screen relative  ">
@@ -412,7 +462,9 @@ const filteredPosts = useMemo(() => {
 
                         <div className="leading-tight">
                           <p className="text-sm font-semibold text-white">
-                            {data.authorname}
+                            {/* {data.authorname} */}
+                             {highlightText(data.authorname, debouncedSearch)}
+                            
                           </p>
                           <p className="text-xs text-gray-400">
                             {getTimeAgo(data.timestamp)}
@@ -441,7 +493,8 @@ const filteredPosts = useMemo(() => {
 
                       <div className="px-4 py-4 space-y-2">
                         <h3 className="text-base font-semibold text-white line-clamp-1">
-                          {data.title}
+                          {/* {data.title} */}
+                           {highlightText(data.title, debouncedSearch)}
                         </h3>
 
                         <p className="text-xs text-gray-400  line-clamp-2  md:line-clamp-1 ">

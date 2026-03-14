@@ -6,7 +6,8 @@ import { PiBookmarksSimpleFill, PiBookmarksSimpleLight } from "react-icons/pi";
 import axiosInstance from "../instances/Axiosinstances";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
-const TutorPlaylistCard = ({ playlist, setPlaylistCategory }) => {
+import highlightText from "../hooks/highlightText";
+const TutorPlaylistCard = ({ playlist, setPlaylistCategory,debouncedSearch }) => {
   const {
     title,
     domain,
@@ -113,7 +114,8 @@ const TutorPlaylistCard = ({ playlist, setPlaylistCategory }) => {
         {/* Content */}
         <div className="mt-2 md:mt-4 px-2 space-y-2">
           <h3 className=" text-base md:text-sm text-slate-200 terminate font-medium line-clamp-1">
-            {title}
+            {/* {title} */}
+            {highlightText(title, debouncedSearch)}
           </h3>
 
           <div className="flex items-center justify-between ">

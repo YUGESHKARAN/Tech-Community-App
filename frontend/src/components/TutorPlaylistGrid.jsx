@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import TutorPlaylistCard from "./TutorPlaylistCard";
 import useTutorPlaylist from "../hooks/useTutorPlaylist";
 import { IoSearchOutline } from "react-icons/io5";
+import Fuse from "fuse.js";
 
 const TutorPlaylistGrid = () => {
   const { tutorPlayList, playlistCount, loading, hasMore } = useTutorPlaylist();
@@ -22,19 +23,46 @@ const TutorPlaylistGrid = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+
+  const [debouncedSearch, setDebouncedSearch] = useState(searchTerm);
+  
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchTerm);
+    }, 300); // 300ms delay
+  
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+  
+    const fuse = useMemo(() => {
+    return new Fuse(tutorPlayList, {
+      keys: [
+        "title",
+        "domain",
+        "name",
+        "email"
+      ],
+      threshold: 0.3, // lower = stricter search
+    });
+  }, [tutorPlayList]);
+
   const filteredPlaylist = useMemo(() => {
     let filtered = [...tutorPlayList];
 
-    if (searchTerm.trim() !== "") {
-      const query = searchTerm.toLowerCase();
-      filtered = filtered.filter(
-        (playlist) =>
-          playlist.title?.toLowerCase().includes(query) ||
-          playlist.domain?.toLowerCase().includes(query) ||
-          playlist.name?.toLowerCase().includes(query) ||
-          playlist.email?.toLowerCase().includes(query),
-      );
-    }
+    // if (searchTerm.trim() !== "") {
+    //   const query = searchTerm.toLowerCase();
+    //   filtered = filtered.filter(
+    //     (playlist) =>
+    //       playlist.title?.toLowerCase().includes(query) ||
+    //       playlist.domain?.toLowerCase().includes(query) ||
+    //       playlist.name?.toLowerCase().includes(query) ||
+    //       playlist.email?.toLowerCase().includes(query),
+    //   );
+    // }
+
+     if (debouncedSearch.trim() !== "") {
+    filtered = fuse.search(debouncedSearch).map((r) => r.item);
+  }
 
     if (playlistCategory !== "") {
       filtered = filtered.filter(
@@ -43,14 +71,14 @@ const TutorPlaylistGrid = () => {
     }
 
     return filtered;
-  }, [tutorPlayList, searchTerm, playlistCategory]);
+  }, [tutorPlayList, searchTerm, playlistCategory, debouncedSearch]);
 
   const getUniqueCategories = (tutorPlayList) => {
     return [...new Set(tutorPlayList.map((playlist) => playlist.domain))];
   };
 
   // console.log("playlist", tutorPlayList)
-  console.log("filteredPlaylist", filteredPlaylist);
+  // console.log("filteredPlaylist", filteredPlaylist);
   return (
     <>
       {/* ================= SEARCH ================= */}
@@ -140,6 +168,7 @@ const TutorPlaylistGrid = () => {
               <TutorPlaylistCard
                 playlist={playlist}
                 setPlaylistCategory={setPlaylistCategory}
+                debouncedSearch={debouncedSearch}
               />
             </div>
           ))}

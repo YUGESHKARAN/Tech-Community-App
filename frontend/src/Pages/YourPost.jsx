@@ -17,6 +17,8 @@ import { BsPersonWorkspace } from "react-icons/bs";
 import getTimeAgo from "../components/DateCovertion";
 import BlogSkeleton from "../components/loaders/BlogSkeleton";
 import PillLoader from "../components/loaders/PillSkeleton";
+import Fuse from "fuse.js";
+import highlightText from "../hooks/highlightText";
 
 function YourPost() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -93,10 +95,7 @@ function YourPost() {
 
   // ----------------------------------------------------------------
 
-  // Search handler
-  const handleSearch = (e) => {
-    setSearchTerm(e.target.value);
-  };
+
 
   // Get unique categories
   const getUniqueCategories = (posts) => {
@@ -156,20 +155,47 @@ function YourPost() {
     }
   };
 
+
+const [debouncedSearch, setDebouncedSearch] = useState(searchTerm);
+
+useEffect(() => {
+  const timer = setTimeout(() => {
+    setDebouncedSearch(searchTerm);
+  }, 300); // 300ms delay
+
+  return () => clearTimeout(timer);
+}, [searchTerm]);
+
+  const fuse = useMemo(() => {
+  return new Fuse(posts, {
+    keys: [
+      "title",
+      "description",
+      "category",
+      "community"
+    ],
+    threshold: 0.3, // lower = stricter search
+  });
+}, [posts]);
+
   // Filter posts based on search
 const filteredPosts = useMemo(() => {
   let filtered =[...posts];
 
-  if (searchTerm.trim() !== "") {
-    const query = searchTerm.toLowerCase();
+  // if (searchTerm.trim() !== "") {
+  //   const query = searchTerm.toLowerCase();
 
-    filtered = filtered.filter(
-      (post) =>
-        post.title?.toLowerCase().includes(query) ||
-        post.description?.toLowerCase().includes(query) ||
-        post.category?.toLowerCase().includes(query) ||
-        post.authorname?.toLowerCase().includes(query)
-    );
+  //   filtered = filtered.filter(
+  //     (post) =>
+  //       post.title?.toLowerCase().includes(query) ||
+  //       post.description?.toLowerCase().includes(query) ||
+  //       post.category?.toLowerCase().includes(query) ||
+  //       post.authorName?.toLowerCase().includes(query)
+  //   );
+  // }
+
+    if (debouncedSearch.trim() !== "") {
+    filtered = fuse.search(debouncedSearch).map((r) => r.item);
   }
 
   if (postCategory !== "") {
@@ -179,7 +205,7 @@ const filteredPosts = useMemo(() => {
   }
 
   return filtered;
-}, [posts, searchTerm, postCategory]);
+}, [posts, searchTerm, postCategory, debouncedSearch]);
 
   const renderTextWithHashtags = (text) => {
     if (!text) return null;
@@ -298,123 +324,7 @@ const filteredPosts = useMemo(() => {
           <div className="md:w-full md:px-2 grid grid-cols-1 w-full mx-auto md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-10 mt-7 md:mt-10 h-auto">
             {/* Posts Grid */}
             {filteredPosts?.map((data, index) => (
-              // <div
-              //   key={index}
-              //   className="w-full mx-auto md:w-full bg-gray-800  flex flex-col shadow-xl hover:shadow-2xl transition-all duration-300 h-auto md:mb-0 md:mb-0 md:p-4 py-4 md:rounded-xl"
-              // >
-              //   <div className="flex mb-2 px-4 gap-2 items-center">
-              //     <img
-              //       src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${authorProfile}`}
-              //       className="w-8 max-h-10 object-cover rounded-full border border-gray-600"
-              //       alt={data.authorName}
-              //     />
-              //     <div className="flex flex-col">
-              //       <p className="text-sm text-white font-semibold">
-              //         {data.authorName}
-              //       </p>
-              //       <p className="text-xs text-gray-400 font-semibold">
-              //         {/* {data.timestamp.slice(0, 10)} */}
-              //         {getTimeAgo(data.timestamp)}
-              //       </p>
-              //     </div>
-              //   </div>
-
-              //   <Link
-              //     to={`/viewpage/${data.authoremail}/${data._id}`}
-              //     onClick={() => postViews(data.authoremail, data._id)}
-              //     // className="cursor-pointer flex items-center gap-1  hover:text-blue-300"
-              //   >
-              //     <img
-              //       src={
-              //         data.image
-              //           ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.image}`
-              //           : blog1
-              //       }
-              //       className="w-full
-              //                 h-44 md:h-36
-              //                 object-cover
-              //                 hover:opacity-90
-              //                 transition"
-              //       alt={data.title}
-              //       // onClick={() =>
-              //       //   handleImageClick(
-              //       //     data.image
-              //       //       ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.image}`
-              //       //       : blog1
-              //       //   )
-              //       // }
-              //     />
-              //   </Link>
-              //   <div className="min-h-28 h-auto px-4 pt-4">
-              //     <h2 className="md:text-xl text-lg text-white line-clamp-1 font-bold">
-              //       {data.title}
-              //     </h2>
-              //     <p className="text-xs text-gray-400 mt-2 line-clamp-2">
-              //       {renderTextWithHashtags(data.description)}
-              //     </p>
-              //   </div>
-
-              //   <div className="flex px-4 justify-between items-center mb-2 ">
-              //     <div className="flex gap-3 items-center">
-              //       <div className="flex items-center gap-2">
-              //         <Link
-              //           to={`/viewpage/${data.authoremail}/${data._id}`}
-              //           onClick={() => postViews(data.authoremail, data._id)}
-              //           className="cursor-pointer flex items-center gap-1  hover:text-blue-300"
-              //         >
-              //           <IoEye className="text-sm text-blue-400" />
-              //           <span className="text-[9px] text-white">
-              //             {data.views.length || ""}
-              //           </span>
-              //         </Link>
-              //         <button
-              //           type="button"
-              //           onClick={(e) =>
-              //             postLikes(data.authoremail, data._id, e)
-              //           }
-              //           className="cursor-pointer flex items-center gap-1 hover:text-blue-300 bg-transparent border-0 disabled:opacity-50"
-              //         >
-              //           {(data.likes || []).includes(email) ? (
-              //             <BiSolidLike className="text-sm text-blue-400" />
-              //           ) : (
-              //             <BiLike className="text-sm text-blue-400" />
-              //           )}
-              //           <span className="text-[9px] text-white">
-              //             {data.likes && data.likes.length > 0
-              //               ? data.likes.length
-              //               : ""}
-              //           </span>
-              //         </button>
-
-              //         <div
-              //           to={`/viewpage/${data.authoremail}/${data._id}`}
-              //           onClick={() =>
-              //             sharePost(data.title, data.authoremail, data._id)
-              //           }
-              //           className="cursor-pointer flex items-center gap-1  hover:text-blue-300"
-              //         >
-              //           <IoShareSocial className="text-sm text-blue-400" />
-              //         </div>
-
-              //         {data.authoremail === email && (
-              //           <Link
-              //             to={`/EditPost/${data._id}`}
-              //             className="text-pink-400 hover:text-pink-300"
-              //           >
-              //             <MdEdit className="text-sm" />
-              //           </Link>
-              //         )}
-              //       </div>
-              //     </div>
-              //     <button
-              //       onClick={() => setPostCategory(data.category)}
-              //       className="px-2 py-1 rounded-full bg-gray-600 text-gray-300 text-sm md:text-xs font-medium
-              //      transition-colors duration-200"
-              //     >
-              //       {data.category}
-              //     </button>
-              //   </div>
-              // </div>
+           
               <article
                 key={data._id}
                 className="
@@ -442,6 +352,7 @@ const filteredPosts = useMemo(() => {
                   <div className="leading-tight">
                     <p className="text-sm font-semibold text-white">
                       {data.authorName}
+ 
                     </p>
                     <p className="text-xs text-gray-400">
                       {getTimeAgo(data.timestamp)}
@@ -468,7 +379,9 @@ const filteredPosts = useMemo(() => {
 
                 <div className="px-4 py-4 space-y-2">
                   <h3 className="text-base font-semibold text-white line-clamp-1">
-                    {data.title}
+                    {/* {data.title} */}
+                    {highlightText(data.title, debouncedSearch)}
+                    
                   </h3>
 
                   <p className="text-xs text-gray-400  line-clamp-2  md:line-clamp-1 ">

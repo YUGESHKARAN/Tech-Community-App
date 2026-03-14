@@ -8,7 +8,8 @@ import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 import { IoIosRemoveCircle } from "react-icons/io";
 import { IoRemoveOutline } from "react-icons/io5";
-const YourPlaylistCard = ({ playlist, onRemove, onDelete }) => {
+import highlightText from "../hooks/highlightText";
+const YourPlaylistCard = ({ playlist, onRemove, onDelete,setPlaylistCategory, debouncedSearch }) => {
   const {
     title,
     domain,
@@ -64,32 +65,6 @@ const YourPlaylistCard = ({ playlist, onRemove, onDelete }) => {
       // toast.error("unable to bookmark");
     }
   };
-
-  // const deletePlaylist = async (id) => {
-   
-  //    let confirmDelete = window.confirm(
-  //       "Are you sure you want to delete this playlist?"
-  //     );
-  //     if (!confirmDelete) {
-  //       return;
-  //     }
-  //   try {
-     
-  //     const response = await axiosInstance.delete(
-  //       `/blog/playlist/delete/${id}`
-  //     );
-  //     console.log("response", response.status);
-  //     if (response.status == 200 ) {
-         
-  //       toast.success("playlist deleted successfully");
-  //        if (onRemove) onRemove();
-        
-  //     }
-  //   } catch (err) {
-  //     console.log("error", err.message);
-  //     toast.error("unable to delete playlist");
-  //   }
-  // };
 
   const deletePlaylist = async (id) => {
   const confirmDelete = window.confirm(
@@ -155,7 +130,7 @@ const YourPlaylistCard = ({ playlist, onRemove, onDelete }) => {
               deletePlaylist(_id);
             }}
             // className="absolute top-2 cursor-pointer right-2 bg-red-500 text-white text-xs font-medium px-2 py-1 rounded"
-            className="absolute top-3 cursor-pointer right-3   md:text-xl  font- text-md medium  rounded"
+            className="absolute top-3 cursor-pointer right-3   md:text-xl  text-2xl font-medium  rounded"
           >
             {/* Del */}
             <IoRemoveOutline  className="bg-red-500 rounded-full text-white" />
@@ -177,7 +152,8 @@ const YourPlaylistCard = ({ playlist, onRemove, onDelete }) => {
         {/* Content */}
         <div className="space-y-2 mt-2 md:mt-4 px-2 ">
           <h3 className="text-base md:text-sm text-slate-200 terminate font-medium line-clamp-1">
-            {title}
+            {/* {title} */}
+             {highlightText(title, debouncedSearch)}
           </h3>
 
           <div className="flex items-center justify-between ">
@@ -227,8 +203,11 @@ const YourPlaylistCard = ({ playlist, onRemove, onDelete }) => {
               </Link>
             </div>
 
-            <span className="inline-block text-[10px] md:text-xs  bg-emerald-600/20 text-emerald-400 px-2 py-1  rounded">
-                {domain}
+            <span 
+            onClick={()=>{setPlaylistCategory(domain)}}
+            className="inline-block text-[10px] md:text-xs cursor-pointer  bg-emerald-600/20 text-emerald-400 px-2 py-1  rounded">
+                {/* {domain} */}
+                {highlightText(domain, debouncedSearch)}
              
               </span>
 

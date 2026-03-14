@@ -19,6 +19,7 @@
     "cors": "^2.8.5",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.26.2",
+    "fuse.js": "^7.1.0",
     "js-cookie": "^3.0.5",
     "lucide-react": "^0.562.0",
     "postcss": "^8.4.45",
