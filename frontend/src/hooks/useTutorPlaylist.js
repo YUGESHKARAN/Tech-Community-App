@@ -33,9 +33,12 @@ function useTutorPlaylist() {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
+  const email = localStorage.getItem("email");
 
   const isFetching = useRef(false);
   const limit = 40;
+
+  console.log("pl email", email)
 
   const getTutorPlayList = useCallback(async () => {
     if (!hasMore || isFetching.current) return;
@@ -45,7 +48,7 @@ function useTutorPlaylist() {
 
     try {
       const response = await axiosInstance.get(
-        `/blog/playlist/all?page=${page}&limit=${limit}`
+        `/blog/playlist/recommended/${email}?page=${page}&limit=${limit}`
       );
 
       if (response.status === 200) {

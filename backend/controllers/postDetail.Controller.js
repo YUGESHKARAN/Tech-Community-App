@@ -166,7 +166,7 @@ const getRecommendedPosts = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = Math.min(parseInt(req.query.limit) || 50, 100);
     // console.log("page",page, "limit",limit)
-    const cacheKey = `feed:${email}:page:${page}:limit:${limit}`;
+    // const cacheKey = `feed:${email}:page:${page}:limit:${limit}`;
 
     // 1. CHECK CACHE FIRST
     // const cachedData = await redisClient.get(cacheKey);

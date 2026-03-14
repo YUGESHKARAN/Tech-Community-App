@@ -295,7 +295,7 @@ const filteredPosts = useMemo(() => {
       <div className="flex-col w-full md:gap-16 relative flex-wrap justify-center h-auto mx-auto">
         {/* Tutor Playlist section starts here */}
         {activeTab === "playlists" && (
-          <section className="space-y-4 mt-4 px-3 md:px-0 mx-auto  md:mx-auto w-full md:w-full ">
+          <section className="space-y-4 mt-4 px-3 md:px-0 px-auto  mx-auto w-full md:w-full ">
        
             <div className=" md:px-4 shadow-inner">
               {/* {  loading ? <TutorPlaylistGridSkeleton /> : <TutorPlaylistGrid />} */}
@@ -312,7 +312,7 @@ const filteredPosts = useMemo(() => {
         {activeTab === "posts" && (
           <>
             {/* ================= SEARCH ================= */}
-            <div className="flex mx-4 md:mx-0 justify-center mt-7">
+            <div className="flex mx-3 md:mx-0 justify-center mt-7">
               <div className="w-full mx-auto max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-2xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
                 <IoSearchOutline className="text-xl text-gray-400" />
                 <input

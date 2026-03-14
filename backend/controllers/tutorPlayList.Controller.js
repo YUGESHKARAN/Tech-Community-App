@@ -90,6 +90,76 @@ const getAllTutorPlaylist = async (req, res) => {
   }
 };
 
+const getRecommendedTutorPlaylist = async (req, res) => {
+  try {
+    const {email} = req.params ;
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const currentAuthor  = Author.findOne({email})
+    if (!currentAuthor){
+      return res.status(404).json({"message":"author not found"}) ;
+    }
+
+    const authorCommunity = currentAuthor.community || [];
+    const authorFollowers = currentAuthor.followers || [];
+
+    const authorFollowersSet = new Set(authorFollowers)
+
+    const tutorPlaylist = await TutorPlayList.find({})
+      .skip(skip)
+      .limit(limit);
+
+    const priorityPlaylist = []
+    const othersPlaylist = []
+
+    for (const playlist of tutorPlaylist){
+      const inFollowing = authorFollowersSet.has(playlist.email);
+      const inCommunity = authorCommunity.includes(playlist.domain); 
+
+      if (inFollowing || inCommunity){
+        priorityPlaylist.push(playlist)
+      }
+      else{
+        othersPlaylist.push(playlist)
+      }
+    }
+
+    const shuffle = (arr) => {
+      const a = arr.slice();
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    };
+   
+    const recommendedPart = shuffle(priorityPlaylist)
+    const remainingPart = shuffle(othersPlaylist)
+
+    const finalPlaylist = [...recommendedPart, ...remainingPart]
+    
+    
+
+    const count = await TutorPlayList.countDocuments();
+
+    // console.log(`recomended playlist page ${page} limit ${limit}`);
+    // console.log("recommended playlist called")
+
+    res.status(200).json({
+      message: "recommended playlist",
+      data: finalPlaylist,
+      count
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+
+
 
 // const getPlaylistByEmail = async (req, res) => {
 //   try {
@@ -395,40 +465,6 @@ const deleteTutorPlayList = async(req,res)=>{
 }
 
 
-// const getBookmarkedPlaylists = async (req, res) => {
-//   try {
-//     const { email } = req.params;
-    
-//     if (!email) return res.status(400).json({ message: "email required" });
-
-//     // adjust "postBookmark" to the actual field name on your Author schema if different
-//     const author = await Author.findOne({ email }).select("postBookmark");
-//     if (!author) return res.status(404).json({ message: "author not found" });
-
-//     const playlistIds = (author.postBookmark || [])
-//       .map((id) => (id ? id.toString() : null))
-//       .filter(Boolean);
-
-//     if (playlistIds.length === 0) {
-//       return res.status(200).json({ message: "No playlists", playlists: [] });
-//     }
-
-//     const playlists = await TutorPlayList.find({ _id: { $in: playlistIds } }).lean();
-
-//     const map = new Map(playlists.map((p) => [p._id.toString(), p]));
-//     const orderedPlaylists = playlistIds.map((id) => map.get(id)).filter(Boolean);
-
-//     return res.status(200).json({
-//       message: "Bookmarked playlists",
-//       count: orderedPlaylists.length,
-//       playlists: orderedPlaylists,
-//       playlistIds: orderedPlaylists.map((p) => p._id.toString()),
-//     });
-//   } catch (err) {
-//     console.error("getBookmarkedPlaylists error:", err);
-//     return res.status(500).json({ message: "server error", error: err.message });
-//   }
-// };
 
 const getBookmarkedPlaylists = async (req, res) => {
   try {
@@ -436,7 +472,7 @@ const getBookmarkedPlaylists = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
-    console.log(`bookmarked playlists page ${page} limit ${limit}`);
+    // console.log(`bookmarked playlists page ${page} limit ${limit}`);
     if (!email) return res.status(400).json({ message: "email required" });
 
     // adjust "postBookmark" to the actual field name on your Author schema if different
@@ -476,5 +512,6 @@ module.exports = {
   getPlaylistByEmail,
   updateTutorPlayList,
   deleteTutorPlayList,
-  getBookmarkedPlaylists
+  getBookmarkedPlaylists,
+  getRecommendedTutorPlaylist
 };

@@ -61,6 +61,7 @@ const TutorPlaylistGridSkeleton = () => {
     space-y-5
     md:space-y-0
     mt-0
+    
   "
     >
       {[...Array(4)].map((_, index) => (

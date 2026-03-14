@@ -6,7 +6,7 @@ import { PiBookmarksSimpleFill, PiBookmarksSimpleLight } from "react-icons/pi";
 import axiosInstance from "../instances/Axiosinstances";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
-const TutorPlaylistCard = ({ playlist }) => {
+const TutorPlaylistCard = ({ playlist, setPlaylistCategory }) => {
   const {
     title,
     domain,
@@ -161,7 +161,9 @@ const TutorPlaylistCard = ({ playlist }) => {
             </div>
 
 
-              <span className="inline-block text-[10px] md:text-xs  bg-emerald-600/20 text-emerald-400 px-2 py-1  rounded">
+              <span 
+              onClick={()=>setPlaylistCategory(domain)}
+              className="inline-block cursor-pointer text-[10px] md:text-xs  bg-emerald-600/20 text-emerald-400 px-2 py-1  rounded">
                 {domain}
              
               </span>

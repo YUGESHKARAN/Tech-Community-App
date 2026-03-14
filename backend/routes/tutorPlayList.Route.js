@@ -10,12 +10,14 @@ const {
   getPlaylistByEmail,
   updateTutorPlayList,
   deleteTutorPlayList,
-  getBookmarkedPlaylists
+  getBookmarkedPlaylists,
+  getRecommendedTutorPlaylist
 } = require("../controllers/tutorPlayList.Controller");
 const authenticateToken = require('../middleware/authMiddleware')
 const router = express.Router();
 
 router.get("/all",authenticateToken, getAllTutorPlaylist);  
+router.get("/recommended/:email",getRecommendedTutorPlaylist)
 router.get("/:playlistId",authenticateToken, getPlaylistById);  
 router.get("/coordinator/:email",authenticateToken, getPlaylistByEmail);
 router.get("/bookmark/:email",authenticateToken,getBookmarkedPlaylists)
