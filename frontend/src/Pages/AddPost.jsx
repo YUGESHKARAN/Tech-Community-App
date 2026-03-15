@@ -694,7 +694,7 @@ function AddPost() {
 
         {/* AI Assistant (Always visible on desktop) */}
         <div
-          className={`bg-[#0f172a]/80 border lg:w-11/12 border-gray-800 rounded-lg md:rounded-xl px-4 py-6 md:p-6 flex flex-col
+          className={`bg-[#0f172a]/80 border lg:w-11/12 h-96 md:h-80 border-gray-800 rounded-lg md:rounded-xl px-4 py-6 md:p-6 flex flex-col
           ${!chatbot ? "hidden lg:flex" : "flex"}`}
         >
 

@@ -625,7 +625,7 @@ function TutorPlaylist() {
           Select Posts for Playlist
         </h2>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 h-fit md:overflow-y-auto gap-3 md:gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-3 h-fit md:overflow-y-auto gap-3 md:gap-5">
           {filteredPosts.map((data, index) => (
             <div
               key={index}
@@ -633,8 +633,8 @@ function TutorPlaylist() {
               className={`rounded-2xl border p-4 cursor-pointer transition-all duration-300
                 ${
                   postIds.includes(data._id)
-                    ? "border-emerald-500 bg-emerald-500/10"
-                    : "border-gray-700 bg-gray-900 hover:bg-gray-800"
+                     ? "border-emerald-500 bg-emerald-500/10"
+                    : "border-gray-700 bg-gray-900 "
                 }`}
             >
            <div className="flex items-center gap-2 mb-3">
@@ -656,7 +656,7 @@ function TutorPlaylist() {
                     ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.image}`
                     : blog1
                 }
-                className="w-full h-20 md:h-36 rounded-xl object-cover mb-3"
+                className="w-full h-40 md:h-36 rounded-xl object-cover mb-3"
                 alt=""
               />
 
@@ -665,7 +665,7 @@ function TutorPlaylist() {
                 <span className="text-gray-400">
                   {data.views.length} views
                 </span>
-                <span className="px-2 py-1 rounded-full bg-gray-700 text-gray-300">
+                <span className="px-2 py-1 inline-block rounded-full text-emerald-400 bg-emerald-600/20">
                   {data.category}
                 </span>
               </div>

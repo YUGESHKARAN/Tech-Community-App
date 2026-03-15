@@ -8,7 +8,7 @@ import {
 } from "react-icons/io5";
 import getTimeAgo from "../components/DateCovertion.jsx";
 import { MagnifyingGlass } from "react-loader-spinner";
-import blog1 from "../images/img_not_found.png";
+import blog1 from "../images/img_not_found2.png";
 import { BiLike, BiSolidLike } from "react-icons/bi";
 import axiosInstance from "../instances/Axiosinstances";
 import { PiBookmarksSimpleFill, PiBookmarksSimpleLight } from "react-icons/pi";
@@ -475,7 +475,7 @@ const filteredPosts = useMemo(() => {
                       <Link
                         to={`/viewpage/${data.authoremail}/${data._id}`}
                         onClick={() => postViews(data.authoremail, data._id)}
-                        className="block"
+                        className="block "
                       >
                         <img
                           src={

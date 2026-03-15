@@ -477,22 +477,9 @@ export default function AITechAssistant({ currentPostId, category }) {
                   {/* Suggested Queries */}
                   {msg.suggestedQueries?.length > 0 && (
                     <div className="flex flex-col gap-2 pt-2">
-                      {/* {msg.suggestedQueries.map((s, i) => (
-                        <button
-                          key={i}
-                           onClick={async () => {
-                              // setQuery(s);
-                              // await handleQueryClick(e);
-                               handleQueryClick(s);
-                            }}
-                          // className="bg-neutral-800 hover:bg-neutral-700 px-3 py-1.5 rounded-full text-sm"
-                          className="border border-neutral-600 w-fit hover:bg-neutral-700 px-3 py-1.5 rounded-full text-sm"
-                        >
-                          {s}
-                        </button>
-                      ))} */}
+                
 
-                      { idx == 0 &&
+                      {
                         msg.suggestedQueries.map((s, i) => (
                           <button
                             key={i}
@@ -511,7 +498,7 @@ export default function AITechAssistant({ currentPostId, category }) {
                           </button>
                         ))}
 
-                      {idx > 0 && msg.suggestedQueries?.length > 0 && (
+                      {/* {idx > 0 && msg.suggestedQueries?.length > 0 && (
                         <div className="flex flex-nowarp scrollbar-hide overflow-x-auto gap-2 pt-2">
                           {msg.suggestedQueries.map((s, i) => (
                             <button
@@ -531,7 +518,7 @@ export default function AITechAssistant({ currentPostId, category }) {
                             </button>
                           ))}
                         </div>
-                      )}
+                      )} */}
                     </div>
                   )}
                 </div>

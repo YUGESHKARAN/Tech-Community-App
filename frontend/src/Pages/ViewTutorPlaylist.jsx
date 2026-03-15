@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import axiosInstance from "../instances/Axiosinstances";
 import NavBar from "../ui/NavBar";
 import user from "../images/user.png";
-import blog1 from "../images/img_not_found.png";
+import blog1 from "../images/img_not_found2.png";
 import { PiBookmarksSimpleFill, PiBookmarksSimpleLight } from "react-icons/pi";
 import { IoClose, IoShareSocial } from "react-icons/io5";
 import { MdArrowDropDown } from "react-icons/md";

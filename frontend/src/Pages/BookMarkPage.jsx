@@ -9,7 +9,7 @@ import {
 import { MdEdit } from "react-icons/md";
 import { MagnifyingGlass } from "react-loader-spinner";
 import getTimeAgo from "../components/DateCovertion.jsx";
-import blog1 from "../images/img_not_found.png";
+import blog1 from "../images/img_not_found2.png";
 import NavBar from "../ui/NavBar";
 import Footer from "../ui/Footer";
 import { BiBookmarkAlt, BiLike, BiSolidLike } from "react-icons/bi";

@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
-import blog1 from "../images/loading3.gif";
 // import user from "../images/blog48.jpg";
 import NavBar from "../ui/NavBar";
 import getTimeAgo from "../components/DateCovertion.jsx";
 import "react-toastify/dist/ReactToastify.css";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import blog1 from "../images/img_not_found2.png";
 import Footer from "../ui/Footer";
 import {
   MdOutlineAttachFile,

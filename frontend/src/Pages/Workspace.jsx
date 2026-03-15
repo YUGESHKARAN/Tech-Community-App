@@ -131,11 +131,11 @@ const ActionCard = ({ to, icon, title, description }) => (
     to={to}
     className="group md:w-11/12 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700 rounded-2xl p-6 flex items-center gap-4 hover:border-teal-500/40 hover:shadow-xl transition-all"
   >
-    <div className="p-4 rounded-xl bg-teal-500/10 text-teal-400 text-2xl group-hover:scale-110 transition-transform">
+    <div className="p-4 rounded-xl bg-teal-500/10 text-teal-400 text-xl md:text-2xl group-hover:scale-110 transition-transform">
       {icon}
     </div>
     <div>
-      <h3 className="text-lg font-semibold group-hover:text-teal-400 transition">
+      <h3 className="md:text-lg text-base font-semibold group-hover:text-teal-400 transition">
         {title}
       </h3>
       <p className="text-sm text-gray-400 mt-1">{description}</p>
