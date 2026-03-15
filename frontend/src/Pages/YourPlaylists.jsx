@@ -103,7 +103,7 @@ useEffect(() => {
       </h1>
 
        {/* ================= SEARCH ================= */}
-            <div className="flex  px-3 mx-auto w-full md:mx-0 justify-center mt-7">
+           { tutorPlayListByEmail.length > 0 && <div className="flex  px-3 mx-auto w-full md:mx-0 justify-center mt-7">
               <div className="w-full mx-auto max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-2xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
                 <IoSearchOutline className="text-xl text-gray-400" />
                 <input
@@ -117,7 +117,7 @@ useEffect(() => {
                   className="bg-transparent w-full focus:outline-none text-sm text-white placeholder-gray-400"
                 />
               </div>
-            </div>
+            </div>}
           
         {tutorPlayListByEmail.length > 0 && (
         <div

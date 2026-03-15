@@ -19,7 +19,6 @@ function ViewEditPost() {
   const [category, setCategory] = useState("");
   const [customCategory, setCustomCategory] = useState("");
   const [image, setImage] = useState(null);
-  const [edit, setEdit] = useState(false);
   const [timeStamp, setTimeStamp] = useState("");
   const [links, setLinks] = useState([]);
   const [currentLinkTitle, setCurrentLinkTitle] = useState("");
@@ -43,57 +42,12 @@ function ViewEditPost() {
   const onImageChange = (e) => {
     console.log(e.target.files[0]);
     const file = e.target.files[0];
-    //   if (file) {
-    //   setPreviewImage(URL.createObjectURL(file)); // Show preview
-    //   // If you also want to upload/store the file:
-    //   // setImage(file);
-    //   setImage(e.target.files[0]);
-    // }
+
     setPreviewImage(URL.createObjectURL(file)); // Show preview
     setImage(e.target.files[0]);
   };
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault(); // Prevent the default form submission
-
-  //   const formData = new FormData();
-  //   formData.append("title", title);
-  //   formData.append("description", description);
-  //   formData.append("category", category);
-  //   if(image){
-  //     formData.append("image", image);
-  //   }
-
-  //   try {
-  //     // Send FormData object directly to the API
-  //     const response = await axios.put(
-  //       `/blog/posts/${email}/${PostId}`,
-  //       formData,
-  //       {
-  //         headers: {
-  //           "Content-Type": "multipart/form-data",
-  //         },
-  //       }
-
-  //     );
-  //     toast.success('post Edited successfully');
-  //     if (response.status === 200) {
-  //       console.log("Post edited successfully:", response.data);
-  //       setTitle("");
-  //       setDescription("");
-  //       setCategory("");
-  //       setImage(null);
-  //       toast.success('post Edited successfully') ;
-  //       navigate("/home"); // Redirect to the homepage
-
-  //       // Optionally, you can reset the form or redirect the user
-  //       // window.location.reload(); // Uncomment if you want to reload the page
-  //     }
-  //   } catch (error) {
-  //     console.error("Error editing post:", error);
-  //   }
-  // };
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -182,7 +136,7 @@ function ViewEditPost() {
     setShowConfirm(true);
     setLoading(true);
     try {
-      const response = axiosInstance.delete(`/blog/posts/${email}/${PostId}`);
+      const response = await axiosInstance.delete(`/blog/posts/${email}/${PostId}`);
       // const response = axiosInstance.delete(`http://localhost:3000/blog/posts/${email}/${PostId}`);
       console.log("deleted response", response);
       toast.success("post deleted successfully");
@@ -231,80 +185,11 @@ function ViewEditPost() {
     <div className="relative w-full  bg-gradient-to-br from-gray-900 to-gray-800 h-auto min-h-[900px]">
       <NavBar />
       <div className="h-auto md:w-11/12  flex flex-col p-2  justify-center items-center  m-auto md:mt-10">
-        <div
-          className={`${
-            edit
-              ? "hidden"
-              : "md:w-6/12 w-11/12 mb-20 md:mb-40 bg-gray-800 rounded-lg shadow-lg p-5 flex flex-col gap-4 items-center"
-          }`}
-        >
-          {/* Top section: Author info + controls */}
-          <div className="w-full flex items-center justify-between">
-            {/* Author Info */}
-            <div className="flex items-center gap-3">
-              <img
-                src={singlePostData.profile?`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${singlePostData.profile}`:user}
-                alt="Author"
-                className="md:w-10 w-8 h-8 md:h-10 object-cover rounded-full border border-gray-600"
-              />
-              <div>
-                <p className="text-sm md:text-base font-semibold text-white">
-                  {singlePostData.authorname}
-                </p>
-                <p className="text-xs text-gray-400">
-                  {timeStamp.slice(0, 10)}
-                </p>
-              </div>
-            </div>
-
-            {/* Actions */}
-            <div className="flex gap-2 md:gap-3">
-              <button
-                onClick={() => setEdit(true)}
-                className="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1 text-xs md:text-sm font-semibold rounded-md transition"
-              >
-                Edit
-              </button>
-              <button
-                onClick={() => setShowConfirm(true)}
-                className="bg-red-600 hover:bg-red-500 text-white px-3 py-1 text-xs md:text-sm font-semibold rounded-md transition"
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-
-          {/* Title */}
-          <h3 className="w-full text-left text-white text-xl md:text-3xl font-bold leading-snug">
-            {singlePostData.title}
-          </h3>
-
-          {/* Blog Image */}
-          <div className="w-full overflow-hidden rounded-md">
-            <img
-              src={
-                singlePostData.image
-                  ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${singlePostData.image}`
-                  : blog1
-              }
-              alt="Blog Visual"
-              className="w-full object-cover rounded-md max-h-[400px]"
-            />
-          </div>
-
-          {/* Description */}
-          <p className="w-full text-justify break-words text-gray-300 text-sm md:text-base leading-relaxed">
-            {singlePostData.description}
-          </p>
-        </div>
+       
 
         <form
           onSubmit={handleSubmit}
-          className={`${
-            edit
-              ? "flex flex-col text-white rounded-lg shadow-lg space-y-6 mb-10 md:mb-12 justify-center p-6 w-full md:w-11/12 gap-3 m-auto md:bg-gray-900"
-              : "hidden"
-          }`}
+          className="flex flex-col text-white rounded-lg shadow-lg space-y-6 mb-10 md:mb-12 justify-center p-6 w-full md:w-11/12 gap-3 m-auto md:bg-gray-900"
         >
           <h1 className="md:text-3xl text-2xl font-bold mb-3 text-left w-full border-b border-gray-700 pb-2">
             Edit Post
@@ -338,7 +223,7 @@ function ViewEditPost() {
             </label>
             <textarea
               id="description"
-              className="mt-1 block w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-sm"
+              className="mt-1 block w-full scrollbar-hide px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-sm"
               placeholder={description}
               value={description}
               rows={5}

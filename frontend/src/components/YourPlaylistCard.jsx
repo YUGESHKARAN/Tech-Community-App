@@ -23,6 +23,8 @@ const YourPlaylistCard = ({ playlist, onRemove, onDelete,setPlaylistCategory, de
 
   const [bookMarkId, setBookMarkId] = useState([]);
   const email = localStorage.getItem("email");
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [loading, setLoading] = useState(false)
 
   const getBookMarkPlaylist = async () => {
     try {
@@ -66,12 +68,30 @@ const YourPlaylistCard = ({ playlist, onRemove, onDelete,setPlaylistCategory, de
     }
   };
 
-  const deletePlaylist = async (id) => {
-  const confirmDelete = window.confirm(
-    "Are you sure you want to delete this playlist?"
-  );
-  if (!confirmDelete) return;
+//   const deletePlaylist = async (id) => {
+//   const confirmDelete = window.confirm(
+//     "Are you sure you want to delete this playlist?"
+//   );
+//   if (!confirmDelete) return;
 
+//   try {
+//     const response = await axiosInstance.delete(
+//       `/blog/playlist/delete/${id}`
+//     );
+
+//     if (response.status === 200) {
+//       // toast.success("playlist deleted successfully");
+//      if(onDelete) onDelete(id); // refresh list
+//     }
+//   } catch (err) {
+//     console.log("error", err.message);
+//     // toast.error("unable to delete playlist");
+//   }
+// };
+
+  const deletePlaylist = async (id) => {
+  setShowConfirm(true);
+    setLoading(true);
   try {
     const response = await axiosInstance.delete(
       `/blog/playlist/delete/${id}`
@@ -80,13 +100,20 @@ const YourPlaylistCard = ({ playlist, onRemove, onDelete,setPlaylistCategory, de
     if (response.status === 200) {
       // toast.success("playlist deleted successfully");
      if(onDelete) onDelete(id); // refresh list
+
     }
   } catch (err) {
     console.log("error", err.message);
     // toast.error("unable to delete playlist");
   }
+  finally{
+    setShowConfirm(false)
+    setLoading(false)
+  }
+  
 };
-  return (
+
+return (
     <div className="relative  w-full mt-4 max-w-sm">
       {/* STACK LAYER 3 (BACK) */}
       <div
@@ -127,7 +154,8 @@ const YourPlaylistCard = ({ playlist, onRemove, onDelete,setPlaylistCategory, de
           {/* Delete Playlist */}
           <span
             onClick={() => {
-              deletePlaylist(_id);
+              // deletePlaylist(_id);
+               setShowConfirm(true);
             }}
             // className="absolute top-2 cursor-pointer right-2 bg-red-500 text-white text-xs font-medium px-2 py-1 rounded"
             className="absolute top-3 cursor-pointer right-3   md:text-xl  text-2xl font-medium  rounded"
@@ -238,6 +266,52 @@ const YourPlaylistCard = ({ playlist, onRemove, onDelete,setPlaylistCategory, de
           </div>
         </div>
       </div>
+      {showConfirm && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-50 transition-opacity duration-300">
+          <div className="bg-white p-6 rounded-lg shadow-2xl w-11/12 max-w-sm animate-fadeIn">
+            <div className="flex items-center mb-4">
+              <div className="flex items-center justify-center w-10 h-10 rounded-full bg-red-100">
+                <svg
+                  className="w-5 h-5 text-red-600"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20 10 10 0 000-20z"
+                  />
+                </svg>
+              </div>
+              <h2 className="ml-3 text-lg font-semibold text-gray-800">
+                Confirm Deletion
+              </h2>
+            </div>
+
+            <p className="text-gray-600 mb-6 text-sm leading-relaxed">
+              Are you sure you want to delete this playlist?
+            </p>
+
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setShowConfirm(false)}
+                className="px-4 py-2 text-sm font-medium text-gray-600 bg-gray-100 rounded hover:bg-gray-200 transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={()=> {deletePlaylist(_id)}}
+                className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded hover:bg-red-700 transition"
+                disabled={loading}
+              >
+                {loading ? "Deleting.." : "Delete"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );

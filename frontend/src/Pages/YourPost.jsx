@@ -5,6 +5,7 @@ import {
   IoEye,
   IoClose,
   IoShareSocial,
+  IoRemoveOutline,
 } from "react-icons/io5";
 import { MdEdit } from "react-icons/md";
 import { MagnifyingGlass } from "react-loader-spinner";
@@ -25,11 +26,14 @@ function YourPost() {
   const [posts, setPosts] = useState([]);
   const [postCategory, setPostCategory] = useState("");
   const [loader, setLoader] = useState(false);
+  const [loading, setLoading] = useState(false);
   const email = localStorage.getItem("email");
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const limit = 50;
   const isFetching = useRef(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [delPostId, setDelPostId] = useState("")
 
   const [authorProfile, setAuthorProfile] = useState("");
 
@@ -244,6 +248,35 @@ const filteredPosts = useMemo(() => {
   return () => window.removeEventListener("scroll", handleScroll);
 }, []);
 
+
+  const deletePost = async (PostId) => {
+    setShowConfirm(true);
+    setLoading(true);
+    try {
+      const response = await axiosInstance.delete(`/blog/posts/${email}/${PostId}`);
+      // const response = axiosInstance.delete(`http://localhost:3000/blog/posts/${email}/${PostId}`);
+      if (response.status === 200){
+          // console.log("deleted response", response);
+           // toast.success("post deleted successfully");
+          // navigate("/home");
+          //  fetchPosts();
+
+          setPosts((prev)=> prev.filter((p)=> p._id!== PostId))
+           
+      }
+    
+      
+    } catch (err) {
+      console.log(err);
+    } 
+    finally{
+      setDelPostId("")
+      setShowConfirm(false);
+      setLoading(false)
+    }
+  
+  };
+
   return (
     <div className="w-full min-h-screen bg-gray-900 h-auto reltive  ">
       <NavBar />
@@ -334,6 +367,7 @@ const filteredPosts = useMemo(() => {
                    transition-transform
                    duration-500
                    md:mb-4
+                  
                 "
               >
                 <div className="flex items-center gap-3 px-4 py-3">
@@ -360,7 +394,7 @@ const filteredPosts = useMemo(() => {
                   </div>
                 </div>
 
-                <Link
+                {/* <Link
                   to={`/viewpage/${data.authoremail}/${data._id}`}
                   onClick={() => postViews(data.authoremail, data._id)}
                   className="block"
@@ -373,9 +407,48 @@ const filteredPosts = useMemo(() => {
                     }
                     alt={data.title}
                     className="w-full  h-60 transition-transform
-                                      duration-500  md:hover:scale-[1.05]  md:h-48  object-cover"
+                                    relative   duration-500  md:hover:scale-[1.05]  md:h-48  object-cover"
                   />
-                </Link>
+
+                  
+                </Link> */}
+
+                  <div
+                  // to={`/viewpage/${data.authoremail}/${data._id}`}
+                  // onClick={() => postViews(data.authoremail, data._id)}
+                  className="block relative"
+                >
+                  <Link
+                   to={`/viewpage/${data.authoremail}/${data._id}`}
+                  onClick={() => postViews(data.authoremail, data._id)}
+                  >
+                    <img
+                    src={
+                      data.image
+                        ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.image}`
+                        : blog1
+                    }
+                    alt={data.title}
+                    className="w-full  h-60 transition-transform
+                                       duration-500  md:hover:scale-[1.05]  md:h-48  object-cover"
+                  />
+                  </Link>
+                
+
+                   <span
+                            onClick={() => {
+                              // deletePost(data._id);
+                              setDelPostId(data._id)
+                              setShowConfirm(true)
+                            }}
+                            // // className="absolute top-2 cursor-pointer right-2 bg-red-500 text-white text-xs font-medium px-2 py-1 rounded"
+                            className="absolute top-3 cursor-pointer right-3 z-50  md:text-xl  text-2xl font-medium  rounded"
+                          >
+                            {/* Del */}
+                            <IoRemoveOutline  className="bg-red-500 rounded-full text-white" />
+                          </span>
+                </div>
+               
 
                 <div className="px-4 py-4 space-y-2">
                   <h3 className="text-base font-semibold text-white line-clamp-1">
@@ -489,6 +562,53 @@ const filteredPosts = useMemo(() => {
           )}
         </div>
       </div>
+
+      {showConfirm && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-50 transition-opacity duration-300">
+          <div className="bg-white p-6 rounded-lg shadow-2xl w-11/12 max-w-sm animate-fadeIn">
+            <div className="flex items-center mb-4">
+              <div className="flex items-center justify-center w-10 h-10 rounded-full bg-red-100">
+                <svg
+                  className="w-5 h-5 text-red-600"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20 10 10 0 000-20z"
+                  />
+                </svg>
+              </div>
+              <h2 className="ml-3 text-lg font-semibold text-gray-800">
+                Confirm Deletion
+              </h2>
+            </div>
+
+            <p className="text-gray-600 mb-6 text-sm leading-relaxed">
+              Are you sure you want to delete this Post?
+            </p>
+
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setShowConfirm(false)}
+                className="px-4 py-2 text-sm font-medium text-gray-600 bg-gray-100 rounded hover:bg-gray-200 transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={()=> {deletePost(delPostId)}}
+                className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded hover:bg-red-700 transition"
+                disabled={loading}
+              >
+                {loading ? "Deleting.." : "Delete"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       <Footer />
     </div>
   );
