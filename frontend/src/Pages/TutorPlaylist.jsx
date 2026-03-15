@@ -104,7 +104,7 @@ function TutorPlaylist() {
   const categories = getUniqueCategories(posts);
 
   const getPostByCategory = (posts, categoryName) => {
-    return posts.filter((post) => post.category === categoryName);
+    return posts.filter((post) => post.category.toLowerCase() === categoryName.toLowerCase());
   };
 
   const filteredPosts = getPostByCategory(posts, domain);
@@ -610,7 +610,7 @@ function TutorPlaylist() {
         type="submit"
         disabled={loader}
         className="md:px-5 px-3 py-2 md:py-2 bg-emerald-600/20 hover:bg-emerald-500/20
-                         rounded-md text-xs md:text-sm   text-emerald-400 transition"
+                         rounded-md text-xs md:text-sm   text-emerald-400 transition-all duration-300 disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed"
       >
         {loader ? "Creating Playlist..." : "Create Playlist"}
       </button>
@@ -687,7 +687,7 @@ function TutorPlaylist() {
         type="submit"
         disabled={loader}
         className="md:px-5 px-5 py-2 md:py-2 bg-emerald-600/20 hover:bg-emerald-500/20
-                         rounded-md text-xs md:text-sm   text-emerald-400 transition"
+                         rounded-md text-xs md:text-sm   text-emerald-400 transition-all duration-300 disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed"
       >
         {loader ? "Creating Playlist..." : "Create Playlist"}
       </button>

@@ -6,7 +6,7 @@ const useGetAuthorPosts = (email) => {
 
   const getAuthorPosts = async () => {
     try {
-      const response = await axiosInstance.get(`/blog/posts/${email}`);
+      const response = await axiosInstance.get(`/blog/posts/${email}?limit=${50}`);
       setPosts(response.data.data);
     } catch (err) {
       console.log("error", err);
