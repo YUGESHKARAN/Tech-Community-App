@@ -556,7 +556,7 @@ export default function AITechAssistant({ currentPostId, category }) {
           />
 
           <button
-            onClick={askAI}
+            onClick={()=>askAI(query)}
             // className="bg-white text-black px-4 rounded-xl text-sm text-base block"
             className="text-2xl md:text-2xl transition-all duration-300 hover:text-gray-400 text-gray-500 block"
           >
