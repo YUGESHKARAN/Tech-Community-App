@@ -9,7 +9,7 @@ import user from "../images/user.png";
 import blog1 from "../images/img_not_found.png";
 import { VscSend } from "react-icons/vsc";
 import { IoSendSharp } from "react-icons/io5";
-import Cookies from "js-cookie"
+import Cookies from "js-cookie";
 export default function AITechAssistant({ currentPostId, category }) {
   const username = localStorage.getItem("username");
   const [open, setOpen] = useState(false);
@@ -32,12 +32,16 @@ export default function AITechAssistant({ currentPostId, category }) {
     },
   ]);
 
-  const askAI = async () => {
-    if (!query.trim()) return;
+  const askAI = async (customQuery) => {
+
+    const finalQuery = customQuery || query;
+    if (!finalQuery.trim()) return;
+
+    console.log("finalQuery", finalQuery)
 
     const userMessage = {
       role: "user",
-      content: query,
+      content: finalQuery,
     };
     // console.log("current post id in assistant:", currentPostId);
     setMessages((prev) => [...prev, userMessage]);
@@ -46,16 +50,19 @@ export default function AITechAssistant({ currentPostId, category }) {
     setLoading(true);
 
     try {
-      const res = await axios.post(`${assistantURL}/ask`, {
-        query,
-        current_post_id: currentPostId,
-        category
-      }, {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const res = await axios.post(
+        `${assistantURL}/ask`,
+        {
+          query:finalQuery,
+          current_post_id: currentPostId,
+          category,
         },
-        
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
       let aiMessage = {
         role: "assistant",
         content: res.data.content,
@@ -67,37 +74,32 @@ export default function AITechAssistant({ currentPostId, category }) {
       console.log("AI response", aiMessage);
 
       setMessages((prev) => [...prev, aiMessage]);
-    } 
-    
-   catch (err) {
+    } catch (err) {
+      console.log("Full error:", err);
 
-  console.log("Full error:", err);
+      let content = "Something went wrong. Please try again.";
 
-  let content = "Something went wrong. Please try again.";
+      if (err.response) {
+        console.log("Status:", err.response.status);
+        console.log("Response data:", err.response.data);
 
-  if (err.response) {
-    console.log("Status:", err.response.status);
-    console.log("Response data:", err.response.data);
+        if (err.response.status === 429) {
+          content = "Too many requests. Please slow down.";
+        } else if (err.response.status === 400) {
+          content = err.response.data?.content || "Invalid request.";
+        }
+      }
 
-    if (err.response.status === 429) {
-      content = "Too many requests. Please slow down.";
+      const aiMessage = {
+        role: "assistant",
+        content,
+        videos: null,
+        posts: null,
+        suggestedQueries: [],
+      };
 
-    } else if (err.response.status === 400) {
-      content = err.response.data?.content || "Invalid request.";
-    }
-  }
-
-  const aiMessage = {
-    role: "assistant",
-    content,
-    videos: null,
-    posts: null,
-    suggestedQueries: [],
-  };
-
-  setMessages((prev) => [...prev, aiMessage]);
-}
- finally {
+      setMessages((prev) => [...prev, aiMessage]);
+    } finally {
       setLoading(false);
     }
   };
@@ -153,93 +155,96 @@ export default function AITechAssistant({ currentPostId, category }) {
   // }, [messages, loading]);
 
   useEffect(() => {
-  const el = containerRef.current;
-  if (!el || messages.length === 0) return;
+    const el = containerRef.current;
+    if (!el || messages.length === 0) return;
 
-  const lastMessage = messages[messages.length - 1];
+    const lastMessage = messages[messages.length - 1];
 
-  // Scroll only when user sends message
-  if (lastMessage.role === "user") {
-    const start = el.scrollTop;
-    const end = el.scrollHeight - el.clientHeight;
+    // Scroll only when user sends message
+    if (lastMessage.role === "user") {
+      const start = el.scrollTop;
+      const end = el.scrollHeight - el.clientHeight;
 
-    let duration = 250;
-    let startTime = null;
+      let duration = 250;
+      let startTime = null;
 
-    function animate(time) {
-      if (!startTime) startTime = time;
-      const progress = Math.min((time - startTime) / duration, 1);
+      function animate(time) {
+        if (!startTime) startTime = time;
+        const progress = Math.min((time - startTime) / duration, 1);
 
-      el.scrollTop = start + (end - start) * progress;
+        el.scrollTop = start + (end - start) * progress;
 
-      if (progress < 1) requestAnimationFrame(animate);
+        if (progress < 1) requestAnimationFrame(animate);
+      }
+
+      requestAnimationFrame(animate);
     }
-
-    requestAnimationFrame(animate);
-  }
-}, [messages]);
+  }, [messages]);
   const bottomRef = useRef(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
-  const handleQueryClick = async (e) => {
-    e.preventDefault();
+  // const handleQueryClick = async (e) => {
+  //   e.preventDefault();
 
-    setTimeout(() => askAI(), 1);
-  };
-  
+  //   setTimeout(() => askAI(), 1);
+  // };
 
-const lastUserIndex = [...messages]
-  .map((m, i) => (m.role === "user" ? i : -1))
-  .filter((i) => i !== -1)
-  .pop();
+  const handleQueryClick = async (suggestion) => {
+  setQuery(suggestion);
+  askAI(suggestion);
+};
 
-// useEffect(() => {
-//   const container = containerRef.current;
-//   const userMessage = lastUserRef.current;
+  const lastUserIndex = [...messages]
+    .map((m, i) => (m.role === "user" ? i : -1))
+    .filter((i) => i !== -1)
+    .pop();
 
-//   if (!container || !userMessage) return;
+  // useEffect(() => {
+  //   const container = containerRef.current;
+  //   const userMessage = lastUserRef.current;
 
-//   const offsetTop = userMessage.offsetTop;
+  //   if (!container || !userMessage) return;
 
-//   container.scrollTo({
-//     top: offsetTop,
-//     behavior: "smooth",
-//   });
-// }, [messages]);
+  //   const offsetTop = userMessage.offsetTop;
 
-useEffect(() => {
-  const container = containerRef.current;
-  const userMessage = lastUserRef.current;
+  //   container.scrollTo({
+  //     top: offsetTop,
+  //     behavior: "smooth",
+  //   });
+  // }, [messages]);
 
-  if (!container || !userMessage) return;
+  useEffect(() => {
+    const container = containerRef.current;
+    const userMessage = lastUserRef.current;
 
-  const start = container.scrollTop;
-  const end = userMessage.offsetTop - 10; // slight padding
-  const duration = 350;
+    if (!container || !userMessage) return;
 
-  let startTime = null;
+    const start = container.scrollTop;
+    const end = userMessage.offsetTop - 10; // slight padding
+    const duration = 350;
 
-  function animateScroll(time) {
-    if (!startTime) startTime = time;
+    let startTime = null;
 
-    const progress = Math.min((time - startTime) / duration, 1);
+    function animateScroll(time) {
+      if (!startTime) startTime = time;
 
-    container.scrollTop = start + (end - start) * progress;
+      const progress = Math.min((time - startTime) / duration, 1);
 
-    if (progress < 1) {
-      requestAnimationFrame(animateScroll);
+      container.scrollTop = start + (end - start) * progress;
+
+      if (progress < 1) {
+        requestAnimationFrame(animateScroll);
+      }
     }
-  }
 
-  requestAnimationFrame(animateScroll);
+    requestAnimationFrame(animateScroll);
+  }, [messages]);
 
-}, [messages]);
-  
-//  console.log("token", token)
-// console.log("messages", messages )
+  //  console.log("token", token)
+  // console.log("messages", messages )
   return (
     <>
       {/* Floating Ask Button (Mobile) */}
@@ -295,9 +300,10 @@ useEffect(() => {
             >
               {/* User bubble */}
               {msg.role === "user" && (
-                <div 
+                <div
                   ref={idx === lastUserIndex ? lastUserRef : null}
-                className="text-right">
+                  className="text-right"
+                >
                   <div className="inline-block text-left bg-white text-black px-4 py-2 rounded-2xl text-sm max-w-[85%]">
                     {msg.content}
                   </div>
@@ -376,7 +382,7 @@ useEffect(() => {
                               {/* Title */}
                               <div className="p-2">
                                 <p className="text-xs md:text-sm md:font-medium line-clamp-2 text-neutral-200">
-                                 Video Source {i+1}
+                                  Video Source {i + 1}
                                 </p>
                               </div>
                             </a>
@@ -423,7 +429,7 @@ useEffect(() => {
                                 className="w-full h-full rounded-lg object-cover"
                               />
 
-                            <div className="absolute inset-0 " />
+                              <div className="absolute inset-0 " />
 
                               <div className="absolute top-2 left-3 bg-black/70 text-[11px] px-2 py-0.5 text-xs rounded-full border border-neutral-700">
                                 {p.category}
@@ -470,20 +476,62 @@ useEffect(() => {
 
                   {/* Suggested Queries */}
                   {msg.suggestedQueries?.length > 0 && (
-                    <div className="flex flex-wrap gap-2 pt-2">
-                      {msg.suggestedQueries.map((s, i) => (
+                    <div className="flex flex-col gap-2 pt-2">
+                      {/* {msg.suggestedQueries.map((s, i) => (
                         <button
                           key={i}
-                          onClick={async (e) => {
-                            setQuery(s);
-                            await handleQueryClick(e);
-                          }}
+                           onClick={async () => {
+                              // setQuery(s);
+                              // await handleQueryClick(e);
+                               handleQueryClick(s);
+                            }}
                           // className="bg-neutral-800 hover:bg-neutral-700 px-3 py-1.5 rounded-full text-sm"
-                          className="border border-neutral-600 hover:bg-neutral-700 px-3 py-1.5 rounded-full text-sm"
+                          className="border border-neutral-600 w-fit hover:bg-neutral-700 px-3 py-1.5 rounded-full text-sm"
                         >
                           {s}
                         </button>
-                      ))}
+                      ))} */}
+
+                      { idx == 0 &&
+                        msg.suggestedQueries.map((s, i) => (
+                          <button
+                            key={i}
+                            disabled={loading}
+                            onClick={async () => {
+                              // setQuery(s);
+                              // await handleQueryClick(e);
+                               handleQueryClick(s);
+                            }}
+                            // className="bg-neutral-800 hover:bg-neutral-700 px-3 py-1.5 rounded-full text-sm"
+                            className="border border-neutral-600 w-fit text-left hover:bg-neutral-800 px-3 md:py-1.5 transition-all duration-300 py-2 rounded-3xl text-sm disabled:opacity-50
+                              disabled:cursor-not-allowed
+                              disabled:hover:bg-transparent "
+                          >
+                            {s}
+                          </button>
+                        ))}
+
+                      {idx > 0 && msg.suggestedQueries?.length > 0 && (
+                        <div className="flex flex-nowarp scrollbar-hide overflow-x-auto gap-2 pt-2">
+                          {msg.suggestedQueries.map((s, i) => (
+                            <button
+                              key={i}
+                              disabled = {loading}
+                             onClick={async () => {
+                              // setQuery(s);
+                              // await handleQueryClick(e);
+                               handleQueryClick(s);
+                            }}
+                              // className="bg-neutral-800 hover:bg-neutral-700 px-3 py-1.5 rounded-full text-sm"
+                              className="border text-nowrap w-11/12 text-left  inline-block border-neutral-600 hover:bg-neutral-800 px-5  py-2 rounded-3xl text-sm disabled:opacity-50 disabled:cursor-not-allowed
+                              disabled:hover:bg-transparent "
+                            >
+                              <p className=" text-wrap   w-64">{s}</p>
+                              
+                            </button>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -516,7 +564,7 @@ useEffect(() => {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && askAI()}
-            placeholder="Ask your query..."
+            placeholder="Ask your queries..."
             className="flex-1 bg-neutral-800 border border-neutral-800 rounded-xl px-4 py-2 text-sm text-white placeholder-neutral-500 outline-none"
           />
 

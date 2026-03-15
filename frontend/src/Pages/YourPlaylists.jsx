@@ -108,7 +108,7 @@ useEffect(() => {
                 <IoSearchOutline className="text-xl text-gray-400" />
                 <input
                   type="text"
-                  placeholder="Search posts, topics, or categories"
+                  placeholder="Search playlists, topics, or domains"
                   value={searchTerm}
                   // onChange={handleSearch}
                   onChange={(e) => {
