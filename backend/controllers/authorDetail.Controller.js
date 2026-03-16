@@ -666,7 +666,7 @@ const notificationAuthorDelete = async (req, res) => {
     author.notification = updatedNotifications;
     await author.save();
 
-    res.json({
+    res.status(200).json({
       message: "Notification deleted successfully",
       notifications: author.notification,
     });
@@ -690,7 +690,7 @@ const notificationAuthorDeleteAll = async (req, res) => {
     author.notification = [];
     await author.save();
 
-    res.json({
+    res.status(200).json({
       message: "All notifications deleted successfully",
       notifications: author.notification, // This will now be an empty array
     });

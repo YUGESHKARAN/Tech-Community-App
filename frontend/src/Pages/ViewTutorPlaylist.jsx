@@ -79,23 +79,49 @@ function ViewTutorPlaylist() {
     getBookMarkPosts();
   }, []);
 
-  const addBookMarkPostId = async (_id) => {
+  const addBookMarkPostIdPlaylist = async (_id) => {
     // e.preventDefault()
-    console.log("bookmark id", playlistbookMarkId);
+    // console.log("bookmark id", _id);
     try {
       const response = await axiosInstance.post(
         `/blog/posts/bookmarkPosts/${email}`,
         { postId: _id },
       );
-      if (response.status == 200) {
-        {
-          playlistbookMarkId.includes(_id)
-            ? toast.success("bookmark removed successfully")
-            : toast.success("post bookmarked successfully");
-        }
-        getBookMarkPlaylist();
-        getBookMarkPosts();
-        // getTutorPlaylist();
+      if (response.status === 200) {
+          setPlaylistBookMarkId((prev) => {
+          if (prev.includes(_id)) {
+            // toast.success("bookmark removed successfully");
+            return prev.filter((id) => id !== _id);
+          } else {
+            // toast.success("post bookmarked successfully");
+            return [...prev, _id];
+          }
+        });
+      }
+    } catch (err) {
+      console.log("error", err.message);
+      // toast.error("unable to bookmark");
+    }
+  };
+
+    const addBookMarkPostId = async (_id) => {
+    // e.preventDefault()
+    // console.log("bookmark id", _id);
+    try {
+      const response = await axiosInstance.post(
+        `/blog/posts/bookmarkPosts/${email}`,
+        { postId: _id },
+      );
+      if (response.status === 200) {
+          setBookMarkId((prev) => {
+          if (prev.includes(_id)) {
+            // toast.success("bookmark removed successfully");
+            return prev.filter((id) => id !== _id);
+          } else {
+            // toast.success("post bookmarked successfully");
+            return [...prev, _id];
+          }
+        });
       }
     } catch (err) {
       console.log("error", err.message);
@@ -136,11 +162,26 @@ function ViewTutorPlaylist() {
   const postLikes = async (authorEmail, postId) => {
     // e.preventDefault();
     try {
-      await axiosInstance.put(`/blog/posts/likes/${authorEmail}/${postId}`, {
+       const response =  await axiosInstance.put(`/blog/posts/likes/${authorEmail}/${postId}`, {
         emailAuthor: email,
       });
 
-      getTutorPlaylist();
+      if (response.status === 200){
+          setPlaylistPosts((prevPosts) =>
+        prevPosts.map((post) =>
+          post._id === postId
+            ? {
+                ...post,
+                likes: post.likes.includes(email)
+                  ? post.likes.filter((like) => like !== email) // Unlike the post
+                  : [...post.likes, email], // Like the post
+              }
+            : post,
+        ),
+      );
+      }
+
+      // getTutorPlaylist();
     } catch (err) {
       console.error("Error updating views:", err);
     }
@@ -312,7 +353,7 @@ function ViewTutorPlaylist() {
                     <div className="flex items-center gap-2">
                       <div
                         onClick={() => {
-                          addBookMarkPostId(playlistData._id);
+                          addBookMarkPostIdPlaylist(playlistData._id);
                         }}
                         className="cursor-pointer flex items-center md:text-xl gap-1 text-teal-300 hover:text-teal-300"
                       >
@@ -384,7 +425,7 @@ function ViewTutorPlaylist() {
                     {/* <div className="flex items-center gap-3">
                     
                       <button
-                        onClick={() => addBookMarkPostId(playlistData._id)}
+                        onClick={() => addBookMarkPostIdPlaylist(playlistData._id)}
                         className="text-teal-400 hover:text-teal-300 transition"
                       >
                         {Array.isArray(playlistbookMarkId) &&
@@ -520,7 +561,7 @@ function ViewTutorPlaylist() {
                     <div className="flex items-center gap-2">
                       <div
                         onClick={() => {
-                          addBookMarkPostId(playlistData._id);
+                          addBookMarkPostIdPlaylist(playlistData._id);
                         }}
                         className="cursor-pointer flex items-center md:text-xl gap-1 text-teal-300 hover:text-teal-300"
                       >
@@ -550,7 +591,7 @@ function ViewTutorPlaylist() {
               {playlistPosts.map((post, index) => (
                 <div
                   key={post._id}
-                  className="flex gap-4 md:p-4 p-2  bg-gray-900 rounded-lg border md:border-neutral-700 border-neutral-800 transition"
+                  className="flex gap-4 md:p-4 p-2  bg-gray-900 rounded-lg border md:border-neutral-800 border-neutral-800 transition"
                 >
                   {/* Video Thumbnail */}
                   <Link

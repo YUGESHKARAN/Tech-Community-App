@@ -105,7 +105,11 @@ function NavBar() {
         `/blog/author/notification/delete?email=${userEmail}&notificationId=${notificationId}`,
       );
 
-      fetchNotifications();
+      if (response.status === 200){
+        setNote((note)=> note.filter((n)=> n._id !== notificationId))
+      }
+
+      // fetchNotifications();
     } catch (err) {
       console.log("error", err);
     }
@@ -120,9 +124,13 @@ function NavBar() {
       const response = await axiosInstance.delete(
         `/blog/author/notification/deleteall?email=${userEmail}`,
       );
-      fetchNotifications();
+      // fetchNotifications();
 
-      console.log("deleted", response.data);
+      if (response.status === 200){
+        setNote([]) ;
+      }
+
+      // console.log("deleted", response.data);
     } catch (err) {
       console.log("error", err);
     }

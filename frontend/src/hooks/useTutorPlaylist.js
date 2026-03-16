@@ -38,7 +38,7 @@ function useTutorPlaylist() {
   const isFetching = useRef(false);
   const limit = 40;
 
-  console.log("pl email", email)
+  // console.log("pl email", email)
 
   const getTutorPlayList = useCallback(async () => {
     if (!hasMore || isFetching.current) return;

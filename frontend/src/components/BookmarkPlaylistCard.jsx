@@ -30,7 +30,7 @@ const BookmarkPlaylistCard = ({ playlist, setBookMarPlaylist }) => {
       );
       if (response.status == 200) {
         // getTutorPlayList();
-        toast.success("Playlist removed from the bookmarks");
+        // toast.success("Playlist removed from the bookmarks");
 
         setBookMarPlaylist((prev) => prev.filter((p) => p._id !== _id));
       }

@@ -133,16 +133,18 @@ function YourPost() {
     }
   };
 
-  const postLikes = async (authorEmail, postId, e) => {
-    if (e) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
+  const postLikes = async (authorEmail, postId) => {
+    // if (e) {
+    //   e.preventDefault();
+    //   e.stopPropagation();
+    // }
     try {
-      await axiosInstance.put(`/blog/posts/likes/${authorEmail}/${postId}`, {
+       const response =  await axiosInstance.put(`/blog/posts/likes/${authorEmail}/${postId}`, {
         emailAuthor: email,
       });
-      setPosts((prevPosts) =>
+
+      if (response.status===200){
+         setPosts((prevPosts) =>
         prevPosts.map((post) =>
           post._id === postId
             ? {
@@ -154,6 +156,8 @@ function YourPost() {
             : post,
         ),
       );
+      }
+     
     } catch (err) {
       console.error("Error updating views:", err);
     }
@@ -476,7 +480,7 @@ const filteredPosts = useMemo(() => {
                                           </Link> */}
 
                     <button
-                      onClick={(e) => postLikes(data.authoremail, data._id, e)}
+                      onClick={() => postLikes(data.authoremail, data._id)}
                       className="flex items-center gap-1 text-teal-500"
                     >
                       {(data.likes || []).includes(email) ? (

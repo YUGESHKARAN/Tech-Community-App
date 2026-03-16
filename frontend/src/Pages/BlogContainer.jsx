@@ -144,13 +144,15 @@ function BlogContainer({activeTab, setActiveTab}) {
     }
   };
 
-  const postLikes = async (authorEmail, postId, e) => {
-    e.preventDefault();
+  const postLikes = async (authorEmail, postId) => {
+    // e.preventDefault();
     try {
-      await axiosInstance.put(`/blog/posts/likes/${authorEmail}/${postId}`, {
+      const response =  await axiosInstance.put(`/blog/posts/likes/${authorEmail}/${postId}`, {
         emailAuthor: email,
       });
-      setPosts((prevPosts) =>
+
+      if (response.status === 200){
+          setPosts((prevPosts) =>
         prevPosts.map((post) =>
           post._id === postId
             ? {
@@ -162,6 +164,8 @@ function BlogContainer({activeTab, setActiveTab}) {
             : post,
         ),
       );
+      }
+    
     } catch (err) {
       console.error("Error updating views:", err);
     }
@@ -307,41 +311,7 @@ const filteredPosts = useMemo(() => {
 
   return (
     <div className="min-h-screen relative  ">
-      {/* <div className="sticky top-0 z-40 p-2  pl-4 md:pt-2 w-full  md:w-11/12 mx-auto backdrop-blur-md ">
-        <div className="flex items-center gap-10">
-         
-          <button
-            onClick={() => setActiveTab("posts")}
-            className={`relative pb-1 md:pb-2 text-sm md:text-base font-semibold transition-all duration-300
-        ${
-          activeTab === "posts"
-            ? "text-white"
-            : "text-gray-400 hover:text-gray-200"
-        }`}
-          >
-            Posts
-            {activeTab === "posts" && (
-              <span className="absolute left-0 -bottom-[1px] w-full h-[2px] bg-teal-500 rounded-full"></span>
-            )}
-          </button>
 
-          
-          <button
-            onClick={() => setActiveTab("playlists")}
-            className={`relative pb-1 md:pb-2 text-sm md:text-base font-semibold transition-all duration-300
-        ${
-          activeTab === "playlists"
-            ? "text-white"
-            : "text-gray-400 hover:text-gray-200"
-        }`}
-          >
-            Playlists
-            {activeTab === "playlists" && (
-              <span className="absolute left-0 -bottom-[1px] w-full h-[2px] bg-teal-500 rounded-full"></span>
-            )}
-          </button>
-        </div>
-      </div> */}
       <div className="flex-col w-full md:gap-16 relative flex-wrap justify-center h-auto mx-auto">
         {/* Tutor Playlist section starts here */}
         {activeTab === "playlists" && (
@@ -415,6 +385,7 @@ const filteredPosts = useMemo(() => {
                     {data}
                   </div>
                 ))}
+                
               </div>
              
                     </div>
@@ -516,8 +487,8 @@ const filteredPosts = useMemo(() => {
                           </Link> */}
 
                           <button
-                            onClick={(e) =>
-                              postLikes(data.authoremail, data._id, e)
+                            onClick={() =>
+                              postLikes(data.authoremail, data._id)
                             }
                             className="flex items-center gap-1 text-teal-500"
                           >
@@ -527,7 +498,7 @@ const filteredPosts = useMemo(() => {
                               <BiLike className="text-xs" />
                             )}
                             <span className="text-xs">
-                              {data.likes?.length || ""}
+                              {data.likes?.length || " "}
                             </span>
                           </button>
 

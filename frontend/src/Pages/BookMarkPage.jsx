@@ -106,26 +106,7 @@ function BookMarkPage() {
 
   // ----------------------------------------------------------------------------------------
 
-  // const addBookMarkPostId = async (e, postId) => {
-  //   e.preventDefault();
-  //   try {
-  //     const response = await axiosInstance.post(
-  //       `/blog/posts/bookmarkPosts/${email}`,
-  //       { postId }
-  //     );
-  //     if (response.status == 200) {
-  //       {
-  //         bookMarkId.includes(postId)
-  //           ? toast.success("bookmark removed successfully")
-  //           : toast.success("post bookmarked successfully");
-  //       }
-  //       getBookMarkPosts();
-  //     }
-  //   } catch (err) {
-  //     console.log("error", err.message);
-  //     toast.error("unable to bookmark");
-  //   }
-  // };
+
 
   const addBookMarkPostId = async (postId) => {
     // e.preventDefault();
@@ -136,32 +117,25 @@ function BookMarkPage() {
         { postId },
       );
 
-      if (response.status === 200) {
-        const isBookmarked = bookMarkId.includes(postId);
+        if (response.status === 200) {
+        // setBookMarkId((prev) => {
+        //   if (prev.includes(postId)) {
+        //     // toast.success("bookmark removed successfully");
+        //     return prev.filter((id) => id !== postId);
+        //   } else {
+        //     // toast.success("post bookmarked successfully");
+        //     return [...prev, postId];
+        //   }
+        // });
 
-        // ✅ Toast correct
-        if (isBookmarked) {
-          toast.success("Bookmark removed successfully");
-        } else {
-          toast.success("Post bookmarked successfully");
-        }
-
-        // ✅ Update bookmark IDs instantly
-        setBookMarkId(
-          (prev) =>
-            isBookmarked
-              ? prev.filter((id) => id !== postId) // remove
-              : [...prev, postId], // add
-        );
-
-        // ✅ Also update posts list visually if needed
-        setPosts((prev) =>
-          prev.filter((post) => (isBookmarked ? post._id !== postId : true)),
-        );
+        setPosts((post)=>
+          post.filter((p)=> p._id!== postId)
+        )
+        filterdPost.filter((p)=> p._id!== postId)
       }
     } catch (err) {
       console.log("error", err.message);
-      toast.error("Unable to bookmark");
+      // toast.error("Unable to bookmark");
     }
   };
 
@@ -206,16 +180,18 @@ function BookMarkPage() {
     }
   };
 
-  const postLikes = async (authorEmail, postId, e) => {
-    if (e) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
+  const postLikes = async (authorEmail, postId) => {
+    // if (e) {
+    //   e.preventDefault();
+    //   e.stopPropagation();
+    // }
     try {
-      await axiosInstance.put(`/blog/posts/likes/${authorEmail}/${postId}`, {
+      const response =  await axiosInstance.put(`/blog/posts/likes/${authorEmail}/${postId}`, {
         emailAuthor: email,
       });
-      setPosts((prevPosts) =>
+      
+      if (response.status === 200){
+          setPosts((prevPosts) =>
         prevPosts.map((post) =>
           post._id === postId
             ? {
@@ -227,6 +203,7 @@ function BookMarkPage() {
             : post,
         ),
       );
+      }
     } catch (err) {
       console.error("Error updating views:", err);
     }
@@ -636,8 +613,8 @@ function BookMarkPage() {
                           </Link> */}
 
                           <button
-                            onClick={(e) =>
-                              postLikes(data.authoremail, data._id, e)
+                            onClick={() =>
+                              postLikes(data.authoremail, data._id)
                             }
                             className="flex items-center gap-1 text-teal-500"
                           >
@@ -668,7 +645,7 @@ function BookMarkPage() {
                             bookMarkId.includes(data._id) ? (
                               <PiBookmarksSimpleFill className="text-teal-600 text-xs" />
                             ) : (
-                              <PiBookmarksSimpleLight />
+                              <PiBookmarksSimpleLight className="text-teal-600 text-xs" />
                             )}
                           </button>
                           <Link

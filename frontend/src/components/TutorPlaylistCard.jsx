@@ -48,16 +48,19 @@ const TutorPlaylistCard = ({ playlist, setPlaylistCategory,debouncedSearch }) =>
         { postId:_id }
       );
       if (response.status == 200) {
-        {
-          bookMarkId.includes(_id)
-            ? toast.success("Playlist removed from the bookmarks")
-            : toast.success("Playlist bookmarked successfully");
-        }
-        getBookMarkPlaylist();
+        setBookMarkId((prev) => {
+          if (prev.includes(_id)) {
+            // toast.success("bookmark removed successfully");
+            return prev.filter((id) => id !== _id);
+          } else {
+            // toast.success("post bookmarked successfully");
+            return [...prev, _id];
+          }
+        });
       }
     } catch (err) {
       console.log("error", err.message);
-      toast.error("unable to bookmark");
+      // toast.error("unable to bookmark");
     }
   };
 

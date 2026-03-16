@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import TutorPlaylistCard from "./TutorPlaylistCard";
 import useTutorPlaylist from "../hooks/useTutorPlaylist";
 import { Link } from "react-router-dom";
@@ -15,30 +15,27 @@ const TutorBookMarkPlaylist = () => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [playlistCategory,setPlaylistCategory] = useState("");
+
+    const [isStickyActive, setIsStickyActive] = useState(false);
+    useEffect(() => {
+      const handleScroll = () => {
+        if (window.scrollY > 40) {
+          setIsStickyActive(true);
+        } else {
+          setIsStickyActive(false);
+        }
+      };
+  
+      window.addEventListener("scroll", handleScroll);
+  
+      return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
 
   const isFetching = useRef(false);
   const limit = 40;
 
 // -------------------------------------------------------
-
-  // const getBookMarkPlaylist = async () => {
-  //   try {
-  //     const response = await axiosInstance.get(
-  //       `/blog/playlist/bookmark/${email}`
-  //     );
-  //     if (response.status == 200) {
-  //       setBookMarPlaylist(response.data.playlists);
-  //       setBookMarkIds(response.data.playlistIds);
-  //       setCount(response.data.count);
-  //     }
-  //   } catch (err) {
-  //     console.log("error", err.message);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   getBookMarkPlaylist();
-  // }, []);
 
 
   const getBookMarkPlaylist = async () => {
@@ -111,6 +108,22 @@ useEffect(() => {
 }, [email]);
   // ----------------------------------------------
 
+    const getUniqueCategories = (tutorPlayList) => {
+    return [...new Set(tutorPlayList.map((playlist) => playlist.domain))];
+  };
+
+  const filteredBookmarkPlaylist = useMemo(()=>{
+       let filtered = [...bookMarPlaylist];
+
+        if (playlistCategory !== "") {
+      filtered = filtered.filter(
+        (playlist) => playlist.domain === playlistCategory,
+      );
+    }
+
+    return filtered;
+  }, [bookMarPlaylist, playlistCategory])
+
   // console.log("bookmarked playlist", bookMarPlaylist);
   // console.log("bookmarked count", count);
 
@@ -122,6 +135,45 @@ useEffect(() => {
           {/* <h2 className="  text-2xl md:text-4xl font-bold tracking-wide text-gray-200">
             Playlists
           </h2> */}
+
+           {bookMarPlaylist.length > 0 && (
+        <div
+          className={`w-full sticky top-0 z-40
+                ${isStickyActive ? "bg-gray-900 " : "bg-transparent"}`}
+        >
+          <div
+            // className="flex md:max-w-5xl md:w-fit mt-10 scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto"
+            className="flex w-full  md:w-fit md:max-w-7xl  mt-2 py-5 z-50 scrollbar-hide mx-auto items-center justify-start gap-3 md:mb-5 overflow-x-auto"
+          >
+            {/* All Button */}
+            <div
+              onClick={() => setPlaylistCategory("")}
+              className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1.5 md:py-2 transition-all duration-200 ${
+                playlistCategory === ""
+                  ? "bg-emerald-600/20 text-emerald-400"
+                  : "bg-gray-800 text-white"
+              }`}
+            >
+              All
+            </div>
+
+            {/* Dynamic Categories */}
+            {getUniqueCategories(bookMarPlaylist).map((data, index) => (
+              <div
+                key={index}
+                onClick={() => setPlaylistCategory(data)}
+                className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1.5 md:py-2 transition-all duration-200 ${
+                  playlistCategory === data
+                    ? "bg-emerald-600/20 text-emerald-400"
+                    : "bg-gray-800 text-white"
+                }`}
+              >
+                {data}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
 
    
@@ -164,7 +216,7 @@ useEffect(() => {
             />
           </div>
         ))} */}
-        {bookMarPlaylist?.map((playlist) => (
+        {filteredBookmarkPlaylist?.map((playlist) => (
           <div key={playlist._id}
           //  className="min-w-[200px] sm:min-w-0"
            className="min-w-[150px] sm:min-w-0"

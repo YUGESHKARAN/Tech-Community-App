@@ -49,18 +49,16 @@ const YourPlaylistCard = ({ playlist, onRemove, onDelete,setPlaylistCategory, de
         `/blog/posts/bookmarkPosts/${email}`,
         { postId: _id }
       );
-      if (response.status == 200) {
-        {
-          // const message =
-          //   Array.isArray(bookMarkId) && bookMarkId.includes(_id)
-          //     ? "Playlist removed from the bookmarks"
-          //     : "Playlist bookmarked successfully";
-          // toast.success(message);
-          getBookMarkPlaylist();
-          if (onRemove) {
-            onRemove();
+      if (response.status === 200) {
+       setBookMarkId((prev) => {
+          if (prev.includes(_id)) {
+            // toast.success("bookmark removed successfully");
+            return prev.filter((id) => id !== _id);
+          } else {
+            // toast.success("post bookmarked successfully");
+            return [...prev, _id];
           }
-        }
+        });
       }
     } catch (err) {
       console.log("error", err.message);
