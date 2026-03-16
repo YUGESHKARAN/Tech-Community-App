@@ -390,15 +390,22 @@ async function deleteFromAIIngestion(post_id, token) {
 
      res = await axios.delete(`${process.env.TECH_ASSISTANT_URL}/delete/${post_id}`,
       {
-        header:{
+        headers:{
           "Authorization": `Bearer ${token}`
         }
       }
 
      );
   }
-  catch(err){
-    console.error("Error notifying AI deletion:", err.message); 
+  // catch(err){
+  //   console.error("Error notifying AI deletion:", err.message); 
+  // }
+    catch (err) {
+    console.error("AI deletion error:", {
+      message: err.message,
+      status: err.response?.status,
+      data: err.response?.data
+    });
   }
 }
 

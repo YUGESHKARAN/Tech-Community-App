@@ -136,46 +136,6 @@ function ViewPage() {
     getComments();
   }, [id, email]);
 
-  //   useEffect(() => {
-  //     const socketUrl = import.meta.env.VITE_WEBSOCKET_URL;
-
-  //     const newSocket = io(socketUrl, {
-  //       transports: ["polling"],
-  //     });
-
-  //     setSocket(newSocket);
-
-  //     newSocket.emit("registerUser", userEmail);
-  //     newSocket.emit("joinPostRoom", postId);
-
-  //     // LIVE COMMENT UPDATE
-  //     // newSocket.on("newMessage", (comment) => {
-  //     //   setMessages((prev) => [...prev, comment]);
-  //     // });
-  //     newSocket.on("newMessage", (comment) => {
-  //   setMessages((prev) => {
-  //     // ✅ If message already exists (based on _id), ignore
-  //     const exists = prev.some(
-  //       (msg) => msg._id && msg._id === comment._id
-  //     );
-
-  //     if (exists) return prev;
-
-  //     return [...prev, comment];
-  //   });
-  // });
-
-  //     // Optional: notifications
-  //     newSocket.on("notification", (notification) => {
-  //       setNotification((prev) => [notification, ...prev]);
-  //     });
-
-  //     return () => {
-  //       newSocket.off("newMessage");
-  //       newSocket.off("notification");
-  //       newSocket.disconnect();
-  //     };
-  //   }, [postId, userEmail]);
 
   useEffect(() => {
     const socketUrl = import.meta.env.VITE_WEBSOCKET_URL;
