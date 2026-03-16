@@ -692,22 +692,22 @@ let parsedLinks = post.links || [];
 
     const updatedPost = await author.save();
 
+
+    //----- Embedding doc update controller-----
+    const updated = updatedPost.posts.id(postId);
+    let updatedToAI = {...updated.toObject(), authorName: author.authorname, profile: author.profile || '', authorEmail: author.email};
+
+     await notifyAIIngestion(updatedToAI, req.token).catch(err => {
+      console.error("AI update ingestion error:", err.message);
+    }); 
+    //-------------------------------------------
+
     res.status(200).json({ 
       message: "Post updated successfully", 
       data: updatedPost 
     });
 
-    const updated = updatedPost.posts.id(postId);
-
-    let updatedToAI = {...updated.toObject(), authorName: author.authorname, profile: author.profile || '', authorEmail: author.email};
- 
-
-
-    // console.log("updated post for AI", updatedToAI)
-
-     await notifyAIIngestion(updatedToAI, req.token).catch(err => {
-      console.error("AI update ingestion error:", err.message);
-    }); 
+   
   } catch (err) {
     console.error(err.errors); 
     res.status(500).json({ 
@@ -803,16 +803,17 @@ const deletePost = async (req, res) => {
     // Save the updated author document
     const updatedAuthor = await author.save();
 
+    // ------Embedding doc delete controller------------------------
+    
+     await deleteFromAIIngestion(postId, req.token).catch(err => {
+      console.error("AI update ingestion error:", err.message);
+    });
+    // --------------------------------------------------------------
+
     res.status(200).json({
       message: "Post deleted successfully",
       data: updatedAuthor,
     });
-
-    //  console.log("deleted post from pinecone", postId)
-
-     await deleteFromAIIngestion(postId, req.token).catch(err => {
-      console.error("AI update ingestion error:", err.message);
-    }); 
 
 
   } catch (err) {
