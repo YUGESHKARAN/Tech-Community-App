@@ -28,7 +28,7 @@ import highlightText from "../hooks/highlightText.jsx";
 
 function BlogContainer({activeTab, setActiveTab}) {
   
-  const {loading } = useTutorPlaylist();
+  const {loading, tutorPlayList } = useTutorPlaylist();
   const [searchTerm, setSearchTerm] = useState("");
   const [posts, setPosts] = useState([]);
   const [postCategory, setPostCategory] = useState("");
@@ -320,7 +320,7 @@ const filteredPosts = useMemo(() => {
        
             <div className=" md:px-4 shadow-inner">
               {/* {  loading2 ? <TutorPlaylistGridSkeleton /> : <TutorPlaylistGrid />} */}
-              {loading ? (
+              {tutorPlayList.length===0 ? (
                   <TutorPlaylistGridSkeleton />
                 ) : (
                   <TutorPlaylistGrid />
