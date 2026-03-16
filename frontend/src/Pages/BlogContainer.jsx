@@ -28,11 +28,12 @@ import highlightText from "../hooks/highlightText.jsx";
 
 function BlogContainer({activeTab, setActiveTab}) {
   
+  const {loading } = useTutorPlaylist();
   const [searchTerm, setSearchTerm] = useState("");
   const [posts, setPosts] = useState([]);
   const [postCategory, setPostCategory] = useState("");
   const [loader, setLoader] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading2, setLoading2] = useState(false);
   const email = localStorage.getItem("email");
   const [bookMarkId, setBookMarkId] = useState([]);
   const [page, setPage] = useState(1);
@@ -40,7 +41,7 @@ function BlogContainer({activeTab, setActiveTab}) {
   // const [filterdPost, setFilterdPost] = useState([])
   const limit = 50;
 
-  const { playlistCount } = useTutorPlaylist();
+
   const [isStickyActive, setIsStickyActive] = useState(false);
   useEffect(() => {
   const handleScroll = () => {
@@ -64,7 +65,7 @@ function BlogContainer({activeTab, setActiveTab}) {
     if (isFetching.current || !hasMore) return;
 
     isFetching.current = true;
-    setLoading(true);
+    setLoading2(true);
 
     try {
       const res = await axiosInstance.get(
@@ -83,7 +84,7 @@ function BlogContainer({activeTab, setActiveTab}) {
       console.error(err);
     }
 
-    setLoading(false);
+    setLoading2(false);
     isFetching.current = false;
   };
 
@@ -104,7 +105,7 @@ function BlogContainer({activeTab, setActiveTab}) {
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [page, hasMore, loading]);
+  }, [page, hasMore, loading2]);
 
   // ------------------------------------------------------------------------------------------------------------
 
@@ -318,7 +319,7 @@ const filteredPosts = useMemo(() => {
           <section className="space-y-4 mt-4 px-3 md:px-0 px-auto  mx-auto w-full md:w-full ">
        
             <div className=" md:px-4 shadow-inner">
-              {/* {  loading ? <TutorPlaylistGridSkeleton /> : <TutorPlaylistGrid />} */}
+              {/* {  loading2 ? <TutorPlaylistGridSkeleton /> : <TutorPlaylistGrid />} */}
               {loading ? (
                   <TutorPlaylistGridSkeleton />
                 ) : (
@@ -391,7 +392,7 @@ const filteredPosts = useMemo(() => {
                     </div>
             )}
 
-            {loading && !posts.length > 0 && <PillLoader />}
+            {loading2 && !posts.length > 0 && <PillLoader />}
 
             <section className="w-full  mx-auto">
             
@@ -552,10 +553,10 @@ const filteredPosts = useMemo(() => {
                   ))
                 )}
                
-                {!posts.length > 0 && loading && <BlogSkeleton />}
-                {posts.length > 0 && loading && (
+                {!posts.length > 0 && loading2 && <BlogSkeleton />}
+                {posts.length > 0 && loading2 && (
                   <p className="col-span-full py-4 text-gray-500 text-center">
-                    loading...
+                    loading2...
                   </p>
                 )}
 
@@ -585,11 +586,11 @@ const filteredPosts = useMemo(() => {
                       visible
                       height="90"
                       width="90"
-                      ariaLabel="loading"
+                      ariaLabel="loading2"
                       glassColor="#4B5563"
                       color="#60A5FA"
                     />
-                    <p className="text-sm text-gray-400 mt-3">Loading posts…</p>
+                    <p className="text-sm text-gray-400 mt-3">Loading2 posts…</p>
                   </div>
                 ) : (
                   (postCategory === ""
