@@ -396,6 +396,7 @@ async function deleteFromAIIngestion(post_id, token) {
       }
 
      );
+      console.log(`embeddign doc - ${post_id} deleted successfully:`, res.data);
   }
   // catch(err){
   //   console.error("Error notifying AI deletion:", err.message); 
