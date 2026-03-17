@@ -460,7 +460,7 @@ function EditTutorPlaylist() {
           Update  Playlist
         </h1>
         <p className="text-xs text-gray-400 mt-1">
-          you have complete control over your content, update your playlist here.
+          you have complete control over your content, can update your playlist here.
         </p>
       </div>
       </div>
