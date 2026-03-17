@@ -82,16 +82,23 @@ function ViewEditPost() {
         formData,
       );
 
-      if (response.status === 200) {
-        // toast.success("Post edited successfully");
-        setTitle("");
+      // if (response.status === 200) {
+      //   // toast.success("Post edited successfully");
+      //   setTitle("");
+      //   setDescription("");
+      //   setCategory("");
+      //   setImage(null);
+      //   setDocuments([]);
+      //   setLinkId(null);
+      //   navigate("/yourposts");
+      // }
+      setTitle("");
         setDescription("");
         setCategory("");
         setImage(null);
         setDocuments([]);
         setLinkId(null);
         navigate("/yourposts");
-      }
     } catch (error) {
       console.error("Error editing post:", error);
       setError({ apiError: error.ValidatorError || "Update failed" });
