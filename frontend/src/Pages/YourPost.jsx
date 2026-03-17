@@ -446,7 +446,7 @@ const filteredPosts = useMemo(() => {
                               setShowConfirm(true)
                             }}
                             // // className="absolute top-2 cursor-pointer right-2 bg-red-500 text-white text-xs font-medium px-2 py-1 rounded"
-                            className="absolute top-3 cursor-pointer right-3 z-50  md:text-xl  text-2xl font-medium  rounded"
+                            className="absolute top-3 cursor-pointer right-3   md:text-xl  text-2xl font-medium  rounded"
                           >
                             {/* Del */}
                             <IoRemoveOutline  className="bg-red-500 rounded-full text-white" />

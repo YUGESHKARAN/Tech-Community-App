@@ -25,15 +25,13 @@ import TutorPlaylistGridSkeleton from "../components/loaders/TutorPlaylistGridSk
 import Fuse from "fuse.js";
 import highlightText from "../hooks/highlightText.jsx";
 
-
-function BlogContainer({activeTab, setActiveTab}) {
-  
-  const {loading, tutorPlayList } = useTutorPlaylist();
+function BlogContainer({ activeTab, setActiveTab }) {
+  const { tutorPlayList } = useTutorPlaylist();
   const [searchTerm, setSearchTerm] = useState("");
   const [posts, setPosts] = useState([]);
   const [postCategory, setPostCategory] = useState("");
   const [loader, setLoader] = useState(false);
-  const [loading2, setLoading2] = useState(false);
+  const [loading, setLoading] = useState(false);
   const email = localStorage.getItem("email");
   const [bookMarkId, setBookMarkId] = useState([]);
   const [page, setPage] = useState(1);
@@ -41,22 +39,20 @@ function BlogContainer({activeTab, setActiveTab}) {
   // const [filterdPost, setFilterdPost] = useState([])
   const limit = 50;
 
-
   const [isStickyActive, setIsStickyActive] = useState(false);
   useEffect(() => {
-  const handleScroll = () => {
-    if (window.scrollY > 40) {
-      setIsStickyActive(true);
-    } else {
-      setIsStickyActive(false);
-    }
-  };
+    const handleScroll = () => {
+      if (window.scrollY > 40) {
+        setIsStickyActive(true);
+      } else {
+        setIsStickyActive(false);
+      }
+    };
 
-  window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll);
 
-  return () => window.removeEventListener("scroll", handleScroll);
-}, []);
-
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   // ------------------------------------------------------------------------------------------------------------
   const isFetching = useRef(false);
@@ -65,7 +61,7 @@ function BlogContainer({activeTab, setActiveTab}) {
     if (isFetching.current || !hasMore) return;
 
     isFetching.current = true;
-    setLoading2(true);
+    setLoading(true);
 
     try {
       const res = await axiosInstance.get(
@@ -84,7 +80,7 @@ function BlogContainer({activeTab, setActiveTab}) {
       console.error(err);
     }
 
-    setLoading2(false);
+    setLoading(false);
     isFetching.current = false;
   };
 
@@ -105,7 +101,7 @@ function BlogContainer({activeTab, setActiveTab}) {
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [page, hasMore, loading2]);
+  }, [page, hasMore, loading]);
 
   // ------------------------------------------------------------------------------------------------------------
 
@@ -148,31 +144,31 @@ function BlogContainer({activeTab, setActiveTab}) {
   const postLikes = async (authorEmail, postId) => {
     // e.preventDefault();
     try {
-      const response =  await axiosInstance.put(`/blog/posts/likes/${authorEmail}/${postId}`, {
-        emailAuthor: email,
-      });
-
-      if (response.status === 200){
-          setPosts((prevPosts) =>
-        prevPosts.map((post) =>
-          post._id === postId
-            ? {
-                ...post,
-                likes: post.likes.includes(email)
-                  ? post.likes.filter((like) => like !== email) // Unlike the post
-                  : [...post.likes, email], // Like the post
-              }
-            : post,
-        ),
+      const response = await axiosInstance.put(
+        `/blog/posts/likes/${authorEmail}/${postId}`,
+        {
+          emailAuthor: email,
+        },
       );
+
+      if (response.status === 200) {
+        setPosts((prevPosts) =>
+          prevPosts.map((post) =>
+            post._id === postId
+              ? {
+                  ...post,
+                  likes: post.likes.includes(email)
+                    ? post.likes.filter((like) => like !== email) // Unlike the post
+                    : [...post.likes, email], // Like the post
+                }
+              : post,
+          ),
+        );
       }
-    
     } catch (err) {
       console.error("Error updating views:", err);
     }
   };
-
- 
 
   const renderTextWithHashtags = (text) => {
     if (!text) return null;
@@ -216,7 +212,7 @@ function BlogContainer({activeTab, setActiveTab}) {
       }
     } catch (err) {
       console.log("error", err.message);
-      toast.error("unable to bookmark");
+      // toast.error("unable to bookmark");
     }
   };
 
@@ -234,97 +230,84 @@ function BlogContainer({activeTab, setActiveTab}) {
     fetchBookmarkIds();
   }, []);
 
+  const [debouncedSearch, setDebouncedSearch] = useState(searchTerm);
 
-const [debouncedSearch, setDebouncedSearch] = useState(searchTerm);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchTerm);
+    }, 300); // 300ms delay
 
-useEffect(() => {
-  const timer = setTimeout(() => {
-    setDebouncedSearch(searchTerm);
-  }, 300); // 300ms delay
-
-  return () => clearTimeout(timer);
-}, [searchTerm]);
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
 
   const fuse = useMemo(() => {
-  return new Fuse(posts, {
-    keys: [
-      "title",
-      "description",
-      "category",
-      "authorname",
-      "community"
-    ],
-    threshold: 0.3, // lower = stricter search
-  });
-}, [posts]);
+    return new Fuse(posts, {
+      keys: ["title", "description", "category", "authorname", "community"],
+      threshold: 0.3, // lower = stricter search
+    });
+  }, [posts]);
 
   // Search quary
-const filteredPosts = useMemo(() => {
-  let filtered =[...posts];
+  const filteredPosts = useMemo(() => {
+    let filtered = [...posts];
 
-  // if (searchTerm.trim() !== "") {
-  //   const query = searchTerm.toLowerCase();
+    // if (searchTerm.trim() !== "") {
+    //   const query = searchTerm.toLowerCase();
 
-  //   filtered = filtered.filter(
-  //     (post) =>
-  //       post.title?.toLowerCase().includes(query) ||
-  //       post.description?.toLowerCase().includes(query) ||
-  //       post.category?.toLowerCase().includes(query) ||
-  //       post.authorname?.toLowerCase().includes(query)
-  //   );
-  // }
+    //   filtered = filtered.filter(
+    //     (post) =>
+    //       post.title?.toLowerCase().includes(query) ||
+    //       post.description?.toLowerCase().includes(query) ||
+    //       post.category?.toLowerCase().includes(query) ||
+    //       post.authorname?.toLowerCase().includes(query)
+    //   );
+    // }
 
     if (debouncedSearch.trim() !== "") {
-    filtered = fuse.search(debouncedSearch).map((r) => r.item);
-  }
+      filtered = fuse.search(debouncedSearch).map((r) => r.item);
+    }
 
-  if (postCategory !== "") {
-    filtered = filtered.filter(
-      (post) => post.category === postCategory
-    );
-  }
+    if (postCategory !== "") {
+      filtered = filtered.filter((post) => post.category === postCategory);
+    }
 
-  return filtered;
-}, [posts, searchTerm, postCategory, debouncedSearch]);
+    return filtered;
+  }, [posts, searchTerm, postCategory, debouncedSearch]);
 
-// console.log("filteredposts", filteredPosts)
+  // console.log("filteredposts", filteredPosts)
   // console.log("posts", bookMarkId);
   // console.log("tutorPlayList", tutorPlayList);
 
+  // const highlightText = (text, query) => {
+  //   if (!query) return text;
 
+  //   const regex = new RegExp(`(${query})`, "gi");
+  //   const parts = text.split(regex);
 
-// const highlightText = (text, query) => {
-//   if (!query) return text;
-
-//   const regex = new RegExp(`(${query})`, "gi");
-//   const parts = text.split(regex);
-
-//   return parts.map((part, i) =>
-//     part.toLowerCase() === query.toLowerCase() ? (
-//       <mark key={i} className="bg-yellow-400 text-black">
-//         {part}
-//       </mark>
-//     ) : (
-//       part
-//     )
-//   );
-// };
+  //   return parts.map((part, i) =>
+  //     part.toLowerCase() === query.toLowerCase() ? (
+  //       <mark key={i} className="bg-yellow-400 text-black">
+  //         {part}
+  //       </mark>
+  //     ) : (
+  //       part
+  //     )
+  //   );
+  // };
 
   return (
     <div className="min-h-screen relative  ">
-
       <div className="flex-col w-full md:gap-16 relative flex-wrap justify-center h-auto mx-auto">
         {/* Tutor Playlist section starts here */}
         {activeTab === "playlists" && (
           <section className="space-y-4 mt-4 px-3 md:px-0 px-auto  mx-auto w-full md:w-full ">
-       
             <div className=" md:px-4 shadow-inner">
-              {/* {  loading2 ? <TutorPlaylistGridSkeleton /> : <TutorPlaylistGrid />} */}
-              {tutorPlayList.length===0 ? (
-                  <TutorPlaylistGridSkeleton />
-                ) : (
-                  <TutorPlaylistGrid />
-                )}
+              {/* {  loading ? <TutorPlaylistGridSkeleton /> : <TutorPlaylistGrid />} */}
+              {tutorPlayList.length === 0 ? (
+                <TutorPlaylistGridSkeleton />
+              ) : (
+                <TutorPlaylistGrid />
+              )}
             </div>
           </section>
         )}
@@ -341,76 +324,65 @@ const filteredPosts = useMemo(() => {
                   placeholder="Search posts, topics, or categories"
                   value={searchTerm}
                   // onChange={handleSearch}
-                  onChange={(e)=>{setSearchTerm(e.target.value)}}
+                  onChange={(e) => {
+                    setSearchTerm(e.target.value);
+                  }}
                   className="bg-transparent w-full focus:outline-none text-sm text-white placeholder-gray-400"
                 />
               </div>
             </div>
-            
+
             {posts.length > 0 && (
-            <div
+              <div
                 className={`w-full sticky top-0 z-40
                 ${isStickyActive ? "bg-gray-900 " : "bg-transparent"}`}
               >
-
-      
-              <div 
-              // className="flex md:max-w-5xl md:w-fit mt-10 scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto"
-              className="flex w-full px-3  md:w-fit md:max-w-7xl  mt-2 py-5 z-50 scrollbar-hide mx-auto items-center justify-start gap-3 md:mb-5 overflow-x-auto"
-              >
-                {/* All Button */}
                 <div
-                  onClick={() => setPostCategory("")}
-                  className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1.5 md:py-2 transition-all duration-200 ${
-                    postCategory === ""
-                      ? "bg-emerald-600/20 text-emerald-400"
-                      : "bg-gray-800 text-white"
-                  }`}
+                  // className="flex md:max-w-5xl md:w-fit mt-10 scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto"
+                  className="flex w-full px-3  md:w-fit md:max-w-7xl  mt-2 py-5 z-50 scrollbar-hide mx-auto items-center justify-start gap-3 md:mb-5 overflow-x-auto"
                 >
-                  All
-                </div>
-                
-
-
-                {/* Dynamic Categories */}
-                {getUniqueCategories(posts).map((data, index) => (
+                  {/* All Button */}
                   <div
-                    key={index}
-                    onClick={() => setPostCategory(data)}
+                    onClick={() => setPostCategory("")}
                     className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1.5 md:py-2 transition-all duration-200 ${
-                      postCategory === data
+                      postCategory === ""
                         ? "bg-emerald-600/20 text-emerald-400"
                         : "bg-gray-800 text-white"
                     }`}
                   >
-                    {data}
+                    All
                   </div>
-                ))}
-                
-              </div>
-             
+
+                  {/* Dynamic Categories */}
+                  {getUniqueCategories(posts).map((data, index) => (
+                    <div
+                      key={index}
+                      onClick={() => setPostCategory(data)}
+                      className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1.5 md:py-2 transition-all duration-200 ${
+                        postCategory === data
+                          ? "bg-emerald-600/20 text-emerald-400"
+                          : "bg-gray-800 text-white"
+                      }`}
+                    >
+                      {data}
                     </div>
+                  ))}
+                </div>
+              </div>
             )}
 
-            {loading2 && !posts.length > 0 && <PillLoader />}
+            {loading && !posts.length > 0 && <PillLoader />}
 
             <section className="w-full  mx-auto">
-            
               {/* <h2 className="text-2xl mx-4 md:mx-0 md:text-4xl font-bold tracking-wide text-gray-200">
                   Recommended Posts
                 </h2> */}
 
               <div className="mx-auto grid grid-cols-1 md:px-2 w-full  mx-auto  md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-10 mt-5 md:mt-10 h-auto">
-                {
-                
-                 (
-                  filteredPosts?.map((data, index) => (
-    
-              
-              
-              <article
-                      key={data._id}
-                      className="
+                {filteredPosts?.map((data, index) => (
+                  <article
+                    key={data._id}
+                    className="
                       bg-[#0f172a]
                       overflow-hidden
                       shadow-2xl
@@ -418,65 +390,62 @@ const filteredPosts = useMemo(() => {
                       duration-500
                       md:mb-4
                     "
-                    >
-                      <div className="flex items-center gap-3 px-4 py-3">
-                        <Link to={`/viewProfile/${data.authoremail}`}>
-                          <img
-                            src={
-                              data.profile
-                                ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.profile}`
-                                : user
-                            }
-                            className="w-9 h-9 rounded-full bg-white object-cover border border-gray-700"
-                            alt={data.authorname}
-                          />
-                        </Link>
-
-                        <div className="leading-tight">
-                          <p className="text-sm font-semibold text-white">
-                            {/* {data.authorname} */}
-                             {highlightText(data.authorname, debouncedSearch)}
-                            
-                          </p>
-                          <p className="text-xs text-gray-400">
-                            {getTimeAgo(data.timestamp)}
-                          </p>
-                        </div>
-                      </div>
-
-                      <Link
-                        to={`/viewpage/${data.authoremail}/${data._id}`}
-                        onClick={() => postViews(data.authoremail, data._id)}
-                        className="block "
-                      >
+                  >
+                    <div className="flex items-center gap-3 px-4 py-3">
+                      <Link to={`/viewProfile/${data.authoremail}`}>
                         <img
                           src={
-                            data.image
-                              ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.image}`
-                              : blog1
+                            data.profile
+                              ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.profile}`
+                              : user
                           }
-                          alt={data.title}
-                          className="w-full  h-60 transition-transform
-                      duration-500  md:hover:scale-[1.05]  md:h-48  object-cover"
+                          className="w-9 h-9 rounded-full bg-white object-cover border border-gray-700"
+                          alt={data.authorname}
                         />
                       </Link>
 
-                     
-
-                      <div className="px-4 py-4 space-y-2">
-                        <h3 className="text-base font-semibold text-white line-clamp-1">
-                          {/* {data.title} */}
-                           {highlightText(data.title, debouncedSearch)}
-                        </h3>
-
-                        <p className="text-xs text-gray-400  line-clamp-2  md:line-clamp-1 ">
-                          {renderTextWithHashtags(data.description)}
+                      <div className="leading-tight">
+                        <p className="text-sm font-semibold text-white">
+                          {/* {data.authorname} */}
+                          {highlightText(data.authorname, debouncedSearch)}
+                        </p>
+                        <p className="text-xs text-gray-400">
+                          {getTimeAgo(data.timestamp)}
                         </p>
                       </div>
+                    </div>
 
-                      <div className="flex items-center justify-between px-4 pb-7 ">
-                        <div className="flex items-center gap-3 text-gray-400">
-                          {/* <Link
+                    <Link
+                      to={`/viewpage/${data.authoremail}/${data._id}`}
+                      onClick={() => postViews(data.authoremail, data._id)}
+                      className="block "
+                    >
+                      <img
+                        src={
+                          data.image
+                            ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.image}`
+                            : blog1
+                        }
+                        alt={data.title}
+                        className="w-full  h-60 transition-transform
+                      duration-500  md:hover:scale-[1.05]  md:h-48  object-cover"
+                      />
+                    </Link>
+
+                    <div className="px-4 py-4 space-y-2">
+                      <h3 className="text-base font-semibold text-white line-clamp-1">
+                        {/* {data.title} */}
+                        {highlightText(data.title, debouncedSearch)}
+                      </h3>
+
+                      <p className="text-xs text-gray-400  line-clamp-2  md:line-clamp-1 ">
+                        {renderTextWithHashtags(data.description)}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center justify-between px-4 pb-7 ">
+                      <div className="flex items-center gap-3 text-gray-400">
+                        {/* <Link
                             to={`/viewpage/${data.authoremail}/${data._id}`}
                             onClick={() =>
                               postViews(data.authoremail, data._id)
@@ -487,76 +456,70 @@ const filteredPosts = useMemo(() => {
                             <span className="text-xs">{data.views.length}</span> views
                           </Link> */}
 
-                          <button
-                            onClick={() =>
-                              postLikes(data.authoremail, data._id)
-                            }
-                            className="flex items-center gap-1 text-teal-500"
-                          >
-                            {(data.likes || []).includes(email) ? (
-                              <BiSolidLike className="text-xs text-teal-600" />
-                            ) : (
-                              <BiLike className="text-xs" />
-                            )}
-                            <span className="text-xs">
-                              {data.likes?.length || " "}
-                            </span>
-                          </button>
-
-                          <button
-                            onClick={() =>
-                              sharePost(data.title, data.authoremail, data._id)
-                            }
-                            className="text-teal-500"
-                          >
-                            <IoShareSocial className="text-xs" />
-                          </button>
-
-                          <button
-                            onClick={() => addBookMarkPostId(data._id)}
-                            className="text-teal-500"
-                          >
-                            {Array.isArray(bookMarkId) &&
-                            bookMarkId.includes(data._id) ? (
-                              <PiBookmarksSimpleFill className="text-teal-600" />
-                            ) : (
-                              <PiBookmarksSimpleLight />
-                            )}
-                          </button>
-                           <Link
-                            to={`/viewpage/${data.authoremail}/${data._id}`}
-                            onClick={() =>
-                              postViews(data.authoremail, data._id)
-                            }
-                            className="flex items-center gap-1 text-xs text-gray-500"
-                          >
-                       
-                            <span className="text-xs">{data.views.length}</span> views
-                          </Link>
-                        </div>
-
-                        
+                        <button
+                          onClick={() => postLikes(data.authoremail, data._id)}
+                          className="flex items-center gap-1 text-teal-500"
+                        >
+                          {(data.likes || []).includes(email) ? (
+                            <BiSolidLike className="text-xs text-teal-600" />
+                          ) : (
+                            <BiLike className="text-xs" />
+                          )}
+                          <span className="text-xs">
+                            {data.likes?.length || " "}
+                          </span>
+                        </button>
 
                         <button
-                          onClick={() => setPostCategory(data.category)}
-                          className="
+                          onClick={() =>
+                            sharePost(data.title, data.authoremail, data._id)
+                          }
+                          className="text-teal-500"
+                        >
+                          <IoShareSocial className="text-xs" />
+                        </button>
+
+                        <button
+                          onClick={() => addBookMarkPostId(data._id)}
+                          className="text-teal-500"
+                        >
+                          {Array.isArray(bookMarkId) &&
+                          bookMarkId.includes(data._id) ? (
+                            <PiBookmarksSimpleFill className="text-teal-600" />
+                          ) : (
+                            <PiBookmarksSimpleLight />
+                          )}
+                        </button>
+
+                        <Link
+                          to={`/viewpage/${data.authoremail}/${data._id}`}
+                          onClick={() => postViews(data.authoremail, data._id)}
+                          className="flex items-center gap-1 text-xs text-gray-500"
+                        >
+                          <span className="text-xs">{data.views.length}</span>{" "}
+                          views
+                        </Link>
+                      </div>
+
+                      <button
+                        onClick={() => setPostCategory(data.category)}
+                        className="
                             text-xs
                             px-2 py-1
                             rounded-full
                            inline-block text-xs bg-emerald-600/20 text-emerald-400 px-2 py-1 rounded
                           "
-                        >
-                          {data.category}
-                        </button>
-                      </div>
-                    </article>
-                  ))
-                )}
-               
-                {!posts.length > 0 && loading2 && <BlogSkeleton />}
-                {posts.length > 0 && loading2 && (
+                      >
+                        {data.category}
+                      </button>
+                    </div>
+                  </article>
+                ))}
+
+                {!posts.length > 0 && loading && <BlogSkeleton />}
+                {posts.length > 0 && loading && (
                   <p className="col-span-full py-4 text-gray-500 text-center">
-                    loading2...
+                    loading...
                   </p>
                 )}
 
@@ -586,11 +549,11 @@ const filteredPosts = useMemo(() => {
                       visible
                       height="90"
                       width="90"
-                      ariaLabel="loading2"
+                      ariaLabel="loading"
                       glassColor="#4B5563"
                       color="#60A5FA"
                     />
-                    <p className="text-sm text-gray-400 mt-3">Loading2 posts…</p>
+                    <p className="text-sm text-gray-400 mt-3">Loading posts…</p>
                   </div>
                 ) : (
                   (postCategory === ""

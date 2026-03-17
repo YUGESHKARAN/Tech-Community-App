@@ -17,7 +17,7 @@ import {
 } from "react-icons/md";
 import { io } from "socket.io-client";
 import { ReactTyped } from "react-typed";
-import { IoClose } from "react-icons/io5";
+import { IoClose, IoShareSocial } from "react-icons/io5";
 import { GlobalStateContext } from "../GlobalStateContext";
 import axiosInstance from "../instances/Axiosinstances";
 import CommentsBox from "../components/CommentsBox ";
@@ -28,6 +28,8 @@ import { SiGooglegemini } from "react-icons/si";
 import AITechAssistant from "../components/AITechAssistant.jsx";
 import PostDetailSkeleton from "../components/loaders/PostDetailSkeleton.jsx";
 import { VscSend } from "react-icons/vsc";
+import { BiLike, BiSolidLike } from "react-icons/bi";
+import { PiBookmarksSimpleFill, PiBookmarksSimpleLight } from "react-icons/pi";
 function ViewPage() {
   const user = localStorage.getItem("username");
   const userEmail = localStorage.getItem("email");
@@ -47,6 +49,7 @@ function ViewPage() {
   const [showAssistant, setShowAssistant] = useState(false);
   const [loading, setLoading] = useState(false);
   const commentsRef = useRef(null);
+  const [bookMarkId, setBookMarkId] = useState([]);
 
   // Fetch post data
   useEffect(() => {
@@ -136,7 +139,6 @@ function ViewPage() {
     getComments();
   }, [id, email]);
 
-
   useEffect(() => {
     const socketUrl = import.meta.env.VITE_WEBSOCKET_URL;
 
@@ -150,30 +152,7 @@ function ViewPage() {
     newSocket.emit("registerUser", userEmail);
     newSocket.emit("joinPostRoom", postId);
 
-    // 🔥 FIXED LIVE COMMENT UPDATE
-    // const handleNewMessage = (comment) => {
-    //   setMessages((prev) => {
-    //     // 1️⃣ Remove optimistic version (no _id but same content)
-    //     const cleaned = prev.filter((msg) => {
-    //       if (!msg._id) {
-    //         return !(
-    //           msg.message === comment.message &&
-    //           msg.user === comment.user
-    //         );
-    //       }
-    //       return true;
-    //     });
-
-    //     // 2️⃣ Prevent duplicate real messages
-    //     const exists = cleaned.some(
-    //       (msg) => msg._id === comment._id
-    //     );
-
-    //     if (exists) return cleaned;
-
-    //     return [...cleaned, comment];
-    //   });
-    // };
+    // FIXED LIVE COMMENT UPDATE
 
     const handleNewMessage = (comment) => {
       setMessages((prev) => {
@@ -292,6 +271,93 @@ function ViewPage() {
     }
   }, [viewComments]);
 
+  // share post with social media
+  const sharePost = async (title, email, id) => {
+    try {
+      const data = {
+        title: title,
+        text: title,
+        url: `${window.location.origin}/viewpage/${email}/${id}`,
+      };
+      const response = await navigator.share(data);
+      // console.log("post shared successfully", response);
+    } catch (err) {
+      console.log("error sharing post", err);
+    }
+  };
+
+  const postLikes = async (postId) => {
+    // e.preventDefault();
+    try {
+      const response = await axiosInstance.put(
+        `/blog/posts/likes/${email}/${postId}`,
+        {
+          emailAuthor: userEmail,
+        },
+      );
+
+      if (response.status === 200) {
+        setSinglePostData((prev) => {
+          if (!prev) return prev;
+
+          const alreadyLiked = (prev.likes || []).includes(userEmail);
+
+          return {
+            ...prev,
+            likes: alreadyLiked
+              ? prev.likes.filter((like) => like !== userEmail) // unlike
+              : [...(prev.likes || []), userEmail], // like
+          };
+        });
+      }
+    } catch (err) {
+      console.error("Error updating views:", err);
+    }
+  };
+
+  const fetchBookmarkIds = async () => {
+    try {
+      const res = await axiosInstance.get(
+        `/blog/posts/bookmarkIds/${userEmail}`,
+      );
+      // console.log("all bookmark ids", res.data.postIds?.length);
+      setBookMarkId(res.data.postIds || []);
+    } catch (err) {
+      console.log("failed to load bookmark ids");
+    }
+  };
+
+  useEffect(() => {
+    fetchBookmarkIds();
+  }, []);
+
+    const addBookMarkPostId = async (postId) => {
+    try {
+      const response = await axiosInstance.post(
+        `/blog/posts/bookmarkPosts/${userEmail}`,
+        { postId },
+      );
+
+      if (response.status === 200) {
+        setBookMarkId((prev) => {
+          if (prev.includes(postId)) {
+            // toast.success("bookmark removed successfully");
+            return prev.filter((id) => id !== postId);
+          } else {
+            // toast.success("post bookmarked successfully");
+            return [...prev, postId];
+          }
+        });
+      }
+    } catch (err) {
+      console.log("error", err.message);
+      // toast.error("unable to bookmark");
+    }
+  };
+
+  // console.log("email", email);
+  // console.log("userEmail", userEmail);
+
   // console.log("post id", postId);
   // console.log("singlepost data", singlePostData);
 
@@ -331,7 +397,7 @@ function ViewPage() {
             <button
               onClick={() => navigate(-1)}
               className="px-3 py-1.5 rounded-md bg-[#F8EFBA] text-[#182C61] text-xs md:text-sm font-medium"
-              // className="md:px-5 px-3 py-2 md:py-2.5 bg-emerald-600/20 hover:bg-emerald-500/20
+              // className="md:px-5 px-3 py-2 md:py-2.5 bg-emerald-500/20 hover:bg-emerald-600/20 hover:bg-emerald-500/20
               //              rounded-md text-xs md:text-sm   text-emerald-400 transition"
             >
               Back
@@ -443,10 +509,97 @@ function ViewPage() {
                       {singlePostData.category}
                     </p>
                   </div>
-
-               
                 </div>
               </div>
+
+
+              {/* -----------------AI assistant, likes, share and bookmark block --starts here------------- */}
+              <div className="flex items-center  justify-between md:justify-end mt-2 mb-3 md:mb-5">
+                {/* AI Assistant */}
+                <div className="text-3xl block md:hidden md:text-4xl text-white">
+                  <AITechAssistant
+                    currentPostId={singlePostData._id}
+                    category={singlePostData.category}
+                  />
+                </div>
+
+                {/* Actions */}
+                <div className="flex items-center md: gap-2 md:gap-3">
+                  {/* Like */}
+                  <button
+                    onClick={() => postLikes(singlePostData._id)}
+                    className="
+                      flex items-center gap-2
+                      px-3 py-1.5 md:px-4 md:py-2
+                      rounded-full
+                      bg-gray-900 hover:bg-gray-800 border border-neutral-700
+                      
+                      active:scale-95
+                      transition
+                    "
+                  >
+                    {(singlePostData.likes || []).includes(userEmail) ? (
+                      <BiSolidLike className="text-sm text-emerald-400" />
+                    ) : (
+                      <BiLike className="text-sm text-emerald-400" />
+                    )}
+                    <span className="text-xs text-gray-300 font-medium">
+                      {singlePostData.likes?.length || " "}
+                    </span>
+                  </button>
+
+                  {/* Share */}
+                  <button
+                    onClick={() =>
+                      sharePost(
+                        singlePostData.title,
+                        singlePostData.authoremail,
+                        singlePostData._id,
+                      )
+                    }
+                    className="
+                  flex items-center gap-2
+                  px-3 py-1.5 md:px-4 md:py-2
+                  rounded-full
+                  bg-gray-900 hover:bg-gray-800 border border-neutral-700
+                  
+                  active:scale-95
+                  transition
+                "
+                  >
+                    <IoShareSocial className="text-sm text-emerald-400" />
+                    <span className="hidden md:inline text-xs text-gray-300">
+                      Share
+                    </span>
+                  </button>
+
+                  {/* Bookmark */}
+                  <button
+                    onClick={() => addBookMarkPostId(singlePostData._id)}
+                    className="
+                      flex items-center gap-2
+                      px-3 py-1.5 md:px-4 md:py-2
+                      rounded-full
+                      bg-gray-900 hover:bg-gray-800 border border-neutral-700
+                      
+                      active:scale-95
+                      transition
+                    "
+                  >
+                    {Array.isArray(bookMarkId) &&
+                    bookMarkId.includes(singlePostData._id) ? (
+                      <PiBookmarksSimpleFill className="text-sm  text-emerald-400" />
+                    ) : (
+                      <PiBookmarksSimpleLight  className="text-sm  text-emerald-400"/>
+                    )}
+                    <span className="hidden md:inline text-xs text-gray-300">
+                      Save
+                    </span>
+                  </button>
+                </div>
+              </div>
+              {/* -------------------------------------------------------ends here-------------------- */}
+              {/* -------------------------------------------------------ends-------------------- */}
 
               {/* Description */}
               <div className=" md:border border-neutral-700/40 md:rounded-xl rounded-lg p-1 md:p-2 md:p-5">
@@ -479,22 +632,22 @@ function ViewPage() {
             </div>
 
             {/* RIGHT COLUMN */}
-            <div className="text-4xl block text-white lg:hidden">
+            {/* <div className="text-4xl block text-white lg:hidden">
               <AITechAssistant
                 currentPostId={singlePostData._id}
                 category={singlePostData.category}
               />
-            </div>
+            </div> */}
 
             <div className="lg:col-span-2 space-y-2  md:space-y-6  h-fit">
               {/* Personal Assistant */}
-              <div className="text-4xl text-white hidden lg:block ">
+              <div className="text-4xl text-white hidden md:block ">
                 <AITechAssistant
                   currentPostId={singlePostData._id}
                   category={singlePostData.category}
                 />
               </div>
-              
+
               {/* Documents */}
               {/* bg-gradient-to-b from-slate-900/80 to-slate-800/80 */}
               {(singlePostData.documents?.length > 0 ||
@@ -642,7 +795,6 @@ function ViewPage() {
                 </div>
               )}
 
-              
               {/* Comments */}
               {/* bg-gradient-to-br from-gray-800 to-gray-900 */}
               <div
@@ -700,7 +852,7 @@ function ViewPage() {
 
                 <button
                   onClick={postComment}
-                  className=" md:px-5 hidden md:block px-3 py-2 md:py-2 bg-emerald-600/20 hover:bg-emerald-500/20
+                  className=" md:px-5 hidden md:block px-3 py-2 md:py-2 bg-emerald-500/20 hover:bg-emerald-600/20 hover:bg-emerald-500/20
                          rounded-md text-xs md:text-sm  text-emerald-400 transition-all duration-300 w-fit mt-3"
                 >
                   Post It
