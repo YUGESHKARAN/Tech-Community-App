@@ -24,7 +24,7 @@ const PostDetailSkeleton = () => {
           <div className="h-72 md:h-96 bg-gray-800 rounded-xl border border-gray-700" />
 
           {/* AI assistant likes, share and bookmark */}
-          <div className="flex items-center md:space-y-0 space-y-2  justify-between md:justify-end mt-2 mb-3 md:mb-5">
+          <div className="flex items-center  justify-between md:justify-end mt-2 mb-3 md:mb-5">
             <button className=" bottom-4 flex items-center gap-2 bg-gray-700 w-16 h-6  right-4 bg text-black text-sm px-5 py-2 rounded-full animate-pulse md:hidden shadow-xl"></button>
 
             <div className="flex items-center md: gap-2 md:gap-3">

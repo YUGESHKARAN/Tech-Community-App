@@ -514,7 +514,7 @@ function ViewPage() {
 
 
               {/* -----------------AI assistant, likes, share and bookmark block --starts here------------- */}
-              <div className="flex items-center  justify-between md:justify-end mt-2 mb-3 md:mb-5">
+            <div className="flex items-center  justify-between md:justify-end mt-3 mb-1 md:mb-5">
                 {/* AI Assistant */}
                 <div className="text-3xl block md:hidden md:text-4xl text-white">
                   <AITechAssistant
@@ -532,7 +532,7 @@ function ViewPage() {
                       flex items-center gap-2
                       px-3 py-1.5 md:px-4 md:py-2
                       rounded-full
-                      bg-gray-900 hover:bg-gray-800 border border-neutral-700
+                      bg-gray-900 hover:bg-gray-800 border md:border-neutral-700 border-neutral-700
                       
                       active:scale-95
                       transition
@@ -561,7 +561,7 @@ function ViewPage() {
                   flex items-center gap-2
                   px-3 py-1.5 md:px-4 md:py-2
                   rounded-full
-                  bg-gray-900 hover:bg-gray-800 border border-neutral-700
+                  bg-gray-900 hover:bg-gray-800 border md:border-neutral-700 border-neutral-700
                   
                   active:scale-95
                   transition
@@ -580,7 +580,7 @@ function ViewPage() {
                       flex items-center gap-2
                       px-3 py-1.5 md:px-4 md:py-2
                       rounded-full
-                      bg-gray-900 hover:bg-gray-800 border border-neutral-700
+                      bg-gray-900 hover:bg-gray-800 border md:border-neutral-700 border-neutral-700
                       
                       active:scale-95
                       transition

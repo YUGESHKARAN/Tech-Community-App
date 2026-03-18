@@ -260,7 +260,7 @@ export default function AITechAssistant({ currentPostId, category }) {
        {!open && (
         <button
           onClick={() => setOpen(true)}
-          className=" bottom-4 flex items-center gap-2 right-4 bg-gray-900 hover:bg-gray-800 border border-neutral-700 text-emerald-400 text-sm md:px-5 px-3 py-2 rounded-full md:hidden z-50 shadow-xl"
+          className=" bottom-4 flex items-center gap-2 right-4 bg-gray-900 hover:bg-gray-800 border border-neutral-700 text-emerald-400 text-sm md:px-5 px-3 py-1 rounded-full md:hidden z-50 shadow-xl"
         >
          AI <SiGooglegemini />
         </button>
