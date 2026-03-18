@@ -7,7 +7,8 @@ const useGetAuthorsPostsCategories = (email) => {
   const getCategories = async () => {
     try {
       const response = await axiosInstance.get(
-        `/blog/posts/categories/${email}`,
+        // `/blog/posts/categories/${email}`,
+        `/blog/playlist/categories/playlist/${email}`,
       );
 
       setCategories(response.data.categories);

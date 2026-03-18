@@ -26,7 +26,8 @@ const limit = 30
 
     try {
       const response = await axiosInstance.get(
-        `/blog/posts/${email}/${encodedCategory}?page=${page}&limit=${limit}`
+        // `/blog/posts/${email}/${encodedCategory}?page=${page}&limit=${limit}`
+        `/blog/playlist/${email}/${encodedCategory}?page=${page}&limit=${limit}`
       );
 
       const data = response.data;
@@ -63,7 +64,7 @@ const fetchInitial = async () => {
     setLoading(true);
 
     const response = await axiosInstance.get(
-      `/blog/posts/${email}/${encodeURIComponent(domain)}?page=1&limit=${limit}`
+      `/blog/playlist/${email}/${encodeURIComponent(domain)}?page=1&limit=${limit}`
     );
 
     setPosts(response.data.posts || []);
@@ -75,6 +76,8 @@ const fetchInitial = async () => {
     setLoading(false);
   }
 };
+
+
 useEffect(() => {
   if (!email || !domain) return;
 

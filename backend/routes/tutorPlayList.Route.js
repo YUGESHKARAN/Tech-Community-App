@@ -11,13 +11,20 @@ const {
   updateTutorPlayList,
   deleteTutorPlayList,
   getBookmarkedPlaylists,
-  getRecommendedTutorPlaylist
+  getRecommendedTutorPlaylist,
+    getPostsByAuthorsCategory,
+  getUniqueCategoriesByAuthor
 } = require("../controllers/tutorPlayList.Controller");
 const authenticateToken = require('../middleware/authMiddleware')
 const router = express.Router();
 
-router.get("/all",authenticateToken, getAllTutorPlaylist);  
-router.get("/recommended/:email",getRecommendedTutorPlaylist)
+// router.get("/all",authenticateToken, getAllTutorPlaylist);  
+router.get("/recommended/:email",getRecommendedTutorPlaylist);
+
+
+router.get("/:email/:category",authenticateToken, getPostsByAuthorsCategory);
+router.get("/categories/playlist/:email",authenticateToken, getUniqueCategoriesByAuthor);
+
 router.get("/:playlistId",authenticateToken, getPlaylistById);  
 router.get("/coordinator/:email",authenticateToken, getPlaylistByEmail);
 router.get("/bookmark/:email",authenticateToken,getBookmarkedPlaylists)
