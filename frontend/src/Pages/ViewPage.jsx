@@ -50,6 +50,7 @@ function ViewPage() {
   const [loading, setLoading] = useState(false);
   const commentsRef = useRef(null);
   const [bookMarkId, setBookMarkId] = useState([]);
+  const myProfile = localStorage.getItem('profile')
 
   // Fetch post data
   useEffect(() => {
@@ -205,6 +206,7 @@ function ViewPage() {
     const optimisticMessage = {
       ...messageData,
       _id: `temp-${Date.now()}`,
+      profile:myProfile || "",
     };
 
     // ✅ OPTIMISTIC UPDATE (instant UI)

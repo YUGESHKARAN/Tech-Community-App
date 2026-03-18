@@ -54,12 +54,12 @@ const CommentsBox = ({ messages, viewComments }) => {
         // key={msg._id}
         key={(msg._id || `temp-${index}`)}
         
-        className="flex items-start gap-4 py-4 last:border-none hover:bg-slate-800/40 transition"
+        className="flex items-start gap-4 py-4 last:border-none  transition"
       >
         {/* Avatar */}
         <img
           src={
-            msg.profile && msg.profile !== ""
+            msg.profile
               ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${msg.profile}`
               : userProfile
           }
