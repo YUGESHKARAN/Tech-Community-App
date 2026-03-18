@@ -159,6 +159,78 @@ const getAllPosts = async (req, res) => {
 //   }
 // };
 
+const getPostsByAuthorsCategory = async (req, res) => {
+  try {
+    const { email } = req.params;
+    const category = decodeURIComponent(req.params.category);
+    let { page = 1, limit = 10 } = req.query;
+
+    console.log("category", category,"page", page, )
+
+    page = parseInt(page);
+    limit = parseInt(limit);
+
+    const skip = (page - 1) * limit;
+
+    // ✅ Find author
+    const author = await Author.findOne({ email });
+
+    if (!author) {
+      return res.status(404).json({ message: "Author not found" });
+    }
+
+    // ✅ Filter posts by category
+    const filteredPosts = author.posts.filter(
+      (post) => post.category === category
+    );
+
+    // ✅ Pagination
+    const paginatedPosts = filteredPosts.slice(skip, skip + limit);
+
+    return res.status(200).json({
+      posts: paginatedPosts,
+      currentPage: page,
+      totalPages: Math.ceil(filteredPosts.length / limit),
+      totalPosts: filteredPosts.length,
+      hasMore: skip + limit < filteredPosts.length,
+    });
+  } catch (err) {
+    console.error("Error:", err.message);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+
+const getUniqueCategoriesByAuthor = async (req, res) => {
+  try {
+    const { email } = req.params;
+
+    const author = await Author.findOne({ email });
+
+    if (!author) {
+      return res.status(404).json({ message: "Author not found" });
+    }
+
+    // ✅ Extract unique categories
+    const categories = [
+      ...new Set(
+        author.posts
+          .map((post) => post.category)
+          .filter(Boolean) // remove null/undefined
+      ),
+    ];
+
+    return res.status(200).json({
+      categories,
+    });
+  } catch (err) {
+    console.error("Error:", err.message);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+
+
 const getRecommendedPosts = async (req, res) => {
   try {
     const { email } = req.params;
@@ -365,6 +437,8 @@ const getCategoryPosts = async (req, res) => {
     res.status(500).json({ message: "server error" });
   }
 };
+
+
 
 const axios = require("axios");
 
@@ -1164,6 +1238,8 @@ module.exports = {
   addPostBookmark,
   getBookmarkedPosts,
   removePostsLinks,
-  getAllBookmarkIds
+  getAllBookmarkIds,
+  getPostsByAuthorsCategory,
+  getUniqueCategoriesByAuthor
  
 };

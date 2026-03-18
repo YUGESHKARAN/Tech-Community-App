@@ -19,26 +19,25 @@ const {
   addPostBookmark,
   getBookmarkedPosts,
   removePostsLinks,
-  getAllBookmarkIds
+  getAllBookmarkIds,
+  getPostsByAuthorsCategory,
+  getUniqueCategoriesByAuthor
 } = require("../controllers/postDetail.Controller");
 
 // handle authors blog post data
-
-router.get("/", getAllPosts);
-router.get("/:email", getSingleAuthorPosts);
-router.get("/recommended/:email",getRecommendedPosts)
-
-router.get("/:category", getCategoryPosts);
-
-
-// Configure memory storage
-const storage = multer.memoryStorage();
-const upload = multer({ storage });
-
 const uploadData = multer().fields([
   { name: 'image', maxCount: 1 },
   { name: 'document', maxCount: 10 }, // Allow up to 10 document files
 ]);
+
+router.get("/", authenticateToken, getAllPosts);
+router.get("/categories/:email",authenticateToken, getUniqueCategoriesByAuthor);
+router.get("/:email",authenticateToken,  getSingleAuthorPosts);
+router.get("/recommended/:email",authenticateToken, getRecommendedPosts)
+
+router.get("/:category",authenticateToken,  getCategoryPosts);
+router.get("/:email/:category",authenticateToken, getPostsByAuthorsCategory);
+
 
 router.post("/:email",authenticateToken,uploadData, addPosts);
 

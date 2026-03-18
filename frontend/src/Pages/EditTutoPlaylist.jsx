@@ -9,12 +9,16 @@ import useFetchCoordinators from "../hooks/useFetchCoordinators";
 import getTimeAgo from "../components/DateCovertion";
 import { IoEye, IoShareSocial } from "react-icons/io5";
 import blog1 from "../images/img_not_found.png";
+import useGetAuthorsPostsCategories from "../hooks/useGetAuthorsPostsCategories";
+import useGetPostsByCategory from "../hooks/useGetPostsByCategory";
+import BlogMiniSkeleton from "../components/loaders/BlogMiniSkeleton";
 function EditTutorPlaylist() {
   const email = localStorage.getItem("email");
   const role = localStorage.getItem("role");
   const navigator = useNavigate();
   const [domain, setDomain] = useState("");
-  const { posts, getAuthorPosts } = useGetAuthorPosts(email);
+  // const { posts, getAuthorPosts } = useGetAuthorPosts(email);
+  
   const { coordinators, fetchCoordinators } = useFetchCoordinators(role);
   const [title, setTitle] = useState("");
   const [postIds, setPostIds] = useState([]);
@@ -26,6 +30,7 @@ function EditTutorPlaylist() {
   const [previewThumbnail, setPreviewThumbnail] = useState(null);
   const thumbnailInputRef = useRef(null);
   const [loader,setLoader]= useState(false);
+  const { categories, setCategories } = useGetAuthorsPostsCategories(email);
   // const [playlistData, setPlaylistData] = useState({});
  const { id } = useParams();
 
@@ -56,8 +61,10 @@ function EditTutorPlaylist() {
     getTutorPlaylist();
   }, [id]);
 
-
-
+    const { posts, loading, hasMore } = useGetPostsByCategory(
+    email,
+    domain,
+  );
 
   const hanldeSubmit = async (e) => {
     e.preventDefault();
@@ -112,29 +119,8 @@ function EditTutorPlaylist() {
     }
   };
 
-  useEffect(() => {
-    // optional manual refresh:
-    // getAuthorPosts();
-  }, [getAuthorPosts]);
 
-  useEffect(() => {
-    // optional manual refresh:
-    // getAuthorPosts();
-  }, [fetchCoordinators]);
 
-  // Get unique categories
-  const getUniqueCategories = (posts) => {
-    return [...new Set(posts.map((post) => post.category))];
-  };
-
-  const categories = getUniqueCategories(posts);
-
-  const getPostByCategory = (posts, categoryName) => {
-    return posts.filter((post) => post.category === categoryName);
-  };
-
-  const filteredPosts = getPostByCategory(posts, domain);
-  // const filteredCoordinators =coordinators.filter((coord) => coord?.community && domain in coord.community)
 
   const filteredCoordinators = useMemo(() => {
     if (!domain) return [];
@@ -145,11 +131,7 @@ function EditTutorPlaylist() {
     );
   }, [coordinators, domain]);
 
-  useEffect(() => {
-    if (!domain) return;
-
-    getPostByCategory(posts, domain);
-  }, [domain, posts]);
+ 
 
   const searchedCoordinators = useMemo(() => {
     if (!searchCollaborator) return filteredCoordinators;
@@ -195,262 +177,11 @@ function EditTutorPlaylist() {
     });
   };
 
-  console.log("filteredPosts",filteredPosts)
+  // console.log("filteredPosts",filteredPosts)
 
 
   return (
 
-//    <div className="w-full min-h-screen bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800 relative">
-//   <NavBar />
-
-//   <form
-//     onSubmit={hanldeSubmit}
-//     className="max-w-7xl mx-auto px-4 py-8 grid gap-8 md:grid-cols-2"
-//   >
-//     {/* LEFT COLUMN */}
-//     <div className="space-y-6">
-
-//       {/* Playlist Title */}
-//       <div className="flex flex-col gap-2">
-//         <label className="text-sm font-medium text-gray-300">
-//           Playlist Title
-//         </label>
-//         <input
-//           type="text"
-//           value={title}
-//           onChange={(e) => setTitle(e.target.value)}
-//           placeholder="Enter playlist title"
-//           className="bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
-//         />
-//       </div>
-
-//       {/* Domain */}
-//       <div className="flex flex-col gap-2">
-//         <label className="text-sm font-medium text-gray-300">
-//           Select Domain
-//         </label>
-//         <select
-//           value={domain}
-//           onChange={(e) => {
-//             setPostIds([]);
-//             setDomain(e.target.value);
-//             setCollaboratorsData([]); 
-//           }}
-//           className="bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
-//         >
-//           <option value="" className="text-gray-200">
-//             Choose Domain
-//           </option>
-//           {categories.map((category, index) => (
-//             <option key={index} value={category} className="text-gray-200">
-//               {category}
-//             </option>
-//           ))}
-//         </select>
-//       </div>
-
-//       {/* Thumbnail Upload */}
-//       <div className="flex flex-col gap-2">
-//         <label className="text-sm font-medium text-gray-300">
-//           Playlist Thumbnail
-//         </label>
-
-//         <input
-//           type="file"
-//           accept="image/*"
-//           onChange={handleChnageThumbnail}
-//           ref={thumbnailInputRef}
-//           className="block w-fit text-sm text-gray-300
-//             file:mr-4 file:py-2 file:px-4
-//             file:rounded-lg file:border-0
-//             file:text-sm file:font-semibold
-//             file:bg-emerald-600 file:text-white
-//             hover:file:bg-emerald-500"
-//         />
-
-//         {previewThumbnail && (
-//           <div className="mt-4 space-y-2">
-//             <p
-//               onClick={() => {
-//                 setPreviewThumbnail(null);
-//                 setThumbnail(null);
-//                 if (thumbnailInputRef.current) {
-//                   thumbnailInputRef.current.value = null;
-//                 }
-//               }}
-//               className="text-sm text-red-400 cursor-pointer hover:underline"
-//             >
-//               Clear thumbnail
-//             </p>
-//             <img
-//               src={previewThumbnail}
-//               alt="Preview"
-//               className="w-60 rounded-xl object-cover border border-gray-700"
-//             />
-//           </div>
-//         )}
-//       </div>
-
-//       {/* Collaborators */}
-//       <div className="relative flex flex-col gap-2">
-//         <label className="text-sm font-medium text-gray-300">
-//           Hook Collaborators
-//         </label>
-
-//         <input
-//           type="text"
-//           placeholder="Search collaborators"
-//           value={searchCollaborator}
-//           onChange={(e) => setSearchCollaborator(e.target.value)}
-//           className="bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
-//         />
-
-//         {/* Selected Collaborators */}
-//         {collaboratorsData.length > 0 && (
-//           <div className="flex flex-wrap gap-2 mt-2">
-//             {collaboratorsData.map((data, index) => (
-//               <div
-//                 key={index}
-//                 onClick={() =>
-//                   handleCollaborators(
-//                     data.email,
-//                     data.authorname,
-//                     data.profile
-//                   )
-//                 }
-//                 className="flex items-center gap-2 px-3 py-1 rounded-full bg-gray-800 border border-gray-700 cursor-pointer hover:bg-gray-700 transition"
-//               >
-//                 <img
-//                   src={
-//                     data.img
-//                       ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.img}`
-//                       : user
-//                   }
-//                   className="w-6 h-6 bg-white rounded-full object-cover border border-emerald-400"
-//                   alt=""
-//                 />
-//                 <span className="text-xs text-gray-200">
-//                   {data.name}
-//                 </span>
-//               </div>
-//             ))}
-//           </div>
-//         )}
-
-//         {/* Search Results */}
-//         {searchCollaborator && searchedCoordinators.length > 0 && (
-//           <div className="absolute top-full mt-2 w-full bg-gray-900 border border-gray-700 rounded-xl shadow-xl z-20">
-//             {searchedCoordinators.map((collaborator, index) => (
-//               <div
-//                 key={index}
-//                 onClick={() =>
-//                   handleCollaborators(
-//                     collaborator.email,
-//                     collaborator.authorname,
-//                     collaborator.profile
-//                   )
-//                 }
-//                 className="flex items-center gap-3 px-4 py-2 hover:bg-gray-800 cursor-pointer"
-//               >
-//                 <img
-//                   src={
-//                     collaborator.profile
-//                       ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${collaborator.profile}`
-//                       : user
-//                   }
-//                   className="w-6 h-6 rounded-full bg-white object-cover border border-emerald-400"
-//                   alt=""
-//                 />
-//                 <span className="text-sm text-gray-200">
-//                   {collaborator.authorname}
-//                 </span>
-//               </div>
-//             ))}
-//           </div>
-//         )}
-//       </div>
-//     </div>
-
-//     {/* RIGHT COLUMN — POSTS */}
-//    { filteredPosts.length>0 &&
-//     <div className="flex flex-col gap-4">
-//       <h2 className="text-lg font-semibold text-white">
-//         Select Posts for Playlist
-//       </h2>
-
-//       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-//         {filteredPosts.map((data, index) => (
-//           <div
-//             key={index}
-//             onClick={() => handlePostIds(data._id)}
-//             className={`rounded-xl border cursor-pointer transition-all duration-300 p-4
-//               ${
-//                 postIds.includes(data._id)
-//                   ? "border-emerald-500 bg-emerald-500/10"
-//                   : "border-gray-700 bg-gray-900 hover:bg-gray-800"
-//               }`}
-//           >
-//             {/* Author */}
-//             <div className="flex items-center gap-2 mb-3">
-          
-//               <div>
-//                 <p className="text-sm font-medium text-white">
-//                   {data.title}
-//                 </p>
-//                 <p className="text-xs text-gray-400">
-//                   {getTimeAgo(data.timestamp)}
-//                 </p>
-//               </div>
-//             </div>
-
-//             {/* Post Image */}
-//             <img
-//               src={
-//                 data.image
-//                   ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.image}`
-//                   : blog1
-//               }
-//               className="w-full h-36 rounded-lg object-cover mb-3"
-//               alt=""
-//             />
-
-//             {/* Footer */}
-//             <div className="flex justify-between items-center">
-              
-//               <div className="text-xs flex items-center gap-2 text-gray-400">
-//                    <img
-//                 src={
-//                   data.profile
-//                     ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.profile}`
-//                     : user
-//                 }
-//                 className="w-8 h-8 rounded-full object-cover border border-gray-600"
-//                 alt=""
-//               />
-//                 {data.views.length} views
-//               </div>
-//               <span className="text-xs px-2 py-1 rounded-full bg-gray-700 text-gray-300">
-//                 {data.category}
-//               </span>
-//             </div>
-//           </div>
-//         ))}
-//       </div>
-//     </div>
-//     }
-
-//     {/* SUBMIT */}
-//     <div className="md:col-span-4 flex justify-end mt-4">
-//       <button
-//         type="submit"
-//         disabled={loader}
-//         className="px-6 py-2 rounded-lg bg-emerald-600 text-white font-semibold hover:bg-emerald-500 disabled:opacity-50 transition"
-//       >
-//         {loader ? "Updating Playlist..." : "Update Playlist"}
-//       </button>
-//     </div>
-//   </form>
-// </div>
 
 <div className="w-full min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 relative">
   <NavBar />
@@ -526,9 +257,9 @@ function EditTutorPlaylist() {
             onChange={handleChnageThumbnail}
             ref={thumbnailInputRef}
             className="w-full mt-2 text-xs  text-gray-300 
-    file:mr-4 file:px-2 file:py-1 file:rounded-md 
-    file:border-0 file:bg-emerald-500/20 file:hover:bg-emerald-600/20 file:text-emerald-400 
-    file:cursor-pointer"
+              file:mr-4 file:px-2 file:py-1 file:rounded-md 
+              file:border-0 file:bg-emerald-500/20 file:hover:bg-emerald-600/20 file:text-emerald-400 
+              file:cursor-pointer"
           />
 
           {previewThumbnail && (
@@ -646,15 +377,17 @@ function EditTutorPlaylist() {
       </div>
     </div>
 
-    {/* RIGHT — POSTS */}
-    {filteredPosts.length > 0 ? (
-      <div className="lg:col-span-2 mt-7 md:mt-0 lg:w-11/12 space-y-6 h-fit">
-        <h2 className="text-xl text-center mt-7 md:mt-0 md:text-left font-semibold text-white">
-          Select Posts for Playlist
-        </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 h-fit md:overflow-y-auto gap-3 md:gap-5">
-          {filteredPosts.map((data, index) => (
+
+    {/* RIGHT — POSTS */}
+
+       <div className="lg:col-span-2 mt-7 md:mt-0 lg:w-11/12 space-y-6 h-fit">
+        {posts?.length>0 && <h2 className="text-xl text-center md:text-left font-semibold text-white">
+            Select Posts for Playlist
+          </h2>}
+
+        <div className="grid grid-cols-1 sm:grid-cols-3  md:max-h-[800px] emerald-scrollbar md:overflow-y-auto gap-3 md:gap-5">
+          {posts?.map((data, index) => (
             <div
               key={index}
               onClick={() => handlePostIds(data._id)}
@@ -684,7 +417,7 @@ function EditTutorPlaylist() {
                     ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.image}`
                     : blog1
                 }
-                className="w-full h-40 md:h-36 rounded-xl object-cover mb-3"
+                className="w-full h-48 md:h-36 rounded-xl object-cover mb-3"
                 alt=""
               />
 
@@ -699,17 +432,33 @@ function EditTutorPlaylist() {
               </div>
             </div>
           ))}
+
+        
+
+           {!posts.length > 0 && loading && <BlogMiniSkeleton />}
+            {posts.length > 0 && loading && (
+              <p className="col-span-full py-4 text-gray-500 text-center">
+                loading...
+              </p>
+            )}
+
+            {!hasMore && posts?.length>0 && (
+              <p className="text-center col-span-full py-4 text-gray-500">
+                No more posts
+              </p>
+            )}
+             {posts?.length == 0 && !loading && (
+            <div className="flex col-span-full md:h-[400px] items-center md:mt-0  my-16 text-center lg:w-11/12 mx-auto text-center  justify-center md:w-full text-white  ">
+            <p className="">  Select domain to see posts available for playlist creation.</p>
+            </div>
+          )}
         </div>
       </div>
-    )
-  :
-   <div className="flex items-center md:mt-20 mt-10 w-11/12 mx-auto text-center  justify-center md:w-full col-span-2 text-white  ">
-    Selecet domain to see posts available for playlist creation.
-    </div>}
+  
 
     {/* SUBMIT */}
    { 
-   filteredPosts.length > 0 &&
+   posts?.length > 0 &&
     <div className="lg:col-span-3 mt-7 md:hidden flex justify-start ">
       <button
         type="submit"
