@@ -1,5 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { Analytics } from "@vercel/analytics/next"
 import { AuthProvider } from "./AuthContext";
 import ProtectedRoute from "./ProtectedRoutes";
 
@@ -34,6 +35,7 @@ function App() {
       <GlobalStateProvider>
         <Router>
           <ScrollToTop/>
+          <Analytics/>
 
           <Routes>
             {/* Public Routes for Login & Register */}
