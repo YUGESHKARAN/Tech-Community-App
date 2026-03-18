@@ -44,10 +44,9 @@ router.get("/:email/:postId",authenticateToken, getSinglePost);
 
 router.post("/:email",authenticateToken,uploadData, addPosts);
 
-// router.put("/:email/:postId",upload.single('image'), updatePost);
 
 router.put("/:email/:postId",authenticateToken,uploadData,updatePost);
-router.get("/getBookmarkPosts/:email",authenticateToken,getBookmarkedPosts)
+router.get("/getBookmarkPosts/bookmark/:email",authenticateToken,getBookmarkedPosts)
 router.post("/bookmarkPosts/:email",authenticateToken,addPostBookmark)
 
 router.put("/views/:email/:id",authenticateToken, postView)

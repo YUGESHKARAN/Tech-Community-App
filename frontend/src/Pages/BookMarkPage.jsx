@@ -75,7 +75,7 @@ function BookMarkPage() {
 
     try {
       const response = await axiosInstance.get(
-        `/blog/posts/getBookmarkPosts/${email}?page=${page}&limit=${limit}`,
+        `/blog/posts/getBookmarkPosts/bookmark/${email}?page=${page}&limit=${limit}`,
       );
 
       if (response.status === 200) {
