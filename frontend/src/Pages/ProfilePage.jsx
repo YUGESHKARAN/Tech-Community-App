@@ -156,12 +156,12 @@ function ProfilePage() {
   };
 
   return (
-    <div className="min-h-screen relative bg-gradient-to-br pb-10 md:pb-0 from-gray-900 to-gray-800 text-white">
+    <div className="min-h-screen relative bg-gray-900 text-white">
       <NavBar />
 
       <div className=" mx-auto md:px-4 py-6 pb-12 w-full">
         {/* Header */}
-        <div className="flex w-full items-center px-3  justify-between mb-7">
+        <div className="flex w-full items-center px-3 md:p-0 justify-between mb-7">
           <h1 className="text-3xl md:text-4xl font-semibold text-white tracking-tight">
             My Bio
           </h1>
@@ -176,123 +176,125 @@ function ProfilePage() {
         </div>
 
         {/* Two Column Layout */}
-        <div className="grid md:grid-cols-[350px_1fr] gap-4">
+        <div className="grid md:grid-cols-[350px_1fr] md:gap-4">
           {/* LEFT COLUMN — Profile Overview */}
-          <div className="bg-gradient-to-b mx-3 md:mx-0 from-gray-800/70 to-gray-900/60  rounded-2xl p-6 text-center shadow-lg md:sticky top-7 self-start">
-            {/* Profile Picture */}
-            <div className="relative w-fit mx-auto mb-6">
-              {previewImage ? (
-                <img
-                  src={previewImage}
-                  alt="Preview"
-                  className="rounded-full object-cover border-2 border-orange-500 w-40 h-40"
-                />
-              ) : author.profile ? (
-                <img
-                  src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`}
-                  alt="Profile"
-                  className="rounded-full object-cover border-2 border-orange-500 w-40 h-40"
-                />
-              ) : (
-                <div className="w-40 h-40 flex items-center justify-center rounded-full bg-white border-2 border-orange-500 shadow-xl">
-                  <HiOutlineUserCircle className="text-[#786fa6] text-9xl" />
-                </div>
-              )}
+          <div className="bg-gray-900 backdrop-blur-xl mx-3 md:mx-0 rounded-2xl p-6 text-center md:shadow-[0_10px_40px_rgba(0,0,0,0.6)] md:border border-neutral-800 md:sticky top-7 self-start">
 
-              {/* Edit Overlay */}
-              <label
-                htmlFor="image"
-                className="absolute bottom-3 right-3 bg-white hover:bg-white text-black p-1 px-2 rounded-full shadow-md cursor-pointer"
-                title="Change Profile Picture"
-              >
-                {/* ✎ */}
-                <MdEdit />
-              </label>
-              <input
-                type="file"
-                id="image"
-                accept="image/*"
-                onChange={onImageChange}
-                className="hidden"
-              />
-            </div>
+  {/* Profile Picture */}
+  <div className="relative w-fit mx-auto mb-6">
+    {previewImage ? (
+      <img
+        src={previewImage}
+        alt="Preview"
+        className="rounded-full object-cover border-2 border-emerald-500 w-36 h-36 md:w-40 md:h-40 shadow-md"
+      />
+    ) : author.profile ? (
+      <img
+        src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`}
+        alt="Profile"
+        className="rounded-full object-cover border-2 border-emerald-500 w-36 h-36 md:w-40 md:h-40 shadow-md"
+      />
+    ) : (
+      <div className="w-36 h-36 md:w-40 md:h-40 flex items-center justify-center rounded-full bg-neutral-800 border-2 border-emerald-500 shadow-md">
+        <HiOutlineUserCircle className="text-neutral-500 text-8xl md:text-9xl" />
+      </div>
+    )}
 
-            {/* Stats */}
-            <div className="flex justify-center gap-10 md:gap-7 mb-6">
-              {author.role === "coordinator" && (
-                <div>
-                  <p className="text-green-400 text-sm">Followers</p>
-                  <p className="text-xl font-semibold">
-                    {followers?.length ?? 0}
-                  </p>
-                </div>
-              )}
-              {/* {author.role === "coordinator" && (
-                <div>
-                  <p className="text-green-400 text-sm">Content Published</p>
-                  <p className="text-xl font-semibold">
-                    {posts.length> 0 ? posts.length: 'Yet to...'}
-                  </p>
+    {/* Edit Overlay */}
+    <label
+      htmlFor="image"
+      className="absolute bottom-2 right-2 bg-neutral-800 hover:bg-neutral-700 text-emerald-400 p-2 rounded-full shadow-md cursor-pointer transition"
+      title="Change Profile Picture"
+    >
+      <MdEdit />
+    </label>
+    <input
+      type="file"
+      id="image"
+      accept="image/*"
+      onChange={onImageChange}
+      className="hidden"
+    />
+  </div>
 
-                </div>
-              )} */}
-              {author.role === "coordinator" && posts.length > 0 ? (
-                <Link to={`/yourposts`}>
-                  <p className="text-green-400 mb-1 text-sm">
-                    Content Published
-                  </p>
-                  <button
-                    className="text-sm font-semibold px-4 py-1 rounded-lg bg-gradient-to-r from-green-500 to-emerald-500 
-                     text-white shadow-md group-hover:shadow-lg group-hover:scale-105 
-                     transition-all duration-300"
-                  >
-                    {posts.length}
-                  </button>
-                </Link>
-              ) : (
-                author.role === "coordinator" && (
-                  <div>
-                    <p className="text-green-400  mb-1 text-sm">
-                      Content Published
-                    </p>
-                    <p className="text-xl font-medium">Yet to...</p>
-                  </div>
-                )
-              )}
-              {author.role !== "admin" && (
-                <div>
-                  <p className="text-green-400 text-sm">Following</p>
-                  <p className="text-xl font-semibold">
-                    {following?.length ?? 0}
-                  </p>
-                </div>
-              )}
-            </div>
+  {/* Stats */}
+  <div className="flex justify-center gap-8 md:gap-6 mb-6">
 
-            {/* Tech Communities */}
-            {author.community?.length > 0 && (
-              <div className="mt-6">
-                <p className="text-orange-400 font-medium mb-3 text-sm uppercase tracking-wide">
-                  Tech Communities
-                </p>
-                <div className="flex flex-wrap justify-center gap-2">
-                  {author.community.map((com, i) => (
-                    <span
-                      key={i}
-                      className="px-3 py-1 text-xs bg-gradient-to-r from-orange-500 to-yellow-500 rounded-full shadow text-white"
-                    >
-                      {com}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
+    {author.role === "coordinator" && (
+      <div>
+        <p className="text-xs text-gray-400">Followers</p>
+        <p className="text-lg md:text-xl font-semibold text-white">
+          {followers?.length ?? 0}
+        </p>
+      </div>
+    )}
+
+    {author.role === "coordinator" && posts.length > 0 ? (
+      <Link to={`/yourposts`}>
+        <p className="text-xs text-gray-400 mb-1">Content</p>
+        <button
+          className="
+            text-sm font-semibold px-4 py-1.5 rounded-lg
+            bg-emerald-500/10 text-emerald-400
+            border border-emerald-500/20
+            hover:bg-emerald-500/20
+            transition-all duration-300
+          "
+        >
+          {posts.length}
+        </button>
+      </Link>
+    ) : (
+      author.role === "coordinator" && (
+        <div>
+          <p className="text-xs text-gray-400 mb-1">Content</p>
+          <p className="text-sm text-gray-500">Yet to...</p>
+        </div>
+      )
+    )}
+
+    {author.role !== "admin" && (
+      <div>
+        <p className="text-xs text-gray-400">Following</p>
+        <p className="text-lg md:text-xl font-semibold text-white">
+          {following?.length ?? 0}
+        </p>
+      </div>
+    )}
+  </div>
+
+  {/* Tech Communities */}
+  {author.community?.length > 0 && (
+    <div className="mt-6">
+      <p className="text-emerald-400 font-medium mb-3 text-xs uppercase tracking-wider">
+        Tech Communities
+      </p>
+
+      <div className="flex flex-wrap justify-center gap-2">
+        {author.community.map((com, i) => (
+          <span
+            key={i}
+            className="
+              px-3 py-1 text-xs
+              bg-emerald-500/10
+              text-emerald-300
+              border border-emerald-500/20
+              rounded-full
+            "
+          >
+            {com}
+          </span>
+        ))}
+      </div>
+    </div>
+  )}
+
+</div>
 
           {/* RIGHT COLUMN — Profile Form */}
           <form
             onSubmit={handleSubmit}
-            className="space-y-4  bg-gray-900/60 rounded-2xl gap-3 grid xl:grid-cols-2 shadow-md  px-5 py-6 md:p-10 md:px-16 backdrop-blur-md"
+            className="space-y-4  bg-gray-900 rounded-2xl gap-3 grid xl:grid-cols-2  px-5 pb-6 md:py-6 md:p-10 md:px-16 md:shadow-[0_10px_40px_rgba(0,0,0,0.6)] md:border border-neutral-800"
           >
             {/* Author Name */}
             <div className="space-y-8">

@@ -64,7 +64,7 @@ function ViewTutorPlaylist() {
   const getBookMarkPosts = async () => {
     try {
       const response = await axiosInstance.get(
-        `/blog/posts/getBookmarkPosts/${email}`,
+        `/blog/posts/getBookmarkPosts/bookmark/${email}`,
       );
       if (response.status == 200) {
         setBookMarkId(response.data.postIds);
@@ -81,7 +81,7 @@ function ViewTutorPlaylist() {
 
   const addBookMarkPostIdPlaylist = async (_id) => {
     // e.preventDefault()
-    // console.log("bookmark id", _id);
+    console.log("bookmark id", _id);
     try {
       const response = await axiosInstance.post(
         `/blog/posts/bookmarkPosts/${email}`,

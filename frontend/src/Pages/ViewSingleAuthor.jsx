@@ -63,121 +63,162 @@ function ViewSingleAuthor() {
   };
 
   return (
-    <div className="min-h-screen relative bg-gradient-to-br pb-10 md:pb-0 from-gray-900 to-gray-800 text-white">
+    <div className="min-h-screen relative bg-gray-900 text-white">
       <NavBar />
 
-      <div className="mx-auto px-3 md:pb-12 md:px-4 py-6 w-full">
+      <div className="mx-auto md:pb-12 md:px-4 py-6 w-full">
         {/* Header */}
-         <h1 className="text-2xl md:text-3xl mb-3 font-semibold text-white w-full mx-auto">
+         <h1 className="text-2xl  px-3 md:px-0 md:text-3xl mb-3 font-semibold text-white w-full mx-auto">
           Profile Page
         </h1>
 
         {/* Two Column Layout */}
-        <div className="grid md:grid-cols-[350px_1fr] md:mt-7 mt-4 gap-4">
+        <div className="grid md:grid-cols-[350px_1fr] md:mt-7 mt-4 md:gap-4">
           {/* LEFT COLUMN — Profile Overview */}
-          <div className="bg-gradient-to-b from-gray-800/70 to-gray-900/60 rounded-2xl p-6 text-center shadow-lg  self-start">
-            {/* Profile Picture */}
-            <div className="relative w-fit mx-auto mb-3">
-              {author.profile ? (
-                <img
-                  src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`}
-                  alt="Profile"
-                  className="rounded-full object-cover border-2 border-orange-500 w-40 h-40"
-                />
-              ) : (
-                <div className="w-40 h-40 flex items-center justify-center rounded-full bg-white border-2 border-orange-500 shadow-xl">
-                  <HiOutlineUserCircle className="text-[#786fa6] text-9xl" />
-                </div>
-              )}
+          <div className="bg-gray-900 backdrop-blur-xl mx-3 md:mx-0 rounded-2xl p-6 text-center md:shadow-[0_10px_40px_rgba(0,0,0,0.6)] md:border border-neutral-800">
+  
+  {/* Profile Picture */}
+  <div className="relative w-fit mx-auto mb-4 group">
+    {author.profile ? (
+      <img
+        src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`}
+        alt="Profile"
+        className="rounded-full object-cover border-2 border-emerald-500 w-36 h-36 md:w-40 md:h-40 shadow-md"
+      />
+    ) : (
+      <div className="w-36 h-36 md:w-40 md:h-40 flex items-center justify-center rounded-full bg-neutral-800 border border-neutral-600 shadow-lg">
+        <HiOutlineUserCircle className="text-neutral-500 text-8xl" />
+      </div>
+    )}
 
-              <h1 className="text-center text-xl font-bold mt-2">
-                {authorName}
-              </h1>
-            </div>
+    {/* Subtle Glow */}
+    {/* <div className="absolute inset-0 rounded-full ring-2 ring-emerald-500/10 group-hover:ring-emerald-500/30 transition-all duration-300" /> */}
 
-            {/* Stats */}
-            <div className="flex justify-center gap-10 md:gap-7 mb-6">
-              {author.role === "coordinator" && (
-                <div>
-                  <p className="text-green-400  mb-1 text-sm">Followers</p>
-                  <p className="text-xl font-semibold">
-                    {followers?.length ?? 0}
-                  </p>
-                </div>
-              )}
-              {author.role === "coordinator" && posts.length > 0 ? (
-                <Link to={`/singleAuthorPosts/${email}`}>
-                  <p className="text-green-400 mb-1 text-sm">Content Published</p>
-                  <button
-                    className="text-sm font-semibold px-4 py-1 rounded-lg bg-gradient-to-r from-green-500 to-emerald-500 
-               text-white shadow-md group-hover:shadow-lg group-hover:scale-105 
-               transition-all duration-300"
-                  >
-                    {posts.length}
-                  </button>
-                </Link>
-              ) : (
-                author.role === "coordinator" && (
-                  <div>
-                    <p className="text-green-400  mb-1 text-sm">Content Published</p>
-                    <p className="text-sm font-medium">Yet to...</p>
-                  </div>
-                )
-              )}
+    {/* Name */}
+    <h1 className="text-center text-lg md:text-xl font-semibold mt-3 text-white tracking-wide">
+      {authorName}
+    </h1>
+  </div>
 
-              {author.role !== "admin" && (
-                <div>
-                  <p className="text-green-400  mb-1 text-sm">Following</p>
-                  <p className="text-sm font-semibold">
-                    {following?.length ?? 0}
-                  </p>
-                </div>
-              )}
-            </div>
+  {/* Stats */}
+  <div className="flex justify-center gap-8 md:gap-6 mb-6 text-sm">
+    
+    {author.role === "coordinator" && (
+      <div className="flex flex-col items-center">
+        <p className="text-neutral-400 text-xs uppercase tracking-wide">
+          Followers
+        </p>
+        <p className="text-lg font-semibold text-white">
+          {followers?.length ?? 0}
+        </p>
+      </div>
+    )}
 
-            {/* Tech Communities */}
-            {author.community?.length > 0 && (
-              <div className="mt-6">
-                <p className="text-orange-400 font-medium mb-3 text-sm uppercase tracking-wide">
-                  Tech Communities{" "}
-                  {author.role === "coordinator" ? "coordinating" : "joined"}
-                </p>
-                <div className="flex flex-wrap justify-center gap-2">
-                  {author.community.map((com, i) => (
-                    <span
-                      key={i}
-                      className="px-3 py-1 text-xs bg-gradient-to-r from-orange-500 to-yellow-500 rounded-full shadow text-white"
-                    >
-                      {com}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
+    {author.role === "coordinator" && posts.length > 0 ? (
+      <Link to={`/singleAuthorPosts/${email}`} className="flex flex-col items-center group">
+        <p className="text-neutral-400 text-xs uppercase tracking-wide">
+          Content
+        </p>
+        <button
+          className="
+            mt-1 px-3 py-1 text-sm rounded-lg 
+            bg-emerald-500/10 text-emerald-400
+            border border-emerald-500/20
+            group-hover:bg-emerald-500/20
+            transition-all duration-300
+          "
+        >
+          {posts.length}
+        </button>
+      </Link>
+    ) : (
+      author.role === "coordinator" && (
+        <div className="flex flex-col items-center">
+          <p className="text-neutral-400 text-xs uppercase tracking-wide">
+            Content
+          </p>
+          <p className="text-sm text-neutral-500 mt-1">Yet to...</p>
+        </div>
+      )
+    )}
 
-            {author.role === "coordinator" && coordEamil !== authorEmail && (
-              <div className="mt-4">
-                {author.followers.includes(authorEmail) ? (
-                  <button
-                    onClick={() => addFollower(email)}
-                    className="cursor-pointer px-4 py-1.5 rounded-lg bg-gradient-to-r from-emerald-200 to-emerald-300 text-gray-800 font-medium text-sm cursor-default shadow-sm border border-white/20"
-                  >
-                    Following...
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => addFollower(email)}
-                    className="cursor-pointer px-4 py-1.5 rounded-lg bg-gradient-to-r from-emerald-300 to-green-400 text-gray-900 font-medium text-sm hover:from-emerald-400 hover:to-green-500 transition-all duration-300 shadow-sm border border-white/20"
-                  >
-                    Follow +
-                  </button>
-                )}
-              </div>
-            )}
-          </div>
+    {author.role !== "admin" && (
+      <div className="flex flex-col items-center">
+        <p className="text-neutral-400 text-xs uppercase tracking-wide">
+          Following
+        </p>
+        <p className="text-lg font-semibold text-white">
+          {following?.length ?? 0}
+        </p>
+      </div>
+    )}
+  </div>
+
+  {/* Tech Communities */}
+  {author.community?.length > 0 && (
+    <div className="mt-5">
+      <p className="text-emerald-400 font-medium mb-3 text-xs uppercase tracking-wider">
+        Tech Communities {author.role === "coordinator" ? "coordinating" : "joined"}
+      </p>
+
+      <div className="flex flex-wrap justify-center gap-2">
+        {author.community.map((com, i) => (
+          <span
+            key={i}
+            className="
+              px-3 py-1 text-xs
+              bg-emerald-500/10
+              text-emerald-300
+              border border-emerald-500/20
+              rounded-full
+            "
+          >
+            {com}
+          </span>
+        ))}
+      </div>
+    </div>
+  )}
+
+  {/* Follow Button */}
+  {author.role === "coordinator" && coordEamil !== authorEmail && (
+    <div className="mt-6">
+      {author.followers.includes(authorEmail) ? (
+        <button
+          onClick={() => addFollower(email)}
+          className="
+            px-5 py-2 rounded-lg
+            bg-gray-900 text-emerald-500
+            border border-neutral-700
+            text-sm font-medium
+            cursor-pointer
+
+          "
+        >
+          Following
+        </button>
+      ) : (
+        <button
+          onClick={() => addFollower(email)}
+          className="
+            px-5 py-2 rounded-lg
+            bg-emerald-500 text-black
+            text-sm font-semibold
+            hover:bg-emerald-400
+            transition-all duration-300
+            shadow-md hover:shadow-emerald-500/20
+            cursor-pointer
+          "
+        >
+          Follow +
+        </button>
+      )}
+    </div>
+  )}
+</div>
 
           {/* RIGHT COLUMN — Profile Form */}
-          <div className="space-y-4  bg-gray-900/60 rounded-2xl gap-3 grid xl:grid-cols-2 shadow-md  px-5 py-6 md:p-10 md:px-16 backdrop-blur-md">
+          <div className="space-y-4  bg-gray-900 rounded-2xl gap-3 grid xl:grid-cols-2  px-5 pb-6 md:py-6 md:p-10 md:px-16 md:shadow-[0_10px_40px_rgba(0,0,0,0.6)] md:border border-neutral-800">
             {/* Author Name */}
             {/* <div>
               <label

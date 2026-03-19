@@ -185,7 +185,7 @@ function EditTutorPlaylist() {
 
 <div className="w-full min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 relative">
   <NavBar />
-   <div className="mb-8 mt-4 px-4 flex items-center justify-between">
+   <div className="mb-8 mt-4 px-3 md:px-4 flex items-center justify-between">
       <div>
         <h1 className="md:text-3xl text-2xl font-bold font-bold text-white tracking-tight">
           Update  Playlist
@@ -198,7 +198,7 @@ function EditTutorPlaylist() {
 
   <form
     onSubmit={hanldeSubmit}
-    className="w-full mx-auto px-4 pb-10 md:grid gap-10 lg:gap-4 lg:grid-cols-3"
+    className="w-full mx-auto px-3 md:px-4 pb-10 md:grid gap-10 lg:gap-4 lg:grid-cols-3"
   >
     {/* LEFT — PLAYLIST DETAILS */}
     <div className="lg:col-span-1 lg:w-11/12 md:bg-gray-900/70  backdrop-blur-xl md:border border-gray-800 rounded-2xl space-y-8">
@@ -208,21 +208,7 @@ function EditTutorPlaylist() {
           Playlist Details
         </h2>
 
-        {/* Playlist Title */}
-        <div className="flex flex-col gap-2">
-          <label className="text-sm text-gray-300 font-medium">
-            Playlist Title <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Enter playlist title"
-            className="bg-gray-950 border border-gray-700 text-sm rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
-          />
-        </div>
-
-        {/* Domain */}
+         {/* Domain */}
         <div className="flex flex-col gap-2">
           <label className="text-sm text-gray-300 font-medium">
             Select Domain <span className="text-red-500">*</span>
@@ -234,7 +220,7 @@ function EditTutorPlaylist() {
               setCollaboratorsData([]);
               setDomain(e.target.value);
             }}
-            className="bg-gray-950 text-sm border border-gray-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
+            className="bg-gray-950 cursor-pointer border border-gray-700 rounded-lg px-4 py-2 text-white text-sm focus:border focus:border-emerald-500/40 outline-none"
           >
             <option value="">Choose Domain</option>
             {categories.map((category, index) => (
@@ -245,46 +231,7 @@ function EditTutorPlaylist() {
           </select>
         </div>
 
-        {/* Thumbnail */}
-        <div className="flex flex-col gap-2">
-          <label className="text-sm text-gray-300 font-medium">
-            Playlist Thumbnail <span className="text-red-500">*</span>
-          </label>
-
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleChnageThumbnail}
-            ref={thumbnailInputRef}
-            className="w-full mt-2 text-xs  text-gray-300 
-              file:mr-4 file:px-2 file:py-1 file:rounded-md 
-              file:border-0 file:bg-emerald-500/20 file:hover:bg-emerald-600/20 file:text-emerald-400 
-              file:cursor-pointer"
-          />
-
-          {previewThumbnail && (
-            <div className="pt-3 space-y-2">
-              <p
-                onClick={() => {
-                  setPreviewThumbnail(null);
-                  setThumbnail(null);
-                  if (thumbnailInputRef.current) {
-                    thumbnailInputRef.current.value = null;
-                  }
-                }}
-                className="text-xs text-red-400 cursor-pointer hover:underline"
-              >
-                Remove thumbnail
-              </p>
-              <img
-                src={previewThumbnail}
-                alt="Preview"
-                className="w-40 max-w-xs object-contain rounded-xl border border-gray-700"
-              />
-            </div>
-          )}
-        </div>
-
+        
         {/* Collaborators */}
         <div className="relative flex flex-col gap-2">
           <label className="text-sm text-gray-300 font-medium">
@@ -296,7 +243,7 @@ function EditTutorPlaylist() {
             placeholder="Search collaborators"
             value={searchCollaborator}
             onChange={(e) => setSearchCollaborator(e.target.value)}
-            className="bg-gray-950 border border-gray-700 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
+            className="bg-gray-950 border border-gray-700 rounded-lg px-4 py-2 text-white placeholder-gray-500 text-sm focus:border focus:border-emerald-500/40 outline-none"
           />
 
           {/* Selected */}
@@ -364,7 +311,73 @@ function EditTutorPlaylist() {
           )}
         </div>
 
-         <div className="lg:col-span-3 hidden md:block flex justify-start pt-6">
+        {/* Playlist Title */}
+        <div className="flex flex-col gap-2">
+          <label className="text-sm text-gray-300 font-medium">
+            Playlist Title <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Enter playlist title"
+            className="bg-gray-950 border border-gray-700 rounded-lg px-4 py-2 text-white placeholder-gray-500 text-sm focus:border focus:border-emerald-500/40 outline-none"
+          />
+        </div>
+
+       
+
+        {/* Thumbnail */}
+        <div className="flex flex-col gap-2">
+          <label className="text-sm text-gray-300 font-medium">
+            Playlist Thumbnail <span className="text-red-500">*</span>
+          </label>
+
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleChnageThumbnail}
+            ref={thumbnailInputRef}
+            className="w-full mt-2 text-xs  text-gray-300 
+              file:mr-4 file:px-2 file:py-1 file:rounded-md 
+              file:border-0 file:bg-emerald-500/20 file:hover:bg-emerald-600/20 file:text-emerald-400 
+              file:cursor-pointer"
+          />
+
+           {
+                !previewThumbnail && (
+                  <div className="w-80 h-40 mt-3 rounded-xl flex items-center justify-center bg-gray-700">
+                    <p className="text-gray-400 text-xs">No Thumbnail</p>
+                
+              </div>
+                )
+              }
+
+          {previewThumbnail && (
+            <div className="pt-3 space-y-2">
+              <p
+                onClick={() => {
+                  setPreviewThumbnail(null);
+                  setThumbnail(null);
+                  if (thumbnailInputRef.current) {
+                    thumbnailInputRef.current.value = null;
+                  }
+                }}
+                className="text-xs text-red-400 cursor-pointer hover:underline"
+              >
+                Remove thumbnail
+              </p>
+              <img
+                src={previewThumbnail}
+                alt="Preview"
+                className="w-80 h-40 max-w-xs  object-cover rounded-xl border border-gray-700"
+              />
+            </div>
+          )}
+        </div>
+
+
+         <div className="lg:col-span-3 hidden md:block flex justify-start pt-0">
       <button
         type="submit"
         disabled={loader}
@@ -433,6 +446,7 @@ function EditTutorPlaylist() {
             </div>
           ))}
 
+          
         
 
            {!posts.length > 0 && loading && <BlogMiniSkeleton />}

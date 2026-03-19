@@ -17,10 +17,7 @@ function TutorPlaylist() {
   const email = localStorage.getItem("email");
   const role = localStorage.getItem("role");
   const [domain, setDomain] = useState("");
-  const { posts, loading, hasMore } = useGetPostsByCategory(
-    email,
-    domain,
-  );
+  const { posts, loading, hasMore } = useGetPostsByCategory(email, domain);
 
   const { coordinators, fetchCoordinators } = useFetchCoordinators(role);
   const [title, setTitle] = useState("");
@@ -92,7 +89,6 @@ function TutorPlaylist() {
     }
   };
 
-
   const filteredCoordinators = useMemo(() => {
     if (!domain) return [];
 
@@ -149,12 +145,118 @@ function TutorPlaylist() {
   // console.log("posts", posts);
   // console.log("domain", domain);
 
+  {
+    /* Collaborators */
+  }
+  // <div className="relative flex  flex-col gap-2">
+  //   <label className="text-sm text-gray-300 font-medium">
+  //     Hook Collaborators
+  //   </label>
+
+  //   <input
+  //     type="text"
+  //     placeholder="Search collaborators"
+  //     value={searchCollaborator}
+  //     onChange={(e) => setSearchCollaborator(e.target.value)}
+  //     className="bg-gray-950 border border-gray-700 rounded-lg px-4 py-2 text-white placeholder-gray-500 text-sm focus:border focus:border-emerald-500/40 outline-none"
+  //   />
+
+  //   {/* Selected */}
+  //   {/* {collaboratorsData.length > 0 && (
+  //     <div className="flex flex-wrap gap-2 pt-2">
+  //       {collaboratorsData.map((data, index) => (
+  //         <div
+  //           key={index}
+  //           onClick={() =>
+  //             handleCollaborators(
+  //               data.email,
+  //               data.authorname,
+  //               data.profile,
+  //             )
+  //           }
+  //           className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-800 border border-gray-700 cursor-pointer hover:bg-gray-700 transition"
+  //         >
+  //           <img
+  //             src={
+  //               data.img
+  //                 ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.img}`
+  //                 : user
+  //             }
+  //             className="w-6 h-6 rounded-full object-cover border border-emerald-400 bg-white"
+  //             alt=""
+  //           />
+  //           <span className="text-xs text-gray-200">{data.name}</span>
+  //         </div>
+  //       ))}
+  //     </div>
+  //   )} */}
+
+  //   {/* Search Results */}
+  //   {searchCollaborator && searchedCoordinators.length > 0 && (
+  //     <div className="absolute top-full mt-2 w-full bg-gray-900 border border-gray-700 rounded-xl shadow-xl z-20 overflow-y-scroll max-h-40">
+  //       {searchedCoordinators.map((collaborator, index) => (
+  //         <div
+  //           key={index}
+  //           onClick={() =>
+  //             handleCollaborators(
+  //               collaborator.email,
+  //               collaborator.authorname,
+  //               collaborator.profile,
+  //             )
+  //           }
+  //           className="flex items-center gap-3 px-4 py-2 hover:bg-gray-800 cursor-pointer"
+  //         >
+  //           <img
+  //             src={
+  //               collaborator.profile
+  //                 ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${collaborator.profile}`
+  //                 : user
+  //             }
+  //             className="w-6 h-6 rounded-full bg-white object-cover border border-emerald-400"
+  //             alt=""
+  //           />
+  //           <span className="text-sm text-gray-200">
+  //             {collaborator.authorname}
+  //           </span>
+  //         </div>
+  //       ))}
+  //        {searchedCoordinators.map((collaborator, index) => (
+  //         <div
+  //           key={index}
+  //           onClick={() =>
+  //             handleCollaborators(
+  //               collaborator.email,
+  //               collaborator.authorname,
+  //               collaborator.profile,
+  //             )
+  //           }
+  //           className="flex items-center gap-3 px-4 py-2 hover:bg-gray-800 cursor-pointer"
+  //         >
+  //           <img
+  //             src={
+  //               collaborator.profile
+  //                 ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${collaborator.profile}`
+  //                 : user
+  //             }
+  //             className="w-6 h-6 rounded-full bg-white object-cover border border-emerald-400"
+  //             alt=""
+  //           />
+  //           <span className="text-sm text-gray-200">
+  //             {collaborator.authorname}
+  //           </span>
+  //         </div>
+  //       ))}
+  //     </div>
+
+  //   )}
+  // </div>
+
   return (
     // bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800
 
     <div className="w-full min-h-screen bg-gray-900 relative">
       <NavBar />
-      <div className="mb-8 mt-4 px-4 flex items-center justify-between">
+      <div className="mb-8 mt-4 px-3 md:px-4 flex items-center justify-between">
         <div>
           <h1 className="md:text-3xl text-2xl font-bold font-bold text-white tracking-tight">
             Create Playlist
@@ -166,30 +268,81 @@ function TutorPlaylist() {
         </div>
       </div>
 
+      {/* Guidelines Card */}
+
+      <div className=" lg:hidden block px-3 mx-auto">
+        <div
+          className="
+      w-full
+      
+      mx-auto
+      rounded-xl
+      border border-emerald-500/20
+      bg-gradient-to-br from-emerald-500/5 to-transparent
+      p-4 md:p-5
+      mb-4
+     
+      
+    "
+        >
+          {/* Header */}
+          <div className="flex items-center gap-2 mb-3">
+            {/* <span className="text-emerald-400 text-lg">📌</span> */}
+            <h2 className="text-sm text-white md:text-base font-semibold  tracking-wide">
+              Playlist Guidelines
+            </h2>
+          </div>
+
+          {/* Content */}
+            <ul className="space-y-2 text-xs md:text-sm text-gray-300 leading-relaxed">
+                    <li className="flex items-start gap-2">
+                      <span className=" mt-[2px]">•</span>
+                      <p>
+                        Organize your <span className="">published posts</span>{" "}
+                        into domain-specific playlists.
+                      </p>
+                    </li>
+
+                    <li className="flex items-start gap-2">
+                      <span className=" mt-[2px]">•</span>
+                      <p>
+                        A playlist must contain at least{" "}
+                        <span className="">two posts</span> for meaningful
+                        grouping.
+                      </p>
+                    </li>
+
+                    <li className="flex items-start gap-2">
+                      <span className=" mt-[2px]">•</span>
+                      <p>
+                        Add <span className="">collaborators</span> who
+                        contributed to the content, resources, or development.
+                      </p>
+                    </li>
+
+                    <li className="flex items-start gap-2">
+                      <span className=" mt-[2px]">•</span>
+                      <p>
+                        <span className="text-gray-400">(Optional)</span> Upload
+                        a thumbnail
+                        <span className=""> (1280 × 720 px)</span> for better
+                        visibility.
+                      </p>
+                    </li>
+                  </ul>
+        </div>
+      </div>
+
       <form
         onSubmit={hanldeSubmit}
-        className="w-full mx-auto px-4 pb-10 md:grid gap-10 lg:gap-0 lg:grid-cols-3"
+        className="w-full mx-auto px-3 md:px-4 pb-10 md:grid gap-10 lg:gap-0 lg:grid-cols-3"
       >
         {/* LEFT — PLAYLIST DETAILS */}
         <div className="lg:col-span-1 md:bg-gray-900/70 lg:w-11/12  backdrop-blur-xl md:border border-gray-800 rounded-2xl space-y-8">
           <div className=" md:p-6 p-2 space-y-8 shadow-lg">
-            <h2 className="text-xl font-semibold text-white">
+            <h2 className="text-xl hidden lg:block font-semibold text-white">
               Playlist Details
             </h2>
-
-            {/* Playlist Title */}
-            <div className="flex flex-col gap-2">
-              <label className="text-sm text-gray-300 font-medium">
-                Playlist Title <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="Enter playlist title"
-                className="bg-gray-950 border border-gray-700 rounded-lg px-4 py-2 text-white placeholder-gray-500 text-sm focus:border focus:border-emerald-500/40 outline-none"
-              />
-            </div>
 
             {/* Domain */}
             <div className="flex flex-col gap-2">
@@ -212,46 +365,6 @@ function TutorPlaylist() {
                   </option>
                 ))}
               </select>
-            </div>
-
-            {/* Thumbnail */}
-            <div className="flex flex-col gap-2">
-              <label className="text-sm text-gray-300 font-medium">
-                Playlist Thumbnail <span className="text-red-500">*</span>
-              </label>
-
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleChnageThumbnail}
-                ref={thumbnailInputRef}
-                className="w-full mt-2 text-xs  text-gray-300 
-    file:mr-4 file:px-2 file:py-1 file:rounded-md 
-    file:border-0 file:bg-emerald-500/20 file:hover:bg-emerald-600/20 file:text-emerald-400 
-    file:cursor-pointer"
-              />
-
-              {previewThumbnail && (
-                <div className="pt-3 space-y-2">
-                  <p
-                    onClick={() => {
-                      setPreviewThumbnail(null);
-                      setThumbnail(null);
-                      if (thumbnailInputRef.current) {
-                        thumbnailInputRef.current.value = null;
-                      }
-                    }}
-                    className="text-xs text-red-400 cursor-pointer hover:underline"
-                  >
-                    Remove thumbnail
-                  </p>
-                  <img
-                    src={previewThumbnail}
-                    alt="Preview"
-                    className="w-40 max-w-xs object-contain rounded-xl border border-gray-700"
-                  />
-                </div>
-              )}
             </div>
 
             {/* Collaborators */}
@@ -300,7 +413,7 @@ function TutorPlaylist() {
 
               {/* Search Results */}
               {searchCollaborator && searchedCoordinators.length > 0 && (
-                <div className="absolute top-full mt-2 w-full bg-gray-900 border border-gray-700 rounded-xl shadow-xl z-20 overflow-hidden">
+                <div className="absolute top-full mt-2 w-full bg-gray-900 border border-gray-700 rounded-xl shadow-xl z-20 emerald-scrollbar overflow-y-auto max-h-48 ">
                   {searchedCoordinators.map((collaborator, index) => (
                     <div
                       key={index}
@@ -327,6 +440,68 @@ function TutorPlaylist() {
                       </span>
                     </div>
                   ))}
+                  
+                
+                </div>
+              )}
+            </div>
+
+            {/* Playlist Title */}
+            <div className="flex flex-col gap-2">
+              <label className="text-sm text-gray-300 font-medium">
+                Playlist Title <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Enter playlist title"
+                className="bg-gray-950 border border-gray-700 rounded-lg px-4 py-2 text-white placeholder-gray-500 text-sm focus:border focus:border-emerald-500/40 outline-none"
+              />
+            </div>
+
+            {/* Thumbnail */}
+            <div className="flex flex-col gap-2">
+              <label className="text-sm text-gray-300 font-medium">
+                Playlist Thumbnail <span className="text-red-500">*</span>
+              </label>
+
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleChnageThumbnail}
+                ref={thumbnailInputRef}
+                className="w-full mt-2 text-xs  text-gray-300 
+                file:mr-4 file:px-2 file:py-1 file:rounded-md 
+                file:border-0 file:bg-emerald-500/20 file:hover:bg-emerald-600/20 file:text-emerald-400 
+                file:cursor-pointer"
+              />
+              {!previewThumbnail && (
+                <div className="w-80 h-40 mt-3 rounded-xl flex items-center justify-center bg-gray-700">
+                  <p className="text-gray-400 text-xs">No Thumbnail</p>
+                </div>
+              )}
+
+              {previewThumbnail && (
+                <div className="pt-3 space-y-2">
+                  <p
+                    onClick={() => {
+                      setPreviewThumbnail(null);
+                      setThumbnail(null);
+                      if (thumbnailInputRef.current) {
+                        thumbnailInputRef.current.value = null;
+                      }
+                    }}
+                    className="text-xs text-red-400 cursor-pointer hover:underline"
+                  >
+                    Remove thumbnail
+                  </p>
+                  <img
+                    src={previewThumbnail}
+                    alt="Preview"
+                    className="w-80 h-40 max-w-xs  object-cover rounded-xl border border-gray-700"
+                    // className="w-full h-48 md:h-[28vh] object-cover rounded-xl border border-gray-700"
+                  />
                 </div>
               )}
             </div>
@@ -347,11 +522,13 @@ function TutorPlaylist() {
         {/* RIGHT — POSTS */}
 
         <div className="lg:col-span-2 mt-7 md:mt-0 lg:w-11/12 space-y-6 h-fit">
-          {posts?.length>0 && <h2 className="text-xl text-center md:text-left font-semibold text-white">
-            Select Posts for Playlist
-          </h2>}
+          {posts?.length > 0 && (
+            <h2 className="text-xl text-center md:text-left font-semibold text-white">
+              Select Posts for Playlist
+            </h2>
+          )}
 
-          <div className="grid grid-cols-1 sm:grid-cols-3  md:max-h-[500px] emerald-scrollbar md:overflow-y-auto gap-3 md:gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-3  md:max-h-[700px] emerald-scrollbar md:overflow-y-auto gap-3 md:gap-5">
             {posts?.map((data, index) => (
               <div
                 key={index}
@@ -397,8 +574,8 @@ function TutorPlaylist() {
               </div>
             ))}
             
-    
-     
+
+
             {!posts.length > 0 && loading && <BlogMiniSkeleton />}
             {posts.length > 0 && loading && (
               <p className="col-span-full py-4 text-gray-500 text-center">
@@ -406,18 +583,80 @@ function TutorPlaylist() {
               </p>
             )}
 
-            {!hasMore && posts?.length>0 && (
+            {!hasMore && posts?.length > 0 && (
               <p className="text-center col-span-full py-4 text-gray-500">
                 No more posts
               </p>
             )}
-             {posts?.length == 0 && !loading && (
-            <div className="flex col-span-full md:h-[400px] items-center md:mt-0  my-16 text-center lg:w-11/12 mx-auto text-center  justify-center md:w-full text-white  ">
-            <p className="">  Select domain to see posts available for playlist creation.</p>
-            </div>
-          )}
+            {posts?.length == 0 && !loading && (
+              <div className="flex flex-col col-span-full md:h-[400px] items-center md:mt-0 my-16 lg:w-11/12 mx-auto justify-center md:w-full text-white">
+                {/* Guidelines Card */}
+                <div
+                  className="
+                    w-full
+                    rounded-xl
+                    border border-emerald-500/20
+                    bg-gradient-to-br from-emerald-500/5 to-transparent
+                    p-4 md:p-5
+                    mb-4
+                    hidden
+                    lg:block
+                  "
+                >
+                  {/* Header */}
+                  <div className="flex items-center gap-2 mb-3">
+                    {/* <span className="text-emerald-400 text-lg">📌</span> */}
+                    <h2 className="text-sm md:text-base font-semibold  tracking-wide">
+                      Playlist Guidelines
+                    </h2>
+                  </div>
+
+                  {/* Content */}
+                  <ul className="space-y-2 text-xs md:text-sm text-gray-300 leading-relaxed">
+                    <li className="flex items-start gap-2">
+                      <span className=" mt-[2px]">•</span>
+                      <p>
+                        Organize your <span className="">published posts</span>{" "}
+                        into domain-specific playlists.
+                      </p>
+                    </li>
+
+                    <li className="flex items-start gap-2">
+                      <span className=" mt-[2px]">•</span>
+                      <p>
+                        A playlist must contain at least{" "}
+                        <span className="">two posts</span> for meaningful
+                        grouping.
+                      </p>
+                    </li>
+
+                    <li className="flex items-start gap-2">
+                      <span className=" mt-[2px]">•</span>
+                      <p>
+                        Add <span className="">collaborators</span> who
+                        contributed to the content, resources, or development.
+                      </p>
+                    </li>
+
+                    <li className="flex items-start gap-2">
+                      <span className=" mt-[2px]">•</span>
+                      <p>
+                        <span className="text-gray-400">(Optional)</span> Upload
+                        a thumbnail
+                        <span className=""> (1280 × 720 px)</span> for better
+                        visibility.
+                      </p>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* Bottom Helper Text */}
+                <p className="text-xs md:text-sm text-gray-400 text-center">
+                  Select a domain to view available posts for playlist creation.
+                </p>
+              </div>
+            )}
           </div>
-         
         </div>
 
         {/* SUBMIT */}
