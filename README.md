@@ -100,6 +100,7 @@ npm install
    ```bash
    npm run dev
    ```
+3. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ### Frontend Setup
 
@@ -113,15 +114,7 @@ npm install
    ```bash
    npm run dev
    ```
-3. Open [http://localhost:3000](http://localhost:3000) in your browser.
-
----
-
-## Related Backend Services
-
-- [web-Socket.io](https://github.com/YUGESHKARAN/web-socket.io.git): Live post comment implementation.
-- [blog_chat_app](https://github.com/YUGESHKARAN/blogChat-backend.git): Content manipulator services.
-- [Recommendation-System](https://github.com/YUGESHKARAN/recommendation-system.git): Author recommendation engine.
+3. Open [http://localhost:3000](http://localhost:5173) in your browser.
 
 ---
 
