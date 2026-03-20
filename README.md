@@ -1,4 +1,4 @@
-# 📝 Tech. Community App
+# Tech. Community App
 
 
 [![License: MIT](https://img.shields.io/github/license/YUGESHKARAN/Node-Blog-App)](./LICENSE)
@@ -27,20 +27,20 @@ E-Learning platform specifically designed for universities and colleges, focusin
 * [**Network Recommendation**](https://github.com/YUGESHKARAN/recommendation-system) – A graph structured author recommendation system to build connections.
 ---
 
-## 👩‍🎓 Student Interface
+## Student Interface
 
 - **Explore Technical Content**: Browse, learn, and engage with posts across tech communities.
 - **Interactive Discussions**: Comment on posts and join lively discussions.
 - **Personalized Experience**: Follow favorite communities and authors, and receive tailored notifications.
 - **Stay Informed**: Get real-time announcements about events and sessions.
 
-## 👨‍🏫 Coordinator Interface
+## Coordinator Interface
 
 - **Content Creation & Management**: Publish, edit, or delete technical posts.
 - **AI-Powered Grammar Checker**: Ensure content quality using integrated AI tools.
 - **Event Management**: Plan and schedule announcements for meetings and events.
 
-## 🛡️ Admin Interface
+## Admin Interface
 
 - **Platform Oversight**: Manage users, roles, and permissions.
 - **Activity Monitoring**: Verify and monitor student and coordinator activities.
@@ -49,7 +49,7 @@ E-Learning platform specifically designed for universities and colleges, focusin
 ---
 
 
-## 🗂️ Monorepo Structure
+## Monorepo Structure
 
 Both backend and frontend are organized for modularity and scalability:
 
@@ -63,7 +63,7 @@ Node-Blog-App/
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Backend:** Node.js, Express, MongoDB, Mongoose
 - **Frontend:** React.js, Tailwind CSS
@@ -71,7 +71,7 @@ Node-Blog-App/
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -117,7 +117,7 @@ npm install
 
 ---
 
-## 🔗 Related Backend Services
+## Related Backend Services
 
 - [web-Socket.io](https://github.com/YUGESHKARAN/web-socket.io.git): Live post comment implementation.
 - [blog_chat_app](https://github.com/YUGESHKARAN/blogChat-backend.git): Content manipulator services.
@@ -125,16 +125,13 @@ npm install
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome!  
 Fork the repository and submit a pull request, or open an issue to discuss significant changes.
 
----
+## License
 
-## 📬 Contact
-
-Created with ❤️ by [YUGESHKARAN](https://github.com/YUGESHKARAN).  
-Feel free to reach out for questions or suggestions!
+This project is licensed under the MIT License.
 
 ---
