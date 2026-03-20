@@ -16,14 +16,15 @@ E-Learning platform specifically designed for universities and colleges, focusin
 ---
 ## Key Features
 
-* **User Authentication** – Secure registration and login with role-based access with JWT key.
-* **Knowledge Hub Assistant** – In-post AI assistant that provides contextual explanations, related posts, videos, and suggested follow-up queries [Knowledge_Hub_Assistant](https://github.com/YUGESHKARAN/Assistant_Knowledge_Hub).
-* **DraftMate AI** – Content drafting assistant to refine and structure post descriptions before publishing [DraftMate AI](https://github.com/YUGESHKARAN/blogChat-backend).
+* **User Authentication** –Secure registration and login with role-based access using JWT.
+* [**Knowledge Hub Assistant**](https://github.com/YUGESHKARAN/Assistant_Knowledge_Hub) – In-post AI assistant that provides contextual explanations, related posts, videos, and suggested follow-up queries.
+* [**DraftMate AI**](https://github.com/YUGESHKARAN/blogChat-backend) – Content drafting assistant to refine and structure post descriptions before publishing.
 * **Post Management** – Create, edit, and publish technical posts within the community.
 * **Playlists Management** – Organize and save curated collections of posts for structured learning.
-* **Comments & Discussions** – Engage with the community through threaded discussions on posts.
+* [**Comments & Discussions**](https://github.com/YUGESHKARAN/web-socket.io) – Engage with the community through threaded discussions on posts.
 * **Announcements** – Coordinators and admins can publish institutional or community updates.
 * **Notifications** – Real-time alerts for recommended feeds and comments.
+* [**Network Recommendation**](https://github.com/YUGESHKARAN/recommendation-system) – A graph structured author recommendation system to build connections.
 ---
 
 ## 👩‍🎓 Student Interface
