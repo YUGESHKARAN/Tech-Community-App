@@ -76,7 +76,7 @@ function ChangePassword() {
                       value={formData.otp}
                       onChange={handleChange}
                       className="w-full px-4 py-2.5 text-sm bg-gray-800 text-white border border-gray-700 rounded-lg focus:outline-none focus:ring-1 focus:ring-green-500"
-                      placeholder="••••"
+                      placeholder="••••••"
                       required
                     />
                   </div>
