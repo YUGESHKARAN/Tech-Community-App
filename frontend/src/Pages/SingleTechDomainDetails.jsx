@@ -423,9 +423,9 @@ function SingleTechDomainDetails() {
                           </b>{" "}
                           Followers
                         </span>
-                        <span>
+                     {author?.posts.length>0 &&   <span>
                           <b className="text-white">{author?.posts.length}</b> Posts
-                        </span>
+                        </span>}
                       </div>
 
                       {/* Social media components */}
@@ -473,13 +473,13 @@ function SingleTechDomainDetails() {
                   ))} 
 
                 {loading && (
-                  <p className="text-center col-span-2 text-gray-500 sm:col-span-3 lg:col-span-5 py-4">
+                  <p className="text-center  text-gray-500 col-span-full py-4">
                     loading...
                   </p>
                 )}
 
                 {!hasMore && (
-                  <p className="text-center col-span-2 sm:col-span-3 lg:col-span-5 py-4 text-gray-500">
+                  <p className="text-center  col-span-full py-4 text-gray-500">
                     No more coordinators
                   </p>
                 )}
@@ -584,13 +584,13 @@ function SingleTechDomainDetails() {
                   ))}
 
                 {loading && (
-                  <p className="text-center col-span-2 text-gray-500 sm-col-span-3 lg:col-span-6  py-4">
+                  <p className="text-center  text-gray-500 col-span-full  py-4">
                     loading...
                   </p>
                 )}
 
                 {!hasMore && (
-                  <p className="text-center col-span-2 sm-col-span-3 lg:col-span-6 py-4 text-gray-500">
+                  <p className="text-center  col-span-full py-4 text-gray-500">
                     No more members
                   </p>
                 )}

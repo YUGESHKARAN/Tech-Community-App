@@ -18,6 +18,7 @@ import RecommendedAuthorsSkeleton from "../components/loaders/RecommendedAuthors
 import CoordinatorGridSkeleton from "../components/loaders/CoordinatorGridSkeleton ";
 import StudentGridSkeleton from "../components/loaders/StudentGridSkeleton ";
 import Cookies from "js-cookie";
+import Fuse from "fuse.js";
 function Authors() {
   const [authors, setAuthors] = useState([]);
   const email = localStorage.getItem("email");
@@ -28,7 +29,7 @@ function Authors() {
   const token = Cookies.get("token");
   // Search query
   const [searchQuery, setSearchQuery] = useState("");
-  const [filteredAuthors, setFilteredAuthors] = useState([]);
+  // const [filteredAuthors, setFilteredAuthors] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const limit = 20;
@@ -93,30 +94,61 @@ function Authors() {
   }, [page, hasMore]);
 
   // Search quary
+  // useEffect(() => {
+  //   filterAndSearch();
+  // }, [searchQuery, roleFilter, authors]);
+
+  // const filterAndSearch = () => {
+  //   let filtered = authors;
+
+  //   if (searchQuery.trim() !== "") {
+  //     const query = searchQuery.toLowerCase();
+  //     filtered = filtered.filter(
+  //       (author) =>
+  //         author.authorName?.toLowerCase().includes(query) ||
+  //         "" ||
+  //         author.email?.toLowerCase().includes(query) ||
+  //         "",
+  //     );
+  //   }
+
+  //   if (roleFilter !== "") {
+  //     filtered = filtered.filter((author) => author.role === roleFilter);
+  //   }
+
+  //   setFilteredAuthors(filtered);
+  // };
+
+  const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
+
   useEffect(() => {
-    filterAndSearch();
-  }, [searchQuery, roleFilter, authors]);
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchQuery);
+    }, 300); // 300ms delay
 
-  const filterAndSearch = () => {
-    let filtered = authors;
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
 
-    if (searchQuery.trim() !== "") {
-      const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(
-        (author) =>
-          author.authorName?.toLowerCase().includes(query) ||
-          "" ||
-          author.email?.toLowerCase().includes(query) ||
-          "",
-      );
+  const fuse = useMemo(() => {
+    return new Fuse(authors, {
+      keys: ["authorName", "email"],
+      threshold: 0.3, // lower = stricter search
+    });
+  }, [authors]);
+
+  const filteredAuthors = useMemo(()=>
+  {
+    let filtered = [...authors];
+
+     if (debouncedSearch.trim() !== "") {
+      filtered = fuse.search(debouncedSearch).map((r) => r.item);
     }
-
-    if (roleFilter !== "") {
+     if (roleFilter !== "") {
       filtered = filtered.filter((author) => author.role === roleFilter);
     }
 
-    setFilteredAuthors(filtered);
-  };
+    return filtered
+  }, [searchQuery, roleFilter, authors, debouncedSearch])
 
   const recommendationURL = import.meta.env.VITE_RECOMMENDATION_URL;
 
@@ -268,9 +300,9 @@ const recommendedAuthors = useMemo(() => {
                 <b className="text-white">{author.followers.length}</b>{" "}
                 Followers
               </span>
-              <span>
-                <b className="text-white">{author.postCount}</b> Posts
-              </span>
+             {author?.postCount>0 && <span>
+                <b className="text-white">{author?.postCount}</b> Posts
+              </span>}
             </div>
 
             <div className="mt-4">
@@ -468,9 +500,9 @@ const recommendedAuthors = useMemo(() => {
                     <b className="text-white">{author.followers.length}</b>{" "}
                     Followers
                   </span>
-                  <span>
+                  {author?.postCount>0 && <span>
                     <b className="text-white">{author.postCount}</b> Posts
-                  </span>
+                  </span>}
                 </div>
 
                 {/* Social media components */}

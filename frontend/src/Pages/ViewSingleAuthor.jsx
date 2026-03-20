@@ -73,7 +73,7 @@ function ViewSingleAuthor() {
         </h1>
 
         {/* Two Column Layout */}
-        <div className="grid md:grid-cols-[350px_1fr] md:mt-7 mt-4 md:gap-4">
+        <div className="grid md:grid-cols-[350px_1fr] pb-7 md:pb-0 md:mt-7 mt-4 md:gap-4">
           {/* LEFT COLUMN — Profile Overview */}
           <div className="bg-gray-900 backdrop-blur-xl mx-3 md:mx-0 rounded-2xl p-6 text-center md:shadow-[0_10px_40px_rgba(0,0,0,0.6)] md:border border-neutral-800">
   

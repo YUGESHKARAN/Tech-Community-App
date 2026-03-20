@@ -210,7 +210,7 @@ function Announcement() {
   };
   // console.log("communityOptions", communityOptions);
   // console.log("selectedCommunities", selectedCommunities);
-  console.log("announcements", announcement);
+  console.log("announcements", reversedAnnouncements);
   return (
     //   <div className="min-h-screen relative bg-gradient-to-r from-gray-900 to-gray-800 text-white">
     //     <NavBar />
@@ -701,7 +701,7 @@ function Announcement() {
         <div className="w-full mx-auto px-3 py-2 md:px-6 md:pb-10 grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-5">
           {/* ================= LEFT RAIL ================= */}
 
-          <aside className="space-y-8 md:sticky top-7 self-start ">
+          <aside className={`${!showAnnouncement?'space-y-8 md:sticky top-7 self-start':'space-y-8 '}`}>
             {/* OVERVIEW */}
             <div className="bg-[#111827] border border-slate-800 rounded-lg p-5">
               <h3 className="text-xs uppercase tracking-wide text-slate-400 mb-4">
@@ -715,10 +715,10 @@ function Announcement() {
                 </div>
 
                 <div className="flex justify-between">
-                  <span className="text-slate-400">Total</span>
+                  <span className="text-slate-400">Total Announcements</span>
                   <span className="font-medium">
                     {announcement?.length > 0 ? announcement.length : "No"}{" "}
-                    Announcements
+                    
                   </span>
                 </div>
               </div>
@@ -727,7 +727,7 @@ function Announcement() {
               <>
                 {/* CREATE PANEL */}
                 {showAnnouncement && (
-                  <div className="bg-[#111827] border border-slate-800 rounded-lg p-6 space-y-6">
+                  <div className="bg-[#111827] border border-slate-800  md:sticky top-7 self-start rounded-lg p-6 space-y-6">
                     <h3 className="text-xs uppercase tracking-wide text-slate-400">
                       Create Broadcast
                     </h3>
@@ -736,7 +736,7 @@ function Announcement() {
                       {/* TITLE */}
                       <div>
                         <label className="block text-sm font-medium text-slate-300">
-                          Title <span className="text-red-500">*</span>
+                         Subject  Title <span className="text-red-500">*</span>
                         </label>
                         <input
                           type="text"
@@ -761,7 +761,7 @@ function Announcement() {
                           value={message}
                           onChange={(e) => setMessage(e.target.value)}
                           className="w-full mt-1 px-3 py-2 bg-[#0f172a] border border-slate-700
-                     rounded-md focus:outline-none focus:border-emerald-500/20 text-sm"
+                     rounded-md focus:outline-none emerald-scrollbar focus:border-emerald-500/20 text-slate-300 leading-relaxed text-xs md:text-sm"
                         />
                         {fieldErrors.message && (
                           <p className="text-sm text-red-500 mt-1">
@@ -848,7 +848,7 @@ function Announcement() {
                       </div>
 
                       {/* POSTER */}
-                      <div>
+                      <div className="transition-all duration-300">
                         <label className="block text-sm font-medium text-slate-300">
                           Choose Poster
                         </label>
@@ -859,10 +859,16 @@ function Announcement() {
                           onChange={onChangeImage}
                           ref={imageInputRef}
                           className="w-full mt-2 text-xs  text-gray-300 
-    file:mr-4 file:px-2 file:py-1 file:rounded-md 
-    file:border-0 file:bg-emerald-500/20 file:hover:bg-emerald-600/20 file:text-emerald-400 
-    file:cursor-pointer"
+                          file:mr-4 file:px-2 file:py-1 file:rounded-md 
+                          file:border-0 file:bg-emerald-500/20 file:hover:bg-emerald-600/20 file:text-emerald-400 
+                          file:cursor-pointer"
                         />
+
+                         {!image && (
+                <div className="w-full h-32  mt-3 rounded-xl flex items-center justify-center bg-gray-700">
+                  <p className="text-gray-400 text-xs">No Poster</p>
+                </div>
+              )}
 
                         {image && (
                           <button
@@ -899,7 +905,7 @@ function Announcement() {
                           value={deliveredTo}
                           onChange={(e) => setDeliveredTo(e.target.value)}
                           className="mt-1 block w-full px-3 py-2 bg-[#0f172a]
-                     border border-slate-700 rounded-md text-sm"
+                    border border-slate-700 cursor-pointer rounded-md focus:outline-none focus:border-emerald-500/20 text-sm"
                         >
                           <option value="">Choose recipients</option>
                           <option value="community">Community</option>
@@ -916,7 +922,7 @@ function Announcement() {
 
                       {/* COMMUNITY MULTI SELECT */}
                       {deliveredTo === "community" && (
-                        <div className="bg-slate-800 border border-slate-700 rounded-md p-4">
+                        <div className="bg-slate-800 border border-gray-700 rounded-md p-4">
                           <div className="flex justify-between items-center mb-3">
                             <p className="text-xs text-slate-200 font-medium">
                               Select communities
@@ -929,16 +935,16 @@ function Announcement() {
                                     communityOptions.slice(),
                                   )
                                 }
-                                className="text-xs px-2 py-1 bg-green-600 hover:bg-green-700
-                           rounded text-white"
+                                className="text-xs px-2 py-1 bg-emerald-600/20 hover:bg-emerald-600/30 transition-all duration-300
+                           rounded text-emerald-400"
                               >
                                 Select all
                               </button>
                               <button
                                 type="button"
                                 onClick={() => setSelectedCommunities([])}
-                                className="text-xs px-2 py-1 bg-slate-600 hover:bg-slate-700
-                           rounded text-white"
+                                className="text-xs px-2 py-1 bg-gray-700 hover:bg-slate-600
+                           rounded text-white transition-all duration-300"
                               >
                                 Clear
                               </button>
@@ -955,7 +961,7 @@ function Announcement() {
                                   type="checkbox"
                                   checked={selectedCommunities.includes(comm)}
                                   onChange={() => toggleCommunity(comm)}
-                                  className="w-4 h-4 accent-green-500 cursor-pointer"
+                                  className="w-4 h-4 accent-emerald-500 cursor-pointer"
                                 />
                                 <span className="text-slate-200">{comm}</span>
                               </label>
@@ -1017,7 +1023,7 @@ function Announcement() {
                     </h2>
                     <div className="text-xs text-slate-400 mt-1">
                       {/* {item.timestamp?.slice(0, 10)} */}
-                      {getTimeAgo(item.timestamp?.slice(0, 10))}
+                      {getTimeAgo(item.timestamp)}
                     </div>
                   </div>
 
@@ -1038,7 +1044,7 @@ function Announcement() {
                     <img
                       src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${item.poster}`}
                       alt=""
-                      className="w-full h-[400px] object-contain bg-black"
+                      className="md:w-full h-48 md:h-[400px] object-contain bg-black"
                       onClick={() =>
                         handleImageClick(
                           `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${item.poster}`,
@@ -1072,10 +1078,10 @@ function Announcement() {
                 <div className="flex justify-between items-center text-xs text-slate-500 pt-2 md:pt-2 md:border-t border-slate-800">
                   <div className="flex items-center gap-3">
                     <Link to={`/viewProfile/${item.authorEmail}`}>
-                      {announcement?.profile &&
-                      announcement.profile !== "undefined" ? (
+                      {item?.profile &&
+                      item.profile !== "undefined" ? (
                         <img
-                          src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${announcement.profile}`}
+                          src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${item.profile}`}
                           alt="Author"
                           className="w-9 h-9 rounded-full object-cover border border-gray-200"
                         />
