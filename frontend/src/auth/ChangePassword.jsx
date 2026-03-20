@@ -21,6 +21,14 @@ function ChangePassword() {
 
       const handleSubmit = async (e) => {
         e.preventDefault();
+        if(!formData.otp){
+          return setErrors({ apiError: "OTP is required" });
+        }
+
+        if(!formData.newPassword){
+          return setErrors({ apiError: "Password is required" });
+        }
+
         try {
           const response = await axiosInstance.post("/blog/author/reset-password", formData);
           if (response.status === 200) {
