@@ -617,7 +617,7 @@ function ViewEditPost() {
             Update Post
           </h1>
           <p className="text-xs text-gray-400 mt-1">
-            you have complete control over your content, can update your post
+            You have complete control over your content, can update your post
             here.
           </p>
         </div>

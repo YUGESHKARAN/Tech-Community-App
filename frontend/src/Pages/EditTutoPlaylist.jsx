@@ -185,13 +185,13 @@ function EditTutorPlaylist() {
 
 <div className="w-full min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 relative">
   <NavBar />
-   <div className="mb-8 mt-4 px-3 md:px-4 flex items-center justify-between">
+   <div className="md:mb-8 mt-4 px-3 md:px-4 flex items-center justify-between">
       <div>
         <h1 className="md:text-3xl text-2xl font-bold font-bold text-white tracking-tight">
           Update  Playlist
         </h1>
         <p className="text-xs text-gray-400 mt-1">
-          you have complete control over your content, can update your playlist here.
+          You have complete control over your content, can update your playlist here.
         </p>
       </div>
       </div>
@@ -201,10 +201,10 @@ function EditTutorPlaylist() {
     className="w-full mx-auto px-3 md:px-4 pb-10 md:grid gap-10 lg:gap-4 lg:grid-cols-3"
   >
     {/* LEFT — PLAYLIST DETAILS */}
-    <div className="lg:col-span-1 lg:w-11/12 md:bg-gray-900/70  backdrop-blur-xl md:border border-gray-800 rounded-2xl space-y-8">
+    <div className="lg:col-span-1 lg:w-11/12 md:bg-gray-900/70   md:border border-gray-800 rounded-2xl space-y-8">
       <div className="p-2 md:p-6 space-y-8 shadow-lg">
 
-        <h2 className="text-xl font-semibold text-white">
+        <h2 className="text-xl hidden md:block font-semibold text-white">
           Playlist Details
         </h2>
 
@@ -462,8 +462,8 @@ function EditTutorPlaylist() {
               </p>
             )}
              {posts?.length == 0 && !loading && (
-            <div className="flex col-span-full md:h-[400px] items-center md:mt-0  my-16 text-center lg:w-11/12 mx-auto text-center  justify-center md:w-full text-white  ">
-            <p className="">  Select domain to see posts available for playlist creation.</p>
+            <div className="flex col-span-full md:h-[400px] items-center md:mt-0  my-16 text-center lg:w-11/12 mx-auto  justify-center md:w-full text-gray-400 md:text-sm text-xs  ">
+            <p className="">  Select domain to see posts for playlist creation.</p>
             </div>
           )}
         </div>
@@ -485,6 +485,8 @@ function EditTutorPlaylist() {
     </div>}
    
   </form>
+
+  <Footer/>
 </div>
 
   );

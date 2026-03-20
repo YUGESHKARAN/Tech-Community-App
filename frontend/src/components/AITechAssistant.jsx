@@ -104,25 +104,7 @@ export default function AITechAssistant({ currentPostId, category }) {
     }
   };
 
-  //     if (!query.trim()) return;
 
-  //     setLoading(true);
-  //     const res = await axios.post("http://localhost:5000/ask", {
-  //       query,
-  //       current_post_id: "6753cc365b6890898f64cc5e",
-  //     });
-  //     const aiMessage = {
-  //       role: "assistant",
-  //       content: res.data.content,
-  //       videos: res.data.videos,
-  //       posts: res.data.posts
-  //     };
-
-  //     setMessages(prev => [...prev, aiMessage]);
-
-  //     setData(res.data);
-  //     setLoading(false);
-  //   };
   const getYouTubeId = (url) => {
     const match = url.match(
       /(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([^&?/]+)/,
@@ -132,27 +114,6 @@ export default function AITechAssistant({ currentPostId, category }) {
   const lastUserRef = useRef(null);
 
   const containerRef = useRef(null);
-  // useEffect(() => {
-  //   const el = containerRef.current;
-  //   if (!el) return;
-
-  //   let start = el.scrollTop;
-  //   let end = el.scrollHeight - el.clientHeight;
-  //   // let end = el.scrollHeight;
-  //   let duration = 300;
-  //   let startTime = null;
-
-  //   function animate(time) {
-  //     if (!startTime) startTime = time;
-  //     const progress = Math.min((time - startTime) / duration, 1);
-
-  //     el.scrollTop = start + (end - start) * progress;
-
-  //     if (progress < 1) requestAnimationFrame(animate);
-  //   }
-
-  //   requestAnimationFrame(animate);
-  // }, [messages, loading]);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -202,19 +163,6 @@ export default function AITechAssistant({ currentPostId, category }) {
     .filter((i) => i !== -1)
     .pop();
 
-  // useEffect(() => {
-  //   const container = containerRef.current;
-  //   const userMessage = lastUserRef.current;
-
-  //   if (!container || !userMessage) return;
-
-  //   const offsetTop = userMessage.offsetTop;
-
-  //   container.scrollTo({
-  //     top: offsetTop,
-  //     behavior: "smooth",
-  //   });
-  // }, [messages]);
 
   useEffect(() => {
     const container = containerRef.current;

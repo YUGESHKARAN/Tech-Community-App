@@ -11,7 +11,7 @@ import axiosInstance from "../instances/Axiosinstances";
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 import glow from "../assets/glow.png";
 import { VscSend } from "react-icons/vsc";
-import Cookies from "js-cookie"
+import Cookies from "js-cookie";
 
 function AddPost() {
   const [title, setTitle] = useState("");
@@ -21,10 +21,9 @@ function AddPost() {
   const email = localStorage.getItem("email"); // Get email from local storage
   const user = localStorage.getItem("username");
   const [loading, setLoading] = useState(false);
-  const [ customTitle ,setCustomTitle]  = useState("");
-  const token = Cookies.get("token")
+  const [customTitle, setCustomTitle] = useState("");
+  const token = Cookies.get("token");
   const navigate = useNavigate();
-
 
   const [fieldErrors, setFieldErrors] = useState({
     title: "",
@@ -32,7 +31,6 @@ function AddPost() {
     description: "",
     image: "",
   });
-
 
   const [messages, setMessages] = useState([
     {
@@ -71,17 +69,20 @@ function AddPost() {
     setIsTyping(true);
 
     try {
-      const response = await axios.post(`${backendEndpoint}`, {
-        description: message,
-      },
-      {
-        headers:{
-          Authorization: `Bearer ${token}`
-        }
-      }      
-    );
+      const response = await axios.post(
+        `${backendEndpoint}`,
+        {
+          description: message,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
 
-      const botResponse = response.data.content || "Something went wrong, try agein later.";
+      const botResponse =
+        response.data.content || "Something went wrong, try agein later.";
       // console.log("botResponse", botResponse);
       typewriterEffect(botResponse, "bot");
     } catch (error) {
@@ -132,7 +133,7 @@ function AddPost() {
 
   useEffect(() => {
     const incommingMessage = messages.filter(
-      (msg) => msg.direction === "incoming"
+      (msg) => msg.direction === "incoming",
     );
 
     if (incommingMessage.length > 2) {
@@ -218,7 +219,7 @@ function AddPost() {
       const response = await axiosInstance.post(
         `/blog/posts/${email}`,
         // `/blog/posts/${email}`,
-        formData
+        formData,
       );
 
       console.log("adding post response", response.data);
@@ -235,7 +236,7 @@ function AddPost() {
       setLinks([]);
       toast.success("Post added successfully");
       // navigate("/home");
-       navigate("/yourposts");
+      navigate("/yourposts");
     } catch (error) {
       console.error("Error adding post:", error);
     } finally {
@@ -248,474 +249,458 @@ function AddPost() {
     setDocuments(files);
   };
 
+  const containerRef = useRef(null);
+  useEffect(() => {
+  const el = containerRef.current;
+  if (!el) return;
 
+  const isNearBottom =
+    el.scrollHeight - el.scrollTop - el.clientHeight < 100;
+
+  if (isNearBottom) {
+    el.scrollTo({
+      top: el.scrollHeight,
+      behavior: "smooth",
+    });
+  }
+}, [messages, isTyping]);
 
   // console.log("links",links)
-  
 
   return (
     <div className="min-h-screen relative bg-gray-900 text-white">
       <NavBar />
-      
-       <div className="min-h-screen   w-full pt-4 pb-8">
 
-  <div className="w-full  mx-auto  md:px-4">
+      <div className="min-h-screen   w-full pt-4 pb-8">
+        <div className="w-full  mx-auto  md:px-4">
+          <div className="mb-8 flex px-4 items-center justify-between">
+            <div>
+              <h1 className="md:text-3xl text-2xl font-bold font-semibold text-white tracking-tight">
+                Create New Post
+              </h1>
+              <p className="text-xs text-gray-400 mt-1">
+                Share knowledge, projects and resources with the community.
+              </p>
+            </div>
 
-    <div className="mb-8 flex px-4 items-center justify-between">
-      <div>
-        <h1 className="md:text-3xl text-2xl font-bold font-semibold text-white tracking-tight">
-          Create New Post
-        </h1>
-        <p className="text-xs text-gray-400 mt-1">
-          Share knowledge, projects and resources with the community.
-        </p>
-      </div>
+            {/* Mobile AI toggle */}
+            <div className="lg:hidden">
+              {!chatbot ? (
+                <button
+                  onClick={() => setChatbot(true)}
+                  className="flex items-center gap-2 px-3 py-2 text-sm rounded-lg bg-gradient-to-r from-purple-600 to-blue-500"
+                >
+                  <img src={glow} className="w-4 h-4" alt="" />
+                  AI
+                </button>
+              ) : (
+                <button
+                  onClick={() => setChatbot(false)}
+                  className="text-emerald-500 text-sm"
+                >
+                  ← Back
+                </button>
+              )}
+            </div>
+          </div>
 
-      {/* Mobile AI toggle */}
-      <div className="lg:hidden">
-        {!chatbot ? (
-          <button
-            onClick={() => setChatbot(true)}
-            className="flex items-center gap-2 px-3 py-2 text-sm rounded-lg bg-gradient-to-r from-purple-600 to-blue-500"
-          >
-            <img src={glow} className="w-4 h-4" alt="" />
-            AI
-          </button>
-        ) : (
-          <button
-            onClick={() => setChatbot(false)}
-            className="text-emerald-500 text-sm"
-          >
-            ← Back
-          </button>
-        )}
-      </div>
-    </div>
-
-    <div className="grid grid-cols-1 px-2 md:px-0  lg:grid-cols-3 gap-4 lg:gap-0">
-
-      {/* LEFT COLUMN */}
-      <div className="space-y-4 md:sticky top-7  self-start md:col-span-1">
-
-        {/* Description / Tips */}
-        <div className="bg-[#0f172a]/80 lg:w-11/12 border border-gray-800 rounded-lg md:rounded-xl px-4 py-6 md:p-6 text-gray-300">
-          <h2 className="text-lg font-semibold text-white mb-3">
-            Writing Tips
-          </h2>
-
-          <ul className="space-y-2 text-sm">
-            <li>• Use a clear descriptive title</li>
-            <li>• Use a contextual description</li>
-            <li>• Add useful resources like links and documents...</li>
-            <li>• Include suitable thumbnail poster (1280×720 px)</li>
-            <li>Note: Youtube links supports video frame</li>
-            
-            
-          </ul>
-        </div>
-
-        {/* AI Assistant (Always visible on desktop) */}
-        <div
-          className={`bg-[#0f172a]/80 border lg:w-11/12 h-96 md:h-80 border-gray-800 rounded-lg md:rounded-xl px-4 py-6 md:p-6 flex flex-col
-          ${!chatbot ? "hidden lg:flex" : "flex"}`}
-        >
-
-          <h2 className="text-lg font-semibold text-white flex items-center gap-2 mb-4">
-            <img src={glow} className="w-5 h-5" />
-            DraftMate AI
-          </h2>
-
-          <div className="flex-1 overflow-y-auto scrollbar-hide space-y-4 max-h-[400px] pr-2">
-
-            {messages.map((msg, idx) => (
-              // <div
-              //   key={idx}
-              //   className={`flex ${
-              //     msg.direction === "outgoing"
-              //       ? "justify-end "
-              //       : "justify-start"
-              //   }`}
-              // >
-              //   <div
-              //     className={`px-3 py-2 rounded-lg break-words whitespace-pre-wrap text-sm text-left leading-relaxed  ${
-              //       msg.direction === "outgoing"
-              //         ? "bg-gray-800  md:ml-5 text-white"
-              //         : "bg-gray-900 break-all md:mr-5 text-white"
-              //     }   `}
-              //   >
-              //    <p className=" inline-block"> {msg.message}</p>
-              //   </div>
-              // </div>
+          <div className="grid grid-cols-1 px-2 md:px-0  lg:grid-cols-3 gap-4 lg:gap-0">
+            {/* LEFT COLUMN */}
+            <div className="space-y-4 md:sticky top-7  self-start md:col-span-1">
+              {/* Description / Tips */}
               <div
-  className={`flex ${
-    msg.direction === "outgoing" ? "justify-end" : "justify-start"
-  }`}
->
-  <div
-    className={`
-      max-w-md
-      px-4
-      py-2.5
-      rounded-2xl
-      text-xs
-      leading-relaxed
-      break-words
-      whitespace-pre-wrap
-      ${
-        msg.direction === "outgoing"
-          ? "bg-gray-800 md:ml-5  text-white rounded-br-md"
-          : "bg-emerald-700/20 text-gray-200 md:mr-5 rounded-bl-md"
-      }
-    `}
-  >
-    {msg.message}
-  </div>
-</div>
-            ))}
+                className="bg-[#0f172a]/80 lg:w-11/12 border border-emerald-500/20
+      bg-gradient-to-br from-emerald-500/5 to-transparent rounded-lg md:rounded-xl px-4 py-6 md:p-6 text-gray-300"
+              >
+                <h2 className="text-lg font-semibold text-white mb-3">
+                  Writing Tips
+                </h2>
 
-            {isTyping && (
-              <div className="text-xs animate-pulse text-gray-400 italic">
-              DraftMate AI is improving your content...
+                <ul className="space-y-2 text-sm">
+                  <li>• Use a clear descriptive title</li>
+                  <li>• Use a contextual description</li>
+                  <li>• Add useful resources like links and documents...</li>
+                  <li>• Include suitable thumbnail poster (1280×720 px)</li>
+                  <li>Note: Youtube links supports video frame</li>
+                </ul>
               </div>
-            )}
-          </div>
 
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              const input = e.target.message;
-              handleSend(input.value);
-              input.value = "";
-            }}
-            className="flex mt-4  gap-3 outline-none overflow-hidden"
-          >
-            <input
-              name="message"
-              placeholder="Ask AI to generate your post..."
-              className="flex-1 px-4 rounded-xl border border-gray-700 py-2 bg-gray-900 text-sm outline-none text-white"
-            />
+              {/* AI Assistant (Always visible on desktop) */}
+              <div
+                className={`bg-[#0f172a]/80  lg:w-11/12 h-96 border border-emerald-500/20
+      bg-gradient-to-br from-emerald-500/5 to-transparent rounded-lg md:rounded-xl px-4 py-6 md:p-6 flex flex-col
+          ${!chatbot ? "hidden lg:flex" : "flex"}`}
+              >
+                <h2 className="text-lg font-semibold text-white flex items-center gap-2 mb-4">
+                  <img src={glow} className="w-5 h-5" />
+                  DraftMate AI
+                </h2>
 
-            <button
-                      
-                        className="text-2xl md:text-2xl transition-all duration-300 hover:text-gray-400 text-gray-500 block"
-                      >
-                        {/* Send */}
-                        <VscSend />
-                      </button>
-          </form>
-        </div>
-      </div>
+                <div
+                ref={containerRef}
+                className="flex-1 overflow-y-auto emerald-scrollbar space-y-4 h-[600px] pr-2">
+                  {messages.map((msg, idx) => (
+                    <div
+                      className={`flex  ${
+                        msg.direction === "outgoing"
+                          ? "justify-end"
+                          : "justify-start"
+                      }`}
+                    >
+                      <div
+                        className={`
+                          w-full
+                          px-4
+                          py-2.5
+                          rounded-2xl
+                          text-xs
+                          leading-relaxed
+                          break-words
 
-      {/* RIGHT COLUMN FORM */}
-      <div
-        className={`bg-[#0f172a]/80 md:col-span-2   border  border-gray-800 rounded-lg px-4 py-6  md:p-8 shadow-xl
+                          
+                          whitespace-pre-wrap
+                          ${
+                            msg.direction === "outgoing"
+                              ? "bg-gray-800 md:ml-5  text-white rounded-br-md"
+                              : "bg-emerald-700/20 text-gray-200 md:mr-5 rounded-bl-md"
+                          }
+                        `}
+                       >
+                        {msg.message}
+                      </div>
+                    </div>
+                  ))}
+
+                  {isTyping && (
+                    <div className="text-xs animate-pulse text-gray-400 italic">
+                      DraftMate is refining your content...
+                    </div>
+                  )}
+                </div>
+
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    const input = e.target.message;
+                    handleSend(input.value);
+                    input.value = "";
+                  }}
+                  className="flex mt-4  gap-3 outline-none overflow-hidden"
+                >
+                  <input
+                    name="message"
+                    placeholder="Ask AI to generate your post..."
+                    className="flex-1 px-4 rounded-xl border border-gray-700 py-2 bg-gray-900 text-sm outline-none text-white"
+                  />
+
+                  <button className="text-2xl md:text-2xl transition-all duration-300 hover:text-gray-400 text-gray-500 block">
+                    {/* Send */}
+                    <VscSend />
+                  </button>
+                </form>
+              </div>
+            </div>
+
+            {/* RIGHT COLUMN FORM */}
+            <div
+              className={`bg-[#0f172a]/80 md:col-span-2   border  border-gray-800 rounded-lg px-4 py-6  md:p-8 shadow-xl
         ${chatbot ? "hidden lg:block" : "block"}`}
-      >
-
-        <form onSubmit={handleSubmit} className="space-y-9 md:space-y-7">
-
-          {/* TITLE */}
-          <div>
-            <label className="text-sm text-gray-400 font-medium">
-              Title <span className="text-red-500">*</span>
-            </label>
-
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="Enter post title"
-              className="w-full mt-2  px-4 py-2 rounded-md bg-gray-900 border border-gray-700 focus:border focus:border-emerald-500/40 outline-none text-white text-sm"
-            />
-
-            {fieldErrors.title && (
-              <p className="text-xs text-red-500 mt-1">
-                {fieldErrors.title}
-              </p>
-            )}
-          </div>
-
-          {/* DESCRIPTION */}
-          <div>
-            <label className="text-sm text-gray-400 font-medium">
-              Description <span className="text-red-500">*</span>
-            </label>
-
-            <textarea
-              rows="6"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Write your post description..."
-              className="w-full mt-2  focus:border focus:border-emerald-500/40 emerald-scrollbar px-4 py-3 rounded-md bg-gray-900 border border-gray-700 outline-none  text-white text-xs leading-relaxed"
-            />
-
-            {fieldErrors.description && (
-              <p className="text-xs text-red-500 mt-1">
-                {fieldErrors.description}
-              </p>
-            )}
-          </div>
-
-          {/* CATEGORY */}
-          <div>
-            <label className="text-sm text-gray-400 font-medium">
-              Category <span className="text-red-500">*</span>
-            </label>
-
-            <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="w-full mt-2 px-4 py-2 cursor-pointer focus:border focus:border-emerald-500/40 rounded-md bg-gray-900 border border-gray-700 outline-none text-sm text-white  "
             >
-              <option value="">Select Domain</option>
-              <option value="GenAI">GenAI</option>
-              <option value="Design Thinking">Design Thinking</option>
-              <option value="Data Science">Data Science</option>
-              <option value="Blockchain">Blockchain</option>
-              <option value="AI/ML">AI/ML</option>
-              <option value="Cyber Security">Cyber Security</option>
-              <option value="IoT">IoT</option>
-              <option value="Embedded System">Embedded System</option>
-              <option value="Web Development">Web Development</option>
-              <option value="Satellite Space Technology">Satellite Space Technology</option>
-              <option value="Others">Others</option>
-            </select>
+              <form onSubmit={handleSubmit} className="space-y-9 md:space-y-7">
+                {/* TITLE */}
+                <div>
+                  <label className="text-sm text-gray-400 font-medium">
+                    Title <span className="text-red-500">*</span>
+                  </label>
 
-            {fieldErrors.category && (
-              <p className="text-xs text-red-500 mt-1">
-                {fieldErrors.category}
-              </p>
-            )}
-          </div>
+                  <input
+                    type="text"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    placeholder="Enter post title"
+                    className="w-full mt-2  px-4 py-2 rounded-md bg-gray-900 border border-gray-700 focus:border focus:border-emerald-500/40 outline-none text-white text-sm"
+                  />
 
-          {category === "Others" && (
-            <input
-              type="text"
-              value={customCategory}
-              onChange={(e) => setCustomCategory(e.target.value)}
-              placeholder="Enter custom category"
-              className="w-full mt-2 px-4 py-2 rounded-md bg-gray-900 border border-gray-700 outline-none  outline-none text-white text-sm"
-            />
-          )}
+                  {fieldErrors.title && (
+                    <p className="text-xs text-red-500 mt-1">
+                      {fieldErrors.title}
+                    </p>
+                  )}
+                </div>
 
-          {/* THUMBNAIL */}
-<div>
-  <label className="text-sm text-gray-400 font-medium">
-    Thumbnail <span className="text-red-500">*</span>
-  </label>
+                {/* DESCRIPTION */}
+                <div>
+                  <label className="text-sm text-gray-400 font-medium">
+                    Description <span className="text-red-500">*</span>
+                  </label>
 
-  <input
-    type="file"
-    accept="image/*"
-    onChange={onImageChange}
-    ref={imageInputRef}
-    className="w-full mt-2 text-xs  text-gray-300 
+                  <textarea
+                    rows="6"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    placeholder="Write your post description..."
+                    className="w-full mt-2  focus:border focus:border-emerald-500/40 emerald-scrollbar px-4 py-3 rounded-md bg-gray-900 border border-gray-700 outline-none  text-white text-xs leading-relaxed"
+                  />
+
+                  {fieldErrors.description && (
+                    <p className="text-xs text-red-500 mt-1">
+                      {fieldErrors.description}
+                    </p>
+                  )}
+                </div>
+
+                {/* CATEGORY */}
+                <div>
+                  <label className="text-sm text-gray-400 font-medium">
+                    Category <span className="text-red-500">*</span>
+                  </label>
+
+                  <select
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                    className="w-full mt-2 px-4 py-2 cursor-pointer focus:border focus:border-emerald-500/40 rounded-md bg-gray-900 border border-gray-700 outline-none text-sm text-white  "
+                  >
+                    <option value="">Select Domain</option>
+                    <option value="GenAI">GenAI</option>
+                    <option value="Design Thinking">Design Thinking</option>
+                    <option value="Data Science">Data Science</option>
+                    <option value="Blockchain">Blockchain</option>
+                    <option value="AI/ML">AI/ML</option>
+                    <option value="Cyber Security">Cyber Security</option>
+                    <option value="IoT">IoT</option>
+                    <option value="Embedded System">Embedded System</option>
+                    <option value="Web Development">Web Development</option>
+                    <option value="Satellite Space Technology">
+                      Satellite Space Technology
+                    </option>
+                    <option value="Others">Others</option>
+                  </select>
+
+                  {fieldErrors.category && (
+                    <p className="text-xs text-red-500 mt-1">
+                      {fieldErrors.category}
+                    </p>
+                  )}
+                </div>
+
+                {category === "Others" && (
+                  <input
+                    type="text"
+                    value={customCategory}
+                    onChange={(e) => setCustomCategory(e.target.value)}
+                    placeholder="Enter custom category"
+                    className="w-full mt-2 px-4 py-2 rounded-md bg-gray-900 border border-gray-700 outline-none  outline-none text-white text-sm"
+                  />
+                )}
+
+                {/* THUMBNAIL */}
+                <div>
+                  <label className="text-sm text-gray-400 font-medium">
+                    Thumbnail <span className="text-red-500">*</span>
+                  </label>
+
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={onImageChange}
+                    ref={imageInputRef}
+                    className="w-full mt-2 text-xs  text-gray-300 
     file:mr-4 file:px-2 file:py-1 file:rounded-md 
     file:border-0 file:bg-emerald-500/20 file:hover:bg-emerald-600/20 file:text-emerald-400 
     file:cursor-pointer"
-  />
+                  />
 
-  {/* REMOVE IMAGE BUTTON */}
-  {image && (
-    <button
-      type="button"
-      onClick={() => {
-        setImage("");
-        setPreviewImage("");
+                  {/* REMOVE IMAGE BUTTON */}
+                  {image && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setImage("");
+                        setPreviewImage("");
 
-        if (imageInputRef.current) {
-          imageInputRef.current.value = null;
-        }
-      }}
-      className="text-xs text-yellow-400 mt-2 hover:underline"
-    >
-      Remove Selected Image
-    </button>
-  )}
+                        if (imageInputRef.current) {
+                          imageInputRef.current.value = null;
+                        }
+                      }}
+                      className="text-xs text-yellow-400 mt-2 hover:underline"
+                    >
+                      Remove Selected Image
+                    </button>
+                  )}
 
-  {/* PREVIEW */}
-  {previewImage && (
-    <div className="mt-3">
-      <img
-        src={previewImage}
-        className="md:w-40 w-full  h-40 object-cover  md:object-contain rounded-lg md:border border-gray-700 outline-none"
-      />
-    </div>
-  )}
+                  {/* PREVIEW */}
+                  {previewImage && (
+                    <div className="mt-3">
+                      <img
+                        src={previewImage}
+                        className="md:w-40 w-full  h-40 object-cover  md:object-contain rounded-lg md:border border-gray-700 outline-none"
+                      />
+                    </div>
+                  )}
 
-  {fieldErrors.image && (
-    <p className="text-xs text-red-500 mt-1">
-      {fieldErrors.image}
-    </p>
-  )}
-</div>
+                  {fieldErrors.image && (
+                    <p className="text-xs text-red-500 mt-1">
+                      {fieldErrors.image}
+                    </p>
+                  )}
+                </div>
 
-          {/* LINKS */}
-<div className="space-y-3 w-full ">
+                {/* LINKS */}
+                <div className="space-y-3 w-full ">
+                  <div className="flex w-full items-center justify-between">
+                    <label className="text-sm text-gray-400 font-medium">
+                      Project Links
+                    </label>
 
-  <div className="flex w-full items-center justify-between">
-    <label className="text-sm text-gray-400 font-medium">
-      Project Links
-    </label>
+                    {currentLinkTitle.length > 0 && (
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setCurrentLinkTitle("");
+                          setCurrentLinkUrl("");
+                          setCustomTitle("");
+                        }}
+                        className="text-xs bg-red-500 px-2 py-1 rounded-md hover:bg-red-600"
+                      >
+                        Clear
+                      </button>
+                    )}
+                  </div>
 
-    {currentLinkTitle.length > 0 && (
-      <button
-        onClick={(e) => {
-          e.preventDefault();
-          setCurrentLinkTitle("");
-          setCurrentLinkUrl("");
-          setCustomTitle("");
-        }}
-        className="text-xs bg-red-500 px-2 py-1 rounded-md hover:bg-red-600"
-      >
-        Clear
-      </button>
-    )}
-  </div>
+                  <div className="flex w-full flex-col md:flex-row  gap-2">
+                    {/* TITLE SELECT */}
+                    {currentLinkTitle !== "Others" && (
+                      <select
+                        value={currentLinkTitle}
+                        onChange={(e) => setCurrentLinkTitle(e.target.value)}
+                        // w-full
+                        className="md:w-1/3 w-full focus:border focus:border-emerald-500/40  px-4 py-2 cursor-pointer rounded-xl bg-gray-900 border border-gray-700 outline-none text-sm text-white"
+                      >
+                        <option value="" disabled>
+                          Select Link
+                        </option>
+                        <option value="GitHub">GitHub</option>
+                        <option value="YouTube">YouTube</option>
+                        <option value="Demo">Demo</option>
+                        <option value="Others">Others</option>
+                      </select>
+                    )}
 
-  <div className="flex w-full flex-col md:flex-row  gap-2">
+                    {/* CUSTOM TITLE */}
+                    {currentLinkTitle === "Others" && (
+                      <input
+                        type="text"
+                        placeholder="Enter platform name"
+                        value={customTitle}
+                        onChange={(e) => setCustomTitle(e.target.value)}
+                        className="md:w-1/3 w-full focus:border focus:border-emerald-500/40 px-4 py-2 rounded-md bg-gray-900 border border-gray-700 outline-none  outline-none text-white text-sm"
+                      />
+                    )}
 
-    {/* TITLE SELECT */}
-    {currentLinkTitle !== "Others" && (
-      <select
-        value={currentLinkTitle}
-        onChange={(e) => setCurrentLinkTitle(e.target.value)}
-        // w-full 
-        className="md:w-1/3 w-full focus:border focus:border-emerald-500/40  px-4 py-2 cursor-pointer rounded-xl bg-gray-900 border border-gray-700 outline-none text-sm text-white"
-      >
-        <option value="" disabled>
-          Select Link
-        </option>
-        <option value="GitHub">GitHub</option>
-        <option value="YouTube">YouTube</option>
-        <option value="Demo">Demo</option>
-        <option value="Others">Others</option>
-      </select>
-    )}
+                    {/* URL */}
+                    <input
+                      type="url"
+                      value={currentLinkUrl}
+                      onChange={(e) => setCurrentLinkUrl(e.target.value)}
+                      placeholder="Paste URL"
+                      className="md:w-2/3 focus:border focus:border-emerald-500/40 w-full px-4 py-2 rounded-md bg-gray-900 border border-gray-700 outline-none  outline-none text-white text-sm"
+                    />
 
-    {/* CUSTOM TITLE */}
-    {currentLinkTitle === "Others" && (
-      <input
-        type="text"
-        placeholder="Enter platform name"
-        value={customTitle}
-        onChange={(e) => setCustomTitle(e.target.value)}
-        className="md:w-1/3 w-full focus:border focus:border-emerald-500/40 px-4 py-2 rounded-md bg-gray-900 border border-gray-700 outline-none  outline-none text-white text-sm"
-      />
-    )}
+                    {/* ADD BUTTON */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const titleToUse =
+                          currentLinkTitle === "Others"
+                            ? customTitle?.trim()
+                            : currentLinkTitle.trim();
 
-    {/* URL */}
-    <input
-      type="url"
-      value={currentLinkUrl}
-      onChange={(e) => setCurrentLinkUrl(e.target.value)}
-      placeholder="Paste URL"
-      className="md:w-2/3 focus:border focus:border-emerald-500/40 w-full px-4 py-2 rounded-md bg-gray-900 border border-gray-700 outline-none  outline-none text-white text-sm"
-    />
+                        if (titleToUse && currentLinkUrl.trim()) {
+                          const newLink = {
+                            title: titleToUse,
+                            url: currentLinkUrl.trim(),
+                          };
 
-    {/* ADD BUTTON */}
-    <button
-      type="button"
-      onClick={() => {
-        const titleToUse =
-          currentLinkTitle === "Others"
-            ? customTitle?.trim()
-            : currentLinkTitle.trim();
+                          setLinks([...links, newLink]);
 
-        if (titleToUse && currentLinkUrl.trim()) {
-          const newLink = {
-            title: titleToUse,
-            url: currentLinkUrl.trim(),
-          };
+                          setCurrentLinkTitle("");
+                          setCurrentLinkUrl("");
+                          setCustomTitle("");
+                        }
+                      }}
+                      className="px-4 bg-emerald-500/20 w-fit py-1 md:py-2   text-black text-emerald-400  text-xs rounded-md hover:bg-emerald-600/20"
+                    >
+                      Add
+                    </button>
+                  </div>
 
-          setLinks([...links, newLink]);
+                  {/* LINKS LIST */}
+                  {links.length > 0 && (
+                    <div className="space-y-2 mt-3">
+                      {links.map((link, index) => (
+                        <div
+                          key={`${link.title}-${index}`}
+                          className="flex justify-between items-start bg-gray-800 border border-gray-700 outline-none rounded-md p-3"
+                        >
+                          <div className="text-sm break-all">
+                            <span className="font-semibold text-gray-300">
+                              {link.title}
+                            </span>
+                            <br />
+                            <span className="text-gray-400">{link.url}</span>
+                          </div>
 
-          setCurrentLinkTitle("");
-          setCurrentLinkUrl("");
-          setCustomTitle("");
-        }
-      }}
-      className="px-4 bg-emerald-500/20 w-fit py-1 md:py-2   text-black text-emerald-400  text-xs rounded-md hover:bg-emerald-600/20"
-    >
-      Add
-    </button>
-  </div>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setLinks((prevLinks) =>
+                                prevLinks.filter((_, i) => i !== index),
+                              )
+                            }
+                            className="text-red-400 hover:text-red-600 text-xs ml-2"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
 
-  {/* LINKS LIST */}
-  {links.length > 0 && (
-    <div className="space-y-2 mt-3">
+                {/* DOCUMENTS */}
+                <div>
+                  <label className="text-sm text-gray-400 font-medium">
+                    Source Documents
+                  </label>
 
-      {links.map((link, index) => (
-        <div
-          key={`${link.title}-${index}`}
-          className="flex justify-between items-start bg-gray-800 border border-gray-700 outline-none rounded-md p-3"
-        >
-
-          <div className="text-sm break-all">
-            <span className="font-semibold text-gray-300">
-              {link.title}
-            </span>
-            <br />
-            <span className="text-gray-400">
-              {link.url}
-            </span>
-          </div>
-
-          <button
-            type="button"
-            onClick={() =>
-              setLinks((prevLinks) =>
-                prevLinks.filter((_, i) => i !== index)
-              )
-            }
-            className="text-red-400 hover:text-red-600 text-xs ml-2"
-          >
-            ✕
-          </button>
-
-        </div>
-      ))}
-
-    </div>
-  )}
-</div>
-
-          {/* DOCUMENTS */}
-          <div>
-            <label className="text-sm text-gray-400 font-medium">
-              Source Documents
-            </label>
-
-            <input
-              type="file"
-              multiple
-              accept=".pdf,.doc,.docx"
-              onChange={onDocumentsChange}
-              className="w-full mt-2 text-xs  text-gray-300 
+                  <input
+                    type="file"
+                    multiple
+                    accept=".pdf,.doc,.docx"
+                    onChange={onDocumentsChange}
+                    className="w-full mt-2 text-xs  text-gray-300 
     file:mr-4 file:px-2 file:py-1 file:rounded-md 
     file:border-0 file:bg-emerald-500/20 file:hover:bg-emerald-600/20 file:text-emerald-400 
     file:cursor-pointer"
-            />
-          </div>
+                  />
+                </div>
 
-          {/* SUBMIT */}
-          <div className="pt-4">
-            <button
-              type="submit"
-              disabled={loading}
-              className="md:px-5 px-3 py-2 md:py-2.5 bg-emerald-600/20 hover:bg-emerald-500/20
+                {/* SUBMIT */}
+                <div className="pt-4">
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="md:px-5 px-3 py-2 md:py-2.5 bg-emerald-600/20 hover:bg-emerald-500/20
                          rounded-md text-xs md:text-sm  text-emerald-400 transition-all duration-300 disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed"
-            >
-              {loading ? "Submitting..." : "Publish Post"}
-            </button>
+                  >
+                    {loading ? "Submitting..." : "Publish Post"}
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
-
-        </form>
+        </div>
       </div>
-
-    </div>
-  </div>
-</div>
       <Footer />
       <ToastContainer />
     </div>

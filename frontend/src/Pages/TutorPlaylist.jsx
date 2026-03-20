@@ -145,112 +145,6 @@ function TutorPlaylist() {
   // console.log("posts", posts);
   // console.log("domain", domain);
 
-  {
-    /* Collaborators */
-  }
-  // <div className="relative flex  flex-col gap-2">
-  //   <label className="text-sm text-gray-300 font-medium">
-  //     Hook Collaborators
-  //   </label>
-
-  //   <input
-  //     type="text"
-  //     placeholder="Search collaborators"
-  //     value={searchCollaborator}
-  //     onChange={(e) => setSearchCollaborator(e.target.value)}
-  //     className="bg-gray-950 border border-gray-700 rounded-lg px-4 py-2 text-white placeholder-gray-500 text-sm focus:border focus:border-emerald-500/40 outline-none"
-  //   />
-
-  //   {/* Selected */}
-  //   {/* {collaboratorsData.length > 0 && (
-  //     <div className="flex flex-wrap gap-2 pt-2">
-  //       {collaboratorsData.map((data, index) => (
-  //         <div
-  //           key={index}
-  //           onClick={() =>
-  //             handleCollaborators(
-  //               data.email,
-  //               data.authorname,
-  //               data.profile,
-  //             )
-  //           }
-  //           className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-800 border border-gray-700 cursor-pointer hover:bg-gray-700 transition"
-  //         >
-  //           <img
-  //             src={
-  //               data.img
-  //                 ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.img}`
-  //                 : user
-  //             }
-  //             className="w-6 h-6 rounded-full object-cover border border-emerald-400 bg-white"
-  //             alt=""
-  //           />
-  //           <span className="text-xs text-gray-200">{data.name}</span>
-  //         </div>
-  //       ))}
-  //     </div>
-  //   )} */}
-
-  //   {/* Search Results */}
-  //   {searchCollaborator && searchedCoordinators.length > 0 && (
-  //     <div className="absolute top-full mt-2 w-full bg-gray-900 border border-gray-700 rounded-xl shadow-xl z-20 overflow-y-scroll max-h-40">
-  //       {searchedCoordinators.map((collaborator, index) => (
-  //         <div
-  //           key={index}
-  //           onClick={() =>
-  //             handleCollaborators(
-  //               collaborator.email,
-  //               collaborator.authorname,
-  //               collaborator.profile,
-  //             )
-  //           }
-  //           className="flex items-center gap-3 px-4 py-2 hover:bg-gray-800 cursor-pointer"
-  //         >
-  //           <img
-  //             src={
-  //               collaborator.profile
-  //                 ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${collaborator.profile}`
-  //                 : user
-  //             }
-  //             className="w-6 h-6 rounded-full bg-white object-cover border border-emerald-400"
-  //             alt=""
-  //           />
-  //           <span className="text-sm text-gray-200">
-  //             {collaborator.authorname}
-  //           </span>
-  //         </div>
-  //       ))}
-  //        {searchedCoordinators.map((collaborator, index) => (
-  //         <div
-  //           key={index}
-  //           onClick={() =>
-  //             handleCollaborators(
-  //               collaborator.email,
-  //               collaborator.authorname,
-  //               collaborator.profile,
-  //             )
-  //           }
-  //           className="flex items-center gap-3 px-4 py-2 hover:bg-gray-800 cursor-pointer"
-  //         >
-  //           <img
-  //             src={
-  //               collaborator.profile
-  //                 ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${collaborator.profile}`
-  //                 : user
-  //             }
-  //             className="w-6 h-6 rounded-full bg-white object-cover border border-emerald-400"
-  //             alt=""
-  //           />
-  //           <span className="text-sm text-gray-200">
-  //             {collaborator.authorname}
-  //           </span>
-  //         </div>
-  //       ))}
-  //     </div>
-
-  //   )}
-  // </div>
-
   return (
     // bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800
 
@@ -280,7 +174,8 @@ function TutorPlaylist() {
       border border-emerald-500/20
       bg-gradient-to-br from-emerald-500/5 to-transparent
       p-4 md:p-5
-      mb-4
+      mb-0
+      md:mb-4
      
       
     "
@@ -338,8 +233,8 @@ function TutorPlaylist() {
         className="w-full mx-auto px-3 md:px-4 pb-10 md:grid gap-10 lg:gap-0 lg:grid-cols-3"
       >
         {/* LEFT — PLAYLIST DETAILS */}
-        <div className="lg:col-span-1 md:bg-gray-900/70 lg:w-11/12  backdrop-blur-xl md:border border-gray-800 rounded-2xl space-y-8">
-          <div className=" md:p-6 p-2 space-y-8 shadow-lg">
+        <div className="lg:col-span-1 md:bg-gray-900/70 lg:w-11/12 md:border border-gray-800 rounded-2xl space-y-8">
+          <div className=" md:p-6 p-2 space-y-10 shadow-lg">
             <h2 className="text-xl hidden lg:block font-semibold text-white">
               Playlist Details
             </h2>
@@ -463,7 +358,8 @@ function TutorPlaylist() {
             {/* Thumbnail */}
             <div className="flex flex-col gap-2">
               <label className="text-sm text-gray-300 font-medium">
-                Playlist Thumbnail <span className="text-red-500">*</span>
+                Playlist Thumbnail 
+                {/* <span className="text-red-500">*</span> */}
               </label>
 
               <input
@@ -652,7 +548,7 @@ function TutorPlaylist() {
 
                 {/* Bottom Helper Text */}
                 <p className="text-xs md:text-sm text-gray-400 text-center">
-                  Select a domain to view available posts for playlist creation.
+                  Select a domain to view posts for playlist creation.
                 </p>
               </div>
             )}
@@ -673,6 +569,8 @@ function TutorPlaylist() {
           </div>
         )}
       </form>
+
+      <Footer/>
     </div>
   );
 }
