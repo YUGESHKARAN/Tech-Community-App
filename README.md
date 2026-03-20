@@ -14,6 +14,17 @@
 E-Learning platform specifically designed for universities and colleges, focusing on knowledge sharing and community building. The platform enables student developers to connect, collaborate, and engage through technical content and discussions, all within their institution. Developers can interact, clarify doubts via comment system. The platform includes role-based interfaces for Students, Coordinators, and Admins to manage content, moderation, and community participation.
 
 ---
+## Key Features
+
+* **User Authentication** – Secure registration and login with role-based access.
+* **Post Management** – Create, edit, and publish technical posts within the community.
+* **DraftMate AI** – Content drafting assistant to refine and structure post descriptions before publishing [DraftMate AI](https://github.com/YUGESHKARAN/blogChat-backend).
+* **Knowledge Hub Assistant** – In-post AI assistant that provides contextual explanations, related posts, videos, and suggested follow-up queries [Knowledge_Hub_Assistant](https://github.com/YUGESHKARAN/Assistant_Knowledge_Hub).
+* **Playlists** – Organize and save curated collections of posts for structured learning.
+* **Comments & Discussions** – Engage with the community through threaded discussions on posts.
+* **Announcements** – Coordinators and admins can publish institutional or community updates.
+* **Notifications** – Real-time alerts for recommended feeds and comments.
+---
 
 ## 👩‍🎓 Student Interface
 
@@ -36,17 +47,6 @@ E-Learning platform specifically designed for universities and colleges, focusin
 
 ---
 
-## Key Features
-
-* **User Authentication** – Secure registration and login with role-based access.
-* **Post Management** – Create, edit, and publish technical posts within the community.
-* **DraftMate AI** – Content drafting assistant to refine and structure post descriptions before publishing [DraftMate AI](https://github.com/YUGESHKARAN/blogChat-backend).
-* **Knowledge Hub Assistant** – In-post AI assistant that provides contextual explanations, related posts, videos, and suggested follow-up queries [Knowledge_Hub_Assistant](https://github.com/YUGESHKARAN/Assistant_Knowledge_Hub).
-* **Playlists** – Organize and save curated collections of posts for structured learning.
-* **Comments & Discussions** – Engage with the community through threaded discussions on posts.
-* **Announcements** – Coordinators and admins can publish institutional or community updates.
-* **Notifications** – Real-time alerts for recommended feeds and comments.
----
 
 ## 🗂️ Monorepo Structure
 
