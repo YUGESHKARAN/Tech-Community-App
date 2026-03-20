@@ -214,7 +214,7 @@ const getAuthorsByDomain = async (req, res) => {
 const addAuthor = async (req, res) => {
   const { authorname, password, email, post } = req.body;
   if (!email.endsWith("@dsuniversity.ac.in")) {
-    return res.status(400).json({ message: "Use university email" });
+    return res.status(400).json({ message: "Use University Email" });
   }
   try {
     const authorExist = await Author.findOne({ email });

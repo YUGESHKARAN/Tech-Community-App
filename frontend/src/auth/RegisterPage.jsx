@@ -219,7 +219,7 @@ function RegisterPage() {
       {/* Username */}
       <div>
         <label className="block text-sm font-medium text-gray-300 mb-1">
-          Username
+          User Name
         </label>
         <input
           type="text"
@@ -227,7 +227,7 @@ function RegisterPage() {
           name="username"
           value={formData.username}
           onChange={handleChange}
-          placeholder="Enter your username"
+          placeholder="Enter Name"
           required
           className="w-full px-4 py-2.5 text-sm bg-gray-800 text-white border border-gray-700 rounded-lg focus:outline-none focus:ring-1 focus:ring-green-500"
         />
@@ -241,7 +241,7 @@ function RegisterPage() {
       {/* Email */}
       <div>
         <label className="block text-sm font-medium text-gray-300 mb-1">
-          Email address
+          Email Address
         </label>
         <input
           type="email"
@@ -249,7 +249,7 @@ function RegisterPage() {
           name="email"
           value={formData.email}
           onChange={handleChange}
-          placeholder="Enter University email"
+          placeholder="University Email"
           required
           className="w-full px-4 py-2.5 text-sm bg-gray-800 text-white border border-gray-700 rounded-lg focus:outline-none focus:ring-1 focus:ring-green-500"
         />
@@ -305,7 +305,7 @@ function RegisterPage() {
         disabled={loading}
         className="w-full py-1.5 md:py-2.5 bg-green-600 hover:bg-green-700 transition text-white font-semibold rounded-lg"
       >
-        {loading ? "Setting up..." : "Register"}
+        {loading ? "Signing Up..." : "Register"}
       </button>
     </form>
 
