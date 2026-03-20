@@ -1,4 +1,4 @@
-# 📝 Tech. Community App
+# Tech. Community App
 
 
 [![License: MIT](https://img.shields.io/github/license/YUGESHKARAN/Node-Blog-App)](./LICENSE)
@@ -14,21 +14,33 @@
 E-Learning platform specifically designed for universities and colleges, focusing on knowledge sharing and community building. The platform enables student developers to connect, collaborate, and engage through technical content and discussions, all within their institution. Developers can interact, clarify doubts via comment system. The platform includes role-based interfaces for Students, Coordinators, and Admins to manage content, moderation, and community participation.
 
 ---
+## Key Features
 
-## 👩‍🎓 Student Interface
+* **User Authentication** –Secure registration and login with role-based access using JWT.
+* [**Knowledge Hub Assistant**](https://github.com/YUGESHKARAN/Assistant_Knowledge_Hub) – In-post AI assistant that provides contextual explanations, related posts, videos, and suggested follow-up queries.
+* [**DraftMate AI**](https://github.com/YUGESHKARAN/blogChat-backend) – Content drafting assistant to refine and structure post descriptions before publishing.
+* **Post Management** – Create, edit, and publish technical posts within the community.
+* **Playlists Management** – Organize and save curated collections of posts for structured learning.
+* [**Comments & Discussions**](https://github.com/YUGESHKARAN/web-socket.io) – Engage with the community through threaded discussions on posts.
+* **Announcements** – Coordinators and admins can publish institutional or community updates.
+* **Notifications** – Real-time alerts for recommended feeds and comments.
+* [**Network Recommendation**](https://github.com/YUGESHKARAN/recommendation-system) – A graph structured author recommendation system to build connections.
+---
+
+## Student Interface
 
 - **Explore Technical Content**: Browse, learn, and engage with posts across tech communities.
 - **Interactive Discussions**: Comment on posts and join lively discussions.
 - **Personalized Experience**: Follow favorite communities and authors, and receive tailored notifications.
 - **Stay Informed**: Get real-time announcements about events and sessions.
 
-## 👨‍🏫 Coordinator Interface
+## Coordinator Interface
 
 - **Content Creation & Management**: Publish, edit, or delete technical posts.
 - **AI-Powered Grammar Checker**: Ensure content quality using integrated AI tools.
 - **Event Management**: Plan and schedule announcements for meetings and events.
 
-## 🛡️ Admin Interface
+## Admin Interface
 
 - **Platform Oversight**: Manage users, roles, and permissions.
 - **Activity Monitoring**: Verify and monitor student and coordinator activities.
@@ -36,19 +48,8 @@ E-Learning platform specifically designed for universities and colleges, focusin
 
 ---
 
-## Key Features
 
-* **User Authentication** – Secure registration and login with role-based access.
-* **Post Management** – Create, edit, and publish technical posts within the community.
-* **DraftMate AI** – Content drafting assistant to refine and structure post descriptions before publishing [DraftMate AI](https://github.com/YUGESHKARAN/blogChat-backend).
-* **Knowledge Hub Assistant** – In-post AI assistant that provides contextual explanations, related posts, videos, and suggested follow-up queries [Knowledge_Hub_Assistant](https://github.com/YUGESHKARAN/Assistant_Knowledge_Hub).
-* **Playlists** – Organize and save curated collections of posts for structured learning.
-* **Comments & Discussions** – Engage with the community through threaded discussions on posts.
-* **Announcements** – Coordinators and admins can publish institutional or community updates.
-* **Notifications** – Real-time alerts for recommended feeds and comments.
----
-
-## 🗂️ Monorepo Structure
+## Monorepo Structure
 
 Both backend and frontend are organized for modularity and scalability:
 
@@ -62,7 +63,7 @@ Node-Blog-App/
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Backend:** Node.js, Express, MongoDB, Mongoose
 - **Frontend:** React.js, Tailwind CSS
@@ -70,7 +71,7 @@ Node-Blog-App/
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -99,6 +100,7 @@ npm install
    ```bash
    npm run dev
    ```
+3. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ### Frontend Setup
 
@@ -112,28 +114,17 @@ npm install
    ```bash
    npm run dev
    ```
-3. Open [http://localhost:3000](http://localhost:3000) in your browser.
+3. Open [http://localhost:3000](http://localhost:5173) in your browser.
 
 ---
 
-## 🔗 Related Backend Services
-
-- [web-Socket.io](https://github.com/YUGESHKARAN/web-socket.io.git): Live post comment implementation.
-- [blog_chat_app](https://github.com/YUGESHKARAN/blogChat-backend.git): Content manipulator services.
-- [Recommendation-System](https://github.com/YUGESHKARAN/recommendation-system.git): Author recommendation engine.
-
----
-
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome!  
 Fork the repository and submit a pull request, or open an issue to discuss significant changes.
 
----
+## License
 
-## 📬 Contact
-
-Created with ❤️ by [YUGESHKARAN](https://github.com/YUGESHKARAN).  
-Feel free to reach out for questions or suggestions!
+This project is licensed under the MIT License.
 
 ---
