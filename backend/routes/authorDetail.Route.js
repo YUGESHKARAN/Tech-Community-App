@@ -25,7 +25,8 @@ const {
   removePersonalLinks,
   deleteAuthorByAdmin,
   deleteAllAnnouncementByAdmin,
-  getAuthorsByDomain
+  getAuthorsByDomain,
+  sendRegistrationOTP
   // getAllAnnouncements
   
 } = require("../controllers/authorDetail.Controller");
@@ -38,6 +39,7 @@ const upload = multer({ storage });
 
 // Public routes
 router.post("/", addAuthor); // signup - keep public
+router.post("/verify-otp", sendRegistrationOTP);
 router.post('/send-otp', sendOtp);
 router.post('/reset-password', resetPassword);
 

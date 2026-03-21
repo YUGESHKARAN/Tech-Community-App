@@ -37,6 +37,103 @@ const s3 = new S3Client({
   region: bucketRegion,
 });
 
+
+
+// ----------------------------------------------------------------------
+
+// const addAuthor = async (req, res) => {
+//   const { authorname, password, email, post } = req.body;
+//   if (!email.endsWith("@dsuniversity.ac.in")) {
+//     return res.status(400).json({ message: "Use University Email" });
+//   }
+//   try {
+//     const authorExist = await Author.findOne({ email });
+//     if (authorExist) {
+//       return res.status(400).json({ message: "Author already exist" });
+//     }
+
+//     const newAuthor = new Author({
+//       authorname,
+//       password,
+//       email,
+//       post,
+//     });
+
+//     await newAuthor.save();
+//     res.status(201).json({
+//       message: "Author created successfully",
+//       newAuthor,
+//     });
+//   } catch (err) {
+//     res
+//       .status(500)
+//       .json({ message: "Error creating author", error: err.message });
+//   }
+// };
+
+const {sendOTPEmail} = require("../utils/emailService");
+const {saveOTP, verifyOTP} = require("../utils/otpStore");
+
+// ─── Step 1: Validate form data & send OTP ───────────────────────────────────
+const sendRegistrationOTP = async (req, res) => {
+  const { authorname, email, password } = req.body;
+  console.log("email", email)
+
+  if (!email.endsWith("@dsuniversity.ac.in")) {
+    return res.status(400).json({ message: "Use University Email" });
+  }
+  if (!authorname || !password) {
+    return res.status(400).json({ message: "All fields are required" });
+  }
+
+  try {
+    const authorExist = await Author.findOne({ email });
+    if (authorExist) {
+      return res.status(400).json({ message: "Author already exists" });
+    }
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit OTP
+    await saveOTP(email, otp);
+    await sendOTPEmail(email, otp);
+
+    res.status(200).json({ message: "OTP sent to your university email" });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to send OTP", error: err.message });
+    console.log("registration error", err.message)
+  }
+};
+
+// ─── Step 2: Verify OTP & create account ─────────────────────────────────────
+const addAuthor = async (req, res) => {
+  const { authorname, password, email, otp } = req.body;
+
+  // if (!email.endsWith("@dsuniversity.ac.in")) {
+  //   return res.status(400).json({ message: "Use University Email" });
+  // }
+
+  const { valid, reason } = await verifyOTP(email, otp);
+  if (!valid) {
+    return res.status(400).json({ message: reason });
+  }
+
+  try {
+    const authorExist = await Author.findOne({ email });
+    if (authorExist) {
+      return res.status(400).json({ message: "Author already exists" });
+    }
+
+    const newAuthor = new Author({ authorname, password, email });
+    await newAuthor.save();
+
+    res.status(201).json({ message: "Author created successfully", newAuthor });
+  } catch (err) {
+    res.status(500).json({ message: "Error creating author", error: err.message });
+  }
+};
+
+// --------------------------------------------------------------------------
+
+
 const getAllAuthor = async (req, res) => {
   try {
     const authors = await Author.find({});
@@ -209,37 +306,6 @@ const getAuthorsByDomain = async (req, res) => {
   }
 };
 
-// ----------------------------------------------------------------------
-
-const addAuthor = async (req, res) => {
-  const { authorname, password, email, post } = req.body;
-  if (!email.endsWith("@dsuniversity.ac.in")) {
-    return res.status(400).json({ message: "Use University Email" });
-  }
-  try {
-    const authorExist = await Author.findOne({ email });
-    if (authorExist) {
-      return res.status(400).json({ message: "Author already exist" });
-    }
-
-    const newAuthor = new Author({
-      authorname,
-      password,
-      email,
-      post,
-    });
-
-    await newAuthor.save();
-    res.status(201).json({
-      message: "Author created successfully",
-      newAuthor,
-    });
-  } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Error creating author", error: err.message });
-  }
-};
 
 const updateAuthor = async (req, res) => {
   const { authorname, email, role, techcommunity, links } = req.body;
@@ -1218,6 +1284,7 @@ const deleteAllAnnouncementByAdmin = async (req, res) => {
 
 module.exports = {
   addAuthor,
+  sendRegistrationOTP,
   getAllAuthor,
   getAuthorsByRole,
   getSingleAuthor,
