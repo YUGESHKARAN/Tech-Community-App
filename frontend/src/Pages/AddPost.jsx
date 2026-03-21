@@ -505,9 +505,9 @@ function AddPost() {
                     onChange={onImageChange}
                     ref={imageInputRef}
                     className="w-full mt-2 text-xs  text-gray-300 
-    file:mr-4 file:px-2 file:py-1 file:rounded-md 
-    file:border-0 file:bg-emerald-500/20 file:hover:bg-emerald-600/20 file:text-emerald-400 
-    file:cursor-pointer"
+                      file:mr-4 file:px-2 file:py-1 file:rounded-md 
+                      file:border-0 file:bg-emerald-500/20 file:hover:bg-emerald-600/20 file:text-emerald-400 
+                      file:cursor-pointer"
                   />
 
                   {/* REMOVE IMAGE BUTTON */}
@@ -528,12 +528,18 @@ function AddPost() {
                     </button>
                   )}
 
+                   {!previewImage && (
+                <div className="w-80 h-40 mt-3 rounded-xl flex items-center justify-center bg-gray-700">
+                  <p className="text-gray-400 text-xs">No Thumbnail</p>
+                </div>
+              )}
+
                   {/* PREVIEW */}
                   {previewImage && (
                     <div className="mt-3">
                       <img
                         src={previewImage}
-                        className="md:w-40 w-full  h-40 object-cover  md:object-contain rounded-lg md:border border-gray-700 outline-none"
+                        className="w-80 h-40   object-cover rounded-xl border border-gray-700"
                       />
                     </div>
                   )}

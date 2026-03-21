@@ -265,7 +265,7 @@ function Announcement() {
               <>
                 {/* CREATE PANEL */}
                 {showAnnouncement && (
-                  <div className="bg-[#111827] border border-slate-800  md:sticky top-7 self-start rounded-lg p-6 space-y-6">
+                  <div className="bg-[#111827] border border-slate-800  rounded-lg p-6 space-y-6">
                     <h3 className="text-xs uppercase tracking-wide text-slate-400">
                       Create Broadcast
                     </h3>

@@ -395,7 +395,7 @@ function TutorPlaylist() {
                   <img
                     src={previewThumbnail}
                     alt="Preview"
-                    className="w-80 h-40 max-w-xs  object-cover rounded-xl border border-gray-700"
+                    className="w-80 h-40   object-cover rounded-xl border border-gray-700"
                     // className="w-full h-48 md:h-[28vh] object-cover rounded-xl border border-gray-700"
                   />
                 </div>
