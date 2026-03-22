@@ -23,25 +23,19 @@ const TutorPlaylistGrid = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-
   const [debouncedSearch, setDebouncedSearch] = useState(searchTerm);
-  
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(searchTerm);
     }, 300); // 300ms delay
-  
+
     return () => clearTimeout(timer);
   }, [searchTerm]);
-  
-    const fuse = useMemo(() => {
+
+  const fuse = useMemo(() => {
     return new Fuse(tutorPlayList, {
-      keys: [
-        "title",
-        "domain",
-        "name",
-        "email"
-      ],
+      keys: ["title", "domain", "name", "email"],
       threshold: 0.3, // lower = stricter search
     });
   }, [tutorPlayList]);
@@ -60,9 +54,9 @@ const TutorPlaylistGrid = () => {
     //   );
     // }
 
-     if (debouncedSearch.trim() !== "") {
-    filtered = fuse.search(debouncedSearch).map((r) => r.item);
-  }
+    if (debouncedSearch.trim() !== "") {
+      filtered = fuse.search(debouncedSearch).map((r) => r.item);
+    }
 
     if (playlistCategory !== "") {
       filtered = filtered.filter(
@@ -174,9 +168,15 @@ const TutorPlaylistGrid = () => {
           ))}
 
           {loading && tutorPlayList?.length > 0 && (
-            <p className="text-center py-4 col-span-full text-gray-500">
-              loading...
-            </p>
+            <div className="col-span-full flex justify-center">
+              <div className="relative flex items-center justify-center">
+                {/* Outer Oval Ring */}
+                <div className="w-7 h-7 border-2 border-neutral-700 border-t-emerald-400 rounded-full animate-spin" />
+
+                {/* Inner Glow Pulse */}
+                {/* <div className="absolute w-10 h-10 md:w-12 md:h-12 bg-emerald-500/20 rounded-full blur-md animate-pulse" /> */}
+              </div>
+            </div>
           )}
           {!hasMore && (
             <p className="text-center col-span-full py-4 text-gray-500">
