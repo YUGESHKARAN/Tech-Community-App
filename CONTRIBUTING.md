@@ -14,14 +14,10 @@ Welcome to the Tech Community App! We appreciate your interest in contributing t
    ```
 
 ## Development Setup
-1. **Install Dependencies:** Ensure you have all necessary dependencies installed by running:
-   ```
-   npm install
-   ```
-2. **Run the Application:** To start the application, use:
-   ```
-   npm start
-   ```
+Follow the instructions in the [README.md](README.md) file to setting up the development environment
+
+## Code of Conduct
+Please adhere to the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Code Standards
 - Follow standard coding conventions and style guides.
@@ -43,23 +39,8 @@ Welcome to the Tech Community App! We appreciate your interest in contributing t
    ```
 4. **Create a Pull Request:** Go to the original repository and create a pull request.
 
-## Testing
-- Ensure your changes do not break existing functionality by running the test suite.
-- Add tests for any new features or bug fixes you implement.
-
 ## Issue Reporting
 If you find a bug or have suggestions for improvement, please open an issue in the repository with the following information:
-- Description of the bug or suggestion
-- Steps to reproduce (if applicable)
-
-## Community Guidelines
-- Be respectful and inclusive.
-- Provide constructive feedback.
-- Be open to differing opinions and approaches.
-
-## Project Structure
-- **src/**: Contains all source code for the application.
-- **tests/**: Contains all test files.
-- **docs/**: Contains documentation.
+- Description of the bug or suggestion with targetted labels.
 
 Thank you for considering contributing to the Tech Community App! We look forward to your contributions!
