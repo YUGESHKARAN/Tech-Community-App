@@ -11,7 +11,7 @@ import { IoClose } from "react-icons/io5";
 import { MdAnnouncement } from "react-icons/md";
 import getTimeAgo from "../components/DateCovertion";
 
-import toast from "../components/toaster/toast";
+import toast from "../components/toaster/Toast"
 
 function Announcement() {
   const username = localStorage.getItem("username");
