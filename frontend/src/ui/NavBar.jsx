@@ -28,7 +28,7 @@ import user from "../images/user.png";
 import { CiMenuKebab } from "react-icons/ci";
 import { BsFillMenuButtonWideFill, BsPersonWorkspace } from "react-icons/bs";
 import getTimeAgo from "../components/DateCovertion";
-import toast from "../components/toaster/toast";
+import toast from "../components/toaster/Toast"
 
 
 function NavBar() {
@@ -122,7 +122,7 @@ function NavBar() {
     const confirm = window.confirm(
       "Are you sure want to delete all the notifications",
     );
-    
+
     if (!confirm) return;
     try {
       const response = await axiosInstance.delete(
