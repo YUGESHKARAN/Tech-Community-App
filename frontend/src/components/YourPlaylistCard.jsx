@@ -4,7 +4,7 @@ import { CgPlayList } from "react-icons/cg";
 import { MdDelete, MdEdit, MdOutlinePlaylistPlay } from "react-icons/md";
 import { PiBookmarksSimpleFill, PiBookmarksSimpleLight } from "react-icons/pi";
 import axiosInstance from "../instances/Axiosinstances";
-import toast from "./toaster/toast";
+import toast from "../components/toaster/Toast"
 import { Link } from "react-router-dom";
 import { IoIosRemoveCircle } from "react-icons/io";
 import { IoRemoveOutline } from "react-icons/io5";
