@@ -162,8 +162,10 @@ function Announcement() {
       const response = await axiosInstance.delete(
         `/blog/author/announcements/${id}`,
       );
-      console.log("response", response);
-      fetchAllAnnouncement();
+      // console.log("response", response);
+       toast.success('Deleted ', 'Announcement removed successfully ')
+      // fetchAllAnnouncement();
+      setAnnouncement((prev)=> prev.filter((a)=> a._id !== id))
     } catch (err) {
       console.log("error", err);
     }
