@@ -28,6 +28,9 @@ import user from "../images/user.png";
 import { CiMenuKebab } from "react-icons/ci";
 import { BsFillMenuButtonWideFill, BsPersonWorkspace } from "react-icons/bs";
 import getTimeAgo from "../components/DateCovertion";
+import toast from "../components/toaster/toast";
+
+
 function NavBar() {
   const { logout } = useAuth();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -127,6 +130,7 @@ function NavBar() {
       // fetchNotifications();
 
       if (response.status === 200){
+        toast.info("Cleared", 'All notifications cleared')
         setNote([]) ;
       }
 

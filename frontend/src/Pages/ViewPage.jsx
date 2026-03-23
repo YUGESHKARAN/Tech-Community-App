@@ -534,7 +534,7 @@ function ViewPage() {
                       flex items-center gap-2
                       px-3 py-1.5 md:px-4 md:py-2
                       rounded-full
-                      bg-gray-900 hover:bg-gray-800 border md:border-neutral-700 border-neutral-700
+                      bg-gray-900  border md:border-neutral-700 border-neutral-700
                       
                       active:scale-95
                       transition
@@ -563,7 +563,7 @@ function ViewPage() {
                   flex items-center gap-2
                   px-3 py-1.5 md:px-4 md:py-2
                   rounded-full
-                  bg-gray-900 hover:bg-gray-800 border md:border-neutral-700 border-neutral-700
+                  bg-gray-900  border md:border-neutral-700 border-neutral-700
                   
                   active:scale-95
                   transition
@@ -582,8 +582,7 @@ function ViewPage() {
                       flex items-center gap-2
                       px-3 py-1.5 md:px-4 md:py-2
                       rounded-full
-                      bg-gray-900 hover:bg-gray-800 border md:border-neutral-700 border-neutral-700
-                      
+                      bg-gray-900  border md:border-neutral-700 border-neutral-700
                       active:scale-95
                       transition
                     "

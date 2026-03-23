@@ -7,6 +7,7 @@ import {
   IoShareSocial,
   IoRemoveOutline,
 } from "react-icons/io5";
+
 import { MdEdit } from "react-icons/md";
 import { MagnifyingGlass } from "react-loader-spinner";
 import blog1 from "../images/img_not_found2.png";
@@ -20,6 +21,7 @@ import BlogSkeleton from "../components/loaders/BlogSkeleton";
 import PillLoader from "../components/loaders/PillSkeleton";
 import Fuse from "fuse.js";
 import highlightText from "../hooks/highlightText";
+import toast from "../components/toaster/Toast"
 
 function YourPost() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -264,14 +266,17 @@ const filteredPosts = useMemo(() => {
            // toast.success("post deleted successfully");
           // navigate("/home");
           //  fetchPosts();
+         
 
           setPosts((prev)=> prev.filter((p)=> p._id!== PostId))
+          toast.success('Success', 'Post deleted successfully')
            
       }
     
       
     } catch (err) {
       console.log(err);
+      // toast.error("error", "error deleting post")
     } 
     finally{
       setDelPostId("")
@@ -388,7 +393,8 @@ const filteredPosts = useMemo(() => {
                   </Link>
 
                   <div className="leading-tight">
-                    <p className="text-sm font-semibold text-white">
+                    <p
+                    className="text-sm font-semibold text-white">
                       {data.authorName}
  
                     </p>

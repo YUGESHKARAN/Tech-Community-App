@@ -174,7 +174,7 @@ useEffect(() => {
               mt-7
         "
           >
-            {filteredPlaylist?.map((playlist) => (
+            {filteredPlaylist?.reverse().map((playlist) => (
               <div key={playlist._id} className="min-w-[150px]  sm:min-w-0">
                 <YourPlaylistCard
                   playlist={playlist}

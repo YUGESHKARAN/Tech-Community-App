@@ -4,7 +4,7 @@ import { CgPlayList } from "react-icons/cg";
 import { MdDelete, MdEdit, MdOutlinePlaylistPlay } from "react-icons/md";
 import { PiBookmarksSimpleFill, PiBookmarksSimpleLight } from "react-icons/pi";
 import axiosInstance from "../instances/Axiosinstances";
-import { toast } from "react-toastify";
+import toast from "./toaster/toast";
 import { Link } from "react-router-dom";
 import { IoIosRemoveCircle } from "react-icons/io";
 import { IoRemoveOutline } from "react-icons/io5";
@@ -55,7 +55,6 @@ const YourPlaylistCard = ({ playlist, onRemove, onDelete,setPlaylistCategory, de
             // toast.success("bookmark removed successfully");
             return prev.filter((id) => id !== _id);
           } else {
-            // toast.success("post bookmarked successfully");
             return [...prev, _id];
           }
         });
@@ -96,13 +95,13 @@ const YourPlaylistCard = ({ playlist, onRemove, onDelete,setPlaylistCategory, de
     );
 
     if (response.status === 200) {
-      // toast.success("playlist deleted successfully");
+        toast.success('Success', 'Playlist deleted successfully')
      if(onDelete) onDelete(id); // refresh list
 
     }
   } catch (err) {
     console.log("error", err.message);
-    // toast.error("unable to delete playlist");
+ 
   }
   finally{
     setShowConfirm(false)

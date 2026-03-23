@@ -5,13 +5,13 @@ import { RiChatDeleteFill, RiDeleteBack2Fill } from "react-icons/ri";
 import Footer from "../ui/Footer";
 import axiosInstance from "../instances/Axiosinstances";
 // import { format } from 'date-fns';
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { Link } from "react-router-dom";
 import { HiOutlineUserCircle } from "react-icons/hi";
 import { IoClose } from "react-icons/io5";
 import { MdAnnouncement } from "react-icons/md";
 import getTimeAgo from "../components/DateCovertion";
+import toast from "../components/toaster/toast";
+
 function Announcement() {
   const username = localStorage.getItem("username");
   const email = localStorage.getItem("email");
@@ -130,7 +130,7 @@ function Announcement() {
       );
 
       if (response.status == 201) {
-        toast.success("Announcement delivered Successfully");
+        toast.success('Delivered ', 'New announcement delivered ')
         setTitle("");
         setMessage("");
         setLinks("");
@@ -187,12 +187,11 @@ function Announcement() {
         { data: { password } },
       );
       if (response.status == 200) {
-        toast.success("All announcements deleted successfully");
+       
         fetchAllAnnouncement();
         setPassword("");
       }
     } catch (err) {
-      toast.error("unable to delete announcements");
       console.log(err.message);
     } finally {
       setLoading(false);
@@ -556,7 +555,9 @@ function Announcement() {
               >
                 <div className="flex justify-between items-start">
                   <div>
-                    <h2 className="text-xl font-semibold text-white">
+                    <h2
+                    
+                     className="text-xl font-semibold text-white">
                       {item.title}
                     </h2>
                     <div className="text-xs text-slate-400 mt-1">
@@ -567,7 +568,7 @@ function Announcement() {
 
                 <button
                       onClick={() => deleteAnnouncement(item._id)}
-                      className="text-slate-500 hover:text-red-400 transition"
+                      className="text-slate-500 text-xs md:text-sm hover:text-red-400 transition"
                     >
                       ✕
                     </button>
@@ -582,7 +583,7 @@ function Announcement() {
                     <img
                       src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${item.poster}`}
                       alt=""
-                      className="md:w-full h-48 md:h-[400px] object-contain bg-black"
+                      className="w-full h-48 md:h-[400px] object-contain bg-black"
                       onClick={() =>
                         handleImageClick(
                           `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${item.poster}`,
