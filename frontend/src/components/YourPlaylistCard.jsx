@@ -95,7 +95,7 @@ const YourPlaylistCard = ({ playlist, onRemove, onDelete,setPlaylistCategory, de
     );
 
     if (response.status === 200) {
-        toast.success('Success', 'Playlist deleted successfully')
+        toast.success('Deleted', 'Playlist deleted successfully')
      if(onDelete) onDelete(id); // refresh list
 
     }

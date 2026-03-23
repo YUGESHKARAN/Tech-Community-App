@@ -269,7 +269,7 @@ const filteredPosts = useMemo(() => {
          
 
           setPosts((prev)=> prev.filter((p)=> p._id!== PostId))
-          toast.success('Success', 'Post deleted successfully')
+          toast.success('Deleted', 'Post deleted successfully')
            
       }
     
