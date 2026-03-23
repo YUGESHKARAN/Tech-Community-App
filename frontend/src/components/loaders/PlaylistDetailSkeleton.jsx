@@ -8,7 +8,7 @@ const PlaylistDetailSkeleton = () => {
       <div className="lg:col-span-1 p-2 md:p-0 space-y-4 animate-pulse">
         
         {/* Banner */}
-        <div className="w-full h-48 md:h-96 bg-gray-800 md:rounded-2xl rounded-xl border border-gray-700" />
+        <div className="w-full h-48 md:h-80 bg-gray-800 md:rounded-2xl rounded-xl border border-gray-700" />
 
         {/* Title */}
         <div className="h-6 w-3/4 bg-gray-700 rounded" />

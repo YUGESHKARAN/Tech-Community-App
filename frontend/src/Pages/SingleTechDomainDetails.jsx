@@ -473,9 +473,15 @@ function SingleTechDomainDetails() {
                   ))} 
 
                 {loading && (
-                  <p className="text-center  text-gray-500 col-span-full py-4">
-                    loading...
-                  </p>
+                  <div className="col-span-full flex justify-center">
+                      <div className="relative flex items-center justify-center">
+                        {/* Outer Oval Ring */}
+                        <div className="w-7 h-7  border-2 border-neutral-700 border-t-emerald-400 rounded-full animate-spin" />
+
+                        {/* Inner Glow Pulse */}
+                        {/* <div className="absolute w-10 h-10 md:w-12 md:h-12 bg-emerald-500/20 rounded-full blur-md animate-pulse" /> */}
+                      </div>
+                    </div>
                 )}
 
                 {!hasMore && (
@@ -584,9 +590,15 @@ function SingleTechDomainDetails() {
                   ))}
 
                 {loading && (
-                  <p className="text-center  text-gray-500 col-span-full  py-4">
-                    loading...
-                  </p>
+                  <div className="col-span-full flex justify-center">
+                      <div className="relative flex items-center justify-center">
+                        {/* Outer Oval Ring */}
+                        <div className="w-7 h-7  border-2 border-neutral-700 border-t-emerald-400 rounded-full animate-spin" />
+
+                        {/* Inner Glow Pulse */}
+                        {/* <div className="absolute w-10 h-10 md:w-12 md:h-12 bg-emerald-500/20 rounded-full blur-md animate-pulse" /> */}
+                      </div>
+                    </div>
                 )}
 
                 {!hasMore && (

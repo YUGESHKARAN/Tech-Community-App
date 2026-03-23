@@ -2,7 +2,7 @@ const PlaylistPostSkeleton = () => {
   return (
     <div className="flex gap-4 p-2 rounded-lg animate-pulse">
       {/* Thumbnail */}
-      <div className="w-32 h-20 md:h-24 bg-gray-700 rounded-sm" />
+      <div className="w-48 h-20 md:h-24 bg-gray-700 rounded-sm" />
 
       {/* Content */}
       <div className="flex flex-col w-full justify-between">

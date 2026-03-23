@@ -388,89 +388,7 @@ const recommendedAuthors = useMemo(() => {
           </h2>
         )}
 
-        {/* <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-8">
-          {filteredAuthors
-            .filter((author) => author.role === "coordinator")
-            .map((author, index) => (
-              <div
-                key={index}
-                className="backdrop-blur-md bg-white/10 border border-white/20 rounded-2xl shadow-lg hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 p-5 flex flex-col items-center"
-              >
-                <Link to={`/viewProfile/${author.email}`}>
-                  <img
-                    src={
-                      author.profile
-                        ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`
-                        : user
-                    }
-                    alt={author.authorName}
-                    className="rounded-full bg-white w-24 h-24 object-cover border-2 border-white shadow-md hover:shadow-lg transition-all"
-                  />
-                </Link>
-
-                <h1 className="text-center font-semibold mt-3 text-lg truncate w-full">
-                  {author.authorName}
-                </h1>
-                <p className="text-center text-sm text-gray-300 truncate w-full">
-                  {author.email}
-                </p>
-
-                {author.community?.length > 0 && (
-                  <div className="flex flex-wrap justify-center gap-2 mt-3">
-                    {author.community.map((com, i) => (
-                      <span
-                        key={i}
-                        className="px-3 py-1 text-xs font-medium backdrop-blur-md bg-white/10 text-white rounded-full shadow-sm border border-gray-400"
-                      >
-                        {com}
-                      </span>
-                    ))}
-                  </div>
-                )}
-
-                {author.profileLinks?.length > 0 && (
-                  <div className="flex justify-center gap-3 mt-4">
-                    {author.profileLinks.map((link, i) => (
-                      <Link
-                        key={i}
-                        to={link.url}
-                        title={link.title}
-                        target="_blank"
-                      >
-                        {link.title === "LinkedIn" ? (
-                          <FaLinkedin className="text-white text-lg hover:text-green-400 transition" />
-                        ) : link.title === "GitHub" ? (
-                          <FaSquareGithub className="text-white text-lg hover:text-green-400 transition" />
-                        ) : link.title === "Portfolio" ? (
-                          <BsPersonSquare className="text-white text-lg hover:text-green-400 transition" />
-                        ) : (
-                          <PiLinkSimpleFill className="text-white text-lg hover:text-green-400 transition" />
-                        )}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-
-                <div className="mt-4">
-                  {author.followers.includes(email) ? (
-                    <button
-                      onClick={() => addFollower(author.email)}
-                      className="px-4 py-1.5 rounded-lg cursor-pointer bg-gradient-to-r from-emerald-200 to-emerald-300 text-gray-800 font-medium text-sm cursor-default shadow-sm border border-white/20"
-                    >
-                      Following...
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => addFollower(author.email)}
-                      className="px-4 py-1.5 rounded-lg cursor-pointer bg-gradient-to-r from-emerald-300 to-green-400 text-gray-900 font-medium text-sm hover:from-emerald-400 hover:to-green-500 transition-all duration-300 shadow-sm border border-white/20"
-                    >
-                      Follow +
-                    </button>
-                  )}
-                </div>
-              </div>
-            ))}
-        </div> */}
+   
         <div className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-2 md:gap-4">
           {filteredAuthors
             .filter((author) => author.role === "coordinator")
@@ -546,9 +464,15 @@ const recommendedAuthors = useMemo(() => {
           {filteredAuthors.filter((author) => author.role === "coordinator")
             .length > 0 &&
             loading && (
-              <p className="text-center col-span-full py-4 text-gray-500">
-                loading..
-              </p>
+             <div className="col-span-full flex justify-center">
+                      <div className="relative flex items-center justify-center">
+                        {/* Outer Oval Ring */}
+                        <div className="w-7 h-7  border-2 border-neutral-700 border-t-emerald-400 rounded-full animate-spin" />
+
+                        {/* Inner Glow Pulse */}
+                        {/* <div className="absolute w-10 h-10 md:w-12 md:h-12 bg-emerald-500/20 rounded-full blur-md animate-pulse" /> */}
+                      </div>
+                    </div>
             )}
 
           {filteredAuthors.filter((author) => author.role === "coordinator")
@@ -579,59 +503,7 @@ const recommendedAuthors = useMemo(() => {
           </h2>
         )}
 
-        {/* <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-8 mt-6">
-          {filteredAuthors
-            .filter((author) => author.role === "student")
-            .map((author, index) => (
-              <div
-                key={index}
-                className="backdrop-blur-md bg-white/10 border border-white/20 rounded-2xl shadow-lg hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 p-5 flex flex-col items-center"
-              >
-                <Link to={`/viewProfile/${author.email}`}>
-                  <img
-                    src={
-                      author.profile
-                        ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`
-                        : user
-                    }
-                    alt={author.authorName}
-                    className="rounded-full w-20 bg-white h-20 object-cover border-2 border-white shadow-md hover:shadow-lg transition-all"
-                  />
-                </Link>
-
-                <h1 className="text-center font-semibold mt-3 text-sm md:text-base truncate w-full">
-                  {author.authorName}
-                </h1>
-                <p className="text-center text-xs text-gray-300 truncate w-full">
-                  {author.email}
-                </p>
-
-                {author.profileLinks?.length > 0 && (
-                  <div className="flex justify-center gap-3 mt-3">
-                    {author.profileLinks.map((link, i) => (
-                      <Link
-                        key={i}
-                        to={link.url}
-                        title={link.title}
-                        target="_blank"
-                      >
-                        {link.title === "LinkedIn" ? (
-                          <FaLinkedin className="text-white text-base hover:text-green-400 transition" />
-                        ) : link.title === "GitHub" ? (
-                          <FaSquareGithub className="text-white text-base hover:text-green-400 transition" />
-                        ) : link.title === "Portfolio" ? (
-                          <BsPersonSquare className="text-white text-base hover:text-green-400 transition" />
-                        ) : (
-                          <PiLinkSimpleFill className="text-white text-base hover:text-green-400 transition" />
-                        )}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
-        </div> */}
-
+       
         <div className="w-full grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-7 gap-2 md:gap-4 mt-8">
           {filteredAuthors
             .filter((author) => author.role === "student")
@@ -714,9 +586,15 @@ const recommendedAuthors = useMemo(() => {
           {filteredAuthors.filter((author) => author.role === "student")
             .length > 0 &&
             loading && (
-              <p className="text-center text-gray-500 col-span-full py-4">
-                loading...
-              </p>
+              <div className="col-span-full flex justify-center">
+                      <div className="relative flex items-center justify-center">
+                        {/* Outer Oval Ring */}
+                        <div className="w-7 h-7  border-2 border-neutral-700 border-t-emerald-400 rounded-full animate-spin" />
+
+                        {/* Inner Glow Pulse */}
+                        {/* <div className="absolute w-10 h-10 md:w-12 md:h-12 bg-emerald-500/20 rounded-full blur-md animate-pulse" /> */}
+                      </div>
+                    </div>
             )}
 
           {filteredAuthors.filter((author) => author.role === "student")

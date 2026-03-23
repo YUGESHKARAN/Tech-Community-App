@@ -397,7 +397,7 @@ function ViewTutorPlaylist() {
                     )
                   }
                   alt="Playlist Banner"
-                  className="w-full h-[260px] md:h-[60vh] cursor-pointer object-cover transition-transform duration-500 group-hover:scale-105"
+                  className="w-full h-[260px] md:h-[50vh] cursor-pointer object-cover transition-transform duration-500 group-hover:scale-105"
                 />
 
                 {/* Gradient Overlay */}
@@ -451,7 +451,7 @@ function ViewTutorPlaylist() {
               </div>
 
               {/* CONTRIBUTORS CARD */}
-              <div className="flex md:px-2 relative justify-between items-center ">
+              <div className="flex p-4 relative border border-neutral-700/70 rounded-lg  justify-between items-center ">
                   {/* left content */}
                   <div className="flex flex-col items-start gap-2">
                     {/* Author */}
@@ -553,7 +553,7 @@ function ViewTutorPlaylist() {
                   </div>
 
                   {/* right content */}
-                  <div className=" absolute top-0 right-0 flex flex-col items-start gap-2">
+                  <div className=" absolute top-4 right-4 flex flex-col items-start gap-2">
                     {/* <p className="text-sm text-gray-400">
                       Playlist • {playlistData?.post_ids?.length}
                     </p> */}
@@ -587,18 +587,18 @@ function ViewTutorPlaylist() {
             </div>
 
             {/* RIGHT PANEL (Playlist Posts) */}
-            <div className="lg:col-span-1 md:overflow-y-scroll mt-0 scrollbar-hide space-y-2 md:space-y-4">
+            <div className="lg:col-span-1 md:overflow-y-scroll mt-0 scrollbar-hide space-y-2 md:space-y-2">
               {playlistPosts.map((post, index) => (
                 <div
                   key={post._id}
-                  className="flex gap-4 md:p-4 p-2  bg-gray-900 rounded-lg border md:border-neutral-800 border-neutral-800 transition"
+                  className="flex gap-4  p-2  bg-gray-900 rounded-lg border md:border-neutral-800 border-neutral-800 transition"
                 >
                   {/* Video Thumbnail */}
                   <Link
                     // to={`/viewpage/playlist/${playlistData.email}/${post._id}`}
                     to={`/viewpage/${playlistData.email}/${post._id}`}
                     onClick={() => postViews(playlistData.email, post._id)}
-                    className="relative w-32 h-20 md:min-w-0 md:h-24 rounded-sm overflow-hidden"
+                    className="relative w-48 h-20 md:min-w-0 md:h-24 rounded-md overflow-hidden"
                   >
                     <img
                       // src={post.thumbnail}
@@ -616,13 +616,21 @@ function ViewTutorPlaylist() {
                   </Link>
 
                   {/* Video Info */}
-                  <div className="flex flex-col w-full md:w-11/12 justify-between">
-                    <h3 className="text-sm font-medium line-clamp-2">
+                  <div className="flex flex-col w-11/12 md:w-11/12 justify-between">
+                    <Link 
+                    // to={`/viewpage/playlist/${playlistData.email}/${post._id}`}
+                    to={`/viewpage/${playlistData.email}/${post._id}`}
+                    onClick={() => postViews(playlistData.email, post._id)}
+                    className="text-sm font-medium line-clamp-2">
                       {post.title}
-                    </h3>
-                    <p className="md:text-sm text-xs text-gray-300 line-clamp-1 md:line-clamp-2">
+                    </Link>
+                      <Link
+                    // to={`/viewpage/playlist/${playlistData.email}/${post._id}`}
+                    to={`/viewpage/${playlistData.email}/${post._id}`}
+                    onClick={() => postViews(playlistData.email, post._id)}
+                    className="md:text-sm text-xs text-gray-300 line-clamp-1 md:line-clamp-2">
                       {post.description?.slice(0, 50)}...
-                    </p>
+                    </Link>
 
                     <div className="flex justify-between items-center">
                       <p className="text-xs text-gray-400">
