@@ -122,6 +122,7 @@ function NavBar() {
     const confirm = window.confirm(
       "Are you sure want to delete all the notifications",
     );
+    
     if (!confirm) return;
     try {
       const response = await axiosInstance.delete(
