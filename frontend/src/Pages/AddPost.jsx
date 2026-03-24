@@ -329,7 +329,7 @@ function AddPost() {
 
               {/* AI Assistant (Always visible on desktop) */}
               <div
-                className={`bg-[#0f172a]/80  lg:w-11/12 h-96 border border-emerald-500/20
+                className={`bg-[#0f172a]/80  lg:w-11/12 h-[450px] md:h-96 border border-emerald-500/20
       bg-gradient-to-br from-emerald-500/5 to-transparent rounded-lg md:rounded-xl px-4 py-6 md:p-6 flex flex-col
           ${!chatbot ? "hidden lg:flex" : "flex"}`}
               >
