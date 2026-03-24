@@ -628,8 +628,9 @@ function ViewTutorPlaylist() {
                     // to={`/viewpage/playlist/${playlistData.email}/${post._id}`}
                     to={`/viewpage/${playlistData.email}/${post._id}`}
                     onClick={() => postViews(playlistData.email, post._id)}
-                    className="md:text-sm text-xs text-gray-300 line-clamp-1 md:line-clamp-2">
-                      {post.description?.slice(0, 50)}...
+                    className="md:text-xs text-xs text-gray-300 line-clamp-1 md:line-clamp-2">
+                      {/* {post.description?.slice(0, 50)}... */}
+                      {post.description}
                     </Link>
 
                     <div className="flex justify-between items-center">

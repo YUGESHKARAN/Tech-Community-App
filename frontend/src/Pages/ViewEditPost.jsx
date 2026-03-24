@@ -100,6 +100,7 @@ function ViewEditPost() {
         setLinkId(null);
         navigate("/yourposts");
     } catch (error) {
+       navigate("/yourposts");
       console.error("Error editing post:", error);
       setError({ apiError: error.ValidatorError || "Update failed" });
       // toast.error("Failed to edit post");
@@ -138,29 +139,6 @@ function ViewEditPost() {
     getSinglrPost();
   }, []);
 
-  const deletePost = async () => {
-    setShowConfirm(true);
-    setLoading(true);
-    try {
-      const response = await axiosInstance.delete(
-        `/blog/posts/${email}/${PostId}`,
-      );
-      // const response = axiosInstance.delete(`http://localhost:3000/blog/posts/${email}/${PostId}`);
-      console.log("deleted response", response);
-      toast.success("post deleted successfully");
-      navigate("/home");
-
-      setShowConfirm(false);
-    } catch (err) {
-      console.log(err);
-    } finally {
-      setInterval(() => {
-        window.location.reload(); // Redirect to the homepage
-      }, 2000);
-      setLoading(false);
-      // getSinglrPost()
-    }
-  };
 
   const removeLinks = async (linkId) => {
     try {
@@ -908,6 +886,65 @@ function ViewEditPost() {
                 )}
               </div>
 
+              
+              {/* Current Documents with Edit Option */}
+              { singlePostData.documents?.length > 0 && (
+                <div className="rounded-xl space-y-2">
+                  <div className="flex justify-between items-center">
+                    <label className="text-sm text-gray-300 font-medium">
+                      Current Documents
+                    </label>
+                    <label className="cursor-pointer text-emerald-400 hover:text-emerald-300 transition">
+                      <MdEdit className="text-lg" />
+                      <input
+                        type="file"
+                        multiple
+                        accept=".pdf,.doc,.docx"
+                        onChange={onDocumentsChange}
+                        className="hidden"
+                      />
+                    </label>
+                  </div>
+ 
+                  <div className="flex flex-col gap-2">
+                    {singlePostData.documents.map((doc, index) => (
+                      <div
+                        key={index}
+                        className="flex flex-col gap-1  items-start "
+                      >
+                        <a
+                          href={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${doc}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs bg-gray-900 px-3 py-2 rounded-lg border border-gray-700 text-gray-400 hover:text-emerald-400 truncate transition"
+                        >
+                          {doc.split("-").slice(5).join("-")}
+                        </a>
+                      </div>
+                    ))}
+                  </div>
+ 
+                  {selectedDocs.length > 0 && (
+                    <div className="pt-2 space-y-2">
+                      <p className="text-xs text-gray-400 ">Newly Selected Document(s):</p>
+                      <div className="flex flex-col gap-1">
+                        {selectedDocs.map((doc, idx) => (
+                          <div
+                            key={idx}
+                            className="flex items-center  gap-2 w-fit md:w-fit bg-gray-900 px-3 py-2 rounded-lg border border-emerald-500/20 text-xs text-gray-300"
+                          >
+                            <span className="text-emerald-400 font-semibold">{idx + 1}.</span>
+                            <p className="line-clamp-1">{doc}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              
+
               {/* Category */}
               <div className="  rounded-xl">
                 <label className="text-sm text-gray-300 font-medium">
@@ -945,6 +982,8 @@ function ViewEditPost() {
                 )}
               </div>
 
+              
+
               {/* Submit */}
               <button
                 type="submit"
@@ -965,3 +1004,4 @@ function ViewEditPost() {
 }
 
 export default ViewEditPost;
+

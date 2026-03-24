@@ -275,6 +275,8 @@ const filteredPosts = useMemo(() => {
     
       
     } catch (err) {
+      setPosts((prev)=> prev.filter((p)=> p._id!== PostId))
+      // toast.success('Deleted', 'Post deleted successfully')
       console.log(err);
       // toast.error("error", "error deleting post")
     } 

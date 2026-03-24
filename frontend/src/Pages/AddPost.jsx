@@ -47,7 +47,7 @@ function AddPost() {
   ]);
 
   const [documents, setDocuments] = useState([]);
-
+  // const fileInputRef = useRef(null);
   const [isTyping, setIsTyping] = useState(false);
   const [chatbot, setChatbot] = useState(false);
 
@@ -222,7 +222,7 @@ function AddPost() {
         formData,
       );
 
-      console.log("adding post response", response.data);
+      // console.log("adding post response", response.data);
 
       if (imageInputRef.current) {
         imageInputRef.current.value = null;
@@ -245,6 +245,7 @@ function AddPost() {
   };
 
   const onDocumentsChange = (e) => {
+    setDocuments([])
     const files = Array.from(e.target.files); // Convert FileList to Array
     setDocuments(files);
   };
@@ -266,6 +267,7 @@ function AddPost() {
 }, [messages, isTyping]);
 
   // console.log("links",links)
+  console.log("documents",documents)
 
   return (
     <div className="min-h-screen relative bg-gray-900 text-white">
@@ -406,10 +408,10 @@ function AddPost() {
               className={`bg-[#0f172a]/80 md:col-span-2   border  border-gray-800 rounded-lg px-4 py-6  md:p-8 shadow-xl
         ${chatbot ? "hidden lg:block" : "block"}`}
             >
-              <form onSubmit={handleSubmit} className="space-y-9 md:space-y-7">
+              <form onSubmit={handleSubmit} className="space-y-9  md:space-y-7">
                 {/* TITLE */}
                 <div>
-                  <label className="text-sm text-gray-400 font-medium">
+                  <label className="text-sm text-gray-400 md:text-gray-300 font-medium">
                     Title <span className="text-red-500">*</span>
                   </label>
 
@@ -418,7 +420,7 @@ function AddPost() {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="Enter post title"
-                    className="w-full mt-2  px-4 py-2 rounded-md bg-gray-900 border border-gray-700 focus:border focus:border-emerald-500/40 outline-none text-white text-sm"
+                    className="w-full mt-2  px-4 py-2 rounded-md bg-gray-900 border border-gray-700 focus:border focus:border-emerald-500/40 outline-none text-white text-xs md:text-sm"
                   />
 
                   {fieldErrors.title && (
@@ -430,7 +432,7 @@ function AddPost() {
 
                 {/* DESCRIPTION */}
                 <div>
-                  <label className="text-sm text-gray-400 font-medium">
+                  <label className="text-sm text-gray-400 md:text-gray-300 font-medium">
                     Description <span className="text-red-500">*</span>
                   </label>
 
@@ -451,14 +453,14 @@ function AddPost() {
 
                 {/* CATEGORY */}
                 <div>
-                  <label className="text-sm text-gray-400 font-medium">
+                  <label className="text-sm text-gray-400 md:text-gray-300 font-medium">
                     Category <span className="text-red-500">*</span>
                   </label>
 
                   <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
-                    className="w-full mt-2 px-4 py-2 cursor-pointer focus:border focus:border-emerald-500/40 rounded-md bg-gray-900 border border-gray-700 outline-none text-sm text-white  "
+                    className="w-full mt-2 px-4 py-2 cursor-pointer focus:border focus:border-emerald-500/40 rounded-md bg-gray-900 border border-gray-700 outline-none text-xs md:text-sm text-white  "
                   >
                     <option value="">Select Domain</option>
                     <option value="GenAI">GenAI</option>
@@ -489,13 +491,13 @@ function AddPost() {
                     value={customCategory}
                     onChange={(e) => setCustomCategory(e.target.value)}
                     placeholder="Enter custom category"
-                    className="w-full mt-2 px-4 py-2 rounded-md bg-gray-900 border border-gray-700 outline-none  outline-none text-white text-sm"
+                    className="w-full mt-2 px-4 py-2 rounded-md bg-gray-900 border border-gray-700 outline-none  outline-none text-white text-xs md:text-sm"
                   />
                 )}
 
                 {/* THUMBNAIL */}
                 <div>
-                  <label className="text-sm text-gray-400 font-medium">
+                  <label className="text-sm text-gray-400 md:text-gray-300 font-medium">
                     Thumbnail <span className="text-red-500">*</span>
                   </label>
 
@@ -530,7 +532,7 @@ function AddPost() {
 
                    {!previewImage && (
                 <div className="w-80 h-40 mt-3 rounded-xl flex items-center justify-center bg-gray-700">
-                  <p className="text-gray-400 text-xs">No Thumbnail</p>
+                  <p className="text-gray-400 md:text-gray-300 text-xs">No Thumbnail</p>
                 </div>
               )}
 
@@ -554,7 +556,7 @@ function AddPost() {
                 {/* LINKS */}
                 <div className="space-y-3 w-full ">
                   <div className="flex w-full items-center justify-between">
-                    <label className="text-sm text-gray-400 font-medium">
+                    <label className="text-sm text-gray-400 md:text-gray-300 font-medium">
                       Project Links
                     </label>
 
@@ -580,7 +582,7 @@ function AddPost() {
                         value={currentLinkTitle}
                         onChange={(e) => setCurrentLinkTitle(e.target.value)}
                         // w-full
-                        className="md:w-1/3 w-full focus:border focus:border-emerald-500/40  px-4 py-2 cursor-pointer rounded-xl bg-gray-900 border border-gray-700 outline-none text-sm text-white"
+                        className="md:w-1/3 w-full focus:border focus:border-emerald-500/40  px-4 py-2 cursor-pointer rounded-xl bg-gray-900 border border-gray-700 outline-none text-xs md:text-sm text-white"
                       >
                         <option value="" disabled>
                           Select Link
@@ -599,7 +601,7 @@ function AddPost() {
                         placeholder="Enter platform name"
                         value={customTitle}
                         onChange={(e) => setCustomTitle(e.target.value)}
-                        className="md:w-1/3 w-full focus:border focus:border-emerald-500/40 px-4 py-2 rounded-md bg-gray-900 border border-gray-700 outline-none  outline-none text-white text-sm"
+                        className="md:w-1/3 w-full focus:border focus:border-emerald-500/40 px-4 py-2 rounded-md bg-gray-900 border border-gray-700 outline-none  outline-none text-white text-xs md:text-sm"
                       />
                     )}
 
@@ -609,7 +611,7 @@ function AddPost() {
                       value={currentLinkUrl}
                       onChange={(e) => setCurrentLinkUrl(e.target.value)}
                       placeholder="Paste URL"
-                      className="md:w-2/3 focus:border focus:border-emerald-500/40 w-full px-4 py-2 rounded-md bg-gray-900 border border-gray-700 outline-none  outline-none text-white text-sm"
+                      className="md:w-2/3 focus:border focus:border-emerald-500/40 w-full px-4 py-2 rounded-md bg-gray-900 border border-gray-700 outline-none  outline-none text-white text-xs md:text-sm"
                     />
 
                     {/* ADD BUTTON */}
@@ -653,7 +655,7 @@ function AddPost() {
                               {link.title}
                             </span>
                             <br />
-                            <span className="text-gray-400">{link.url}</span>
+                            <span className="text-gray-400 md:text-gray-300">{link.url}</span>
                           </div>
 
                           <button
@@ -681,15 +683,35 @@ function AddPost() {
 
                   <input
                     type="file"
+                    // ref={fileInputRef}
                     multiple
                     accept=".pdf,.doc,.docx"
                     onChange={onDocumentsChange}
                     className="w-full mt-2 text-xs  text-gray-300 
-    file:mr-4 file:px-2 file:py-1 file:rounded-md 
-    file:border-0 file:bg-emerald-500/20 file:hover:bg-emerald-600/20 file:text-emerald-400 
-    file:cursor-pointer"
+                      file:mr-4 file:px-2 file:py-1 file:rounded-md 
+                      file:border-0 file:bg-emerald-500/20 file:hover:bg-emerald-600/20 file:text-emerald-400 
+                      file:cursor-pointer"
                   />
+                  {documents.length > 0 && (
+                    <div className="mt-3 flex flex-col gap-1.5">
+                      {documents.map((doc, idx) => (
+                        <div
+                          key={idx}
+                         
+
+                          className="flex items-center gap-2 bg-gray-900 px-3 py-2 rounded-lg border border-emerald-500/20 text-xs text-gray-300"
+                        >
+                          <span className="text-emerald-400 font-semibold shrink-0">{idx + 1}.</span>
+                          <span className="truncate">{doc.name}</span>
+                          <span className="ml-auto text-gray-500 shrink-0">
+                            {(doc.size / 1024).toFixed(1)} KB
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
+                  
 
                 {/* SUBMIT */}
                 <div className="pt-4">

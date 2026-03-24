@@ -103,6 +103,7 @@ function EditTutorPlaylist() {
         navigator(-1)
       }
     } catch (err) {
+     
       console.log("error", err.message);
     }
     finally{

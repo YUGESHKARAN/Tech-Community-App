@@ -878,7 +878,7 @@ const notificationAuthorDeleteAll = async (req, res) => {
 // };
 
 const addAnnouncement = async (req, res) => {
-  console.log("announcement route hit");
+  // console.log("announcement route hit");
 
   const {
     user,
@@ -890,7 +890,7 @@ const addAnnouncement = async (req, res) => {
     email,
     profile,
   } = req.body;
-  const poster = req.file ? req.file.originalname : "";
+  // const poster = req.file ? req.file.originalname : "";
   try {
     const author = await Author.findOne({ email });
     if (!author) {
