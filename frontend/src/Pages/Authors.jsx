@@ -498,7 +498,7 @@ const recommendedAuthors = useMemo(() => {
         {/* Students Section */}
         {filteredAuthors.filter((author) => author.role === "student").length >
           0 && (
-          <h2 className="md:text-left text-center w-full mt-16 text-2xl md:text-4xl font-semibold text-white">
+          <h2 className={`md:text-left text-center w-full  text-2xl md:text-4xl font-semibold text-white ${roleFilter=='student'?'mt-6':' mt-16'}`}>
             Students
           </h2>
         )}
