@@ -464,7 +464,7 @@ const recommendedAuthors = useMemo(() => {
           {filteredAuthors.filter((author) => author.role === "coordinator")
             .length > 0 &&
             loading && (
-             <div className="col-span-full flex justify-center">
+             <div className="col-span-full flex justify-center py-4">
                       <div className="relative flex items-center justify-center">
                         {/* Outer Oval Ring */}
                         <div className="w-7 h-7  border-2 border-neutral-700 border-t-emerald-400 rounded-full animate-spin" />
@@ -586,7 +586,7 @@ const recommendedAuthors = useMemo(() => {
           {filteredAuthors.filter((author) => author.role === "student")
             .length > 0 &&
             loading && (
-              <div className="col-span-full flex justify-center">
+              <div className="col-span-full flex justify-center py-4">
                       <div className="relative flex items-center justify-center">
                         {/* Outer Oval Ring */}
                         <div className="w-7 h-7  border-2 border-neutral-700 border-t-emerald-400 rounded-full animate-spin" />
