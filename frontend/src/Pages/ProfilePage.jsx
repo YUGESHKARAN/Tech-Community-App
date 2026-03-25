@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import NavBar from "../ui/NavBar";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+
 import { useAuth } from "../AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 import { RiDeleteBin6Line } from "react-icons/ri";
@@ -16,6 +15,7 @@ import { ImProfile } from "react-icons/im";
 
 import { PiLinkSimpleFill } from "react-icons/pi";
 import { MdEdit } from "react-icons/md";
+import toast from "../components/toaster/Toast"
 function ProfilePage() {
   const { logout } = useAuth();
   const email = localStorage.getItem("email");
@@ -51,11 +51,11 @@ function ProfilePage() {
       const response = await axiosInstance.delete(`/blog/author/${email}`, {
         data: { password },
       });
-      toast.success("Account deleted successfully");
+      
       response.status === 200 && logout();
     } catch (err) {
       console.log(err);
-      toast.error("unable to delete your account");
+      toast.error('Unauthorized', 'Unable to delete the account')
     } finally {
       setLoading(false);
       setPassword("");
@@ -113,10 +113,10 @@ function ProfilePage() {
         // `/blog/author/${email}`,
         formData
       );
-      // toast.success("Profile updated successfully");
+     
       if (response.status === 201) {
         // navigate("/home"); // Redirect to the homepage
-        toast.success("Author data updated successfully");
+        toast.success('Updated', 'Account details updated successfully')
         setLinks([]);
         fetchAuthor();
         setLinkId(null); // Reset link ID after submission
@@ -146,15 +146,20 @@ function ProfilePage() {
         `/blog/author/personalLinks/${authorEmail}/links/${linkId}`
       );
       if (response.status === 200) {
-        toast.success("Link removed successfully");
-        fetchAuthor();
+        setProfileLinks((prev)=>
+          prev.filter((link)=> link._id!==linkId)
+        )
+        toast.success('Deleted', 'Bio link removed successfully')
+        // fetchAuthor();
         setShowLinkBox(false);
       }
     } catch (err) {
+      toast.error('Error', 'Error removing bio link')
       console.log("error", err);
     }
   };
 
+  // console.log("profile links", profileLinks)
   return (
     <div className="min-h-screen relative bg-gray-900 text-white">
       <NavBar />
@@ -167,7 +172,7 @@ function ProfilePage() {
           </h1>
           <button
             onClick={() => setShowConfirm(true)}
-            className="flex items-center gap-2 text-white bg-red-600 hover:bg-red-500 transition-all duration-200 px-3 py-2 rounded-md shadow-sm"
+            className="flex items-center gap-2 text-gray-200 bg-red-600/80 hover:bg-red-600/60 transition-all duration-200 px-3 py-2 rounded-md shadow-sm"
             title="Delete Account"
           >
             <RiDeleteBin6Line size={20} />
@@ -373,7 +378,7 @@ function ProfilePage() {
                       setCurrentLinkUrl("");
                       setShowLinkBox(false);
                     }}
-                    className="bg-red-500 md:px-3 px-2 md:text-sm text-xs py-0.5 rounded-md"
+                    className="bg-red-600/80 hover:bg-red-600/60 transition-all duration-300  px-2 md:px-3  text-xs md:py-1 py-0.5 rounded-md"
                   >
                     Clear
                   </button>
@@ -513,25 +518,25 @@ function ProfilePage() {
                   {profileLinks.map((link, index) => (
                     <div
                       key={index}
-                      className="relative bg-gray-800/30 hover:bg-gray-800/90  border-gray-700 rounded-lg p-3 transition-all duration-300 group"
+                      className="relative bg-gray-800/30 hover:bg-gray-800/90  border-neutral-700 rounded-lg p-3 transition-all duration-300 group"
                     >
                       <div className="flex flex-row md:flex-row md:items-center md:justify-between gap-2">
                         <div className="w-full flex flex-col">
                           <div className="flex gap-2 items-center">
                             {link.title === "LinkedIn" ? (
-                              <FaLinkedin className="text-xl" />
+                              <FaLinkedin className="text-3xl" />
                             ) : link.title === "GitHub" ? (
-                              <FaSquareGithub className="text-xl" />
+                              <FaSquareGithub className="text-3xl" />
                             ) : link.title === "Portfolio" ? (
-                              <BsPersonSquare className="text-xl" />
+                              <BsPersonSquare className="text-3xl" />
                             ) : (
-                              <PiLinkSimpleFill className="text-xl" />
+                              <PiLinkSimpleFill className="text-3xl" />
                             )}
-                            <p className="text-gray-300 text-sm font-medium mb-1">
+                            <div className="flex flex-col">
+                              <p className="text-gray-300 text-sm font-medium ">
                               {link.title}
                             </p>
-                          </div>
-                          <a
+                             <a
                             href={link.url}
                             target="_blank"
                             rel="noopener noreferrer"
@@ -539,6 +544,9 @@ function ProfilePage() {
                           >
                             {userName}/{link.title}
                           </a>
+                            </div>
+                          </div>
+                         
                         </div>
 
                         {/* Action Buttons */}
@@ -555,7 +563,7 @@ function ProfilePage() {
                               setShowLinkBox(true);
                               setUpdateButton(true);
                             }}
-                            className="p-1 md:p-1.5  rounded-full text-sm bg-blue-600 hover:bg-blue-500 text-white transition-all duration-200"
+                            className="p-1 md:p-1.5  rounded-full text-sm bg-blue-600/20 hover:bg-blue-600/30 text-white transition-all duration-200"
                             title="Edit link"
                           >
                             <MdEdit className="text-xs md:text-sm" />
@@ -603,7 +611,7 @@ function ProfilePage() {
                       setCurrentLinkUrl("");
                       setShowLinkBox(false);
                     }}
-                    className="bg-red-500 md:px-3 px-2 md:text-sm text-xs py-0.5 rounded-md"
+                    className="bg-red-600/80 hover:bg-red-600/60 transition-all duration-300  px-3 md:px-3  text-xs md:py-1 py-1 rounded-md"
                   >
                     Clear
                   </button>
@@ -619,7 +627,7 @@ function ProfilePage() {
                       onChange={(e) => {
                         setCurrentLinkTitle(e.target.value);
                       }}
-                      className="w-full px-3 py-1 md:py-2 bg-gray-900 border md:text-sm border-gray-600 focus:border-emerald-500 cursor-pointer outline-none rounded-md text-xs   text-gray-200"
+                      className="w-full px-3 py-2 bg-gray-900 border md:text-sm border-gray-600 focus:border-emerald-500 cursor-pointer outline-none rounded-md text-xs   text-gray-200"
                     >
                       <option value="" disabled>
                         Select Link Title
@@ -652,7 +660,7 @@ function ProfilePage() {
                       type="text"
                       placeholder="Enter platform name"
                       onChange={(e) => setCustomTitle(e.target.value)}
-                      className="w-full  px-3 py-1 md:py-2 bg-gray-900 text-xs md:text-sm outline-none border border-gray-600 rounded-md focus:border-emerald-500"
+                      className="w-full  px-3 py-2 bg-gray-900 text-xs md:text-sm outline-none border border-gray-600 rounded-md focus:border-emerald-500"
                     />
                   )}
                 </div>
@@ -661,7 +669,7 @@ function ProfilePage() {
                   value={currentLinkUrl}
                   onChange={(e) => setCurrentLinkUrl(e.target.value)}
                   placeholder="Link URL"
-                  className="w-full  px-3 py-1 md:py-2 bg-gray-900 text-xs md:text-sm outline-none border border-gray-600 rounded-md focus:border-emerald-500"
+                  className="w-full  px-3 py-2 bg-gray-900 text-xs md:text-sm outline-none border border-gray-600 rounded-md focus:border-emerald-500"
                 />
 
                 <button
@@ -686,7 +694,7 @@ function ProfilePage() {
                       setLinkId(null);
                     }
                   }}
-                  className="px-4 bg-emerald-500/20 w-fit py-1 md:py-2   text-black text-emerald-400  text-xs rounded-md hover:bg-emerald-600/20"
+                  className="px-4 bg-emerald-500/20 w-fit py-2   text-black text-emerald-400  text-xs rounded-md hover:bg-emerald-600/20"
                 >
                   Add
                 </button>
@@ -813,7 +821,7 @@ function ProfilePage() {
         </div>
       )}
 
-      <ToastContainer />
+
       <div className="absolute bottom-0 w-full">
         {" "}
         <Footer />

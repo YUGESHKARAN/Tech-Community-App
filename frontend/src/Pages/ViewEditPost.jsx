@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import blog1 from "../images/img_not_found.png";
 import { useParams } from "react-router-dom";
 import NavBar from "../ui/NavBar";
-import { ToastContainer, toast } from "react-toastify";
+// import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import Footer from "../ui/Footer";
@@ -10,6 +10,8 @@ import { MdEdit } from "react-icons/md";
 import axiosInstance from "../instances/Axiosinstances";
 import { IoIosRemoveCircleOutline } from "react-icons/io";
 import user from "../images/user.png";
+import toast from "../components/toaster/Toast"
+
 function ViewEditPost() {
   // const username = localStorage.getItem("username");
   const email = localStorage.getItem("email");
@@ -103,7 +105,6 @@ function ViewEditPost() {
        navigate("/yourposts");
       console.error("Error editing post:", error);
       setError({ apiError: error.ValidatorError || "Update failed" });
-      // toast.error("Failed to edit post");
     } finally {
       setLoading(false);
     }
@@ -154,13 +155,13 @@ function ViewEditPost() {
         { data: { linkId } },
       );
       if (response.status === 200) {
-        toast.success("Link removed successfully");
+        toast.success('Deleted', 'Resource link removed successfully')
         setLinkId(null);
         // Refresh post data to reflect changes
         getSinglrPost();
       }
     } catch (err) {
-      toast.error("Unable to remove link ");
+      toast.error('Error', 'Error removing resource link')
       console.log("error", err);
     }
   };

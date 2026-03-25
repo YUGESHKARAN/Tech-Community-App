@@ -366,127 +366,7 @@ function BookMarkPage() {
                 >
                   All
                 </div>
-                 {/* <div
-                  onClick={() => setPostCategory("")}
-                  className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1 md:py-2 transition-all duration-200 ${
-                    postCategory === ""
-                      ? "bg-emerald-600/20 text-emerald-400"
-                      : "bg-gray-800 text-white"
-                  }`}
-                >
-                  domain 2
-                </div>
-                 <div
-                  onClick={() => setPostCategory("")}
-                  className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1 md:py-2 transition-all duration-200 ${
-                    postCategory === ""
-                      ? "bg-emerald-600/20 text-emerald-400"
-                      : "bg-gray-800 text-white"
-                  }`}
-                >
-                  domain  3
-                </div>
-                 <div
-                  onClick={() => setPostCategory("")}
-                  className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1 md:py-2 transition-all duration-200 ${
-                    postCategory === ""
-                      ? "bg-emerald-600/20 text-emerald-400"
-                      : "bg-gray-800 text-white"
-                  }`}
-                >
-                  domain  3
-                </div>
-                 <div
-                  onClick={() => setPostCategory("")}
-                  className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1 md:py-2 transition-all duration-200 ${
-                    postCategory === ""
-                      ? "bg-emerald-600/20 text-emerald-400"
-                      : "bg-gray-800 text-white"
-                  }`}
-                >
-                  domain  3
-                </div>
-                 <div
-                  onClick={() => setPostCategory("")}
-                  className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1 md:py-2 transition-all duration-200 ${
-                    postCategory === ""
-                      ? "bg-emerald-600/20 text-emerald-400"
-                      : "bg-gray-800 text-white"
-                  }`}
-                >
-                  domain  3
-                </div>
-                 <div
-                  onClick={() => setPostCategory("")}
-                  className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1 md:py-2 transition-all duration-200 ${
-                    postCategory === ""
-                      ? "bg-emerald-600/20 text-emerald-400"
-                      : "bg-gray-800 text-white"
-                  }`}
-                >
-                  domain  3
-                </div>
-                 <div
-                  onClick={() => setPostCategory("")}
-                  className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1 md:py-2 transition-all duration-200 ${
-                    postCategory === ""
-                      ? "bg-emerald-600/20 text-emerald-400"
-                      : "bg-gray-800 text-white"
-                  }`}
-                >
-                  domain  3
-                </div>
-                 <div
-                  onClick={() => setPostCategory("")}
-                  className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1 md:py-2 transition-all duration-200 ${
-                    postCategory === ""
-                      ? "bg-emerald-600/20 text-emerald-400"
-                      : "bg-gray-800 text-white"
-                  }`}
-                >
-                  domain  3
-                </div>
-                 <div
-                  onClick={() => setPostCategory("")}
-                  className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1 md:py-2 transition-all duration-200 ${
-                    postCategory === ""
-                      ? "bg-emerald-600/20 text-emerald-400"
-                      : "bg-gray-800 text-white"
-                  }`}
-                >
-                  domain  3
-                </div>
-                 <div
-                  onClick={() => setPostCategory("")}
-                  className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1 md:py-2 transition-all duration-200 ${
-                    postCategory === ""
-                      ? "bg-emerald-600/20 text-emerald-400"
-                      : "bg-gray-800 text-white"
-                  }`}
-                >
-                  domain  3
-                </div>
-                 <div
-                  onClick={() => setPostCategory("")}
-                  className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1 md:py-2 transition-all duration-200 ${
-                    postCategory === ""
-                      ? "bg-emerald-600/20 text-emerald-400"
-                      : "bg-gray-800 text-white"
-                  }`}
-                >
-                  domain  3
-                </div>
-                 <div
-                  onClick={() => setPostCategory("")}
-                  className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1 md:py-2 transition-all duration-200 ${
-                    postCategory === ""
-                      ? "bg-emerald-600/20 text-emerald-400"
-                      : "bg-gray-800 text-white"
-                  }`}
-                >
-                  domain  3
-                </div> */}
-
+        
 
                 {/* Dynamic Categories */}
                 {getUniqueCategories(posts).map((data, index) => (
@@ -511,25 +391,9 @@ function BookMarkPage() {
               
 
               <div className="mx-auto grid grid-cols-1 w-full  md:px-2 mx-auto md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-10 mt-5 md:mt-10 h-auto">
-                {/* Posts Grid */}
+
                 {
-                  // loader ? (
-                  //   <div className="col-span-full flex flex-col items-center justify-center">
-                  //     <MagnifyingGlass
-                  //       visible={true}
-                  //       height="100"
-                  //       width="100"
-                  //       ariaLabel="loading"
-                  //       wrapperStyle={{ marginTop: "20px" }}
-                  //       wrapperClass="magnifying-glass-wrapper"
-                  //       glassColor="#4B5563"
-                  //       color="#60A5FA"
-                  //     />
-                  //     <p className="text-sm md:text-lg font-semibold text-gray-400">
-                  //       Loading Posts...
-                  //     </p>
-                  //   </div>
-                  // ) :
+             
                   (postCategory === ""
                     ? filterdPost
                     : posts.filter((post) => post.category === postCategory)
@@ -690,11 +554,11 @@ function BookMarkPage() {
               </div>
 
               {!loading && posts.length == 0 && (
-                <p className="text-gray-400 flex justify-center items-center h-56 text-center py-4">
+                <p className="text-gray-400 flex col-span-full justify-center items-center h-56 text-center py-4">
                   No posts bookmarked!
                 </p>
               )}
-               {!hasMore && (
+               {!hasMore && posts.length >0 && (
                   <p className="text-center col-span-full py-4 text-gray-500">
                     No more posts
                   </p>
