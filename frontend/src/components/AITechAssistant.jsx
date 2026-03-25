@@ -10,7 +10,7 @@ import blog1 from "../images/img_not_found.png";
 import { VscSend } from "react-icons/vsc";
 import { IoSendSharp } from "react-icons/io5";
 import Cookies from "js-cookie";
-export default function AITechAssistant({ currentPostId, category }) {
+export default function AITechAssistant({ currentPostId, category, viewComments, setViewComments }) {
   const username = localStorage.getItem("username");
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -191,6 +191,12 @@ export default function AITechAssistant({ currentPostId, category }) {
     requestAnimationFrame(animateScroll);
   }, [messages]);
 
+  useEffect(()=>{
+    if (viewComments){
+      setOpen(false)
+    }
+  }, [viewComments])
+
   //  console.log("token", token)
   // console.log("messages", messages )
   return (
@@ -205,14 +211,28 @@ export default function AITechAssistant({ currentPostId, category }) {
         </button>
       )} */}
 
-       {!open && (
+     {open&& <div
+                  onClick={() => setOpen(false)}
+                  className={`absolute inset-0 duration-300 ${
+                    open ? "opacity-100" : "opacity-0"
+                  }`}
+                />}
+
+       {/* {!open && (
         <button
           onClick={() => setOpen(true)}
           className=" bottom-4 flex items-center gap-2 right-4 bg-gray-900 hover:bg-gray-800 border border-neutral-700 text-emerald-400 text-sm md:px-5 px-3 py-1 rounded-full md:hidden z-50 shadow-xl"
         >
          AI <SiGooglegemini />
         </button>
-      )}
+      )} */}
+
+        <button
+          onClick={() => setOpen(!open)}
+          className=" bottom-4 flex md:hidden items-center gap-2 right-4 bg-gray-900 transition-all duration-300 active:scale-95 border border-neutral-700 text-emerald-400 text-sm md:px-5 px-3 py-1 rounded-full md:hidden z-50 shadow-xl"
+        >
+         AI <SiGooglegemini />
+        </button>
 
 
       {/* Assistant Panel */}
@@ -221,18 +241,26 @@ export default function AITechAssistant({ currentPostId, category }) {
       fixed md:static bottom-0 right-0
       w-full md:w-full
       md:relative
-      h-[75vh] md:h-[520px]
+      h-[65vh] md:h-[520px]
        text-white
        bg-[#0f0f0f]
       border-l border-neutral-800
       transform transition-transform duration-300
       ${open ? "translate-y-0" : "translate-y-full md:translate-y-0"}
       z-40 flex flex-col  md:rounded-xl
+      
       md:py-4
+
+      
     `}
       >
+
+        {/* <div className="flex md:hidden justify-center pt-3 pb-1 shrink-0">
+                    <div className="w-9 h-1 rounded-full bg-gray-600" />
+                  </div> */}
         {/* Header */}
         <div className="relative p-4 border-b text-xl border-neutral-800 flex justify-between items-center">
+          
           <h2 className="font-bold ">
             Ask about this post <SiGooglegemini />
           </h2>
@@ -243,6 +271,8 @@ export default function AITechAssistant({ currentPostId, category }) {
             ✕
           </button>
         </div>
+
+        
 
         {/* Timeline */}
         <div

@@ -30,6 +30,7 @@ import PostDetailSkeleton from "../components/loaders/PostDetailSkeleton.jsx";
 import { VscSend } from "react-icons/vsc";
 import { BiLike, BiSolidLike } from "react-icons/bi";
 import { PiBookmarksSimpleFill, PiBookmarksSimpleLight } from "react-icons/pi";
+import useDragSheet from "../hooks/useDragHeader.js";
 function ViewPage() {
   const user = localStorage.getItem("username");
   const userEmail = localStorage.getItem("email");
@@ -50,7 +51,8 @@ function ViewPage() {
   const [loading, setLoading] = useState(false);
   const commentsRef = useRef(null);
   const [bookMarkId, setBookMarkId] = useState([]);
-  const myProfile = localStorage.getItem('profile')
+  const myProfile = localStorage.getItem("profile");
+  const { sheetRef, handleDragStart } = useDragSheet(setViewComments);
 
   // Fetch post data
   useEffect(() => {
@@ -206,7 +208,7 @@ function ViewPage() {
     const optimisticMessage = {
       ...messageData,
       _id: `temp-${Date.now()}`,
-      profile:myProfile || "",
+      profile: myProfile || "",
     };
 
     // ✅ OPTIMISTIC UPDATE (instant UI)
@@ -333,7 +335,7 @@ function ViewPage() {
     fetchBookmarkIds();
   }, []);
 
-    const addBookMarkPostId = async (postId) => {
+  const addBookMarkPostId = async (postId) => {
     try {
       const response = await axiosInstance.post(
         `/blog/posts/bookmarkPosts/${userEmail}`,
@@ -514,19 +516,42 @@ function ViewPage() {
                 </div>
               </div>
 
-
               {/* -----------------AI assistant, likes, share and bookmark block --starts here------------- */}
-            <div className="flex items-center  justify-between md:justify-end mt-3 mb-1 md:mb-5">
+              <div className="flex items-center  justify-between md:justify-end mt-3 mb-1 md:mb-5">
                 {/* AI Assistant */}
                 <div className="text-3xl block md:hidden md:text-4xl text-white">
                   <AITechAssistant
                     currentPostId={singlePostData._id}
                     category={singlePostData.category}
+                    viewComments = {viewComments}
+                    setViewComments = {setViewComments}
                   />
+                 
+                  
                 </div>
 
                 {/* Actions */}
                 <div className="flex items-center md: gap-2 md:gap-3">
+                   <button
+                    onClick={() =>setViewComments(!viewComments)
+                    }
+
+                    className={`
+                                  flex items-center gap-2
+                  px-3 py-1.5 md:px-4 md:py-2
+                  rounded-full
+                  bg-gray-900  border md:border-neutral-700 border-neutral-700
+                  md:hidden
+                  active:scale-95
+                  transition
+                  ${showAssistant ? "pointer-events-none" : ""}`}
+                  >
+            
+                    <MdOutlineInsertComment className="text-sm text-emerald-400" />
+
+                  </button>
+
+
                   {/* Like */}
                   <button
                     onClick={() => postLikes(singlePostData._id)}
@@ -549,6 +574,8 @@ function ViewPage() {
                       {singlePostData.likes?.length || " "}
                     </span>
                   </button>
+
+                 
 
                   {/* Share */}
                   <button
@@ -575,6 +602,8 @@ function ViewPage() {
                     </span>
                   </button>
 
+                 
+
                   {/* Bookmark */}
                   <button
                     onClick={() => addBookMarkPostId(singlePostData._id)}
@@ -591,7 +620,7 @@ function ViewPage() {
                     bookMarkId.includes(singlePostData._id) ? (
                       <PiBookmarksSimpleFill className="text-sm  text-emerald-400" />
                     ) : (
-                      <PiBookmarksSimpleLight  className="text-sm  text-emerald-400"/>
+                      <PiBookmarksSimpleLight className="text-sm  text-emerald-400" />
                     )}
                     <span className="hidden md:inline text-xs text-gray-300">
                       Save
@@ -797,8 +826,7 @@ function ViewPage() {
               )}
 
               {/* Comments */}
-              {/* bg-gradient-to-br from-gray-800 to-gray-900 */}
-              <div
+              {/* <div
                 className="
                 bg-gray-900
                 border border-neutral-700/50
@@ -811,7 +839,7 @@ function ViewPage() {
               "
                 ref={commentWrapperRef}
               >
-                {/* Header */}
+    
                 <div className="flex justify-between items-center mb-3 shrink-0">
                   <h3 className="font-semibold">
                     💬 Comments{" "}
@@ -827,11 +855,8 @@ function ViewPage() {
                   />
                 </div>
 
-                {/* Scrollable comments list */}
-                {/* <div className="flex-1 overflow-y-auto pr-1 scrollbar-hide">
-                <CommentsBox messages={messages} viewComments={viewComments} />
-              </div> */}
-                {/* Scrollable comments list */}
+              
+             
                 <div
                   ref={commentsRef}
                   className="flex-1 overflow-y-auto pr-1 scrollbar-hide"
@@ -858,14 +883,14 @@ function ViewPage() {
                 >
                   Post It
                 </button>
-              </div>
+              </div> */}
 
               {/* Fixed Comment Input Bar */}
-              <div
+              {/* <div
                 className={`${showAssistant ? "hidden" : "fixed md:hidden bottom-0 left-0 right-0 z-30 bg-gray-900  backdrop-blur-md"}`}
               >
                 <div className="max-w-7xl mx-auto px-3 md:px-8 py-3 flex items-center gap-3">
-                  {/* Input */}
+                
                   <input
                     type="text"
                     value={newMessage}
@@ -880,30 +905,201 @@ function ViewPage() {
                   "
                   />
 
-                  {/* Button */}
-                  {/* <button
-                  onClick={postComment}
-                  className="
-                      px-5 py-2.5
-                      rounded-xl
-                      bg-gradient-to-r from-orange-500 to-yellow-500
-                      text-sm font-semibold text-gray-900
-                      hover:from-orange-600 hover:to-yellow-600
-                      shadow-md
-                      transition-all
-                      whitespace-nowrap
-                    "
-                >
-                  Post
-                </button> */}
+                
 
                   <button
                     onClick={postComment}
                     // className="bg-white text-black px-4 rounded-xl text-sm text-base block"
                     className="text-2xl md:text-2xl transition-all duration-300 hover:text-gray-400 text-gray-500 block"
                   >
-                    {/* Send */}
+                   
                     <VscSend />
+                  </button>
+                </div>
+              </div> */}
+
+              {/* Comments */}
+              {/* bg-[#161b22] */}
+              <div
+                className={`
+                   bg-gray-900
+                  border border-[#30363d]
+                  md:rounded-xl rounded-lg
+                  text-white
+                  md:flex md:flex-col
+                  max-h-[75vh]
+                  overflow-hidden
+                    ${showAssistant ? "pointer-events-none" : ""}
+                  ${viewComments ? "hidden " : "flex-col"}
+                 md:flex-col
+                  `}
+                ref={commentWrapperRef}
+              >
+                {/* Header */}
+                <div className="flex justify-between items-center px-4 py-3 border-b border-[#21262d] shrink-0">
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-sm font-semibold text-gray-200">
+                      Discussion
+                    </h3>
+                    {messages.length > 0 && (
+                      <span className="text-[10px] font-medium bg-[#21262d] text-gray-400 border border-[#30363d] px-2 py-0.5 rounded-full">
+                        {messages.length}
+                      </span>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => setViewComments(!viewComments)}
+                    className={`p-1.5 rounded-md transition-colors ${
+                      viewComments
+                        ? "bg-emerald-500/20 text-emerald-400"
+                        : "text-gray-500 hover:text-gray-300 hover:bg-white/5"
+                    }`}
+                  >
+                    <MdOutlineInsertComment className="text-base" />
+                  </button>
+                </div>
+
+                {/* Scrollable comments list */}
+                <div
+                  ref={commentsRef}
+                  className="flex-1 overflow-y-auto px-4 py-2 scrollbar-hide"
+                >
+                  <CommentsBox
+                    messages={messages}
+                    viewComments={viewComments}
+                  />
+                </div>
+
+                {/* Desktop input */}
+                <div className="hidden md:block px-4 pb-4 pt-2 border-t border-[#21262d] shrink-0">
+                  <div className="flex items-center gap-2 bg-gray-900 border border-[#30363d] rounded-lg px-3 py-2 focus-within:border-emerald-500/50 transition-colors">
+                    <input
+                      type="text"
+                      value={newMessage}
+                      onChange={(e) => setNewMessage(e.target.value)}
+                      onKeyDown={(e) => e.key === "Enter" && postComment()}
+                      placeholder="Leave a comment..."
+                      className="flex-1 bg-transparent outline-none text-xs text-gray-300 placeholder-gray-600"
+                    />
+                    <button
+                      onClick={postComment}
+                      className="shrink-0 px-3 py-1 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 text-xs rounded-md transition-colors"
+                    >
+                      Comment
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Mobile: YouTube-style bottom sheet */}
+              <div
+                className={`
+                  md:hidden fixed inset-0 z-40 transition-all duration-300
+                  ${showAssistant ? "pointer-events-none" : ""}
+                  ${viewComments ? "visible" : "invisible"}
+                `}
+              >
+                {/* Backdrop */}
+                <div
+                  onClick={() => setViewComments(false)}
+                  // className={`absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300`}
+                  className={`absolute inset-0 duration-300`}
+                />
+
+                {/* Sheet */}
+                <div
+                ref={sheetRef}
+                  className={`
+                    absolute bottom-0 left-0 right-0
+                    bg-gray-900 border-t border-[#30363d]
+                    rounded-t-2xl
+                    flex flex-col
+                    max-h-[65vh]
+                    transition-transform duration-300 ease-out
+                    ${viewComments ? "translate-y-0" : "translate-y-full"}
+                  `}
+                  
+                >
+                 {/* Drag handle */}
+                <div
+                    className="flex justify-center pt-3 pb-1 shrink-0 cursor-row-resize touch-none"
+                    onMouseDown={handleDragStart}
+                    onTouchStart={handleDragStart}
+                  >
+                    <div className="w-9 h-1 rounded-full bg-gray-600" />
+                  </div>
+
+                  {/* Sheet header */}
+                  <div className="flex items-center justify-between px-4 py-2 border-b border-[#21262d] shrink-0">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-semibold text-gray-200">
+                        Discussion
+                      </span>
+                      {messages.length > 0 && (
+                        <span className="text-[10px] font-medium bg-[#21262d] text-gray-400 border border-[#30363d] px-2 py-0.5 rounded-full">
+                          {messages.length}
+                        </span>
+                      )}
+                    </div>
+                    <button
+                      onClick={() => setViewComments(false)}
+                      className="p-1.5 rounded-md text-gray-500 hover:text-gray-300 hover:bg-white/5 transition-colors"
+                    >
+                      <IoClose className="text-base" />
+                    </button>
+                  </div>
+
+                  {/* Scrollable comments */}
+                  <div className="flex-1 overflow-y-auto px-4 py-2 scrollbar-hide">
+                    <CommentsBox messages={messages} viewComments={viewComments} />
+                  </div>
+
+                  {/* Input flush to bottom, no gap */}
+                  <div className="shrink-0 px-3 py-3 border-t border-[#21262d] bg-gray-900">
+                    <div className="flex items-center gap-2 bg-[#161b22] border border-[#30363d] rounded-xl px-3 py-2.5 focus-within:border-emerald-500/50 transition-colors">
+                      <input
+                        type="text"
+                        value={newMessage}
+                        onChange={(e) => setNewMessage(e.target.value)}
+                        onKeyDown={(e) => e.key === "Enter" && postComment()}
+                        placeholder="Leave a comment..."
+                        className="flex-1 bg-transparent outline-none text-sm text-gray-300 placeholder-gray-600"
+                      />
+                      <button
+                        onClick={postComment}
+                        className="p-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 rounded-lg transition-colors"
+                      >
+                        <VscSend className="text-base" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Fixed Mobile Comment Input Bar */}
+              <div
+                className={`${
+                  showAssistant
+                    ? "hidden"
+                    : "fixed md:hidden bottom-0 left-0 right-0 z-30"
+                } bg-gray-900 `}
+              >
+                <div className="max-w-7xl mx-auto px-3 py-2.5 flex items-center gap-2.5">
+                  <div className="flex-1 flex items-center gap-2 bg-[#161b22] border border-[#30363d] rounded-lg px-3 py-2 focus-within:border-emerald-500/50 transition-colors">
+                    <input
+                      type="text"
+                      value={newMessage}
+                      onChange={(e) => setNewMessage(e.target.value)}
+                      onKeyDown={(e) => e.key === "Enter" && postComment()}
+                      placeholder="Leave a comment…"
+                      className="flex-1 bg-transparent outline-none text-sm text-gray-300 placeholder-gray-600"
+                    />
+                  </div>
+                  <button
+                    onClick={postComment}
+                    className="p-2.5 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 rounded-lg transition-colors"
+                  >
+                    <VscSend className="text-base" />
                   </button>
                 </div>
               </div>
