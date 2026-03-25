@@ -476,7 +476,7 @@ const recommendedAuthors = useMemo(() => {
             )}
 
           {filteredAuthors.filter((author) => author.role === "coordinator")
-            .length == 0 &&
+            .length == 0 && roleFilter !== "student" &&
             loading && (
               <div className="col-span-full">
                 <h2 className="md:text-left text-center w-full text-2xl md:text-4xl font-semibold my-6 text-white">
@@ -584,7 +584,7 @@ const recommendedAuthors = useMemo(() => {
             ))}
 
           {filteredAuthors.filter((author) => author.role === "student")
-            .length > 0 &&
+            .length > 0  &&
             loading && (
               <div className="col-span-full flex justify-center py-4">
                       <div className="relative flex items-center justify-center">
@@ -599,6 +599,7 @@ const recommendedAuthors = useMemo(() => {
 
           {filteredAuthors.filter((author) => author.role === "student")
             .length == 0 &&
+             roleFilter !== "coordinator" && 
             loading && (
               <div className="col-span-full">
                 <h2 className="md:text-left text-center w-full text-2xl md:text-4xl font-semibold my-6 text-white">
