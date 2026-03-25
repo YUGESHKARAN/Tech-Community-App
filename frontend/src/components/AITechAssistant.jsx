@@ -241,7 +241,7 @@ export default function AITechAssistant({ currentPostId, category, viewComments,
       fixed md:static bottom-0 right-0
       w-full md:w-full
       md:relative
-      h-[65vh] md:h-[520px]
+      h-[75vh] md:h-[520px]
        text-white
        bg-[#0f0f0f]
       border-l border-neutral-800

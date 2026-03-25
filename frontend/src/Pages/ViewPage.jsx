@@ -1014,7 +1014,7 @@ function ViewPage() {
                     bg-gray-900 border-t border-[#30363d]
                     rounded-t-2xl
                     flex flex-col
-                    max-h-[65vh]
+                    max-h-[75vh]
                     transition-transform duration-300 ease-out
                     ${viewComments ? "translate-y-0" : "translate-y-full"}
                   `}
