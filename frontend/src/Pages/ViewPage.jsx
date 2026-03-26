@@ -1014,7 +1014,7 @@ function ViewPage() {
                     bg-gray-900 border-t border-[#30363d]
                     rounded-t-2xl
                     flex flex-col
-                    max-h-[75vh]
+                    h-[75vh]
                     transition-transform duration-300 ease-out
                     ${viewComments ? "translate-y-0" : "translate-y-full"}
                   `}
@@ -1023,8 +1023,9 @@ function ViewPage() {
                  {/* Drag handle */}
                 <div
                     className="flex justify-center pt-3 pb-1 shrink-0 cursor-row-resize touch-none"
-                    onMouseDown={handleDragStart}
-                    onTouchStart={handleDragStart}
+                    // onMouseDown={handleDragStart}
+                    // onTouchStart={handleDragStart}
+                    onClick={()=>{setViewComments(false)}}
                   >
                     <div className="w-9 h-1 rounded-full bg-gray-600" />
                   </div>

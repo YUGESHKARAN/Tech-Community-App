@@ -37,7 +37,7 @@ export default function AITechAssistant({ currentPostId, category, viewComments,
     const finalQuery = customQuery || query;
     if (!finalQuery.trim()) return;
 
-    console.log("finalQuery", finalQuery)
+    // console.log("finalQuery", finalQuery)
 
     const userMessage = {
       role: "user",
@@ -255,9 +255,11 @@ export default function AITechAssistant({ currentPostId, category, viewComments,
     `}
       >
 
-        {/* <div className="flex md:hidden justify-center pt-3 pb-1 shrink-0">
+        <div 
+        onClick={()=>{setOpen(false)}}
+        className="flex md:hidden justify-center pt-3 pb-1 shrink-0">
                     <div className="w-9 h-1 rounded-full bg-gray-600" />
-                  </div> */}
+                  </div>
         {/* Header */}
         <div className="relative p-4 border-b text-xl border-neutral-800 flex justify-between items-center">
           
