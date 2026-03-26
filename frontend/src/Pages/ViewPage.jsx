@@ -521,7 +521,7 @@ function ViewPage() {
               {/* -----------------AI assistant, likes, share and bookmark block --starts here------------- */}
               <div 
               // className="flex items-center  justify-between md:justify-end mt-3 mb-1 md:mb-5"
-              className="w-full mt-3 mb-1 md:mb-5"
+              className="w-full mx-auto mt-3 mb-1 md:mb-5"
               >
                 {/* AI Assistant */}
                 {/* <div className="text-3xl block md:hidden md:text-4xl text-white">
@@ -536,7 +536,7 @@ function ViewPage() {
                 </div> */}
 
                 {/* Actions */}
-                <div className="flex items-center md:justify-end justify-evenly gap-4  md:gap-3">
+                <div className="flex items-center md:justify-end justify-between   md:gap-3">
                   <div className="text-3xl block md:hidden md:text-4xl text-white">
                   <AITechAssistant
                     currentPostId={singlePostData._id}
