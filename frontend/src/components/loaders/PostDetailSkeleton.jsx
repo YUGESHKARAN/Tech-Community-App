@@ -17,18 +17,18 @@ const PostDetailSkeleton = () => {
       <div className="h-8 w-3/4 bg-gray-700 rounded mb-4 md:mb-6" />
 
       {/* Two Column Layout */}
-      <div className="grid grid-cols-1 md:grid-cols-6 md:gap-8 gap-6">
+      <div className="grid grid-cols-1 mt-2 md:mt-0 md:grid-cols-6 md:gap-8 gap-4 md:gap-6">
         {/* LEFT COLUMN */}
-        <div className="md:col-span-4 space-y-2 md:space-y-6">
+        <div className="md:col-span-4 space-y-4 md:space-y-6">
           {/* Banner */}
           <div className="h-72 md:h-96 bg-gray-800 rounded-xl border border-gray-700" />
 
           {/* AI assistant likes, share and bookmark */}
-          <div className="flex items-center  justify-between md:justify-end mt-2 mb-3 md:mb-5">
+          <div className="flex items-center  justify-between md:justify-end mt-2 my-3 md:mb-5">
             <button className=" bottom-4 flex items-center gap-2 bg-gray-700 w-16 h-6  right-4 bg text-black text-sm px-5 py-2 rounded-full animate-pulse md:hidden shadow-xl"></button>
 
-            <div className="flex items-center md: gap-2 md:gap-3">
-              <button className=" bottom-4 flex md:hidden items-center gap-2 bg-gray-700 w-12  md:w-16 h-6  right-4 bg text-black text-sm px-5 py-2 rounded-full animate-pulse  shadow-xl"></button>
+            <div className="flex items-center gap-4 md:gap-3">
+              <button className=" bottom-4 flex md:hidden items-center gap-2 bg-gray-700 w-28  md:w-16 h-6  right-4 bg text-black text-sm px-5 py-2 rounded-full animate-pulse  shadow-xl"></button>
               <button className=" bottom-4 flex items-center gap-2 bg-gray-700 w-12  md:w-16 h-6  right-4 bg text-black text-sm px-5 py-2 rounded-full animate-pulse  shadow-xl"></button>
               <button className=" bottom-4 flex items-center gap-2 bg-gray-700 w-12  md:w-16 h-6  right-4 bg text-black text-sm px-5 py-2 rounded-full animate-pulse  shadow-xl"></button>
               <button className=" bottom-4 flex items-center gap-2 bg-gray-700 w-12  md:w-16 h-6  right-4 bg text-black text-sm px-5 py-2 rounded-full animate-pulse  shadow-xl"></button>
@@ -45,7 +45,7 @@ const PostDetailSkeleton = () => {
         </div>
 
         {/* RIGHT COLUMN */}
-        <div className="md:col-span-2 space-y-2 md:space-y-6">
+        <div className="md:col-span-2 space-y-4 md:space-y-6">
           {/* Assistant Box */}
           <div className="h-40 bg-gray-800 rounded-xl border border-gray-700" />
 

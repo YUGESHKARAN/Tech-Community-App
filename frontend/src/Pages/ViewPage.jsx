@@ -22,7 +22,7 @@ import { GlobalStateContext } from "../GlobalStateContext";
 import axiosInstance from "../instances/Axiosinstances";
 import CommentsBox from "../components/CommentsBox ";
 import { FaSquareGithub } from "react-icons/fa6";
-import { FaGithub, FaYoutube } from "react-icons/fa";
+import { FaGithub } from "react-icons/fa";
 import userImg from "../images/user.png";
 import { SiGooglegemini } from "react-icons/si";
 import AITechAssistant from "../components/AITechAssistant.jsx";
@@ -31,6 +31,8 @@ import { VscSend } from "react-icons/vsc";
 import { BiLike, BiSolidLike } from "react-icons/bi";
 import { PiBookmarksSimpleFill, PiBookmarksSimpleLight } from "react-icons/pi";
 import useDragSheet from "../hooks/useDragHeader.js";
+import { FaYoutube } from "react-icons/fa6";
+
 function ViewPage() {
   const user = localStorage.getItem("username");
   const userEmail = localStorage.getItem("email");
@@ -371,7 +373,7 @@ function ViewPage() {
 
       {/* Main Container */}
       {!loading && (
-        <div className="w-full mx-auto px-3  md:px-8 py-6 pb-20  md:py-10">
+        <div className="w-full relative mx-auto px-3  md:px-8 py-6 pb-20  md:py-10">
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
@@ -414,7 +416,7 @@ function ViewPage() {
           </h1>
 
           {/* Two Column Layout */}
-          <div className="grid grid-cols-1  lg:grid-cols-6 md:gap-8 gap-6">
+          <div className="grid grid-cols-1  lg:grid-cols-6 md:gap-8 gap-2">
             {/* LEFT COLUMN */}
             <div className="lg:col-span-4  ">
               {/* Banner */}
@@ -517,9 +519,25 @@ function ViewPage() {
               </div>
 
               {/* -----------------AI assistant, likes, share and bookmark block --starts here------------- */}
-              <div className="flex items-center  justify-between md:justify-end mt-3 mb-1 md:mb-5">
+              <div 
+              // className="flex items-center  justify-between md:justify-end mt-3 mb-1 md:mb-5"
+              className="w-full mt-3 mb-1 md:mb-5"
+              >
                 {/* AI Assistant */}
-                <div className="text-3xl block md:hidden md:text-4xl text-white">
+                {/* <div className="text-3xl block md:hidden md:text-4xl text-white">
+                  <AITechAssistant
+                    currentPostId={singlePostData._id}
+                    category={singlePostData.category}
+                    viewComments = {viewComments}
+                    setViewComments = {setViewComments}
+                  />
+                 
+                  
+                </div> */}
+
+                {/* Actions */}
+                <div className="flex items-center md:justify-end justify-evenly gap-4  md:gap-3">
+                  <div className="text-3xl block md:hidden md:text-4xl text-white">
                   <AITechAssistant
                     currentPostId={singlePostData._id}
                     category={singlePostData.category}
@@ -529,25 +547,33 @@ function ViewPage() {
                  
                   
                 </div>
-
-                {/* Actions */}
-                <div className="flex items-center md: gap-2 md:gap-3">
                    <button
                     onClick={() =>setViewComments(!viewComments)
                     }
 
                     className={`
-                                  flex items-center gap-2
-                  px-3 py-1.5 md:px-4 md:py-2
-                  rounded-full
-                  bg-gray-900  border md:border-neutral-700 border-neutral-700
+                                  flex items-center justify-center gap-2
+                  px-3 py-1 md:px-4 md:py-2
+                  rounded-3xl md:rounded-full
+                  bg-gray-800/50  md:border md:border-neutral-700 border-neutral-800
                   md:hidden
                   active:scale-95
                   transition
+
                   ${showAssistant ? "pointer-events-none" : ""}`}
                   >
             
-                    <MdOutlineInsertComment className="text-sm text-emerald-400" />
+                    <MdOutlineInsertComment className="text-xs text-emerald-400" />
+                    <span className=" flex items-center justify-cennter text-[10px] text-gray-300">
+                      Discussion 
+                            {messages.length > 0 && (
+                      <span className="text-[10px] ml-2 font-medium bg-[#21262d] text-gray-400 border border-[#30363d] px-2 py-0.5 rounded-full">
+                        {messages.length}
+                      </span>
+                    )}
+                   
+                    </span>
+                 
 
                   </button>
 
@@ -558,8 +584,8 @@ function ViewPage() {
                     className="
                       flex items-center gap-2
                       px-3 py-1.5 md:px-4 md:py-2
-                      rounded-full
-                      bg-gray-900  border md:border-neutral-700 border-neutral-700
+                      rounded-3xl md:rounded-full
+                      bg-gray-800/50  md:border md:border-neutral-700 border-neutral-800
                       
                       active:scale-95
                       transition
@@ -589,8 +615,8 @@ function ViewPage() {
                     className="
                   flex items-center gap-2
                   px-3 py-1.5 md:px-4 md:py-2
-                  rounded-full
-                  bg-gray-900  border md:border-neutral-700 border-neutral-700
+                  rounded-3xl md:rounded-full
+                  bg-gray-800/50  md:border md:border-neutral-700 border-neutral-800
                   
                   active:scale-95
                   transition
@@ -610,8 +636,8 @@ function ViewPage() {
                     className="
                       flex items-center gap-2
                       px-3 py-1.5 md:px-4 md:py-2
-                      rounded-full
-                      bg-gray-900  border md:border-neutral-700 border-neutral-700
+                      rounded-3xl md:rounded-full
+                      bg-gray-800/50  md:border md:border-neutral-700 border-neutral-800
                       active:scale-95
                       transition
                     "
@@ -629,10 +655,10 @@ function ViewPage() {
                 </div>
               </div>
               {/* -------------------------------------------------------ends here-------------------- */}
-              {/* -------------------------------------------------------ends-------------------- */}
+      
 
               {/* Description */}
-              <div className=" md:border border-neutral-700/40 md:rounded-xl rounded-lg p-1 md:p-2 md:p-5">
+              <div className=" md:border border-neutral-700/40 md:rounded-xl rounded-lg p-1 pt-4 md:p-5">
                 {singlePostData.description && showContent ? (
                   <>
                     <p className="text-sm md:text-sm text-gray-300 leading-relaxed break-words">
@@ -669,7 +695,7 @@ function ViewPage() {
               />
             </div> */}
 
-            <div className="lg:col-span-2 space-y-2  md:space-y-6  h-fit">
+            <div className="lg:col-span-2 space-y-2 relative  md:space-y-6  h-fit">
               {/* Personal Assistant */}
               <div className="text-4xl text-white hidden md:block ">
                 <AITechAssistant
@@ -684,14 +710,14 @@ function ViewPage() {
                 singlePostData.links?.filter(
                   (link) => (link.title || "").toLowerCase() !== "youtube",
                 ).length > 0) && (
-                <div className="md:rounded-xl rounded-lg  border border-neutral-700/50  p-6">
+                <div className="md:rounded-xl rounded-lg  border border-neutral-700/50 p-6">
                   {/* Header */}
-                  <div className="flex items-center gap-2 mb-5">
+                  <div className="flex items-center gap-2 mb-2 md:mb-5">
                     {/* <div className="w-9 h-9 flex items-center justify-center rounded-lg bg-blue-600/15 border border-blue-500/20">
                     
                   </div> */}
                     <MdOutlineLibraryBooks className="text-white/90 text-xl" />
-                    <h3 className="text-xl font-semibold tracking-wide text-slate-100">
+                    <h3 className="text-base font-semibold tracking-wide text-slate-300">
                       Resources
                     </h3>
                   </div>
@@ -710,13 +736,13 @@ function ViewPage() {
                             href={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${doc}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="group flex items-center gap-3 px-4 py-2.5
+                            className="group flex items-center gap-3 md:px-4 px-3 py-1.5 md:py-2.5
                             rounded-xl border border-slate-600/40
                             bg-slate-800/60 hover:bg-slate-800
                             transition"
                           >
-                            <div className="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-700/70">
-                              <MdOutlineDescription className="text-slate-200 text-lg" />
+                            <div className="md:w-8 md:h-8 h-5 w-5 flex items-center justify-center rounded-lg bg-slate-700/70">
+                              <MdOutlineDescription className="text-slate-200 text-sm md:text-lg" />
                             </div>
 
                             <span className="text-xs text-slate-200 max-w-[180px] truncate">
@@ -747,19 +773,19 @@ function ViewPage() {
                               href={link.url}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="group flex items-center gap-3 px-4 py-2.5
+                              className="group flex items-center gap-3 md:px-4 px-3 py-1.5 md:py-2.5
                             rounded-xl border border-blue-500/20
                             bg-gradient-to-r from-blue-600/10 to-blue-400/5
                             hover:from-blue-600/20 hover:to-blue-400/10
                             transition"
                             >
-                              <div className="w-8 h-8 flex items-center justify-center rounded-lg bg-blue-600/20">
+                              <div className="md:w-8 md:h-8 h-5 w-5 flex items-center justify-center rounded-lg bg-blue-600/20">
                                 {link.title === "GitHub" ? (
-                                  <FaGithub className="text-blue-300 text-lg" />
+                                  <FaGithub className="text-blue-300 text-sm md:text-lg" />
                                 ) : link.title === "Demo" ? (
-                                  <MdPlayCircleOutline className="text-blue-300 text-lg" />
+                                  <MdPlayCircleOutline className="text-blue-300 text-sm md:text-lg" />
                                 ) : (
-                                  <MdOutlineLink className="text-blue-300 text-lg" />
+                                  <MdOutlineLink className="text-blue-300 text-sm md:text-lg" />
                                 )}
                               </div>
 
@@ -776,9 +802,11 @@ function ViewPage() {
 
               {/* Videos */}
               {youtubeVideo?.length > 0 && (
-                <div className=" border border-neutral-700/50 rounded-lg md:rounded-xl p-5">
-                  <h3 className="text-base font-semibold text-white mb-3">
-                    🎥 Video Sources
+                <div className=" md:border border-neutral-700/50 rounded-lg md:rounded-xl pl-2 pt-5  md:p-5">
+                  <h3 className="text-base flex items-center gap-2 md:gap-3  text-slate-300 font-semibold  mb-3">
+                    {/* 🎥 */}
+                     <FaYoutube className="text-slate-300 text-xl" />
+                     Video Source
                   </h3>
 
                   <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
@@ -1080,7 +1108,7 @@ function ViewPage() {
               {/* Fixed Mobile Comment Input Bar */}
               <div
                 className={`${
-                  showAssistant
+                  showAssistant || viewComments
                     ? "hidden"
                     : "fixed md:hidden bottom-0 left-0 right-0 z-30"
                 } bg-gray-900 `}
