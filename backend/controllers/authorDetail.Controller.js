@@ -1059,7 +1059,7 @@ const addAnnouncement = async (req, res) => {
 //       return res.status(400).json({message:"email is required"});
 //     }
 
-//     const admin = await Author.findOne({email});
+//     const admin = await Author.findOne({ email: { $eq: email }});
 
 //     if(!admin)
 //     {

@@ -9,7 +9,7 @@ const jwt = require('jsonwebtoken');
 //     try{
 
 //         const {email, password} = req.body ;
-//         const author = await Author.findOne({email});
+//         const author = await Author.findOne({ email: { $eq: email }});
 
 //         if(!author){
 //           return  res.status(400).json({message:"Invalid Email"}) ;
@@ -36,7 +36,7 @@ const verifyUser =  async (req,res) => {
     try{
 
         const {email, password} = req.body ;
-        const user = await Author.findOne({email});
+        const user = await Author.findOne({ email: { $eq: email }});
 
         if(!user){
           return  res.status(400).json({message:"Invalid Email"}) ;

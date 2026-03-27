@@ -85,7 +85,7 @@ const getAllPosts = async (req, res) => {
 //     let followedEmails = [];
 //     let authorCommunities = [];
 //     if (email) {
-//       const currentAuthor = await Author.findOne({ email }).select('following community');
+//       const currentAuthor = await Author.findOne({ email: { $eq: email }}).select('following community');
 //       if (currentAuthor) {
 //         followedEmails = Array.isArray(currentAuthor.following) ? currentAuthor.following : [];
 //         authorCommunities = Array.isArray(currentAuthor.community) ? currentAuthor.community : [];
@@ -173,7 +173,7 @@ const getAllPosts = async (req, res) => {
 //     const skip = (page - 1) * limit;
 
 //     // ✅ Find author
-//     const author = await Author.findOne({ email });
+//     const author = await Author.findOne({ email: { $eq: email }});
 
 //     if (!author) {
 //       return res.status(404).json({ message: "Author not found" });
@@ -205,7 +205,7 @@ const getAllPosts = async (req, res) => {
 //   try {
 //     const { email } = req.params;
 
-//     const author = await Author.findOne({ email });
+//     const author = await Author.findOne({ email: { $eq: email }});
 
 //     if (!author) {
 //       return res.status(404).json({ message: "Author not found" });
@@ -255,7 +255,7 @@ const getRecommendedPosts = async (req, res) => {
     let followedEmails = [];
     let authorCommunities = [];
 
-    const currentAuthor = await Author.findOne({ email })
+    const currentAuthor = await Author.findOne({ email: { $eq: email }})
       .select("following community");
 
     if (currentAuthor) {
@@ -345,7 +345,7 @@ const getRecommendedPosts = async (req, res) => {
 
 //     const {email} = req.params;
 
-//     const author = await Author.findOne({email});
+//     const author = await Author.findOne({ email: { $eq: email }});
 //     if(!author){
 //       return res.status(404).json({message:`author ${email} not found`});
 //     }
@@ -376,7 +376,7 @@ const getSingleAuthorPosts = async (req, res) => {
     page = parseInt(page);
     limit = parseInt(limit);
 
-    const author = await Author.findOne({ email });
+    const author = await Author.findOne({ email: { $eq: email }});
     if (!author) {
       return res.status(404).json({ message: `author ${email} not found` });
     }
@@ -470,7 +470,7 @@ async function deleteFromAIIngestion(post_id, token) {
       }
 
      );
-      console.log(`embeddign doc - ${post_id} deleted successfully:`, res.data);
+      console.log("embedding doc deleted successfully:",post_id, res.data);
   }
   // catch(err){
   //   console.error("Error notifying AI deletion:", err.message); 
@@ -662,7 +662,7 @@ const updatePost = async (req, res) => {
 
   
   try {
-    const author = await Author.findOne({ email });
+    const author = await Author.findOne({ email: { $eq: email }});
 
     if (!author) {
       return res.status(404).json({ message: "author not found" });
@@ -804,7 +804,7 @@ const removePostsLinks = async (req, res) => {
         .json({ message: "Author email, postId and link Id are required" });
     }
 
-    const author = await Author.findOne({ email });
+    const author = await Author.findOne({ email: { $eq: email }});
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
     }
@@ -840,7 +840,7 @@ const deletePost = async (req, res) => {
   try {
     const { email, postId } = req.params;
 
-    const author = await Author.findOne({ email });
+    const author = await Author.findOne({ email: { $eq: email }});
 
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
@@ -901,7 +901,7 @@ const getSinglePost = async(req,res) =>{
    const { email, postId } = req.params;
 
      // Find the author by email
-     const author = await Author.findOne({ email });
+     const author = await Author.findOne({ email: { $eq: email }});
      if (!author) {
       return res.status(404).json({ message: "Author not found" });
     }
@@ -942,7 +942,7 @@ const postView = async (req, res) => {
     const { emailAuthor } = req.body; // Retrieve emailAuthor from the body
 
     // Find the author by email
-    const author = await Author.findOne({ email });
+    const author = await Author.findOne({ email: { $eq: email }});
 
     // If author doesn't exist, send a 404 error
     if (!author) {
@@ -984,7 +984,7 @@ const postLikes = async (req, res) => {
     const { emailAuthor } = req.body; // Retrieve emailAuthor from the body
 
     // Find the author by email
-    const author = await Author.findOne({ email });
+    const author = await Author.findOne({ email: { $eq: email }});
 
     // If author doesn't exist, send a 404 error
     if (!author) {
@@ -1041,7 +1041,7 @@ const addPostBookmark = async(req,res)=>{
     }
 
   
-    const author = await Author.findOne({email});
+    const author = await Author.findOne({ email: { $eq: email }});
   
     if(!author){
       return res.status(404).json({message:"author not found"})
@@ -1076,7 +1076,7 @@ const addPostBookmark = async(req,res)=>{
 //     if (!email) return res.status(400).json({ message: "email required" });
 
 //     // fetch only bookmark ids (ensure field is returned)
-//     const author = await Author.findOne({ email }).select("postBookmark");
+//     const author = await Author.findOne({ email: { $eq: email }}).select("postBookmark");
 //     if (!author) return res.status(404).json({ message: "author not found" });
 
 //     // normalize bookmark ids to strings
@@ -1140,7 +1140,7 @@ const getBookmarkedPosts = async (req, res) => {
 
     if (!email) return res.status(400).json({ message: "email required" });
 
-    const author = await Author.findOne({ email }).select("postBookmark");
+    const author = await Author.findOne({ email: { $eq: email }}).select("postBookmark");
     if (!author) return res.status(404).json({ message: "author not found" });
 
     const postIds = (author.postBookmark || [])
@@ -1206,7 +1206,7 @@ const getAllBookmarkIds = async (req, res) => {
   try {
     const { email } = req.params;
 
-    const author = await Author.findOne({ email }).select("postBookmark");
+    const author = await Author.findOne({ email: { $eq: email }}).select("postBookmark");
 
     if (!author) {
       return res.status(404).json({ message: "Author not found" });

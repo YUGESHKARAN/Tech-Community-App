@@ -98,7 +98,7 @@ const getRecommendedTutorPlaylist = async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
-    const currentAuthor  = Author.findOne({email})
+    const currentAuthor  = Author.findOne({ email: { $eq: email }})
     if (!currentAuthor){
       return res.status(404).json({"message":"author not found"}) ;
     }
@@ -212,7 +212,7 @@ const getPlaylistById = async(req,res)=>{
     const email = playList.email;
     const domain = playList.domain;
 
-    const author = await Author.findOne({email});
+    const author = await Author.findOne({ email: { $eq: email }});
 
     const playlistPostIds = (playList.post_ids || []).map(id=> id.toString());
     
@@ -476,7 +476,7 @@ const getBookmarkedPlaylists = async (req, res) => {
     if (!email) return res.status(400).json({ message: "email required" });
 
     // adjust "postBookmark" to the actual field name on your Author schema if different
-    const author = await Author.findOne({ email }).select("postBookmark");
+    const author = await Author.findOne({ email: { $eq: email }}).select("postBookmark");
     if (!author) return res.status(404).json({ message: "author not found" });
 
     const playlistIds = (author.postBookmark || [])
@@ -519,7 +519,7 @@ const getPostsByAuthorsCategory = async (req, res) => {
     const skip = (page - 1) * limit;
 
     // ✅ Find author
-    const author = await Author.findOne({ email });
+    const author = await Author.findOne({ email: { $eq: email }});
 
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
@@ -551,7 +551,7 @@ const getUniqueCategoriesByAuthor = async (req, res) => {
   try {
     const { email } = req.params;
 
-    const author = await Author.findOne({ email });
+    const author = await Author.findOne({ email: { $eq: email }});
 
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
