@@ -245,7 +245,7 @@ export default function AITechAssistant({ currentPostId, category, viewComments,
       md:relative
       h-[75vh] md:h-[520px]
        text-white
-       bg-[#030712] md:bg-gray-950/50
+       bg-[#0a0f1d] md:bg-gray-950/50
        md:bg-gray-950/50
       border-t border-[#30363d] md:border-0
       rounded-t-2xl 
@@ -525,12 +525,12 @@ export default function AITechAssistant({ currentPostId, category, viewComments,
               {/* Typing bubble */}
 
               {/* Skeleton text */}
-              <div className="bg-[#030712] md:bg-gray-950/50 border border-neutral-800 p-4 rounded-2xl space-y-4">
+              <div className="bg-[#0a0f1d] md:bg-gray-950/50 border border-neutral-800 p-4 rounded-2xl space-y-4">
                 {/* Title shimmer */}
-                <div className="h-4 w-2/3 rounded-full from-gray-800 md:via-gray-700 to-gray-800 animate-shimmer" />
+                <div className="h-4 w-2/3 rounded-full bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 animate-shimmer" />
 
                 {/* Line 1 */}
-                <div className="h-3 w-full rounded-full from-gray-800 md:via-gray-700 to-gray-800 animate-shimmer" />
+                <div className="h-3 w-full rounded-full bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 animate-shimmer" />
 
                 {/* Line 2 */}
                 {/* <div className="h-3 w-[95%] rounded-full bg-gradient-to-r from-neutral-800 via-neutral-700 to-neutral-800 animate-shimmer" /> */}
@@ -558,6 +558,11 @@ export default function AITechAssistant({ currentPostId, category, viewComments,
             <VscSend />
           </button>
         </div>
+        {/* <ul className="text-center text-gray-300 h-10 ">
+           <li className="text-[8px] h-3"> AI can make mistakes, so double-check it</li>
+           <li className="text-[6px] h-3">Made with <span className="text-gray-400 text-[5px]">Llama-4-Scout-17B & Pinecone</span></li>
+          </ul> */}
+          
       </div>
     </>
   );
