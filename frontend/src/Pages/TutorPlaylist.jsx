@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import useGetPostsByCategory from "../hooks/useGetPostsByCategory";
 import useGetAuthorsPostsCategories from "../hooks/useGetAuthorsPostsCategories";
 import BlogMiniSkeleton from "../components/loaders/BlogMiniSkeleton";
+import Fuse from "fuse.js";
 function TutorPlaylist() {
   const email = localStorage.getItem("email");
   const role = localStorage.getItem("role");
@@ -100,23 +101,55 @@ function TutorPlaylist() {
     );
   }, [coordinators, domain]);
 
+
+const [debouncedSearch, setDebouncedSearch] = useState(searchCollaborator);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchCollaborator);
+    }, 300); // 300ms delay
+
+    return () => clearTimeout(timer);
+  }, [searchCollaborator]);
+
+  const fuse = useMemo(() => {
+    return new Fuse(filteredCoordinators, {
+      keys: ["authorname", "email"],
+      threshold: 0.1, // lower = stricter search
+    });
+  }, [filteredCoordinators]);
+
   const searchedCoordinators = useMemo(() => {
-    if (!searchCollaborator) return filteredCoordinators;
+   
+    let filtered = [...filteredCoordinators]
+     
+    // if (!searchCollaborator) return filteredCoordinators;
+    // const query = searchCollaborator.toLowerCase();
+    // return filteredCoordinators.filter((coord) => {
+    //   const authorMatch = coord.authorname?.toLowerCase().includes(query);
+    //   const emailMatch = coord.email?.toLowerCase().includes(query);
+    //   const alreadySelected = collaboratorsData.some(
+    //     (col) => col.email?.toLowerCase() === coord.email?.toLowerCase(),
+    //   );
+    //   return (authorMatch || emailMatch) && !alreadySelected;
+    // });
 
-    const query = searchCollaborator.toLowerCase();
-    return filteredCoordinators.filter((coord) => {
-      const authorMatch = coord.authorname?.toLowerCase().includes(query);
+    if (debouncedSearch.trim() !== "") {
+      filtered = fuse.search(debouncedSearch).map((r) => r.item);
+    }
 
-      const emailMatch = coord.email?.toLowerCase().includes(query);
-
+    
+    return filtered.filter((coord)=>{
       const alreadySelected = collaboratorsData.some(
         (col) => col.email?.toLowerCase() === coord.email?.toLowerCase(),
       );
+      return coord && !alreadySelected
+    })
 
-      return (authorMatch || emailMatch) && !alreadySelected;
-    });
-  }, [filteredCoordinators, searchCollaborator]);
+  }, [filteredCoordinators, searchCollaborator, debouncedSearch, collaboratorsData]);
 
+
+  
   const handleCollaborators = (email, name, img) => {
     setCollaboratorsData((prev) => {
       const exists = prev.some((col) => col.email === email);
@@ -144,6 +177,8 @@ function TutorPlaylist() {
 
   // console.log("posts", posts);
   // console.log("domain", domain);
+
+  console.log('filteredCoordinators', filteredCoordinators)
 
   return (
     // bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800
@@ -307,9 +342,9 @@ function TutorPlaylist() {
               )}
 
               {/* Search Results */}
-              {searchCollaborator && searchedCoordinators.length > 0 && (
+              {searchCollaborator && (
                 <div className="absolute top-full mt-2 w-full bg-gray-900 border border-gray-700 rounded-xl shadow-xl z-20 emerald-scrollbar overflow-y-auto max-h-48 ">
-                  {searchedCoordinators.map((collaborator, index) => (
+                  { searchedCoordinators.length > 0 ? searchedCoordinators.map( (collaborator, index) => (
                     <div
                       key={index}
                       onClick={() =>
@@ -331,14 +366,27 @@ function TutorPlaylist() {
                         alt=""
                       />
                       <span className="text-sm text-gray-200">
+                        
                         {collaborator.authorname}
                       </span>
                     </div>
-                  ))}
+                  ))
+                  :
+                  <div className="px-4 py-2 ">                 
+                     <span className="text-sm text-gray-200 ">
+                      {domain.length>0?' No authors found!':'Select domain to hook collaborators'}
+                      
+                      </span>
+                    </div>
+                  
+                  }
+                  
                   
                 
                 </div>
               )}
+
+
             </div>
 
             {/* Playlist Title */}

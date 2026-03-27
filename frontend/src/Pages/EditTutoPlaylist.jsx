@@ -12,6 +12,7 @@ import blog1 from "../images/img_not_found.png";
 import useGetAuthorsPostsCategories from "../hooks/useGetAuthorsPostsCategories";
 import useGetPostsByCategory from "../hooks/useGetPostsByCategory";
 import BlogMiniSkeleton from "../components/loaders/BlogMiniSkeleton";
+import Fuse from "fuse.js";
 function EditTutorPlaylist() {
   const email = localStorage.getItem("email");
   const role = localStorage.getItem("role");
@@ -134,22 +135,68 @@ function EditTutorPlaylist() {
 
  
 
-  const searchedCoordinators = useMemo(() => {
-    if (!searchCollaborator) return filteredCoordinators;
+  // const searchedCoordinators = useMemo(() => {
+  //   if (!searchCollaborator) return filteredCoordinators;
 
-    const query = searchCollaborator.toLowerCase();
-    return filteredCoordinators.filter((coord) => {
-      const authorMatch = coord.authorname?.toLowerCase().includes(query);
+  //   const query = searchCollaborator.toLowerCase();
+  //   return filteredCoordinators.filter((coord) => {
+  //     const authorMatch = coord.authorname?.toLowerCase().includes(query);
 
-      const emailMatch = coord.email?.toLowerCase().includes(query);
+  //     const emailMatch = coord.email?.toLowerCase().includes(query);
 
-      const alreadySelected = collaboratorsData.some(
-        (col) => col.email?.toLowerCase() === coord.email?.toLowerCase()
-      );
+  //     const alreadySelected = collaboratorsData.some(
+  //       (col) => col.email?.toLowerCase() === coord.email?.toLowerCase()
+  //     );
 
-      return (authorMatch || emailMatch) && !alreadySelected;
+  //     return (authorMatch || emailMatch) && !alreadySelected;
+  //   });
+  // }, [filteredCoordinators, searchCollaborator]);
+
+  const [debouncedSearch, setDebouncedSearch] = useState(searchCollaborator);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchCollaborator);
+    }, 300); // 300ms delay
+
+    return () => clearTimeout(timer);
+  }, [searchCollaborator]);
+
+  const fuse = useMemo(() => {
+    return new Fuse(filteredCoordinators, {
+      keys: ["authorname", "email"],
+      threshold: 0.1, // lower = stricter search
     });
-  }, [filteredCoordinators, searchCollaborator]);
+  }, [filteredCoordinators]);
+
+  const searchedCoordinators = useMemo(() => {
+   
+    let filtered = [...filteredCoordinators]
+     
+    // if (!searchCollaborator) return filteredCoordinators;
+    // const query = searchCollaborator.toLowerCase();
+    // return filteredCoordinators.filter((coord) => {
+    //   const authorMatch = coord.authorname?.toLowerCase().includes(query);
+    //   const emailMatch = coord.email?.toLowerCase().includes(query);
+    //   const alreadySelected = collaboratorsData.some(
+    //     (col) => col.email?.toLowerCase() === coord.email?.toLowerCase(),
+    //   );
+    //   return (authorMatch || emailMatch) && !alreadySelected;
+    // });
+
+    if (debouncedSearch.trim() !== "") {
+      filtered = fuse.search(debouncedSearch).map((r) => r.item);
+    }
+
+    
+    return filtered.filter((coord)=>{
+      const alreadySelected = collaboratorsData.some(
+        (col) => col.email?.toLowerCase() === coord.email?.toLowerCase(),
+      );
+      return coord && !alreadySelected
+    })
+
+  }, [filteredCoordinators, searchCollaborator, debouncedSearch, collaboratorsData]);
 
  
 
@@ -280,9 +327,9 @@ function EditTutorPlaylist() {
           )}
 
           {/* Search Results */}
-          {searchCollaborator && searchedCoordinators.length > 0 && (
+          {searchCollaborator && (
             <div className="absolute top-full mt-2 w-full bg-gray-900 border border-gray-700 rounded-xl shadow-xl z-20 overflow-hidden">
-              {searchedCoordinators.map((collaborator, index) => (
+              { searchedCoordinators.length > 0 ? searchedCoordinators.map((collaborator, index) => (
                 <div
                   key={index}
                   onClick={() =>
@@ -307,7 +354,14 @@ function EditTutorPlaylist() {
                     {collaborator.authorname}
                   </span>
                 </div>
-              ))}
+              ))
+                         :
+                  <div className="px-4 py-2 ">                 
+                     <span className="text-sm text-gray-200 ">
+                      {domain.length>0?' No authors found!':'Select domain to hook collaborators'}
+                      
+                      </span>
+                    </div>}
             </div>
           )}
         </div>

@@ -622,13 +622,15 @@ function ViewEditPost() {
 
               <div className="relative mt-2 group rounded-lg overflow-hidden border border-neutral-700">
                 <img
-                  src={
-                    previewImage
-                      ? previewImage
-                      : singlePostData.image
-                        ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${singlePostData.image}`
-                        : blog1
-                  }
+                  // src={
+                  //   previewImage
+                  //     ? previewImage
+                  //     : singlePostData.image
+                  //       ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${singlePostData.image}`
+                  //       : blog1
+                  // }
+                  src={previewImage || (singlePostData.image ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${singlePostData.image}` : blog1)}
+                  
                   className="w-full h-48 md:h-[30vh] object-cover"
                 />
 
