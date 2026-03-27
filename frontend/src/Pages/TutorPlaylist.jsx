@@ -115,7 +115,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchCollaborator);
   const fuse = useMemo(() => {
     return new Fuse(filteredCoordinators, {
       keys: ["authorname", "email"],
-      threshold: 0.1, // lower = stricter search
+      threshold: 0.2, // lower = stricter search
     });
   }, [filteredCoordinators]);
 
