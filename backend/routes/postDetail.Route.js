@@ -24,12 +24,13 @@ const {
   // getUniqueCategoriesByAuthor
 } = require("../controllers/postDetail.Controller");
 
+const {limiter} = require("../middleware/rateLimitter")
 
-router.get("/", getAllPosts);
-router.get("/:email",  getSingleAuthorPosts);
-router.get("/recommended/:email", getRecommendedPosts)
+router.get("/",authenticateToken, getAllPosts);  // used in TechCommunity.jsx
+router.get("/:email",limiter, authenticateToken,  getSingleAuthorPosts);
+router.get("/recommended/:email",limiter, authenticateToken,  getRecommendedPosts)
 
-router.get("/:category",  getCategoryPosts);
+router.get("/:category", limiter, authenticateToken, getCategoryPosts);
 
 // handle authors blog post data
 const uploadData = multer().fields([
@@ -38,22 +39,22 @@ const uploadData = multer().fields([
 ]);
 
 
-router.get("/bookmarkIds/:email",authenticateToken,getAllBookmarkIds)
+router.get("/bookmarkIds/:email", limiter, authenticateToken,getAllBookmarkIds)
 
-router.get("/:email/:postId",authenticateToken, getSinglePost);
+router.get("/:email/:postId", limiter, authenticateToken, getSinglePost);
 
-router.post("/:email",authenticateToken,uploadData, addPosts);
+router.post("/:email", limiter, authenticateToken,uploadData, addPosts);
 
 
-router.put("/:email/:postId",authenticateToken,uploadData,updatePost);
-router.get("/getBookmarkPosts/bookmark/:email",authenticateToken,getBookmarkedPosts)
-router.post("/bookmarkPosts/:email",authenticateToken,addPostBookmark)
+router.put("/:email/:postId", limiter, authenticateToken,uploadData,updatePost);
+router.get("/getBookmarkPosts/bookmark/:email", limiter, authenticateToken,getBookmarkedPosts)
+router.post("/bookmarkPosts/:email", limiter, authenticateToken,addPostBookmark)
 
-router.put("/views/:email/:id",authenticateToken, postView)
-router.put("/likes/:email/:id",authenticateToken, postLikes)
+router.put("/views/:email/:id", limiter, authenticateToken, postView)
+router.put("/likes/:email/:id", limiter, authenticateToken, postLikes)
 
-router.delete("/:email/:postId",authenticateToken,  deletePost);
-router.delete("/links/:email/:postId",authenticateToken,  removePostsLinks);
+router.delete("/:email/:postId", limiter, authenticateToken,  deletePost);
+router.delete("/links/:email/:postId", limiter, authenticateToken,  removePostsLinks);
 
 // router.get("/:email/:category",authenticateToken, getPostsByAuthorsCategory);
 

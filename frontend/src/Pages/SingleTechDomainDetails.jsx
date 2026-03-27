@@ -344,7 +344,7 @@ function SingleTechDomainDetails() {
     //   <Footer />
     // </div>
 
-    <div className="w-full h-auto  bg-gradient-to-r from-gray-900 to-gray-800 relative text-white">
+    <div className="w-full h-auto bg-gray-900  relative text-white">
       <NavBar />
 
       <div className="min-h-screen">

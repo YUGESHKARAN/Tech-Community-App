@@ -18,20 +18,21 @@ const {
 const authenticateToken = require('../middleware/authMiddleware')
 const router = express.Router();
 
+const {limiter}  = require("../middleware/rateLimitter")
 // router.get("/all",authenticateToken, getAllTutorPlaylist);  
-router.get("/recommended/:email",getRecommendedTutorPlaylist);
+router.get("/recommended/:email",limiter, authenticateToken, getRecommendedTutorPlaylist);
 
 
 
-router.get("/:playlistId",authenticateToken, getPlaylistById);  
-router.get("/coordinator/:email",authenticateToken, getPlaylistByEmail);
-router.get("/bookmark/:email",authenticateToken,getBookmarkedPlaylists)
+router.get("/:playlistId", limiter, authenticateToken, getPlaylistById);  
+router.get("/coordinator/:email", limiter, authenticateToken, getPlaylistByEmail);
+router.get("/bookmark/:email", limiter, authenticateToken,getBookmarkedPlaylists)
 
-router.post("/add",authenticateToken,upload.single('thumbnail'), addTutorPlayList);
+router.post("/add", limiter, authenticateToken,upload.single('thumbnail'), addTutorPlayList);
 router.put("/update/:id", authenticateToken, upload.single('thumbnail'), updateTutorPlayList);
-router.delete("/delete/:id",authenticateToken, deleteTutorPlayList);
+router.delete("/delete/:id", limiter, authenticateToken, deleteTutorPlayList);
 
-router.get("/:email/:category",authenticateToken, getPostsByAuthorsCategory);
-router.get("/categories/playlist/:email",authenticateToken, getUniqueCategoriesByAuthor);
+router.get("/:email/:category", limiter, authenticateToken, getPostsByAuthorsCategory);
+router.get("/categories/playlist/:email", limiter, authenticateToken, getUniqueCategoriesByAuthor);
 
 module.exports = router;

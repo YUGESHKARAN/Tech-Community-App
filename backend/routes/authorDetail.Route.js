@@ -44,7 +44,7 @@ router.post('/send-otp', sendOtp);
 router.post('/reset-password', resetPassword);
 
 // Protect specific routes
-router.get("/", authenticateToken,getAllAuthor);
+router.get("/", authenticateToken,getAllAuthor);   // used in TechCommunity.jsx
 router.get("/profiles",authenticateToken, getProfile);
 router.get("/:email",authenticateToken, getSingleAuthor);
 router.get("/getAuthorsByDomain/:category(*)", authenticateToken,getAuthorsByDomain);

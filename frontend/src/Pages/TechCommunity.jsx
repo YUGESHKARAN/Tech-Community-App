@@ -119,7 +119,7 @@ function TechCommunity() {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-gray-900 to-gray-800  text-white flex flex-col">
+    <div className="min-h-screen bg-gray-900  text-white flex flex-col">
       <NavBar />
 
       <div className="flex-grow">
