@@ -39,10 +39,10 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 // Public routes
-router.post("/", addAuthor); // signup - keep public
-router.post("/verify-otp", sendRegistrationOTP);
-router.post('/send-otp', sendOtp);
-router.post('/reset-password', resetPassword);
+router.post("/", limiter, addAuthor); // signup - keep public
+router.post("/verify-otp", limiter, sendRegistrationOTP);
+router.post('/send-otp', limiter, sendOtp);
+router.post('/reset-password', limiter, resetPassword);
 
 // Protect specific routes
 router.get("/", readLimiter, authenticateToken,getAllAuthor);   // used in TechCommunity.jsx

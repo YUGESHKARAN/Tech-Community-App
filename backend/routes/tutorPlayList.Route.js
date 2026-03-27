@@ -29,7 +29,7 @@ router.get("/coordinator/:email", readLimiter, authenticateToken, getPlaylistByE
 router.get("/bookmark/:email", readLimiter, authenticateToken,getBookmarkedPlaylists)
 
 router.post("/add", limiter, authenticateToken,upload.single('thumbnail'), addTutorPlayList);
-router.put("/update/:id", authenticateToken, upload.single('thumbnail'), updateTutorPlayList);
+router.put("/update/:id", limiter,  authenticateToken, upload.single('thumbnail'), updateTutorPlayList);
 router.delete("/delete/:id", limiter, authenticateToken, deleteTutorPlayList);
 
 router.get("/:email/:category", limiter, authenticateToken, getPostsByAuthorsCategory);
