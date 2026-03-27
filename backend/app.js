@@ -41,6 +41,8 @@ app.use("/blog/posts", postRouter);
 app.use("/blog/playlist",tutorPlaylist);
 // app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
+// Trust proxy (for rate limiter IP detection)
+app.set("trust proxy", 1);
 
 // Request timeout middleware
 app.use((req, res, next) => {

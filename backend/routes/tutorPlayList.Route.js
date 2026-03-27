@@ -18,15 +18,15 @@ const {
 const authenticateToken = require('../middleware/authMiddleware')
 const router = express.Router();
 
-const {limiter}  = require("../middleware/rateLimitter")
+const {limiter, readLimiter}  = require("../middleware/rateLimitter")
 // router.get("/all",authenticateToken, getAllTutorPlaylist);  
-router.get("/recommended/:email",limiter, authenticateToken, getRecommendedTutorPlaylist);
+router.get("/recommended/:email",readLimiter, authenticateToken, getRecommendedTutorPlaylist);
 
 
 
-router.get("/:playlistId", limiter, authenticateToken, getPlaylistById);  
-router.get("/coordinator/:email", limiter, authenticateToken, getPlaylistByEmail);
-router.get("/bookmark/:email", limiter, authenticateToken,getBookmarkedPlaylists)
+router.get("/:playlistId", readLimiter, authenticateToken, getPlaylistById);  
+router.get("/coordinator/:email", readLimiter, authenticateToken, getPlaylistByEmail);
+router.get("/bookmark/:email", readLimiter, authenticateToken,getBookmarkedPlaylists)
 
 router.post("/add", limiter, authenticateToken,upload.single('thumbnail'), addTutorPlayList);
 router.put("/update/:id", authenticateToken, upload.single('thumbnail'), updateTutorPlayList);

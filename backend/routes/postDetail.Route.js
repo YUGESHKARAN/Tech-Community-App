@@ -24,13 +24,13 @@ const {
   // getUniqueCategoriesByAuthor
 } = require("../controllers/postDetail.Controller");
 
-const {limiter} = require("../middleware/rateLimitter")
+const {limiter, readLimiter} = require("../middleware/rateLimitter")
 
-router.get("/",authenticateToken, getAllPosts);  // used in TechCommunity.jsx
-router.get("/:email",limiter, authenticateToken,  getSingleAuthorPosts);
-router.get("/recommended/:email",limiter, authenticateToken,  getRecommendedPosts)
+router.get("/", readLimiter, authenticateToken, getAllPosts);  // used in TechCommunity.jsx
+router.get("/:email", readLimiter, authenticateToken,  getSingleAuthorPosts);
+router.get("/recommended/:email", readLimiter, authenticateToken,  getRecommendedPosts)
 
-router.get("/:category", limiter, authenticateToken, getCategoryPosts);
+router.get("/:category", readLimiter, authenticateToken, getCategoryPosts);
 
 // handle authors blog post data
 const uploadData = multer().fields([
@@ -39,15 +39,15 @@ const uploadData = multer().fields([
 ]);
 
 
-router.get("/bookmarkIds/:email", limiter, authenticateToken,getAllBookmarkIds)
+router.get("/bookmarkIds/:email", readLimiter, authenticateToken,getAllBookmarkIds)
 
-router.get("/:email/:postId", limiter, authenticateToken, getSinglePost);
+router.get("/:email/:postId", readLimiter, authenticateToken, getSinglePost);
 
 router.post("/:email", limiter, authenticateToken,uploadData, addPosts);
 
 
 router.put("/:email/:postId", limiter, authenticateToken,uploadData,updatePost);
-router.get("/getBookmarkPosts/bookmark/:email", limiter, authenticateToken,getBookmarkedPosts)
+router.get("/getBookmarkPosts/bookmark/:email", readLimiter, authenticateToken,getBookmarkedPosts)
 router.post("/bookmarkPosts/:email", limiter, authenticateToken,addPostBookmark)
 
 router.put("/views/:email/:id", limiter, authenticateToken, postView)

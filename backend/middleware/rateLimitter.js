@@ -8,10 +8,17 @@ const limiter = rateLimit({
   // legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
 
+// Relaxed — for frequent read routes
+const readLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 500,
+  message: { error: "Too many requests, please try again later." },
+});
+
 const loginLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute
   max: 10, // 10 login attempts per minute
   message: "Too many login attempts. Try again later."
 });   
 
-module.exports ={ limiter,loginLimiter}
+module.exports ={ limiter, readLimiter, loginLimiter}

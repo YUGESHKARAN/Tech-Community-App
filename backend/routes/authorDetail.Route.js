@@ -31,6 +31,7 @@ const {
   
 } = require("../controllers/authorDetail.Controller");
 
+const {limiter, readLimiter} = require("../middleware/rateLimitter")
 
 const authenticateToken = require('../middleware/authMiddleware')
 const storage = multer.memoryStorage();
@@ -44,31 +45,31 @@ router.post('/send-otp', sendOtp);
 router.post('/reset-password', resetPassword);
 
 // Protect specific routes
-router.get("/", authenticateToken,getAllAuthor);   // used in TechCommunity.jsx
-router.get("/profiles",authenticateToken, getProfile);
-router.get("/:email",authenticateToken, getSingleAuthor);
-router.get("/getAuthorsByDomain/:category(*)", authenticateToken,getAuthorsByDomain);
-router.get("/authoreByRole/:role", authenticateToken,getAuthorsByRole);
+router.get("/", readLimiter, authenticateToken,getAllAuthor);   // used in TechCommunity.jsx
+router.get("/profiles", readLimiter, authenticateToken, getProfile);
+router.get("/:email", readLimiter, authenticateToken, getSingleAuthor);
+router.get("/getAuthorsByDomain/:category(*)", readLimiter, authenticateToken,getAuthorsByDomain);
+router.get("/authoreByRole/:role", readLimiter, authenticateToken,getAuthorsByRole);
 
-router.put("/:email", authenticateToken, upload.single('profile'), updateAuthor);
-router.put("/password/:email", authenticateToken, updateAPassword);
-router.put("/follow/:email", authenticateToken, updateFollowers);
-router.delete("/:email", authenticateToken, deleteAuthor);
-router.delete("/deleteByAdmin/:authorEmail", authenticateToken, deleteAuthorByAdmin);
+router.put("/:email", limiter, authenticateToken, upload.single('profile'), updateAuthor);
+router.put("/password/:email", limiter, authenticateToken, updateAPassword);
+router.put("/follow/:email", limiter, authenticateToken, updateFollowers);
+router.delete("/:email", limiter, authenticateToken, deleteAuthor);
+router.delete("/deleteByAdmin/:authorEmail", limiter, authenticateToken, deleteAuthorByAdmin);
 
 router.get('/notification', authenticateToken, notificationAuthor);
-router.delete('/notification/delete', authenticateToken, notificationAuthorDelete);
-router.delete('/notification/deleteall', authenticateToken, notificationAuthorDeleteAll);
+router.delete('/notification/delete', limiter, authenticateToken, notificationAuthorDelete);
+router.delete('/notification/deleteall', limiter, authenticateToken, notificationAuthorDeleteAll);
 
 // Protected admin/control endpoints
-// router.get("/getAllAnnouncemnet/:email",authenticateToken, getAllAnnouncements);
-router.post("/announcement/add", authenticateToken, upload.single('poster'), addAnnouncement);
-router.delete('/announcements/:announcementId', authenticateToken, deleteAnnouncement);
-router.delete('/announcementsByAdmin/:email', authenticateToken, deleteAllAnnouncementByAdmin);
-router.put("/control/updateRole", authenticateToken, upload.none(), updateRole);
-router.put("/control/updateCommunity", authenticateToken, updateTechCommunity);
-router.put("/control/coordinatorUpdate", authenticateToken, updateTechCommunityCoordinator);
+// router.get("/getAllAnnouncemnet/:email",limiter, authenticateToken, getAllAnnouncements);
+router.post("/announcement/add", limiter, authenticateToken, upload.single('poster'), addAnnouncement);
+router.delete('/announcements/:announcementId', limiter, authenticateToken, deleteAnnouncement);
+router.delete('/announcementsByAdmin/:email', limiter, authenticateToken, deleteAllAnnouncementByAdmin);
+router.put("/control/updateRole", limiter, authenticateToken, upload.none(), updateRole);
+router.put("/control/updateCommunity", limiter, authenticateToken, updateTechCommunity);
+router.put("/control/coordinatorUpdate", limiter, authenticateToken, updateTechCommunityCoordinator);
 
-router.delete("/personalLinks/:authorEmail/links/:linkId", authenticateToken, removePersonalLinks);
+router.delete("/personalLinks/:authorEmail/links/:linkId", limiter, authenticateToken, removePersonalLinks);
 
 module.exports = router;
