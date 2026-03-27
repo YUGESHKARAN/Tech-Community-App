@@ -229,7 +229,7 @@ function Announcement() {
               <button
                 onClick={() => setShowAnnouncement(!showAnnouncement)}
                 className="md:px-5 px-3 py-2 md:py-2.5 bg-emerald-600/20 hover:bg-emerald-500/20
-                         rounded-md text-xs md:text-sm   text-emerald-400 transition"
+                rounded-md text-xs md:text-sm   text-emerald-400 transition"
               >
                 {showAnnouncement ? "Close Panel" : "New Broadcast"}
               </button>

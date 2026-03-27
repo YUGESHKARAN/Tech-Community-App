@@ -236,6 +236,7 @@ export default function AITechAssistant({ currentPostId, category, viewComments,
 
 
       {/* Assistant Panel */}
+      {/* [#0f0f0f] */}
       <div
         className={`
       fixed md:static bottom-0 right-0
@@ -243,7 +244,8 @@ export default function AITechAssistant({ currentPostId, category, viewComments,
       md:relative
       h-[75vh] md:h-[520px]
        text-white
-       bg-[#0f0f0f]
+       bg-[#111827] md:bg-gray-950/50
+       md:bg-gray-950/50
       border-l border-neutral-800
       transform transition-transform duration-300
       ${open ? "translate-y-0" : "translate-y-full md:translate-y-0"}
@@ -480,7 +482,7 @@ export default function AITechAssistant({ currentPostId, category, viewComments,
                                handleQueryClick(s);
                             }}
                             // className="bg-neutral-800 hover:bg-neutral-700 px-3 py-1.5 rounded-full text-sm"
-                            className="border border-neutral-600 w-fit text-left hover:bg-neutral-800 px-3 md:py-1.5 transition-all duration-300 py-2 rounded-3xl text-sm disabled:opacity-50
+                            className="border border-neutral-600 w-fit text-left hover:bg-gray-800/70 px-3 md:py-1.5 transition-all duration-300 py-2 rounded-3xl text-sm disabled:opacity-50
                               disabled:cursor-not-allowed
                               disabled:hover:bg-transparent "
                           >
@@ -521,12 +523,12 @@ export default function AITechAssistant({ currentPostId, category, viewComments,
               {/* Typing bubble */}
 
               {/* Skeleton text */}
-              <div className="bg-[#1a1a1a] border border-neutral-800 p-4 rounded-2xl space-y-4">
+              <div className="bg-[#111827] md:bg-gray-950/50 border border-neutral-800 p-4 rounded-2xl space-y-4">
                 {/* Title shimmer */}
-                <div className="h-4 w-2/3 rounded-full bg-gradient-to-r from-neutral-800 via-neutral-700 to-neutral-800 animate-shimmer" />
+                <div className="h-4 w-2/3 rounded-full from-gray-800 md:via-gray-700 to-gray-800 animate-shimmer" />
 
                 {/* Line 1 */}
-                <div className="h-3 w-full rounded-full bg-gradient-to-r from-neutral-800 via-neutral-700 to-neutral-800 animate-shimmer" />
+                <div className="h-3 w-full rounded-full from-gray-800 md:via-gray-700 to-gray-800 animate-shimmer" />
 
                 {/* Line 2 */}
                 {/* <div className="h-3 w-[95%] rounded-full bg-gradient-to-r from-neutral-800 via-neutral-700 to-neutral-800 animate-shimmer" /> */}
@@ -536,13 +538,13 @@ export default function AITechAssistant({ currentPostId, category, viewComments,
         </div>
 
         {/* Input */}
-        <div className="p-3 border-t border-neutral-800 rounded-b-xl flex gap-2 bg-[#0f0f0f]">
+        <div className="p-3 border-t border-neutral-800 rounded-b-xl flex gap-2 bg-[#111827] md:bg-gray-950/50">
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && askAI()}
             placeholder="Ask your queries..."
-            className="flex-1 bg-neutral-800 border border-neutral-800 rounded-xl px-4 py-2 text-sm text-white placeholder-neutral-500 outline-none"
+            className="flex-1 bg-gray-800 border border-neutral-800 rounded-xl px-4 py-2 text-sm text-white placeholder-neutral-500 outline-none"
           />
 
           <button

@@ -596,7 +596,7 @@ function ViewPage() {
                     ) : (
                       <BiLike className="text-sm text-emerald-400" />
                     )}
-                    <span className="text-xs text-gray-300 font-medium">
+                    <span className="text-[10px] md:text-xs text-gray-300 font-medium">
                       {singlePostData.likes?.length || " "}
                     </span>
                   </button>
@@ -1038,7 +1038,7 @@ function ViewPage() {
                 <div
                 ref={sheetRef}
                   className={`
-                    absolute bottom-0 left-0 right-0
+                    fixed bottom-0 left-0 right-0
                     bg-gray-900 border-t border-[#30363d]
                     rounded-t-2xl
                     flex flex-col
