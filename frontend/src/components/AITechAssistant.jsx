@@ -240,13 +240,15 @@ export default function AITechAssistant({ currentPostId, category, viewComments,
       <div
         className={`
       fixed md:static bottom-0 right-0
+
       w-full md:w-full
       md:relative
       h-[75vh] md:h-[520px]
        text-white
-       bg-[#111827] md:bg-gray-950/50
+       bg-[#030712] md:bg-gray-950/50
        md:bg-gray-950/50
-      border-l border-neutral-800
+      border-t border-[#30363d] md:border-0
+      rounded-t-2xl 
       transform transition-transform duration-300
       ${open ? "translate-y-0" : "translate-y-full md:translate-y-0"}
       z-40 flex flex-col  md:rounded-xl
@@ -523,7 +525,7 @@ export default function AITechAssistant({ currentPostId, category, viewComments,
               {/* Typing bubble */}
 
               {/* Skeleton text */}
-              <div className="bg-[#111827] md:bg-gray-950/50 border border-neutral-800 p-4 rounded-2xl space-y-4">
+              <div className="bg-[#030712] md:bg-gray-950/50 border border-neutral-800 p-4 rounded-2xl space-y-4">
                 {/* Title shimmer */}
                 <div className="h-4 w-2/3 rounded-full from-gray-800 md:via-gray-700 to-gray-800 animate-shimmer" />
 
@@ -538,7 +540,7 @@ export default function AITechAssistant({ currentPostId, category, viewComments,
         </div>
 
         {/* Input */}
-        <div className="p-3 border-t border-neutral-800 rounded-b-xl flex gap-2 bg-[#111827] md:bg-gray-950/50">
+        <div className="p-3 border-t border-neutral-800 rounded-b-xl flex gap-2 bg-[#030712] md:bg-gray-950/50">
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
