@@ -47,7 +47,7 @@ const s3 = new S3Client({
 //     return res.status(400).json({ message: "Use University Email" });
 //   }
 //   try {
-//     const authorExist = await Author.findOne({ email });
+//     const authorExist = await Author.findOne({ email: { $eq: email }});
 //     if (authorExist) {
 //       return res.status(400).json({ message: "Author already exist" });
 //     }
@@ -87,7 +87,7 @@ const sendRegistrationOTP = async (req, res) => {
   }
 
   try {
-    const authorExist = await Author.findOne({ email });
+    const authorExist = await Author.findOne({ email: { $eq: email }});
     if (authorExist) {
       return res.status(400).json({ message: "Author already exists" });
     }
@@ -117,7 +117,7 @@ const addAuthor = async (req, res) => {
   }
 
   try {
-    const authorExist = await Author.findOne({ email });
+    const authorExist = await Author.findOne({ email: { $eq: email }});
     if (authorExist) {
       return res.status(400).json({ message: "Author already exists" });
     }
@@ -422,7 +422,7 @@ const updateAPassword = async (req, res) => {
 
   try {
     // Find the author by email
-    const author = await Author.findOne({ email });
+    const author = await Author.findOne({ email: { $eq: email }});
 
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
@@ -436,6 +436,7 @@ const updateAPassword = async (req, res) => {
 
     // Return a success message with status 200
     res.status(200).json({ message: "Password updated successfully", data });
+    
   } catch (err) {
     // Handle server errors
     console.error("Error updating password:", err);
@@ -459,7 +460,7 @@ const deleteAuthor = async (req, res) => {
     }
 
     // Find author first (do NOT delete before verifying password)
-    const author = await Author.findOne({ email });
+    const author = await Author.findOne({ email: { $eq: email }});
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
     }
@@ -566,7 +567,7 @@ const updateFollowers = async (req, res) => {
       return res.status(400).json({ message: "Both emails are required" });
     }
 
-    const author = await Author.findOne({ email });
+    const author = await Author.findOne({ email: { $eq: email }});
     const followerAuthor = await Author.findOne({ email: emailAuthor });
 
     if (!author || !followerAuthor) {
@@ -618,7 +619,7 @@ const sendOtp = async (req, res) => {
   const { email } = req.body;
 
   try {
-    const user = await Author.findOne({ email });
+    const user = await Author.findOne({ email: { $eq: email }});
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -671,7 +672,7 @@ const resetPassword = async (req, res) => {
   const { email, otp, newPassword } = req.body;
 
   try {
-    const user = await Author.findOne({ email });
+    const user = await Author.findOne({ email: { $eq: email }});
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -696,7 +697,7 @@ const resetPassword = async (req, res) => {
 const notificationAuthor = async (req, res) => {
   const { email } = req.body;
   try {
-    const author = await Author.findOne({ email });
+    const author = await Author.findOne({ email: { $eq: email }});
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
     }
@@ -713,7 +714,7 @@ const notificationAuthorDelete = async (req, res) => {
 
   try {
     // Find the author by email
-    const author = await Author.findOne({ email });
+    const author = await Author.findOne({ email: { $eq: email }});
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
     }
@@ -747,7 +748,7 @@ const notificationAuthorDeleteAll = async (req, res) => {
 
   try {
     // Find the author by email
-    const author = await Author.findOne({ email });
+    const author = await Author.findOne({ email: { $eq: email }});
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
     }
@@ -776,7 +777,7 @@ const notificationAuthorDeleteAll = async (req, res) => {
 
 //   try {
 //     // Find the author by email
-//     const author = await Author.findOne({ email });
+//     const author = await Author.findOne({ email: { $eq: email }});
 //     if (!author) {
 //       return res.status(404).json({ message: 'Author not found' });
 //     }
@@ -892,7 +893,7 @@ const addAnnouncement = async (req, res) => {
   } = req.body;
   // const poster = req.file ? req.file.originalname : "";
   try {
-    const author = await Author.findOne({ email });
+    const author = await Author.findOne({ email: { $eq: email }});
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
     }
@@ -1133,7 +1134,7 @@ const updateRole = async (req, res) => {
   try {
     console.log("logged");
 
-    const author = await Author.findOne({ email });
+    const author = await Author.findOne({ email: { $eq: email }});
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
     }
@@ -1153,7 +1154,7 @@ const updateTechCommunity = async (req, res) => {
   console.log("community called");
 
   try {
-    const author = await Author.findOne({ email });
+    const author = await Author.findOne({ email: { $eq: email }});
 
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
@@ -1182,7 +1183,7 @@ const updateTechCommunityCoordinator = async (req, res) => {
   console.log("communities called", email);
 
   try {
-    const author = await Author.findOne({ email });
+    const author = await Author.findOne({ email: { $eq: email }});
 
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
@@ -1211,7 +1212,7 @@ const deleteAllAnnouncementByAdmin = async (req, res) => {
       return res.status(400).json({ message: "author email required" });
     }
 
-    const admin = await Author.findOne({ email });
+    const admin = await Author.findOne({ email: { $eq: email }});
     if (!admin) {
       return res.status(404).json({ message: "Author not found" });
     }

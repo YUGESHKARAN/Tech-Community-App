@@ -4,6 +4,7 @@ import axiosInstance from '../instances/Axiosinstances';
 function ChangePassword() {
     const [errors, setErrors] = useState({});
     const email = localStorage.getItem("emailForOtp");
+    const [loading, setLoading] = useState(false)
       const [success, setSuccess] = useState("");
       const navigate = useNavigate();
      const [formData, setFormData] = useState({
@@ -21,6 +22,7 @@ function ChangePassword() {
 
       const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true)
         if(!formData.otp){
           return setErrors({ apiError: "OTP is required" });
         }
@@ -40,6 +42,9 @@ function ChangePassword() {
           }
         } catch (error) {
           setErrors({ apiError: error.response?.data?.message || "Password update failed" });
+        }
+        finally{
+          setLoading(false)
         }
       }
 
@@ -108,10 +113,11 @@ function ChangePassword() {
         
                   <button
                     onClick={handleSubmit}
+                    disabled={loading}
                     type="submit"
-                    className='w-full p-1.5 md:py-2.5 bg-yellow-600 hover:bg-yellow-700 transition text-white font-semibold rounded-lg'
+                    className='w-full p-1.5 md:py-2.5 bg-yellow-600 hover:bg-yellow-700 transition-all duration-200 text-white font-semibold rounded-lg'
                   >
-                    Change Password
+                    {loading?'Changing...':'Change Password'}
                   </button>
                   
                 </form>
