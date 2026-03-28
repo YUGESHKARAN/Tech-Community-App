@@ -655,10 +655,13 @@ const addPosts = async (req, res) => {
 };
 
 
+
+
+
 const updatePost = async (req, res) => {
   const { email, postId } = req.params;
   const { title, description, category,links } = req.body;
-  console.log("new changes", req.body)
+  // console.log("new changes", req.body)
 
   
   try {
@@ -1069,63 +1072,6 @@ const addPostBookmark = async(req,res)=>{
   }
 }
 
-
-// const getBookmarkedPosts = async (req, res) => {
-//   try {
-//     const { email } = req.params;
-//     if (!email) return res.status(400).json({ message: "email required" });
-
-//     // fetch only bookmark ids (ensure field is returned)
-//     const author = await Author.findOne({ email: { $eq: email }}).select("postBookmark");
-//     if (!author) return res.status(404).json({ message: "author not found" });
-
-//     // normalize bookmark ids to strings
-//     const postIds = (author.postBookmark || [])
-//       .map((id) => (id ? id.toString() : null))
-//       .filter(Boolean);
-
-//     if (postIds.length === 0) {
-//       return res.status(200).json({ message: "No bookmarks", posts: [] });
-//     }
-
-//     // Fetch all authors that have posts (avoid relying on Mongo $in casting issues)
-//     const authorsWithPosts = await Author.find({ "posts.0": { $exists: true } })
-//       .select("authorname email profile role community posts");
-
-//     // Build map postId -> postWithAuthorDetails by scanning posts in JS
-//     const postMap = new Map();
-//     for (const a of authorsWithPosts) {
-//       for (const p of a.posts || []) {
-//         const pid = p._id && p._id.toString();
-//         if (pid && postIds.includes(pid) && !postMap.has(pid)) {
-//           postMap.set(pid, {
-//             ...p.toObject(),
-//             authorname: a.authorname,
-//             authoremail: a.email,
-//             profile: a.profile || "",
-//             role: a.role,
-//             community: a.community,
-//           });
-//         }
-//       }
-//     }
-
-//     // preserve bookmark order
-//     const bookmarkedPosts = postIds.map((id) => postMap.get(id)).filter(Boolean);
-//     const bookmarkedPostIds = bookmarkedPosts.map(p => (p && p._id) ? p._id.toString() : null).filter(Boolean);
-    
-
-//     return res.status(200).json({
-//       message: "Bookmarked posts",
-//       count: bookmarkedPosts.length,
-//       posts: bookmarkedPosts,
-//       postIds:bookmarkedPostIds
-//     });
-//   } catch (err) {
-//     console.error("getBookmarkedPosts error:", err);
-//     return res.status(500).json({ message: "server error", error: err.message });
-//   }
-// };
 const getBookmarkedPosts = async (req, res) => {
   try {
     const { email } = req.params;
@@ -1221,6 +1167,82 @@ const getAllBookmarkIds = async (req, res) => {
 };
 
 
+// const updateMessage = async(req, res)=>{
+// console.log("edit message triggred")
+//   const {email, postId, id} = req.params;
+//   const {message} = req.body;
+//   try{
+
+//     if(!email || !postId || !id){
+//       return  res.status(401).json({error:"email, postId and messageId are required!"})
+//     }
+
+//     const author = await Author.findOne({email : {$eq: email}});
+
+//     if (!author){
+//       return  res.status(404).json({error:"Author not foud!"})
+//     }
+
+//     const post = author.posts.id(postId)
+//     if(!post){
+//       return  res.status(404).json({ error: "post not found!" })
+//     }
+
+//     const comment = post.messages.id(id);
+//     if(!comment){
+//       return res.status(404).json({message: "comment not found!"})
+//     }
+//     comment.message = message.trim();
+
+//     await author.save();
+
+//     res.status(200).json({ message: "comment updated", comment})
+//   }
+
+//   catch(err){
+//     res.status(500).json({ error: err.message })
+//   }
+// }
+
+// const deleteComment = async(req, res)=>{
+//   // console.log("delete comment triggred", req.params)
+
+//   const {email, postId, id} = req.params;
+//   try{
+//     if(!email || !postId || !id){
+//        return res.status(401).json({ message: "email, postId, messageId are required!"})
+//     }
+//     const author = await Author.findOne({email: {$eq: email}})
+    
+//     if(!author){
+//       return res.status(404).json({message: "Author not found!"})
+//     }
+//     const post = author.posts.id(postId)
+
+//     if(!post){
+//       return res.status(404).json({message: "post not found!"})
+//     }
+
+//     const commentIndex = post.messages.findIndex((mesg)=>
+//     mesg._id.toString()=== id);
+    
+//      if (commentIndex === -1){
+//       return res.status(404).json({message:"comment not found!"})
+//     }
+
+//     post.messages.splice(commentIndex, 1);
+
+//     await author.save();
+
+//     res.status(200).json({ message: "comment deleted successfully"})
+//   }
+//   catch(err)
+//   {
+//     res.status(500).json({ message:err.message})
+//     console.log("error", err.message)
+//   }
+// }
+
 
 
 
@@ -1241,5 +1263,7 @@ module.exports = {
   getAllBookmarkIds,
   // getPostsByAuthorsCategory,
   // getUniqueCategoriesByAuthor
+  // updateMessage,
+  // deleteComment
  
 };

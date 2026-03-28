@@ -157,6 +157,19 @@ function ViewPage() {
     newSocket.emit("registerUser", userEmail);
     newSocket.emit("joinPostRoom", postId);
 
+    const handleEditMessage = ({ messageId, message }) => {
+      setMessages((prev) =>
+        prev.map((msg) => (msg._id === messageId ? { ...msg, message } : msg)),
+      );
+    };
+
+    const handleDeleteMessage = ({ messageId }) => {
+      setMessages((prev) => prev.filter((msg) => msg._id !== messageId));
+    };
+
+    newSocket.on("editMessage", handleEditMessage);
+    newSocket.on("deleteMessage", handleDeleteMessage);
+
     // FIXED LIVE COMMENT UPDATE
 
     const handleNewMessage = (comment) => {
@@ -186,8 +199,15 @@ function ViewPage() {
 
     newSocket.on("notification", handleNotification);
 
+    // return () => {
+    //   newSocket.off("newMessage", handleNewMessage);
+    //   newSocket.off("notification", handleNotification);
+    //   newSocket.disconnect();
+    // };
     return () => {
       newSocket.off("newMessage", handleNewMessage);
+      newSocket.off("editMessage", handleEditMessage);
+      newSocket.off("deleteMessage", handleDeleteMessage);
       newSocket.off("notification", handleNotification);
       newSocket.disconnect();
     };
@@ -364,7 +384,7 @@ function ViewPage() {
   // console.log("email", email);
   // console.log("userEmail", userEmail);
 
-  console.log("post id", postId);
+  // console.log("post id", postId);
   // console.log("singlepost data", singlePostData);
 
   return (
@@ -519,9 +539,9 @@ function ViewPage() {
               </div>
 
               {/* -----------------AI assistant, likes, share and bookmark block --starts here------------- */}
-              <div 
-              // className="flex items-center  justify-between md:justify-end mt-3 mb-1 md:mb-5"
-              className="w-full mx-auto mt-3 mb-1 md:mb-5"
+              <div
+                // className="flex items-center  justify-between md:justify-end mt-3 mb-1 md:mb-5"
+                className="w-full mx-auto mt-3 mb-1 md:mb-5"
               >
                 {/* AI Assistant */}
                 {/* <div className="text-3xl block md:hidden md:text-4xl text-white">
@@ -538,19 +558,15 @@ function ViewPage() {
                 {/* Actions */}
                 <div className="flex items-center md:justify-end justify-between   md:gap-3">
                   <div className="text-3xl block md:hidden md:text-4xl text-white">
-                  <AITechAssistant
-                    currentPostId={singlePostData._id}
-                    category={singlePostData.category}
-                    viewComments = {viewComments}
-                    setViewComments = {setViewComments}
-                  />
-                 
-                  
-                </div>
-                   <button
-                    onClick={() =>setViewComments(!viewComments)
-                    }
-
+                    <AITechAssistant
+                      currentPostId={singlePostData._id}
+                      category={singlePostData.category}
+                      viewComments={viewComments}
+                      setViewComments={setViewComments}
+                    />
+                  </div>
+                  <button
+                    onClick={() => setViewComments(!viewComments)}
                     className={`
                                   flex items-center justify-center gap-2
                   px-3 py-1 md:px-4 md:py-2
@@ -562,21 +578,16 @@ function ViewPage() {
 
                   ${showAssistant ? "pointer-events-none" : ""}`}
                   >
-            
                     <MdOutlineInsertComment className="text-xs text-emerald-400" />
                     <span className=" flex items-center justify-cennter text-[10px] text-gray-300">
-                      Discussion 
-                            {messages.length > 0 && (
-                      <span className="text-[10px] ml-2 font-medium bg-[#21262d] text-gray-400 border border-[#30363d] px-2 py-0.5 rounded-full">
-                        {messages.length}
-                      </span>
-                    )}
-                   
+                      Discussion
+                      {messages.length > 0 && (
+                        <span className="text-[10px] ml-2 font-medium bg-[#21262d] text-gray-400 border border-[#30363d] px-2 py-0.5 rounded-full">
+                          {messages.length}
+                        </span>
+                      )}
                     </span>
-                 
-
                   </button>
-
 
                   {/* Like */}
                   <button
@@ -600,8 +611,6 @@ function ViewPage() {
                       {singlePostData.likes?.length || " "}
                     </span>
                   </button>
-
-                 
 
                   {/* Share */}
                   <button
@@ -628,8 +637,6 @@ function ViewPage() {
                     </span>
                   </button>
 
-                 
-
                   {/* Bookmark */}
                   <button
                     onClick={() => addBookMarkPostId(singlePostData._id)}
@@ -655,7 +662,6 @@ function ViewPage() {
                 </div>
               </div>
               {/* -------------------------------------------------------ends here-------------------- */}
-      
 
               {/* Description */}
               <div className=" md:border border-neutral-700/40 md:rounded-xl rounded-lg p-1 pt-4 md:p-5">
@@ -805,8 +811,8 @@ function ViewPage() {
                 <div className=" md:border border-neutral-700/50 rounded-lg md:rounded-xl pl-2 pt-5  md:p-5">
                   <h3 className="text-base flex items-center gap-2 md:gap-3  text-slate-300 font-semibold  mb-3">
                     {/* 🎥 */}
-                     <FaYoutube className="text-slate-300 text-xl" />
-                     Video Source
+                    <FaYoutube className="text-slate-300 text-xl" />
+                    Video Source
                   </h3>
 
                   <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
@@ -994,7 +1000,12 @@ function ViewPage() {
                 >
                   <CommentsBox
                     messages={messages}
+                    setMessages={setMessages}
                     viewComments={viewComments}
+                    userEmail={userEmail}
+                    email={email}
+                    postId={postId}
+                    socket={socket} 
                   />
                 </div>
 
@@ -1036,7 +1047,7 @@ function ViewPage() {
 
                 {/* Sheet */}
                 <div
-                ref={sheetRef}
+                  ref={sheetRef}
                   className={`
                     fixed bottom-0 left-0 right-0
                     bg-gray-900 border-t border-[#30363d]
@@ -1046,14 +1057,15 @@ function ViewPage() {
                     transition-transform duration-300 ease-out
                     ${viewComments ? "translate-y-0" : "translate-y-full"}
                   `}
-                  
                 >
-                 {/* Drag handle */}
-                <div
+                  {/* Drag handle */}
+                  <div
                     className="flex justify-center pt-3 pb-1 shrink-0 cursor-row-resize touch-none"
                     // onMouseDown={handleDragStart}
                     // onTouchStart={handleDragStart}
-                    onClick={()=>{setViewComments(false)}}
+                    onClick={() => {
+                      setViewComments(false);
+                    }}
                   >
                     <div className="w-9 h-1 rounded-full bg-gray-600" />
                   </div>
@@ -1080,7 +1092,15 @@ function ViewPage() {
 
                   {/* Scrollable comments */}
                   <div className="flex-1 overflow-y-auto px-4 py-2 scrollbar-hide">
-                    <CommentsBox messages={messages} viewComments={viewComments} />
+                    <CommentsBox
+                      messages={messages}
+                      setMessages={setMessages}
+                      viewComments={viewComments}
+                      userEmail={userEmail}
+                      email={email}
+                      postId={postId}
+                      socket={socket} 
+                    />
                   </div>
 
                   {/* Input flush to bottom, no gap */}

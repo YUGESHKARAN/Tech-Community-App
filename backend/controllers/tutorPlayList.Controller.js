@@ -243,7 +243,7 @@ const addTutorPlayList = async (req, res) => {
       return res.status(400).json({ message: "playlist data required" });
     }
 
-    const user = await Author.findOne({ email});
+    const user = await Author.findOne({ email: { $eq: email }});
     // console.log("user",user);
 
     if (!user) {

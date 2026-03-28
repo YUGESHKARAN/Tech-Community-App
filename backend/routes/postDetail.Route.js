@@ -22,6 +22,8 @@ const {
   getAllBookmarkIds,
   // getPostsByAuthorsCategory,
   // getUniqueCategoriesByAuthor
+  // updateMessage,
+  // deleteComment
 } = require("../controllers/postDetail.Controller");
 
 const {limiter, readLimiter} = require("../middleware/rateLimitter")
@@ -55,6 +57,9 @@ router.put("/likes/:email/:id", limiter, authenticateToken, postLikes)
 
 router.delete("/:email/:postId", limiter, authenticateToken,  deletePost);
 router.delete("/links/:email/:postId", limiter, authenticateToken,  removePostsLinks);
+
+// router.put("/comment/:email/:postId/:id",limiter, authenticateToken, updateMessage )
+// router.delete("/comment/:email/:postId/:id",limiter, authenticateToken, deleteComment )
 
 // router.get("/:email/:category",authenticateToken, getPostsByAuthorsCategory);
 

@@ -532,7 +532,7 @@ const deleteAuthorByAdmin = async (req, res) => {
     }
 
     //  Delete author
-    const author = await Author.findOneAndDelete({ email });
+    const author = await Author.findOneAndDelete({ email: { $eq: email }});
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
     }
@@ -568,7 +568,7 @@ const updateFollowers = async (req, res) => {
     }
 
     const author = await Author.findOne({ email: { $eq: email }});
-    const followerAuthor = await Author.findOne({ email: emailAuthor });
+    const followerAuthor = await Author.findOne({ email: { $eq: emailAuthor }});
 
     if (!author || !followerAuthor) {
       return res.status(404).json({ message: "Author not found" });
