@@ -540,7 +540,7 @@ export default function AITechAssistant({ currentPostId, category, viewComments,
         </div>
 
         {/* Input */}
-        <div className="p-3 md:border-t border-neutral-800 rounded-b-xl flex gap-2 bg-[#030712] md:bg-gray-950/50">
+        <div className="p-3 md:border-t border-neutral-800 rounded-b-xl flex gap-2 bg-[#0a0f1d] md:bg-gray-950/50">
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
