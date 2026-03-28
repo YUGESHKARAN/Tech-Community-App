@@ -225,7 +225,9 @@ const handleDelete = (msgId) => {
   // Optimistic update
   setMessages((prev) => prev.filter((m) => m._id !== msgId));
   socket.emit("deleteMessage", { postId, messageId: msgId });
-  toast.success("Deleted", "Message removed successfully")
+  setTimeout(()=>{
+    toast.success("Deleted", "Message removed successfully")
+  },1000)
 };
 
 const handleEdit = (msgId) => {
@@ -238,7 +240,9 @@ const handleEdit = (msgId) => {
   setEditingId(null);
   setEditValue("");
   socket.emit("editMessage", { postId, messageId: msgId, message: updated });
-  toast.success("Edited", "Message edited successfully")
+  setTimeout(()=>{
+    toast.success("Edited", "Message edited successfully")
+  },1000)
 };
 
 const menuRef = useRef(null);
@@ -252,6 +256,17 @@ useEffect(() => {
   document.addEventListener("mousedown", handler);
   return () => document.removeEventListener("mousedown", handler);
 }, []);
+
+
+const editTextareaRef = useRef(null);
+
+useEffect(() => {
+  if (editTextareaRef.current) {
+    const len = editTextareaRef.current.value.length;
+    editTextareaRef.current.setSelectionRange(len, len);
+    editTextareaRef.current.focus();
+  }
+}, [editingId]);
 
   // console.log("messages", messages)
   return (
@@ -402,11 +417,11 @@ useEffect(() => {
                 {editingId === msg._id ? (
                   <div className="mt-2 flex flex-col gap-1.5">
                     <textarea
+                      ref={editTextareaRef}
                       value={editValue}
                       onChange={(e) => setEditValue(e.target.value)}
-                      rows={2}
-                      autoFocus
-                      className="w-full bg-[#0d1117] border border-emerald-500/30 rounded-md px-2.5 py-1.5 text-xs text-gray-200 outline-none resize-none scrollbar-hide focus:border-emerald-500/60 transition-colors"
+                      rows={3}
+                      className="w-full bg-[#0d1117] border border-emerald-500/30 rounded-md  px-2.5 py-1.5 text-xs text-gray-200 outline-none resize-none scrollbar-hide focus:border-emerald-500/60 transition-colors"
                     />
                     <div className="flex justify-end gap-1.5">
                       <button
