@@ -6,6 +6,7 @@ import axiosInstance from "../instances/Axiosinstances";
 import { Link } from "react-router-dom";
 import useAuthorCommunity from "../hooks/useAuthorCommunity";
 import CommunityCardSkeleton from "../components/loaders/CommunityCardSkeleton";
+import toast from "../components/toaster/Toast"
 function TechCommunity() {
   const [posts, setPosts] = useState([]);
 
@@ -15,87 +16,93 @@ function TechCommunity() {
   const [loading, setLoading] = useState(false)
   // const [authorCommunity, setAuthorCommunity] = useState([]);
   const [authors, setAuthors] = useState([]);
-   const { authorCommunity, getAuthorCommunity } = useAuthorCommunity(email);
-  //  const [communities, setCommunities] = useState([]);
+   const { authorCommunity,setAuthorCommunity } = useAuthorCommunity(email);
+   const [communities, setCommunities] = useState([]);
 
-  // const getAuthorCommunity = async () => {
-  //   try {
-  //     const response = await axiosInstance.get(`/blog/author/${email}`);
-  //     setAuthorCommunity(response.data.community);
-  //   } catch (err) {
-  //     console.log("error", err);
-  //   }
-  // };
+ 
 
   
   // Fetch posts from API
-  const getPosts = async () => {
-    setLoading(true);
-    try {
-      const response = await axiosInstance.get("/blog/posts");
-      setPosts(response.data.posts);
+  // const getPosts = async () => {
+  //   setLoading(true);
+  //   try {
+  //     const response = await axiosInstance.get("/blog/posts");
+  //     setPosts(response.data.posts);
 
-    } catch (err) {
-      console.error("Error fetching posts:", err);
-    }
-    finally{
-       setLoading(false);
-    }
-  };
+  //   } catch (err) {
+  //     console.error("Error fetching posts:", err);
+  //   }
+  //   finally{
+  //      setLoading(false);
+  //   }
+  // };
 
-  const getAuthors = async () => {
-    try {
-      const response = await axiosInstance.get("/blog/author");
-      setAuthors(response.data);
-    } catch (err) {
-      console.error("Error fetching posts:", err);
-    }
+  // const getAuthors = async () => {
+  //   try {
+  //     const response = await axiosInstance.get("/blog/author");
+  //     setAuthors(response.data);
+  //   } catch (err) {
+  //     console.error("Error fetching posts:", err);
+  //   }
   
-  };
-  useEffect(() => {
-    getPosts();
-    getAuthorCommunity();
-    getAuthors();
-  }, []);
+  // };
 
   // Get unique categories
-  const getUniqueCategories = (posts) => {
-    return [...new Set(posts.map((post) => post.category))];
-  };
-  const categories = getUniqueCategories(posts);
+  // const getUniqueCategories = (posts) => {
+  //   return [...new Set(posts.map((post) => post.category))];
+  // };
+  // const categories = getUniqueCategories(posts);
 
-  //  get Tech community array
-  function getCategoryStats(authors, categoryname) {
-    let followerscount = 0;
-    let authorcount = 0;
-    let postscount = 0;
+  // //  get Tech community array
+  // function getCategoryStats(authors, categoryname) {
+  //   let followerscount = 0;
+  //   let authorcount = 0;
+  //   let postscount = 0;
 
-    authors.forEach((author) => {
-      if (author.community.includes(categoryname)) {
-        if (author.role === "student") {
-          followerscount++;
-        } else if (author.role === "coordinator") {
-          authorcount++;
-        }
-      }
-      const matchingPosts =
-        author.posts?.filter((post) => post.category === categoryname) || [];
+  //   authors.forEach((author) => {
+  //     if (author.community.includes(categoryname)) {
+  //       if (author.role === "student") {
+  //         followerscount++;
+  //       } else if (author.role === "coordinator") {
+  //         authorcount++;
+  //       }
+  //     }
+  //     const matchingPosts =
+  //       author.posts?.filter((post) => post.category === categoryname) || [];
 
-      postscount += matchingPosts.length;
-    });
+  //     postscount += matchingPosts.length;
+  //   });
 
-    return {
-      categoryname,
-      followerscount,
-      authorcount,
-      postscount,
-    };
-  }
+  //   return {
+  //     categoryname,
+  //     followerscount,
+  //     authorcount,
+  //     postscount,
+  //   };
+  // }
 
   // const communities = getCategoryStats(authors, categories);
-  const communities = categories.map((category) =>
-    getCategoryStats(authors, category)
-  );
+  // const communities = categories.map((category) =>
+  //   getCategoryStats(authors, category)
+  // );
+
+  const getCommunityAnalytics = async () => {
+
+    try{
+      const response = await axiosInstance.get("/blog/analytics/view/techDomain");
+      // console.log("analytics", response.data);  
+      setCommunities(response.data.analytics);
+    }
+    catch(err){
+      console.log("error", err.message);
+    }
+  }
+
+useEffect(()=>{
+getCommunityAnalytics();
+}, [])
+
+
 
   const updateCommunity = async (email, techCommunity) => {
     try {
@@ -106,16 +113,34 @@ function TechCommunity() {
           techcommunity: techCommunity,
         }
       );
+
+      if (authorCommunity?.includes(techCommunity)) {
+        setAuthorCommunity((prev)=>prev.filter((comm)=> comm!== techCommunity))
+        // toast.info('Left', 'You have left the community!');
+      }
+      else{
+        setAuthorCommunity((prev) => [...new Set([...prev, techCommunity])]);
+        // toast.success('Joined', 'You have joined the community!');
+      }
       if (response.status === 201) {
-        await getPosts();
-        await getAuthorCommunity();
-        // window.location.reload();
+         if (authorCommunity?.includes(techCommunity)) {
+        // setAuthorCommunity((prev)=>prev.filter((comm)=> comm!== techCommunity))
+        toast.info('Left', 'You have left the community!');
+      }
+      else{
+        // setAuthorCommunity((prev) => [...new Set([...prev, techCommunity])]);
+        toast.success('Joined', 'You have joined the community!');
+      }
+  
       }
     } catch (err) {
       console.log("error", err);
     }
   };
 
+
+  // console.log("authorCommunity", authorCommunity);
+  // console.log("communities", communities);  
 
 
   return (
@@ -134,7 +159,7 @@ function TechCommunity() {
           communities.map((item, index) => (
             <div
               key={index}
-              className="relative group backdrop-blur-xl  border border-white/40 p-6 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 flex flex-col justify-between overflow-hidden"
+              className="relative group backdrop-blur-xl  border border-neutral-700/50 p-6 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 flex flex-col justify-between overflow-hidden"
             >
               {/* Glow hover effect */}
               <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 via-purple-500/10 to-pink-600/10 opacity-0 group-hover:opacity-100 blur-2xl transition duration-700"></div>
@@ -169,7 +194,7 @@ function TechCommunity() {
                     type="button"
                     className={`${
                       authorCommunity.includes(item.categoryname)
-                        ? "bg-gradient-to-r from-orange-500 to-yellow-400 text-black font-semibold px-5 py-2 rounded-lg shadow-lg hover:opacity-90 transition-all duration-300"
+                        ? "bg-gradient-to-r from-orange-500 to-yellow-400 text-black font-semibold md:px-5 md:py-2 text-xs md:text-base px-3 py-1.5 rounded-lg shadow-lg hover:opacity-90 transition-all duration-300"
                         : "hidden"
                     }`}
                   >
@@ -180,11 +205,11 @@ function TechCommunity() {
                   <button
                     onClick={() => updateCommunity(email, item.categoryname)}
                     type="button"
-                    className={`font-semibold px-5 py-2 rounded-lg shadow-md transition-all duration-300
+                    className={`font-semibold md:px-5 md:py-2 text-xs md:text-base px-3 py-1.5 rounded-lg shadow-md transition-all duration-300
                 ${
                   authorCommunity.includes(item.categoryname)
-                    ? "bg-gradient-to-r from-green-500 to-emerald-400 text-black hover:opacity-90"
-                    : "bg-gradient-to-r from-gray-200 to-white text-gray-800 hover:from-gray-300 hover:to-white"
+                    ? "bg-emerald-600/20 text-emerald-400 "
+                    : "bg-white/80 text-gray-800 hover:from-gray-300 "
                 }`}
                   >
                     {authorCommunity.includes(item.categoryname)

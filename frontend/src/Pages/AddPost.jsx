@@ -375,7 +375,7 @@ function AddPost() {
 
                   {isTyping && (
                     <div className="text-xs animate-pulse text-gray-400 italic">
-                      DraftMate is refining your content...
+                      DraftMate refining your content...
                     </div>
                   )}
                 </div>

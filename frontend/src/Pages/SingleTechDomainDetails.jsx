@@ -15,27 +15,18 @@ import { useParams } from "react-router-dom";
 import useAuthorCommunity from "../hooks/useAuthorCommunity";
 import CoordinatorGridSkeleton from "../components/loaders/CoordinatorGridSkeleton ";
 import StudentGridSkeleton from "../components/loaders/StudentGridSkeleton ";
+import toast from "../components/toaster/Toast"
 function SingleTechDomainDetails() {
   const { category } = useParams();
   const decodedCategory = decodeURIComponent(category);
   const [authors, setAuthors] = useState([]);
   const email = localStorage.getItem("email");
-  const { authorCommunity, getAuthorCommunity } = useAuthorCommunity(email);
+  const { authorCommunity, setAuthorCommunity } = useAuthorCommunity(email);
   const role = localStorage.getItem("role");
 
   // --------------------------------------------------------------------------------------
 
-  // const authorsDetails = async () => {
-  //   try {
 
-  //     const response = await axiosInstance.get(`/blog/author/getAuthorsByDomain/${decodedCategory}`);
-
-  //     setAuthors(response.data.filteredAuthors);
-  //   } catch (err) {
-  //     console.log("error", err);
-  //   }
-
-  // };
 
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
@@ -99,16 +90,30 @@ function SingleTechDomainDetails() {
   // --------------------------------------------------------------------------------------
 
   const addFollower = async (userEmail) => {
-    console.log("useremail", userEmail);
+    // console.log("useremail", userEmail);
     try {
       const response = await axiosInstance.put(
         `/blog/author/follow/${userEmail}`,
         { emailAuthor: email },
       );
-      if (response.status === 200) {
-        console.log(response.data);
-        authorsDetails();
-      }
+        setAuthors((prev) =>
+          prev.map((author) => {
+            if (author.email === userEmail) {
+              const isFollowing = author.followers?.includes(email);
+
+              return {
+                ...author,
+                followers: isFollowing
+                  ? author.followers.filter((f) => f !== email)
+                  : [...(author.followers || []), email],
+              };
+            }
+            return author;
+          }),
+        );
+      // if (response.status === 200) {
+     
+      // }
     } catch (err) {
       console.log("error", err);
     }
@@ -123,10 +128,24 @@ function SingleTechDomainDetails() {
           techcommunity: techCommunity,
         },
       );
+      if (authorCommunity?.includes(techCommunity)) {
+        setAuthorCommunity((prev)=>prev.filter((comm)=> comm!== techCommunity))
+        // toast.info('Left', 'You have left the community!');
+      }
+      else{
+        setAuthorCommunity((prev) => [...new Set([...prev, techCommunity])]);
+        // toast.success('Joined', 'You have joined the community!');
+      }
       if (response.status === 201) {
-        await authorsDetails();
-        await getAuthorCommunity();
-        // window.location.reload();
+         if (authorCommunity?.includes(techCommunity)) {
+        // setAuthorCommunity((prev)=>prev.filter((comm)=> comm!== techCommunity))
+        toast.info('Left', 'You have left the community!');
+      }
+      else{
+        // setAuthorCommunity((prev) => [...new Set([...prev, techCommunity])]);
+        toast.success('Joined', 'You have joined the community!');
+      }
+  
       }
     } catch (err) {
       console.log("error", err);
@@ -136,213 +155,7 @@ function SingleTechDomainDetails() {
   // console.log("authors", authors)
 
   return (
-    // <div className="w-full min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 h-auto reltive  ">
-    //   <NavBar />
 
-    //    <h1 className="md:text-left text-center w-11/12 mx-auto text-3xl md:text-5xl font-extrabold mt-12 mb-8 bg-gradient-to-r from-blue-400 via-yellow-400 to-pink-400 bg-clip-text text-transparent drop-shadow-lg tracking-wide">
-    //       {decodedCategory} - Community
-    //     </h1>
-
-    //      <div className="flex justify-center md:justify-start w-11/12 mx-auto mb-8">
-    //             {role === "coordinator" || role === "admin" ? (
-    //               <button
-    //                 type="button"
-    //                 className={`${
-    //                   authorCommunity.includes(decodedCategory)
-    //                     ? "bg-gradient-to-r md:text-xl from-orange-500 to-yellow-400 text-black font-semibold px-5 py-2 rounded-lg shadow-lg hover:opacity-90 transition-all duration-300"
-    //                     : "hidden"
-    //                 }`}
-    //               >
-    //                 {authorCommunity.includes(decodedCategory) &&
-    //                   "Coordinator"}
-    //               </button>
-    //             ) : (
-    //               <button
-    //                 onClick={() => updateCommunity(email, decodedCategory)}
-    //                 type="button"
-    //                 className={`font-semibold px-5 py-2 rounded-lg shadow-md transition-all duration-300
-    //             ${
-    //               authorCommunity.includes(decodedCategory)
-    //                 ? "bg-gradient-to-r from-green-500 to-emerald-400 text-black hover:opacity-90"
-    //                 : "bg-gradient-to-r from-gray-200 to-white text-gray-800 hover:from-gray-300 hover:to-white"
-    //             } md:text-xl`}
-    //               >
-    //                 {authorCommunity.includes(decodedCategory)
-    //                   ? "Joined"
-    //                   : "Join"}
-    //               </button>
-    //             )}
-    //           </div>
-
-    //   <div className="w-11/12 mx-auto min-h-screen flex flex-col items-center mt-12 text-white">
-    //     {/* Coordinators Section */}
-    //     {authors.filter((author) => author.role === "coordinator").length >
-    //       0 && (
-    //       // <h2 className="text-center text-2xl md:text-4xl font-bold mb-6 bg-gradient-to-r from-orange-400 to-yellow-300 bg-clip-text text-transparent">
-    //       <h2 className="text-center text-2xl md:text-4xl font-bold mb-6 text-white/90">
-    //         Coordinators {`(${authors.filter((author) => author.role === "coordinator").length })`}
-    //       </h2>
-    //     )}
-
-    //     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-8">
-    //       {authors
-    //         .filter((author) => author.role === "coordinator")
-    //         .map((author, index) => (
-    //           <div
-    //             key={index}
-    //             className="backdrop-blur-md bg-white/10 border border-white/20 rounded-2xl shadow-lg hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 p-5 flex flex-col items-center"
-    //           >
-    //             <Link to={`/viewProfile/${author.email}`}>
-    //               <img
-    //                 src={
-    //                   author.profile
-    //                     ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`
-    //                     : user
-    //                 }
-    //                 alt={author.authorname}
-    //                 className="rounded-full bg-white w-24 h-24 object-cover border-2 border-white shadow-md hover:shadow-lg transition-all"
-    //               />
-    //             </Link>
-
-    //             <h1 className="text-center font-semibold mt-3 text-lg truncate w-full">
-    //               {author.authorname}
-    //             </h1>
-    //             <p className="text-center text-sm text-gray-300 truncate w-full">
-    //               {author.email}
-    //             </p>
-
-    //             {/* Communities */}
-    //             {/* {author.community?.length > 0 && (
-    //               <div className="flex flex-wrap justify-center gap-2 mt-3">
-    //                 {author.community.map((com, i) => (
-    //                   <span
-    //                     key={i}
-    //                     className="px-3 py-1 text-xs font-medium backdrop-blur-md bg-white/10 text-white rounded-full shadow-sm border border-gray-400"
-    //                   >
-    //                     {com}
-    //                   </span>
-    //                 ))}
-    //               </div>
-    //             )} */}
-
-    //             {/* Social Links */}
-    //             {author.profileLinks?.length > 0 && (
-    //               <div className="flex justify-center gap-3 mt-4">
-    //                 {author.profileLinks.map((link, i) => (
-    //                   <Link
-    //                     key={i}
-    //                     to={link.url}
-    //                     title={link.title}
-    //                     target="_blank"
-    //                   >
-    //                     {link.title === "LinkedIn" ? (
-    //                       <FaLinkedin className="text-white text-lg hover:text-green-400 transition" />
-    //                     ) : link.title === "GitHub" ? (
-    //                       <FaSquareGithub className="text-white text-lg hover:text-green-400 transition" />
-    //                     ) : link.title === "Portfolio" ? (
-    //                       <BsPersonSquare className="text-white text-lg hover:text-green-400 transition" />
-    //                     ) : (
-    //                       <PiLinkSimpleFill className="text-white text-lg hover:text-green-400 transition" />
-    //                     )}
-    //                   </Link>
-    //                 ))}
-    //               </div>
-    //             )}
-
-    //             {/* Follow Button */}
-    //             {author.email !== email ?
-    //             <div className="mt-4">
-    //               {author.followers.includes(email) ? (
-    //                 <button
-    //                   onClick={() => addFollower(author.email)}
-    //                   className="px-4 py-1.5 rounded-lg cursor-pointer bg-gradient-to-r from-emerald-200 to-emerald-300 text-gray-800 font-medium text-sm cursor-default shadow-sm border border-white/20"
-    //                 >
-    //                   Following...
-    //                 </button>
-    //               ) : (
-    //                 <button
-    //                   onClick={() => addFollower(author.email)}
-    //                   className="px-4 py-1.5 rounded-lg cursor-pointer bg-gradient-to-r from-emerald-300 to-green-400 text-gray-900 font-medium text-sm hover:from-emerald-400 hover:to-green-500 transition-all duration-300 shadow-sm border border-white/20"
-    //                 >
-    //                   Follow +
-    //                 </button>
-    //               )}
-    //             </div>:
-    //                 <div
-
-    //                   className="px-4 mt-4 py-1.5 font-medium rounded-lg bg-gradient-to-r from-orange-500 to-yellow-500"
-    //                 >
-    //                   Coordinating
-    //                 </div>
-    //             }
-    //           </div>
-    //         ))}
-    //     </div>
-
-    //     {/* Students Section */}
-    //     {authors.filter((author) => author.role === "student").length > 0 && (
-    //       <h2 className="text-center mt-16 text-2xl md:text-4xl font-bold text-white/90">
-    //         Students  {`(${authors.filter((author) => author.role === "student").length })`}
-    //       </h2>
-    //     )}
-
-    //     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-8 mt-6">
-    //       {authors
-    //         .filter((author) => author.role === "student")
-    //         .map((author, index) => (
-    //           <div
-    //             key={index}
-    //             className="backdrop-blur-md bg-white/10 border border-white/20 rounded-2xl shadow-lg hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 p-5 flex flex-col items-center"
-    //           >
-    //             <Link to={`/viewProfile/${author.email}`}>
-    //               <img
-    //                 src={
-    //                   author.profile
-    //                     ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`
-    //                     : user
-    //                 }
-    //                 alt={author.authorname}
-    //                 className="rounded-full w-20 bg-white h-20 object-cover border-2 border-white shadow-md hover:shadow-lg transition-all"
-    //               />
-    //             </Link>
-
-    //             <h1 className="text-center font-semibold mt-3 text-sm md:text-base truncate w-full">
-    //               {author.authorname}
-    //             </h1>
-    //             <p className="text-center text-xs text-gray-300 truncate w-full">
-    //               {author.email}
-    //             </p>
-
-    //             {/* Social Links */}
-    //             {author.profileLinks?.length > 0 && (
-    //               <div className="flex justify-center gap-3 mt-3">
-    //                 {author.profileLinks.map((link, i) => (
-    //                   <Link
-    //                     key={i}
-    //                     to={link.url}
-    //                     title={link.title}
-    //                     target="_blank"
-    //                   >
-    //                     {link.title === "LinkedIn" ? (
-    //                       <FaLinkedin className="text-white text-base hover:text-green-400 transition" />
-    //                     ) : link.title === "GitHub" ? (
-    //                       <FaSquareGithub className="text-white text-base hover:text-green-400 transition" />
-    //                     ) : link.title === "Portfolio" ? (
-    //                       <BsPersonSquare className="text-white text-base hover:text-green-400 transition" />
-    //                     ) : (
-    //                       <PiLinkSimpleFill className="text-white text-base hover:text-green-400 transition" />
-    //                     )}
-    //                   </Link>
-    //                 ))}
-    //               </div>
-    //             )}
-    //           </div>
-    //         ))}
-    //     </div>
-    //   </div>
-
-    //   <Footer />
-    // </div>
 
     <div className="w-full h-auto bg-gray-900  relative text-white">
       <NavBar />
@@ -358,18 +171,18 @@ function SingleTechDomainDetails() {
           <div className="flex justify-center md:justify-start mt-6">
             {role === "coordinator" || role === "admin" ? (
               authorCommunity.includes(decodedCategory) && (
-                <span className="px-6 py-2 text-lg font-semibold rounded-xl bg-gradient-to-r from-orange-500 to-yellow-400 text-black shadow-lg">
+                <span className="md:px-5 md:py-2 text-xs md:text-base px-3 py-1.5 font-semibold rounded-xl bg-gradient-to-r from-orange-500 to-yellow-400 text-black shadow-lg">
                   Coordinator
                 </span>
               )
             ) : (
               <button
                 onClick={() => updateCommunity(email, decodedCategory)}
-                className={`px-6 py-2 text-lg font-semibold rounded-xl shadow-lg transition-all duration-300
+                className={`md:px-5 md:py-2 text-xs md:text-base px-3 py-1.5 font-semibold rounded-xl shadow-lg transition-all duration-300
             ${
               authorCommunity.includes(decodedCategory)
-                ? "bg-gradient-to-r from-emerald-400 to-green-500 text-black"
-                : "bg-gradient-to-r from-gray-200 to-white text-gray-900 hover:opacity-90"
+                ? "bg-emerald-600/20 text-emerald-400 "
+                    : "bg-white/80 text-gray-800 hover:from-gray-300 "
             }`}
               >
                 {authorCommunity.includes(decodedCategory)
@@ -410,7 +223,7 @@ function SingleTechDomainDetails() {
                       </Link>
 
                       <h3 className="mt-3 font-semibold text-white truncate">
-                        {author.authorName}
+                        {author.authorname}
                       </h3>
                       <p className="text-xs text-gray-400 truncate">
                         {author.email}
@@ -553,7 +366,7 @@ function SingleTechDomainDetails() {
 
                       {/* Name */}
                       <h3 className="mt-4 font-semibold text-sm md:text-base text-white truncate w-full">
-                        {author.authorName}
+                        {author.authorname}
                       </h3>
 
                       {/* Email */}

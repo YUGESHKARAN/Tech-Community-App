@@ -35,12 +35,16 @@ const authorRouter = require("./routes/authorDetail.Route");
 const postRouter = require("./routes/postDetail.Route");
 const tutorPlaylist = require("./routes/tutorPlayList.Route")
 
+// Analytics route
+const appAnalysisRouter = require("./routes/appAnalysis.Route");
+
+
 app.use("/blog/login", loginRouter);
 app.use("/blog/author", authorRouter);
 app.use("/blog/posts", postRouter);
 app.use("/blog/playlist",tutorPlaylist);
-// app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
+app.use("/blog/analytics", appAnalysisRouter);
 // Trust proxy (for rate limiter IP detection)
 app.set("trust proxy", 1);
 

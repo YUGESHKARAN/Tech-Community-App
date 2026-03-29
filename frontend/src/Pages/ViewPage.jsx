@@ -199,11 +199,7 @@ function ViewPage() {
 
     newSocket.on("notification", handleNotification);
 
-    // return () => {
-    //   newSocket.off("newMessage", handleNewMessage);
-    //   newSocket.off("notification", handleNotification);
-    //   newSocket.disconnect();
-    // };
+    
     return () => {
       newSocket.off("newMessage", handleNewMessage);
       newSocket.off("editMessage", handleEditMessage);
@@ -543,20 +539,9 @@ function ViewPage() {
                 // className="flex items-center  justify-between md:justify-end mt-3 mb-1 md:mb-5"
                 className="w-full mx-auto mt-3 mb-1 md:mb-5"
               >
-                {/* AI Assistant */}
-                {/* <div className="text-3xl block md:hidden md:text-4xl text-white">
-                  <AITechAssistant
-                    currentPostId={singlePostData._id}
-                    category={singlePostData.category}
-                    viewComments = {viewComments}
-                    setViewComments = {setViewComments}
-                  />
-                 
-                  
-                </div> */}
-
                 {/* Actions */}
                 <div className="flex items-center md:justify-end justify-between   md:gap-3">
+                  {/* AI Assistant */}
                   <div className="text-3xl block md:hidden md:text-4xl text-white">
                     <AITechAssistant
                       currentPostId={singlePostData._id}
@@ -565,18 +550,19 @@ function ViewPage() {
                       setViewComments={setViewComments}
                     />
                   </div>
+
                   <button
                     onClick={() => setViewComments(!viewComments)}
                     className={`
-                                  flex items-center justify-center gap-2
-                  px-3 py-1 md:px-4 md:py-2
-                  rounded-3xl md:rounded-full
-                  bg-gray-800/50  md:border md:border-neutral-700 border-neutral-800
-                  md:hidden
-                  active:scale-95
-                  transition
+                      flex items-center justify-center gap-2
+                      px-3 py-1 md:px-4 md:py-2
+                      rounded-3xl md:rounded-full
+                      bg-gray-800/50  md:border md:border-neutral-700 border-neutral-800
+                      md:hidden
+                      active:scale-95
+                      transition
 
-                  ${showAssistant ? "pointer-events-none" : ""}`}
+                      ${showAssistant ? "pointer-events-none" : ""}`}
                   >
                     <MdOutlineInsertComment className="text-xs text-emerald-400" />
                     <span className=" flex items-center justify-cennter text-[10px] text-gray-300">
@@ -694,12 +680,6 @@ function ViewPage() {
             </div>
 
             {/* RIGHT COLUMN */}
-            {/* <div className="text-4xl block text-white lg:hidden">
-              <AITechAssistant
-                currentPostId={singlePostData._id}
-                category={singlePostData.category}
-              />
-            </div> */}
 
             <div className="lg:col-span-2 space-y-2 relative  md:space-y-6  h-fit">
               {/* Personal Assistant */}
@@ -860,99 +840,6 @@ function ViewPage() {
               )}
 
               {/* Comments */}
-              {/* <div
-                className="
-                bg-gray-900
-                border border-neutral-700/50
-                md:rounded-xl
-                rounded-lg
-                p-5
-                text-white
-                flex flex-col
-                max-h-[65vh]
-              "
-                ref={commentWrapperRef}
-              >
-    
-                <div className="flex justify-between items-center mb-3 shrink-0">
-                  <h3 className="font-semibold">
-                    💬 Comments{" "}
-                    {messages.length > 0 && (
-                      <span className="text-xs text-gray-400">
-                        ({messages.length})
-                      </span>
-                    )}
-                  </h3>
-                  <MdOutlineInsertComment
-                    onClick={() => setViewComments(!viewComments)}
-                    className="cursor-pointer hover:text-orange-400"
-                  />
-                </div>
-
-              
-             
-                <div
-                  ref={commentsRef}
-                  className="flex-1 overflow-y-auto pr-1 scrollbar-hide"
-                >
-                  <CommentsBox
-                    messages={messages}
-                    viewComments={viewComments}
-                  />
-                </div>
-
-                <input
-                  type="text"
-                  value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && postComment()}
-                  placeholder="Write a comment..."
-                  className="w-full hidden md:block mt-3 p-2 rounded-lg outline-none bg-gray-900/80 focus:border-neutral-600 border border-neutral-700/70 text-xs md:text-sm"
-                />
-
-                <button
-                  onClick={postComment}
-                  className=" md:px-5 hidden md:block px-3 py-2 md:py-2 bg-emerald-500/20 hover:bg-emerald-600/20 hover:bg-emerald-500/20
-                         rounded-md text-xs md:text-sm  text-emerald-400 transition-all duration-300 w-fit mt-3"
-                >
-                  Post It
-                </button>
-              </div> */}
-
-              {/* Fixed Comment Input Bar */}
-              {/* <div
-                className={`${showAssistant ? "hidden" : "fixed md:hidden bottom-0 left-0 right-0 z-30 bg-gray-900  backdrop-blur-md"}`}
-              >
-                <div className="max-w-7xl mx-auto px-3 md:px-8 py-3 flex items-center gap-3">
-                
-                  <input
-                    type="text"
-                    value={newMessage}
-                    onChange={(e) => setNewMessage(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && postComment()}
-                    placeholder="Write a comment..."
-                    className="
-                    flex-1
-                    px-4 py-2.5
-                    rounded-xl
-                    outline-none bg-gray-900/80 text-white focus:border-white/50 border border-neutral-700/70 text-sm
-                  "
-                  />
-
-                
-
-                  <button
-                    onClick={postComment}
-                    // className="bg-white text-black px-4 rounded-xl text-sm text-base block"
-                    className="text-2xl md:text-2xl transition-all duration-300 hover:text-gray-400 text-gray-500 block"
-                  >
-                   
-                    <VscSend />
-                  </button>
-                </div>
-              </div> */}
-
-              {/* Comments */}
               {/* bg-[#161b22] */}
               <div
                 className={`
@@ -1005,7 +892,7 @@ function ViewPage() {
                     userEmail={userEmail}
                     email={email}
                     postId={postId}
-                    socket={socket} 
+                    socket={socket}
                   />
                 </div>
 
@@ -1099,7 +986,7 @@ function ViewPage() {
                       userEmail={userEmail}
                       email={email}
                       postId={postId}
-                      socket={socket} 
+                      socket={socket}
                     />
                   </div>
 
@@ -1158,23 +1045,6 @@ function ViewPage() {
       )}
 
       {loading && <PostDetailSkeleton />}
-
-      {/* <Footer /> */}
-
-      {/* Image Modal */}
-      {/* {selectedImage && (
-        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center">
-          <img
-            src={selectedImage}
-            className="max-w-5xl md:h-96 object-contain w-11/12"
-            alt="Preview"
-          />
-          <IoClose
-            onClick={handleCloseModal}
-            className="absolute top-6 right-6 text-white text-2xl cursor-pointer"
-          />
-        </div>
-      )} */}
 
       {selectedImage && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4">

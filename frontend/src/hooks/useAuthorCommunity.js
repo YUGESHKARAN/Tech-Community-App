@@ -17,7 +17,7 @@ const useAuthorCommunity = (email) => {
     if (email) getAuthorCommunity();
   }, [email]);
 
-  return { authorCommunity, getAuthorCommunity };
+  return { authorCommunity,setAuthorCommunity,  getAuthorCommunity };
 };
 
 export default useAuthorCommunity;

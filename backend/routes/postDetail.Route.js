@@ -6,7 +6,7 @@ const multer = require('multer');
 const path = require('path');
 const authenticateToken = require('../middleware/authMiddleware')
 const {
-  getAllPosts,
+  // getAllPosts,
   getSingleAuthorPosts,
   getCategoryPosts,
   addPosts,
@@ -28,7 +28,7 @@ const {
 
 const {limiter, readLimiter} = require("../middleware/rateLimitter")
 
-router.get("/", readLimiter, authenticateToken, getAllPosts);  // used in TechCommunity.jsx
+// router.get("/", readLimiter, authenticateToken, getAllPosts);  // used in TechCommunity.jsx
 router.get("/:email", readLimiter, authenticateToken,  getSingleAuthorPosts);
 router.get("/recommended/:email", readLimiter, authenticateToken,  getRecommendedPosts)
 

@@ -134,14 +134,14 @@ const addAuthor = async (req, res) => {
 // --------------------------------------------------------------------------
 
 
-const getAllAuthor = async (req, res) => {
-  try {
-    const authors = await Author.find({});
-    res.json(authors);
-  } catch (err) {
-    res.status("Error" + err);
-  }
-};
+// const getAllAuthor = async (req, res) => {
+//   try {
+//     const authors = await Author.find({});
+//     res.json(authors);
+//   } catch (err) {
+//     res.status("Error" + err);
+//   }
+// };
 
 const getAuthorsByRole = async(req,res)=>{
   try{
@@ -1151,7 +1151,7 @@ const updateRole = async (req, res) => {
 
 const updateTechCommunity = async (req, res) => {
   const { email, techcommunity } = req.body;
-  console.log("community called");
+  // console.log("community called");
 
   try {
     const author = await Author.findOne({ email: { $eq: email }});
@@ -1286,7 +1286,7 @@ const deleteAllAnnouncementByAdmin = async (req, res) => {
 module.exports = {
   addAuthor,
   sendRegistrationOTP,
-  getAllAuthor,
+  // getAllAuthor,
   getAuthorsByRole,
   getSingleAuthor,
   updateAuthor,
