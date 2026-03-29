@@ -134,14 +134,14 @@ const addAuthor = async (req, res) => {
 // --------------------------------------------------------------------------
 
 
-// const getAllAuthor = async (req, res) => {
-//   try {
-//     const authors = await Author.find({});
-//     res.json(authors);
-//   } catch (err) {
-//     res.status("Error" + err);
-//   }
-// };
+const getAllAuthor = async (req, res) => {
+  try {
+    const authors = await Author.find({});
+    res.json(authors);
+  } catch (err) {
+    res.status("Error" + err);
+  }
+};
 
 const getAuthorsByRole = async(req,res)=>{
   try{
@@ -1286,7 +1286,7 @@ const deleteAllAnnouncementByAdmin = async (req, res) => {
 module.exports = {
   addAuthor,
   sendRegistrationOTP,
-  // getAllAuthor,
+  getAllAuthor,
   getAuthorsByRole,
   getSingleAuthor,
   updateAuthor,

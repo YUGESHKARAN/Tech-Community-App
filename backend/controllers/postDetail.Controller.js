@@ -46,35 +46,35 @@ const s3 = new S3Client({
 
 
 
-// const getAllPosts = async (req, res) => {
-//   try {
-//     const authors = await Author.find({}); // fetch all authors
-//     const allPosts =  authors.flatMap((author) => author.posts.map((post)=>({
-//       ...post.toObject(), //Conver post to a plain object
-//       authorname: author.authorname,
-//       authoremail: author.email,
-//       profie:author.profile||'',
-//       role:author.role, 
-//       community:author.community,
+const getAllPosts = async (req, res) => {
+  try {
+    const authors = await Author.find({}); // fetch all authors
+    const allPosts =  authors.flatMap((author) => author.posts.map((post)=>({
+      ...post.toObject(), //Conver post to a plain object
+      authorname: author.authorname,
+      authoremail: author.email,
+      profie:author.profile||'',
+      role:author.role, 
+      community:author.community,
       
-//     }))); // extract posts alone
+    }))); // extract posts alone
 
-//        // Calculate category counts
-//      const categoryCounts = authors.flatMap((author) =>
-//       author.posts.map((post) => post.category)
-//     ).reduce((counts, category) => {
-//       counts[category] = (counts[category] || 0) + 1;
-//       return counts;
-//     }, {});
+       // Calculate category counts
+     const categoryCounts = authors.flatMap((author) =>
+      author.posts.map((post) => post.category)
+    ).reduce((counts, category) => {
+      counts[category] = (counts[category] || 0) + 1;
+      return counts;
+    }, {});
     
 
-//     const count = Object.keys(categoryCounts).length
+    const count = Object.keys(categoryCounts).length
 
-//     res.status(200).json({ message: "All posts", posts: allPosts,count});
-//   } catch (err) {
-//     res.status(500).json({ message: "server error" });
-//   }
-// };
+    res.status(200).json({ message: "All posts", posts: allPosts,count});
+  } catch (err) {
+    res.status(500).json({ message: "server error" });
+  }
+};
 
 
 // ...existing code...
@@ -228,6 +228,7 @@ const s3 = new S3Client({
 //     res.status(500).json({ message: "Server Error" });
 //   }
 // };
+
 
 
 
@@ -1249,7 +1250,7 @@ const getAllBookmarkIds = async (req, res) => {
 
 
 module.exports = {
-  // getAllPosts,
+  getAllPosts,
   getSingleAuthorPosts,
   getCategoryPosts,
   addPosts,

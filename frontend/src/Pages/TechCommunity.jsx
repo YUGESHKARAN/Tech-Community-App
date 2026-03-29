@@ -7,17 +7,20 @@ import { Link } from "react-router-dom";
 import useAuthorCommunity from "../hooks/useAuthorCommunity";
 import CommunityCardSkeleton from "../components/loaders/CommunityCardSkeleton";
 import toast from "../components/toaster/Toast"
+import { use } from "react";
+import useGetCommunityAnalytics from "../hooks/useGetCommunityAnalytics";
 function TechCommunity() {
   const [posts, setPosts] = useState([]);
 
   const username = localStorage.getItem("username");
   const email = localStorage.getItem("email");
   const role = localStorage.getItem("role");
-  const [loading, setLoading] = useState(false)
+  // const [loading, setLoading] = useState(false)
   // const [authorCommunity, setAuthorCommunity] = useState([]);
-  const [authors, setAuthors] = useState([]);
+  // const [authors, setAuthors] = useState([]);
    const { authorCommunity,setAuthorCommunity } = useAuthorCommunity(email);
-   const [communities, setCommunities] = useState([]);
+  //  const [communities, setCommunities] = useState([]);
+  const {communities,loading} = useGetCommunityAnalytics();
 
  
 
@@ -86,21 +89,21 @@ function TechCommunity() {
   //   getCategoryStats(authors, category)
   // );
 
-  const getCommunityAnalytics = async () => {
+//   const getCommunityAnalytics = async () => {
 
-    try{
-      const response = await axiosInstance.get("/blog/analytics/view/techDomain");
-      // console.log("analytics", response.data);  
-      setCommunities(response.data.analytics);
-    }
-    catch(err){
-      console.log("error", err.message);
-    }
-  }
+//     try{
+//       const response = await axiosInstance.get("/blog/analytics/view/techDomain");
+//       // console.log("analytics", response.data);  
+//       setCommunities(response.data.analytics);
+//     }
+//     catch(err){
+//       console.log("error", err.message);
+//     }
+//   }
 
-useEffect(()=>{
-getCommunityAnalytics();
-}, [])
+// useEffect(()=>{
+// getCommunityAnalytics();
+// }, [])
 
 
 
@@ -140,7 +143,7 @@ getCommunityAnalytics();
 
 
   // console.log("authorCommunity", authorCommunity);
-  // console.log("communities", communities);  
+  console.log("communities", communities);  
 
 
   return (

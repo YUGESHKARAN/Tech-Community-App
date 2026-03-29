@@ -4,8 +4,8 @@ import { MdDeleteForever } from "react-icons/md";
 import Footer from "../ui/Footer";
 import { IoSearch } from "react-icons/io5";
 import axiosInstance from "../instances/Axiosinstances";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import toast from "../components/toaster/Toast";
+import useGetCommunityAnalytics from "../hooks/useGetCommunityAnalytics";
 function Control() {
   const [authors, setAuthors] = useState([]);
   const [filteredAuthors, setFilteredAuthors] = useState([]);
@@ -19,6 +19,7 @@ function Control() {
   const [authorEmail, setAuthorEmail] = useState("");
   const email = localStorage.getItem("email");
   const [password, setPassword] = useState("");
+  const {communities} = useGetCommunityAnalytics();
   
   const getAuthors = async () => {
     try {
@@ -45,7 +46,7 @@ function Control() {
   const updateRole = async (email, id) => {
     const roleToUpdate = updatedRoles[id];
     if (!roleToUpdate) {
-      toast.error("Please select a role before updating");
+      toast.warning("Warning","Please select a role before updating");
       return;
     }
 
@@ -56,7 +57,7 @@ function Control() {
       );
       if (response.status === 200) {
         // alert('Role updated successfully');
-        toast.success("Role updated successfully");
+        toast.success("Updated","Role updated successfully");
         getAuthors();
       }
     } catch (err) {
@@ -112,67 +113,67 @@ function Control() {
   };
 
   // Fetch posts from API
-  const getPosts = async () => {
-    try {
-      const response = await axiosInstance.get("/blog/posts");
-      setPosts(response.data.posts);
-    } catch (err) {
-      console.error("Error fetching posts:", err);
-    }
-  };
+  // const getPosts = async () => {
+  //   try {
+  //     const response = await axiosInstance.get("/blog/posts");
+  //     setPosts(response.data.posts);
+  //   } catch (err) {
+  //     console.error("Error fetching posts:", err);
+  //   }
+  // };
 
-  useEffect(() => {
-    getPosts();
-  }, []);
+  // useEffect(() => {
+  //   getPosts();
+  // }, []);
 
-  function groupByCommunity(data) {
-    const communityMap = {};
+  // function groupByCommunity(data) {
+  //   const communityMap = {};
 
-    data.forEach((item) => {
-      const category = item.category || "Uncategorized";
-      const author = item.authoremail;
+  //   data.forEach((item) => {
+  //     const category = item.category || "Uncategorized";
+  //     const author = item.authoremail;
 
-      if (!communityMap[category]) {
-        communityMap[category] = {
-          communityName: category,
-          Authors: new Set(),
-          Posts: 0,
-        };
-      }
+  //     if (!communityMap[category]) {
+  //       communityMap[category] = {
+  //         categoryname: category,
+  //         Authors: new Set(),
+  //         Posts: 0,
+  //       };
+  //     }
 
-      communityMap[category].Authors.add(author);
-      communityMap[category].Posts += 1;
-    });
+  //     communityMap[category].Authors.add(author);
+  //     communityMap[category].Posts += 1;
+  //   });
 
-    // Convert to array and count unique authors
-    const result = Object.values(communityMap).map((item) => ({
-      communityName: item.communityName,
-      Authors: item.Authors.size,
-      Posts: item.Posts,
-    }));
+  //   // Convert to array and count unique authors
+  //   const result = Object.values(communityMap).map((item) => ({
+  //     categoryname: item.categoryname,
+  //     Authors: item.Authors.size,
+  //     Posts: item.Posts,
+  //   }));
 
-    return result;
-  }
+  //   return result;
+  // }
 
-  const communities = groupByCommunity(posts);
+  // const communities = groupByCommunity(posts);
 
-  const handleCommunityCheckbox = (email, communityName) => {
+  const handleCommunityCheckbox = (email, categoryname) => {
     setAssignedCommunities((prev) => {
       const current = prev[email] || [];
-      const isChecked = current.includes(communityName);
+      const isChecked = current.includes(categoryname);
       return {
         ...prev,
         [email]: isChecked
-          ? current.filter((c) => c !== communityName)
-          : [...current, communityName],
+          ? current.filter((c) => c !== categoryname)
+          : [...current, categoryname],
       };
     });
   };
 
   const updateAssignedCommunities = async (email) => {
-    console.log("updateAssignedCommunities email", email);
+    // console.log("updateAssignedCommunities email", email);
     const selectedCommunities = assignedCommunities[email] || [];
-    console.log("selected commu", selectedCommunities);
+    // console.log("selected commu", selectedCommunities);
     try {
       const response = await axiosInstance.put(
         `/blog/author/control/coordinatorUpdate`,
@@ -182,11 +183,11 @@ function Control() {
         }
       );
 
-      console.log(response.data);
+      // console.log(response.data);
 
       if (response.status === 201) {
         // alert("Communities updated successfully");
-        toast.success("Tech community updated successfully");
+        toast.success("Saved","Tech community saved successfully");
       }
     } catch (err) {
       console.error("Error updating communities", err);
@@ -212,6 +213,8 @@ function Control() {
   }, [authors]);
 
   // console.group("filteredAuthors",filteredAuthors)
+  // console.log("communities", communities);
+  // console.log("analytics", comm);
 
   // console.log("authorCommusnity",authorCommunity)
   return (
@@ -345,9 +348,11 @@ function Control() {
                 value={updatedRoles[author._id] || author.role}
                 onChange={(e) => handleRoleChange(author._id, e.target.value)}
               >
-                <option value="student">Student</option>
-                <option value="coordinator">Coordinator</option>
+                
                 <option value="admin">Admin</option>
+                <option value="coordinator">Coordinator</option>
+                <option value="student">Student</option>
+                
               </select>
 
               <button
@@ -373,18 +378,18 @@ function Control() {
                         type="checkbox"
                         checked={
                           assignedCommunities[author.email]?.includes(
-                            community.communityName
+                            community.categoryname
                           ) || false
                         }
                         onChange={() =>
                           handleCommunityCheckbox(
                             author.email,
-                            community.communityName
+                            community.categoryname
                           )
                         }
                         className="form-checkbox accent-green-500"
                       />
-                      <span>{community.communityName}</span>
+                      <span>{community.categoryname}</span>
                     </label>
                   ))}
                 </div>
@@ -478,9 +483,11 @@ function Control() {
                 value={updatedRoles[author._id] || author.role}
                 onChange={(e) => handleRoleChange(author._id, e.target.value)}
               >
-                <option value="student">Student</option>
-                <option value="coordinator">Coordinator</option>
+               
                 <option value="admin">Admin</option>
+                <option value="coordinator">Coordinator</option>
+                <option value="student">Student</option>
+               
               </select>
 
               <button
@@ -506,18 +513,18 @@ function Control() {
                         type="checkbox"
                         checked={
                           assignedCommunities[author.email]?.includes(
-                            community.communityName
+                            community.categoryname
                           ) || false
                         }
                         onChange={() =>
                           handleCommunityCheckbox(
                             author.email,
-                            community.communityName
+                            community.categoryname
                           )
                         }
                         className="form-checkbox cursor-pointer accent-emerald-500"
                       />
-                      <span>{community.communityName}</span>
+                      <span>{community.categoryname}</span>
                     </label>
                   ))}
                 </div>
@@ -665,7 +672,7 @@ function Control() {
           </div>
         </div>
       )}
-      <ToastContainer />
+   
       {filteredAuthors.length>0 &&
        <Footer /> }
      

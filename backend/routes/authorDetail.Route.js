@@ -3,7 +3,7 @@ const router = express.Router();
 const multer = require('multer');
 const path = require('path');
 const {
-  // getAllAuthor,
+  getAllAuthor,
   addAuthor,
   getSingleAuthor,
   getAuthorsByRole,
@@ -45,7 +45,7 @@ router.post('/send-otp', limiter, sendOtp);
 router.post('/reset-password', limiter, resetPassword);
 
 // Protect specific routes
-// router.get("/", readLimiter, authenticateToken,getAllAuthor);   // used in TechCommunity.jsx
+router.get("/", readLimiter, authenticateToken,getAllAuthor);   // used in TechCommunity.jsx
 router.get("/profiles", readLimiter, authenticateToken, getProfile);
 router.get("/:email", readLimiter, authenticateToken, getSingleAuthor);
 router.get("/getAuthorsByDomain/:category(*)", readLimiter, authenticateToken,getAuthorsByDomain);
