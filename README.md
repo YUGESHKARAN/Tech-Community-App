@@ -67,7 +67,8 @@ Node-Blog-App/
 
 - **Backend:** Node.js, Express, MongoDB, Mongoose
 - **Frontend:** React.js, Tailwind CSS
-- **Image Storage:** AWS S3
+- **Storage:** AWS S3
+- **Caching:** Redis
 
 ---
 
