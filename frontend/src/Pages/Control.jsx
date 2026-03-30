@@ -681,3 +681,643 @@ function Control() {
 }
 
 export default Control;
+
+
+// import { useState, useRef } from "react";
+// import {
+//   LayoutDashboard,
+//   Users,
+//   ShieldCheck,
+//   GraduationCap,
+//   UserCog,
+//   BarChart2,
+//   TrendingUp,
+//   Trophy,
+//   Globe,
+//   LogOut,
+//   Search,
+//   Trash2,
+//   ChevronDown,
+//   BookOpen,
+//   ListVideo,
+// } from "lucide-react";
+// import NavBar from "../ui/NavBar";
+
+// // ── Mock data ──────────────────────────────────────────────────────────────────
+// const MOCK_STATS = {
+//   totalUsers: 124,
+//   students: 98,
+//   coordinators: 22,
+//   admins: 4,
+//   newThisMonth: 11,
+//   totalPosts: 340,
+//   totalPlaylists: 28,
+//   mostActiveCategory: "AI/ML",
+// };
+
+// const MOCK_CATEGORIES = [
+//   { categoryname: "AI/ML", postscount: 7, followerscount: 1, authorcount: 4 },
+//   { categoryname: "GenAI", postscount: 4, followerscount: 1, authorcount: 2 },
+//   { categoryname: "Web Development", postscount: 2, followerscount: 1, authorcount: 3 },
+//   { categoryname: "Cyber Security", postscount: 2, followerscount: 0, authorcount: 1 },
+//   { categoryname: "Data Science", postscount: 3, followerscount: 2, authorcount: 2 },
+//   { categoryname: "AI/ML", postscount: 7, followerscount: 1, authorcount: 4 },
+//   { categoryname: "GenAI", postscount: 4, followerscount: 1, authorcount: 2 },
+//   { categoryname: "Web Development", postscount: 2, followerscount: 1, authorcount: 3 },
+//   { categoryname: "Cyber Security", postscount: 2, followerscount: 0, authorcount: 1 },
+//   { categoryname: "Data Science", postscount: 3, followerscount: 2, authorcount: 2 },
+//   { categoryname: "AI/ML", postscount: 7, followerscount: 1, authorcount: 4 },
+//   { categoryname: "GenAI", postscount: 4, followerscount: 1, authorcount: 2 },
+//   { categoryname: "Web Development", postscount: 2, followerscount: 1, authorcount: 3 },
+//   { categoryname: "Cyber Security", postscount: 2, followerscount: 0, authorcount: 1 },
+//   { categoryname: "Data Science", postscount: 3, followerscount: 2, authorcount: 2 },
+// ];
+
+// const MOCK_GROWTH = [
+//   { month: "Jan", count: 8 },
+//   { month: "Feb", count: 14 },
+//   { month: "Mar", count: 11 },
+//   { month: "Apr", count: 19 },
+//   { month: "May", count: 15 },
+//   { month: "Jun", count: 23 },
+// ];
+
+// const MOCK_TOP = [
+//   { authorname: "Yugesh Karan", email: "yugesh@gmail.com", postsCount: 42, followersCount: 120 },
+//   { authorname: "haricharan_1133", email: "hari@gmail.com", postsCount: 38, followersCount: 98 },
+//   { authorname: "Sibi", email: "sibi@gmail.com", postsCount: 31, followersCount: 76 },
+//   { authorname: "Pradeep", email: "pradeep@gmail.com", postsCount: 24, followersCount: 54 },
+//   { authorname: "Rosinii", email: "rosinii@gmail.com", postsCount: 18, followersCount: 43 },
+// ];
+
+
+// // ── Mini bar chart ─────────────────────────────────────────────────────────────
+// const MiniBar = ({ data, valueKey, labelKey, color = "#6366f1" }) => {
+//   const max = Math.max(...data.map((d) => d[valueKey]));
+//   const ticks = [0, Math.round(max * 0.33), Math.round(max * 0.66), max];
+//   const [hoveredIndex, setHoveredIndex] = useState(null);
+
+//   return (
+//     <div className="flex gap-3">
+//       {/* Y-axis ticks */}
+//       <div className="flex flex-col-reverse justify-between pb-5 shrink-0">
+//         {ticks.map((t) => (
+//           <span key={t} className="text-[9px] text-gray-600 leading-none">{t}</span>
+//         ))}
+//       </div>
+
+//       {/* Chart area — scrollable on x */}
+//       <div className="flex-1 overflow-x-auto scrollbar-hide">
+//         <div className="flex flex-col gap-1" style={{ minWidth: `${data.length * 90}px` }}>
+//           <div className="relative flex items-end justify-between h-36">
+//             {/* Bars */}
+//             {data.map((d, i) => (
+//               <div
+//                 key={i}
+//                 className="flex-1 flex justify-center items-end h-full relative"
+//                 onMouseEnter={() => setHoveredIndex(i)}
+//                 onMouseLeave={() => setHoveredIndex(null)}
+//               >
+//                 {/* Tooltip */}
+//                 {hoveredIndex === i && (
+//                   <div className="absolute bottom-[calc(100%+6px)] left-1/2 -translate-x-1/2 bg-gray-800 border border-white/10 text-white text-xs font-semibold px-2 py-1 rounded-md whitespace-nowrap z-10 shadow-lg">
+//                     {d[valueKey]}
+//                     <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800" />
+//                   </div>
+//                 )}
+//                 {/* Bar */}
+//                 <div
+//                   className="rounded-t-md transition-all duration-300 cursor-pointer"
+//                   style={{
+//                     width: "28px",
+//                     height: `${(d[valueKey] / max) * 100}%`,
+//                     background: hoveredIndex === i
+//                       ? `linear-gradient(180deg, #ffffff 0%, ${color} 100%)`
+//                       : color,
+//                     minHeight: "4px",
+//                   }}
+//                 />
+//               </div>
+//             ))}
+//           </div>
+
+//           {/* X-axis labels */}
+//           <div className="flex justify-between">
+//             {data.map((d, i) => (
+//               <span key={i} className="flex-1 font-semibold text-center text-[9px] text-gray-400">
+//                 {d[labelKey]}
+//               </span>
+//             ))}
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+// // ── Mini line chart ────────────────────────────────────────────────────────────
+// const MiniLine = ({ data }) => {
+//   const max = Math.max(...data.map((d) => d.count));
+//   const w = 220, h = 80;
+//   const pts = data.map((d, i) => ({
+//     x: (i / (data.length - 1)) * (w - 20) + 10,
+//     y: h - 10 - ((d.count / max) * (h - 20)),
+//   }));
+//   const path = pts.map((p, i) => `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`).join(" ");
+//   const area = `${path} L ${pts[pts.length - 1].x} ${h} L ${pts[0].x} ${h} Z`;
+//   return (
+//     <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-20">
+//       <defs>
+//         <linearGradient id="lineGrad" x1="0" y1="0" x2="0" y2="1">
+//           <stop offset="0%" stopColor="#10b981" stopOpacity="0.3" />
+//           <stop offset="100%" stopColor="#10b981" stopOpacity="0" />
+//         </linearGradient>
+//       </defs>
+//       <path d={area} fill="url(#lineGrad)" />
+//       <path d={path} stroke="#10b981" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+//       {pts.map((p, i) => (
+//         <circle key={i} cx={p.x} cy={p.y} r="3" fill="#10b981" />
+//       ))}
+//     </svg>
+//   );
+// };
+
+// // ── KPI Card ───────────────────────────────────────────────────────────────────
+// const KPICard = ({ label, value, sub, icon: Icon, accent = "#10b981", change, changePositive = true }) => (
+//   <div className="bg-gray-800/70 border border-[#1e293b] rounded-xl p-4  md:flex items-center justify-between gap-3 hover:border-white/10 transition-colors">
+//     {/* Top — icon + name */}
+//     <div className="flex items-center gap-2.5">
+//       <div
+//         className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+//         style={{ backgroundColor: accent }}
+//       >
+//         <Icon  className="text-white text-xs" />
+//       </div>
+//       <div>
+//         <p className="text-sm font-bold text-gray-100">{label}</p>
+//         <p className="text-[10px] text-gray-500">{sub || label}</p>
+//       </div>
+//     </div>
+//     {/* Bottom — value + badge */}
+//     <div className="flex items-end justify-end">
+//       <span className="md:text-lg text-xs bg-gray-700/60 font-medium text-white rounded-full md:px-4 md:py-1.5 px-2 py-1">{value}</span>
+//       {/* {change && (
+//         <span
+//           className="flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full"
+//           style={{
+//             backgroundColor: changePositive ? "#10b98122" : "#ef444422",
+//             color: changePositive ? "#10b981" : "#ef4444",
+//           }}
+//         >
+//           {changePositive ? "↑" : "↓"} {change}
+//         </span>
+//       )} */}
+//     </div>
+//   </div>
+// );
+
+// // ── Sidebar nav item ───────────────────────────────────────────────────────────
+// const NavItem = ({ icon: Icon, label, active, onClick }) => (
+//   <button
+//     onClick={onClick}
+//     className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all ${
+//       active
+//         ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/20"
+//         : "text-gray-500 hover:text-gray-300 hover:bg-white/5"
+//     }`}
+//   >
+//     <Icon size={15} />
+//     <span>{label}</span>
+//   </button>
+// );
+
+// // ── Main Dashboard ─────────────────────────────────────────────────────────────
+// export default function Controls() {
+//   const [activeSection, setActiveSection] = useState("overview");
+//   const [search, setSearch] = useState("");
+//   const [roleFilter, setRoleFilter] = useState("All Roles");
+
+//   // Refs for scroll-to
+//   const overviewRef = useRef(null);
+//   const analyticsRef = useRef(null);
+//   const controlRef = useRef(null);
+
+//   const scrollTo = (ref, section) => {
+//     setActiveSection(section);
+//     ref.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+//   };
+
+//   const handleDelete = (email) => {
+//     if (window.confirm(`Delete user ${email}?`)) {
+//       console.log("Delete", email);
+//       // call axiosInstance.delete(...)
+//     }
+//   };
+
+//   const handleRoleUpdate = (email, role) => {
+//     console.log("Update role", email, role);
+//     // call axiosInstance.put(...)
+//   };
+
+//   const handleCommunityUpdate = (email, communities) => {
+//     console.log("Update communities", email, communities);
+//     // call axiosInstance.put(...)
+//   };
+
+//   // Filter helpers
+//   const filterUsers = (list) => {
+//     return list.filter((u) => {
+//       const matchSearch =
+//         !search ||
+//         u.authorname.toLowerCase().includes(search.toLowerCase()) ||
+//         u.email.toLowerCase().includes(search.toLowerCase());
+//       return matchSearch;
+//     });
+//   };
+
+//   return (
+
+//   <div className="min-h-screen h-auto  relative bg-gray-900 text-white flex flex-col">
+//       <NavBar />
+    
+//     <div className="flex h-screen bg-gray-900 text-white overflow-hidden">
+
+//       {/* ── SIDEBAR ──────────────────────────────────────────────────────────── */}
+//       <aside className="md:w-80 hidden shrink-0 bg-gray-900 border-r border-[#1e293b] flex flex-col py-5 px-3 gap-1">
+//         {/* Logo */}
+//         <div className="flex items-center gap-2.5 px-3 mb-6">
+//           <div className="w-7 h-7 rounded-lg bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center">
+//             <ShieldCheck size={14} className="text-emerald-400" />
+//           </div>
+//           <div>
+//             <p className="text-xs font-bold text-gray-100">Admin Panel</p>
+//             <p className="text-[10px] text-gray-500">Tech Community</p>
+//           </div>
+//         </div>
+
+//         {/* Nav */}
+//         <div className="flex flex-col gap-0.5">
+//           <p className="text-[9px] text-gray-600 font-semibold uppercase tracking-widest px-3 mb-1">Overview</p>
+//           <NavItem icon={LayoutDashboard} label="Dashboard" active={activeSection === "overview"} onClick={() => scrollTo(overviewRef, "overview")} />
+//           <NavItem icon={BarChart2} label="Analytics" active={activeSection === "analytics"} onClick={() => scrollTo(analyticsRef, "analytics")} />
+//         </div>
+
+//         <div className="flex flex-col gap-0.5 mt-4">
+//           <p className="text-[9px] text-gray-600 font-semibold uppercase tracking-widest px-3 mb-1">Controls</p>
+//           <NavItem icon={UserCog} label="Control Panel" active={activeSection === "control"} onClick={() => scrollTo(controlRef, "control")} />
+//         </div>
+
+//         {/* Bottom admin info */}
+//         {/* <div className="mt-auto border-t border-[#1e293b] pt-4 flex flex-col gap-2">
+//           <div className="flex items-center gap-2.5 px-2">
+//             <div className="w-7 h-7 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-[10px] font-bold text-emerald-400">
+//               AD
+//             </div>
+//             <div>
+//               <p className="text-xs font-medium text-gray-200">Admin</p>
+//               <p className="text-[10px] text-gray-500">admin@ds.ac.in</p>
+//             </div>
+//           </div>
+//           <button className="w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs text-gray-500 hover:text-red-400 hover:bg-red-500/10 transition-all">
+//             <LogOut size={13} />
+//             Logout
+//           </button>
+//         </div> */}
+//       </aside>
+
+
+//       {/* ── MAIN ─────────────────────────────────────────────────────────────── */}
+//       <main className="flex-1 overflow-y-auto px-6 py-6 space-y-10 scrollbar-hide">
+
+        
+
+//         {/* ── ZONE 2: KPI Cards ──────────────────────────────────────── */}
+//         <section className="space-y-3">
+//           {/* Row 1 — Users */}
+//           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+//             <KPICard label="Total Users" value={MOCK_STATS.totalUsers} sub="All members" icon={Users} change="8.2%" changePositive={true} />
+//             <KPICard label="Students" value={MOCK_STATS.students} sub="Students" icon={GraduationCap} accent="#3b82f6" change="5.1%" changePositive={true} />
+//             <KPICard label="Coordinators" value={MOCK_STATS.coordinators} sub="Coordinators" icon={UserCog} accent="#f59e0b" change="2.3%" changePositive={true} />
+//             <KPICard label="Admins" value={MOCK_STATS.admins} sub="Admins" icon={ShieldCheck} accent="#ec4899" />
+//             <KPICard label="New This Month" value={`+${MOCK_STATS.newThisMonth}`} sub="New this month" icon={TrendingUp} change="11%" changePositive={true} />
+//           </div>
+//           {/* Row 2 — Content */}
+//           {/* <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+//             <KPICard label="Total Posts" value={MOCK_STATS.totalPosts} sub="Total Posts" icon={BookOpen} accent="#8b5cf6" change="14.2%" changePositive={true} />
+//             <KPICard label="Total Playlists" value={MOCK_STATS.totalPlaylists} sub="Total Playlists" icon={ListVideo} accent="#06b6d4" change="3.5%" changePositive={false} />
+//             <KPICard label="Most Active" value={MOCK_STATS.mostActiveCategory} sub="Top Category" icon={Trophy} accent="#f59e0b" change="11.01%" changePositive={true} />
+//           </div> */}
+//         </section>
+
+//         {/* ── ZONE 3: Analytics ──────────────────────────────────────── */}
+//         <section ref={analyticsRef} className="space-y-4">
+//           <h2 className="text-base font-bold text-gray-100 border-b border-[#1e293b] pb-2">Analytics</h2>
+
+//           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+//             {/* Posts by Category */}
+//             <div className="bg-[#0f172a]  flex flex-col justify-between items-start  border border-[#1e293b] rounded-xl p-4">
+//               <div>
+//               <p className="text-sm font-semibold text-gray-200 mb-1">Posts by Category</p>
+//               <p className="text-[10px] text-gray-500 mb-4">Total posts in each domain</p>
+//               </div>
+//               <div className="flex flex-col w-full overflow-x-auto scrollbar-hide ">
+//                 <MiniBar data={MOCK_CATEGORIES} valueKey="postscount" labelKey="categoryname" color="#0a18de" />
+//               </div>
+              
+//             </div>
+
+//             {/* Community Membership */}
+//             <div className="bg-[#0f172a] border border-[#1e293b] rounded-xl p-4">
+//               <p className="text-sm font-semibold text-gray-200 mb-1">Community Membership</p>
+//               <p className="text-[10px] text-gray-500 mb-3">Coordinators vs Students per domain</p>
+//               <div className="flex flex-col h-52 emerald-scrollbar pr-4 overflow-y-auto gap-2">
+//                 {MOCK_CATEGORIES.map((c) => {
+//                   const maxVal = Math.max(...MOCK_CATEGORIES.map((x) => x.authorcount + x.followerscount)) || 1;
+//                   const total = c.authorcount + c.followerscount;
+//                   return (
+//                     <div key={c.categoryname} className="flex items-center gap-2">
+//                       <span className="text-[10px] text-gray-500 w-24 truncate">{c.categoryname}</span>
+//                       <div className="flex-1 h-4 bg-[#1e293b] rounded-full overflow-hidden flex">
+//                         <div className="h-full bg-emerald-500/70 rounded-l-full transition-all" style={{ width: `${(c.authorcount / (total || 1)) * 100}%` }} />
+//                         <div className="h-full bg-blue-500/50 transition-all" style={{ width: `${(c.followerscount / (total || 1)) * 100}%` }} />
+//                       </div>
+//                       <span className="text-[10px] text-gray-500 w-10 text-right">{total}</span>
+//                     </div>
+//                   );
+//                 })}
+//                 <div className="flex gap-4 mt-1">
+//                   <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-emerald-500/70" /><span className="text-[10px] text-gray-500">Coordinators</span></div>
+//                   <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-blue-500/50" /><span className="text-[10px] text-gray-500">Students</span></div>
+//                 </div>
+//               </div>
+//             </div>
+
+//             {/* User Growth */}
+//             <div className="bg-[#0f172a] border border-[#1e293b] rounded-xl p-4">
+//               <p className="text-sm font-semibold text-gray-200 mb-1">User Growth</p>
+//               <p className="text-[10px] text-gray-500 mb-3">Monthly new registrations</p>
+//               <div className="flex items-end justify-between gap-1 mb-1">
+//                 {MOCK_GROWTH.map((g) => (
+//                   <div key={g.month} className="flex flex-col items-center gap-1 flex-1">
+//                     <span className="text-[9px] text-emerald-400 font-medium">{g.count}</span>
+//                   </div>
+//                 ))}
+//               </div>
+//               <MiniLine data={MOCK_GROWTH} />
+//               <div className="flex justify-between mt-1">
+//                 {MOCK_GROWTH.map((g) => (
+//                   <span key={g.month} className="text-[9px] text-gray-600 flex-1 text-center">{g.month}</span>
+//                 ))}
+//               </div>
+//             </div>
+
+//             {/* Top Contributors */}
+//             <div className="bg-[#0f172a] border border-[#1e293b] rounded-xl p-4">
+//               <p className="text-sm font-semibold text-gray-200 mb-1">Top Contributors</p>
+//               <p className="text-[10px] text-gray-500 mb-3">Ranked by post count</p>
+//               <div className="flex flex-col gap-2">
+//                 {MOCK_TOP.map((u, i) => (
+//                   <div key={i} className="flex items-center gap-3">
+//                     <span className="text-[11px] font-bold w-4" style={{ color: i < 3 ? ["#f59e0b", "#94a3b8", "#b45309"][i] : "#4b5563" }}>
+//                       {i + 1}
+//                     </span>
+//                     <div
+//                       className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold text-white shrink-0"
+//                       style={{ backgroundColor: avatarColor(u.authorname) }}
+//                     >
+//                       {initials(u.authorname)}
+//                     </div>
+//                     <span className="text-xs text-gray-300 flex-1 truncate">{u.authorname}</span>
+//                     <span className="text-[10px] text-emerald-400 font-medium">{u.postsCount} posts</span>
+//                   </div>
+//                 ))}
+//               </div>
+//             </div>
+//           </div>
+//         </section>
+
+//         {/* ── ZONE 4: Users Tables ──────────────────────────────────── */}
+//         <section className="space-y-3">
+//       <h2 className="text-base font-bold text-gray-100 border-b border-[#1e293b] pb-2">Users</h2>
+//       <div className="flex gap-4 items-start">
+//         <AuthorsTable />
+//         <StudentsTable />
+//       </div>
+//     </section>
+      
+
+//         {/* bottom padding */}
+//         <div className="h-10" />
+//       </main>
+//     </div>
+//   </div>
+//   );
+// }
+
+
+// const MOCK_AUTHORS = [
+//   { authorname: "Admin", email: "21aid145@dsuniversity.ac.in", role: "admin", postsCount: 0, playlistsCount: 0, followersCount: 0, followingCount: 0 },
+//   { authorname: "Yugesh Karan", email: "yugeshkaran01@gmail.com", role: "coordinator", postsCount: 12, playlistsCount: 3, followersCount: 2, followingCount: 5 },
+//   { authorname: "Sibi", email: "ssibi3290@gmail.com", role: "coordinator", postsCount: 0, playlistsCount: 1, followersCount: 3, followingCount: 2 },
+//   { authorname: "haricharan_1133", email: "haricharanuggirala1133@gmail.com", role: "coordinator", postsCount: 5, playlistsCount: 2, followersCount: 2, followingCount: 4 },
+//   { authorname: "Rosinii", email: "rosiniisures@gmail.com", role: "coordinator", postsCount: 0, playlistsCount: 0, followersCount: 1, followingCount: 1 },
+//   { authorname: "Kumaran", email: "kumaranv.set2022@dsuniversity.ac.in", role: "coordinator", postsCount: 0, playlistsCount: 0, followersCount: 1, followingCount: 0 },
+//   { authorname: "Pradeep", email: "21aid060@dsuniversity.ac.in", role: "coordinator", postsCount: 1, playlistsCount: 0, followersCount: 1, followingCount: 3 },
+// ];
+
+// const MOCK_STUDENTS = [
+//   { authorname: "ajayvarsanr", email: "ajayvarsanr2020@gmail.com", role: "student" },
+//   { authorname: "Karan", email: "yugeshkaran001@gmail.com", role: "student" },
+//   { authorname: "Divya", email: "divya@dsuniversity.ac.in", role: "student" },
+//   { authorname: "Meena", email: "meena@dsuniversity.ac.in", role: "student" },
+//   { authorname: "Rajan", email: "rajan@dsuniversity.ac.in", role: "student" },
+// ];
+
+// const avatarColor = (name) => {
+//   const colors = ["#10b981", "#3b82f6", "#f59e0b", "#ec4899", "#8b5cf6", "#06b6d4", "#f97316"];
+//   return colors[(name?.charCodeAt(0) ?? 0) % colors.length];
+// };
+
+// const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
+
+// const RoleBadge = ({ role }) => {
+//   const styles = {
+//     admin: { bg: "#ec489918", color: "#ec4899", label: "Admin" },
+//     coordinator: { bg: "#f59e0b18", color: "#f59e0b", label: "Coordinator" },
+//     student: { bg: "#3b82f618", color: "#3b82f6", label: "Student" },
+//   };
+//   const s = styles[role] ?? styles.student;
+//   return (
+//     <span
+//       className="text-[10px] font-semibold px-2.5 py-1 rounded-full"
+//       style={{ backgroundColor: s.bg, color: s.color }}
+//     >
+//       {s.label}
+//     </span>
+//   );
+// };
+
+// const TableHeader = ({ title, count, search, onSearch }) => (
+//   <div className="flex items-center justify-between px-5 py-4 shrink-0">
+//     <div className="flex items-center gap-2.5">
+//       <h3 className="text-sm font-bold text-white">{title}</h3>
+//       <span className="text-[10px] bg-white/5 border border-white/10 text-gray-400 px-2 py-0.5 rounded-full">
+//         {count}
+//       </span>
+//     </div>
+//     <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 w-44 focus-within:border-emerald-500/40 transition-colors">
+//       <Search size={12} className="text-gray-500 shrink-0" />
+//       <input
+//         type="text"
+//         placeholder="Search..."
+//         value={search}
+//         onChange={(e) => onSearch(e.target.value)}
+//         className="bg-transparent outline-none text-xs text-gray-300 placeholder-gray-600 w-full"
+//       />
+//     </div>
+//   </div>
+// );
+
+// const ColHead = ({ children, className = "" }) => (
+//   <th className={`text-[11px] font-medium text-gray-500 py-2.5 px-5 text-left border-b border-white/5 ${className}`}>
+//     {children}
+//   </th>
+// );
+
+// // ── Authors Table (Admin + Coordinators) ──────────────────────────────────────
+// const AuthorsTable = () => {
+//   const [search, setSearch] = useState("");
+//   const filtered = MOCK_AUTHORS.filter(
+//     (u) =>
+//       u.authorname.toLowerCase().includes(search.toLowerCase()) ||
+//       u.email.toLowerCase().includes(search.toLowerCase())
+//   );
+
+//   return (
+//     <div className="bg-[#0f172a] border border-[#1e293b] rounded-2xl flex flex-col overflow-hidden flex-1">
+//       <TableHeader title="Authors" count={MOCK_AUTHORS.length} search={search} onSearch={setSearch} />
+//       <div className="overflow-hidden flex flex-col flex-1">
+//         <table className="w-full table-fixed">
+//           <thead>
+//             <tr className="bg-white/[0.02]">
+//               <ColHead className="w-[38%]">Name</ColHead>
+//               <ColHead className="w-[16%] text-center">Role</ColHead>
+//               <ColHead className="w-[12%] text-center">Posts</ColHead>
+//               <ColHead className="w-[12%] text-center">Playlists</ColHead>
+//               <ColHead className="w-[11%] text-center">Followers</ColHead>
+//               <ColHead className="w-[11%] text-center">Following</ColHead>
+//             </tr>
+//           </thead>
+//         </table>
+//         {/* Scrollable body */}
+//         <div className="overflow-y-auto scrollbar-hide" style={{ height: "260px" }}>
+//           <table className="w-full table-fixed">
+//             <tbody>
+//               {filtered.map((u, i) => (
+//                 <tr
+//                   key={u.email}
+//                   className="border-b border-white/[0.04] hover:bg-white/[0.03] transition-colors"
+//                 >
+//                   {/* Name */}
+//                   <td className="py-3 px-5 w-[38%]">
+//                     <div className="flex items-center gap-3">
+//                       <div
+//                         className="w-8 h-8 rounded-full shrink-0 flex items-center justify-center text-[10px] font-bold text-white"
+//                         style={{ backgroundColor: avatarColor(u.authorname) }}
+//                       >
+//                         {initials(u.authorname)}
+//                       </div>
+//                       <div className="min-w-0">
+//                         <p className="text-xs font-semibold text-gray-100 truncate">{u.authorname}</p>
+//                         <p className="text-[10px] text-gray-500 truncate">{u.email}</p>
+//                       </div>
+//                     </div>
+//                   </td>
+//                   {/* Role */}
+//                   <td className="py-3 px-5 w-[16%] text-center">
+//                     <RoleBadge role={u.role} />
+//                   </td>
+//                   {/* Posts */}
+//                   <td className="py-3 px-5 w-[12%] text-center">
+//                     <span className="text-xs text-gray-300">{u.postsCount}</span>
+//                   </td>
+//                   {/* Playlists */}
+//                   <td className="py-3 px-5 w-[12%] text-center">
+//                     <span className="text-xs text-gray-300">{u.playlistsCount}</span>
+//                   </td>
+//                   {/* Followers */}
+//                   <td className="py-3 px-5 w-[11%] text-center">
+//                     <span className="text-xs text-gray-300">{u.followersCount}</span>
+//                   </td>
+//                   {/* Following */}
+//                   <td className="py-3 px-5 w-[11%] text-center">
+//                     <span className="text-xs text-gray-300">{u.followingCount}</span>
+//                   </td>
+//                 </tr>
+//               ))}
+//             </tbody>
+//           </table>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// // ── Students Table ─────────────────────────────────────────────────────────────
+// const StudentsTable = () => {
+//   const [search, setSearch] = useState("");
+//   const filtered = MOCK_STUDENTS.filter(
+//     (u) =>
+//       u.authorname.toLowerCase().includes(search.toLowerCase()) ||
+//       u.email.toLowerCase().includes(search.toLowerCase())
+//   );
+
+//   return (
+//     <div className="bg-[#0f172a] border border-[#1e293b] rounded-2xl flex flex-col overflow-hidden" style={{ width: "340px", minWidth: "340px" }}>
+//       <TableHeader title="Students" count={MOCK_STUDENTS.length} search={search} onSearch={setSearch} />
+//       <div className="overflow-hidden flex flex-col">
+//         <table className="w-full table-fixed">
+//           <thead>
+//             <tr className="bg-white/[0.02]">
+//               <ColHead className="w-[70%]">Name</ColHead>
+//               <ColHead className="w-[30%] text-center">Role</ColHead>
+//             </tr>
+//           </thead>
+//         </table>
+//         {/* Scrollable body */}
+//         <div className="overflow-y-auto scrollbar-hide" style={{ height: "260px" }}>
+//           <table className="w-full table-fixed">
+//             <tbody>
+//               {filtered.map((u) => (
+//                 <tr
+//                   key={u.email}
+//                   className="border-b border-white/[0.04] hover:bg-white/[0.03] transition-colors"
+//                 >
+//                   {/* Name */}
+//                   <td className="py-3 px-5 w-[70%]">
+//                     <div className="flex items-center gap-3">
+//                       <div
+//                         className="w-8 h-8 rounded-full shrink-0 flex items-center justify-center text-[10px] font-bold text-white"
+//                         style={{ backgroundColor: avatarColor(u.authorname) }}
+//                       >
+//                         {initials(u.authorname)}
+//                       </div>
+//                       <div className="min-w-0">
+//                         <p className="text-xs font-semibold text-gray-100 truncate">{u.authorname}</p>
+//                         <p className="text-[10px] text-gray-500 truncate">{u.email}</p>
+//                       </div>
+//                     </div>
+//                   </td>
+//                   {/* Role */}
+//                   <td className="py-3 px-5 w-[30%] text-center">
+//                     <RoleBadge role={u.role} />
+//                   </td>
+//                 </tr>
+//               ))}
+//             </tbody>
+//           </table>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
