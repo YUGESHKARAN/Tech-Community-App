@@ -11,7 +11,7 @@
 
 **Welcome to the Tech. Community App!**
 
-E-Learning platform specifically designed for universities and colleges, focusing on knowledge sharing and community building. The platform enables student developers to connect, collaborate, and engage through technical content and discussions, all within their institution. Developers can interact, clarify doubts via comment system. The platform includes role-based interfaces for Students, Coordinators, and Admins to manage content, moderation, and community participation.
+E-Learning & collaborative platform designed for universities and colleges, focusing on knowledge sharing and community building. The platform enables student developers to connect, collaborate, and engage through sharing their tech works, knowledges and findings, all within their institution. Developers can interact, clarify doubts via discussion section. The platform includes role-based interfaces for Students, Coordinators, and Admins to manage content, moderation, and community participation.
 
 ---
 ## Key Features
@@ -21,7 +21,7 @@ E-Learning platform specifically designed for universities and colleges, focusin
 * [**DraftMate AI**](https://github.com/YUGESHKARAN/blogChat-backend) – Content drafting assistant to refine and structure post descriptions before publishing.
 * **Post Management** – Create, edit, and publish technical posts within the community.
 * **Playlists Management** – Organize and save curated collections of posts for structured learning.
-* [**Comments & Discussions**](https://github.com/YUGESHKARAN/web-socket.io) – Engage with the community through threaded discussions on posts.
+* [**Discussions**](https://github.com/YUGESHKARAN/Tech-Discussion.io.git) – Engage with the community through threaded discussions on posts.
 * **Announcements** – Coordinators and admins can publish institutional or community updates.
 * **Notifications** – Real-time alerts for recommended feeds and comments.
 * [**Network Recommendation**](https://github.com/YUGESHKARAN/recommendation-system) – A graph structured author recommendation system to build connections.
@@ -67,7 +67,8 @@ Node-Blog-App/
 
 - **Backend:** Node.js, Express, MongoDB, Mongoose
 - **Frontend:** React.js, Tailwind CSS
-- **Image Storage:** AWS S3
+- **Storage:** AWS S3
+- **Caching:** Redis
 
 ---
 
