@@ -1,5 +1,5 @@
 // import React, { useState, useEffect } from "react";
-// import NavBar from "../ui/NavBar";
+// import React, { useState, useEffect } from "react";
 // import { MdDeleteForever } from "react-icons/md";
 // import Footer from "../ui/Footer";
 // import { IoSearch } from "react-icons/io5";
@@ -705,6 +705,8 @@ import useStatsSummary from "../hooks/admins/useStatsSummary";
 import useGetCommunityAnalytics from "../hooks/useGetCommunityAnalytics";
 import KPISkeleton from "../components/loaders/dashboard/KPISkeleton";
 import PostCategorySkeleton from "../components/loaders/dashboard/PostCategorySkeleton";
+import usePostsByMonthAnalaysis from "../hooks/admins/usePostsByMonthAnalaysis";
+import PostsGaugeCardSkeleton from "../components/loaders/dashboard/PostsGaugeCardSkeleton";
 
 // ── Mock data ──────────────────────────────────────────────────────────────────
 // const MOCK_STATS = {
@@ -923,22 +925,50 @@ const MiniBar = ({ data, valueKey, labelKey, color = "#0004ff" }) => {
 };
 // ── Mini line chart ────────────────────────────────────────────────────────────
 
-const MOCK_POSTS_OVER_TIME = [
-  { month: "Jan", count: 18 },
-  { month: "Feb", count: 34 },
-  { month: "Mar", count: 27 },
-  { month: "Apr", count: 45 },
-  { month: "May", count: 38 },
-  { month: "Jun", count: 10 },
-   { month: "Jul", count: 18 },
-  { month: "Aug", count: 34 },
-  { month: "Sep", count: 27 },
-  { month: "Oct", count: 45 },
-  { month: "Nov", count: 38 },
-  { month: "Dec", count: 35 },
-];
+// const MOCK_POSTS_OVER_TIME = [
+//   { month: "Jan", count: 18, year: 2024 },
+//   { month: "Feb", count: 34, year: 2024 },
+//   { month: "Mar", count: 27, year: 2024 },
+//   { month: "Apr", count: 45, year: 2024 },
+//   { month: "May", count: 38, year: 2024 },
+//   { month: "Jun", count: 10, year: 2024 },
+//   { month: "Jul", count: 18, year: 2024 },
+//   { month: "Aug", count: 34, year: 2024 },
+//   { month: "Sep", count: 27, year: 2024 },
+//   { month: "Oct", count: 45, year: 2024 },
+//   { month: "Nov", count: 38, year: 2024 },
+//   { month: "Dec", count: 35, year: 2024 },
+//   { month: "Jan", count: 18, year: 2025 },
+//   { month: "Feb", count: 34, year: 2025 },
+//   { month: "Mar", count: 27, year: 2025 },
+//   { month: "Apr", count: 45, year: 2025 },
+//   { month: "May", count: 38, year: 2025 },
+//   { month: "Jun", count: 10, year: 2025 },
+//   { month: "Jul", count: 18, year: 2025 },
+//   { month: "Aug", count: 34, year: 2025 },
+//   { month: "Sep", count: 27, year: 2025 },
+//   { month: "Oct", count: 45, year: 2025 },
+//   { month: "Nov", count: 38, year: 2025 },
+//   { month: "Dec", count: 35, year: 2025 },
+//   { month: "Jan", count: 18, year: 2026 },
+//   { month: "Feb", count: 34, year: 2026 },
+//   { month: "Mar", count: 27, year: 2026 },
+//   { month: "Apr", count: 45, year: 2026 },
+//   { month: "May", count: 38, year: 2026 },
+//   { month: "Jun", count: 10, year: 2026 },
+//   { month: "Jul", count: 18, year: 2026 },
+//   { month: "Aug", count: 34, year: 2026 },
+//   { month: "Sep", count: 27, year: 2026 },
+//   { month: "Oct", count: 45, year: 2026 },
+//   { month: "Nov", count: 38, year: 2026 },
+//   { month: "Dec", count: 35, year: 2026 },
+// ];
 
-const PostsGaugeCard = ({ data = MOCK_POSTS_OVER_TIME }) => {
+const PostsGaugeCard = ({ data, year, setYear }) => {
+  // const [selectedYear, setSelectedYear] = useState('default');
+
+  // const data = year === 'default' ? data : data.filter(d => d.year == year);
+
   const current = data[data.length - 1]?.count ?? 0;
   const previous = data[data.length - 2]?.count ?? 0;
 
@@ -953,17 +983,40 @@ const PostsGaugeCard = ({ data = MOCK_POSTS_OVER_TIME }) => {
   const pct = Math.min((current / TARGET) * 100, 100);
 
   const max = Math.max(...data.map((d) => d.count));
+  const currentYear = new Date().getFullYear();
+const yearOptions = [currentYear - 1, currentYear - 2];
+
 
   return (
     <div className="bg-[#0f172a]  border border-[#1e293b] rounded-xl p-4 flex flex-col">
       
       {/* Header */}
-      <p className="text-sm md:text-base font-semibold text-gray-200">
-        Posts Published
-      </p>
-      <p className="text-[9px] md:text-[10px] text-gray-400 mb-4">
-        Monthly performance vs target
-      </p>
+      <div className="flex justify-between items-center mb-4">
+        <div>
+          <p className="text-sm md:text-base font-semibold text-gray-200">
+            Posts Published
+          </p>
+          <p className="text-[9px] md:text-[10px] text-gray-400">
+            Monthly performance vs target
+          </p>
+        </div>
+        {/* <select value={year} onChange={(e) => setYear(e.target.value)} className="bg-[#1e293b] text-gray-200 text-xs rounded px-2 py-1 border border-[#334155]">
+          <option value="default">Default</option>
+          <option value="2026">2026</option>
+          <option value="2025">2025</option>
+          <option value="2024">2024</option>
+        </select> */}
+        <select
+  value={year}
+  onChange={(e) => setYear(e.target.value)}
+  className="bg-[#1e293b] text-gray-200 cursor-pointer text-xs rounded px-2 py-1 border border-[#334155]"
+>
+  <option value="default">{currentYear}</option>
+  {yearOptions.map((y) => (
+    <option key={y} value={y}>{y}</option>
+  ))}
+</select>
+      </div>
 
       {/* ✅ Gauge (Conic Gradient) */}
       <div className="flex justify-center">
@@ -1119,20 +1172,26 @@ export default function Controls() {
   const [showSideBar, setShowSidebar] = useState(true);
   const email = localStorage.getItem("email")
   const {statsSummary, statsLoader} = useStatsSummary(email);
+  const [year, setYear] = useState();
+
 
  const {communities, loading:postCategoryLoading} = useGetCommunityAnalytics();
-  // Refs for scroll-to
-  const overviewRef = useRef(null);
-  const analyticsRef = useRef(null);
-  const controlRef = useRef(null);
+ const {postsByMonth,loading:postsByMonthLoading} = usePostsByMonthAnalaysis(email,year);
 
-  const scrollTo = (ref, section) => {
-    setActiveSection(section);
-    ref.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
+
+  // Refs for scroll-to
+  // const overviewRef = useRef(null);
+  // const analyticsRef = useRef(null);
+  // const controlRef = useRef(null);
+
+  // const scrollTo = (ref, section) => {
+  //   setActiveSection(section);
+  //   ref.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  // };
 
 //  console.log("statsSummary",statsSummary)
 //  console.log("communities",communities)
+//  console.log("postsByMonth",postsByMonth)
 
   return (
     <div className="min-h-screen h-auto  relative bg-gray-900 text-white flex flex-col">
@@ -1166,14 +1225,14 @@ export default function Controls() {
               label="Dashboard"
               showSideBar ={showSideBar}
               active={activeSection === "overview"}
-              onClick={() => scrollTo(overviewRef, "overview")}
+              // onClick={() => scrollTo(overviewRef, "overview")}
             />
             <NavItem
               icon={BarChart2}
               label="Analytics"
               showSideBar ={showSideBar}
               active={activeSection === "analytics"}
-              onClick={() => scrollTo(analyticsRef, "analytics")}
+              // onClick={() => scrollTo(analyticsRef, "analytics")}
             />
           </div>
 
@@ -1185,7 +1244,7 @@ export default function Controls() {
               icon={UserCog}
               label="Control Panel"
               active={activeSection === "control"}
-              onClick={() => scrollTo(controlRef, "control")}
+              // onClick={() => scrollTo(controlRef, "control")}
             />
           </div>
 
@@ -1264,7 +1323,9 @@ export default function Controls() {
           </section>
 
           {/* ── ZONE 3: Analytics ──────────────────────────────────────── */}
-          <section ref={analyticsRef} className="space-y-4">
+          <section 
+          // ref={analyticsRef}
+           className="space-y-4">
             <h2 className="md:text-2xl text-xl font-semibold text-emerald-400 ">
               Analytics
             </h2>
@@ -1293,7 +1354,7 @@ export default function Controls() {
               :
                 <PostCategorySkeleton/>
               }
-               <PostsGaugeCard data={MOCK_POSTS_OVER_TIME} />
+               {!postsByMonthLoading ?<PostsGaugeCard data={postsByMonth} year={year} setYear={setYear} /> : <PostsGaugeCardSkeleton />}
 
               {/* Community Membership */}
               <div className="bg-[#0f172a] flex flex-col justify-between items-start  border border-[#1e293b] rounded-xl p-4">
@@ -1317,6 +1378,7 @@ export default function Controls() {
                     </div>
                   </div>
                 </div>
+                
                 <div className="flex flex-col w-full h-52 emerald-scrollbar pr-4 overflow-y-auto gap-2">
                   {MOCK_CATEGORIES.map((c) => {
                     const maxVal =
@@ -1438,9 +1500,12 @@ export default function Controls() {
             <h2 className="md:text-2xl text-xl font-semibold text-emerald-400">
               Users
             </h2>
-            <div className="flex gap-4 items-start">
-              <AuthorsTable />
-              <StudentsTable />
+            <div className="md:flex overflow-x-scroll md:overflow-hidden gap-4 items-start">
+               <AuthorsTable />
+               <StudentsTable />
+             
+            
+              
             </div>
           </section>
 
@@ -1601,14 +1666,15 @@ const AuthorsTable = () => {
   );
 
   return (
-    <div className="bg-[#0f172a] border border-[#1e293b] rounded-2xl flex flex-col overflow-hidden flex-1">
+    <div className="bg-[#0f172a] border border-[#1e293b] rounded-2xl md:w-full w-[600px] flex flex-col md:overflow-x-hidden overflow-x-scroll md:flex-1">
       <TableHeader
         title="Contributors"
         count={MOCK_AUTHORS.length}
         search={search}
         onSearch={setSearch}
+        className="overflow-x-scroll"
       />
-      <div className="overflow-hidden flex flex-col flex-1">
+      <div className=" flex  flex-col flex-1">
         <table className="w-full table-fixed">
           <thead>
             <tr className="bg-white/[0.02]">
@@ -1700,7 +1766,7 @@ const StudentsTable = () => {
   );
 
   return (
-    <div className="bg-[#0f172a] border border-[#1e293b] rounded-2xl flex flex-col overflow-hidden w-[600px]">
+    <div className="bg-[#0f172a] border mt-4 md:mt-0 border-[#1e293b] rounded-2xl flex flex-col overflow-hidden w-[600px]">
       <TableHeader
         title="Students"
         count={MOCK_STUDENTS.length}

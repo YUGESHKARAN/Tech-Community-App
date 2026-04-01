@@ -139,7 +139,140 @@ const getAppSummary = async (req, res) => {
   }
 };
 
+const getMonthlyPostCounts = async (req, res) => {
+  
+  const requestEmail = req.params.email;
+  const requestedYear = req.query.year ? Number(req.query.year) : null;
+  // const requestedYear = 2026;
+  // console.log('getMonthlyPostCounts called with email:', requestEmail, 'year:', requestedYear);
+
+  if (!requestEmail) {
+    return res.status(400).json({ message: 'Email is required as path param.' });
+  }
+
+  if (requestedYear && (!Number.isInteger(requestedYear) || requestedYear < 1970 || requestedYear > 3000)) {
+    return res.status(400).json({ message: 'Invalid year parameter. Use a 4-digit year (1970-3000).' });
+  }
+
+  try {
+    const author = await Author.findOne({ email: { $eq: requestEmail } });
+    if (!author) {
+      return res.status(404).json({ message: 'Author not found' });
+    }
+
+    if (author.role !== 'admin') {
+      return res.status(403).json({ message: 'Access denied' });
+    }
+
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    let aggregation;
+    let responseYear;
+
+    if (requestedYear) {
+      // Mode 1: Specific year requested - return Jan to Dec of that year
+      responseYear = requestedYear;
+      const yearStart = new Date(requestedYear, 0, 1);
+      const yearEnd = new Date(requestedYear, 11, 31, 23, 59, 59);
+
+      aggregation = await Author.aggregate([
+        { $unwind: { path: '$posts', preserveNullAndEmptyArrays: false } },
+        {
+          $match: {
+            'posts.timestamp': {
+              $gte: yearStart,
+              $lte: yearEnd,
+            },
+          },
+        },
+        {
+          $project: {
+            postMonth: { $month: '$posts.timestamp' },
+          },
+        },
+        {
+          $group: {
+            _id: '$postMonth',
+            count: { $sum: 1 },
+          },
+        },
+      ]);
+    } else {
+      // Mode 2: No year provided - return last 12 months (current month back 11 months)
+      const now = new Date();
+      const start = new Date(now.getFullYear(), now.getMonth() - 11, 1);
+      const end = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
+      responseYear = null; // Dynamic range, no fixed year
+
+      aggregation = await Author.aggregate([
+        { $unwind: { path: '$posts', preserveNullAndEmptyArrays: false } },
+        {
+          $match: {
+            'posts.timestamp': {
+              $gte: start,
+              $lte: end,
+            },
+          },
+        },
+        {
+          $project: {
+            postYear: { $year: '$posts.timestamp' },
+            postMonth: { $month: '$posts.timestamp' },
+          },
+        },
+        {
+          $group: {
+            _id: { year: '$postYear', month: '$postMonth' },
+            count: { $sum: 1 },
+          },
+        },
+      ]);
+    }
+
+    // Process results
+    let monthlyData = [];
+
+    if (requestedYear) {
+      // For specific year: fill all 12 months
+      const monthCounts = Array(12).fill(0);
+      for (const doc of aggregation) {
+        if (doc._id >= 1 && doc._id <= 12) {
+          monthCounts[doc._id - 1] = doc.count;
+        }
+      }
+      monthlyData = monthNames.map((month, index) => ({
+        month,
+        count: monthCounts[index],
+      }));
+      res.status(200).json({ year: responseYear, monthlyData });
+    } else {
+      // For last 12 months: build dynamic label
+      const monthMap = {};
+      for (const doc of aggregation) {
+        const key = `${doc._id.year}-${doc._id.month}`;
+        monthMap[key] = doc.count;
+      }
+
+      // Generate month labels for last 12 months
+      const now = new Date();
+      for (let i = 11; i >= 0; i--) {
+        const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+        const monthName = monthNames[month - 1];
+        const key = `${year}-${month}`;
+        const count = monthMap[key] || 0;
+        monthlyData.push({ month: `${monthName}'${year.toString().slice(-2)}`, count });
+      }
+      res.status(200).json({ year: 'last12months', monthlyData });
+    }
+  } catch (err) {
+    console.error('getMonthlyPostCounts error:', err.message);
+    res.status(500).json({ message: err.message });
+  }
+};
+
 module.exports = {
   getCategoryAnalytics,
   getAppSummary,
+  getMonthlyPostCounts,
 };
