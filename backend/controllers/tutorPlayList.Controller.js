@@ -563,7 +563,7 @@ const getUniqueCategoriesByAuthor = async (req, res) => {
         author.posts
           .map((post) => post.category)
           .filter(Boolean) // remove null/undefined
-      ),
+      ), 
     ];
 
     return res.status(200).json({
