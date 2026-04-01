@@ -702,6 +702,9 @@ import {
 } from "lucide-react";
 import NavBar from "../ui/NavBar";
 import useStatsSummary from "../hooks/admins/useStatsSummary";
+import useGetCommunityAnalytics from "../hooks/useGetCommunityAnalytics";
+import KPISkeleton from "../components/loaders/dashboard/KPISkeleton";
+import PostCategorySkeleton from "../components/loaders/dashboard/PostCategorySkeleton";
 
 // ── Mock data ──────────────────────────────────────────────────────────────────
 // const MOCK_STATS = {
@@ -845,16 +848,17 @@ const MOCK_TOP = [
 // ── Mini bar chart ─────────────────────────────────────────────────────────────
 const MiniBar = ({ data, valueKey, labelKey, color = "#0004ff" }) => {
   const max = Math.max(...data.map((d) => d.postscount));
-  const ticks = [0, Math.round(max * 0.33), Math.round(max * 0.66), max];
+  const ticks = [0, Math.ceil(max * (33/100)), Math.ceil(max * (66/100)), max];
   const [hoveredIndex, setHoveredIndex] = useState(null);
-
+ console.log("max", max)
+ console.log("ticks", ticks)
   return (
     <div className="flex gap-3">
       {/* Y-axis ticks */}
       <div className="flex flex-col-reverse justify-between pb-5 shrink-0">
-        {ticks.map((t) => (
+        {ticks.map((t,i) => (
           <span
-            key={t}
+            key={i}
             className="text-xs font-semibold text-gray-400 leading-none"
           >
             {t}
@@ -1116,7 +1120,7 @@ export default function Controls() {
   const email = localStorage.getItem("email")
   const {statsSummary, statsLoader} = useStatsSummary(email);
 
-
+ const {communities, loading:postCategoryLoading} = useGetCommunityAnalytics();
   // Refs for scroll-to
   const overviewRef = useRef(null);
   const analyticsRef = useRef(null);
@@ -1127,7 +1131,8 @@ export default function Controls() {
     ref.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
- console.log("statsSummary",statsSummary)
+//  console.log("statsSummary",statsSummary)
+//  console.log("communities",communities)
 
   return (
     <div className="min-h-screen h-auto  relative bg-gray-900 text-white flex flex-col">
@@ -1207,7 +1212,7 @@ export default function Controls() {
           {/* ── ZONE 2: KPI Cards ──────────────────────────────────────── */}
           <section className="space-y-3">
             {/* Row 1 — Users */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+           {!statsLoader? <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
               <KPICard
                 label="Total Users"
                 value={statsSummary.totalUsers}
@@ -1252,7 +1257,9 @@ export default function Controls() {
                 change="11%"
                 changePositive={true}
               />
-            </div>
+            </div>: 
+            <KPISkeleton />
+            }
          
           </section>
 
@@ -1264,6 +1271,7 @@ export default function Controls() {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {/* Posts by Category */}
+              {!postCategoryLoading ? 
               <div className="bg-[#0f172a]  flex flex-col justify-between items-start  border border-[#1e293b] rounded-xl p-4">
                 <div>
                   <p className="text-sm md:text-base font-semibold text-gray-200 ">
@@ -1275,13 +1283,16 @@ export default function Controls() {
                 </div>
                 <div className="flex flex-col w-full overflow-x-auto scrollbar-hide ">
                   <MiniBar
-                    data={MOCK_CATEGORIES}
+                    data={communities}
                     // valueKey="postscount"
                     labelKey="categoryname"
                     color="#1121ff"
                   />
                 </div>
-              </div>
+              </div> 
+              :
+                <PostCategorySkeleton/>
+              }
                <PostsGaugeCard data={MOCK_POSTS_OVER_TIME} />
 
               {/* Community Membership */}
