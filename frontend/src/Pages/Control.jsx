@@ -1094,7 +1094,7 @@ const yearOptions = [currentYear - 1, currentYear - 2];
               }}
             />
 
-            <span className="text-[9px] text-gray-600">
+            <span className="text-[9px] text-center text-gray-400">
               {d.month}
             </span>
           </div>

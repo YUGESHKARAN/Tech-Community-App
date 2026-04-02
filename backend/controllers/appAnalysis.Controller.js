@@ -261,7 +261,8 @@ const getMonthlyPostCounts = async (req, res) => {
         const monthName = monthNames[month - 1];
         const key = `${year}-${month}`;
         const count = monthMap[key] || 0;
-        monthlyData.push({ month: `${monthName}'${year.toString().slice(-2)}`, count });
+        monthlyData.push({ month: `${monthName}'\n${year.toString().slice(-2)}`, count });
+        // monthlyData.push({ month: monthName, count });
       }
       res.status(200).json({ year: 'last12months', monthlyData });
     }
