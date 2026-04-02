@@ -1,7 +1,9 @@
 const PostsGaugeCardSkeleton = () => {
   return (
-    <div className="bg-[#0f172a] border border-[#1e293b] rounded-xl p-4 flex flex-col animate-pulse">
-      
+    <div className="bg-[#0f172a]  overflow-hidden relative border border-[#1e293b] rounded-xl p-4 flex flex-col animate-pulse">
+      {/* Shimmer */}
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-[shimmer_1.5s_infinite]" />
+
       {/* Header */}
       <div className="flex justify-between items-center mb-4">
         <div>
@@ -15,7 +17,6 @@ const PostsGaugeCardSkeleton = () => {
       {/* Gauge Skeleton */}
       <div className="flex justify-center">
         <div className="relative w-[180px] h-[100px] overflow-hidden">
-          
           {/* Outer fake gauge */}
           <div className="absolute w-[180px] h-[180px] rounded-full bg-gray-700/30" />
 

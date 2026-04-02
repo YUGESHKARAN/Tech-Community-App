@@ -1,8 +1,9 @@
-
 const CommunityMembershipSkeleton = () => {
   return (
-    <div className="bg-[#0f172a] flex flex-col justify-between items-start border border-[#1e293b] rounded-xl p-4 animate-pulse">
-      
+    <div className="bg-[#0f172a] flex flex-col justify-between  overflow-hidden relative items-start border border-[#1e293b] rounded-xl p-4 animate-pulse">
+      {/* Shimmer */}
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-[shimmer_1.5s_infinite]" />
+
       {/* Header */}
       <div className="w-full">
         <div className="h-4 w-40 bg-gray-700/50 rounded mb-2" />
@@ -29,13 +30,11 @@ const CommunityMembershipSkeleton = () => {
 
           return (
             <div key={i} className="flex items-center gap-2">
-              
               {/* Category label */}
               <div className="h-3 w-24 bg-gray-700/40 rounded" />
 
               {/* Progress bar */}
               <div className="flex-1 h-4 bg-[#1e293b] rounded-full overflow-hidden flex">
-                
                 {/* Coordinators */}
                 <div
                   className="h-full bg-gray-600/50"

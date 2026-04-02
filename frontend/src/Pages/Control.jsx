@@ -1129,7 +1129,7 @@ const KPICard = ({
     {/* Bottom — value + badge */}
     <div className="flex items-end justify-end">
       <span className="md:text-lg text-xs bg-gray-700/60 font-medium text-white rounded-full md:px-4 md:py-1.5 px-2 py-1">
-        {value}
+        {value && value}
       </span>
       {/* {change && (
         <span
@@ -1315,9 +1315,9 @@ export default function Controls() {
                 />
 
                 <KPICard
-                  label="New This Month"
+                  label="New Entry"
                   value={`+${statsSummary.newThisMonth}`}
-                  sub="New this month"
+                  sub="This Month"
                   icon={TrendingUp}
                   change="11%"
                   changePositive={true}
