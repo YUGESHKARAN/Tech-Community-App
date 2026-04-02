@@ -1546,7 +1546,7 @@ export default function Controls() {
                       />}
 
                      
-                      <span className="md:text-xs text-[10px] flex-1 font-semibold text-gray-200 truncate">
+                      <span className="text-xs  flex-1 font-semibold text-gray-200 truncate">
                         {u.name}
                          <p className="md:text-[10px] hidden md:block text-[9px] text-gray-500 truncate">
                           {u.email}
