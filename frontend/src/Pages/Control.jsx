@@ -707,6 +707,7 @@ import KPISkeleton from "../components/loaders/dashboard/KPISkeleton";
 import PostCategorySkeleton from "../components/loaders/dashboard/PostCategorySkeleton";
 import usePostsByMonthAnalaysis from "../hooks/admins/usePostsByMonthAnalaysis";
 import PostsGaugeCardSkeleton from "../components/loaders/dashboard/PostsGaugeCardSkeleton";
+import CommunityMembershipSkeleton from "../components/loaders/dashboard/CommunityMembershipSkeleton";
 
 // ── Mock data ──────────────────────────────────────────────────────────────────
 // const MOCK_STATS = {
@@ -720,69 +721,68 @@ import PostsGaugeCardSkeleton from "../components/loaders/dashboard/PostsGaugeCa
 //   mostActiveCategory: "AI/ML",
 // };
 
-const MOCK_CATEGORIES = [
-  { categoryname: "AI/ML", postscount: 7, followerscount: 1, authorcount: 4 },
-  { categoryname: "GenAI", postscount: 4, followerscount: 1, authorcount: 2 },
-  {
-    categoryname: "Web Development",
-    postscount: 2,
-    followerscount: 1,
-    authorcount: 3,
-  },
-  {
-    categoryname: "Cyber Security",
-    postscount: 2,
-    followerscount: 0,
-    authorcount: 1,
-  },
-  {
-    categoryname: "Data Science",
-    postscount: 3,
-    followerscount: 2,
-    authorcount: 2,
-  },
-  { categoryname: "AI/ML", postscount: 7, followerscount: 1, authorcount: 4 },
-  { categoryname: "GenAI", postscount: 4, followerscount: 1, authorcount: 2 },
-  {
-    categoryname: "Web Development",
-    postscount: 2,
-    followerscount: 1,
-    authorcount: 3,
-  },
-  {
-    categoryname: "Cyber Security",
-    postscount: 2,
-    followerscount: 0,
-    authorcount: 1,
-  },
-  {
-    categoryname: "Data Science",
-    postscount: 3,
-    followerscount: 2,
-    authorcount: 2,
-  },
-  { categoryname: "AI/ML", postscount: 7, followerscount: 1, authorcount: 4 },
-  { categoryname: "GenAI", postscount: 4, followerscount: 1, authorcount: 2 },
-  {
-    categoryname: "Web Development",
-    postscount: 2,
-    followerscount: 1,
-    authorcount: 3,
-  },
-  {
-    categoryname: "Cyber Security",
-    postscount: 2,
-    followerscount: 0,
-    authorcount: 1,
-  },
-  {
-    categoryname: "Data Science",
-    postscount: 3,
-    followerscount: 2,
-    authorcount: 2,
-  },
-];
-
+// const MOCK_CATEGORIES = [
+//   { categoryname: "AI/ML", postscount: 7, followerscount: 1, authorcount: 4 },
+//   { categoryname: "GenAI", postscount: 4, followerscount: 1, authorcount: 2 },
+//   {
+//     categoryname: "Web Development",
+//     postscount: 2,
+//     followerscount: 1,
+//     authorcount: 3,
+//   },
+//   {
+//     categoryname: "Cyber Security",
+//     postscount: 2,
+//     followerscount: 0,
+//     authorcount: 1,
+//   },
+//   {
+//     categoryname: "Data Science",
+//     postscount: 3,
+//     followerscount: 2,
+//     authorcount: 2,
+//   },
+//   { categoryname: "AI/ML", postscount: 7, followerscount: 1, authorcount: 4 },
+//   { categoryname: "GenAI", postscount: 4, followerscount: 1, authorcount: 2 },
+//   {
+//     categoryname: "Web Development",
+//     postscount: 2,
+//     followerscount: 1,
+//     authorcount: 3,
+//   },
+//   {
+//     categoryname: "Cyber Security",
+//     postscount: 2,
+//     followerscount: 0,
+//     authorcount: 1,
+//   },
+//   {
+//     categoryname: "Data Science",
+//     postscount: 3,
+//     followerscount: 2,
+//     authorcount: 2,
+//   },
+//   { categoryname: "AI/ML", postscount: 7, followerscount: 1, authorcount: 4 },
+//   { categoryname: "GenAI", postscount: 4, followerscount: 1, authorcount: 2 },
+//   {
+//     categoryname: "Web Development",
+//     postscount: 2,
+//     followerscount: 1,
+//     authorcount: 3,
+//   },
+//   {
+//     categoryname: "Cyber Security",
+//     postscount: 2,
+//     followerscount: 0,
+//     authorcount: 1,
+//   },
+//   {
+//     categoryname: "Data Science",
+//     postscount: 3,
+//     followerscount: 2,
+//     authorcount: 2,
+//   },
+// ];
 
 const MOCK_TOP = [
   {
@@ -850,15 +850,20 @@ const MOCK_TOP = [
 // ── Mini bar chart ─────────────────────────────────────────────────────────────
 const MiniBar = ({ data, valueKey, labelKey, color = "#0004ff" }) => {
   const max = Math.max(...data.map((d) => d.postscount));
-  const ticks = [0, Math.ceil(max * (33/100)), Math.ceil(max * (66/100)), max];
+  const ticks = [
+    0,
+    Math.ceil(max * (33 / 100)),
+    Math.ceil(max * (66 / 100)),
+    max,
+  ];
   const [hoveredIndex, setHoveredIndex] = useState(null);
- console.log("max", max)
- console.log("ticks", ticks)
+  // console.log("max", max);
+  // console.log("ticks", ticks);
   return (
     <div className="flex gap-3">
       {/* Y-axis ticks */}
       <div className="flex flex-col-reverse justify-between pb-5 shrink-0">
-        {ticks.map((t,i) => (
+        {ticks.map((t, i) => (
           <span
             key={i}
             className="text-xs font-semibold text-gray-400 leading-none"
@@ -964,7 +969,7 @@ const MiniBar = ({ data, valueKey, labelKey, color = "#0004ff" }) => {
 //   { month: "Dec", count: 35, year: 2026 },
 // ];
 
-const PostsGaugeCard = ({ data, year, setYear }) => {
+const PostsGaugeCard = ({ data, year, setYear, target, setTarget }) => {
   // const [selectedYear, setSelectedYear] = useState('default');
 
   // const data = year === 'default' ? data : data.filter(d => d.year == year);
@@ -973,23 +978,19 @@ const PostsGaugeCard = ({ data, year, setYear }) => {
   const previous = data[data.length - 2]?.count ?? 0;
 
   const change =
-    previous > 0
-      ? (((current - previous) / previous) * 100).toFixed(1)
-      : 0;
+    previous > 0 ? (((current - previous) / previous) * 100).toFixed(1) : 0;
 
   const isPositive = change >= 0;
 
-  const TARGET = 50;
-  const pct = Math.min((current / TARGET) * 100, 100);
+
+  const pct = Math.min((current / target) * 100, 100);
 
   const max = Math.max(...data.map((d) => d.count));
   const currentYear = new Date().getFullYear();
-const yearOptions = [currentYear - 1, currentYear - 2];
-
+  const yearOptions = [currentYear - 1, currentYear - 2];
 
   return (
     <div className="bg-[#0f172a]  border border-[#1e293b] rounded-xl p-4 flex flex-col">
-      
       {/* Header */}
       <div className="flex justify-between items-center mb-4">
         <div>
@@ -1007,21 +1008,22 @@ const yearOptions = [currentYear - 1, currentYear - 2];
           <option value="2024">2024</option>
         </select> */}
         <select
-  value={year}
-  onChange={(e) => setYear(e.target.value)}
-  className="bg-[#1e293b] text-gray-200 cursor-pointer text-xs rounded px-2 py-1 border border-[#334155]"
->
-  <option value="default">{currentYear}</option>
-  {yearOptions.map((y) => (
-    <option key={y} value={y}>{y}</option>
-  ))}
-</select>
+          value={year}
+          onChange={(e) => setYear(e.target.value)}
+          className="bg-[#1e293b] text-gray-200 cursor-pointer text-xs rounded px-2 py-1 border border-[#334155]"
+        >
+          <option value="default">{currentYear}</option>
+          {yearOptions.map((y) => (
+            <option key={y} value={y}>
+              {y}
+            </option>
+          ))}
+        </select>
       </div>
 
       {/* ✅ Gauge (Conic Gradient) */}
       <div className="flex justify-center">
         <div className="relative w-[180px] h-[100px] overflow-hidden">
-          
           {/* Circle */}
           <div
             className="absolute w-[180px] h-[180px] rounded-full"
@@ -1047,9 +1049,7 @@ const yearOptions = [currentYear - 1, currentYear - 2];
             <span
               className="mt-1 text-[10px] font-semibold px-2 py-0.5 rounded-full"
               style={{
-                backgroundColor: isPositive
-                  ? "#10b98122"
-                  : "#ef444422",
+                backgroundColor: isPositive ? "#10b98122" : "#ef444422",
                 color: isPositive ? "#10b981" : "#ef4444",
               }}
             >
@@ -1062,9 +1062,7 @@ const yearOptions = [currentYear - 1, currentYear - 2];
 
       {/* Footer */}
       <p className="text-[10px] text-gray-500 text-center mt-2 leading-relaxed">
-        <span className="text-gray-300 font-semibold">
-          {current} posts
-        </span>{" "}
+        <span className="text-gray-300 font-semibold">{current} posts</span>{" "}
         this month
         {isPositive
           ? ", higher than last month. Keep it up!"
@@ -1072,7 +1070,9 @@ const yearOptions = [currentYear - 1, currentYear - 2];
       </p>
 
       {/* Sparkline */}
-      <div className={`flex items-end justify-between gap-2 mt-4 pt-3 border-t border-[#1e293b] ${year!='default'?'h-16':'h-20'}`}>
+      <div
+        className={`flex items-end justify-between gap-2 mt-4 pt-3 border-t border-[#1e293b] ${year != "default" ? "h-16" : "h-20"}`}
+      >
         {data.map((d, i) => (
           <div
             key={i}
@@ -1086,11 +1086,9 @@ const yearOptions = [currentYear - 1, currentYear - 2];
               className="w-2 rounded-full"
               style={{
                 height: `${Math.max((d.count / max) * 40, 10)}px`,
-                backgroundColor:
-                  i === data.length - 1 ? "#6366f1" : "#1e293b",
+                backgroundColor: i === data.length - 1 ? "#6366f1" : "#1e293b",
                 border: "1px solid",
-                borderColor:
-                  i === data.length - 1 ? "#6366f1" : "#334155",
+                borderColor: i === data.length - 1 ? "#6366f1" : "#334155",
               }}
             />
 
@@ -1114,17 +1112,17 @@ const KPICard = ({
   change,
   changePositive = true,
 }) => (
-  <div className="bg-gray-800/70 border border-[#1e293b] rounded-xl p-3 md:p-5  md:flex items-center justify-between gap-3 hover:border-white/10 transition-colors">
+  <div className="bg-gray-800/70 border border-[#1e293b] rounded-xl p-3 md:p-5  flex items-center justify-between gap-3 hover:border-white/10 transition-colors">
     {/* Top — icon + name */}
     <div className="flex items-center gap-2.5">
       <div
-        className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+        className="md:w-10 md:h-10 w-10 h-10 rounded-lg md:rounded-xl flex items-center justify-center shrink-0"
         style={{ backgroundColor: accent }}
       >
         <Icon className="text-white text-xs" />
       </div>
       <div>
-        <p className="text-sm font-bold text-gray-100">{label}</p>
+        <p className="md:text-sm text-xs font-semibold md:font-bold text-gray-100">{label}</p>
         <p className="text-[10px] text-gray-500">{sub || label}</p>
       </div>
     </div>
@@ -1149,35 +1147,35 @@ const KPICard = ({
 );
 
 // ── Sidebar nav item ───────────────────────────────────────────────────────────
-const NavItem = ({ icon: Icon, label, active,showSideBar, onClick }) => (
+const NavItem = ({ icon: Icon, label, active, showSideBar, onClick }) => (
   <button
     onClick={onClick}
-    className={`${showSideBar? 'w-full':'w-fit'} flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all ${
+    className={`${showSideBar ? "w-full" : "w-fit"} flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all ${
       active
         ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/20"
         : "text-gray-500 hover:text-gray-300 hover:bg-white/5"
     }`}
   >
     <Icon size={17} />
-{ showSideBar &&   <span >{label}</span>}
+    {showSideBar && <span>{label}</span>}
   </button>
 );
 
 // ── Main Dashboard ─────────────────────────────────────────────────────────────
 export default function Controls() {
-
   const [activeSection, setActiveSection] = useState("overview");
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("All Roles");
   const [showSideBar, setShowSidebar] = useState(true);
-  const email = localStorage.getItem("email")
-  const {statsSummary, statsLoader} = useStatsSummary(email);
+  const email = localStorage.getItem("email");
+  const { statsSummary, statsLoader } = useStatsSummary(email);
   const [year, setYear] = useState();
+  const [target, setTarget] = useState(50);
 
-
- const {communities, loading:postCategoryLoading} = useGetCommunityAnalytics();
- const {postsByMonth,loading:postsByMonthLoading} = usePostsByMonthAnalaysis(email,year);
-
+  const { communities, loading: postCategoryLoading } =
+    useGetCommunityAnalytics();
+  const { postsByMonth, loading: postsByMonthLoading } =
+    usePostsByMonthAnalaysis(email, year);
 
   // Refs for scroll-to
   // const overviewRef = useRef(null);
@@ -1189,9 +1187,9 @@ export default function Controls() {
   //   ref.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   // };
 
-//  console.log("statsSummary",statsSummary)
-//  console.log("communities",communities)
-//  console.log("postsByMonth",postsByMonth)
+  //  console.log("statsSummary",statsSummary)
+  //  console.log("communities",communities)
+  //  console.log("postsByMonth",postsByMonth)
 
   return (
     <div className="min-h-screen h-auto  relative bg-gray-900 text-white flex flex-col">
@@ -1200,16 +1198,19 @@ export default function Controls() {
       <div className="flex h-screen bg-gray-900 text-white overflow-hidden">
         {/* ── SIDEBAR ──────────────────────────────────────────────────────────── */}
         <aside
-      
-         className={`${!showSideBar ?'w-20 py-5':'md:w-80 shrink-0 bg-gray-900  flex flex-col py-5 px-3 gap-1' } transition-all duration-300  hidden`}>
+          className={`${!showSideBar ? "w-20 py-5" : "md:w-80 shrink-0 bg-gray-900  flex flex-col py-5 px-3 gap-1"} transition-all duration-300  hidden`}
+        >
           {/* Logo */}
           <div
-            onClick={()=>{setShowSidebar((prev)=>!prev)}}
-           className="flex items-center gap-2.5 px-3 mb-6">
+            onClick={() => {
+              setShowSidebar((prev) => !prev);
+            }}
+            className="flex items-center gap-2.5 px-3 mb-6"
+          >
             <div className="w-7 h-7 rounded-lg bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center">
               <ShieldCheck size={17} className="text-emerald-400" />
             </div>
-            <div className={`${!showSideBar ? 'hidden':'block'}`}>
+            <div className={`${!showSideBar ? "hidden" : "block"}`}>
               <p className="text-xs font-bold text-gray-100">Admin Panel</p>
               <p className="text-[10px] text-gray-500">Tech Community</p>
             </div>
@@ -1217,27 +1218,31 @@ export default function Controls() {
 
           {/* Nav */}
           <div className="flex flex-col px-3  gap-0.5">
-            <p className={`${!showSideBar ? 'hidden':'block'} text-[9px] text-gray-600 font-semibold uppercase tracking-widest px-3 mb-1`}>
+            <p
+              className={`${!showSideBar ? "hidden" : "block"} text-[9px] text-gray-600 font-semibold uppercase tracking-widest px-3 mb-1`}
+            >
               Overview
             </p>
             <NavItem
               icon={LayoutDashboard}
               label="Dashboard"
-              showSideBar ={showSideBar}
+              showSideBar={showSideBar}
               active={activeSection === "overview"}
               // onClick={() => scrollTo(overviewRef, "overview")}
             />
             <NavItem
               icon={BarChart2}
               label="Analytics"
-              showSideBar ={showSideBar}
+              showSideBar={showSideBar}
               active={activeSection === "analytics"}
               // onClick={() => scrollTo(analyticsRef, "analytics")}
             />
           </div>
 
           <div className="flex flex-col px-3 py-5 gap-0.5 mt-4">
-            <p className={`text-[9px] text-gray-600 font-semibold uppercase tracking-widest px-3 mb-1 ${!showSideBar ? 'hidden':'block'}`}>
+            <p
+              className={`text-[9px] text-gray-600 font-semibold uppercase tracking-widest px-3 mb-1 ${!showSideBar ? "hidden" : "block"}`}
+            >
               Controls
             </p>
             <NavItem
@@ -1271,93 +1276,124 @@ export default function Controls() {
           {/* ── ZONE 2: KPI Cards ──────────────────────────────────────── */}
           <section className="space-y-3">
             {/* Row 1 — Users */}
-           {!statsLoader? <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-              <KPICard
-                label="Total Users"
-                value={statsSummary.totalUsers}
-                sub="All members"
-                icon={Users}
-                change="8.2%"
-                changePositive={true}
-              />
-               <KPICard
-                label="Admins"
-                value={statsSummary.admins}
-                sub="Admins"
-                icon={ShieldCheck}
-                accent="#ec4899"
-              />
-              
-              <KPICard
-                label="Coordinators"
-                value={statsSummary.coordinators}
-                sub="Coordinators"
-                icon={UserCog}
-                accent="#f59e0b"
-                change="2.3%"
-                changePositive={true}
-              />
+            {!statsLoader ? (
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+                <KPICard
+                  label="Total Users"
+                  value={statsSummary.totalUsers}
+                  sub="All members"
+                  icon={Users}
+                  change="8.2%"
+                  changePositive={true}
+                />
+                <KPICard
+                  label="Admins"
+                  value={statsSummary.admins}
+                  sub="Admins"
+                  icon={ShieldCheck}
+                  accent="#ec4899"
+                />
 
-              <KPICard
-                label="Students"
-                value={statsSummary.students}
-                sub="Students"
-                icon={GraduationCap}
-                accent="#3b82f6"
-                change="5.1%"
-                changePositive={true}
-              />
-             
-              <KPICard
-                label="New This Month"
-                value={`+${statsSummary.newThisMonth}`}
-                sub="New this month"
-                icon={TrendingUp}
-                change="11%"
-                changePositive={true}
-              />
-            </div>: 
-            <KPISkeleton />
-            }
-         
+                <KPICard
+                  label="Coordinators"
+                  value={statsSummary.coordinators}
+                  sub="Coordinators"
+                  icon={UserCog}
+                  accent="#f59e0b"
+                  change="2.3%"
+                  changePositive={true}
+                />
+
+                <KPICard
+                  label="Students"
+                  value={statsSummary.students}
+                  sub="Students"
+                  icon={GraduationCap}
+                  accent="#3b82f6"
+                  change="5.1%"
+                  changePositive={true}
+                />
+
+                <KPICard
+                  label="New This Month"
+                  value={`+${statsSummary.newThisMonth}`}
+                  sub="New this month"
+                  icon={TrendingUp}
+                  change="11%"
+                  changePositive={true}
+                />
+              </div>
+            ) : (
+              <KPISkeleton />
+            )}
           </section>
 
           {/* ── ZONE 3: Analytics ──────────────────────────────────────── */}
-          <section 
-          // ref={analyticsRef}
-           className="space-y-4">
+          <section
+            // ref={analyticsRef}
+            className="space-y-4"
+          >
             <h2 className="md:text-2xl text-xl font-semibold text-emerald-400 ">
               Analytics
             </h2>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              {/* Posts by Category */}
-              {!postCategoryLoading ? 
-              <div className="bg-[#0f172a]  flex flex-col justify-between items-start  border border-[#1e293b] rounded-xl p-4">
-                <div>
-                  <p className="text-sm md:text-base font-semibold text-gray-200 ">
-                    Posts by Category
-                  </p>
-                  <p className="text-[9px] md:text-[10px] text-gray-400 mb-4">
-                    Total posts in each domain
-                  </p>
-                </div>
-                <div className="flex flex-col w-full overflow-x-auto scrollbar-hide ">
-                  <MiniBar
-                    data={communities}
-                    // valueKey="postscount"
-                    labelKey="categoryname"
-                    color="#1121ff"
-                  />
-                </div>
-              </div> 
-              :
-                <PostCategorySkeleton/>
-              }
-               {!postsByMonthLoading ?<PostsGaugeCard data={postsByMonth} year={year} setYear={setYear} /> : <PostsGaugeCardSkeleton />}
+              <div className="md:hidden">
+                   {!postsByMonthLoading ? (
+                <PostsGaugeCard
+                  data={postsByMonth}
+                  year={year}
+                  setYear={setYear}
+                  target={target}
+                  setTarget={setTarget}
+                />
+              ) : (
+                <PostsGaugeCardSkeleton />
+              )} 
 
+              </div>
+            
+
+              {/* Posts by Category */}
+              {!postCategoryLoading ? (
+                <div className="bg-[#0f172a]  flex flex-col justify-between items-start  border border-[#1e293b] rounded-xl p-4">
+                  <div>
+                    <p className="text-sm md:text-base font-semibold text-gray-200 ">
+                      Posts by Category
+                    </p>
+                    <p className="text-[9px] md:text-[10px] text-gray-400 mb-4">
+                      Total posts in each domain
+                    </p>
+                  </div>
+                  <div className="flex flex-col w-full overflow-x-auto scrollbar-hide ">
+                    <MiniBar
+                      data={communities}
+                      // valueKey="postscount"
+                      labelKey="categoryname"
+                      color="#1121ff"
+                    />
+                  </div>
+                </div>
+              ) : (
+                <PostCategorySkeleton />
+              )}
+               <div className="hidden md:block">
+                   {!postsByMonthLoading ? (
+                <PostsGaugeCard
+                  data={postsByMonth}
+                  year={year}
+                  setYear={setYear}
+                  target={target}
+                  setTarget={setTarget}
+                />
+              ) : (
+                <PostsGaugeCardSkeleton />
+              )} 
+
+              </div>
+             
               {/* Community Membership */}
-              <div className="bg-[#0f172a] flex flex-col justify-between items-start  border border-[#1e293b] rounded-xl p-4">
+           {!postCategoryLoading ?  <div className="bg-[#0f172a] flex flex-col justify-between items-start  border border-[#1e293b] rounded-xl p-4">
                 <div>
                   <p className="text-sm md:text-base font-semibold text-gray-200">
                     Community Membership
@@ -1378,15 +1414,9 @@ export default function Controls() {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="flex flex-col w-full h-52 emerald-scrollbar pr-4 overflow-y-auto gap-2">
-                  {MOCK_CATEGORIES.map((c) => {
-                    const maxVal =
-                      Math.max(
-                        ...MOCK_CATEGORIES.map(
-                          (x) => x.authorcount + x.followerscount,
-                        ),
-                      ) || 1;
+                  {communities.map((c) => {
                     const total = c.authorcount + c.followerscount;
                     return (
                       <div
@@ -1396,29 +1426,98 @@ export default function Controls() {
                         <span className="text-xs text-gray-400 font-semibold w-32 truncate">
                           {c.categoryname}
                         </span>
+
                         <div className="flex-1 h-4 bg-[#1e293b] rounded-full overflow-hidden flex">
+                          {/* Coordinators */}
                           <div
-                            className="h-full bg-emerald-500/70 rounded-l-full transition-all"
+                            className="h-full cursor-pointer bg-emerald-500/70 rounded-l-full flex items-center justify-center transition-all duration-300 group relative"
                             style={{
                               width: `${(c.authorcount / (total || 1)) * 100}%`,
                             }}
-                          />
+                          >
+                            <span className="opacity-0 group-hover:opacity-100 transition-all duration-200 text-[9px] text-gray-200 md:font-bold  whitespace-nowrap">
+                              {((c.authorcount / (total || 1)) * 100).toFixed(
+                                0,
+                              )}
+                              % · {c.authorcount}
+                            </span>
+                          </div>
+
+                          {/* Students */}
                           <div
-                            className="h-full bg-blue-500/50 transition-all"
+                            className="h-full cursor-pointer bg-blue-500/50 flex items-center justify-center transition-all duration-300 group relative"
                             style={{
                               width: `${(c.followerscount / (total || 1)) * 100}%`,
                             }}
-                          />
+                          >
+                            <span className="opacity-0 group-hover:opacity-100 transition-all duration-200 text-[9px] text-gray-200 md:font-bold  whitespace-nowrap">
+                              {(
+                                (c.followerscount / (total || 1)) *
+                                100
+                              ).toFixed(0)}
+                              % · {c.followerscount}
+                            </span>
+                          </div>
                         </div>
-                        <span className="text-xs text-gray-300 font-semibold w-24 text-right flex-end items-center justify-between">
-                          {" "}
-                          <span className="">{total}</span>
+
+                        <span className="text-xs text-gray-300 font-semibold w-6 text-right">
+                          {total}
+                        </span>
+                      </div>
+                    );
+                  })}
+                  {communities.map((c) => {
+                    const total = c.authorcount + c.followerscount;
+                    return (
+                      <div
+                        key={c.categoryname}
+                        className="flex items-center gap-2"
+                      >
+                        <span className="text-xs text-gray-400 font-semibold w-32 truncate">
+                          {c.categoryname}
+                        </span>
+
+                        <div className="flex-1 h-4 bg-[#1e293b] rounded-full overflow-hidden flex">
+                          {/* Coordinators */}
+                          <div
+                            className="h-full cursor-pointer bg-emerald-500/70 rounded-l-full flex items-center justify-center transition-all duration-300 group relative"
+                            style={{
+                              width: `${(c.authorcount / (total || 1)) * 100}%`,
+                            }}
+                          >
+                            <span className="opacity-0 group-hover:opacity-100 transition-all duration-200 text-[9px] text-gray-200 md:font-bold  whitespace-nowrap">
+                              {((c.authorcount / (total || 1)) * 100).toFixed(
+                                0,
+                              )}
+                              % · {c.authorcount}
+                            </span>
+                          </div>
+
+                          {/* Students */}
+                          <div
+                            className="h-full cursor-pointer bg-blue-500/50 flex items-center justify-center transition-all duration-300 group relative"
+                            style={{
+                              width: `${(c.followerscount / (total || 1)) * 100}%`,
+                            }}
+                          >
+                            <span className="opacity-0 group-hover:opacity-100 transition-all duration-200 text-[9px] text-gray-200 md:font-bold  whitespace-nowrap">
+                              {(
+                                (c.followerscount / (total || 1)) *
+                                100
+                              ).toFixed(0)}
+                              % · {c.followerscount}
+                            </span>
+                          </div>
+                        </div>
+
+                        <span className="text-xs text-gray-300 font-semibold w-6 text-right">
+                          {total}
                         </span>
                       </div>
                     );
                   })}
                 </div>
-              </div>
+              </div>: <CommunityMembershipSkeleton />}
 
               {/* User Growth */}
               {/* <div className="bg-[#0f172a] border border-[#1e293b] rounded-xl p-4">
@@ -1452,7 +1551,6 @@ export default function Controls() {
                   ))}
                 </div>
               </div> */}
-             
 
               {/* Top Contributors */}
               <div className="bg-[#0f172a] border border-[#1e293b] rounded-xl p-4">
@@ -1501,11 +1599,8 @@ export default function Controls() {
               Users
             </h2>
             <div className="md:flex overflow-x-scroll md:overflow-hidden gap-4 items-start">
-               <AuthorsTable />
-               <StudentsTable />
-             
-            
-              
+              <AuthorsTable />
+              <StudentsTable />
             </div>
           </section>
 

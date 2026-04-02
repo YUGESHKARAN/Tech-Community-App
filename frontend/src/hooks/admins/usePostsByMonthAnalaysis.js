@@ -5,7 +5,7 @@ const usePostsByMonthAnalaysis = (email, year) => {
   const [loading, setLoading] = useState(true);
  
   const getPostsByMonth = async() => {
-    console.log("Fetching posts by month for:", { email, year });   
+    // console.log("Fetching posts by month for:", { email, year });   
     try {
       setLoading(true);
       const response = await axiosInstance.get(
