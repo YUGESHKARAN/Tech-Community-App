@@ -1072,7 +1072,7 @@ const yearOptions = [currentYear - 1, currentYear - 2];
       </p>
 
       {/* Sparkline */}
-      <div className="flex items-end justify-between gap-2 mt-4 pt-3 border-t border-[#1e293b] h-16">
+      <div className={`flex items-end justify-between gap-2 mt-4 pt-3 border-t border-[#1e293b] ${year!='default'?'h-16':'h-20'}`}>
         {data.map((d, i) => (
           <div
             key={i}
