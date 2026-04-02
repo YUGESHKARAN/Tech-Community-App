@@ -708,7 +708,7 @@ import PostCategorySkeleton from "../components/loaders/dashboard/PostCategorySk
 import usePostsByMonthAnalaysis from "../hooks/admins/usePostsByMonthAnalaysis";
 import PostsGaugeCardSkeleton from "../components/loaders/dashboard/PostsGaugeCardSkeleton";
 import CommunityMembershipSkeleton from "../components/loaders/dashboard/CommunityMembershipSkeleton";
-
+import Footer from "../ui/Footer";
 // ── Mock data ──────────────────────────────────────────────────────────────────
 // const MOCK_STATS = {
 //   totalUsers: 124,
@@ -982,7 +982,6 @@ const PostsGaugeCard = ({ data, year, setYear, target, setTarget }) => {
 
   const isPositive = change >= 0;
 
-
   const pct = Math.min((current / target) * 100, 100);
 
   const max = Math.max(...data.map((d) => d.count));
@@ -1071,7 +1070,7 @@ const PostsGaugeCard = ({ data, year, setYear, target, setTarget }) => {
 
       {/* Sparkline */}
       <div
-        className={`flex items-end justify-between gap-2 mt-4 pt-3 border-t border-[#1e293b] ${year != "default" ? "h-16" : "h-20"}`}
+        className={`flex items-end justify-between gap-2 mt-4 pt-3 border-t border-[#1e293b] ${year!=="" && year != "default" ? "h-16" : "h-20"}`}
       >
         {data.map((d, i) => (
           <div
@@ -1122,7 +1121,9 @@ const KPICard = ({
         <Icon className="text-white text-xs" />
       </div>
       <div>
-        <p className="md:text-sm text-xs font-semibold md:font-bold text-gray-100">{label}</p>
+        <p className="md:text-sm text-xs font-semibold md:font-bold text-gray-100">
+          {label}
+        </p>
         <p className="text-[10px] text-gray-500">{sub || label}</p>
       </div>
     </div>
@@ -1169,7 +1170,7 @@ export default function Controls() {
   const [showSideBar, setShowSidebar] = useState(true);
   const email = localStorage.getItem("email");
   const { statsSummary, statsLoader } = useStatsSummary(email);
-  const [year, setYear] = useState();
+  const [year, setYear] = useState("");
   const [target, setTarget] = useState(50);
 
   const { communities, loading: postCategoryLoading } =
@@ -1195,7 +1196,7 @@ export default function Controls() {
     <div className="min-h-screen h-auto  relative bg-gray-900 text-white flex flex-col">
       <NavBar />
 
-      <div className="flex h-screen bg-gray-900 text-white overflow-hidden">
+      <div className="md:flex h-full md:h-screen bg-gray-900 text-white overflow-hidden">
         {/* ── SIDEBAR ──────────────────────────────────────────────────────────── */}
         <aside
           className={`${!showSideBar ? "w-20 py-5" : "md:w-80 shrink-0 bg-gray-900  flex flex-col py-5 px-3 gap-1"} transition-all duration-300  hidden`}
@@ -1272,7 +1273,7 @@ export default function Controls() {
         </aside>
 
         {/* ── MAIN ─────────────────────────────────────────────────────────────── */}
-        <main className="flex-1 overflow-y-auto px-3 md:px-6 py-6 space-y-10 scrollbar-hide">
+        <main className="flex-1 md:overflow-y-auto px-3 md:px-6 py-6 space-y-10 scrollbar-hide">
           {/* ── ZONE 2: KPI Cards ──────────────────────────────────────── */}
           <section className="space-y-3">
             {/* Row 1 — Users */}
@@ -1339,20 +1340,18 @@ export default function Controls() {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               <div className="md:hidden">
-                   {!postsByMonthLoading ? (
-                <PostsGaugeCard
-                  data={postsByMonth}
-                  year={year}
-                  setYear={setYear}
-                  target={target}
-                  setTarget={setTarget}
-                />
-              ) : (
-                <PostsGaugeCardSkeleton />
-              )} 
-
+                {!postsByMonthLoading ? (
+                  <PostsGaugeCard
+                    data={postsByMonth}
+                    year={year}
+                    setYear={setYear}
+                    target={target}
+                    setTarget={setTarget}
+                  />
+                ) : (
+                  <PostsGaugeCardSkeleton />
+                )}
               </div>
-            
 
               {/* Posts by Category */}
               {!postCategoryLoading ? (
@@ -1377,147 +1376,150 @@ export default function Controls() {
               ) : (
                 <PostCategorySkeleton />
               )}
-               <div className="hidden md:block">
-                   {!postsByMonthLoading ? (
-                <PostsGaugeCard
-                  data={postsByMonth}
-                  year={year}
-                  setYear={setYear}
-                  target={target}
-                  setTarget={setTarget}
-                />
-              ) : (
-                <PostsGaugeCardSkeleton />
-              )} 
-
+              <div className="hidden md:block">
+                {!postsByMonthLoading ? (
+                  <PostsGaugeCard
+                    data={postsByMonth}
+                    year={year}
+                    setYear={setYear}
+                    target={target}
+                    setTarget={setTarget}
+                  />
+                ) : (
+                  <PostsGaugeCardSkeleton />
+                )}
               </div>
-             
+
               {/* Community Membership */}
-           {!postCategoryLoading ?  <div className="bg-[#0f172a] flex flex-col justify-between items-start  border border-[#1e293b] rounded-xl p-4">
-                <div>
-                  <p className="text-sm md:text-base font-semibold text-gray-200">
-                    Community Membership
-                  </p>
-                  {/* <p className="text-[10px] text-gray-400 mb-">Coordinators vs Students per domain</p> */}
-                  <div className="flex text-[10px] text-gray-400 gap-4 mt-1 mb-4">
-                    <div className="flex items-center gap-1.5">
-                      <div className="w-2 h-2 rounded-full bg-emerald-500" />
-                      <span className="text-[10px] text-gray-400 font-semibold">
-                        Coordinators
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <div className="w-2 h-2 rounded-full bg-blue-500" />
-                      <span className="text-[10px] text-gray-400 font-semibold">
-                        Students
-                      </span>
+              {!postCategoryLoading ? (
+                <div className="bg-[#0f172a] flex flex-col justify-between items-start  border border-[#1e293b] rounded-xl p-4">
+                  <div>
+                    <p className="text-sm md:text-base font-semibold text-gray-200">
+                      Community Membership
+                    </p>
+                    {/* <p className="text-[10px] text-gray-400 mb-">Coordinators vs Students per domain</p> */}
+                    <div className="flex text-[10px] text-gray-400 gap-4 mt-1 mb-4">
+                      <div className="flex items-center gap-1.5">
+                        <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                        <span className="text-[10px] text-gray-400 font-semibold">
+                          Coordinators
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <div className="w-2 h-2 rounded-full bg-blue-500" />
+                        <span className="text-[10px] text-gray-400 font-semibold">
+                          Students
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div className="flex flex-col w-full h-52 emerald-scrollbar pr-4 overflow-y-auto gap-2">
-                  {communities.map((c) => {
-                    const total = c.authorcount + c.followerscount;
-                    return (
-                      <div
-                        key={c.categoryname}
-                        className="flex items-center gap-2"
-                      >
-                        <span className="text-xs text-gray-400 font-semibold w-32 truncate">
-                          {c.categoryname}
-                        </span>
+                  <div className="flex flex-col w-full h-52 emerald-scrollbar pr-4 overflow-y-auto gap-2">
+                    {communities.map((c) => {
+                      const total = c.authorcount + c.followerscount;
+                      return (
+                        <div
+                          key={c.categoryname}
+                          className="flex items-center gap-2"
+                        >
+                          <span className="text-xs text-gray-400 font-semibold w-32 truncate">
+                            {c.categoryname}
+                          </span>
 
-                        <div className="flex-1 h-4 bg-[#1e293b] rounded-full overflow-hidden flex">
-                          {/* Coordinators */}
-                          <div
-                            className="h-full cursor-pointer bg-emerald-500/70 rounded-l-full flex items-center justify-center transition-all duration-300 group relative"
-                            style={{
-                              width: `${(c.authorcount / (total || 1)) * 100}%`,
-                            }}
-                          >
-                            <span className="opacity-0 group-hover:opacity-100 transition-all duration-200 text-[9px] text-gray-200 md:font-bold  whitespace-nowrap">
-                              {((c.authorcount / (total || 1)) * 100).toFixed(
-                                0,
-                              )}
-                              % · {c.authorcount}
-                            </span>
+                          <div className="flex-1 h-4 bg-[#1e293b] rounded-full overflow-hidden flex">
+                            {/* Coordinators */}
+                            <div
+                              className="h-full cursor-pointer bg-emerald-500/70 rounded-l-full flex items-center justify-center transition-all duration-300 group relative"
+                              style={{
+                                width: `${(c.authorcount / (total || 1)) * 100}%`,
+                              }}
+                            >
+                              <span className="opacity-0 group-hover:opacity-100 transition-all duration-200 text-[9px] text-gray-200 md:font-bold  whitespace-nowrap">
+                                {((c.authorcount / (total || 1)) * 100).toFixed(
+                                  0,
+                                )}
+                                % · {c.authorcount}
+                              </span>
+                            </div>
+
+                            {/* Students */}
+                            <div
+                              className="h-full cursor-pointer bg-blue-500/50 flex items-center justify-center transition-all duration-300 group relative"
+                              style={{
+                                width: `${(c.followerscount / (total || 1)) * 100}%`,
+                              }}
+                            >
+                              <span className="opacity-0 group-hover:opacity-100 transition-all duration-200 text-[9px] text-gray-200 md:font-bold  whitespace-nowrap">
+                                {(
+                                  (c.followerscount / (total || 1)) *
+                                  100
+                                ).toFixed(0)}
+                                % · {c.followerscount}
+                              </span>
+                            </div>
                           </div>
 
-                          {/* Students */}
-                          <div
-                            className="h-full cursor-pointer bg-blue-500/50 flex items-center justify-center transition-all duration-300 group relative"
-                            style={{
-                              width: `${(c.followerscount / (total || 1)) * 100}%`,
-                            }}
-                          >
-                            <span className="opacity-0 group-hover:opacity-100 transition-all duration-200 text-[9px] text-gray-200 md:font-bold  whitespace-nowrap">
-                              {(
-                                (c.followerscount / (total || 1)) *
-                                100
-                              ).toFixed(0)}
-                              % · {c.followerscount}
-                            </span>
-                          </div>
+                          <span className="text-xs text-gray-300 font-semibold w-6 text-right">
+                            {total}
+                          </span>
                         </div>
+                      );
+                    })}
+                    {communities.map((c) => {
+                      const total = c.authorcount + c.followerscount;
+                      return (
+                        <div
+                          key={c.categoryname}
+                          className="flex items-center gap-2"
+                        >
+                          <span className="text-xs text-gray-400 font-semibold w-32 truncate">
+                            {c.categoryname}
+                          </span>
 
-                        <span className="text-xs text-gray-300 font-semibold w-6 text-right">
-                          {total}
-                        </span>
-                      </div>
-                    );
-                  })}
-                  {communities.map((c) => {
-                    const total = c.authorcount + c.followerscount;
-                    return (
-                      <div
-                        key={c.categoryname}
-                        className="flex items-center gap-2"
-                      >
-                        <span className="text-xs text-gray-400 font-semibold w-32 truncate">
-                          {c.categoryname}
-                        </span>
+                          <div className="flex-1 h-4 bg-[#1e293b] rounded-full overflow-hidden flex">
+                            {/* Coordinators */}
+                            <div
+                              className="h-full cursor-pointer bg-emerald-500/70 rounded-l-full flex items-center justify-center transition-all duration-300 group relative"
+                              style={{
+                                width: `${(c.authorcount / (total || 1)) * 100}%`,
+                              }}
+                            >
+                              <span className="opacity-0 group-hover:opacity-100 transition-all duration-200 text-[9px] text-gray-200 md:font-bold  whitespace-nowrap">
+                                {((c.authorcount / (total || 1)) * 100).toFixed(
+                                  0,
+                                )}
+                                % · {c.authorcount}
+                              </span>
+                            </div>
 
-                        <div className="flex-1 h-4 bg-[#1e293b] rounded-full overflow-hidden flex">
-                          {/* Coordinators */}
-                          <div
-                            className="h-full cursor-pointer bg-emerald-500/70 rounded-l-full flex items-center justify-center transition-all duration-300 group relative"
-                            style={{
-                              width: `${(c.authorcount / (total || 1)) * 100}%`,
-                            }}
-                          >
-                            <span className="opacity-0 group-hover:opacity-100 transition-all duration-200 text-[9px] text-gray-200 md:font-bold  whitespace-nowrap">
-                              {((c.authorcount / (total || 1)) * 100).toFixed(
-                                0,
-                              )}
-                              % · {c.authorcount}
-                            </span>
+                            {/* Students */}
+                            <div
+                              className="h-full cursor-pointer bg-blue-500/50 flex items-center justify-center transition-all duration-300 group relative"
+                              style={{
+                                width: `${(c.followerscount / (total || 1)) * 100}%`,
+                              }}
+                            >
+                              <span className="opacity-0 group-hover:opacity-100 transition-all duration-200 text-[9px] text-gray-200 md:font-bold  whitespace-nowrap">
+                                {(
+                                  (c.followerscount / (total || 1)) *
+                                  100
+                                ).toFixed(0)}
+                                % · {c.followerscount}
+                              </span>
+                            </div>
                           </div>
 
-                          {/* Students */}
-                          <div
-                            className="h-full cursor-pointer bg-blue-500/50 flex items-center justify-center transition-all duration-300 group relative"
-                            style={{
-                              width: `${(c.followerscount / (total || 1)) * 100}%`,
-                            }}
-                          >
-                            <span className="opacity-0 group-hover:opacity-100 transition-all duration-200 text-[9px] text-gray-200 md:font-bold  whitespace-nowrap">
-                              {(
-                                (c.followerscount / (total || 1)) *
-                                100
-                              ).toFixed(0)}
-                              % · {c.followerscount}
-                            </span>
-                          </div>
+                          <span className="text-xs text-gray-300 font-semibold w-6 text-right">
+                            {total}
+                          </span>
                         </div>
-
-                        <span className="text-xs text-gray-300 font-semibold w-6 text-right">
-                          {total}
-                        </span>
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>: <CommunityMembershipSkeleton />}
+              ) : (
+                <CommunityMembershipSkeleton />
+              )}
 
               {/* User Growth */}
               {/* <div className="bg-[#0f172a] border border-[#1e293b] rounded-xl p-4">
@@ -1608,6 +1610,7 @@ export default function Controls() {
           <div className="h-10" />
         </main>
       </div>
+      <Footer />
     </div>
   );
 }

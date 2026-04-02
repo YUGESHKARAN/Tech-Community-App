@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import NavBar from "../ui/NavBar";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+
 import { useNavigate } from "react-router-dom";
 import Footer from "../ui/Footer";
 import Chatbot from "../images/chatbt.gif";
@@ -234,7 +233,7 @@ function AddPost() {
       setCategory("");
       setImage(null);
       setLinks([]);
-      toast.success("Post added successfully");
+     
       // navigate("/home");
       navigate("/yourposts");
     } catch (error) {
@@ -730,7 +729,7 @@ function AddPost() {
         </div>
       </div>
       <Footer />
-      <ToastContainer />
+     
     </div>
   );
 }
