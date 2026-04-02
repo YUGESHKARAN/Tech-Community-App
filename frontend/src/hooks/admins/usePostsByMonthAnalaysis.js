@@ -25,7 +25,7 @@ const usePostsByMonthAnalaysis = (email, year) => {
 
   useEffect(() => {
     getPostsByMonth();
-  }, [year]);
+  }, [email,year]);
 
   return { postsByMonth, loading, getPostsByMonth };
 };

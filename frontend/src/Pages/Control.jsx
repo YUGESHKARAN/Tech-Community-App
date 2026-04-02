@@ -709,6 +709,9 @@ import usePostsByMonthAnalaysis from "../hooks/admins/usePostsByMonthAnalaysis";
 import PostsGaugeCardSkeleton from "../components/loaders/dashboard/PostsGaugeCardSkeleton";
 import CommunityMembershipSkeleton from "../components/loaders/dashboard/CommunityMembershipSkeleton";
 import Footer from "../ui/Footer";
+import useTopContributors from "../hooks/admins/useTopContributors";
+import { Link } from "react-router-dom";
+import TopContributorsSkeleton from "../components/loaders/dashboard/TopContributorsSkeleton";
 // ── Mock data ──────────────────────────────────────────────────────────────────
 // const MOCK_STATS = {
 //   totalUsers: 124,
@@ -930,49 +933,7 @@ const MiniBar = ({ data, valueKey, labelKey, color = "#0004ff" }) => {
 };
 // ── Mini line chart ────────────────────────────────────────────────────────────
 
-// const MOCK_POSTS_OVER_TIME = [
-//   { month: "Jan", count: 18, year: 2024 },
-//   { month: "Feb", count: 34, year: 2024 },
-//   { month: "Mar", count: 27, year: 2024 },
-//   { month: "Apr", count: 45, year: 2024 },
-//   { month: "May", count: 38, year: 2024 },
-//   { month: "Jun", count: 10, year: 2024 },
-//   { month: "Jul", count: 18, year: 2024 },
-//   { month: "Aug", count: 34, year: 2024 },
-//   { month: "Sep", count: 27, year: 2024 },
-//   { month: "Oct", count: 45, year: 2024 },
-//   { month: "Nov", count: 38, year: 2024 },
-//   { month: "Dec", count: 35, year: 2024 },
-//   { month: "Jan", count: 18, year: 2025 },
-//   { month: "Feb", count: 34, year: 2025 },
-//   { month: "Mar", count: 27, year: 2025 },
-//   { month: "Apr", count: 45, year: 2025 },
-//   { month: "May", count: 38, year: 2025 },
-//   { month: "Jun", count: 10, year: 2025 },
-//   { month: "Jul", count: 18, year: 2025 },
-//   { month: "Aug", count: 34, year: 2025 },
-//   { month: "Sep", count: 27, year: 2025 },
-//   { month: "Oct", count: 45, year: 2025 },
-//   { month: "Nov", count: 38, year: 2025 },
-//   { month: "Dec", count: 35, year: 2025 },
-//   { month: "Jan", count: 18, year: 2026 },
-//   { month: "Feb", count: 34, year: 2026 },
-//   { month: "Mar", count: 27, year: 2026 },
-//   { month: "Apr", count: 45, year: 2026 },
-//   { month: "May", count: 38, year: 2026 },
-//   { month: "Jun", count: 10, year: 2026 },
-//   { month: "Jul", count: 18, year: 2026 },
-//   { month: "Aug", count: 34, year: 2026 },
-//   { month: "Sep", count: 27, year: 2026 },
-//   { month: "Oct", count: 45, year: 2026 },
-//   { month: "Nov", count: 38, year: 2026 },
-//   { month: "Dec", count: 35, year: 2026 },
-// ];
-
 const PostsGaugeCard = ({ data, year, setYear, target, setTarget }) => {
-  // const [selectedYear, setSelectedYear] = useState('default');
-
-  // const data = year === 'default' ? data : data.filter(d => d.year == year);
 
   const current = data[data.length - 1]?.count ?? 0;
   const previous = data[data.length - 2]?.count ?? 0;
@@ -1178,25 +1139,20 @@ export default function Controls() {
   const { postsByMonth, loading: postsByMonthLoading } =
     usePostsByMonthAnalaysis(email, year);
 
-  // Refs for scroll-to
-  // const overviewRef = useRef(null);
-  // const analyticsRef = useRef(null);
-  // const controlRef = useRef(null);
+  const [limit, setLimit] = useState(10);
 
-  // const scrollTo = (ref, section) => {
-  //   setActiveSection(section);
-  //   ref.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-  // };
+  const{topContributors, contributorsLoading} = useTopContributors(email, limit);
 
   //  console.log("statsSummary",statsSummary)
   //  console.log("communities",communities)
   //  console.log("postsByMonth",postsByMonth)
+  console.log("topContributors", topContributors);
 
   return (
     <div className="min-h-screen h-auto  relative bg-gray-900 text-white flex flex-col">
       <NavBar />
 
-      <div className="md:flex h-full md:h-screen bg-gray-900 text-white overflow-hidden">
+      <div className="md:flex h-full  bg-gray-900 text-white overflow-hidden">
         {/* ── SIDEBAR ──────────────────────────────────────────────────────────── */}
         <aside
           className={`${!showSideBar ? "w-20 py-5" : "md:w-80 shrink-0 bg-gray-900  flex flex-col py-5 px-3 gap-1"} transition-all duration-300  hidden`}
@@ -1273,7 +1229,7 @@ export default function Controls() {
         </aside>
 
         {/* ── MAIN ─────────────────────────────────────────────────────────────── */}
-        <main className="flex-1 md:overflow-y-auto px-3 md:px-6 py-6 space-y-10 scrollbar-hide">
+        <main className="flex-1  px-3 md:px-6 py-6 space-y-10 scrollbar-hide">
           {/* ── ZONE 2: KPI Cards ──────────────────────────────────────── */}
           <section className="space-y-3">
             {/* Row 1 — Users */}
@@ -1555,43 +1511,56 @@ export default function Controls() {
               </div> */}
 
               {/* Top Contributors */}
-              <div className="bg-[#0f172a] border border-[#1e293b] rounded-xl p-4">
+             {!contributorsLoading? 
+             <div className="bg-[#0f172a] border border-[#1e293b] rounded-xl p-4">
                 <p className="text-sm font-semibold text-gray-200 mb-1">
-                  Top Contributors
+                  Top 10 Contributors
                 </p>
-                <p className="text-[10px] text-gray-500 mb-3">
+                <p className="text-[10px] text-gray-400 mb-3">
                   Ranked by post count
                 </p>
-                <div className="flex overflow-y-auto scrollbar-hide h-48 flex-col gap-2">
-                  {MOCK_TOP.map((u, i) => (
-                    <div key={i} className="flex items-center gap-3">
+                <div className="flex overflow-y-auto scrollbar-hide h-52 flex-col gap-2">
+                  {topContributors.map((u, i) => (
+                    <Link
+                    to={`/viewProfile/${u.email}`}
+                     key={i} className="flex cursor-pointer md:p-2 md:hover:bg-gray-800/50 rounded-lg items-center gap-3">
                       <span
-                        className="text-[11px] font-bold w-4"
+                        className="md:text-[11px] text-[9px] bg-gray-800 rounded-full text-gray-300 px-2 py-1 md:px-3  md:py-1.5 md:font-bold font-semibold "
                         style={{
                           color:
                             i < 3
-                              ? ["#f59e0b", "#94a3b8", "#b45309"][i]
-                              : "#4b5563",
+                              && ["#3ecc28", "#d4a52f", "#e0853f"][i]
+                              // : "#8799b3",
                         }}
                       >
                         {i + 1}
                       </span>
-                      <div
-                        className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold text-white shrink-0"
-                        style={{ backgroundColor: avatarColor(u.authorname) }}
+                     {!u.profile ? <div
+                        className="md:w-8 md:h-8 w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold text-white shrink-0"
+                        style={{ backgroundColor: avatarColor(u.name) }}
                       >
-                        {initials(u.authorname)}
-                      </div>
-                      <span className="text-xs text-gray-300 flex-1 truncate">
-                        {u.authorname}
+                        {initials(u.name)}
+                      </div> : <img src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${u.profile}`}
+                        alt=""
+                        className="md:w-8 md:h-8 w-6 h-6 border border-green-500/70 rounded-full object-cover"
+                      />}
+
+                     
+                      <span className="md:text-xs text-[10px] flex-1 font-semibold text-gray-200 truncate">
+                        {u.name}
+                         <p className="md:text-[10px] hidden md:block text-[9px] text-gray-500 truncate">
+                          {u.email}
+                        </p>
                       </span>
                       <span className="text-[10px] text-emerald-400 font-medium">
                         {u.postsCount} posts
                       </span>
-                    </div>
+                    </Link>
                   ))}
                 </div>
               </div>
+              :
+              <TopContributorsSkeleton />}
             </div>
           </section>
 

@@ -272,8 +272,81 @@ const getMonthlyPostCounts = async (req, res) => {
   }
 };
 
+const getTopContributors = async (req, res) => {
+  const requestEmail = req.params.email;
+  const limitFromClient = Number(req.query.limit);
+  const limit = Number.isInteger(limitFromClient) && limitFromClient > 0 ? limitFromClient : 10;
+
+  if (!requestEmail) {
+    return res.status(400).json({ message: 'Email is required as path param.' });
+  }
+
+  try {
+    const admin = await Author.findOne({ email: requestEmail });
+    if (!admin) {
+      return res.status(404).json({ message: 'Author not found' });
+    }
+    if (admin.role !== 'admin') {
+      return res.status(403).json({ message: 'Access denied' });
+    }
+
+    const contributors = await Author.aggregate([
+      {
+        $match: {
+          role: { $in: ['admin', 'coordinator'] },
+        },
+      },
+      {
+        $addFields: {
+          postsCount: { $size: { $ifNull: ['$posts', []] } },
+          followerscount: { $size: { $ifNull: ['$followers', []] } },
+          followingcount: { $size: { $ifNull: ['$following', []] } },
+        },
+      },
+      {
+        $lookup: {
+          from: 'tutorplaylists',
+          let: { authorEmail: '$email' },
+          pipeline: [
+            { $match: { $expr: { $eq: ['$email', '$$authorEmail'] } } },
+            { $count: 'count' },
+          ],
+          as: 'playlistAgg',
+        },
+      },
+      {
+        $addFields: {
+          playlistCount: { $ifNull: [{ $arrayElemAt: ['$playlistAgg.count', 0] }, 0] },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          name: '$authorname',
+          email: 1,
+          profile: 1,
+          community: 1,
+          personalLinks: 1,
+          postsCount: 1,
+          playlistCount: 1,
+          followerscount: 1,
+          followingcount: 1,
+        },
+      },
+      { $sort: { postsCount: -1, followerscount: -1, followingcount: -1 } },
+      { $limit: limit },
+    ]);
+
+    res.status(200).json({ contributors });
+  } catch (err) {
+    console.error('getTopContributors error:', err.message);
+    res.status(500).json({ message: err.message });
+  }
+};
+
 module.exports = {
   getCategoryAnalytics,
   getAppSummary,
   getMonthlyPostCounts,
+  getTopContributors,
 };
