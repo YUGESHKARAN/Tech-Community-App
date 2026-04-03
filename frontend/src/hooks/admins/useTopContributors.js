@@ -3,11 +3,11 @@ import axiosInstance from "../../instances/Axiosinstances";
 
 const useTopContributors = (email, limit) => {
   const [topContributors, setTopContributors] = useState([]);
-  const [contributorsLoading, setContributorsLoading] = useState(true);
+  const [topContributorsLoading, setTopContributorsLoading] = useState(true);
 
   const getTopContributors = async () => {
     try {
-      setContributorsLoading(true);
+      setTopContributorsLoading(true);
       const response = await axiosInstance.get(`/blog/analytics/view/top-contributors/${email}?limit=${limit}`);
 
       if (response.status === 200) {
@@ -16,7 +16,7 @@ const useTopContributors = (email, limit) => {
     } catch (err) {
       console.log("error", err.message);
     } finally {
-      setContributorsLoading(false);
+      setTopContributorsLoading(false);
     }
   };
 
@@ -24,7 +24,7 @@ const useTopContributors = (email, limit) => {
     getTopContributors();
   }, [email, limit]);
 
-  return { topContributors, contributorsLoading, getTopContributors };
+  return { topContributors, topContributorsLoading, getTopContributors };
 };
 
 
