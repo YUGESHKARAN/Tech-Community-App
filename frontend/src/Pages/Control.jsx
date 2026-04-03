@@ -1724,13 +1724,13 @@ const AuthorsTable = ({contributors, totalContributors, contributorsLoading,  ha
                        <div className="flex items-center gap-3">
 
                         {!u.profile ? <div
-                        className="md:w-8 md:h-8 w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold text-white shrink-0"
+                        className="w-8 h-8 rounded-full flex items-center justify-center text-[9px] font-bold text-white shrink-0"
                         style={{ backgroundColor: avatarColor(u.name) }}
                       >
                         {initials(u.name)}
                       </div> : <img src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${u.profile}`}
                         alt=""
-                        className="md:w-8 md:h-8 w-6 h-6 border border-green-500/70 rounded-full object-cover"
+                        className="w-8 h-8 border border-green-500/70 rounded-full object-cover"
                       />}
                       <div className="min-w-0">
                         <p className="text-xs font-semibold text-gray-100 truncate">
