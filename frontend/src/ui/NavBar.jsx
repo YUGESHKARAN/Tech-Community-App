@@ -29,6 +29,7 @@ import { CiMenuKebab } from "react-icons/ci";
 import { BsFillMenuButtonWideFill, BsPersonWorkspace } from "react-icons/bs";
 import getTimeAgo from "../components/DateCovertion";
 import toast from "../components/toaster/Toast"
+import { MdDashboard } from "react-icons/md";
 
 
 function NavBar() {
@@ -187,15 +188,30 @@ function NavBar() {
       </div>
 
       {/* Desktop Menu */}
-      <ul className="lg:flex justify-center text-xs hidden font-semibold text-gray-300 w-3/5  items-center gap-10">
+      <ul className="xl:flex justify-center text-xs hidden font-semibold text-gray-300 w-3/5  items-center gap-10">
 
 
-       <NavIcon
+      {role === "admin" && 
+        <NavIcon
+              to="/dashboard"
+              icon={<MdDashboard />}
+              label=" Control Panel"
+              
+            />
+        }
+{     role!=='admin' &&  <NavIcon
               to="/home"
               icon={<IoHome />}
               label="Home"
               
-            />
+            />}
+
+            {     role=='admin' &&  <NavIcon
+              to="/home"
+              icon={<IoHome />}
+              label="Borowse"
+              
+            />}
 
               {role === "coordinator" && (
         <NavIcon
@@ -268,7 +284,7 @@ function NavBar() {
       </ul>
 
       {/* Mobile Hamburger Button */}
-      <p className="text-white flex justify-end w-full lg:hidden  font-semibold items-center gap-1 mr-3 text-sm">
+      <p className="text-white flex justify-end w-full xl:hidden  font-semibold items-center gap-1 mr-3 text-sm">
         <Link to="/profile" className="flex text-sm  items-center gap-1">
           {profile !== "undefined" ? (
             <img
@@ -283,7 +299,7 @@ function NavBar() {
       </p>
 
       <div className="transition-all flex items-center duration-200 hover:text-white">
-        <p className="text-white lg:flex justify-end w-full hidden font-semibold items-center gap-1 mr-3 text-sm">
+        <p className="text-white xl:flex justify-end w-full hidden font-semibold items-center gap-1 mr-3 text-sm">
           <Link to="/profile" className="flex  items-center gap-1">
             {profile !== "undefined" ? (
               <img
@@ -315,7 +331,7 @@ function NavBar() {
         </div>
       </div>
 
-      <button onClick={toggleSidebar} className="lg:hidden ml-2 text-white">
+      <button onClick={toggleSidebar} className="xl:hidden ml-2 text-white">
         {/* ☰ */}
         <RiMenuFoldFill className="text-xl" />
       </button>
@@ -357,12 +373,19 @@ function NavBar() {
 
         {/* ================= PRIMARY ICON NAV ================= */}
         <div className="flex justify-between px-6 py-3">
-          <NavIcon
+          {role!='admin'&&<NavIcon
             to="/home"
             icon={<IoHome />}
             label="Home"
             close={setIsSidebarOpen}
-          />
+          />}
+
+          {role=='admin'&&<NavIcon
+            to="/home"
+            icon={<IoHome />}
+            label="Browse"
+            close={setIsSidebarOpen}
+          />}
 
           {/* {role === "admin" && (
             <NavIcon
@@ -386,7 +409,7 @@ function NavBar() {
               close={setIsSidebarOpen}
             />
 
-             {role == 'student' && <NavIcon
+             {role != 'coordinator' && <NavIcon
             to="/profile"
             icon={<FaUserAlt />}
             label="Profile"
@@ -406,7 +429,13 @@ function NavBar() {
 
         {/* ================= SECONDARY TILES ================= */}
         <div className="grid grid-cols-2 gap-3 px-5 py-4 pb-6">
-            
+            {role=='admin' && <NavTile
+            to="/dashboard"
+            icon={<MdDashboard />}
+            title="Dashboard"
+            subtitle="Analytics"
+            close={setIsSidebarOpen}
+          />}
             {role === "admin" && (
             <NavTile
               to="/control"
@@ -435,13 +464,14 @@ function NavBar() {
           />
 
 
-         {role!='student' && <NavTile
+         {role=='coordinator' && <NavTile
             to="/profile"
             icon={<FaUserAlt />}
             title="Profile"
             subtitle="Account"
             close={setIsSidebarOpen}
           />}
+
 
           <NavTile
             to="/announcement"

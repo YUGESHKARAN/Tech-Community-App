@@ -16,7 +16,7 @@ import ChangePassword from "./auth/ChangePassword.jsx";
 import YourPost from "./Pages/YourPost.jsx";
 import { GlobalStateProvider } from "./GlobalStateContext.jsx";
 import Announcement from "./Pages/Announcement.jsx";
-import Control from "./Pages/Control.jsx";
+import Control from "./Pages/admin/Control.jsx";
 import TechCommunity from "./Pages/TechCommunity.jsx";
 import ViewSingleAuthor from "./Pages/ViewSingleAuthor.jsx";
 import SingleAuthorPosts from "./Pages/SingleAuthorPosts.jsx";
@@ -29,6 +29,7 @@ import Workspace from "./Pages/Workspace.jsx";
 import YourPlaylist from "./Pages/YourPlaylists.jsx";
 import EditTutorPlaylist from "./Pages/EditTutoPlaylist.jsx";
 import ScrollToTop from "./components/ScrollTop.jsx";
+import Dashboard from "./Pages/admin/Dashboard.jsx";
 function App() {
   return (
     <AuthProvider>
@@ -53,6 +54,7 @@ function App() {
               path="/addPost"
               element={<ProtectedRoute element={<AddPost />} />}
             />
+
             <Route
               path="/EditPost/:PostId"
               element={<ProtectedRoute element={<ViewEditPost />} />}
@@ -134,7 +136,12 @@ function App() {
 
             <Route
               path="/control"
-              element={<ProtectedRoute element={<Control />} />}
+              element={<ProtectedRoute element={<Control />} requiredRole="admin" />}
+            />
+
+            <Route
+              path="/dashboard"
+              element={<ProtectedRoute element={<Dashboard />} requiredRole="admin" />}
             />
 
             <Route

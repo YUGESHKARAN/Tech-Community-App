@@ -41,7 +41,7 @@ const ContributorsTableSkeleton = () => {
       {/* Scrollable Body */}
       <div
         className="overflow-y-auto scrollbar-hide"
-        style={{ height: "290px" }}
+        style={{ height: "305px" }}
       >
         <table className="w-full table-fixed">
           <tbody>

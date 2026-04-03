@@ -59,7 +59,12 @@ function LoginPage() {
         setLoader(true);
          // Delay navigation by 2 seconds
         setTimeout(() => {
-          navigate("/home"); // Redirect to the homepage
+         if(response.data.author.role==="admin"){
+           navigate("/dashboard"); // Redirect to the dashboard
+         }
+         else{
+           navigate("/home"); // Redirect to the homepage
+         }
         }, 2000);
       }
     } catch (error) {
