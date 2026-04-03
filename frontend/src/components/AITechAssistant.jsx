@@ -171,7 +171,7 @@ export default function AITechAssistant({ currentPostId, category, viewComments,
     if (!container || !userMessage) return;
 
     const start = container.scrollTop;
-    const end = userMessage.offsetTop - 10; // slight padding
+    const end = userMessage.offsetTop - 30; // slight padding
     const duration = 350;
 
     let startTime = null;
@@ -521,16 +521,16 @@ export default function AITechAssistant({ currentPostId, category, viewComments,
           ))}
 
           {loading && (
-            <div className="space-y-6 animate-pulse">
+            <div className="space-y-6 overflow-x-hidden relative animate-pulse">
               {/* Typing bubble */}
 
               {/* Skeleton text */}
               <div className="bg-[#0a0f1d] md:bg-gray-950/50 border border-neutral-800 p-4 rounded-2xl space-y-4">
                 {/* Title shimmer */}
-                <div className="h-4 w-2/3 rounded-full bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 animate-shimmer" />
+                <div className="h-4 w-2/3 rounded-full bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 " />
 
                 {/* Line 1 */}
-                <div className="h-3 w-full rounded-full bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 animate-shimmer" />
+                <div className="h-3 w-full rounded-full bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 " />
 
                 {/* Line 2 */}
                 {/* <div className="h-3 w-[95%] rounded-full bg-gradient-to-r from-neutral-800 via-neutral-700 to-neutral-800 animate-shimmer" /> */}
