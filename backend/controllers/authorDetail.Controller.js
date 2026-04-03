@@ -306,7 +306,6 @@ const getAuthorsByDomain = async (req, res) => {
   }
 };
 
-
 const updateAuthor = async (req, res) => {
   const { authorname, email, role, techcommunity, links } = req.body;
   const profile = req.file ? req.file.originalname : "";

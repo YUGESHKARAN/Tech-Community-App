@@ -511,7 +511,7 @@ const getPostsByAuthorsCategory = async (req, res) => {
     const category = decodeURIComponent(req.params.category);
     let { page = 1, limit = 10 } = req.query;
 
-    console.log("category", category,"page", page, )
+    // console.log("category", category,"page", page, )
 
     page = parseInt(page);
     limit = parseInt(limit);

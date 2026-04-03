@@ -712,6 +712,8 @@ import Footer from "../ui/Footer";
 import useTopContributors from "../hooks/admins/useTopContributors";
 import { Link } from "react-router-dom";
 import TopContributorsSkeleton from "../components/loaders/dashboard/TopContributorsSkeleton";
+import useGetContributors from "../hooks/admins/useGetContributors";
+import ContributorsTableSkeleton from "../components/loaders/dashboard/ContributorsTableSkeleton";
 // ── Mock data ──────────────────────────────────────────────────────────────────
 // const MOCK_STATS = {
 //   totalUsers: 124,
@@ -1141,12 +1143,14 @@ export default function Controls() {
 
   const [limit, setLimit] = useState(10);
 
-  const{topContributors, contributorsLoading} = useTopContributors(email, limit);
+  const{topContributors, topContributorsLoading} = useTopContributors(email, limit);
+  const { contributors, totalContributors, loading:contributorsLoading, error, hasMore }  = useGetContributors(email);
 
   //  console.log("statsSummary",statsSummary)
   //  console.log("communities",communities)
-  //  console.log("postsByMonth",postsByMonth)
-  console.log("topContributors", topContributors);
+  //  console.log("postsByMonth",postsByMonth);
+  // console.log("topContributors", topContributors);
+  console.log("contributors", contributors);
 
   return (
     <div className="min-h-screen h-auto  relative bg-gray-900 text-white flex flex-col">
@@ -1511,7 +1515,7 @@ export default function Controls() {
               </div> */}
 
               {/* Top Contributors */}
-             {!contributorsLoading? 
+             {!topContributorsLoading? 
              <div className="bg-[#0f172a] border border-[#1e293b] rounded-xl p-4">
                 <p className="text-sm font-semibold text-gray-200 mb-1">
                   Top 10 Contributors
@@ -1565,12 +1569,20 @@ export default function Controls() {
           </section>
 
           {/* ── ZONE 4: Users Tables ──────────────────────────────────── */}
-          <section className="space-y-3">
+          <section className="space-y-4">
             <h2 className="md:text-2xl text-xl font-semibold text-emerald-400">
               Users
             </h2>
-            <div className="md:flex overflow-x-scroll md:overflow-hidden gap-4 items-start">
-              <AuthorsTable />
+            <div className="md:flex overflow-hidden gap-4 items-start">
+             {!contributorsLoading && contributors.length > 0 ? 
+              <AuthorsTable 
+                contributors={contributors}
+                totalContributors={totalContributors}
+                contributorsLoading={contributorsLoading}
+                hasMore={hasMore}
+              />
+              :
+              <ContributorsTableSkeleton/>}
               <StudentsTable />
             </div>
           </section>
@@ -1584,71 +1596,6 @@ export default function Controls() {
   );
 }
 
-const MOCK_AUTHORS = [
-  {
-    authorname: "Admin",
-    email: "21aid145@dsuniversity.ac.in",
-    role: "admin",
-    postsCount: 0,
-    playlistsCount: 0,
-    followersCount: 0,
-    followingCount: 0,
-  },
-  {
-    authorname: "Yugesh Karan",
-    email: "yugeshkaran01@gmail.com",
-    role: "coordinator",
-    postsCount: 12,
-    playlistsCount: 3,
-    followersCount: 2,
-    followingCount: 5,
-  },
-  {
-    authorname: "Sibi",
-    email: "ssibi3290@gmail.com",
-    role: "coordinator",
-    postsCount: 0,
-    playlistsCount: 1,
-    followersCount: 3,
-    followingCount: 2,
-  },
-  {
-    authorname: "haricharan_1133",
-    email: "haricharanuggirala1133@gmail.com",
-    role: "coordinator",
-    postsCount: 5,
-    playlistsCount: 2,
-    followersCount: 2,
-    followingCount: 4,
-  },
-  {
-    authorname: "Rosinii",
-    email: "rosiniisures@gmail.com",
-    role: "coordinator",
-    postsCount: 0,
-    playlistsCount: 0,
-    followersCount: 1,
-    followingCount: 1,
-  },
-  {
-    authorname: "Kumaran",
-    email: "kumaranv.set2022@dsuniversity.ac.in",
-    role: "coordinator",
-    postsCount: 0,
-    playlistsCount: 0,
-    followersCount: 1,
-    followingCount: 0,
-  },
-  {
-    authorname: "Pradeep",
-    email: "21aid060@dsuniversity.ac.in",
-    role: "coordinator",
-    postsCount: 1,
-    playlistsCount: 0,
-    followersCount: 1,
-    followingCount: 3,
-  },
-];
 
 const MOCK_STUDENTS = [
   {
@@ -1724,33 +1671,34 @@ const ColHead = ({ children, className = "" }) => (
 );
 
 // ── Authors Table (Admin + Coordinators) ──────────────────────────────────────
-const AuthorsTable = () => {
+const AuthorsTable = ({contributors, totalContributors, contributorsLoading,  hasMore}) => {
+    // const { contributors, totalContributors, loading:contributorsLoading, error, hasMore }  = useGetContributors(email);
   const [search, setSearch] = useState("");
-  const filtered = MOCK_AUTHORS.filter(
+  const filtered = contributors.filter(
     (u) =>
-      u.authorname.toLowerCase().includes(search.toLowerCase()) ||
+      u.name.toLowerCase().includes(search.toLowerCase()) ||
       u.email.toLowerCase().includes(search.toLowerCase()),
   );
 
   return (
-    <div className="bg-[#0f172a] border border-[#1e293b] rounded-2xl md:w-full w-[600px] flex flex-col md:overflow-x-hidden overflow-x-scroll md:flex-1">
+    <div className="bg-[#0f172a] border border-[#1e293b] rounded-2xl md:w-full  flex flex-col md:overflow-x-hidden overflow-x-scroll md:flex-1">
       <TableHeader
         title="Contributors"
-        count={MOCK_AUTHORS.length}
+        count={totalContributors}
         search={search}
         onSearch={setSearch}
         className="overflow-x-scroll"
       />
-      <div className=" flex  flex-col flex-1">
+      <div className=" flex  flex-col flex-1 pb-4">
         <table className="w-full table-fixed">
           <thead>
             <tr className="bg-white/[0.02]">
-              <ColHead className="w-[38%]">Name</ColHead>
-              <ColHead className="w-[16%] text-center">Role</ColHead>
-              <ColHead className="w-[12%] text-center">Posts</ColHead>
-              <ColHead className="w-[12%] text-center">Playlists</ColHead>
-              <ColHead className="w-[11%] text-center">Followers</ColHead>
-              <ColHead className="w-[11%] text-center">Following</ColHead>
+              <ColHead className="w-[70%] md:w-[38%]">Name</ColHead>
+              <ColHead className="md:w-[16%] w-[30%] text-center">Role</ColHead>
+              <ColHead className="hidden md:table-cell w-[12%] text-center">Posts</ColHead>
+              <ColHead className="hidden md:table-cell w-[12%] text-center">Playlists</ColHead>
+              <ColHead className="hidden md:table-cell w-[11%] text-center">Followers</ColHead>
+              <ColHead className="hidden md:table-cell w-[11%] text-center">Following</ColHead>
             </tr>
           </thead>
         </table>
@@ -1761,60 +1709,110 @@ const AuthorsTable = () => {
         >
           <table className="w-full table-fixed">
             <tbody>
+              
               {filtered.map((u, i) => (
                 <tr
                   key={u.email}
-                  className="border-b border-white/[0.04] hover:bg-white/[0.03] transition-colors"
+                  
+                  className="border-b border-white/[0.04] md:hover:bg-white/[0.03]  transition-colors"
                 >
+                
+
                   {/* Name */}
-                  <td className="py-3 px-5 w-[38%]">
-                    <div className="flex items-center gap-3">
-                      <div
-                        className="w-8 h-8 rounded-full shrink-0 flex items-center justify-center text-[10px] font-bold text-white"
-                        style={{ backgroundColor: avatarColor(u.authorname) }}
+                  <td className="py-3 px-5 w-[70%] md:w-[38%]">
+                     <Link to={`/viewProfile/${u.email}`} className="block w-full">
+                       <div className="flex items-center gap-3">
+
+                        {!u.profile ? <div
+                        className="md:w-8 md:h-8 w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold text-white shrink-0"
+                        style={{ backgroundColor: avatarColor(u.name) }}
                       >
-                        {initials(u.authorname)}
-                      </div>
+                        {initials(u.name)}
+                      </div> : <img src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${u.profile}`}
+                        alt=""
+                        className="md:w-8 md:h-8 w-6 h-6 border border-green-500/70 rounded-full object-cover"
+                      />}
                       <div className="min-w-0">
                         <p className="text-xs font-semibold text-gray-100 truncate">
-                          {u.authorname}
+                          {u.name}
                         </p>
                         <p className="text-[10px] text-gray-500 truncate">
                           {u.email}
                         </p>
                       </div>
                     </div>
+                    </Link>
                   </td>
                   {/* Role */}
                   <td className="py-3 px-5 w-[16%] text-center">
+                     <Link to={`/viewProfile/${u.email}`} className="block w-full">
                     <RoleBadge role={u.role} />
+                    </Link>
                   </td>
                   {/* Posts */}
-                  <td className="py-3 px-5 w-[12%] text-center">
+                  <td className="py-3 px-5 w-[12%] text-center hidden md:table-cell">
+                     <Link to={`/viewProfile/${u.email}`} className="block w-full">
                     <span className="text-xs text-gray-300">
                       {u.postsCount}
                     </span>
+                    </Link>
                   </td>
                   {/* Playlists */}
-                  <td className="py-3 px-5 w-[12%] text-center">
+                  <td className="py-3 px-5 w-[12%] text-center hidden md:table-cell">
+                     <Link to={`/viewProfile/${u.email}`} className="block w-full">
                     <span className="text-xs text-gray-300">
-                      {u.playlistsCount}
+                      {u.playlistCount}
                     </span>
+                    </Link>
                   </td>
                   {/* Followers */}
-                  <td className="py-3 px-5 w-[11%] text-center">
+                  <td className="py-3 px-5 w-[11%] text-center hidden md:table-cell">
+                      <Link to={`/viewProfile/${u.email}`} className="block w-full">
                     <span className="text-xs text-gray-300">
-                      {u.followersCount}
+                      {u.followerscount}
                     </span>
+                    </Link>
                   </td>
                   {/* Following */}
-                  <td className="py-3 px-5 w-[11%] text-center">
+                  <td className="py-3 px-5 w-[11%] text-center hidden md:table-cell">
+                      <Link to={`/viewProfile/${u.email}`} className="block w-full">
                     <span className="text-xs text-gray-300">
-                      {u.followingCount}
+                      {u.followingcount}
                     </span>
+                    </Link>
                   </td>
                 </tr>
               ))}
+
+              {!hasMore && (
+                <tr>
+                  <td colSpan={6} className="text-center text-[10px] text-gray-400 py-2 md:py-4">
+                    No more contributors.
+                  </td>
+                </tr>
+              )}
+              {contributorsLoading && contributors.length>0 && (
+                <tr>
+                  <td colSpan={6} className="text-center py-4"> 
+                   <div className="col-span-full flex justify-center">
+                      <div className="relative flex items-center justify-center">
+                        {/* Outer Oval Ring */}
+                        <div className="w-4 h-4  border-2 border-neutral-700 border-t-emerald-400 rounded-full animate-spin" />
+
+                        {/* Inner Glow Pulse */}
+                        {/* <div className="absolute w-10 h-10 md:w-12 md:h-12 bg-emerald-500/20 rounded-full blur-md animate-pulse" /> */}
+                      </div>
+                    </div>
+                  </td>
+                </tr> 
+              )}
+              { !contributorsLoading && contributors.length===0 && (
+                <tr>
+                  <td colSpan={6} className="text-center text-[10px] text-gray-400 py-4">
+                    No contributors found.
+                  </td>
+                </tr>
+              )}  
             </tbody>
           </table>
         </div>
@@ -1833,14 +1831,14 @@ const StudentsTable = () => {
   );
 
   return (
-    <div className="bg-[#0f172a] border mt-4 md:mt-0 border-[#1e293b] rounded-2xl flex flex-col overflow-hidden w-[600px]">
+    <div className="bg-[#0f172a] border mt-4 md:mt-0 border-[#1e293b] rounded-2xl flex flex-col overflow-hidden md:w-[600px]">
       <TableHeader
         title="Students"
         count={MOCK_STUDENTS.length}
         search={search}
         onSearch={setSearch}
       />
-      <div className="overflow-hidden flex flex-col">
+      <div className="overflow-hidden flex pb-4  flex-col">
         <table className="w-full table-fixed">
           <thead>
             <tr className="bg-white/[0.02]">
