@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { MdDeleteForever } from "react-icons/md";
 import Footer from "../../ui/Footer";
@@ -7,6 +6,10 @@ import axiosInstance from "../../instances/Axiosinstances";
 import toast from "../../components/toaster/Toast";
 import useGetCommunityAnalytics from "../../hooks/useGetCommunityAnalytics";
 import NavBar from "../../ui/NavBar";
+import useGetStudents from "../../hooks/admins/useGetStudents";
+import useGetCoordinators from "../../hooks/admins/useGetCoordinators";
+import useGetAdmins from "../../hooks/admins/useGetAdmins";
+import { Link } from "react-router-dom";
 // import Footer from "../../ui/Footer";
 function Control() {
   const [authors, setAuthors] = useState([]);
@@ -21,7 +24,7 @@ function Control() {
   const [authorEmail, setAuthorEmail] = useState("");
   const email = localStorage.getItem("email");
   const [password, setPassword] = useState("");
-  const {communities} = useGetCommunityAnalytics();
+  const { communities } = useGetCommunityAnalytics();
 
   const getAuthors = async () => {
     try {
@@ -48,18 +51,18 @@ function Control() {
   const updateRole = async (email, id) => {
     const roleToUpdate = updatedRoles[id];
     if (!roleToUpdate) {
-      toast.warning("Warning","Please select a role before updating");
+      toast.warning("Warning", "Please select a role before updating");
       return;
     }
 
     try {
       const response = await axiosInstance.put(
         "/blog/author/control/updateRole",
-        { role: roleToUpdate, email }
+        { role: roleToUpdate, email },
       );
       if (response.status === 200) {
         // alert('Role updated successfully');
-        toast.success("Updated","Role updated successfully");
+        toast.success("Updated", "Role updated successfully");
         getAuthors();
       }
     } catch (err) {
@@ -76,7 +79,7 @@ function Control() {
           author.name?.toLowerCase().includes(query) ||
           "" ||
           author.email?.toLowerCase().includes(query) ||
-          ""
+          "",
       );
     }
 
@@ -94,23 +97,22 @@ function Control() {
     try {
       const response = await axiosInstance.delete(
         `/blog/author/deleteByAdmin/${email}`,
-        { data: { email: authorEmail, password } }
+        { data: { email: authorEmail, password } },
       );
 
-      if(response.status==200){
+      if (response.status == 200) {
         toast.success(`${response.data.message}`);
         getAuthors();
-        setPassword("")
+        setPassword("");
       }
     } catch (err) {
-      toast.error(`${response.data.message}`)
+      toast.error(`${response.data.message}`);
       console.log(err);
     } finally {
       setLoading(false);
       setShowConfirm(false);
-      setPassword("")
+      setPassword("");
       toast.error(`unable to delete the author`);
-
     }
   };
 
@@ -182,14 +184,14 @@ function Control() {
         {
           techCommunities: selectedCommunities,
           email: email,
-        }
+        },
       );
 
       // console.log(response.data);
 
       if (response.status === 201) {
         // alert("Communities updated successfully");
-        toast.success("Saved","Tech community saved successfully");
+        toast.success("Saved", "Tech community saved successfully");
       }
     } catch (err) {
       console.error("Error updating communities", err);
@@ -219,10 +221,49 @@ function Control() {
   // console.log("analytics", comm);
 
   // console.log("authorCommusnity",authorCommunity)
+
+  const avatarColor = (name) => {
+    const colors = [
+      "#10b981",
+      "#3b82f6",
+      "#f59e0b",
+      "#ec4899",
+      "#8b5cf6",
+      "#06b6d4",
+      "#f97316",
+    ];
+    return colors[(name?.charCodeAt(0) ?? 0) % colors.length];
+  };
+
+  const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
+
+  const {
+    students,
+    totalStudents,
+    loading: studentLoading,
+    hasMore: studentHashMore,
+  } = useGetStudents(email);
+  const {
+    coordinators,
+    totalCoordinators,
+    loading: coordinatorsLoading,
+    hasMore: coordinatorHashMore,
+  } = useGetCoordinators(email);
+
+  const {
+    admins,
+    totalAdmins,
+    loading: adminLoading,
+    hasMore: adminHashMore,
+    loadMore,
+  } = useGetAdmins(email);
+
+  // console.log("students", students);
+  // console.log("coordinators", coordinators);
+  // console.log("admins", admins);
   return (
     // <div className="relative w-full min-h-screen h-auto  bg-gradient-to-br from-gray-900 to-gray-700">
     <div className="min-h-screen h-auto relative w-full   bg-gray-900">
-
       <NavBar />
       <h1 className="md:text-4xl text-3xl font-semibold my-5 text-white text-left  w-full px-4 mx-auto">
         Control Panel
@@ -231,8 +272,8 @@ function Control() {
       {/* Search and Filter */}
       <div className="w-full px-4 py-2 mx-auto flex  md:flex-row justify-between items-center gap-4 mb-6">
         <div
-        // className="md:w-1/3 w-3/5 px-4 py-2 flex items-center gap-2 justify-center rounded-md bg-gray-600 border border-white text-xs md:text-sm text-white placeholder-gray-400"
-        className="w-full max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-2xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition"
+          // className="md:w-1/3 w-3/5 px-4 py-2 flex items-center gap-2 justify-center rounded-md bg-gray-600 border border-white text-xs md:text-sm text-white placeholder-gray-400"
+          className="w-full max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-2xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition"
         >
           <IoSearch className="text-white" />
           <input
@@ -265,34 +306,56 @@ function Control() {
             hover:bg-gray-900
           "
         >
-          <option className="bg-gray-900" value="">All Roles</option>
-          <option className="bg-gray-900" value="student">Student</option>
-          <option className="bg-gray-900" value="coordinator">Coordinator</option>
-          <option className="bg-gray-900" value="admin">Admin</option>
+          <option className="bg-gray-900" value="">
+            All Roles
+          </option>
+          <option className="bg-gray-900" value="student">
+            Student
+          </option>
+          <option className="bg-gray-900" value="coordinator">
+            Coordinator
+          </option>
+          <option className="bg-gray-900" value="admin">
+            Admin
+          </option>
         </select>
       </div>
 
-      {
-        [
-          ...filteredAuthors.filter((author) => author.role === "admin"),
-        ].length>0 &&
+      {/* -------------------------------------------------Admins--------------------------------------- */}
+
+      {/* {[...filteredAuthors.filter((author) => author.role === "admin")].length >
+        0 && (
         <h1
-        className={`${
-          roleFilter === "admin" || roleFilter === ""
-            ? " mx-4 text-center text-2xl md:text-3xl mb-6 font-semibold  text-white"
-            : "hidden"
-        }`}
-      >
-        Admins
-      </h1>}
+          className={`${
+            roleFilter === "admin" || roleFilter === ""
+              ? " mx-4 text-center text-2xl md:text-3xl mb-6 font-semibold  text-white"
+              : "hidden"
+          }`}
+        >
+          Admins
+        </h1>
+      )} */}
+
+      {admins.length > 0 && (
+        <h1
+          className={`${
+            roleFilter === "admin" || roleFilter === ""
+              ? " mx-4 text-center text-2xl md:text-3xl mb-6 font-semibold  text-white"
+              : "hidden"
+          }`}
+        >
+          Admins
+        </h1>
+      )}
+
       {/* Author admin */}
-      <div
+      {/* <div
         className={`${
           roleFilter === ""
             ? "h-auto md:mb-16 mb-10   grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full px-4 mx-auto mt-2"
             : roleFilter === "admin"
-            ? "min-h-screen md:mb-16 mb-10 flex flex-col   md:grid  md:grid-cols-2 lg:grid-cols-3 gap-4 w-full px-4 mx-auto mt-2"
-            : "hidden"
+              ? "min-h-screen md:mb-16 mb-10 flex flex-col   md:grid  md:grid-cols-2 lg:grid-cols-3 gap-4 w-full px-4 mx-auto mt-2"
+              : "hidden"
         }`}
       >
         {[
@@ -350,11 +413,9 @@ function Control() {
                 value={updatedRoles[author._id] || author.role}
                 onChange={(e) => handleRoleChange(author._id, e.target.value)}
               >
-
                 <option value="admin">Admin</option>
                 <option value="coordinator">Coordinator</option>
                 <option value="student">Student</option>
-
               </select>
 
               <button
@@ -380,13 +441,13 @@ function Control() {
                         type="checkbox"
                         checked={
                           assignedCommunities[author.email]?.includes(
-                            community.categoryname
+                            community.categoryname,
                           ) || false
                         }
                         onChange={() =>
                           handleCommunityCheckbox(
                             author.email,
-                            community.categoryname
+                            community.categoryname,
                           )
                         }
                         className="form-checkbox accent-green-500"
@@ -405,9 +466,169 @@ function Control() {
             )}
           </div>
         ))}
+      </div> */}
+
+      <div
+        className={`${
+          roleFilter === ""
+            ? "h-auto md:mb-16 mb-10   grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full px-4 mx-auto mt-2"
+            : roleFilter === "admin"
+              ? "min-h-screen md:mb-16 mb-10 flex flex-col   md:grid  md:grid-cols-2 lg:grid-cols-3 gap-4 w-full px-4 mx-auto mt-2"
+              : "hidden"
+        }`}
+      >
+        {admins.map((author) => (
+          <div
+            key={author._id}
+            className="bg-gray-900 w-full px-4 mx-auto md:w-full h-fit p-4 flex flex-col justify-between rounded-lg shadow-md border md:border-neutral-800 border-neutral-700"
+          >
+            <div className="flex justify-between items-center text-xl font-semibold text-white">
+              <Link
+                to={`/viewProfile/${author.email}`}
+                className="flex items-start gap-2"
+              >
+                {!author.profile ? (
+                  <div
+                    className="w-9 h-9 w-6 h-6 rounded-full flex items-center justify-center text-[9px] md:text-xs font-bold text-white shrink-0"
+                    style={{ backgroundColor: avatarColor(author.name) }}
+                  >
+                    {initials(author.name)}
+                  </div>
+                ) : (
+                  <img
+                    src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`}
+                    alt=""
+                    className="w-9 h-9 w-6 h-6 border border-green-500/70 rounded-full object-cover"
+                  />
+                )}
+                <span className="text-base  flex-1 font-semibold text-gray-200 truncate">
+                  {author.name}
+                  <p className="text-gray-500 text-xs md:text-xs mb-2">
+                    {author.email}
+                  </p>
+                </span>
+              </Link>
+              <span
+                // onClick={() => deleteAuthorByAdmin(author.email)}
+                onClick={() => {
+                  setAuthorEmail(author.email);
+                  setShowConfirm(true);
+                }}
+                className="text-red-400 cursor-pointer"
+              >
+                <MdDeleteForever />
+              </span>
+            </div>
+            {/* <p className="text-gray-600 text-xs md:text-sm mt-2">
+              {author.email}
+            </p> */}
+
+            <div className="md:flex justify-start md:space-x-4 items-center">
+              <p className="text-gray-400 text-xs md:text-sm mt-2">
+                Role: {author.role}
+              </p>
+              <p
+                className={`${
+                  author.role === "student"
+                    ? "hidden"
+                    : "text-gray-400 text-xs md:text-sm mt-2"
+                }`}
+              >
+                Followers: {author.followerscount}
+              </p>
+              <p
+                className={`${
+                  author.role === "student"
+                    ? "hidden"
+                    : "text-gray-400 text-xs md:text-sm mt-2"
+                }`}
+              >
+                Posts: {author.postsCount}
+              </p>
+            </div>
+
+            <div className="flex items-center mt-4">
+              <select
+                className="cursor-pointer mt-2 p-2  text-xs md:text-sm mr-4 rounded bg-gray-800 text-white"
+                value={updatedRoles[author._id] || author.role}
+                onChange={(e) => handleRoleChange(author._id, e.target.value)}
+              >
+                <option value="admin">Admin</option>
+                <option value="coordinator">Coordinator</option>
+                <option value="student">Student</option>
+              </select>
+
+              <button
+                className="mt-2 md:px-4 px-2  text-xs md:text-sm py-1 font-semibold hover:bg-gray-500 bg-white text-gray-800 transition-all duration-200 rounded"
+                onClick={() => updateRole(author.email, author._id)}
+              >
+                Update Role
+              </button>
+            </div>
+
+            {author.role === "coordinator" && (
+              <div className="mt-4 text-white">
+                <p className="mb-1 text-sm font-semibold">
+                  Assign Tech Communities:
+                </p>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                  {communities.map((community, idx) => (
+                    <label
+                      key={idx}
+                      className="flex items-center space-x-2 text-xs"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={
+                          assignedCommunities[author.email]?.includes(
+                            community.categoryname,
+                          ) || false
+                        }
+                        onChange={() =>
+                          handleCommunityCheckbox(
+                            author.email,
+                            community.categoryname,
+                          )
+                        }
+                        className="form-checkbox accent-green-500"
+                      />
+                      <span>{community.categoryname}</span>
+                    </label>
+                  ))}
+                </div>
+                <button
+                  onClick={() => updateAssignedCommunities(author.email)}
+                  className="mt-2 text-xs md:text-sm bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
+                >
+                  Save Communities
+                </button>
+              </div>
+            )}
+          </div>
+        ))}
+
+        {admins.length > 0 && adminLoading && (
+          <div className="col-span-full flex justify-center">
+            <div className="relative flex items-center justify-center">
+              {/* Outer Oval Ring */}
+              <div className="w-7 h-7  border-2 border-neutral-700 border-t-emerald-400 rounded-full animate-spin" />
+
+              {/* Inner Glow Pulse */}
+              {/* <div className="absolute w-10 h-10 md:w-12 md:h-12 bg-emerald-500/20 rounded-full blur-md animate-pulse" /> */}
+            </div>
+          </div>
+        )}
+
+        {!adminHashMore && (
+          <p className="text-center col-span-full py-4 text-gray-500">
+            No more Admins
+          </p>
+        )}
       </div>
 
-      {
+      {/* -------------------------------------------------Coordinators----------------------------------------------------- */}
+
+      {/* {
           [
           ...filteredAuthors.filter((author) => author.role === "coordinator"),
         ].length>0 &&
@@ -419,9 +640,9 @@ function Control() {
         }`}
       >
         Coordinators
-      </h1>}
-      {/* Author Coordinators */}
-      <div
+      </h1>} */}
+
+      {/* <div
         className={`${
           roleFilter === ""
             ? "h-auto md:mb-16 mb-10  grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full px-4 mx-auto mt-2"
@@ -541,9 +762,178 @@ function Control() {
             )}
           </div>
         ))}
+      </div> */}
+
+      {coordinators.length > 0 && (
+        <h1
+          className={`${
+            roleFilter === "coordinator" || roleFilter === ""
+              ? " mx-4 text-center text-2xl md:text-3xl mb-6 font-semibold  text-white"
+              : "hidden"
+          }`}
+        >
+          Coordinators
+        </h1>
+      )}
+
+      <div
+        className={`${
+          roleFilter === ""
+            ? "h-auto md:mb-16 mb-10  grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full px-4 mx-auto mt-2"
+            : roleFilter === "coordinator"
+              ? "min-h-screen h-auto md:mb-16 mb-10 flex flex-col  md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 w-full px-4 mx-auto mt-2"
+              : "hidden"
+        }`}
+      >
+        {coordinators.map((author) => (
+          <div
+            key={author._id}
+            className="bg-gray-900 w-full px-4 mx-auto md:w-full h-fit p-4 flex flex-col justify-between rounded-lg shadow-md border  border-neutral-700/70"
+          >
+            <div className="flex justify-between items-center text-xl font-semibold text-white">
+              <Link
+                to={`/viewProfile/${author.email}`}
+                className="flex items-start gap-2"
+              >
+                {!author.profile ? (
+                  <div
+                    className="w-9 h-9 w-6 h-6 rounded-full flex items-center justify-center text-[9px] md:text-xs font-bold text-white shrink-0"
+                    style={{ backgroundColor: avatarColor(author.name) }}
+                  >
+                    {initials(author.name)}
+                  </div>
+                ) : (
+                  <img
+                    src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`}
+                    alt=""
+                    className="w-9 h-9 w-6 h-6 border border-green-500/70 rounded-full object-cover"
+                  />
+                )}
+                <span className="text-base  flex-1 font-semibold text-gray-200 truncate">
+                  {author.name}
+                  <p className="text-gray-500 text-xs md:text-xs mb-2">
+                    {author.email}
+                  </p>
+                </span>
+              </Link>
+              <span
+                // onClick={() => deleteAuthorByAdmin(author.email)}
+                onClick={() => {
+                  setAuthorEmail(author.email);
+                  setShowConfirm(true);
+                }}
+                className="text-red-400 cursor-pointer"
+              >
+                <MdDeleteForever />
+              </span>
+            </div>
+            {/* <p className="text-gray-500 text-xs md:text-xs mb-2">
+              {author.email}
+            </p> */}
+
+            <div className="md:flex justify-start md:space-x-4 items-center">
+              <p className="text-gray-400 text-xs md:text-sm mt-2">
+                Role: {author.role}
+              </p>
+              <p
+                className={`${
+                  author.role === "student"
+                    ? "hidden"
+                    : "text-gray-400 text-xs md:text-sm mt-2"
+                }`}
+              >
+                Followers: {author.followerscount}
+              </p>
+              <p
+                className={`${
+                  author.role === "student"
+                    ? "hidden"
+                    : "text-gray-400 text-xs md:text-sm mt-2"
+                }`}
+              >
+                Posts: {author.postsCount}
+              </p>
+            </div>
+
+            <div className="flex items-center mt-4">
+              <select
+                className="cursor-pointer mt-2 p-2  text-xs md:text-sm mr-4 rounded bg-gray-800 text-white"
+                value={updatedRoles[author._id] || author.role}
+                onChange={(e) => handleRoleChange(author._id, e.target.value)}
+              >
+                <option value="admin">Admin</option>
+                <option value="coordinator">Coordinator</option>
+                <option value="student">Student</option>
+              </select>
+
+              <button
+                className="mt-2 md:px-4 px-2  text-xs md:text-sm py-1 font-semibold hover:bg-gray-500 bg-white text-gray-800 transition-all duration-200 rounded"
+                onClick={() => updateRole(author.email, author._id)}
+              >
+                Update Role
+              </button>
+            </div>
+
+            <div className="mt-4 text-white">
+              <p className="mb-3 text-sm ">Assign Tech Communities:</p>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                {communities.map((community, idx) => (
+                  <label
+                    key={idx}
+                    className="flex items-center space-x-2 text-xs"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={
+                        assignedCommunities[author.email]?.includes(
+                          community.categoryname,
+                        ) || false
+                      }
+                      onChange={() =>
+                        handleCommunityCheckbox(
+                          author.email,
+                          community.categoryname,
+                        )
+                      }
+                      className="form-checkbox cursor-pointer accent-emerald-500"
+                    />
+                    <span>{community.categoryname}</span>
+                  </label>
+                ))}
+              </div>
+              <button
+                onClick={() => updateAssignedCommunities(author.email)}
+                className="md:px-5 px-3 py-2 mt-4 bg-emerald-600/20 hover:bg-emerald-500/20
+                         rounded-md text-xs md:text-xs  text-emerald-400 transition-all duration-300 disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed"
+              >
+                Save Communities
+              </button>
+            </div>
+          </div>
+        ))}
+
+        {coordinators.length > 0 && coordinatorsLoading && (
+          <div className="col-span-full flex justify-center">
+            <div className="relative flex items-center justify-center">
+              {/* Outer Oval Ring */}
+              <div className="w-7 h-7  border-2 border-neutral-700 border-t-emerald-400 rounded-full animate-spin" />
+
+              {/* Inner Glow Pulse */}
+              {/* <div className="absolute w-10 h-10 md:w-12 md:h-12 bg-emerald-500/20 rounded-full blur-md animate-pulse" /> */}
+            </div>
+          </div>
+        )}
+
+        {!coordinatorHashMore && (
+          <p className="text-center col-span-full py-4 text-gray-500">
+            No more Coordinators
+          </p>
+        )}
       </div>
 
-     {
+      {/*------------------------------------------------------------- Students----------------------------------------------------------- */}
+
+      {/* {
        [
           ...filteredAuthors.filter((author) => author.role === "student"),
         ].length>0 &&
@@ -555,9 +945,11 @@ function Control() {
         }`}
       >
         Students
-      </h1>}
+      </h1>
+    } */}
+
       {/* Author students */}
-      <div
+      {/* <div
         className={`${
           roleFilter === ""
             ? "h-auto md:mb-16 mb-10  grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full px-4 mx-auto mt-2"
@@ -610,6 +1002,116 @@ function Control() {
             </div>
           </div>
         ))}
+      </div> */}
+
+      {students.length > 0 && (
+          <h1 
+           className={`${
+            roleFilter === "student" || roleFilter === ""
+              ? " mx-4 text-center text-2xl md:text-3xl mb-6 font-semibold  text-white"
+              : "hidden"
+          }`}
+          >
+            Students
+          </h1>
+        )
+        
+        }
+
+      <div
+        className={`${
+          roleFilter === ""
+            ? "h-auto md:mb-16 mb-10  grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full px-4 mx-auto mt-2"
+            : roleFilter === "student"
+              ? " min-h-screen h-auto md:mb-16 mb-10  flex flex-col   md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 w-full px-4 mx-auto mt-2"
+              : "hidden"
+        }`}
+      >
+        {students.map((author) => (
+          <div
+            key={author._id}
+            className="bg-gray-900 w-full px-4 mx-auto md:w-full h-fit p-4 flex flex-col justify-between rounded-lg shadow-md border  border-neutral-700/70"
+          >
+            <div className="flex justify-between items-center text-xl font-semibold text-white">
+               <Link
+                                      to={`/viewProfile/${author.email}`}
+                                      className="flex items-start gap-2"
+                        
+                                    >
+                    {!author.profile ? (
+                          <div
+                            className="w-9 h-9 w-6 h-6 rounded-full flex items-center justify-center text-[9px] md:text-xs font-bold text-white shrink-0"
+                            style={{ backgroundColor: avatarColor(author.name) }}
+                          >
+                            {initials(author.name)}
+                          </div>
+                        ) : (
+                          <img
+                            src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`}
+                            alt=""
+                            className="w-9 h-9 w-6 h-6 border border-green-500/70 rounded-full object-cover"
+                          />
+                        )} 
+                         <span className="text-base  flex-1 font-semibold text-gray-200 truncate">
+                        {author.name}
+                                     <p className="text-gray-500 text-xs md:text-xs mb-2">
+              {author.email}
+            </p>
+                    
+                        </span>
+                        </Link>
+              <span
+                // onClick={() => deleteAuthorByAdmin(author.email)}
+                onClick={() => {
+                  setAuthorEmail(author.email);
+                  setShowConfirm(true);
+                }}
+                className="text-red-400 cursor-pointer"
+              >
+                <MdDeleteForever />
+              </span>
+            </div>
+            {/* <p className="text-gray-400 text-xs md:text-sm mt-2">
+              {author.email}
+            </p> */}
+
+            <div className="flex items-center mt-4">
+              <select
+                className="cursor-pointer mt-2 p-2  text-xs md:text-sm mr-4 rounded bg-gray-800 text-white"
+                value={updatedRoles[author._id] || author.role}
+                onChange={(e) => handleRoleChange(author._id, e.target.value)}
+              >
+                <option value="student">Student</option>
+                <option value="coordinator">Coordinator</option>
+              </select>
+
+              <button
+                className="mt-2 md:px-4 px-2  text-xs md:text-sm py-1 font-semibold hover:bg-gray-500 bg-white text-gray-800 transition-all duration-200 rounded"
+                onClick={() => updateRole(author.email, author._id)}
+              >
+                Update Role
+              </button>
+            </div>
+          </div>
+        ))}
+
+        {students.length > 0 && studentLoading && (
+          <div className="col-span-full flex justify-center">
+            <div className="relative flex items-center justify-center">
+              {/* Outer Oval Ring */}
+              <div className="w-7 h-7  border-2 border-neutral-700 border-t-emerald-400 rounded-full animate-spin" />
+
+              {/* Inner Glow Pulse */}
+              {/* <div className="absolute w-10 h-10 md:w-12 md:h-12 bg-emerald-500/20 rounded-full blur-md animate-pulse" /> */}
+            </div>
+          </div>
+        )}
+
+        {!studentHashMore && (
+          <p className="text-center col-span-full py-4 text-gray-500">
+            No more Students
+          </p>
+        )}
       </div>
 
       {showConfirm && (
@@ -675,9 +1177,7 @@ function Control() {
         </div>
       )}
 
-      {filteredAuthors.length>0 &&
-       <Footer /> }
-
+      {filteredAuthors.length > 0 && <Footer />}
     </div>
   );
 }
@@ -718,7 +1218,6 @@ export default Control;
 // import ContributorsTableSkeleton from "../../components/loaders/dashboard/ContributorsTableSkeleton";
 // import useGetStudents from "../../hooks/admins/useGetStudents";
 // import StudentsTableSkeleton from "../../components/loaders/dashboard/StudentsTableSkeleton";
-
 
 // // ── Mini bar chart ─────────────────────────────────────────────────────────────
 // const MiniBar = ({ data, valueKey, labelKey, color = "#0004ff" }) => {
@@ -1384,7 +1883,7 @@ export default Control;
 //               </div> */}
 
 //               {/* Top Contributors */}
-//              {!topContributorsLoading? 
+//              {!topContributorsLoading?
 //              <div className="bg-[#0f172a] border border-[#1e293b] rounded-xl p-4">
 //                 <p className="text-sm font-semibold text-gray-200 mb-1">
 //                   Top 10 Contributors
@@ -1418,7 +1917,6 @@ export default Control;
 //                         className="md:w-8 md:h-8 w-6 h-6 border border-green-500/70 rounded-full object-cover"
 //                       />}
 
-                     
 //                       <span className="text-xs  flex-1 font-semibold text-gray-200 truncate">
 //                         {u.name}
 //                          <p className="md:text-[10px] hidden md:block text-[9px] text-gray-500 truncate">
@@ -1444,8 +1942,8 @@ export default Control;
 //             </h2>
 //             <div className="md:flex overflow-hidden gap-4 items-start">
 //               <div>
-//              {!contributorsLoading && contributors.length > 0 ? 
-//               <AuthorsTable 
+//              {!contributorsLoading && contributors.length > 0 ?
+//               <AuthorsTable
 //                 contributors={contributors}
 //                 totalContributors={totalContributors}
 //                 contributorsLoading={contributorsLoading}
@@ -1456,15 +1954,15 @@ export default Control;
 
 //               </div>
 
-//               <div>              
+//               <div>
 //               {!studentsLoading ?
-//               <StudentsTable 
+//               <StudentsTable
 //                 students={students}
 //                 totalStudents={totalStudents}
 //                 studentsLoading={studentsLoading}
 //                 hasMore={studentsHasMore}
 //               />
-//               : 
+//               :
 //               <StudentsTableSkeleton/>}
 //               </div>
 
@@ -1479,7 +1977,6 @@ export default Control;
 //     </div>
 //   );
 // }
-
 
 // const avatarColor = (name) => {
 //   const colors = [
@@ -1581,14 +2078,13 @@ export default Control;
 //         >
 //           <table className="w-full table-fixed">
 //             <tbody>
-              
+
 //               {filtered.map((u, i) => (
 //                 <tr
 //                   key={u.email}
-                  
+
 //                   className="border-b border-white/[0.04] md:hover:bg-white/[0.03]  transition-colors"
 //                 >
-                
 
 //                   {/* Name */}
 //                   <td className="py-3 px-5 w-[70%] md:w-[38%]">
@@ -1665,7 +2161,7 @@ export default Control;
 //               )}
 //               {contributorsLoading && contributors.length>0 && (
 //                 <tr>
-//                   <td colSpan={6} className="text-center py-4"> 
+//                   <td colSpan={6} className="text-center py-4">
 //                    <div className="col-span-full flex justify-center">
 //                       <div className="relative flex items-center justify-center">
 //                         {/* Outer Oval Ring */}
@@ -1676,7 +2172,7 @@ export default Control;
 //                       </div>
 //                     </div>
 //                   </td>
-//                 </tr> 
+//                 </tr>
 //               )}
 //               { !contributorsLoading && contributors.length===0 && (
 //                 <tr>
@@ -1684,7 +2180,7 @@ export default Control;
 //                     No contributors found.
 //                   </td>
 //                 </tr>
-//               )}  
+//               )}
 //             </tbody>
 //           </table>
 //         </div>
@@ -1764,7 +2260,6 @@ export default Control;
 //                   </td>
 //                 </tr>
 //               ))}
-              
 
 //                {!hasMore && (
 //                 <tr>
@@ -1775,7 +2270,7 @@ export default Control;
 //               )}
 //               {studentsLoading && students.length>0 && (
 //                 <tr>
-//                   <td colSpan={2} className="text-center py-4"> 
+//                   <td colSpan={2} className="text-center py-4">
 //                    <div className="col-span-full flex justify-center">
 //                       <div className="relative flex items-center justify-center">
 //                         {/* Outer Oval Ring */}
@@ -1786,7 +2281,7 @@ export default Control;
 //                       </div>
 //                     </div>
 //                   </td>
-//                 </tr> 
+//                 </tr>
 //               )}
 
 //                 { !studentsLoading && students.length===0 && (
@@ -1795,7 +2290,7 @@ export default Control;
 //                     No students found.
 //                   </td>
 //                 </tr>
-//               )} 
+//               )}
 //             </tbody>
 //           </table>
 //         </div>

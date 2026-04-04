@@ -5,7 +5,7 @@ const {limiter, readLimiter} = require("../middleware/rateLimitter");
 
 const authenticateToken = require('../middleware/authMiddleware');  
 
-const { getCategoryAnalytics, getAppSummary, getMonthlyPostCounts, getTopContributors, getContributors, getStudents } = require("../controllers/appAnalysis.Controller");
+const { getCategoryAnalytics, getAppSummary, getMonthlyPostCounts, getTopContributors, getContributors, getStudents, getCoordinators, getAdmins } = require("../controllers/appAnalysis.Controller");
 
 router.get("/view/techDomain", readLimiter, authenticateToken, getCategoryAnalytics);
 router.get("/view/summary/:email", readLimiter, authenticateToken, getAppSummary);
@@ -14,5 +14,7 @@ router.get("/view/monthly-posts/:email", readLimiter, authenticateToken, getMont
 router.get("/view/top-contributors/:email", readLimiter, authenticateToken, getTopContributors);
 router.get("/view/contributors/:email", readLimiter, authenticateToken, getContributors);
 router.get("/view/users/:email", readLimiter, authenticateToken, getStudents);
+router.get("/view/coordinators/:email", readLimiter, authenticateToken, getCoordinators);
+router.get("/view/admins/:email", readLimiter, authenticateToken, getAdmins);
 
 module.exports = router;

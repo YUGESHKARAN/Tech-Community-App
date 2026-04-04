@@ -52,17 +52,16 @@ const TutorPlaylistGridSkeleton = () => {
       // "
         className="
         pb-4 gap-5 md:gap-6
-    grid grid-cols-1
-    md:grid-cols-2
-    lg:grid-cols-3
-    xl:grid-cols-4
-    3xl:grid-cols-5
-    overflow-visible
-    space-y-5
-    md:space-y-0
-    mt-0
-    
-  "
+        grid grid-cols-1
+        md:grid-cols-2
+        lg:grid-cols-3
+        xl:grid-cols-4
+        3xl:grid-cols-5
+        overflow-visible
+        space-y-5
+        md:space-y-0
+        mt-0 
+      "
     >
       {[...Array(4)].map((_, index) => (
         <div key={index} className="min-w-[150px] sm:min-w-0">

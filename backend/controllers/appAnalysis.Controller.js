@@ -467,6 +467,7 @@ const getContributors = async (req, res) => {
 };
 
 
+// Get all Students
 const getStudents = async (req, res) => {
   const requestEmail = req.params.email;
   const page = parseInt(req.query.page) || 1;
@@ -517,7 +518,7 @@ const getStudents = async (req, res) => {
       role: contributor.role,
     }));
 
-    console.log("Formatted students:", formattedContributors);
+    // console.log("Formatted students:", formattedContributors);
 
     // Count total contributors
     const totalStudents = await Author.countDocuments({
@@ -536,11 +537,165 @@ const getStudents = async (req, res) => {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
+
+
+// Get only coordinators
+const getCoordinators = async (req, res) => {
+  const requestEmail = req.params.email;
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const skip = (page - 1) * limit;
+  if (!requestEmail) {
+    return res
+      .status(400)
+      .json({ message: "Email is required as path param." });
+  }
+  try {
+    const admin = await Author.findOne({ email: requestEmail });
+    if (!admin) {
+      return res.status(404).json({ message: "Author not found" });
+    }
+    if (admin.role !== "admin") {
+      return res.status(403).json({ message: "Access denied" });
+    }
+
+    // console.log(`getContributors called by ${requestEmail} with page ${page} and limit ${limit}`);
+    // Fetch contributors with roles 'admin' or 'coordinator'
+    const contributors = await Author.find({
+      role: { $in: ["coordinator"] },
+    })
+      .skip(skip)
+      .limit(limit)
+      .lean();
+
+    // Aggregate playlist counts from TutorPlayList by author email
+    const contributorEmails = contributors.map((c) => c.email);
+    const playlistCountsByEmail = await TutorPlayList.aggregate([
+      { $match: { email: { $in: contributorEmails } } },
+      { $group: { _id: "$email", count: { $sum: 1 } } },
+    ]).exec();
+    const playlistCountMap = playlistCountsByEmail.reduce((acc, item) => {
+      acc[item._id] = item.count;
+      return acc;
+    }, {});
+
+    // Format contributor data
+    const formattedContributors = contributors.map((contributor) => ({
+      community: contributor.community || [],
+      email: contributor.email,
+      followerscount: contributor.followers ? contributor.followers.length : 0,
+      followingcount: contributor.following ? contributor.following.length : 0,
+      name: contributor.authorname,
+      personalLinks: contributor.personalLinks || [],
+      playlistCount: playlistCountMap[contributor.email] || 0,
+      postsCount: contributor.posts ? contributor.posts.length : 0,
+      profile: contributor.profile,
+      role: contributor.role,
+    }));
+
+    // Count total contributors
+    const totalCoordinators = await Author.countDocuments({
+      role: { $in: ["coordinator"] },
+    });
+
+    res.status(200).json({
+      page,
+      limit,
+      totalCoordinators,
+      totalPages: Math.ceil(totalCoordinators / limit),
+      coordinators: formattedContributors,
+    });
+  } catch (err) {
+    console.error("Error fetching coordinators:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
+
+
+// Get only Admins
+const getAdmins = async (req, res) => {
+  const requestEmail = req.params.email;
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const skip = (page - 1) * limit;
+  if (!requestEmail) {
+    return res
+      .status(400)
+      .json({ message: "Email is required as path param." });
+  }
+  try {
+    const admin = await Author.findOne({ email: requestEmail });
+    if (!admin) {
+      return res.status(404).json({ message: "Author not found" });
+    }
+    if (admin.role !== "admin") {
+      return res.status(403).json({ message: "Access denied" });
+    }
+
+    // console.log(`getContributors called by ${requestEmail} with page ${page} and limit ${limit}`);
+    // Fetch contributors with roles 'admin' or 'coordinator'
+    const contributors = await Author.find({
+      role: { $in: ["admin"] },
+    })
+      .skip(skip)
+      .limit(limit)
+      .lean();
+
+    // Aggregate playlist counts from TutorPlayList by author email
+    const contributorEmails = contributors.map((c) => c.email);
+    const playlistCountsByEmail = await TutorPlayList.aggregate([
+      { $match: { email: { $in: contributorEmails } } },
+      { $group: { _id: "$email", count: { $sum: 1 } } },
+    ]).exec();
+    const playlistCountMap = playlistCountsByEmail.reduce((acc, item) => {
+      acc[item._id] = item.count;
+      return acc;
+    }, {});
+
+    // Format contributor data
+    const formattedContributors = contributors.map((contributor) => ({
+      community: contributor.community || [],
+      email: contributor.email,
+      followerscount: contributor.followers ? contributor.followers.length : 0,
+      followingcount: contributor.following ? contributor.following.length : 0,
+      name: contributor.authorname,
+      personalLinks: contributor.personalLinks || [],
+      playlistCount: playlistCountMap[contributor.email] || 0,
+      postsCount: contributor.posts ? contributor.posts.length : 0,
+      profile: contributor.profile,
+      role: contributor.role,
+    }));
+
+    // Count total contributors
+    const totalAdmins = await Author.countDocuments({
+      role: { $in: ["admin"] },
+    });
+
+    res.status(200).json({
+      page,
+      limit,
+      totalAdmins,
+      totalPages: Math.ceil(totalAdmins / limit),
+      admins: formattedContributors,
+    });
+  } catch (err) {
+    console.error("Error fetching admins:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
+
+
+
+
 module.exports = {
   getCategoryAnalytics,
   getAppSummary,
   getMonthlyPostCounts,
   getTopContributors,
   getContributors,
-  getStudents
+  getStudents,
+  getCoordinators,
+  getAdmins
 };
