@@ -516,6 +516,7 @@ const getStudents = async (req, res) => {
       personalLinks: contributor.personalLinks || [],
       profile: contributor.profile,
       role: contributor.role,
+      id :contributor._id.toString(), 
     }));
 
     // console.log("Formatted students:", formattedContributors);
@@ -591,6 +592,7 @@ const getCoordinators = async (req, res) => {
       postsCount: contributor.posts ? contributor.posts.length : 0,
       profile: contributor.profile,
       role: contributor.role,
+      id: contributor._id.toString(),
     }));
 
     // Count total contributors
@@ -665,6 +667,7 @@ const getAdmins = async (req, res) => {
       postsCount: contributor.posts ? contributor.posts.length : 0,
       profile: contributor.profile,
       role: contributor.role,
+      id :contributor._id.toString(),
     }));
 
     // Count total contributors

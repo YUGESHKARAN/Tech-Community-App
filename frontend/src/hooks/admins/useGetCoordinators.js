@@ -15,7 +15,7 @@ const useGetCoordinators = (email) => {
   const isFetchingRef = useRef(false);
   const hasMoreRef = useRef(true);
 
-  const limit = 3;
+  const limit = 50;
 
   const fetchCoordinators = useCallback(async () => {
     const currentPage = pageRef.current;
@@ -89,7 +89,7 @@ const useGetCoordinators = (email) => {
     };
   }, [loadMore, loading]);
 
-  return { coordinators, totalCoordinators, loading, error, hasMore, loadMore };
+  return { coordinators, totalCoordinators, loading, error, hasMore, loadMore, setCoordinators };
 };
 
 export default useGetCoordinators;

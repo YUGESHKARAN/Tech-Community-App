@@ -16,7 +16,7 @@ const useGetAdmins = (email) => {
   const isFetchingRef = useRef(false);
   const hasMoreRef = useRef(true);
 
-  const limit = 3;
+  const limit = 20;
 
   const fetchAdmins = useCallback(async () => {
     const currentPage = pageRef.current;
@@ -90,7 +90,7 @@ const useGetAdmins = (email) => {
     };
   }, [loadMore, loading]);
 
-  return { admins, totalAdmins, loading, hasMore, loadMore };
+  return { admins, totalAdmins, loading, hasMore, loadMore, setAdmins };
 };
 
 export default useGetAdmins;

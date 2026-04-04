@@ -191,25 +191,26 @@ function NavBar() {
       <ul className="xl:flex justify-center text-xs hidden font-semibold text-gray-300 w-3/5  items-center gap-10">
 
 
-      {role === "admin" && 
-        <NavIcon
-              to="/dashboard"
-              icon={<MdDashboard />}
-              label=" Control Panel"
-              
-            />
+      {
+        role === "admin" && 
+          <NavIcon
+            to="/dashboard"
+            icon={<MdDashboard />}
+            label=" Control Panel"
+            
+          />
         }
-{     role!=='admin' &&  <NavIcon
+        {role!=='admin' &&  <NavIcon
               to="/home"
               icon={<IoHome />}
               label="Home"
               
             />}
 
-            {     role=='admin' &&  <NavIcon
+            {role=='admin' &&  <NavIcon
               to="/home"
               icon={<IoHome />}
-              label="Borowse"
+              label="Browse"
               
             />}
 

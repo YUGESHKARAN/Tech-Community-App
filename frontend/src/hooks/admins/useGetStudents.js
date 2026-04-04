@@ -14,9 +14,9 @@ const useGetStudents = (email) => {
   const isFetchingRef = useRef(false);
   const hasMoreRef = useRef(true);
 
-  const limit = 10;
+  const limit = 50;
 
-  const fetchContributors = useCallback(async () => {
+  const fetchStudents = useCallback(async () => {
     const currentPage = pageRef.current;
     if (!email || isFetchingRef.current || !hasMoreRef.current) return;
 
@@ -52,9 +52,9 @@ const useGetStudents = (email) => {
 
   const loadMore = useCallback(() => {
     if (!isFetchingRef.current && hasMoreRef.current && !loading) {
-      fetchContributors();
+      fetchStudents();
     }
-  }, [fetchContributors, loading]);
+  }, [fetchStudents, loading]);
 
   useEffect(() => {
     setStudents([]);
@@ -65,8 +65,8 @@ const useGetStudents = (email) => {
     setError(null);
     setTotalStudents(0);
 
-    fetchContributors();
-  }, [email, fetchContributors]);
+    fetchStudents();
+  }, [email, fetchStudents]);
 
   useEffect(() => {
     let rafId = 0;
@@ -88,7 +88,7 @@ const useGetStudents = (email) => {
     };
   }, [loadMore, loading]);
 
-  return { students, totalStudents, loading, error, hasMore, loadMore };
+  return { students, totalStudents, loading, error, hasMore, loadMore, setStudents };
 };
 
 export default useGetStudents;
