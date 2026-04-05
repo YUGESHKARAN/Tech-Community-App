@@ -26,7 +26,8 @@ const {
   deleteAuthorByAdmin,
   deleteAllAnnouncementByAdmin,
   getAuthorsByDomain,
-  sendRegistrationOTP
+  sendRegistrationOTP,
+  getAllAuthorsByDomain
   // getAllAnnouncements
   
 } = require("../controllers/authorDetail.Controller");
@@ -49,6 +50,7 @@ router.get("/", readLimiter, authenticateToken,getAllAuthor);   // used in TechC
 router.get("/profiles", readLimiter, authenticateToken, getProfile);
 router.get("/:email", readLimiter, authenticateToken, getSingleAuthor);
 router.get("/getAuthorsByDomain/:category(*)", readLimiter, authenticateToken,getAuthorsByDomain);
+router.get("/getAllAuthorsByDomain/:category(*)", readLimiter, authenticateToken,getAllAuthorsByDomain);
 router.get("/authoreByRole/:role", readLimiter, authenticateToken,getAuthorsByRole);
 
 router.put("/:email", limiter, authenticateToken, upload.single('profile'), updateAuthor);

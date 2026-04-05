@@ -1,26 +1,25 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import user from "../images/user.png";
 import NavBar from "../ui/NavBar";
-import { Link } from "react-router-dom";
 import axiosInstance from "../instances/Axiosinstances";
 import Footer from "../ui/Footer";
-import useGetAuthorPosts from "../hooks/useGetAuthorPost";
-import useFetchCoordinators from "../hooks/useFetchCoordinators";
 import getTimeAgo from "../components/DateCovertion";
-import { IoEye, IoShareSocial } from "react-icons/io5";
 import blog1 from "../images/img_not_found.png";
 import { useNavigate } from "react-router-dom";
 import useGetPostsByCategory from "../hooks/useGetPostsByCategory";
 import useGetAuthorsPostsCategories from "../hooks/useGetAuthorsPostsCategories";
 import BlogMiniSkeleton from "../components/loaders/BlogMiniSkeleton";
 import Fuse from "fuse.js";
+import useGetAllAuthorsByDomain from "../hooks/useGetAllAuthorsByDomain";
 function TutorPlaylist() {
   const email = localStorage.getItem("email");
   const role = localStorage.getItem("role");
   const [domain, setDomain] = useState("");
   const { posts, loading, hasMore } = useGetPostsByCategory(email, domain);
 
-  const { coordinators, fetchCoordinators } = useFetchCoordinators(role);
+  // const { coordinators, fetchCoordinators } = useFetchCoordinators(role);
+  
+  const { coordinators } = useGetAllAuthorsByDomain(domain);
   const [title, setTitle] = useState("");
   const [postIds, setPostIds] = useState([]);
   const [searchCollaborator, setSearchCollaborator] = useState("");
@@ -95,10 +94,12 @@ function TutorPlaylist() {
 
     return coordinators.filter(
       (coord) =>
-        Array.isArray(coord?.community) &&
-        coord.community.includes(domain) &&
+
         coord.email !== email,
     );
+    // const finalCoordinators = coordinators.filter((coord) => coord.email !== email);
+
+    // return [...finalCoordinators]
   }, [coordinators, domain]);
 
 
@@ -121,7 +122,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchCollaborator);
 
   const searchedCoordinators = useMemo(() => {
    
-    let filtered = [...filteredCoordinators]
+    let filtered = [...filteredCoordinators].filter((author)=> author.email !== email);
      
     // if (!searchCollaborator) return filteredCoordinators;
     // const query = searchCollaborator.toLowerCase();
@@ -176,7 +177,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchCollaborator);
   };
 
   // console.log("posts", posts);
-  // console.log("domain", domain);
+  console.log("domain", domain);
 
   console.log('filteredCoordinators', filteredCoordinators)
 

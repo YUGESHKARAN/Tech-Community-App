@@ -37,8 +37,6 @@ const s3 = new S3Client({
   region: bucketRegion,
 });
 
-
-
 // ----------------------------------------------------------------------
 
 // const addAuthor = async (req, res) => {
@@ -71,13 +69,13 @@ const s3 = new S3Client({
 //   }
 // };
 
-const {sendOTPEmail} = require("../utils/emailService");
-const {saveOTP, verifyOTP} = require("../utils/otpStore");
+const { sendOTPEmail } = require("../utils/emailService");
+const { saveOTP, verifyOTP } = require("../utils/otpStore");
 
 // ─── Step 1: Validate form data & send OTP ───────────────────────────────────
 const sendRegistrationOTP = async (req, res) => {
   const { authorname, email, password } = req.body;
-  console.log("email", email)
+  console.log("email", email);
 
   if (!email.endsWith("@dsuniversity.ac.in")) {
     return res.status(400).json({ message: "Use University Email" });
@@ -87,7 +85,7 @@ const sendRegistrationOTP = async (req, res) => {
   }
 
   try {
-    const authorExist = await Author.findOne({ email: { $eq: email }});
+    const authorExist = await Author.findOne({ email: { $eq: email } });
     if (authorExist) {
       return res.status(400).json({ message: "Author already exists" });
     }
@@ -99,7 +97,7 @@ const sendRegistrationOTP = async (req, res) => {
     res.status(200).json({ message: "OTP sent to your university email" });
   } catch (err) {
     res.status(500).json({ message: "Failed to send OTP", error: err.message });
-    console.log("registration error", err.message)
+    console.log("registration error", err.message);
   }
 };
 
@@ -117,7 +115,7 @@ const addAuthor = async (req, res) => {
   }
 
   try {
-    const authorExist = await Author.findOne({ email: { $eq: email }});
+    const authorExist = await Author.findOne({ email: { $eq: email } });
     if (authorExist) {
       return res.status(400).json({ message: "Author already exists" });
     }
@@ -127,12 +125,13 @@ const addAuthor = async (req, res) => {
 
     res.status(201).json({ message: "Author created successfully", newAuthor });
   } catch (err) {
-    res.status(500).json({ message: "Error creating author", error: err.message });
+    res
+      .status(500)
+      .json({ message: "Error creating author", error: err.message });
   }
 };
 
 // --------------------------------------------------------------------------
-
 
 const getAllAuthor = async (req, res) => {
   try {
@@ -143,18 +142,16 @@ const getAllAuthor = async (req, res) => {
   }
 };
 
-const getAuthorsByRole = async(req,res)=>{
-  try{
-    const {role} = req.params;
-    const authors = await Author.find({role:role});
+const getAuthorsByRole = async (req, res) => {
+  try {
+    const { role } = req.params;
+    const authors = await Author.find({ role: role });
 
-    res.status(200).json({authors})
+    res.status(200).json({ authors });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
-  catch(err)
-  {
-    res.status(500).json({message:err.message})
-  }
-}
+};
 
 // const getProfile = async (req, res) => {
 //   try {
@@ -170,7 +167,6 @@ const getAuthorsByRole = async(req,res)=>{
 //     };
 
 //     const shuffledAuthors = shuffleArray(authorsProfile);
-
 
 //     const data = shuffledAuthors.map((author) => ({
 //       authorName: author.authorname,
@@ -188,7 +184,6 @@ const getAuthorsByRole = async(req,res)=>{
 //   }
 // };
 
-
 const getProfile = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -197,10 +192,7 @@ const getProfile = async (req, res) => {
     // console.log("authors page:", page, "limit:", limit);
 
     // Fetch only required batch
-    const authorsProfile = await Author.find({})
-      .skip(skip)
-      .limit(limit)
-      .lean();
+    const authorsProfile = await Author.find({}).skip(skip).limit(limit).lean();
 
     // Shuffle only this batch (not entire DB)
     const shuffleArray = (arr) => {
@@ -240,8 +232,6 @@ const getProfile = async (req, res) => {
   }
 };
 
-
-
 const getSingleAuthor = async (req, res) => {
   try {
     const author = await Author.findOne({ email: req.params.email });
@@ -263,21 +253,21 @@ const getSingleAuthor = async (req, res) => {
 //      category = decodeURIComponent(category);
 //       const authors = await Author.find({})
 //       const filteredAuthors = authors.filter((author) => author.community.includes(category));
-      
+
 //       res.status(200).json({filteredAuthors});
 //   }
 //   catch(err)
 //   {
 
-//     console.log("Error fetching authors by domain:", err.message);  
+//     console.log("Error fetching authors by domain:", err.message);
 //     res.status(500).json({message:"Server error", error: err.message})
 //   }
 // }
 const getAuthorsByDomain = async (req, res) => {
   try {
     let { category } = req.params;
-    let { page = 1, limit = 20 } = req.query;  // ← NEW
-  //  console.log("domain page", page, "limit", limit);  
+    let { page = 1, limit = 20 } = req.query; // ← NEW
+    //  console.log("domain page", page, "limit", limit);
     category = decodeURIComponent(category);
 
     page = parseInt(page);
@@ -285,20 +275,70 @@ const getAuthorsByDomain = async (req, res) => {
 
     // Filter directly in MongoDB (more efficient)
     const filteredAuthors = await Author.find({
-      community: { $in: [category] }
+      community: { $in: [category] },
     })
       .skip((page - 1) * limit)
       .limit(limit);
 
+    const shuffleArray = (arr) => {
+      const a = arr.slice();
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    };
+
+    const shuffledAuthors = shuffleArray(filteredAuthors);
+
+    const data = shuffledAuthors.map((author) => ({
+      authorName: author.authorname,
+      email: author.email,
+      postCount: author.posts?.length || 0,
+      profile: author.profile,
+      followers: author.followers,
+      role: author.role,
+      profileLinks: author.personalLinks,
+      community: author.community,
+    }));
+
     const total = await Author.countDocuments({
-      community: { $in: [category] }
+      community: { $in: [category] },
+    });
+
+    res.status(200).json({
+      filteredAuthors: data,
+      currentPage: page,
+      totalPages: Math.ceil(total / limit),
+      total,
+    });
+  } catch (err) {
+    console.log("Error fetching authors by domain:", err.message);
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
+const getAllAuthorsByDomain = async (req, res) => {
+  try {
+    let { category } = req.params;
+
+    category = decodeURIComponent(category);
+
+    const filteredAuthors = await Author.find(
+      {
+        community: { $in: [category] },
+        role: { $in: ["admin", "coordinator"] },
+      },
+      "authorname email profile",
+    );
+
+    const total = await Author.countDocuments({
+      community: { $in: [category] },
     });
 
     res.status(200).json({
       filteredAuthors,
-      currentPage: page,
-      totalPages: Math.ceil(total / limit),
-      total
+      total,
     });
   } catch (err) {
     console.log("Error fetching authors by domain:", err.message);
@@ -333,7 +373,7 @@ const updateAuthor = async (req, res) => {
         // Replace existing links or add new ones
         incomingLinks.forEach((newLink) => {
           const existingIndex = parsedLinks.findIndex(
-            (existing) => existing._id.toString() === newLink._id.toString()
+            (existing) => existing._id.toString() === newLink._id.toString(),
           );
 
           if (existingIndex !== -1) {
@@ -399,7 +439,7 @@ const removePersonalLinks = async (req, res) => {
     const initialLength = author.personalLinks.length;
 
     author.personalLinks = author.personalLinks.filter(
-      (link) => link._id.toString() !== linkId.toString()
+      (link) => link._id.toString() !== linkId.toString(),
     );
     if (author.personalLinks.length === initialLength) {
       return res.status(404).json({ message: "Link not found" });
@@ -421,7 +461,7 @@ const updateAPassword = async (req, res) => {
 
   try {
     // Find the author by email
-    const author = await Author.findOne({ email: { $eq: email }});
+    const author = await Author.findOne({ email: { $eq: email } });
 
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
@@ -435,7 +475,6 @@ const updateAPassword = async (req, res) => {
 
     // Return a success message with status 200
     res.status(200).json({ message: "Password updated successfully", data });
-    
   } catch (err) {
     // Handle server errors
     console.error("Error updating password:", err);
@@ -459,7 +498,7 @@ const deleteAuthor = async (req, res) => {
     }
 
     // Find author first (do NOT delete before verifying password)
-    const author = await Author.findOne({ email: { $eq: email }});
+    const author = await Author.findOne({ email: { $eq: email } });
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
     }
@@ -477,7 +516,7 @@ const deleteAuthor = async (req, res) => {
           new DeleteObjectCommand({
             Bucket: bucketName,
             Key: author.profile,
-          })
+          }),
         );
       } catch (s3Err) {
         console.error("Failed to delete profile from S3:", s3Err);
@@ -489,14 +528,16 @@ const deleteAuthor = async (req, res) => {
     await Author.deleteOne({ email: author.email });
 
     console.log("author deleted", author.email);
-    return res.status(200).json({ message: "Author deleted successfully", author });
+    return res
+      .status(200)
+      .json({ message: "Author deleted successfully", author });
   } catch (err) {
     console.error("Error deleting author:", err);
-    return res.status(500).json({ message: "Server error", error: err.message });
+    return res
+      .status(500)
+      .json({ message: "Server error", error: err.message });
   }
 };
-
-
 
 const deleteAuthorByAdmin = async (req, res) => {
   try {
@@ -521,7 +562,9 @@ const deleteAuthorByAdmin = async (req, res) => {
 
     //  Verify role
     if (admin.role !== "admin") {
-      return res.status(403).json({ message: "You are not allowed to perform this action" });
+      return res
+        .status(403)
+        .json({ message: "You are not allowed to perform this action" });
     }
 
     //  Check password
@@ -531,7 +574,7 @@ const deleteAuthorByAdmin = async (req, res) => {
     }
 
     //  Delete author
-    const author = await Author.findOneAndDelete({ email: { $eq: email }});
+    const author = await Author.findOneAndDelete({ email: { $eq: email } });
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
     }
@@ -542,18 +585,21 @@ const deleteAuthorByAdmin = async (req, res) => {
         new DeleteObjectCommand({
           Bucket: bucketName,
           Key: author.profile,
-        })
+        }),
       );
     }
 
     console.log("Author deleted successfully:", author.email);
-    return res.status(200).json({ message: "Author deleted successfully", author });
+    return res
+      .status(200)
+      .json({ message: "Author deleted successfully", author });
   } catch (err) {
     console.error("Error deleting author:", err);
-    return res.status(500).json({ message: "Internal server error", error: err.message });
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: err.message });
   }
 };
-
 
 const updateFollowers = async (req, res) => {
   try {
@@ -566,8 +612,10 @@ const updateFollowers = async (req, res) => {
       return res.status(400).json({ message: "Both emails are required" });
     }
 
-    const author = await Author.findOne({ email: { $eq: email }});
-    const followerAuthor = await Author.findOne({ email: { $eq: emailAuthor }});
+    const author = await Author.findOne({ email: { $eq: email } });
+    const followerAuthor = await Author.findOne({
+      email: { $eq: emailAuthor },
+    });
 
     if (!author || !followerAuthor) {
       return res.status(404).json({ message: "Author not found" });
@@ -577,7 +625,7 @@ const updateFollowers = async (req, res) => {
     if (author.followers.includes(emailAuthor)) {
       author.followers = author.followers.filter((f) => f !== emailAuthor);
       followerAuthor.following = followerAuthor.following.filter(
-        (f) => f !== email
+        (f) => f !== email,
       );
 
       // await author.save();
@@ -618,7 +666,7 @@ const sendOtp = async (req, res) => {
   const { email } = req.body;
 
   try {
-    const user = await Author.findOne({ email: { $eq: email }});
+    const user = await Author.findOne({ email: { $eq: email } });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -671,7 +719,7 @@ const resetPassword = async (req, res) => {
   const { email, otp, newPassword } = req.body;
 
   try {
-    const user = await Author.findOne({ email: { $eq: email }});
+    const user = await Author.findOne({ email: { $eq: email } });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -696,7 +744,7 @@ const resetPassword = async (req, res) => {
 const notificationAuthor = async (req, res) => {
   const { email } = req.body;
   try {
-    const author = await Author.findOne({ email: { $eq: email }});
+    const author = await Author.findOne({ email: { $eq: email } });
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
     }
@@ -713,14 +761,14 @@ const notificationAuthorDelete = async (req, res) => {
 
   try {
     // Find the author by email
-    const author = await Author.findOne({ email: { $eq: email }});
+    const author = await Author.findOne({ email: { $eq: email } });
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
     }
 
     // Filter out the notification with the given notificationId
     const updatedNotifications = author.notification.filter(
-      (notif) => notif._id.toString() !== notificationId
+      (notif) => notif._id.toString() !== notificationId,
     );
 
     // If no notification matches the provided ID
@@ -747,7 +795,7 @@ const notificationAuthorDeleteAll = async (req, res) => {
 
   try {
     // Find the author by email
-    const author = await Author.findOne({ email: { $eq: email }});
+    const author = await Author.findOne({ email: { $eq: email } });
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
     }
@@ -892,7 +940,7 @@ const addAnnouncement = async (req, res) => {
   } = req.body;
   // const poster = req.file ? req.file.originalname : "";
   try {
-    const author = await Author.findOne({ email: { $eq: email }});
+    const author = await Author.findOne({ email: { $eq: email } });
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
     }
@@ -913,7 +961,9 @@ const addAnnouncement = async (req, res) => {
     }
     const eventFolder = "Events/";
     // const uniqueFilename = `${eventFolder}${uuidv4()}-${poster}`;
-    const uniqueFilename = req.file ? `${eventFolder}${uuidv4()}-${req.file.originalname}` : "";
+    const uniqueFilename = req.file
+      ? `${eventFolder}${uuidv4()}-${req.file.originalname}`
+      : "";
 
     if (req.file) {
       // S3 Integration
@@ -964,7 +1014,7 @@ const addAnnouncement = async (req, res) => {
       // send to members of selected communities OR admins
       filter.$or = [
         { community: { $in: selectedCommunities } },
-        { role: "admin" }
+        { role: "admin" },
       ];
     }
 
@@ -1015,7 +1065,7 @@ const addAnnouncement = async (req, res) => {
     // Send emails sequentially after response
     const sendEmailsSequentially = async () => {
       console.log(
-        `📨 Sending announcement emails to ${recipientEmails.length} recipients...`
+        `📨 Sending announcement emails to ${recipientEmails.length} recipients...`,
       );
       for (const recipient of recipientEmails) {
         try {
@@ -1036,7 +1086,7 @@ const addAnnouncement = async (req, res) => {
         } catch (err) {
           console.error(
             `❌ Failed to send email to ${recipient}:`,
-            err.message
+            err.message,
           );
         }
       }
@@ -1069,7 +1119,6 @@ const addAnnouncement = async (req, res) => {
 //       // console.log("admin role", admin)
 //       return res.status(403).json({message:"access denied"})
 //     }
-
 
 //     // optional query filters: ?deliveredTo=coordinators|community|all
 //     const { deliveredTo } = req.query;
@@ -1112,7 +1161,7 @@ const deleteAnnouncement = async (req, res) => {
     // Find the author who has the announcement and remove it
     const result = await Author.updateOne(
       { "announcement._id": announcementId },
-      { $pull: { announcement: { _id: announcementId } } }
+      { $pull: { announcement: { _id: announcementId } } },
     );
 
     if (result.modifiedCount === 0) {
@@ -1133,7 +1182,7 @@ const updateRole = async (req, res) => {
   try {
     console.log("logged");
 
-    const author = await Author.findOne({ email: { $eq: email }});
+    const author = await Author.findOne({ email: { $eq: email } });
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
     }
@@ -1153,7 +1202,7 @@ const updateTechCommunity = async (req, res) => {
   // console.log("community called");
 
   try {
-    const author = await Author.findOne({ email: { $eq: email }});
+    const author = await Author.findOne({ email: { $eq: email } });
 
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
@@ -1182,7 +1231,7 @@ const updateTechCommunityCoordinator = async (req, res) => {
   console.log("communities called", email);
 
   try {
-    const author = await Author.findOne({ email: { $eq: email }});
+    const author = await Author.findOne({ email: { $eq: email } });
 
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
@@ -1201,7 +1250,6 @@ const updateTechCommunityCoordinator = async (req, res) => {
   }
 };
 
-
 const deleteAllAnnouncementByAdmin = async (req, res) => {
   try {
     const { email } = req.params;
@@ -1211,7 +1259,7 @@ const deleteAllAnnouncementByAdmin = async (req, res) => {
       return res.status(400).json({ message: "author email required" });
     }
 
-    const admin = await Author.findOne({ email: { $eq: email }});
+    const admin = await Author.findOne({ email: { $eq: email } });
     if (!admin) {
       return res.status(404).json({ message: "Author not found" });
     }
@@ -1257,7 +1305,8 @@ const deleteAllAnnouncementByAdmin = async (req, res) => {
         .map((r, i) => ({
           status: r.status,
           key: uniqueKeys[i],
-          reason: r.status === "rejected" ? r.reason?.message || r.reason : undefined,
+          reason:
+            r.status === "rejected" ? r.reason?.message || r.reason : undefined,
         }))
         .filter((r) => r.status === "rejected");
     }
@@ -1265,7 +1314,7 @@ const deleteAllAnnouncementByAdmin = async (req, res) => {
     // Clear all announcements from DB (remove announcements array for authors who have it)
     await Author.updateMany(
       { "announcement.0": { $exists: true } },
-      { $set: { announcement: [] } }
+      { $set: { announcement: [] } },
     );
 
     return res.status(200).json({
@@ -1277,10 +1326,11 @@ const deleteAllAnnouncementByAdmin = async (req, res) => {
     });
   } catch (err) {
     console.error("Error deleting all announcements:", err);
-    return res.status(500).json({ message: "Server error", error: err.message });
+    return res
+      .status(500)
+      .json({ message: "Server error", error: err.message });
   }
 };
-
 
 module.exports = {
   addAuthor,
@@ -1306,7 +1356,7 @@ module.exports = {
   removePersonalLinks,
   deleteAuthorByAdmin,
   deleteAllAnnouncementByAdmin,
-  getAuthorsByDomain
+  getAuthorsByDomain,
+  getAllAuthorsByDomain,
   // getAllAnnouncements
-  
 };

@@ -236,8 +236,8 @@ function SingleTechDomainDetails() {
                           </b>{" "}
                           Followers
                         </span>
-                     {author?.posts.length>0 &&   <span>
-                          <b className="text-white">{author?.posts.length}</b> Posts
+                     {author?.postCount>0 &&   <span>
+                          <b className="text-white">{author?.postCount}</b> Posts
                         </span>}
                       </div>
 
