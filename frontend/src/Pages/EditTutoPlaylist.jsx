@@ -13,6 +13,7 @@ import useGetAuthorsPostsCategories from "../hooks/useGetAuthorsPostsCategories"
 import useGetPostsByCategory from "../hooks/useGetPostsByCategory";
 import BlogMiniSkeleton from "../components/loaders/BlogMiniSkeleton";
 import Fuse from "fuse.js";
+import useGetAllAuthorsByDomain from "../hooks/useGetAllAuthorsByDomain";
 function EditTutorPlaylist() {
   const email = localStorage.getItem("email");
   const role = localStorage.getItem("role");
@@ -20,7 +21,7 @@ function EditTutorPlaylist() {
   const [domain, setDomain] = useState("");
   // const { posts, getAuthorPosts } = useGetAuthorPosts(email);
   
-  const { coordinators, fetchCoordinators } = useFetchCoordinators(role);
+  const { coordinators } = useGetAllAuthorsByDomain(domain);
   const [title, setTitle] = useState("");
   const [postIds, setPostIds] = useState([]);
   // const [filteredCoordinators, setFilteredCoordinators] = useState([])
@@ -129,7 +130,7 @@ function EditTutorPlaylist() {
 
     return coordinators.filter(
       (coord) =>
-        Array.isArray(coord?.community) && coord.community.includes(domain) && coord.email !== email
+    coord.email !== email
     );
   }, [coordinators, domain]);
 
