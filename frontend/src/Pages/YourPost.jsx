@@ -22,7 +22,7 @@ import PillLoader from "../components/loaders/PillSkeleton";
 import Fuse from "fuse.js";
 import highlightText from "../hooks/highlightText";
 import toast from "../components/toaster/Toast"
-
+import user from "../images/user.png";
 function YourPost() {
   const [searchTerm, setSearchTerm] = useState("");
   const [posts, setPosts] = useState([]);

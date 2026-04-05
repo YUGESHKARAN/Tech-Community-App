@@ -226,7 +226,7 @@ const handleDelete = (msgId) => {
   setMessages((prev) => prev.filter((m) => m._id !== msgId));
   socket.emit("deleteMessage", { postId, messageId: msgId });
   setTimeout(()=>{
-    toast.success("Deleted", "Message removed successfully")
+    toast.success("Deleted", "Comment removed successfully")
   },1000)
 };
 
@@ -241,7 +241,7 @@ const handleEdit = (msgId) => {
   setEditValue("");
   socket.emit("editMessage", { postId, messageId: msgId, message: updated });
   setTimeout(()=>{
-    toast.success("Edited", "Message edited successfully")
+    toast.success("Edited", "Comment edited successfully")
   },1000)
 };
 

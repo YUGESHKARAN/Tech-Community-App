@@ -293,11 +293,11 @@ function Control() {
           </option>
           
            <option className="bg-gray-900" value="coordinator">
-            Coordinator
+            Contributors
           </option>
          
           <option className="bg-gray-900" value="student">
-            Student
+            Users
           </option>
          
         </select>
@@ -458,6 +458,7 @@ function Control() {
           </div>
         ))}
       </div> */}
+      
 
       {admins.length > 0 ? (
         <div
@@ -501,7 +502,7 @@ function Control() {
                     </p>
                   </span>
                 </Link>
-                <span
+                {email!==author.email && <span
                   // onClick={() => deleteAuthorByAdmin(author.email)}
                   onClick={() => {
                     setAuthorEmail(author.email);
@@ -510,7 +511,7 @@ function Control() {
                   className="text-red-400 cursor-pointer"
                 >
                   <MdDeleteForever />
-                </span>
+                </span>}
               </div>
               {/* <p className="text-gray-600 text-xs md:text-sm mt-2">
               {author.email}
@@ -547,8 +548,8 @@ function Control() {
                   onChange={(e) => handleRoleChange(author.id, e.target.value)}
                 >
                   <option value="admin">Admin</option>
-                  <option value="coordinator">Coordinator</option>
-                  <option value="student">Student</option>
+                  <option value="coordinator">Contributors</option>
+                  <option value="student">Users</option>
                 </select>
 
                 <button
@@ -559,7 +560,7 @@ function Control() {
                 </button>
               </div>
 
-              {author.role === "coordinator" && (
+              {/* {author.role === "coordinator" && (
                 <div className="mt-4 text-white">
                   <p className="mb-1 text-sm font-semibold">
                     Assign Tech Communities:
@@ -596,7 +597,42 @@ function Control() {
                     Save Communities
                   </button>
                 </div>
-              )}
+              )} */}
+                <div className="mt-4 text-white">
+                <p className="mb-3 text-sm ">Assign Tech Communities:</p>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                  {communities.map((community, idx) => (
+                    <label
+                      key={idx}
+                      className="flex items-center space-x-2 text-xs"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={
+                          assignedCommunities[author.email]?.includes(
+                            community.categoryname,
+                          ) || false
+                        }
+                        onChange={() =>
+                          handleCommunityCheckbox(
+                            author.email,
+                            community.categoryname,
+                          )
+                        }
+                        className="form-checkbox cursor-pointer accent-emerald-500"
+                      />
+                      <span>{community.categoryname}</span>
+                    </label>
+                  ))}
+                </div>
+                <button
+                  onClick={() => updateAssignedCommunities(author.email)}
+                  className="md:px-5 px-3 py-2 mt-4 bg-emerald-600/20 hover:bg-emerald-500/20
+                         rounded-md text-xs md:text-xs  text-emerald-400 transition-all duration-300 disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed"
+                >
+                  Save Communities
+                </button>
+              </div>
             </div>
           ))
           ) : (
@@ -785,7 +821,7 @@ function Control() {
             : "hidden"
         }`}
       >
-        Coordinators
+        Contributors
       </h1>
 
       {coordinators.length > 0 ? (
@@ -928,7 +964,7 @@ function Control() {
           ) : (
             <div className="col-span-full flex flex-col items-center justify-center py-12">
               <p className="text-center text-gray-400 text-sm md:text-base">
-                {searchQuery ? "No coordinators found matching your search" : "No coordinators available"}
+                {searchQuery ? "No contributors found matching your search" : "No contributors available"}
               </p>
             </div>
           )}
@@ -947,7 +983,7 @@ function Control() {
 
           { searchQuery.length === 0 && !coordinatorHashMore && (
             <p className="text-center col-span-full py-4 text-gray-500">
-              No more Coordinators
+              No more Contributors
             </p>
           )}
         </div>
@@ -1049,7 +1085,7 @@ function Control() {
             : "hidden"
         }`}
       >
-        Students
+        Users
       </h1>
 
       {students.length > 0 ? (
@@ -1137,7 +1173,7 @@ function Control() {
           ) : (
             <div className="col-span-full flex flex-col items-center justify-center py-12">
               <p className="text-center text-gray-400 text-sm md:text-base">
-                {searchQuery ? "No students found matching your search" : "No students available"}
+                {searchQuery ? "No users found matching your search" : "No users available"}
               </p>
             </div>
           )}
@@ -1156,7 +1192,7 @@ function Control() {
 
           { searchQuery.length === 0 && !studentHashMore && (
             <p className="text-center col-span-full py-4 text-gray-500">
-              No more Students
+              No more Users
             </p>
           )}
         </div>

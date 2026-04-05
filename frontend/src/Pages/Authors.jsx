@@ -373,8 +373,8 @@ const recommendedAuthors = useMemo(() => {
           "
         >
           <option value="">All Roles</option>
-          <option value="student">Student</option>
-          <option value="coordinator">Coordinator</option>
+          <option value="coordinator">Contributors</option>
+          <option value="student">Users</option>
         </select>
       </div>
 
@@ -384,7 +384,7 @@ const recommendedAuthors = useMemo(() => {
           .length > 0 && (
           // <h2 className="text-center text-2xl md:text-4xl font-semibold mb-6 bg-gradient-to-r from-orange-400 to-yellow-300 bg-clip-text text-transparent">
           <h2 className="md:text-left text-center w-full text-2xl md:text-4xl font-semibold my-6 text-white">
-            Student Coordinators
+            Contributors
           </h2>
         )}
 
@@ -480,7 +480,7 @@ const recommendedAuthors = useMemo(() => {
             loading && (
               <div className="col-span-full">
                 <h2 className="md:text-left text-center w-full text-2xl md:text-4xl font-semibold my-6 text-white">
-                  Student Coordinators
+                  Contributors
                 </h2>
                 <CoordinatorGridSkeleton />
               </div>
@@ -499,7 +499,7 @@ const recommendedAuthors = useMemo(() => {
         {filteredAuthors.filter((author) => author.role === "student").length >
           0 && (
           <h2 className={`md:text-left text-center w-full  text-2xl md:text-4xl font-semibold text-white ${roleFilter=='student'?'mt-6':' mt-16'}`}>
-            Students
+            Users
           </h2>
         )}
 
@@ -727,7 +727,7 @@ const recommendedAuthors = useMemo(() => {
     //   {/* Coordinators */}
     //   {filteredAuthors.filter((a) => a.role === "coordinator").length > 0 && (
     //     <h2 className="text-center text-xl md:text-2xl font-semibold text-white mb-6">
-    //       Student Coordinators
+    //       Contributors
     //     </h2>
     //   )}
 

@@ -143,7 +143,7 @@ function Dashboard() {
           <section className="space-y-3">
             {/* Row 1 — Users */}
             {!statsLoader ? (
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
                 <KPICard
                   label="Total Users"
                   value={statsSummary.totalUsers}
@@ -151,11 +151,11 @@ function Dashboard() {
                   icon={Users}
                   change="8.2%"
                   changePositive={true}
-                />
+                /> 
                 <KPICard
                   label="Admins"
                   value={statsSummary.admins}
-                  sub="Admins"
+                  sub="Chief Controllers"
                   icon={ShieldCheck}
                   accent="#ec4899"
                 />
@@ -163,7 +163,7 @@ function Dashboard() {
                 <KPICard
                   label="Coordinators"
                   value={statsSummary.coordinators}
-                  sub="Coordinators"
+                  sub="Contributors"
                   icon={UserCog}
                   accent="#f59e0b"
                   change="2.3%"
@@ -173,7 +173,7 @@ function Dashboard() {
                 <KPICard
                   label="Students"
                   value={statsSummary.students}
-                  sub="Students"
+                  sub="Users"
                   icon={GraduationCap}
                   accent="#3b82f6"
                   change="5.1%"
@@ -192,7 +192,7 @@ function Dashboard() {
             ) : (
               <KPISkeleton />
             )}
-          </section>
+          </section> 
 
           {/* ── ZONE 3: Analytics ──────────────────────────────────────── */}
           <section
@@ -754,7 +754,7 @@ const KPICard = ({
         <p className="md:text-sm text-xs font-semibold md:font-bold text-gray-100">
           {label}
         </p>
-        <p className="text-[10px] text-gray-500">{sub || label}</p>
+        <p className="text-[10px] text-gray-500 md:text-gray-400">{sub || label}</p>
       </div>
     </div>
     {/* Bottom — value + badge */}
@@ -873,7 +873,7 @@ const AuthorsTable = ({
   return (
     <div className="bg-[#0f172a] border border-[#1e293b] rounded-2xl md:w-full  flex flex-col md:overflow-x-hidden overflow-x-scroll md:flex-1">
       <TableHeader
-        title="Contributors"
+        title="Total Contributors"
         count={totalContributors}
         search={search}
         onSearch={setSearch}
@@ -1058,11 +1058,12 @@ const StudentsTable = ({
   );
 
   return (
-    <div className="bg-[#0f172a] border mt-4 md:mt-0 border-[#1e293b] rounded-2xl flex flex-col overflow-hidden md:w-[600px]">
+    <div className="bg-[#0f172a] border mt-4 md:mt-0 border-[#1e293b] rounded-2xl flex flex-col  overflow-hidden md:w-[600px]">
       <TableHeader
-        title="Students"
+        title="Total Students"
         count={totalStudents}
         search={search}
+        
         onSearch={setSearch}
       />
       <div className="overflow-hidden flex pb-4  flex-col">

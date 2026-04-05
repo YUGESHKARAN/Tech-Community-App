@@ -225,7 +225,7 @@ function ProfilePage() {
   {/* Stats */}
   <div className="flex justify-center gap-8 md:gap-6 mb-6">
 
-    {author.role === "coordinator" && (
+    {author.role !== "student" && followers?.length>0 && (
       <div>
         <p className="text-xs text-gray-400">Followers</p>
         <p className="text-lg md:text-xl font-semibold text-white">
@@ -234,7 +234,7 @@ function ProfilePage() {
       </div>
     )}
 
-    {author.role === "coordinator" && posts.length > 0 ? (
+    {author.role !== "student" && posts.length > 0 ? (
       <Link to={`/yourposts`}>
         <p className="text-xs text-gray-400 mb-1">Content</p>
         <button
@@ -250,7 +250,7 @@ function ProfilePage() {
         </button>
       </Link>
     ) : (
-      author.role === "coordinator" && (
+      author.role !== "student" && (
         <div>
           <p className="text-xs text-gray-400 mb-1">Content</p>
           <p className="text-sm text-gray-500">Yet to...</p>
@@ -258,14 +258,12 @@ function ProfilePage() {
       )
     )}
 
-    {author.role !== "admin" && (
-      <div>
+      {following?.length>0 && <div>
         <p className="text-xs text-gray-400">Following</p>
         <p className="text-lg md:text-xl font-semibold text-white">
           {following?.length ?? 0}
         </p>
-      </div>
-    )}
+      </div>}
   </div>
 
   {/* Tech Communities */}

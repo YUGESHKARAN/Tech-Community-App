@@ -103,7 +103,7 @@ function ViewSingleAuthor() {
   {/* Stats */}
   <div className="flex justify-center gap-8 md:gap-6 mb-6 text-sm">
     
-    {author.role === "coordinator" && (
+    {author.role !== "student" && followers?.length>0 && (
       <div className="flex flex-col items-center">
         <p className="text-neutral-400 text-xs uppercase tracking-wide">
           Followers
@@ -114,7 +114,7 @@ function ViewSingleAuthor() {
       </div>
     )}
 
-    {author.role === "coordinator" && posts.length > 0 ? (
+    {author.role !== "student" && posts.length > 0 ? (
       <Link to={`/singleAuthorPosts/${email}`} className="flex flex-col items-center group">
         <p className="text-neutral-400 text-xs uppercase tracking-wide">
           Content
@@ -142,7 +142,7 @@ function ViewSingleAuthor() {
       )
     )}
 
-    {author.role !== "admin" && (
+    {following?.length>0 && (
       <div className="flex flex-col items-center">
         <p className="text-neutral-400 text-xs uppercase tracking-wide">
           Following

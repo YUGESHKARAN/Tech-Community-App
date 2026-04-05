@@ -3,7 +3,7 @@ import { useAuth } from "../AuthContext";
 import { Link } from "react-router-dom";
 import {
   MdAnnouncement,
-  MdAppSettingsAlt,
+  MdManageAccounts,
   MdDataObject,
   MdGroups,
   MdLogout,
@@ -178,13 +178,20 @@ function NavBar() {
       // className="flex border-b border-slate-700/50 relative justify-between items-center  h-16 bg-gray-900 mb-2 px-5"
     >
       <div className="md:text-xl text-sm w-1/2 md:w-1/5 font-bold text-white">
-        <Link to="/home">
+       {role!=='admin'? <Link to="/home">
           <img
             src={bloglogo}
             className="w-10 md:w-30 rounded-full"
             alt="Blog Logo"
           />
-        </Link>
+        </Link>:
+         <Link to="/dashboard">
+          <img
+            src={bloglogo}
+            className="w-10 md:w-30 rounded-full"
+            alt="Blog Logo"
+          />
+        </Link>}
       </div>
 
       {/* Desktop Menu */}
@@ -196,7 +203,7 @@ function NavBar() {
           <NavIcon
             to="/dashboard"
             icon={<MdDashboard />}
-            label=" Control Panel"
+            label=" Analytics"
             
           />
         }
@@ -207,30 +214,33 @@ function NavBar() {
               
             />}
 
-            {role=='admin' &&  <NavIcon
+          
+
+             {role === "admin" && 
+        <NavIcon
+              to="/control"
+              icon={<MdManageAccounts />}
+              label=" Control Panel"
+              
+            />
+        }
+
+        {role=='admin' &&  <NavIcon
               to="/home"
               icon={<IoHome />}
               label="Browse"
               
             />}
 
-              {role === "coordinator" && (
+              {role !== "student" && (
         <NavIcon
               to="/workspace"
               icon={<BsPersonWorkspace />}
-              label=" My Workspace"
+              label="Workspace"
               
             />
         )}
 
-             {role === "admin" && 
-        <NavIcon
-              to="/control"
-              icon={<MdAppSettingsAlt />}
-              label=" Control Panel"
-              
-            />
-        }
          <NavIcon
               to="/community"
               icon={<MdGroups />}
@@ -241,7 +251,7 @@ function NavBar() {
               <NavIcon
               to="/authors"
               icon={<IoIosGitNetwork />}
-              label=" My Network"
+              label="Network"
               
             />
 
@@ -252,7 +262,7 @@ function NavBar() {
           <NavIcon
               to={`/bookMarkPage/${email}`}
               icon={<RiBookMarkedFill />}
-              label=" My Bookmark"
+              label="Bookmark"
               
             />
 
@@ -355,18 +365,26 @@ function NavBar() {
       >
         {/* ================= HEADER ================= */}
         <div className="flex items-center justify-between px-5 py-4">
-          <Link
+          {role!=='admin'?<Link
             to="/home"
             onClick={() => setIsSidebarOpen(false)}
             className="flex items-center gap-2"
           >
             <img src={bloglogo} alt="Logo" className="w-9 h-9 rounded-full" />
             {/* <span className="text-sm font-semibold tracking-wide">Home</span> */}
-          </Link>
+          </Link>:
+          <Link
+            to="/dashboard"
+            onClick={() => setIsSidebarOpen(false)}
+            className="flex items-center gap-2"
+          >
+            <img src={bloglogo} alt="Logo" className="w-9 h-9 rounded-full" />
+            {/* <span className="text-sm font-semibold tracking-wide">Home</span> */}
+          </Link>}
 
           <button
             onClick={() => setIsSidebarOpen(false)}
-            className="text-white/50 hover:text-white transition text-lg"
+            className="text-white/50 hover:text-white transition text-sm md:text-lg"
           >
             ✕
           </button>
@@ -391,7 +409,7 @@ function NavBar() {
           {/* {role === "admin" && (
             <NavIcon
               to="/control"
-              icon={<MdAppSettingsAlt />}
+              icon={<MdManageAccounts />}
               label="Controls"
               close={setIsSidebarOpen}
             />
@@ -403,6 +421,16 @@ function NavBar() {
             label="Community"
             close={setIsSidebarOpen}
           />
+
+          {
+            role === 'admin' &&
+             <NavIcon
+            to="/authors"
+            icon={<IoIosGitNetwork />}
+            label="My Network"
+            close={setIsSidebarOpen}
+          />
+          }
             <NavIcon
               to={`/bookMarkPage/${email}`}
               icon={<RiBookMarkedFill />}
@@ -410,7 +438,7 @@ function NavBar() {
               close={setIsSidebarOpen}
             />
 
-             {role != 'coordinator' && <NavIcon
+             {role == 'student' && <NavIcon
             to="/profile"
             icon={<FaUserAlt />}
             label="Profile"
@@ -433,21 +461,21 @@ function NavBar() {
             {role=='admin' && <NavTile
             to="/dashboard"
             icon={<MdDashboard />}
-            title="Dashboard"
-            subtitle="Analytics"
+            title="Analytics"
+            subtitle="Dashboard"
             close={setIsSidebarOpen}
           />}
             {role === "admin" && (
             <NavTile
               to="/control"
-              icon={<MdAppSettingsAlt />}
+              icon={<MdManageAccounts />}
               title="Control Panel"
               subtitle="Manage Users"
               close={setIsSidebarOpen}
             />
           )}
           
-          {role === "coordinator" && (
+          {role !== "student" && (
             <NavTile
               to="/workspace"
               icon={<BsPersonWorkspace />}
@@ -456,13 +484,13 @@ function NavBar() {
               close={setIsSidebarOpen}
             />
           )}
-          <NavTile
+         {role!=='admin' && <NavTile
             to="/authors"
             icon={<IoIosGitNetwork />}
             title="Network"
             subtitle="Connections"
             close={setIsSidebarOpen}
-          />
+          />}
 
 
          {role=='coordinator' && <NavTile
@@ -600,7 +628,7 @@ function NavIcon({ to, icon, label, close }) {
       className="flex flex-col items-center gap-0
                  text-white/70 hover:text-white transition"
     >
-      <span className="text-xl text-emerald-400">{icon}</span>
+      <span className=" text-xl md:text-lg text-emerald-400">{icon}</span>
       <span className="text-[11px]">{label}</span>
     </Link>
   );

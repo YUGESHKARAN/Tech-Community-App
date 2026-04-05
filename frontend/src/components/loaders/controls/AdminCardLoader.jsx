@@ -99,7 +99,7 @@ const AdminCardLoader = ({roleFilter}) => {
       </div>
 
       {/* Communities Section */}
-      {/* <div className="mt-2">
+      <div className="mt-2">
         <div className="h-3 w-40 bg-gray-700 rounded mb-3" />
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
@@ -111,8 +111,8 @@ const AdminCardLoader = ({roleFilter}) => {
           ))}
         </div>
 
-        <div className="h-7 w-28 bg-gray-700 rounded mt-3" />
-      </div> */}
+        <div className="md:h-7 md:w-28 h-5 w-20 bg-gray-700 rounded mt-3" />
+      </div>
     </div>
   ))}
 </div>
