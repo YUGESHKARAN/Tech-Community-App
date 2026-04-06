@@ -17,7 +17,7 @@ import axiosInstance from "../instances/Axiosinstances";
 import user from "../images/user.png";
 import { useParams } from "react-router-dom";
 import { PiBookmarksSimpleFill, PiBookmarksSimpleLight } from "react-icons/pi";
-import { ToastContainer, toast } from "react-toastify";
+
 import TutorBookMarkPlaylist from "../components/TutorBookMarkPlaylist.jsx";
 import BlogSkeleton from "../components/loaders/BlogSkeleton.jsx";
 import PillLoader from "../components/loaders/PillSkeleton.jsx";
@@ -397,7 +397,7 @@ function BookMarkPage() {
                   (postCategory === ""
                     ? filterdPost
                     : posts.filter((post) => post.category === postCategory)
-                  ).map((data, index) => (
+                  ).reverse().map((data, index) => (
                 
                     <article
                       key={data._id}
@@ -465,16 +465,7 @@ function BookMarkPage() {
 
                       <div className="flex items-center justify-between px-4 pb-7 ">
                         <div className="flex items-center gap-3 text-gray-400">
-                          {/* <Link
-                            to={`/viewpage/${data.authoremail}/${data._id}`}
-                            onClick={() =>
-                              postViews(data.authoremail, data._id)
-                            }
-                            className="flex items-center gap-1 text-xs text-gray-500"
-                          >
                        
-                            <span className="text-xs">{data.views.length}</span> views
-                          </Link> */}
 
                           <button
                             onClick={() =>
@@ -585,7 +576,6 @@ function BookMarkPage() {
             </div>
           </div>
         )}
-        <ToastContainer />
       </div>
       <Footer />
     </div>

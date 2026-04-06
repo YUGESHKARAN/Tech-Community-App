@@ -93,33 +93,27 @@ function NavBar() {
     fetchNotifications();
   }, [userEmail]);
 
-  //   useEffect(() => {
-  //   fetchNotifications(); // initial load
 
-  //   const interval = setInterval(() => {
-  //     fetchNotifications(); // poll every 40 sec
-  //   }, 40000);
-
-  //   return () => clearInterval(interval);
-  // }, [userEmail]);
 
   const deleteSigleNotification = async (userEmail, notificationId) => {
+    setNote((note)=> note.filter((n)=> n._id !== notificationId))
     try {
       const response = await axiosInstance.delete(
         `/blog/author/notification/delete?email=${userEmail}&notificationId=${notificationId}`,
       );
+      
+      setNote((note)=> note.filter((n)=> n._id !== notificationId))
+      // if (response.status === 200){
+      //   setNote((note)=> note.filter((n)=> n._id !== notificationId))
+      // }
 
-      if (response.status === 200){
-        setNote((note)=> note.filter((n)=> n._id !== notificationId))
-      }
-
-      // fetchNotifications();
     } catch (err) {
       console.log("error", err);
     }
   };
 
   const deleteAllNotification = async (userEmail) => {
+    if (note.length===0) return;
     const confirm = window.confirm(
       "Are you sure want to delete all the notifications",
     );
