@@ -173,7 +173,7 @@ function AddPost() {
     }
 
     if (!category.trim()) {
-      errors.category = "Post category is required.";
+      errors.category = "Post domain is required.";
     }
 
     // if (!price || Number(price) <= 0) {
@@ -185,7 +185,7 @@ function AddPost() {
     }
     const finalCategory = category === "Others" ? customCategory : category;
     if (category === "Others" && !customCategory.trim()) {
-      errors.finalCategory = "Please enter the category.";
+      errors.finalCategory = "Domain name is required.";
     }
 
     const hasNoImage = image.length === 0 && (!image || image.length === 0);
@@ -482,17 +482,23 @@ function AddPost() {
                       {fieldErrors.category}
                     </p>
                   )}
-                </div>
-
-                {category === "Others" && (
+                       {category === "Others" && (
                   <input
                     type="text"
                     value={customCategory}
                     onChange={(e) => setCustomCategory(e.target.value)}
-                    placeholder="Enter custom category"
+                    placeholder="Enter domain name"
                     className="w-full mt-2 px-4 py-2 rounded-md bg-gray-900 border border-gray-700 outline-none  outline-none text-white text-xs md:text-sm"
                   />
                 )}
+                {fieldErrors.finalCategory && (
+                    <p className="text-xs text-red-500 mt-1">
+                      {fieldErrors.finalCategory}
+                    </p>
+                  )}
+                </div>
+
+           
 
                 {/* THUMBNAIL */}
                 <div>

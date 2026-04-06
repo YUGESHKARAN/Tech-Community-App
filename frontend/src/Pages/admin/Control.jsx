@@ -32,6 +32,7 @@ function Control() {
   const [filteredStudents, setFilteredStudents] = useState([]);
   const { communities } = useGetCommunityAnalytics();
   const [updateId , setUpdateId] = useState(null);
+  const [ updateCommuntiyId, setUpdateCommunityId] = useState(null)
 
   const {
     students,
@@ -178,8 +179,9 @@ function Control() {
     });
   };
 
-  const updateAssignedCommunities = async (email) => {
+  const updateAssignedCommunities = async (email, id) => {
     // console.log("updateAssignedCommunities email", email);
+    setUpdateCommunityId(id)
     const selectedCommunities = assignedCommunities[email] || [];
     // console.log("selected commu", selectedCommunities);
     try {
@@ -199,6 +201,9 @@ function Control() {
       }
     } catch (err) {
       console.error("Error updating communities", err);
+    }
+    finally{
+      setUpdateCommunityId(null)
     }
   };
 
@@ -488,11 +493,12 @@ function Control() {
                   ))}
                 </div>
                 <button
-                  onClick={() => updateAssignedCommunities(author.email)}
+                  onClick={() => updateAssignedCommunities(author.email, author.id)}
                   className="md:px-5 px-3 py-2 mt-4 bg-emerald-600/20 hover:bg-emerald-500/20
                          rounded-md text-xs md:text-xs  text-emerald-400 transition-all duration-300 disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed"
+                  disabled={updateCommuntiyId===author.id}
                 >
-                  Save Communities
+                  {updateCommuntiyId===author.id?'Saving...':'Save Communities'}
                 </button>
               </div>
             </div>
@@ -667,11 +673,14 @@ function Control() {
                   ))}
                 </div>
                 <button
-                  onClick={() => updateAssignedCommunities(author.email)}
+                  onClick={() => updateAssignedCommunities(author.email, author.id)}
                   className="md:px-5 px-3 py-2 mt-4 bg-emerald-600/20 hover:bg-emerald-500/20
                          rounded-md text-xs md:text-xs  text-emerald-400 transition-all duration-300 disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed"
+                  
+                  disabled = {updateCommuntiyId===author.id}
                 >
-                  Save Communities
+                  {updateCommuntiyId === author.id?'Saving...':'Save Communities'}
+
                 </button>
               </div>
             </div>

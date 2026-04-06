@@ -155,7 +155,7 @@ function Dashboard() {
                 <KPICard
                   label="Admins"
                   value={statsSummary.admins}
-                  sub="Chief Controllers"
+                  sub="Chief Control"
                   icon={ShieldCheck}
                   accent="#ec4899"
                 />

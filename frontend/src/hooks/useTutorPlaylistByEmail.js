@@ -13,19 +13,6 @@ function useTutoPlaylistByEmail() {
     const isFetching = useRef(false);
     const limit = 40;  
 
-    // `blog/playlist/coordinator/${email}
-  // const getTutorPlayListByEmail = useCallback(async () => {
-  //   try {
-  //     const response = await axiosInstance.get(`blog/playlist/coordinator/${email}`);
-
-  //     if (response.status === 200 || response.status === 204) {
-  //       setTutorPlayListByEmail(response.data.data || []);
-  //     }
-  //   } catch (err) {
-  //     console.error("error", err.message);
-  //   }
-  // }, []);
-
     const getTutorPlayListByEmail = useCallback(async () => {
       if (!hasMore || isFetching.current) return;
   
