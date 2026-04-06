@@ -298,7 +298,7 @@ function Control() {
           </option>
 
            <option className="bg-gray-900" value="admin">
-            Admin
+            Admins
           </option>
           
            <option className="bg-gray-900" value="coordinator">
