@@ -31,7 +31,7 @@ function Control() {
   const [filteredCoordinators, setFilteredCoordinators] = useState([]);
   const [filteredStudents, setFilteredStudents] = useState([]);
   const { communities } = useGetCommunityAnalytics();
-
+  const [updateId , setUpdateId] = useState(null);
 
   const {
     students,
@@ -107,6 +107,7 @@ function Control() {
   };
 
   const updateRole = async (email, id) => {
+    setUpdateId(id);
     const roleToUpdate = updatedRoles[id];
     if (!roleToUpdate) {
       toast.warning("Warning", "Please select a role before updating");
@@ -119,8 +120,9 @@ function Control() {
         { role: roleToUpdate, email },
       );
       if (response.status === 200) {
-        toast.success("Updated", "Role updated successfully");
+       
         await reloadRoleLists();
+        toast.success("Updated", "Role updated successfully");
         setUpdatedRoles((prev) => {
           const next = { ...prev };
           delete next[id];
@@ -129,6 +131,9 @@ function Control() {
       }
     } catch (err) {
       console.error(err);
+    }
+    finally{
+      setUpdateId(null);
     }
   };
 
@@ -238,7 +243,6 @@ function Control() {
 
   const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
 
-// console.log("communities", communities)
   return (
     // <div className="relative w-full min-h-screen h-auto  bg-gradient-to-br from-gray-900 to-gray-700">
     <div className="min-h-screen h-auto relative w-full   bg-gray-900">
@@ -305,32 +309,7 @@ function Control() {
 
       {/* -------------------------------------------------Admins--------------------------------------- */}
 
-      {/* {[...filteredAuthors.filter((author) => author.role === "admin")].length >
-        0 && (
         <h1
-          className={`${
-            roleFilter === "admin" || roleFilter === ""
-              ? " mx-4 text-center text-2xl md:text-3xl mb-6 font-semibold  text-white"
-              : "hidden"
-          }`}
-        >
-          Admins
-        </h1>
-      )} */}
-
-      {/* {admins.length > 0 && (
-        <h1
-          className={`${
-            roleFilter === "admin" || roleFilter === ""
-              ? " mx-4 text-center text-2xl md:text-3xl mb-6 font-semibold  text-white"
-              : "hidden"
-          }`}
-        >
-          Admins
-        </h1>
-      )} */}
-
-      <h1
         className={`${
           roleFilter === "admin" || roleFilter === ""
             ? " mx-4 text-center text-2xl md:text-3xl mb-6 font-semibold  text-white"
@@ -339,125 +318,6 @@ function Control() {
       >
         Admins
       </h1>
-      {/* Author admin */}
-      {/* <div
-        className={`${
-          roleFilter === ""
-            ? "h-auto md:mb-16 mb-10   grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full px-4 mx-auto mt-2"
-            : roleFilter === "admin"
-              ? "min-h-screen md:mb-16 mb-10 flex flex-col   md:grid  md:grid-cols-2 lg:grid-cols-3 gap-4 w-full px-4 mx-auto mt-2"
-              : "hidden"
-        }`}
-      >
-        {[
-          // First, filter authors based on their roles
-          ...filteredAuthors.filter((author) => author.role === "admin"),
-        ].map((author) => (
-          <div
-            key={author.id}
-            className="bg-gray-900 w-full px-4 mx-auto md:w-full h-fit p-4 flex flex-col justify-between rounded-lg shadow-md border md:border-neutral-800 border-neutral-700"
-          >
-            <h2 className="flex justify-between items-center text-xl font-semibold text-white">
-              {author.authorname}
-              <span
-                // onClick={() => deleteAuthorByAdmin(author.email)}
-                onClick={() => {
-                  setAuthorEmail(author.email);
-                  setShowConfirm(true);
-                }}
-                className="text-red-400 cursor-pointer"
-              >
-                <MdDeleteForever />
-              </span>
-            </h2>
-            <p className="text-gray-400 text-xs md:text-sm mt-2">
-              {author.email}
-            </p>
-
-            <div className="md:flex justify-start md:space-x-4 items-center">
-              <p className="text-gray-400 text-xs md:text-sm mt-2">
-                Role: {author.role}
-              </p>
-              <p
-                className={`${
-                  author.role === "student"
-                    ? "hidden"
-                    : "text-gray-400 text-xs md:text-sm mt-2"
-                }`}
-              >
-                Followers: {author.followers.length}
-              </p>
-              <p
-                className={`${
-                  author.role === "student"
-                    ? "hidden"
-                    : "text-gray-400 text-xs md:text-sm mt-2"
-                }`}
-              >
-                Posts: {author.posts.length}
-              </p>
-            </div>
-
-            <div className="flex items-center mt-4">
-              <select
-                className="cursor-pointer mt-2 p-2  text-xs md:text-sm mr-4 rounded bg-gray-800 text-white"
-                value={updatedRoles[author.id] || author.role}
-                onChange={(e) => handleRoleChange(author.id, e.target.value)}
-              >
-                <option value="admin">Admin</option>
-                <option value="coordinator">Coordinator</option>
-                <option value="student">Student</option>
-              </select>
-
-              <button
-                className="mt-2 md:px-4 px-2  text-xs md:text-sm py-1 font-semibold hover:bg-gray-500 bg-white text-gray-800 transition-all duration-200 rounded"
-                onClick={() => updateRole(author.email, author._id)}
-              >
-                Update Role
-              </button>
-            </div>
-
-            {author.role === "coordinator" && (
-              <div className="mt-4 text-white">
-                <p className="mb-1 text-sm font-semibold">
-                  Assign Tech Communities:
-                </p>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                  {communities.map((community, idx) => (
-                    <label
-                      key={idx}
-                      className="flex items-center space-x-2 text-xs"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={
-                          assignedCommunities[author.email]?.includes(
-                            community.categoryname,
-                          ) || false
-                        }
-                        onChange={() =>
-                          handleCommunityCheckbox(
-                            author.email,
-                            community.categoryname,
-                          )
-                        }
-                        className="form-checkbox accent-green-500"
-                      />
-                      <span>{community.categoryname}</span>
-                    </label>
-                  ))}
-                </div>
-                <button
-                  onClick={() => updateAssignedCommunities(author.email)}
-                  className="mt-2 text-xs md:text-sm bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
-                >
-                  Save Communities
-                </button>
-              </div>
-            )}
-          </div>
-        ))}
-      </div> */}
       
 
       {admins.length > 0 ? (
@@ -543,9 +403,10 @@ function Control() {
 
               <div className="flex items-center mt-4">
                 <select
-                  className="cursor-pointer mt-2 p-2  text-xs md:text-sm mr-4 rounded bg-gray-800 text-white"
+                  className="cursor-pointer mt-2 p-2  text-xs md:text-sm mr-4 rounded bg-gray-800 text-white  disabled:cursor-not-allowed"
                   value={updatedRoles[author.id] || author.role}
                   onChange={(e) => handleRoleChange(author.id, e.target.value)}
+                  disabled={email === author.email}
                 >
                   <option value="admin">Admin</option>
                   <option value="coordinator">Contributors</option>
@@ -553,10 +414,11 @@ function Control() {
                 </select>
 
                 <button
-                  className="mt-2 md:px-4 px-2  text-xs md:text-sm py-1 font-semibold hover:bg-gray-500 bg-white text-gray-800 transition-all duration-200 rounded"
+                  className="mt-2 md:px-4 px-2  text-xs md:text-sm py-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white  font-semibold hover:bg-gray-500 bg-white text-gray-800 transition-all duration-200 rounded"
                   onClick={() => updateRole(author.email, author.id)}
+                  disabled={email === author.email || updateId === author.id}
                 >
-                  Update Role
+                  {updateId === author.id ? "Updating..." : "Update Role"}
                 </button>
               </div>
 
@@ -667,153 +529,6 @@ function Control() {
 
       {/* -------------------------------------------------Coordinators----------------------------------------------------- */}
 
-      {/* {
-          [
-          ...filteredAuthors.filter((author) => author.role === "coordinator"),
-        ].length>0 &&
-        <h1
-        className={`${
-          roleFilter === "coordinator" || roleFilter === ""
-            ? " mx-4 text-center text-2xl md:text-3xl mb-6 font-semibold  text-white"
-            : "hidden"
-        }`}
-      >
-        Coordinators
-      </h1>} */}
-
-      {/* <div
-        className={`${
-          roleFilter === ""
-            ? "h-auto md:mb-16 mb-10  grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full px-4 mx-auto mt-2"
-            : roleFilter === "coordinator"
-            ? "min-h-screen h-auto md:mb-16 mb-10 flex flex-col  md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 w-full px-4 mx-auto mt-2"
-            : "hidden"
-        }`}
-      >
-        {[
-          // First, filter authors based on their roles
-          ...filteredAuthors.filter((author) => author.role === "coordinator"),
-        ].map((author) => (
-          <div
-            key={author.id}
-            className="bg-gray-900 w-full px-4 mx-auto md:w-full h-fit p-4 flex flex-col justify-between rounded-lg shadow-md border  border-neutral-700/70"
-          >
-            <h2 className="flex justify-between items-center text-xl font-semibold text-white">
-              {author.authorname}
-              <span
-                // onClick={() => deleteAuthorByAdmin(author.email)}
-                onClick={() => {
-                  setAuthorEmail(author.email);
-                  setShowConfirm(true);
-                }}
-                className="text-red-400 cursor-pointer"
-              >
-                <MdDeleteForever />
-              </span>
-            </h2>
-            <p className="text-gray-400 text-xs md:text-sm mt-2">
-              {author.email}
-            </p>
-
-            <div className="md:flex justify-start md:space-x-4 items-center">
-              <p className="text-gray-400 text-xs md:text-sm mt-2">
-                Role: {author.role}
-              </p>
-              <p
-                className={`${
-                  author.role === "student"
-                    ? "hidden"
-                    : "text-gray-400 text-xs md:text-sm mt-2"
-                }`}
-              >
-                Followers: {author.followers.length}
-              </p>
-              <p
-                className={`${
-                  author.role === "student"
-                    ? "hidden"
-                    : "text-gray-400 text-xs md:text-sm mt-2"
-                }`}
-              >
-                Posts: {author.posts.length}
-              </p>
-            </div>
-
-            <div className="flex items-center mt-4">
-              <select
-                className="cursor-pointer mt-2 p-2  text-xs md:text-sm mr-4 rounded bg-gray-800 text-white"
-                value={updatedRoles[author.id] || author.role}
-                onChange={(e) => handleRoleChange(author.id, e.target.value)}
-              >
-
-                <option value="admin">Admin</option>
-                <option value="coordinator">Coordinator</option>
-                <option value="student">Student</option>
-
-              </select>
-
-              <button
-                className="mt-2 md:px-4 px-2  text-xs md:text-sm py-1 font-semibold hover:bg-gray-500 bg-white text-gray-800 transition-all duration-200 rounded"
-                onClick={() => updateRole(author.email, author._id)}
-              >
-                Update Role
-              </button>
-            </div>
-
-            {author.role === "coordinator" && (
-              <div className="mt-4 text-white">
-                <p className="mb-3 text-sm ">
-                  Assign Tech Communities:
-                </p>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                  {communities.map((community, idx) => (
-                    <label
-                      key={idx}
-                      className="flex items-center space-x-2 text-xs"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={
-                          assignedCommunities[author.email]?.includes(
-                            community.categoryname
-                          ) || false
-                        }
-                        onChange={() =>
-                          handleCommunityCheckbox(
-                            author.email,
-                            community.categoryname
-                          )
-                        }
-                        className="form-checkbox cursor-pointer accent-emerald-500"
-                      />
-                      <span>{community.categoryname}</span>
-                    </label>
-                  ))}
-                </div>
-                <button
-                  onClick={() => updateAssignedCommunities(author.email)}
-                  className="md:px-5 px-3 py-2 mt-4 bg-emerald-600/20 hover:bg-emerald-500/20
-                         rounded-md text-xs md:text-xs  text-emerald-400 transition-all duration-300 disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed"
-                >
-                  Save Communities
-                </button>
-              </div>
-            )}
-          </div>
-        ))}
-      </div> */}
-
-      {/* {coordinators.length > 0 && (
-        <h1
-          className={`${
-            roleFilter === "coordinator" || roleFilter === ""
-              ? " mx-4 text-center text-2xl md:text-3xl mb-6 font-semibold  text-white"
-              : "hidden"
-          }`}
-        >
-          Coordinators
-        </h1>
-      )} */}
       <h1
         className={`${
           roleFilter === "coordinator" || roleFilter === ""
@@ -877,9 +592,7 @@ function Control() {
                   <MdDeleteForever />
                 </span>
               </div>
-              {/* <p className="text-gray-500 text-xs md:text-xs mb-2">
-              {author.email}
-            </p> */}
+          
 
               <div className="md:flex justify-start md:space-x-4 items-center">
                 <p className="text-gray-400 text-xs md:text-sm mt-2">
@@ -912,15 +625,17 @@ function Control() {
                   onChange={(e) => handleRoleChange(author.id, e.target.value)}
                 >
                   <option value="admin">Admin</option>
-                  <option value="coordinator">Coordinator</option>
-                  <option value="student">Student</option>
+                  <option value="coordinator">Contributors</option>
+                  <option value="student">Users</option>
                 </select>
 
                 <button
-                  className="mt-2 md:px-4 px-2  text-xs md:text-sm py-1 font-semibold hover:bg-gray-500 bg-white text-gray-800 transition-all duration-200 rounded"
+                  className="mt-2 md:px-4 px-2  text-xs md:text-sm py-1 font-semibold hover:bg-gray-500 bg-white text-gray-800 transition-all duration-200 rounded disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white"
                   onClick={() => updateRole(author.email, author.id)}
+                  disabled = {updateId === author.id}
                 >
-                  Update Role
+                  
+                 {updateId === author.id ? "Updating..." : "Update Role"}
                 </button>
               </div>
 
@@ -993,90 +708,6 @@ function Control() {
 
       {/*------------------------------------------------------------- Students----------------------------------------------------------- */}
 
-      {/* {
-       [
-          ...filteredAuthors.filter((author) => author.role === "student"),
-        ].length>0 &&
-      <h1
-        className={`${
-          roleFilter === "student" || roleFilter === ""
-            ? " mx-4 text-center text-2xl md:text-3xl mb-6 font-semibold  text-white"
-            : "hidden"
-        }`}
-      >
-        Students
-      </h1>
-    } */}
-
-      {/* Author students */}
-      {/* <div
-        className={`${
-          roleFilter === ""
-            ? "h-auto md:mb-16 mb-10  grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full px-4 mx-auto mt-2"
-            : roleFilter === "student"
-            ? " min-h-screen h-auto md:mb-16 mb-10  flex flex-col   md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 w-full px-4 mx-auto mt-2"
-            : "hidden"
-        }`}
-      >
-        {[
-          // First, filter authors based on their roles
-          ...filteredAuthors.filter((author) => author.role === "student"),
-        ].map((author) => (
-          <div
-            key={author.id}
-            className="bg-gray-900 w-full px-4 mx-auto md:w-full h-fit p-4 flex flex-col justify-between rounded-lg shadow-md border  border-neutral-700/70"
-          >
-            <h2 className="flex justify-between items-center text-xl font-semibold text-white">
-              {author.authorname}
-              <span
-                // onClick={() => deleteAuthorByAdmin(author.email)}
-                onClick={() => {
-                  setAuthorEmail(author.email);
-                  setShowConfirm(true);
-                }}
-                className="text-red-400 cursor-pointer"
-              >
-                <MdDeleteForever />
-              </span>
-            </h2>
-            <p className="text-gray-400 text-xs md:text-sm mt-2">
-              {author.email}
-            </p>
-
-            <div className="flex items-center mt-4">
-              <select
-                className="cursor-pointer mt-2 p-2  text-xs md:text-sm mr-4 rounded bg-gray-800 text-white"
-                value={updatedRoles[author.id] || author.role}
-                onChange={(e) => handleRoleChange(author.id, e.target.value)}
-              >
-                <option value="student">Student</option>
-                <option value="coordinator">Coordinator</option>
-              </select>
-
-              <button
-                className="mt-2 md:px-4 px-2  text-xs md:text-sm py-1 font-semibold hover:bg-gray-500 bg-white text-gray-800 transition-all duration-200 rounded"
-                onClick={() => updateRole(author.email, author._id)}
-              >
-                Update Role
-              </button>
-            </div>
-          </div>
-        ))}
-      </div> */}
-
-      {/* {students.length > 0 && (
-          <h1 
-           className={`${
-            roleFilter === "student" || roleFilter === ""
-              ? " mx-4 text-center text-2xl md:text-3xl mb-6 font-semibold  text-white"
-              : "hidden"
-          }`}
-          >
-            Students
-          </h1>
-        )
-        
-        } */}
 
       <h1
         className={`${
@@ -1157,15 +788,16 @@ function Control() {
                   value={updatedRoles[author.id] || author.role}
                   onChange={(e) => handleRoleChange(author.id, e.target.value)}
                 >
-                  <option value="student">Student</option>
-                  <option value="coordinator">Coordinator</option>
+                  <option value="student">Users</option>
+                  <option value="coordinator">Contributors</option>
                 </select>
 
                 <button
-                  className="mt-2 md:px-4 px-2  text-xs md:text-sm py-1 font-semibold hover:bg-gray-500 bg-white text-gray-800 transition-all duration-200 rounded"
+                  className="mt-2 md:px-4 px-2  text-xs md:text-sm py-1 font-semibold hover:bg-gray-500 bg-white text-gray-800 transition-all duration-200 rounded disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white"
                   onClick={() => updateRole(author.email, author.id)}
+                  disabled = {updateId === author.id}
                 >
-                  Update Role
+                  {updateId === author.id ? "Updating..." : "Update Role"}
                 </button>
               </div>
             </div>

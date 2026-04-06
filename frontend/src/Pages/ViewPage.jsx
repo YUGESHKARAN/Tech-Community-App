@@ -566,7 +566,7 @@ function ViewPage() {
                   >
                     <MdOutlineInsertComment className="text-xs text-emerald-400" />
                     <span className=" flex items-center justify-cennter text-[10px] text-gray-300">
-                      Discussion
+                      Discussions
                       {messages.length > 0 && (
                         <span className="text-[10px] ml-2 font-medium bg-[#21262d] text-gray-400 border border-[#30363d] px-2 py-0.5 rounded-full">
                           {messages.length}
@@ -860,7 +860,7 @@ function ViewPage() {
                 <div className="flex justify-between items-center px-4 py-3 border-b border-[#21262d] shrink-0">
                   <div className="flex items-center gap-2">
                     <h3 className="text-sm font-semibold text-gray-200">
-                      Discussion
+                      Discussions
                     </h3>
                     {messages.length > 0 && (
                       <span className="text-[10px] font-medium bg-[#21262d] text-gray-400 border border-[#30363d] px-2 py-0.5 rounded-full">
@@ -961,7 +961,7 @@ function ViewPage() {
                   <div className="flex items-center justify-between px-4 py-2 border-b border-[#21262d] shrink-0">
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-semibold text-gray-200">
-                        Discussion
+                        Discussions
                       </span>
                       {messages.length > 0 && (
                         <span className="text-[10px] font-medium bg-[#21262d] text-gray-400 border border-[#30363d] px-2 py-0.5 rounded-full">
