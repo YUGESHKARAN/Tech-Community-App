@@ -108,12 +108,14 @@ function Control() {
   };
 
   const updateRole = async (email, id) => {
-    setUpdateId(id);
+   
     const roleToUpdate = updatedRoles[id];
     if (!roleToUpdate) {
       toast.warning("Warning", "Please select a role before updating");
       return;
     }
+
+    setUpdateId(id);
 
     try {
       const response = await axiosInstance.put(
