@@ -11,9 +11,11 @@ import useGetAuthorsPostsCategories from "../hooks/useGetAuthorsPostsCategories"
 import BlogMiniSkeleton from "../components/loaders/BlogMiniSkeleton";
 import Fuse from "fuse.js";
 import useGetAllAuthorsByDomain from "../hooks/useGetAllAuthorsByDomain";
+import { getItem } from "../utils/encode";
 function TutorPlaylist() {
   const email = localStorage.getItem("email");
-  const role = localStorage.getItem("role");
+  // const role = localStorage.getItem("role");
+  const role = getItem("role");
   const [domain, setDomain] = useState("");
   const { posts, loading, hasMore } = useGetPostsByCategory(email, domain);
 

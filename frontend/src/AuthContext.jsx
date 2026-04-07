@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import Cookies from 'js-cookie';
+import { clearStore, removeItem } from "./utils/encode";
 // import { useNavigate } from "react-router-dom";
 // Create context
 const AuthContext = createContext();
@@ -38,8 +39,11 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("username"); // Clear additional data if needed
     localStorage.removeItem("email");
     // localStorage.removeItem("message");
-    localStorage.removeItem("role");
+    // localStorage.removeItem("role");
+    removeItem("role");
     localStorage.removeItem("profile");
+    clearStore()
+    localStorage.clear()
   };
 
   // useEffect(() => {

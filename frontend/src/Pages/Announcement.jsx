@@ -12,6 +12,7 @@ import { MdAnnouncement } from "react-icons/md";
 import getTimeAgo from "../components/DateCovertion";
 
 import toast from "../components/toaster/Toast"
+import { getItem } from "../utils/encode";
 
 function Announcement() {
   const username = localStorage.getItem("username");
@@ -28,7 +29,8 @@ function Announcement() {
   const [showAnnouncement, setShowAnnouncement] = useState(false);
   const [announcement, setAnnouncement] = useState([]);
   const [loading, setLoading] = useState(false);
-  const role = localStorage.getItem("role");
+  // const role = localStorage.getItem("role");
+  const role = getItem("role")
   const [communityOptions, setCommunityOptions] = useState([]);
   const [selectedCommunities, setSelectedCommunities] = useState([]);
   const [image, setImage] = useState("");

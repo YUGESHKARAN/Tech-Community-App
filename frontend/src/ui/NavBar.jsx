@@ -30,6 +30,7 @@ import { BsFillMenuButtonWideFill, BsPersonWorkspace } from "react-icons/bs";
 import getTimeAgo from "../components/DateCovertion";
 import toast from "../components/toaster/Toast"
 import { MdDashboard } from "react-icons/md";
+import { getItem, removeItem } from "../utils/encode";
 
 
 function NavBar() {
@@ -40,15 +41,17 @@ function NavBar() {
   const { notification, setNotification } = useContext(GlobalStateContext);
   const username = localStorage.getItem("username");
   const userEmail = localStorage.getItem("email");
-  const role = localStorage.getItem("role");
+  // const role = localStorage.getItem("role");
   const profile = localStorage.getItem("profile");
   const [showNotefication, setShowNotification] = useState(false);
   const [announcement, setAnnouncement] = useState([]);
   const [socket, setSocket] = useState(null);
   const email = localStorage.getItem("email");  
+  const role    = getItem("role");
 
   const exit = () => {
-    localStorage.removeItem("role");
+    // localStorage.removeItem("role");
+    removeItem("role");
     localStorage.removeItem("username");
     localStorage.removeItem("email");
     // localStorage.removeItem("message");

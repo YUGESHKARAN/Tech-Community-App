@@ -16,13 +16,15 @@ import useAuthorCommunity from "../hooks/useAuthorCommunity";
 import CoordinatorGridSkeleton from "../components/loaders/CoordinatorGridSkeleton ";
 import StudentGridSkeleton from "../components/loaders/StudentGridSkeleton ";
 import toast from "../components/toaster/Toast"
+import { getItem } from "../utils/encode";
 function SingleTechDomainDetails() {
   const { category } = useParams();
   const decodedCategory = decodeURIComponent(category);
   const [authors, setAuthors] = useState([]);
   const email = localStorage.getItem("email");
   const { authorCommunity, setAuthorCommunity } = useAuthorCommunity(email);
-  const role = localStorage.getItem("role");
+  // const role = localStorage.getItem("role");
+  const role = getItem("role");
 
   // --------------------------------------------------------------------------------------
 

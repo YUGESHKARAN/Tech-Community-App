@@ -11,10 +11,12 @@ import { FaSquareGithub } from "react-icons/fa6";
 import { BsPersonSquare } from "react-icons/bs";
 
 import { PiLinkSimpleFill } from "react-icons/pi";
+import { getItem } from "../utils/encode";
 
 function ViewSingleAuthor() {
   const { email } = useParams();
-  const role = localStorage.getItem("role");
+  // const role = localStorage.getItem("role");
+  const role = getItem("role");
   const [author, setAuthor] = useState({});
   const [authorName, setAuthorName] = useState("");
   // const [authorEmail, setAuthorEmail] = useState("");

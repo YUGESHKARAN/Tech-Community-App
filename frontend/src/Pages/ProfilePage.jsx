@@ -16,10 +16,12 @@ import { ImProfile } from "react-icons/im";
 import { PiLinkSimpleFill } from "react-icons/pi";
 import { MdEdit } from "react-icons/md";
 import toast from "../components/toaster/Toast"
+import { getItem, removeItem } from "../utils/encode";
 function ProfilePage() {
   const { logout } = useAuth();
   const email = localStorage.getItem("email");
-  const role = localStorage.getItem("role");
+  // const role = localStorage.getItem("role");
+  const role    = getItem("role");
   const [author, setAuthor] = useState({});
   const [authorName, setAuthorName] = useState("");
   const [authorEmail, setAuthorEmail] = useState("");

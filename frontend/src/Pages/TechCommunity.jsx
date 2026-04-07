@@ -9,12 +9,14 @@ import CommunityCardSkeleton from "../components/loaders/CommunityCardSkeleton";
 import toast from "../components/toaster/Toast"
 import { use } from "react";
 import useGetCommunityAnalytics from "../hooks/useGetCommunityAnalytics";
+import { getItem } from "../utils/encode";
 function TechCommunity() {
   const [posts, setPosts] = useState([]);
 
   const username = localStorage.getItem("username");
   const email = localStorage.getItem("email");
-  const role = localStorage.getItem("role");
+  // const role = localStorage.getItem("role");
+  const role = getItem("role");
   // const [loading, setLoading] = useState(false)
   // const [authorCommunity, setAuthorCommunity] = useState([]);
   // const [authors, setAuthors] = useState([]);
@@ -162,10 +164,10 @@ function TechCommunity() {
           communities.map((item, index) => (
             <div
               key={index}
-              className="relative group backdrop-blur-xl  border border-neutral-700/50 p-6 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 flex flex-col justify-between overflow-hidden"
+              className="relative group  border border-neutral-700/50 p-6 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 flex flex-col justify-between overflow-hidden"
             >
               {/* Glow hover effect */}
-              <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 via-purple-500/10 to-pink-600/10 opacity-0 group-hover:opacity-100 blur-2xl transition duration-700"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 via-purple-500/10 to-pink-600/10 opacity-0 group-hover:opacity-100 blur-2xl transition duration-700"/>
 
               <Link to={`/techDomainDetails/${encodeURIComponent(item.categoryname)}`}>
               <div className="relative z-10 p-5 bg-white/10 backdrop-blur-md rounded-2xl shadow-md hover:shadow-lg transition-all duration-300">

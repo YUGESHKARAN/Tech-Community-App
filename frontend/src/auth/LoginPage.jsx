@@ -4,6 +4,7 @@ import { useAuth } from "../AuthContext";
 import {CirclesWithBar} from 'react-loader-spinner'
 import axiosInstance from "../instances/Axiosinstances";
 import Cookies from 'js-cookie'
+import { storeItem } from "../utils/encode";
 function LoginPage() {
   const [formData, setFormData] = useState({
     email: "",
@@ -54,7 +55,8 @@ function LoginPage() {
         localStorage.setItem("username", response.data.author.authorname);
         localStorage.setItem("email", response.data.author.email);
         // localStorage.setItem("message",response.data.message); 
-        localStorage.setItem("role",response.data.author.role); 
+        // localStorage.setItem("role",response.data.author.role); 
+        storeItem("role",response.data.author.role);
         localStorage.setItem("profile",response.data.author.profile); 
         setLoader(true);
          // Delay navigation by 2 seconds
