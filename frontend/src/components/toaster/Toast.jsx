@@ -1,6 +1,7 @@
 const ICONS = { success: '✓', error: '✕', warning: '!', info: 'i' };
 const DURATION = 3000;
-
+// 131d2b
+// 1f2937
 function injectStyles() {
   if (document.getElementById('toast-styles')) return;
   const style = document.createElement('style');
@@ -9,7 +10,7 @@ function injectStyles() {
     #toast-container { position: fixed; bottom: 24px; right: 14px; display: flex;
       flex-direction: column-reverse; gap: 8px; z-index: 9999; }
     .toast { display: flex; align-items: center; gap: 10px; padding: 10px 14px;
-      border-radius: 10px; background: #1f2937 ; border: 0.5px solid rgba(255,255,255,0.08);
+      border-radius: 10px; background: #131d2b ; border: 0.5px solid rgba(255,255,255,0.08);
       min-width: 220px; max-width: 320px; animation: toastIn 0.22s ease; position: relative;
       overflow: hidden; padding-top: 14px; padding-right: 28px; }
     .toast.removing { animation: toastOut 0.2s ease forwards; }

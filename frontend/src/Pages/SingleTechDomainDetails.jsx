@@ -154,7 +154,7 @@ function SingleTechDomainDetails() {
     }
   };
 
-  // console.log("authors", authors)
+  console.log("authors", authors)
 
   return (
 
@@ -225,7 +225,7 @@ function SingleTechDomainDetails() {
                       </Link>
 
                       <h3 className="mt-3 font-semibold text-white truncate">
-                        {author.authorname}
+                        {author.authorName}
                       </h3>
                       <p className="text-xs text-gray-400 truncate">
                         {author.email}
@@ -368,7 +368,7 @@ function SingleTechDomainDetails() {
 
                       {/* Name */}
                       <h3 className="mt-4 font-semibold text-sm md:text-base text-white truncate w-full">
-                        {author.authorname}
+                        {author.authorName}
                       </h3>
 
                       {/* Email */}

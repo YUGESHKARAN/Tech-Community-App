@@ -10,6 +10,7 @@ import toast from "../components/toaster/Toast"
 import { use } from "react";
 import useGetCommunityAnalytics from "../hooks/useGetCommunityAnalytics";
 import { getItem } from "../utils/encode";
+import { MdCardMembership, MdOutlineCardMembership } from "react-icons/md";
 function TechCommunity() {
   const [posts, setPosts] = useState([]);
 
@@ -23,94 +24,14 @@ function TechCommunity() {
    const { authorCommunity,setAuthorCommunity } = useAuthorCommunity(email);
   //  const [communities, setCommunities] = useState([]);
   const {communities,loading} = useGetCommunityAnalytics();
+  const [updateDomain, setUpdateDomain] = useState(null)
 
- 
-
-  
-  // Fetch posts from API
-  // const getPosts = async () => {
-  //   setLoading(true);
-  //   try {
-  //     const response = await axiosInstance.get("/blog/posts");
-  //     setPosts(response.data.posts);
-
-  //   } catch (err) {
-  //     console.error("Error fetching posts:", err);
-  //   }
-  //   finally{
-  //      setLoading(false);
-  //   }
-  // };
-
-  // const getAuthors = async () => {
-  //   try {
-  //     const response = await axiosInstance.get("/blog/author");
-  //     setAuthors(response.data);
-  //   } catch (err) {
-  //     console.error("Error fetching posts:", err);
-  //   }
-  
-  // };
-
-  // Get unique categories
-  // const getUniqueCategories = (posts) => {
-  //   return [...new Set(posts.map((post) => post.category))];
-  // };
-  // const categories = getUniqueCategories(posts);
-
-  // //  get Tech community array
-  // function getCategoryStats(authors, categoryname) {
-  //   let followerscount = 0;
-  //   let authorcount = 0;
-  //   let postscount = 0;
-
-  //   authors.forEach((author) => {
-  //     if (author.community.includes(categoryname)) {
-  //       if (author.role === "student") {
-  //         followerscount++;
-  //       } else if (author.role === "coordinator") {
-  //         authorcount++;
-  //       }
-  //     }
-  //     const matchingPosts =
-  //       author.posts?.filter((post) => post.category === categoryname) || [];
-
-  //     postscount += matchingPosts.length;
-  //   });
-
-  //   return {
-  //     categoryname,
-  //     followerscount,
-  //     authorcount,
-  //     postscount,
-  //   };
-  // }
-
-  // const communities = getCategoryStats(authors, categories);
-  // const communities = categories.map((category) =>
-  //   getCategoryStats(authors, category)
-  // );
-
-//   const getCommunityAnalytics = async () => {
-
-//     try{
-//       const response = await axiosInstance.get("/blog/analytics/view/techDomain");
-//       // console.log("analytics", response.data);  
-//       setCommunities(response.data.analytics);
-//     }
-//     catch(err){
-//       console.log("error", err.message);
-//     }
-//   }
-
-// useEffect(()=>{
-// getCommunityAnalytics();
-// }, [])
 
 
 
   const updateCommunity = async (email, techCommunity) => {
     try {
+      setUpdateDomain(techCommunity)
       const response = await axiosInstance.put(
         "/blog/author/control/updateCommunity",
         {
@@ -141,95 +62,282 @@ function TechCommunity() {
     } catch (err) {
       console.log("error", err);
     }
+    finally{
+      setUpdateDomain(null)
+    }
   };
 
 
   // console.log("authorCommunity", authorCommunity);
-  console.log("communities", communities);  
+  // console.log("communities", communities);  
+  //  const domainAccents = {
+  //   "GenAI":                    { from: "#10b981", to: "#059669", icon: "⚡" },
+  //   "AI/ML":                    { from: "#6366f1", to: "#4f46e5", icon: "🧠" },
+  //   "Web Development":          { from: "#f59e0b", to: "#d97706", icon: "🌐" },
+  //   "Cyber Security":           { from: "#ef4444", to: "#dc2626", icon: "🔐" },
+  //   "Data Science":             { from: "#06b6d4", to: "#0891b2", icon: "📊" },
+  //   "Blockchain":               { from: "#8b5cf6", to: "#7c3aed", icon: "🔗" },
+  //   "IoT":                      { from: "#ec4899", to: "#db2777", icon: "📡" },
+  //   "Embedded System":          { from: "#14b8a6", to: "#0d9488", icon: "🔧" },
+  //   "Satellite Space Technology":{ from: "#a78bfa", to: "#7c3aed", icon: "🛰️" },
+  //   "Design Thinking":          { from: "#fb923c", to: "#ea580c", icon: "🎨" },
+  // };
 
+   const domainAccents = {
+    "GenAI":                    { from: "#10b981", to: "#059669" },
+    "AI/ML":                    {  from: "#10b981", to: "#059669" },
+    "Web Development":          {  from: "#10b981", to: "#059669" },
+    "Cyber Security":           {  from: "#10b981", to: "#059669" },
+    "Data Science":             {  from: "#10b981", to: "#059669" },
+    "Blockchain":               {  from: "#10b981", to: "#059669" },
+    "IoT":                      {  from: "#10b981", to: "#059669" },
+    "Embedded System":          {  from: "#10b981", to: "#059669" },
+    "Satellite Space Technology":{  from: "#10b981", to: "#059669" },
+    "Design Thinking":          { from: "#10b981", to: "#059669" },
+  };
+ 
+  const getAccent = (name) =>
+    domainAccents[name] || { from: "#10b981", to: "#059669", icon: "💡" };
 
   return (
-    <div className="min-h-screen bg-gray-900  text-white flex flex-col">
-      <NavBar />
+    // <div className="min-h-screen bg-gray-900  text-white flex flex-col">
+    //   <NavBar />
 
-      <div className="flex-grow">
-        <h1 className="text-center text-3xl md:text-5xl font-extrabold mt-12 mb-8 bg-gradient-to-r from-pink-500 via-blue-400 to-yellow-400 bg-clip-text text-transparent drop-shadow-lg tracking-wide">
-          Tech. Communities
-        </h1>
+    //   <div className="flex-grow">
+    //     <h1 className="text-center text-3xl md:text-5xl font-extrabold mt-12 mb-8 bg-gradient-to-r from-pink-500 via-blue-400 to-yellow-400 bg-clip-text text-transparent drop-shadow-lg tracking-wide">
+    //       Tech. Communities
+    //     </h1>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 px-4 md:px-6 pb-16">
-          {
-            loading? <CommunityCardSkeleton/>:
+    //     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 px-4 md:px-6 pb-16">
+    //       {
+    //         loading? <CommunityCardSkeleton/>:
           
-          communities.map((item, index) => (
-            <div
-              key={index}
-              className="relative group  border border-neutral-700/50 p-6 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 flex flex-col justify-between overflow-hidden"
-            >
-              {/* Glow hover effect */}
-              <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 via-purple-500/10 to-pink-600/10 opacity-0 group-hover:opacity-100 blur-2xl transition duration-700"/>
+    //       communities.map((item, index) => (
+    //         <div
+    //           key={index}
+    //           className="relative group  border border-neutral-700/50 p-6 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 flex flex-col justify-between overflow-hidden"
+    //         >
+    //           {/* Glow hover effect */}
+    //           <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 via-purple-500/10 to-pink-600/10 opacity-0 group-hover:opacity-100 blur-2xl transition duration-700"/>
 
-              <Link to={`/techDomainDetails/${encodeURIComponent(item.categoryname)}`}>
-              <div className="relative z-10 p-5 bg-white/10 backdrop-blur-md rounded-2xl shadow-md hover:shadow-lg transition-all duration-300">
-                <h2 className="text-2xl md:text-3xl font-bold mb-4 bg-gradient-to-r from-green-400 via-blue-400 to-pink-400 bg-clip-text text-transparent drop-shadow-lg  tracking-tight">
-                  {item.categoryname}
-                </h2>
+    //           <Link to={`/techDomainDetails/${encodeURIComponent(item.categoryname)}`}>
+    //           <div className="relative z-10 p-5 bg-white/10 backdrop-blur-md rounded-2xl shadow-md hover:shadow-lg transition-all duration-300">
+    //             <h2 className="text-2xl md:text-3xl font-bold mb-4 bg-gradient-to-r from-green-400 via-blue-400 to-pink-400 bg-clip-text text-transparent drop-shadow-lg  tracking-tight">
+    //               {item.categoryname}
+    //             </h2>
 
-                <ul className="text-gray-200 space-y-2 text-sm md:text-base">
-                  <li className="flex justify-between">
-                    <span className="font-semibold text-white">Authors:</span>
-                    <span>{item.authorcount}</span>
-                  </li>
-                  <li className="flex justify-between">
-                    <span className="font-semibold text-white">Posts:</span>
-                    <span>{item.postscount}</span>
-                  </li>
-                  <li className="flex justify-between">
-                    <span className="font-semibold text-white">Followers:</span>
-                    <span>{item.followerscount}</span>
-                  </li>
-                </ul>
-              </div>
-              </Link>
+    //             <ul className="text-gray-200 space-y-2 text-sm md:text-base">
+    //               <li className="flex justify-between">
+    //                 <span className="font-semibold text-white">Authors:</span>
+    //                 <span>{item.authorcount}</span>
+    //               </li>
+    //               <li className="flex justify-between">
+    //                 <span className="font-semibold text-white">Posts:</span>
+    //                 <span>{item.postscount}</span>
+    //               </li>
+    //               <li className="flex justify-between">
+    //                 <span className="font-semibold text-white">Followers:</span>
+    //                 <span>{item.followerscount}</span>
+    //               </li>
+    //             </ul>
+    //           </div>
+    //           </Link>
 
-              {/* Buttons */}
-              <div className="relative z-10 mt-5 flex justify-end">
-                {role === "coordinator" || role === "admin" ? (
-                  <button
-                    type="button"
-                    className={`${
-                      authorCommunity.includes(item.categoryname)
-                        ? "bg-gradient-to-r from-orange-500 to-yellow-400 text-black font-semibold md:px-5 md:py-2 text-xs md:text-base px-3 py-1.5 rounded-lg shadow-lg hover:opacity-90 transition-all duration-300"
-                        : "hidden"
-                    }`}
+    //           {/* Buttons */}
+    //           <div className="relative z-10 mt-5 flex justify-end">
+    //             {role === "coordinator" || role === "admin" ? (
+    //               <button
+    //                 type="button"
+    //                 className={`${
+    //                   authorCommunity.includes(item.categoryname)
+    //                     ? "bg-gradient-to-r from-orange-500 to-yellow-400 text-black font-semibold md:px-5 md:py-2 text-xs md:text-base px-3 py-1.5 rounded-lg shadow-lg hover:opacity-90 transition-all duration-300"
+    //                     : "hidden"
+    //                 }`}
+    //               >
+    //                 {authorCommunity.includes(item.categoryname) &&
+    //                   "Coordinator"}
+    //               </button>
+    //             ) : (
+    //               <button
+    //                 onClick={() => updateCommunity(email, item.categoryname)}
+    //                 type="button"
+    //                 className={`font-semibold md:px-5 md:py-2 text-xs md:text-base px-3 py-1.5 rounded-lg shadow-md transition-all duration-300
+    //             ${
+    //               authorCommunity.includes(item.categoryname)
+    //                 ? "bg-emerald-600/20 text-emerald-400 "
+    //                 : "bg-white/80 text-gray-800 hover:from-gray-300 "
+    //             }`}
+    //               >
+    //                 {authorCommunity.includes(item.categoryname)
+    //                   ? "Joined"
+    //                   : "Join"}
+    //               </button>
+    //             )}
+    //           </div>
+    //         </div>
+    //       ))}
+    //     </div>
+    //   </div>
+
+    //   <Footer />
+    // </div>
+
+      <div className="min-h-screen bg-gray-900 text-white flex flex-col">
+      <NavBar />
+ 
+      <div className="flex-grow px-4 pb-20">
+ 
+        {/* ── Hero header ───────────────────────────────────────────── */}
+        <div className="pt-7 pb-12 text-center">
+          {/* <p className="text-[10px] font-semibold tracking-[0.3em] text-emerald-400 uppercase mb-3">
+            Explore · Learn · Contribute
+          </p> */}
+          <h1 className="text-2xl md:text-4xl font-bold md:font-black md:tracking-tight text-gray-200 leading-none mb-4">
+            Tech Communities
+          </h1>
+          <p className="text-xs text-gray-400 max-w-md mx-auto leading-relaxed">
+            {role=='student'?'Join a domain, connect with coordinators, and stay at the frontier of technology.':'Lead with knowledge - contribute content, collaborate with people, and elevate the ecosystem.'}
+          </p>
+        </div>
+ 
+        {/* ── Grid ──────────────────────────────────────────────────── */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          {loading ? (
+            <CommunityCardSkeleton />
+          ) : (
+            communities.map((item, index) => {
+              const accent = getAccent(item.categoryname);
+              const isJoined = authorCommunity.includes(item.categoryname);
+              const isCoord  = role === "coordinator" || role === "admin";
+ 
+              return (
+              <div
+                  key={index}
+                  className="group relative bg-gray-900 border border-[#1e293b] rounded-2xl overflow-hidden flex flex-col hover:border-white/10 transition-all duration-300"
+               
+                >
+                
+                  <Link
+                    to={`/techDomainDetails/${encodeURIComponent(item.categoryname)}`}
+                    className="flex-1 p-5 flex flex-col gap-4"
                   >
-                    {authorCommunity.includes(item.categoryname) &&
-                      "Coordinator"}
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => updateCommunity(email, item.categoryname)}
-                    type="button"
-                    className={`font-semibold md:px-5 md:py-2 text-xs md:text-base px-3 py-1.5 rounded-lg shadow-md transition-all duration-300
-                ${
-                  authorCommunity.includes(item.categoryname)
-                    ? "bg-emerald-600/20 text-emerald-400 "
-                    : "bg-white/80 text-gray-800 hover:from-gray-300 "
-                }`}
-                  >
-                    {authorCommunity.includes(item.categoryname)
-                      ? "Joined"
-                      : "Join"}
-                  </button>
-                )}
-              </div>
-            </div>
-          ))}
+                    {/* Icon + title */}
+                    <div className="flex items-start justify-between gap-3">
+               
+                      <div>
+                        <h2 
+                        className="text-base md:text-xl font-bold bg-gradient-to-r from-green-400 via-blue-400 to-pink-400 bg-clip-text text-transparent drop-shadow-lg truncate  tracking-tight"
+                        >
+
+                          {item.categoryname}
+                        </h2>
+                        <p className="text-[11px] text-gray-300 mt-0.5">Tech Domain</p>
+                      </div>
+                      {isJoined && <span className="text-xs flex gap-2 items-center justify-center text-emerald-400">
+                     <MdCardMembership className="text-sm md:text-base text-yellow-500" />
+                      </span>}
+                    </div>
+ 
+                    {/* Divider */}
+                    <div className="h-px bg-[#1e293b]" />
+ 
+                    {/* Stats */}
+                    <div className="grid grid-cols-3 gap-2">
+                      {[
+                        { label: "Coordinators",   value: item.authorcount },
+                        { label: "Posts",     value: item.postscount },
+                        { label: "Members",   value: item.followerscount },
+                      ].map((stat) => (
+                        <div
+                          key={stat.label}
+                          className="flex flex-col items-center justify-center bg-white/[0.03] border border-white/[0.05] rounded-lg py-2.5 px-1"
+                        >
+                          <span
+                            className="text-lg font-bold leading-none"
+                            style={{ color: accent.from }}
+                          >
+                            {stat.value}
+                          </span>
+                          <span className="text-[10px] text-gray-500 mt-1">{stat.label}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </Link>
+ 
+                  {/* Footer — action button */}
+                  <div className="px-5 pb-5">
+                    {isCoord ?
+                     (
+                      isJoined ? (
+                        <div
+                          className="w-full flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-semibold border"
+                          style={{
+                            background: `${accent.from}12`,
+                            borderColor: `${accent.from}30`,
+                            color: accent.from,
+                          }}
+                        >
+                          <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: accent.from }} />
+                          Coordinator
+                        </div>
+                      ) :  null
+                    ) :
+                     (
+                      
+                      <button
+                        onClick={() => updateCommunity(email, item.categoryname)}
+                        type="button"
+                        className="w-full py-2 rounded-xl text-xs font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed "
+                        disabled={updateDomain===item.categoryname}
+                        
+                        style={
+                          isJoined
+                            ? {
+                                background: `${accent.from}12`,
+                                border: `1px solid ${accent.from}30`,
+                                color: accent.from,
+                              }
+                            : {
+                                background: "#1e293b",
+                                border: "1px solid #334155",
+                                color: "#94a3b8",
+                              }
+                        }
+                        onMouseEnter={(e) => {
+                          if (!isJoined) {
+                            e.currentTarget.style.background = `${accent.from}18`;
+                            e.currentTarget.style.borderColor = `${accent.from}40`;
+                            e.currentTarget.style.color = accent.from;
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          if (!isJoined) {
+                            e.currentTarget.style.background = "#1e293b";
+                            e.currentTarget.style.borderColor = "#334155";
+                            e.currentTarget.style.color = "#94a3b8";
+                          }
+                        }}
+                      >
+                       {/* {isJoined ? updateDomain===item.categoryname?'Exiting...':"✓ Joined" : updateDomain===item.categoryname?"Joining...":"Join Community" } */}
+                       {
+  isJoined
+    ? (updateDomain === item.categoryname ? "Exiting..." : "✓ Joined")
+    : (updateDomain === item.categoryname ? "Joining..." : "Join Community")
+}
+                      </button>
+                    )}
+                  </div>
+                </div>
+              );
+            })
+          )}
         </div>
       </div>
-
+ 
       <Footer />
     </div>
+  
+
   );
 }
 
