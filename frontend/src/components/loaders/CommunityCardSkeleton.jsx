@@ -22,7 +22,7 @@ const CommunityCardSkeleton = () => (
     <div className="h-px bg-[#1e293b]" />
 
     {/* Stats */}
-    <div className="grid grid-cols-3 gap-2">
+    <div className="grid grid-cols-3  py-3 gap-2">
       {Array.from({ length: 3 }).map((_, i) => (
         <div
           key={i}

@@ -195,13 +195,13 @@ function TechCommunity() {
           <h1 className="text-2xl md:text-4xl font-bold md:font-black md:tracking-tight text-gray-200 leading-none mb-4">
             Tech Communities
           </h1>
-          <p className="text-xs text-gray-400 max-w-md mx-auto leading-relaxed">
+          <p className="text-xs text-gray-400 max-w-sm md:max-w-md mx-auto leading-relaxed">
             {role=='student'?'Join a domain, connect with coordinators, and stay at the frontier of technology.':'Lead with knowledge - contribute content, collaborate with people, and elevate the ecosystem.'}
           </p>
         </div>
  
         {/* ── Grid ──────────────────────────────────────────────────── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-7">
           {loading ? (
             <CommunityCardSkeleton />
           ) : (
@@ -216,7 +216,7 @@ function TechCommunity() {
                   className="group relative bg-gray-900 border border-[#1e293b] rounded-2xl overflow-hidden flex flex-col hover:border-white/10 transition-all duration-300"
                
                 >
-                
+                 
                   <Link
                     to={`/techDomainDetails/${encodeURIComponent(item.categoryname)}`}
                     className="flex-1 p-5 flex flex-col gap-4"
@@ -231,7 +231,7 @@ function TechCommunity() {
 
                           {item.categoryname}
                         </h2>
-                        <p className="text-[11px] text-gray-300 mt-0.5">Tech Domain</p>
+                        <p className="text-[11px] text-gray-400 md:text-gray-300 mt-0.5">Tech Domain</p>
                       </div>
                       {isJoined && <span className="text-xs flex gap-2 items-center justify-center text-emerald-400">
                      <MdCardMembership className="text-sm md:text-base text-yellow-500" />
@@ -242,7 +242,7 @@ function TechCommunity() {
                     <div className="h-px bg-[#1e293b]" />
  
                     {/* Stats */}
-                    <div className="grid grid-cols-3 gap-2">
+                    <div className="grid grid-cols-3 py-3 gap-2">
                       {[
                         { label: "Coordinators",   value: item.authorcount },
                         { label: "Posts",     value: item.postscount },
@@ -320,10 +320,10 @@ function TechCommunity() {
                       >
                        {/* {isJoined ? updateDomain===item.categoryname?'Exiting...':"✓ Joined" : updateDomain===item.categoryname?"Joining...":"Join Community" } */}
                        {
-  isJoined
-    ? (updateDomain === item.categoryname ? "Exiting..." : "✓ Joined")
-    : (updateDomain === item.categoryname ? "Joining..." : "Join Community")
-}
+                         isJoined
+                        ? (updateDomain === item.categoryname ? "Exiting..." : "✓ Joined")
+                        : (updateDomain === item.categoryname ? "Joining..." : "Join Community")
+                      }
                       </button>
                     )}
                   </div>
