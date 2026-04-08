@@ -23,13 +23,15 @@ import Fuse from "fuse.js";
 import highlightText from "../hooks/highlightText";
 import toast from "../components/toaster/Toast"
 import user from "../images/user.png";
+import { getItem } from "../utils/encode";
 function YourPost() {
   const [searchTerm, setSearchTerm] = useState("");
   const [posts, setPosts] = useState([]);
   const [postCategory, setPostCategory] = useState("");
   const [loader, setLoader] = useState(false);
   const [loading, setLoading] = useState(false);
-  const email = localStorage.getItem("email");
+  // const email = localStorage.getItem("email");
+  const email = getItem("email");
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const limit = 50;

@@ -15,13 +15,16 @@ import { IoIosGitNetwork } from "react-icons/io";
 import { BsPersonWorkspace } from "react-icons/bs";
 
 import { motion, AnimatePresence } from "framer-motion";
+import { getItem } from "../utils/encode";
 function HomePage() {
   const username = localStorage.getItem("username");
 
   const [categoryCount, setCategoryCount] = useState(0);
   const [announcement, setAnnouncement] = useState([]);
-  const email = localStorage.getItem("email");
-  const role = localStorage.getItem("role");
+  // const email = localStorage.getItem("email");
+  const email = getItem("email");
+  const role = getItem("role");
+  
 
   const [openDashboard, setOpenDashboard] = useState(false);
   const dashboardRef = useRef(null);

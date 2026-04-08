@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import axiosInstance from "../instances/Axiosinstances";
+import { getItem } from "../utils/encode";
 
 // function useTutorPlaylist() {
 //   const [tutorPlayList, setTutorPlayList] = useState([]);
@@ -33,7 +34,8 @@ function useTutorPlaylist() {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
-  const email = localStorage.getItem("email");
+  // const email = localStorage.getItem("email");
+  const email = getItem("email");
 
   const isFetching = useRef(false);
   const limit = 40;

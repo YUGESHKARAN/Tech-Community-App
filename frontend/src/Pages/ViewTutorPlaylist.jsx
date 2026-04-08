@@ -12,9 +12,11 @@ import { BiLike, BiSolidLike } from "react-icons/bi";
 import { ToastContainer, toast } from "react-toastify";
 import PlaylistDetailSkeleton from "../components/loaders/PlaylistDetailSkeleton";
 import Footer from "../ui/Footer";
+import { getItem } from "../utils/encode";
 
 function ViewTutorPlaylist() {
-  const email = localStorage.getItem("email");
+  // const email = localStorage.getItem("email");
+  const email = getItem("email");
   const { playlistId } = useParams();
   const [playlistData, setPlaylistData] = useState({});
   const [playlistPosts, setPlaylistPosts] = useState([]);

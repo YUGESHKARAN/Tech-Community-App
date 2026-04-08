@@ -21,7 +21,8 @@ function SingleTechDomainDetails() {
   const { category } = useParams();
   const decodedCategory = decodeURIComponent(category);
   const [authors, setAuthors] = useState([]);
-  const email = localStorage.getItem("email");
+  // const email = localStorage.getItem("email");
+  const email = getItem("email");
   const { authorCommunity, setAuthorCommunity } = useAuthorCommunity(email);
   // const role = localStorage.getItem("role");
   const role = getItem("role");

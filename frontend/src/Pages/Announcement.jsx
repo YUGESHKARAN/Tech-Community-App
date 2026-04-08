@@ -16,7 +16,8 @@ import { getItem } from "../utils/encode";
 
 function Announcement() {
   const username = localStorage.getItem("username");
-  const email = localStorage.getItem("email");
+  // const email = localStorage.getItem("email");
+  const email = getItem("email");
   const profile = localStorage.getItem("profile");
 
   const [title, setTitle] = useState("");
@@ -111,7 +112,8 @@ function Announcement() {
       return; // prevent submit
     }
 
-    const email = localStorage.getItem("email");
+    // const email = localStorage.getItem("email");
+    const email = getItem("email");
 
     setLoading(true);
 

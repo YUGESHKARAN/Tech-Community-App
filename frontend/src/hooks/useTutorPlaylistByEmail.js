@@ -1,9 +1,11 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import axiosInstance from "../instances/Axiosinstances";
+import { getItem } from "../utils/encode";
 
 function useTutoPlaylistByEmail() {
 
-  const email = localStorage.getItem("email");
+  // const email = localStorage.getItem("email");
+  const email = getItem("email");
   const [tutorPlayListByEmail, setTutorPlayListByEmail] = useState([]);
   const [playlistCountByEmail, setPlaylistCountByEmail] = useState(0);
   const [page, setPage] = useState(1);

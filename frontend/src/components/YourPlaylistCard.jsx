@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import { IoIosRemoveCircle } from "react-icons/io";
 import { IoRemoveOutline } from "react-icons/io5";
 import highlightText from "../hooks/highlightText";
+import { getItem } from "../utils/encode";
 const YourPlaylistCard = ({ playlist, onRemove, onDelete,setPlaylistCategory, debouncedSearch }) => {
   const {
     title,
@@ -22,7 +23,8 @@ const YourPlaylistCard = ({ playlist, onRemove, onDelete,setPlaylistCategory, de
   } = playlist;
 
   const [bookMarkId, setBookMarkId] = useState([]);
-  const email = localStorage.getItem("email");
+  // const email = localStorage.getItem("email");
+  const email = getItem("email");
   const [showConfirm, setShowConfirm] = useState(false);
   const [loading, setLoading] = useState(false)
 

@@ -37,7 +37,8 @@ export const AuthProvider = ({ children }) => {
     Cookies.remove("token");
     localStorage.removeItem("isAuthenticated"); // Clear login status
     localStorage.removeItem("username"); // Clear additional data if needed
-    localStorage.removeItem("email");
+    // localStorage.removeItem("email");
+    removeItem("email");
     // localStorage.removeItem("message");
     // localStorage.removeItem("role");
     removeItem("role");

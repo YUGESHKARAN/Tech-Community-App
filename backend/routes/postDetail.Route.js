@@ -6,7 +6,7 @@ const multer = require('multer');
 const path = require('path');
 const authenticateToken = require('../middleware/authMiddleware')
 const {
-  getAllPosts,
+  // getAllPosts,
   getSingleAuthorPosts,
   getCategoryPosts,
   addPosts,

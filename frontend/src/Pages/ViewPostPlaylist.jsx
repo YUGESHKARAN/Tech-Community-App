@@ -16,9 +16,11 @@ import CommentsBox from "../components/CommentsBox ";
 import { FaSquareGithub } from "react-icons/fa6";
 import { FaYoutube } from "react-icons/fa";
 import userImg from "../images/user.png";
+import { getItem } from "../utils/encode.js";
 function ViewPostPlaylist() {
   const user = localStorage.getItem("username");
-  const userEmail = localStorage.getItem("email");
+  // const userEmail = localStorage.getItem("email");
+  const userEmail = getItem("email");
   const [newMessage, setNewMessage] = useState("");
   const [socket, setSocket] = useState(null);
   const [messages, setMessages] = useState([]);

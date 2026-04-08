@@ -7,6 +7,7 @@ import axiosInstance from "../instances/Axiosinstances";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 import highlightText from "../hooks/highlightText";
+import { getItem } from "../utils/encode";
 const TutorPlaylistCard = ({ playlist, setPlaylistCategory,debouncedSearch }) => {
   const {
     title,
@@ -20,7 +21,8 @@ const TutorPlaylistCard = ({ playlist, setPlaylistCategory,debouncedSearch }) =>
   } = playlist;
 
   const [bookMarkId, setBookMarkId] = useState([]);
- const email = localStorage.getItem("email");
+//  const email = localStorage.getItem("email");
+ const email = getItem("email");
  
   const getBookMarkPlaylist = async () => {
     try {

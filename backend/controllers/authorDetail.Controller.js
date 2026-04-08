@@ -133,25 +133,25 @@ const addAuthor = async (req, res) => {
 
 // --------------------------------------------------------------------------
 
-const getAllAuthor = async (req, res) => {
-  try {
-    const authors = await Author.find({});
-    res.json(authors);
-  } catch (err) {
-    res.status("Error" + err);
-  }
-};
+// const getAllAuthor = async (req, res) => {
+//   try {
+//     const authors = await Author.find({});
+//     res.json(authors);
+//   } catch (err) {
+//     res.status("Error" + err);
+//   }
+// };
 
-const getAuthorsByRole = async (req, res) => {
-  try {
-    const { role } = req.params;
-    const authors = await Author.find({ role: role });
+// const getAuthorsByRole = async (req, res) => {
+//   try {
+//     const { role } = req.params;
+//     const authors = await Author.find({ role: {$eq: role} });
 
-    res.status(200).json({ authors });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
+//     res.status(200).json({ authors });
+//   } catch (err) {
+//     res.status(500).json({ message: err.message });
+//   }
+// };
 
 // const getProfile = async (req, res) => {
 //   try {
@@ -234,7 +234,8 @@ const getProfile = async (req, res) => {
 
 const getSingleAuthor = async (req, res) => {
   try {
-    const author = await Author.findOne({ email: req.params.email });
+    const {email} = req.params;
+    const author = await Author.findOne({ email: {$eq : email} });
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
     }
@@ -350,7 +351,7 @@ const updateAuthor = async (req, res) => {
   const { authorname, email, role, techcommunity, links } = req.body;
   const profile = req.file ? req.file.originalname : "";
   try {
-    const author = await Author.findOne({ email: req.params.email });
+    const author = await Author.findOne({ email: {$eq: req.params.email} });
 
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
@@ -431,7 +432,7 @@ const removePersonalLinks = async (req, res) => {
         .json({ message: "Author email and link Id are required" });
     }
 
-    const author = await Author.findOne({ email: authorEmail });
+    const author = await Author.findOne({ email: {$eq: authorEmail} });
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
     }
@@ -555,7 +556,7 @@ const deleteAuthorByAdmin = async (req, res) => {
     }
 
     //  Find admin first
-    const admin = await Author.findOne({ email: authorEmail });
+    const admin = await Author.findOne({ email: {$eq: authorEmail} });
     if (!admin) {
       return res.status(404).json({ message: "Admin not found" });
     }
@@ -1335,8 +1336,8 @@ const deleteAllAnnouncementByAdmin = async (req, res) => {
 module.exports = {
   addAuthor,
   sendRegistrationOTP,
-  getAllAuthor,
-  getAuthorsByRole,
+  // getAllAuthor,
+  // getAuthorsByRole,
   getSingleAuthor,
   updateAuthor,
   updateAPassword,

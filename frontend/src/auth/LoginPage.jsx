@@ -53,7 +53,8 @@ function LoginPage() {
         // console.log("token",response.data.token)  
 
         localStorage.setItem("username", response.data.author.authorname);
-        localStorage.setItem("email", response.data.author.email);
+        // localStorage.setItem("email", response.data.author.email);
+        storeItem("email", response.data.author.email);
         // localStorage.setItem("message",response.data.message); 
         // localStorage.setItem("role",response.data.author.role); 
         storeItem("role",response.data.author.role);

@@ -28,6 +28,7 @@ import useGetContributors from "../../hooks/admins/useGetContributors";
 import ContributorsTableSkeleton from "../../components/loaders/dashboard/ContributorsTableSkeleton";
 import useGetStudents from "../../hooks/admins/useGetStudents";
 import StudentsTableSkeleton from "../../components/loaders/dashboard/StudentsTableSkeleton";
+import { getItem } from "../../utils/encode";
 
 
 
@@ -36,7 +37,9 @@ function Dashboard() {
   const [activeSection, setActiveSection] = useState("overview");
 
   const [showSideBar, setShowSidebar] = useState(true);
-  const email = localStorage.getItem("email");
+  // const email = localStorage.getItem("email");
+  const email = getItem("email");
+
   const { statsSummary, statsLoader } = useStatsSummary(email);
   const [year, setYear] = useState("");
   const [target, setTarget] = useState(50);

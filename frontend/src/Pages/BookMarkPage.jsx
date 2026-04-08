@@ -24,6 +24,7 @@ import PillLoader from "../components/loaders/PillSkeleton.jsx";
 import TutorPlaylistGridSkeleton from "../components/loaders/TutorPlaylistGridSkeleton.jsx";
 import useTutorPlaylist from "../hooks/useTutorPlaylist.js";
 import useGetBookmarkPlaylist from "../hooks/useGetBookmarkPlaylist.js";
+import { getItem } from "../utils/encode.js";
 function BookMarkPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [posts, setPosts] = useState([]);
@@ -34,7 +35,8 @@ function BookMarkPage() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [bookMarkId, setBookMarkId] = useState([]);
   // const { email } = useParams();
-  const email = localStorage.getItem('email')
+  // const email = localStorage.getItem('email')
+  const email = getItem('email')
   const {loading:playlistLoading, bookMarPlaylist} = useGetBookmarkPlaylist(email)
 
   // ----------------------------------------------------------------------------------------

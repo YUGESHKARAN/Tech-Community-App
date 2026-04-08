@@ -32,10 +32,12 @@ import { BiLike, BiSolidLike } from "react-icons/bi";
 import { PiBookmarksSimpleFill, PiBookmarksSimpleLight } from "react-icons/pi";
 import useDragSheet from "../hooks/useDragHeader.js";
 import { FaYoutube } from "react-icons/fa6";
+import { getItem } from "../utils/encode.js";
 
 function ViewPage() {
   const user = localStorage.getItem("username");
-  const userEmail = localStorage.getItem("email");
+  // const userEmail = localStorage.getItem("email");
+  const userEmail = getItem("email");
   const [newMessage, setNewMessage] = useState("");
   const [socket, setSocket] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -378,9 +380,9 @@ function ViewPage() {
   };
 
   // console.log("email", email);
-  // console.log("userEmail", userEmail);
+  console.log("userEmail", userEmail);
 
-  // console.log("post id", postId);
+  console.log("post id", postId);
   // console.log("singlepost data", singlePostData);
 
   return (

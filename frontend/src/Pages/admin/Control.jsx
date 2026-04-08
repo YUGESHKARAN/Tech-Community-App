@@ -13,6 +13,7 @@ import { Link } from "react-router-dom";
 import AdminCardLoader from "../../components/loaders/controls/AdminCardLoader";
 import CoordinatorLoader from "../../components/loaders/controls/CoordinatorLoader";
 import StudentLoader from "../../components/loaders/controls/StudentLoader";
+import { getItem } from "../../utils/encode";
 // import Footer from "../../ui/Footer";
 function Control() {
   const [authors, setAuthors] = useState([]);
@@ -25,7 +26,8 @@ function Control() {
   const [showConfirm, setShowConfirm] = useState(false);
   const [loading, setLoading] = useState(false);
   const [authorEmail, setAuthorEmail] = useState("");
-  const email = localStorage.getItem("email");
+  // const email = localStorage.getItem("email");
+  const email = getItem("email");
   const [password, setPassword] = useState("");
   const [filteredAdmins, setFilteredAdmins] = useState([]);
   const [filteredCoordinators, setFilteredCoordinators] = useState([]);

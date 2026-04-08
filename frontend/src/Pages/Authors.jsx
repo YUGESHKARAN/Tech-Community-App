@@ -19,9 +19,11 @@ import CoordinatorGridSkeleton from "../components/loaders/CoordinatorGridSkelet
 import StudentGridSkeleton from "../components/loaders/StudentGridSkeleton ";
 import Cookies from "js-cookie";
 import Fuse from "fuse.js";
+import { getItem } from "../utils/encode";
 function Authors() {
   const [authors, setAuthors] = useState([]);
-  const email = localStorage.getItem("email");
+  // const email = localStorage.getItem("email");
+  const email = getItem("email");
   const [roleFilter, setRoleFilter] = useState("");
   const [follow, setFollow] = useState(false);
   const [recommendation, setRecommendation] = useState([]);

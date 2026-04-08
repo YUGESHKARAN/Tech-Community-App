@@ -40,20 +40,23 @@ function NavBar() {
   const menuRef = useRef(null);
   const { notification, setNotification } = useContext(GlobalStateContext);
   const username = localStorage.getItem("username");
-  const userEmail = localStorage.getItem("email");
+  // const userEmail = localStorage.getItem("email");
+  const userEmail = getItem("email");
   // const role = localStorage.getItem("role");
   const profile = localStorage.getItem("profile");
   const [showNotefication, setShowNotification] = useState(false);
   const [announcement, setAnnouncement] = useState([]);
   const [socket, setSocket] = useState(null);
-  const email = localStorage.getItem("email");  
+  // const email = localStorage.getItem("email");  
+  // const email = getItem("email");  
   const role    = getItem("role");
 
   const exit = () => {
     // localStorage.removeItem("role");
     removeItem("role");
     localStorage.removeItem("username");
-    localStorage.removeItem("email");
+    // localStorage.removeItem("email");
+    removeItem("email");
     // localStorage.removeItem("message");
 
     logout();

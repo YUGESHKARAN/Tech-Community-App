@@ -11,13 +11,15 @@ import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 import glow from "../assets/glow.png";
 import { VscSend } from "react-icons/vsc";
 import Cookies from "js-cookie";
+import { getItem } from "../utils/encode";
 
 function AddPost() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
   const [image, setImage] = useState("");
-  const email = localStorage.getItem("email"); // Get email from local storage
+  // const email = localStorage.getItem("email"); // Get email from local storage
+  const email = getItem("email"); // Get email from local storage
   const user = localStorage.getItem("username");
   const [loading, setLoading] = useState(false);
   const [customTitle, setCustomTitle] = useState("");

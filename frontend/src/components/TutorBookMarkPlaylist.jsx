@@ -6,13 +6,15 @@ import BookmarkPlaylistCard from "./BookmarkPlaylistCard";
 import axiosInstance from "../instances/Axiosinstances";
 import useGetBookmarkPlaylist from "../hooks/useGetBookmarkPlaylist";
 import TutorPlaylistGridSkeleton from "./loaders/TutorPlaylistGridSkeleton";
+import { getItem } from "../utils/encode";
 
 const TutorBookMarkPlaylist = () => {
   const { tutorPlayList } = useTutorPlaylist();
   // const [bookMarPlaylist, setBookMarPlaylist] = useState([]);
   // const [bookmakIds, setBookMarkIds] = useState([]);
   // const [count, setCount] = useState(1);
-  const email = localStorage.getItem("email");
+  // const email = localStorage.getItem("email");
+  const email = getItem("email");
   // console.log("playlist", tutorPlayList);
   // const [page, setPage] = useState(1);
   // const [hasMore, setHasMore] = useState(true);
@@ -123,7 +125,7 @@ const TutorBookMarkPlaylist = () => {
       );
     }
 
-    return filtered;
+    return [...filtered].reverse();
   }, [bookMarPlaylist, playlistCategory]);
 
   // console.log("bookmarked playlist", bookMarPlaylist);
@@ -188,7 +190,7 @@ const TutorBookMarkPlaylist = () => {
             "
           >
      
-            {filteredBookmarkPlaylist?.reverse().map((playlist) => (
+            {filteredBookmarkPlaylist?.map((playlist) => (
               <div
                 key={playlist._id}
                 //  className="min-w-[200px] sm:min-w-0"

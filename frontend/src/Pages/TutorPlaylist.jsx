@@ -13,7 +13,8 @@ import Fuse from "fuse.js";
 import useGetAllAuthorsByDomain from "../hooks/useGetAllAuthorsByDomain";
 import { getItem } from "../utils/encode";
 function TutorPlaylist() {
-  const email = localStorage.getItem("email");
+  // const email = localStorage.getItem("email");
+  const email = getItem("email");
   // const role = localStorage.getItem("role");
   const role = getItem("role");
   const [domain, setDomain] = useState("");

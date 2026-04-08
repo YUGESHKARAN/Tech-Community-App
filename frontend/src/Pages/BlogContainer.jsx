@@ -24,6 +24,7 @@ import TutorPlaylistGridSkeleton from "../components/loaders/TutorPlaylistGridSk
 
 import Fuse from "fuse.js";
 import highlightText from "../hooks/highlightText.jsx";
+import { getItem } from "../utils/encode.js";
 
 function BlogContainer({ activeTab, setActiveTab }) {
   const { tutorPlayList, loading:playlistLoading } = useTutorPlaylist();
@@ -32,7 +33,8 @@ function BlogContainer({ activeTab, setActiveTab }) {
   const [postCategory, setPostCategory] = useState("");
   const [loader, setLoader] = useState(false);
   const [loading, setLoading] = useState(false);
-  const email = localStorage.getItem("email");
+  // const email = localStorage.getItem("email");
+  const email = getItem("email");
   const [bookMarkId, setBookMarkId] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);

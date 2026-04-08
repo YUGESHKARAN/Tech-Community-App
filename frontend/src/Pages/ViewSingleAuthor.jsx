@@ -25,7 +25,8 @@ function ViewSingleAuthor() {
   const [following, setFollowing] = useState([]);
   const [ coordEamil, setCoordEmail ] = useState("");
   const [posts, setPosts] = useState([]);
-  const authorEmail = localStorage.getItem("email");
+  // const authorEmail = localStorage.getItem("email");
+  const authorEmail = getItem("email");
   const [profileLinks, setProfileLinks] = useState([]); // New state for profile links
 
   const fetchAuthor = async () => {

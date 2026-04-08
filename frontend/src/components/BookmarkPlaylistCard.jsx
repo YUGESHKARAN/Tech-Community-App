@@ -6,6 +6,7 @@ import { PiBookmarksSimpleFill, PiBookmarksSimpleLight } from "react-icons/pi";
 import axiosInstance from "../instances/Axiosinstances";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import { getItem } from "../utils/encode";
 const BookmarkPlaylistCard = ({ playlist, setBookMarPlaylist }) => {
   const {
     title,
@@ -19,7 +20,8 @@ const BookmarkPlaylistCard = ({ playlist, setBookMarPlaylist }) => {
   } = playlist;
 
   //   const [bookMarkId, setBookMarkId] = useState([]);
-  const email = localStorage.getItem("email");
+  // const email = localStorage.getItem("email");
+  const email = getItem("email");
 
   const addBookMarkPostId = async (_id) => {
     // e.preventDefault()

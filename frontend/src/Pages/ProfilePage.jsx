@@ -19,7 +19,8 @@ import toast from "../components/toaster/Toast"
 import { getItem, removeItem } from "../utils/encode";
 function ProfilePage() {
   const { logout } = useAuth();
-  const email = localStorage.getItem("email");
+  // const email = localStorage.getItem("email");
+  const email = getItem("email");
   // const role = localStorage.getItem("role");
   const role    = getItem("role");
   const [author, setAuthor] = useState({});

@@ -14,9 +14,11 @@ import useGetPostsByCategory from "../hooks/useGetPostsByCategory";
 import BlogMiniSkeleton from "../components/loaders/BlogMiniSkeleton";
 import Fuse from "fuse.js";
 import useGetAllAuthorsByDomain from "../hooks/useGetAllAuthorsByDomain";
+import { getItem } from "../utils/encode";
 function EditTutorPlaylist() {
-  const email = localStorage.getItem("email");
-  const role = localStorage.getItem("role");
+  // const email = localStorage.getItem("email");
+  const email = getItem("email");
+  const role = getItem("role");
   const navigator = useNavigate();
   const [domain, setDomain] = useState("");
   // const { posts, getAuthorPosts } = useGetAuthorPosts(email);

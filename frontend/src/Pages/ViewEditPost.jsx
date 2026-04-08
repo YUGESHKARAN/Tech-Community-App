@@ -11,10 +11,12 @@ import axiosInstance from "../instances/Axiosinstances";
 import { IoIosRemoveCircleOutline } from "react-icons/io";
 import user from "../images/user.png";
 import toast from "../components/toaster/Toast"
+import { getItem } from "../utils/encode";
 
 function ViewEditPost() {
   // const username = localStorage.getItem("username");
-  const email = localStorage.getItem("email");
+  // const email = localStorage.getItem("email");
+  const email = getItem("email");
   const [singlePostData, setSinglePostData] = useState([]);
   const [title, setTitle] = useState(null);
   const [description, setDescription] = useState(null);
