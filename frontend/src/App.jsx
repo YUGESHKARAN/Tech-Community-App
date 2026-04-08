@@ -125,7 +125,8 @@ function App() {
             />
 
             <Route
-              path="/bookMarkPage/:email"
+              // path="/bookMarkPage/:email"
+              path="/bookMarkPage"
               element={<ProtectedRoute element={<BookMarkPage />} />}
             />
 

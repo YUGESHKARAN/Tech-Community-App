@@ -23,6 +23,7 @@ import BlogSkeleton from "../components/loaders/BlogSkeleton.jsx";
 import PillLoader from "../components/loaders/PillSkeleton.jsx";
 import TutorPlaylistGridSkeleton from "../components/loaders/TutorPlaylistGridSkeleton.jsx";
 import useTutorPlaylist from "../hooks/useTutorPlaylist.js";
+import useGetBookmarkPlaylist from "../hooks/useGetBookmarkPlaylist.js";
 function BookMarkPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [posts, setPosts] = useState([]);
@@ -32,7 +33,9 @@ function BookMarkPage() {
   const [authorProfile, setAuthorProfile] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
   const [bookMarkId, setBookMarkId] = useState([]);
-  const { email } = useParams();
+  // const { email } = useParams();
+  const email = localStorage.getItem('email')
+  const {loading:playlistLoading, bookMarPlaylist} = useGetBookmarkPlaylist(email)
 
   // ----------------------------------------------------------------------------------------
   // const getBookMarkPosts = async () => {
@@ -318,11 +321,12 @@ function BookMarkPage() {
         {activeTab === "playlists" && (
           <div className="md:px-4 w-full  mx-auto shadow-inner ">
             {/* <TutorBookMarkPlaylist/> */}
-            {loading ? (
+            {/* {(playlistLoading && bookMarPlaylist.length ===0) ? (
               <TutorPlaylistGridSkeleton />
             ) : (
               <TutorBookMarkPlaylist />
-            )}
+            )} */}
+            <TutorBookMarkPlaylist />
           </div>
         )}
 

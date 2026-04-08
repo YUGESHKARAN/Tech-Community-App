@@ -257,7 +257,8 @@ function NavBar() {
             
 
           <NavIcon
-              to={`/bookMarkPage/${email}`}
+              // to={`/bookMarkPage/${email}`}
+              to={`/bookMarkPage`}
               icon={<RiBookMarkedFill />}
               label="Bookmark"
               
@@ -292,7 +293,7 @@ function NavBar() {
       </ul>
 
       {/* Mobile Hamburger Button */}
-      <p className="text-white flex justify-end w-full xl:hidden  font-semibold items-center gap-1 mr-3 text-sm">
+      <div className="text-white flex justify-end w-full xl:hidden  font-semibold items-center gap-1 mr-3 text-sm">
         <Link to="/profile" className="flex text-sm  items-center gap-1">
           {profile !== "undefined" ? (
             <img
@@ -304,10 +305,10 @@ function NavBar() {
           )}{" "}
           <p className="truncate"> Hi,{username}</p> 
         </Link>
-      </p>
+      </div>
 
       <div className="transition-all flex items-center duration-200 hover:text-white">
-        <p className="text-white xl:flex justify-end w-full hidden font-semibold items-center gap-1 mr-3 text-sm">
+        <div className="text-white xl:flex justify-end w-full hidden font-semibold items-center gap-1 mr-3 text-sm">
           <Link to="/profile" className="flex  items-center gap-1">
             {profile !== "undefined" ? (
               <img
@@ -319,7 +320,7 @@ function NavBar() {
             )}{" "}
             <p className="truncate"> Hi,{username}</p> 
           </Link>
-        </p>
+        </div>
         <div className="flex items-center ">
           <IoMdNotifications
             onClick={() => {
@@ -429,7 +430,8 @@ function NavBar() {
           />
           }
             <NavIcon
-              to={`/bookMarkPage/${email}`}
+              // to={`/bookMarkPage/${email}`}
+              to={`/bookMarkPage`}
               icon={<RiBookMarkedFill />}
               label="Bookmark"
               close={setIsSidebarOpen}

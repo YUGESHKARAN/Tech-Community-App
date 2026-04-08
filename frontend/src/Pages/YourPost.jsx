@@ -566,7 +566,7 @@ const filteredPosts = useMemo(() => {
           </div>
           {posts.length == 0 && !loader && (
             <div className="flex h-[70vh] flex-col justify-center items-center gap-5 ">
-              <span className="text-gray-400 flex justify-center items-center text-center ">
+              <span className="text-gray-400 max-w-xs md:max-w-md flex justify-center items-center text-center ">
                 {" "}
                 Your workspace is empty! Start creating your posts.{" "}
               </span>
@@ -608,7 +608,7 @@ const filteredPosts = useMemo(() => {
               </h2>
             </div>
 
-            <p className="text-gray-600 mb-6 text-sm leading-relaxed">
+            <p className="text-gray-600  mb-6 text-sm leading-relaxed">
               Are you sure you want to delete this Post?
             </p>
 

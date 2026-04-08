@@ -26,7 +26,7 @@ import Fuse from "fuse.js";
 import highlightText from "../hooks/highlightText.jsx";
 
 function BlogContainer({ activeTab, setActiveTab }) {
-  const { tutorPlayList } = useTutorPlaylist();
+  const { tutorPlayList, loading:playlistLoading } = useTutorPlaylist();
   const [searchTerm, setSearchTerm] = useState("");
   const [posts, setPosts] = useState([]);
   const [postCategory, setPostCategory] = useState("");
@@ -303,11 +303,12 @@ function BlogContainer({ activeTab, setActiveTab }) {
           <section className="space-y-4 mt-4 px-3 md:px-0 px-auto  mx-auto w-full md:w-full ">
             <div className=" md:px-4 shadow-inner">
               {/* {  loading ? <TutorPlaylistGridSkeleton /> : <TutorPlaylistGrid />} */}
-              {tutorPlayList.length === 0 ? (
+              {/* {tutorPlayList.length === 0 && playlistLoading ? (
                 <TutorPlaylistGridSkeleton />
               ) : (
                 <TutorPlaylistGrid />
-              )}
+              )} */}
+               <TutorPlaylistGrid />
             </div>
           </section>
         )}

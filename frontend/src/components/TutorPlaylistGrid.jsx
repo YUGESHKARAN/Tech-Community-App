@@ -3,6 +3,8 @@ import TutorPlaylistCard from "./TutorPlaylistCard";
 import useTutorPlaylist from "../hooks/useTutorPlaylist";
 import { IoSearchOutline } from "react-icons/io5";
 import Fuse from "fuse.js";
+import TutorPlaylist from "../Pages/TutorPlaylist";
+import TutorPlaylistGridSkeleton from "./loaders/TutorPlaylistGridSkeleton";
 
 const TutorPlaylistGrid = () => {
   const { tutorPlayList, playlistCount, loading, hasMore } = useTutorPlaylist();
@@ -92,7 +94,10 @@ const TutorPlaylistGrid = () => {
         </div>
       </div>
 
+     
+
       {tutorPlayList.length > 0 && (
+         <>
         <div
           className={`w-full sticky top-0 z-40
                 ${isStickyActive ? "bg-gray-900 " : "bg-transparent"}`}
@@ -129,10 +134,8 @@ const TutorPlaylistGrid = () => {
             ))}
           </div>
         </div>
-      )}
 
-      {tutorPlayList?.length > 0 ? (
-        <div
+         <div
           // className="
           //   flex gap-6 overflow-x-auto pb-4
           //   sm:grid sm:grid-cols-2
@@ -183,12 +186,20 @@ const TutorPlaylistGrid = () => {
               No more playlists
             </p>
           )}
+
+          
         </div>
-      ) : (
-        <p className="text-gray-400 flex justify-center items-center h-56 text-center py-4">
+
+        </>
+      )}
+
+     
+      {
+        tutorPlayList?.length===0 && !loading && <p className="text-gray-400 flex justify-center items-center h-56 text-center py-4">
           No playlists available!
         </p>
-      )}
+      }
+      {  tutorPlayList.length===0 && loading && <TutorPlaylistGridSkeleton />}
     </>
   );
 };

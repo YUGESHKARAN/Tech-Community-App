@@ -620,22 +620,22 @@ function Announcement() {
 
                 {/* VIEW POST SECTION RESTORED */}
                 <div className="flex justify-between items-center text-xs text-slate-500 pt-2 md:pt-2 md:border-t border-slate-800">
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 md:gap-3">
                     <Link to={`/viewProfile/${item.authorEmail}`}>
                       {item?.profile &&
                       item.profile !== "undefined" ? (
                         <img
                           src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${item.profile}`}
                           alt="Author"
-                          className="w-9 h-9 rounded-full object-cover border border-gray-200"
+                          className="md:w-9 md:h-9 w-8 h-8 rounded-full object-cover border border-gray-200"
                         />
                       ) : (
-                        <div className="w-9 h-9 rounded-full object-cover border border-gray-300">
+                        <div className="md:w-9 md:h-9 w-8 h-8 rounded-full object-cover border border-gray-300">
                           <HiOutlineUserCircle className="text-[#786fa6] bg-white rounded-full w-full h-full " />
                         </div>
                       )}
                     </Link>
-                    <span>Posted by {item.user}</span>
+                    <div className="text-[10px] text-gray-500 md:text-gray-400">Posted by <p className="text-gray-200 text-xs font-semibold">{item.user}</p></div>
                   </div>
                 </div>
               </div>
