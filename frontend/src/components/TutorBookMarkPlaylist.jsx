@@ -7,6 +7,7 @@ import axiosInstance from "../instances/Axiosinstances";
 import useGetBookmarkPlaylist from "../hooks/useGetBookmarkPlaylist";
 import TutorPlaylistGridSkeleton from "./loaders/TutorPlaylistGridSkeleton";
 import { getItem } from "../utils/encode";
+import PillLoader from "./loaders/PillSkeleton";
 
 const TutorBookMarkPlaylist = () => {
   const { tutorPlayList } = useTutorPlaylist();
@@ -173,6 +174,9 @@ const TutorBookMarkPlaylist = () => {
               </div>
             </div>
           )}
+
+          {loading && !bookMarPlaylist.length > 0 && <PillLoader />}
+          
 
          {bookMarPlaylist.length>0 && <div
           

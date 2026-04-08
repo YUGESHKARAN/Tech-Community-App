@@ -393,6 +393,8 @@ function BookMarkPage() {
                     </div>
             )}
 
+             {loading && !posts.length > 0 && <PillLoader/>}
+
             <div className="flex relative  w-full flex-wrap justify-center h-auto mx-auto">
               
 

@@ -5,6 +5,7 @@ import { IoSearchOutline } from "react-icons/io5";
 import Fuse from "fuse.js";
 import TutorPlaylist from "../Pages/TutorPlaylist";
 import TutorPlaylistGridSkeleton from "./loaders/TutorPlaylistGridSkeleton";
+import PillLoader from "./loaders/PillSkeleton";
 
 const TutorPlaylistGrid = () => {
   const { tutorPlayList, playlistCount, loading, hasMore } = useTutorPlaylist();
@@ -93,6 +94,8 @@ const TutorPlaylistGrid = () => {
           />
         </div>
       </div>
+
+      {loading && !tutorPlayList.length > 0 && <PillLoader />}
 
      
 
