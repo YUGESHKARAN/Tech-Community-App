@@ -494,7 +494,7 @@ function ViewTutorPlaylist() {
                                 : user
                             }
                             alt={collab.name}
-                            className="h-6 md:h-7 w-6 md:w-7 rounded-full border-2 border-teal-600 bg-white"
+                            className="h-6 md:h-7 w-6 md:w-7 rounded-full border-2 border-teal-600 bg-gray-600"
                           />
                         ))}
                         <img
@@ -504,7 +504,7 @@ function ViewTutorPlaylist() {
                               : user
                           }
                           // alt={collab.name}
-                          className="h-6 md:h-7 w-6 md:w-7 rounded-full border-2 border-teal-600 bg-white"
+                          className="h-6 md:h-7 w-6 md:w-7 rounded-full border-2 border-teal-600 bg-gray-600"
                         />
                       </div>
 
@@ -527,7 +527,7 @@ function ViewTutorPlaylist() {
                                 : user
                             }
                             alt=""
-                            className="h-6 md:h-7 w-6 md:w-7 bg-white  rounded-full object-cover border border-green-400"
+                            className="h-6 md:h-7 w-6 md:w-7 bg-gray-600  rounded-full object-cover border border-teal-600"
                           />
                           {playlistData.name}{" "}
                           <span className="text-gray-200">(Author)</span>
@@ -545,7 +545,7 @@ function ViewTutorPlaylist() {
                                   : user
                               }
                               alt=""
-                              className="h-6 md:h-7 w-6 md:w-7 bg-white  rounded-full object-cover border border-green-400"
+                              className="h-6 md:h-7 w-6 md:w-7 bg-gray-600  rounded-full object-cover border border-teal-600"
                             />
                             {data.name}
                           </Link>

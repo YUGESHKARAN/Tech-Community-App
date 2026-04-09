@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import NavBar from "../ui/NavBar";
 import axios from "axios";
 import Footer from "../ui/Footer";
@@ -100,6 +100,7 @@ function TechCommunity() {
   const getAccent = (name) =>
     domainAccents[name] || { from: "#10b981", to: "#059669", icon: "💡" };
 
+ 
   return (
     // <div className="min-h-screen bg-gray-900  text-white flex flex-col">
     //   <NavBar />

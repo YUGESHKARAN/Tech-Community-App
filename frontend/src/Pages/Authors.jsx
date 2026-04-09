@@ -283,7 +283,7 @@ const recommendedAuthors = useMemo(() => {
                       ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`
                       : user
                   }
-                  className="w-12 h-12 bg-white rounded-full object-cover border border-gray-600"
+                  className="w-12 h-12 bg-gray-700 rounded-full object-cover border border-gray-900"
                 />
               </Link>
 
@@ -406,7 +406,7 @@ const recommendedAuthors = useMemo(() => {
                         ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`
                         : user
                     }
-                    className="w-24 h-24 mx-auto bg-white rounded-full object-cover border border-gray-600"
+                    className="w-24 h-24 mx-auto bg-gray-700 rounded-full object-cover border border-gray-900"
                   />
                 </Link>
 
@@ -538,11 +538,11 @@ const recommendedAuthors = useMemo(() => {
                         w-20 h-20
                         rounded-full
                         object-cover
-                        border border-gray-600
+                        border border-gray-900
                         shadow-sm
                         hover:shadow-md
                         transition
-                        bg-white
+                        bg-gray-700
                     "
                   />
                 </Link>

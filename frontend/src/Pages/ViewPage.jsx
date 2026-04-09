@@ -402,7 +402,7 @@ function ViewPage() {
                       ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`
                       : userImg
                   }
-                  className="w-10 h-10 rounded-full object-cover bg-white border border-neutral-700/40"
+                  className="w-10 h-10 rounded-full object-cover bg-gray-700 border border-neutral-700/40"
                   alt="Author"
                 />
               </Link>

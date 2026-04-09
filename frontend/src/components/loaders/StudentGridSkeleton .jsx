@@ -1,6 +1,6 @@
 const StudentGridSkeleton = () => {
   return (
-    <div className="w-full grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-7 gap-2 md:gap-4 mt-8 animate-pulse">
+    <div className="w-full grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-7 gap-2 md:gap-4 mt-4 animate-pulse">
       {[...Array(7)].map((_, index) => (
         <div
           key={index}
