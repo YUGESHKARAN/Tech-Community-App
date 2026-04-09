@@ -476,7 +476,7 @@ function SingleTechDomainDetails() {
       <NavBar />
 
       {/* ── HEADER ─────────────────────────────────────────────── */}
-      <header className="px-4 md:px-10 pt-10 pb-7 border-b border-white/5">
+      <header className="px-4 md:px-10 pt-10 pb-7 border-white/5">
         <div className="w-full mx-auto md:flex flex-wrap items-start justify-between gap-5">
           {/* Title */}
           <div>
@@ -487,7 +487,7 @@ function SingleTechDomainDetails() {
               <span className="text-white/60">Community</span>
             </h1>
             <p className="mt-2.5 text-xs text-center md:text-left md:text-sm text-gray-500">
-              Connect, collaborate and grow within this tech domain
+              Connect, collaborate and grow together
             </p>
           </div>
 
@@ -632,7 +632,7 @@ function SingleTechDomainDetails() {
                         {author.followers.includes(email) ? (
                           <button
                             onClick={() => addFollower(author.email)}
-                            className="w-full py-2 cursor-pointer rounded-lg bg-gray-700 text-gray-300 text-sm cursor-default transition-all duration-400 disabled:bg-transparent  "
+                            className="w-full py-2 cursor-pointer rounded-lg bg-gray-700 text-gray-300 text-sm cursor-default transition-all duration-400 disabled:bg-transparent"
                             disabled={followAuthorLoaderId === author.email}
                           >
                             {followAuthorLoaderId === author.email ? (
@@ -648,7 +648,7 @@ function SingleTechDomainDetails() {
                         ) : (
                           <button
                             onClick={() => addFollower(author.email)}
-                            className="w-full py-2 rounded-lg bg-green-500 text-gray-900 text-sm font-medium hover:bg-green-400 transition-all duration-400 disabled:bg-transparent "
+                            className="w-full py-2 rounded-lg bg-green-500 text-gray-900 text-sm font-medium hover:bg-green-400 transition-all duration-400 disabled:bg-transparent"
                             disabled={followAuthorLoaderId === author.email}
                           >
                             {followAuthorLoaderId === author.email ? (
@@ -684,7 +684,7 @@ function SingleTechDomainDetails() {
               )}
 
               {!hasMore && (
-                <p className="text-center  col-span-full py-4 text-gray-500">
+                <p className="text-center text-[10px] md:text-xs col-span-full py-4 text-gray-500">
                   No more coordinators
                 </p>
               )}
@@ -808,7 +808,7 @@ function SingleTechDomainDetails() {
               )}
 
               {!hasMore && (
-                <p className="text-center  col-span-full py-4 text-gray-500">
+                <p className="text-center text-[10px] md:text-xs col-span-full py-4 text-gray-500">
                   No more members
                 </p>
               )}

@@ -275,7 +275,7 @@ const filteredPosts = useMemo(() => {
                 }
                 alt="Author Profile"
                 className={`w-20 h-20 md:w-28 md:h-28 rounded-full object-cover border-2 transition-all duration-300 group-hover:scale-105 ${
-                  authorProfile ? "border-teal-400" : "border-gray-500 bg-white"
+                  authorProfile ? "border-teal-400" : "border-gray-500 bg-gray-700"
                 }`}
               />
 
@@ -398,7 +398,7 @@ const filteredPosts = useMemo(() => {
                           ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.profile}`
                           : user
                       }
-                      className="w-9 h-9 rounded-full bg-white object-cover border border-gray-700"
+                      className="w-9 h-9 rounded-full bg-gray-700 object-cover border border-gray-900"
                       alt={data.authorName}
                     />
                   </Link>
