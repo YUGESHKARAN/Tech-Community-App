@@ -13,6 +13,7 @@ import getTimeAgo from "../components/DateCovertion";
 
 import toast from "../components/toaster/Toast"
 import { getItem } from "../utils/encode";
+import AnnouncementSkeleton from "../components/loaders/AnnouncementSkeleton";
 
 function Announcement() {
   const username = localStorage.getItem("username");
@@ -46,6 +47,8 @@ function Announcement() {
     deliveredTo: "",
   });
 
+  const [announceLoading, setAnnounceLoading] = useState(false)
+
   // const announcementUrl =
   //   role === "admin"
   //     ? `/blog/author/getAllAnnouncemnet/${email}`
@@ -53,11 +56,15 @@ function Announcement() {
 
   const fetchAllAnnouncement = async () => {
     try {
+      setAnnounceLoading(true)
       const response = await axiosInstance.get(`/blog/author/${email}`);
       // console.log("announcement", response.data.announcement);
       setAnnouncement(response.data.announcement);
     } catch (err) {
       console.log("error", err);
+    }
+    finally{
+      setAnnounceLoading(false)
     }
   };
 
@@ -245,9 +252,12 @@ function Announcement() {
         <div className="w-full mx-auto px-3 py-2 md:px-6 md:pb-10 grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-5">
           {/* ================= LEFT RAIL ================= */}
 
-          <aside className={`${!showAnnouncement?'space-y-8 md:sticky top-7 self-start':'space-y-8 '}`}>
+          <aside 
+          // className={`${!showAnnouncement?'md:sticky top-7 self-start':' md:sticky top-7 self-start'}`}
+          className="lg:sticky top-7 self-start"
+          >
             {/* OVERVIEW */}
-            <div className="bg-[#111827] border border-slate-800 rounded-lg p-5">
+            <div className={`${showAnnouncement?'hidden':'bg-[#111827] border border-slate-800 rounded-lg p-5'}`}>
               <h3 className="text-xs uppercase tracking-wide text-slate-400 mb-4">
                 Overview
               </h3>
@@ -267,10 +277,13 @@ function Announcement() {
                 </div>
               </div>
             </div>
+           
+
             {role !== "student" && (
               <>
                 {/* CREATE PANEL */}
                 {showAnnouncement && (
+                  <div className="lg:overflow-y-scroll lg:h-screen emerald-scrollbar  lg:pb-12">
                   <div className="bg-[#111827] border border-slate-800  rounded-lg p-6 space-y-6">
                     <h3 className="text-xs uppercase tracking-wide text-slate-400">
                       Create Broadcast
@@ -524,6 +537,7 @@ function Announcement() {
                       </button>
                     </form>
                   </div>
+                  </div>
                 )}
 
                 {/* DANGER ZONE */}
@@ -549,13 +563,13 @@ function Announcement() {
 
           {/* ================= MAIN FEED ================= */}
           <main className="space-y-8">
-            {announcement.length === 0 && (
+            {announcement.length === 0 && !announceLoading && (
               <div className="bg-[#111827] border border-slate-800 rounded-lg p-12 text-center text-slate-500 text-sm">
                 No announcements available.
               </div>
             )}
 
-            {reversedAnnouncements.map((item) => (
+            {!announceLoading && reversedAnnouncements.map((item) => (
               <div
                 key={item._id}
                 className="bg-[#111827] border border-slate-800 rounded-lg p-4 md:p-7 space-y-6"
@@ -642,6 +656,8 @@ function Announcement() {
                 </div>
               </div>
             ))}
+
+            {announceLoading && <AnnouncementSkeleton/>}
           </main>
         </div>
         {/* {selectedImage && (
