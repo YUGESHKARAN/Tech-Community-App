@@ -1,7 +1,9 @@
 
 const AnnouncementSkeleton = () => {
   return (
-    <div className="bg-[#111827] border border-slate-800 rounded-lg p-4 md:p-7 space-y-6 animate-pulse">
+    <>
+    {Array.from({ length: 4 }).map((_, index) => (
+        <div className="bg-[#111827] border border-slate-800 rounded-lg p-4 md:p-7 space-y-6 animate-pulse">
       
       {/* Header */}
       <div className="flex justify-between items-start">
@@ -46,7 +48,11 @@ const AnnouncementSkeleton = () => {
       </div>
 
     </div>
-  );
+
+
+  ))}
+  </>
+      );
 };
 
 export default AnnouncementSkeleton;
