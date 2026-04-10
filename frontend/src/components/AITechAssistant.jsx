@@ -18,6 +18,7 @@ export default function AITechAssistant({ currentPostId, category, viewComments,
   const [loading, setLoading] = useState(false);
   const token = Cookies.get("token");
   const assistantURL = import.meta.env.VITE_TECH_ASSISTANT_URL;
+  const [isInputFocused, setIsInputFocused] = useState(false);
   const [messages, setMessages] = useState([
     {
       role: "assistant",
@@ -243,20 +244,18 @@ export default function AITechAssistant({ currentPostId, category, viewComments,
 
       w-full md:w-full
       md:relative
-      h-[75vh] md:h-[520px]
-       text-white
-       bg-[#0a0f1d] 
+      text-white
+      bg-[#0a0f1d] 
        
       border-t border-[#30363d] md:border-0
       rounded-t-2xl 
       transform transition-transform duration-300
       ${open ? "translate-y-0" : "translate-y-full md:translate-y-0"}
       z-40 flex flex-col  md:rounded-xl
-      
       md:py-4
-
-      
+      md:h-[520px]      
     `}
+                      style={{ height: isInputFocused ? "50vh" : "75vh" }}
       >
 
         <div 
@@ -546,7 +545,19 @@ export default function AITechAssistant({ currentPostId, category, viewComments,
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && askAI()}
             placeholder="Ask your queries..."
-            className="flex-1 bg-gray-800 border border-neutral-800 rounded-xl px-4 py-2 text-sm text-white placeholder-neutral-500 outline-none"
+            className="flex-1 md:hidden bg-gray-800 border border-neutral-800 rounded-xl px-4 py-2 text-sm text-white placeholder-neutral-500 outline-none"
+            onFocus={() => setIsInputFocused(true)}
+            // onBlur={() => setIsInputFocused(false)}
+            onMouseOut={() => setIsInputFocused(false)}
+          />
+
+           <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && askAI()}
+            placeholder="Ask your queries..."
+            className="flex-1 bg-gray-800 hidden md:block border border-neutral-800 rounded-xl px-4 py-2 text-sm text-white placeholder-neutral-500 outline-none"
+
           />
 
           <button

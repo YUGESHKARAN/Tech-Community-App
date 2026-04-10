@@ -58,7 +58,7 @@ function ViewPage() {
   const myProfile = localStorage.getItem("profile");
   // const { sheetRef, handleDragStart } = useDragSheet(setViewComments);
   const sheetRef = useRef(null);
-  const [isInputFocused, setIsInputFocused] = useState(false);
+    const [isInputFocused, setIsInputFocused] = useState(false);
 
   // Fetch post data
   useEffect(() => {
@@ -975,7 +975,7 @@ function ViewPage() {
                       )}
                     </div>
                     <button
-                      onClick={() => setViewComments(false)}
+                      onClick={(e) => {e.preventDefault(); setViewComments(false);}}
                       className="p-1.5 rounded-md text-gray-500 hover:text-gray-300 hover:bg-white/5 transition-colors"
                     >
                       <IoClose className="text-base" />
@@ -1006,7 +1006,8 @@ function ViewPage() {
                         placeholder="Leave a comment..."
                         className="flex-1 bg-transparent outline-none text-sm text-gray-300 placeholder-gray-600"
                         onFocus={() => setIsInputFocused(true)}
-                        onBlur={() => setIsInputFocused(false)}
+                        // onBlur={() => setIsInputFocused(false)}
+                        onMouseOut={() => setIsInputFocused(false)}
                       />
                       <button
                         onClick={postComment}
