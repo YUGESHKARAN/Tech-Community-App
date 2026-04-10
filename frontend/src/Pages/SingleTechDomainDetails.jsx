@@ -566,7 +566,7 @@ function SingleTechDomainDetails() {
         {/* ── COORDINATORS ─────────────────────────────────────── */}
         {authors.filter((a) => a.role === "coordinator").length > 0 && (
           <section className="mt-10">
-            <p className="text-[11px] font-medium tracking-widest uppercase text-gray-500 mb-4">
+            <p className="text-xs text-center md:text-sm font-medium tracking-widest uppercase md:text-gray-400 text-gray-500 mb-4">
               Community Coordinators
             </p>
 
@@ -696,7 +696,7 @@ function SingleTechDomainDetails() {
         {loading &&
           authors.filter((a) => a.role === "coordinator").length === 0 && (
             <section className="mt-10">
-              <p className="text-[11px] font-medium tracking-widest uppercase text-gray-500 mb-4">
+              <p className="text-xs text-center md:text-sm font-medium tracking-widest uppercase md:text-gray-400 text-gray-500 mb-4">
                 Community Coordinators
               </p>
               <CoordinatorGridSkeleton />
@@ -712,7 +712,7 @@ function SingleTechDomainDetails() {
         {/* ── MEMBERS ──────────────────────────────────────────── */}
         {authors.filter((a) => a.role === "student").length > 0 && (
           <section className="mt-4">
-            <p className="text-[11px] font-medium tracking-widest uppercase text-gray-500 mb-4">
+            <p className="text-xs text-center md:text-sm font-medium tracking-widest uppercase md:text-gray-400 text-gray-500 mb-4">
               Community Members
             </p>
 
@@ -820,7 +820,7 @@ function SingleTechDomainDetails() {
         {loading &&
           authors.filter((a) => a.role === "student").length === 0 && (
             <section className="mt-10">
-              <p className="text-[11px] font-medium tracking-widest uppercase text-gray-500 mb-4">
+              <p className="text-xs text-center md:text-sm font-medium tracking-widest uppercase md:text-gray-400 text-gray-500 mb-4">
                 Community Members
               </p>
               <StudentGridSkeleton />
@@ -921,12 +921,12 @@ export default SingleTechDomainDetails;
 //                     {author.authorName}
 //                   </h3>
 
-//                   <p className="text-[11px] text-gray-400 truncate">
+//                   <p className="text-xs text-gray-400 truncate">
 //                     {author.email}
 //                   </p>
 
 //                   {/* Stats */}
-//                   <div className="flex justify-center gap-4 mt-4 text-[11px]">
+//                   <div className="flex justify-center gap-4 mt-4 text-xs">
 //                     <span className="text-gray-400">
 //                       <span className="text-white font-semibold">
 //                         {author.followers.length}
@@ -1028,7 +1028,7 @@ export default SingleTechDomainDetails;
 //                     {author.authorName}
 //                   </h3>
 
-//                   <p className="text-[11px] text-gray-500 truncate w-full">
+//                   <p className="text-xs text-gray-500 truncate w-full">
 //                     {author.email}
 //                   </p>
 //                 </div>

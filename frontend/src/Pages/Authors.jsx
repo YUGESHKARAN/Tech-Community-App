@@ -264,13 +264,13 @@ const recommendedAuthors = useMemo(() => {
   
       {/* Recommended authors */}
       {recommendedAuthors?.length > 0 && (
-        <h2 className="w-full px-4 mx-auto  text-left text-xl text-green-400 md:text-3xl font-semibold">
+        <h2 className="w-full px-4 mx-auto tracking-widest  text-left text-lg text-green-400 md:text-2xl font-semibold">
           Recommended
         </h2>
       )}
 
       <div
-        className={`${recommendedAuthors?.length > 0 ? "flex w-full px-4 mx-auto gap-2 overflow-x-auto scrollbar-hide mt-5 pb-2" : "hidden"}`}
+        className={`${recommendedAuthors?.length > 0 ? "flex w-full px-4 mx-auto gap-2 overflow-x-auto scrollbar-hide mt-4 pb-2" : "hidden"}`}
       >
         {recommendedAuthors.map((author, index) => (
           <div
@@ -354,7 +354,7 @@ const recommendedAuthors = useMemo(() => {
         recommendedAuthors?.length == 0 &&
         filteredAuthors?.length == 0 && (
           <>
-            <h2 className="w-full px-4 mx-auto  text-left text-xl text-green-400 md:text-3xl font-semibold">
+            <h2 className="w-full px-4 mx-auto  tracking-widest text-left text-lg text-green-400 md:text-2xl font-semibold">
               Recommended
             </h2>
             <RecommendedAuthorsSkeleton />
@@ -408,7 +408,7 @@ const recommendedAuthors = useMemo(() => {
         {filteredAuthors.filter((author) => author.role === "coordinator")
           .length > 0 && (
           // <h2 className="text-center text-2xl md:text-4xl font-semibold mb-6 bg-gradient-to-r from-orange-400 to-yellow-300 bg-clip-text text-transparent">
-          <h2 className="md:text-left text-center w-full text-2xl md:text-4xl font-semibold my-6 text-white">
+          <h2 className="w-full   text-center text-sm md:text-gray-400 tracking-widest uppercase text-gray-500  font-semibold my-6">
             Contributors
           </h2>
         )}
@@ -522,7 +522,7 @@ const recommendedAuthors = useMemo(() => {
             .length == 0 && roleFilter !== "student" &&
             loading && (
               <div className="col-span-full">
-                <h2 className="md:text-left text-center w-full text-2xl md:text-4xl font-semibold my-6 text-white">
+                <h2 className="w-full   text-center text-sm md:text-gray-400 tracking-widest uppercase text-gray-500  font-semibold my-6">
                   Contributors
                 </h2>
                 <CoordinatorGridSkeleton />
@@ -532,7 +532,7 @@ const recommendedAuthors = useMemo(() => {
           {filteredAuthors.filter((author) => author.role === "coordinator")
             .length > 0 &&
             !hasMore && (
-              <p className="text-center col-span-full py-4 text-gray-500">
+              <p className="text-center text-[10px] md:text-xs col-span-full py-4 text-gray-500">
                 No more coordinators
               </p>
             )}
@@ -541,13 +541,13 @@ const recommendedAuthors = useMemo(() => {
         {/* Students Section */}
         {filteredAuthors.filter((author) => author.role === "student").length >
           0 && (
-          <h2 className={`md:text-left text-center w-full  text-2xl md:text-4xl font-semibold text-white ${roleFilter=='student'?'mt-6':' mt-16'}`}>
+          <h2 className={`w-full   text-center text-sm md:text-gray-400 tracking-widest uppercase text-gray-500  font-semibold  ${roleFilter=='student'?'mt-6':' mt-16'}`}>
             Users
           </h2>
         )}
 
        
-        <div className="w-full grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-7 gap-2 md:gap-4 mt-8">
+        <div className="w-full grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-7 gap-2 md:gap-4 mt-6">
           {filteredAuthors
             .filter((author) => author.role === "student")
             .map((author, index) => (
@@ -596,7 +596,7 @@ const recommendedAuthors = useMemo(() => {
                 {/* Email */}
                 <p className="text-xs text-gray-400 truncate w-full">
                   {author.email}
-                </p>
+                </p> 
 
                 {/* Social Links */}
 
@@ -645,8 +645,8 @@ const recommendedAuthors = useMemo(() => {
              roleFilter !== "coordinator" && 
             loading && (
               <div className="col-span-full">
-                <h2 className="md:text-left text-center w-full text-2xl md:text-4xl font-semibold my-6 text-white">
-                  Student
+                <h2 className="w-full   text-center text-sm md:text-gray-400 tracking-widest uppercase text-gray-500  font-semibold my-6">
+                  Users
                 </h2>
                 <StudentGridSkeleton />
               </div>
@@ -655,8 +655,8 @@ const recommendedAuthors = useMemo(() => {
           {filteredAuthors.filter((author) => author.role === "student")
             .length > 0 &&
             !hasMore && (
-              <p className="text-center col-span-full py-4 text-gray-500">
-                No more students
+              <p className="text-center text-[10px] md:text-xs col-span-full py-4 text-gray-500">
+                No more users
               </p>
             )}
         </div>
@@ -679,7 +679,7 @@ const recommendedAuthors = useMemo(() => {
     //   {/* Recommended */}
     //   {recommendedAuthors.length > 0 && (
     //     <div className="w-11/12 mx-auto">
-    //       <h2 className="text-lg md:text-xl font-semibold text-green-400 mb-4">
+    //       <hName="text-lg text-sm md:text-gray-400d text-green-400 mb-4">
     //         People you may know
     //       </h2>
 
