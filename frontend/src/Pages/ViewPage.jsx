@@ -59,36 +59,66 @@ function ViewPage() {
   // const { sheetRef, handleDragStart } = useDragSheet(setViewComments);
  const sheetRef = useRef(null);
 
+// useEffect(() => {
+//   const sheet = sheetRef.current;
+//   if (!sheet) return;
+
+//   const handleViewport = () => {
+//     const viewport = window.visualViewport;
+//     if (!viewport) return;
+
+//     const offsetFromBottom =
+//       window.innerHeight - viewport.height - viewport.offsetTop;
+
+//     // Lift the sheet above the keyboard
+//     sheet.style.transform = viewComments
+//       ? `translateY(-${offsetFromBottom}px)`
+//       : "translateY(100%)";
+
+//     // Shrink the sheet height to fit visible area
+//     sheet.style.height = `${Math.min(viewport.height * 0.92, viewport.height)}px`;
+//   };
+
+//   window.visualViewport?.addEventListener("resize", handleViewport);
+//   window.visualViewport?.addEventListener("scroll", handleViewport);
+
+//   return () => {
+//     window.visualViewport?.removeEventListener("resize", handleViewport);
+//     window.visualViewport?.removeEventListener("scroll", handleViewport);
+//   };
+// }, [viewComments]);
+
+  // Fetch post data
 useEffect(() => {
   const sheet = sheetRef.current;
-  if (!sheet) return;
+  if (!sheet || !viewComments) return;
 
-  const handleViewport = () => {
+  const handleResize = () => {
     const viewport = window.visualViewport;
     if (!viewport) return;
 
-    const offsetFromBottom =
-      window.innerHeight - viewport.height - viewport.offsetTop;
+    const keyboardHeight = window.innerHeight - viewport.height;
 
-    // Lift the sheet above the keyboard
-    sheet.style.transform = viewComments
-      ? `translateY(-${offsetFromBottom}px)`
-      : "translateY(100%)";
-
-    // Shrink the sheet height to fit visible area
-    sheet.style.height = `${Math.min(viewport.height * 0.92, viewport.height)}px`;
+    sheet.style.transform = `translateY(-${keyboardHeight}px)`;
+    sheet.style.height = `${viewport.height * 0.92}px`;
   };
 
-  window.visualViewport?.addEventListener("resize", handleViewport);
-  window.visualViewport?.addEventListener("scroll", handleViewport);
+  // Reset when sheet closes
+  const reset = () => {
+    sheet.style.transform = "";
+    sheet.style.height = "75vh";
+  };
+
+  if (viewComments) {
+    window.visualViewport?.addEventListener("resize", handleResize);
+  } else {
+    reset();
+  }
 
   return () => {
-    window.visualViewport?.removeEventListener("resize", handleViewport);
-    window.visualViewport?.removeEventListener("scroll", handleViewport);
+    window.visualViewport?.removeEventListener("resize", handleResize);
   };
 }, [viewComments]);
-
-  // Fetch post data
   useEffect(() => {
     const getSinglePost = async () => {
       try {
