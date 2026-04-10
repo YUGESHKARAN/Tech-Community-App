@@ -58,6 +58,30 @@ function ViewPage() {
   const myProfile = localStorage.getItem("profile");
   // const { sheetRef, handleDragStart } = useDragSheet(setViewComments);
  const sheetRef = useRef(null);
+ const inputRef = useRef(null);
+
+ useEffect(() => {
+  const input = inputRef.current;
+  if (!input) return;
+
+  const onFocus = () => {
+    setTimeout(() => {
+      const kb = window.innerHeight - (window.visualViewport?.height ?? window.innerHeight);
+      sheetRef.current.style.bottom = `${kb}px`;
+    }, 300); // wait for keyboard animation
+  };
+
+  const onBlur = () => {
+    sheetRef.current.style.bottom = "0px";
+  };
+
+  input.addEventListener("focus", onFocus);
+  input.addEventListener("blur", onBlur);
+  return () => {
+    input.removeEventListener("focus", onFocus);
+    input.removeEventListener("blur", onBlur);
+  };
+}, []);
 
 // useEffect(() => {
 //   const sheet = sheetRef.current;
@@ -1007,7 +1031,7 @@ useEffect(() => {
                     ${viewComments ? "translate-y-0" : "translate-y-full"}
                   `}
                 > */}
-                <div
+                {/* <div
                 ref={sheetRef}
                 className={`
                   fixed bottom-0 left-0 right-0
@@ -1018,6 +1042,20 @@ useEffect(() => {
                   ${viewComments ? "translate-y-0" : "translate-y-full"}
                 `}
                 style={{ height: "75vh" }}  
+              > */}
+
+              {/* Sheet */}
+              <div
+                ref={sheetRef}
+                className={`
+                  fixed bottom-0 left-0 right-0
+                  bg-gray-900 border-t border-[#30363d]
+                  rounded-t-2xl
+                  flex flex-col
+                  transition-transform duration-300 ease-out
+                  ${viewComments ? "translate-y-0" : "translate-y-full"}
+                `}
+                style={{ height: "75dvh" }}
               >
                   {/* Drag handle */}
                   <div
@@ -1067,14 +1105,28 @@ useEffect(() => {
                   {/* Input flush to bottom, no gap */}
                   <div className="shrink-0 px-3 py-3 border-t border-[#21262d] bg-gray-900">
                     <div className="flex items-center gap-2 bg-[#161b22] border border-[#30363d] rounded-xl px-3 py-2.5 focus-within:border-emerald-500/50 transition-colors">
-                      <input
+                      {/* <input
                         type="text"
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
                         onKeyDown={(e) => e.key === "Enter" && postComment()}
                         placeholder="Leave a comment..."
                         className="flex-1 bg-transparent outline-none text-sm text-gray-300 placeholder-gray-600"
-                      />
+                      /> */}
+                      <input
+  type="text"
+  value={newMessage}
+  onChange={(e) => setNewMessage(e.target.value)}
+  onKeyDown={(e) => e.key === "Enter" && postComment()}
+  onFocus={(e) => {
+    // Wait for keyboard to fully open, then scroll input into view
+    setTimeout(() => {
+      e.target.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }, 300);
+  }}
+  placeholder="Leave a comment..."
+  className="flex-1 bg-transparent outline-none text-sm text-gray-300 placeholder-gray-600"
+/>
                       <button
                         onClick={postComment}
                         className="p-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 rounded-lg transition-colors"

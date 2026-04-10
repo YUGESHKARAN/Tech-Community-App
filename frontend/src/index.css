@@ -97,3 +97,10 @@
   0% { transform: translateX(-100%); }
   100% { transform: translateX(100%); }
 }
+
+/* Tells the browser to factor in the keyboard when calculating dvh */
+@supports (height: 100dvh) {
+  .comment-sheet {
+    height: 75dvh;
+  }
+}
