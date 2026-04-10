@@ -685,7 +685,7 @@ function ViewPage() {
 
             {/* RIGHT COLUMN */}
 
-            <div className="lg:col-span-2 space-y-2 relative  md:space-y-6  h-fit">
+            <div className="lg:col-span-2 space-y-2 md:relative  md:space-y-6  h-fit">
               {/* Personal Assistant */}
               <div className="text-4xl text-white hidden md:block ">
                 <AITechAssistant
