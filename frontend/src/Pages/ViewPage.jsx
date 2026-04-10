@@ -393,7 +393,7 @@ function ViewPage() {
 
       {/* Main Container */}
       {!loading && (
-        <div className="w-full relative mx-auto px-3  md:px-8 py-6 pb-20  md:py-10">
+        <div className="w-full  mx-auto px-3  md:px-8 py-6 pb-20  md:py-10">
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
@@ -546,7 +546,7 @@ function ViewPage() {
                 {/* Actions */}
                 <div className="flex items-center md:justify-end justify-between   md:gap-3">
                   {/* AI Assistant */}
-                  <div className="text-3xl block md:hidden md:text-4xl text-white">
+                  <div className="text-3xl block  md:hidden md:text-4xl text-white">
                     <AITechAssistant
                       currentPostId={singlePostData._id}
                       category={singlePostData.category}
@@ -932,8 +932,8 @@ function ViewPage() {
                 {/* Backdrop */}
                 <div
                   onClick={() => setViewComments(false)}
-                  // className={`absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300`}
-                  className={`absolute inset-0 duration-300`}
+                  className={`absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300`}
+                  // className={`absolute inset-0 duration-300`}
                 />
 
                 {/* Sheet */}

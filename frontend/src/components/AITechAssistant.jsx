@@ -215,7 +215,7 @@ export default function AITechAssistant({ currentPostId, category, viewComments,
      {open&& <div
                   onClick={() => setOpen(false)}
                   className={`absolute inset-0 duration-300 ${
-                    open ? "opacity-100" : "opacity-0"
+                    open ? "bg-black/60 backdrop-blur-sm transition-opacity" : "opacity-0"
                   }`}
                 />}
 
@@ -443,7 +443,7 @@ export default function AITechAssistant({ currentPostId, category, viewComments,
                                       ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${p.profile}`
                                       : user
                                   }
-                                  className="w-5 h-5 rounded-full object-cover bg-white border border-neutral-700"
+                                  className="w-5 h-5 rounded-full object-cover bg-gray-700 border border-gray-900"
                                 />
 
                                 <div className="min-w-0 flex-col">

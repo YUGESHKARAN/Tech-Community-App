@@ -208,7 +208,7 @@ useEffect(() => {
             </div>
             )}
             {!hasMore && (
-              <p className="text-center col-span-full py-4 text-gray-500">
+              <p className="text-center text-[10px] md:text-xs col-span-full py-4 text-gray-500">
                 No more playlists
               </p>
             )}
