@@ -30,7 +30,7 @@ import PostDetailSkeleton from "../components/loaders/PostDetailSkeleton.jsx";
 import { VscSend } from "react-icons/vsc";
 import { BiLike, BiSolidLike } from "react-icons/bi";
 import { PiBookmarksSimpleFill, PiBookmarksSimpleLight } from "react-icons/pi";
-import useDragSheet from "../hooks/useDragHeader.js";
+// import useDragSheet from "../hooks/useDragHeader.js";
 import { FaYoutube } from "react-icons/fa6";
 import { getItem } from "../utils/encode.js";
 
@@ -56,7 +56,37 @@ function ViewPage() {
   const commentsRef = useRef(null);
   const [bookMarkId, setBookMarkId] = useState([]);
   const myProfile = localStorage.getItem("profile");
-  const { sheetRef, handleDragStart } = useDragSheet(setViewComments);
+  // const { sheetRef, handleDragStart } = useDragSheet(setViewComments);
+ const sheetRef = useRef(null);
+
+useEffect(() => {
+  const sheet = sheetRef.current;
+  if (!sheet) return;
+
+  const handleViewport = () => {
+    const viewport = window.visualViewport;
+    if (!viewport) return;
+
+    const offsetFromBottom =
+      window.innerHeight - viewport.height - viewport.offsetTop;
+
+    // Lift the sheet above the keyboard
+    sheet.style.transform = viewComments
+      ? `translateY(-${offsetFromBottom}px)`
+      : "translateY(100%)";
+
+    // Shrink the sheet height to fit visible area
+    sheet.style.height = `${Math.min(viewport.height * 0.92, viewport.height)}px`;
+  };
+
+  window.visualViewport?.addEventListener("resize", handleViewport);
+  window.visualViewport?.addEventListener("scroll", handleViewport);
+
+  return () => {
+    window.visualViewport?.removeEventListener("resize", handleViewport);
+    window.visualViewport?.removeEventListener("scroll", handleViewport);
+  };
+}, [viewComments]);
 
   // Fetch post data
   useEffect(() => {
@@ -935,7 +965,7 @@ function ViewPage() {
                 />
 
                 {/* Sheet */}
-                <div
+                {/* <div
                   ref={sheetRef}
                   className={`
                     fixed bottom-0 left-0 right-0
@@ -946,7 +976,19 @@ function ViewPage() {
                     transition-transform duration-300 ease-out
                     ${viewComments ? "translate-y-0" : "translate-y-full"}
                   `}
-                >
+                > */}
+                <div
+                ref={sheetRef}
+                className={`
+                  fixed bottom-0 left-0 right-0
+                  bg-gray-900 border-t border-[#30363d]
+                  rounded-t-2xl
+                  flex flex-col
+                  transition-transform duration-300 ease-out
+                  ${viewComments ? "translate-y-0" : "translate-y-full"}
+                `}
+                style={{ height: "75vh" }}  
+              >
                   {/* Drag handle */}
                   <div
                     className="flex justify-center pt-3 pb-1 shrink-0 cursor-row-resize touch-none"
