@@ -574,7 +574,7 @@ function Announcement() {
                 <img className="w-72 md:w-80 " src={empty_state_announcement} alt="" />
                 <span className="text-gray-400 max-w-xs md:max-w-md text-sm flex justify-center items-center text-center ">
                   {" "}
-                  Your announcements tab is empty. No announcement available{" "}
+                  Your announcements tab is empty!{" "}
                 </span>
               </div>
             )}
