@@ -25,6 +25,8 @@ import TutorPlaylistGridSkeleton from "../components/loaders/TutorPlaylistGridSk
 import useTutorPlaylist from "../hooks/useTutorPlaylist.js";
 import useGetBookmarkPlaylist from "../hooks/useGetBookmarkPlaylist.js";
 import { getItem } from "../utils/encode.js";
+import empty_state_post from "../assets/empty_state_post.png";
+
 function BookMarkPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [posts, setPosts] = useState([]);
@@ -551,11 +553,21 @@ function BookMarkPage() {
                     </div>
                 )}
               </div>
+             
 
               {!loading && posts.length == 0 && (
-                <p className="text-gray-400 flex col-span-full justify-center items-center h-56 text-center py-4">
+                  <div className="flex h-[70vh] md:h-[55vh] flex-col justify-center items-center ">
+                              <img
+                                className="w-60 md:w-80 "
+                                src={empty_state_post}
+                                alt=""
+                              />
+                    <p className="text-gray-400 max-w-xs md:max-w-md text-sm flex justify-center items-center text-center">
                   No posts bookmarked!
                 </p>
+                
+              </div>
+              
               )}
                {!hasMore && posts.length >0 && (
                   <p className="text-center text-[10px] md:text-xs col-span-full py-4 text-gray-500">

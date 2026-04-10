@@ -22,7 +22,7 @@ function ChangePassword() {
 
       const handleSubmit = async (e) => {
         e.preventDefault();
-        setLoading(true)
+       
         if(!formData.otp){
           return setErrors({ apiError: "OTP is required" });
         }
@@ -30,6 +30,8 @@ function ChangePassword() {
         if(!formData.newPassword){
           return setErrors({ apiError: "Password is required" });
         }
+
+         setLoading(true)
 
         try {
           const response = await axiosInstance.post("/blog/author/reset-password", formData);
@@ -115,9 +117,9 @@ function ChangePassword() {
                     onClick={handleSubmit}
                     disabled={loading}
                     type="submit"
-                    className='w-full p-1.5 md:py-2.5 bg-yellow-600 hover:bg-yellow-700 transition-all duration-200 text-white font-semibold rounded-lg'
+                    className='w-full p-1.5 md:py-2.5 bg-red-600 hover:bg-red-700 transition text-white font-semibold rounded-lg'
                   >
-                    {loading?'Changing...':'Change Password'}
+                    {loading?'Updating...':'Update Password'}
                   </button>
                   
                 </form>

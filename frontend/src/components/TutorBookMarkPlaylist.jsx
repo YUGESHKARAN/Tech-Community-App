@@ -8,6 +8,7 @@ import useGetBookmarkPlaylist from "../hooks/useGetBookmarkPlaylist";
 import TutorPlaylistGridSkeleton from "./loaders/TutorPlaylistGridSkeleton";
 import { getItem } from "../utils/encode";
 import PillLoader from "./loaders/PillSkeleton";
+import empty_state_post from "../assets/empty_state_post.png";
 
 const TutorBookMarkPlaylist = () => {
   const { tutorPlayList } = useTutorPlaylist();
@@ -228,9 +229,17 @@ const TutorBookMarkPlaylist = () => {
         {  bookMarPlaylist.length===0 && loading && <TutorPlaylistGridSkeleton />}
 
       { bookMarPlaylist.length===0 &&!loading &&
-        <p className="text-gray-400 flex justify-center items-center h-56 text-center py-4">
-          No playlists bookmarked!
-         </p>
+        <div className="flex h-[70vh]  md:h-[55vh]  flex-col pt-10 md:mt-5 justify-center items-center ">
+                                     <img
+                                       className="w-60 md:w-80 "
+                                       src={empty_state_post}
+                                       alt=""
+                                     />
+                           <p className="text-gray-400 max-w-xs md:max-w-md text-sm flex justify-center items-center text-center">
+                         No playlists bookmarked!
+                       </p>
+                       
+                     </div>
       }
     </>
   );

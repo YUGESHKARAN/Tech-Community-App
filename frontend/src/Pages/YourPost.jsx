@@ -21,9 +21,11 @@ import BlogSkeleton from "../components/loaders/BlogSkeleton";
 import PillLoader from "../components/loaders/PillSkeleton";
 import Fuse from "fuse.js";
 import highlightText from "../hooks/highlightText";
-import toast from "../components/toaster/Toast"
+import toast from "../components/toaster/Toast";
 import user from "../images/user.png";
 import { getItem } from "../utils/encode";
+import empty_state_post from "../assets/empty_state_post.png";
+
 function YourPost() {
   const [searchTerm, setSearchTerm] = useState("");
   const [posts, setPosts] = useState([]);
@@ -37,11 +39,9 @@ function YourPost() {
   const limit = 50;
   const isFetching = useRef(false);
   const [showConfirm, setShowConfirm] = useState(false);
-  const [delPostId, setDelPostId] = useState("")
+  const [delPostId, setDelPostId] = useState("");
 
   const [authorProfile, setAuthorProfile] = useState("");
-
-
 
   // ------------------------------------------------------------------
 
@@ -103,8 +103,6 @@ function YourPost() {
 
   // ----------------------------------------------------------------
 
-
-
   // Get unique categories
   const getUniqueCategories = (posts) => {
     return [...new Set(posts.map((post) => post.category))];
@@ -143,81 +141,75 @@ function YourPost() {
     //   e.stopPropagation();
     // }
     try {
-       const response =  await axiosInstance.put(`/blog/posts/likes/${authorEmail}/${postId}`, {
-        emailAuthor: email,
-      });
-
-      if (response.status===200){
-         setPosts((prevPosts) =>
-        prevPosts.map((post) =>
-          post._id === postId
-            ? {
-                ...post,
-                likes: post.likes.includes(email)
-                  ? post.likes.filter((like) => like !== email) // Unlike the post
-                  : [...post.likes, email], // Like the post
-              }
-            : post,
-        ),
+      const response = await axiosInstance.put(
+        `/blog/posts/likes/${authorEmail}/${postId}`,
+        {
+          emailAuthor: email,
+        },
       );
+
+      if (response.status === 200) {
+        setPosts((prevPosts) =>
+          prevPosts.map((post) =>
+            post._id === postId
+              ? {
+                  ...post,
+                  likes: post.likes.includes(email)
+                    ? post.likes.filter((like) => like !== email) // Unlike the post
+                    : [...post.likes, email], // Like the post
+                }
+              : post,
+          ),
+        );
       }
-     
     } catch (err) {
       console.error("Error updating views:", err);
     }
   };
 
+  const [debouncedSearch, setDebouncedSearch] = useState(searchTerm);
 
-const [debouncedSearch, setDebouncedSearch] = useState(searchTerm);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchTerm);
+    }, 300); // 300ms delay
 
-useEffect(() => {
-  const timer = setTimeout(() => {
-    setDebouncedSearch(searchTerm);
-  }, 300); // 300ms delay
-
-  return () => clearTimeout(timer);
-}, [searchTerm]);
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
 
   const fuse = useMemo(() => {
-  return new Fuse(posts, {
-    keys: [
-      "title",
-      "description",
-      "category",
-      "community"
-    ],
-    threshold: 0.3, // lower = stricter search
-  });
-}, [posts]);
+    return new Fuse(posts, {
+      keys: ["title", "description", "category", "community"],
+      threshold: 0.3, // lower = stricter search
+    });
+  }, [posts]);
 
   // Filter posts based on search
-const filteredPosts = useMemo(() => {
-  let filtered =[...posts];
+  const filteredPosts = useMemo(() => {
+    let filtered = [...posts];
 
-  // if (searchTerm.trim() !== "") {
-  //   const query = searchTerm.toLowerCase();
+    // if (searchTerm.trim() !== "") {
+    //   const query = searchTerm.toLowerCase();
 
-  //   filtered = filtered.filter(
-  //     (post) =>
-  //       post.title?.toLowerCase().includes(query) ||
-  //       post.description?.toLowerCase().includes(query) ||
-  //       post.category?.toLowerCase().includes(query) ||
-  //       post.authorName?.toLowerCase().includes(query)
-  //   );
-  // }
+    //   filtered = filtered.filter(
+    //     (post) =>
+    //       post.title?.toLowerCase().includes(query) ||
+    //       post.description?.toLowerCase().includes(query) ||
+    //       post.category?.toLowerCase().includes(query) ||
+    //       post.authorName?.toLowerCase().includes(query)
+    //   );
+    // }
 
     if (debouncedSearch.trim() !== "") {
-    filtered = fuse.search(debouncedSearch).map((r) => r.item);
-  }
+      filtered = fuse.search(debouncedSearch).map((r) => r.item);
+    }
 
-  if (postCategory !== "") {
-    filtered = filtered.filter(
-      (post) => post.category === postCategory
-    );
-  }
+    if (postCategory !== "") {
+      filtered = filtered.filter((post) => post.category === postCategory);
+    }
 
-  return filtered;
-}, [posts, searchTerm, postCategory, debouncedSearch]);
+    return filtered;
+  }, [posts, searchTerm, postCategory, debouncedSearch]);
 
   const renderTextWithHashtags = (text) => {
     if (!text) return null;
@@ -243,51 +235,46 @@ const filteredPosts = useMemo(() => {
 
   const [isStickyActive, setIsStickyActive] = useState(false);
   useEffect(() => {
-  const handleScroll = () => {
-    if (window.scrollY > 40) {
-      setIsStickyActive(true);
-    } else {
-      setIsStickyActive(false);
-    }
-  };
+    const handleScroll = () => {
+      if (window.scrollY > 40) {
+        setIsStickyActive(true);
+      } else {
+        setIsStickyActive(false);
+      }
+    };
 
-  window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll);
 
-  return () => window.removeEventListener("scroll", handleScroll);
-}, []);
-
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const deletePost = async (PostId) => {
     setShowConfirm(true);
     setLoading(true);
     try {
-      const response = await axiosInstance.delete(`/blog/posts/${email}/${PostId}`);
+      const response = await axiosInstance.delete(
+        `/blog/posts/${email}/${PostId}`,
+      );
       // const response = axiosInstance.delete(`http://localhost:3000/blog/posts/${email}/${PostId}`);
-      if (response.status === 200){
-          // console.log("deleted response", response);
-           // toast.success("post deleted successfully");
-          // navigate("/home");
-          //  fetchPosts();
-         
+      if (response.status === 200) {
+        // console.log("deleted response", response);
+        // toast.success("post deleted successfully");
+        // navigate("/home");
+        //  fetchPosts();
 
-          setPosts((prev)=> prev.filter((p)=> p._id!== PostId))
-          toast.success('Deleted', 'Post deleted successfully')
-           
+        setPosts((prev) => prev.filter((p) => p._id !== PostId));
+        toast.success("Deleted", "Post deleted successfully");
       }
-    
-      
     } catch (err) {
-      setPosts((prev)=> prev.filter((p)=> p._id!== PostId))
+      setPosts((prev) => prev.filter((p) => p._id !== PostId));
       // toast.success('Deleted', 'Post deleted successfully')
       console.log(err);
       // toast.error("error", "error deleting post")
-    } 
-    finally{
-      setDelPostId("")
+    } finally {
+      setDelPostId("");
       setShowConfirm(false);
-      setLoading(false)
+      setLoading(false);
     }
-  
   };
 
   return (
@@ -304,7 +291,7 @@ const filteredPosts = useMemo(() => {
         {/* <p className="text-lg text-white w-11/12 mx-auto">Posts {posts.length>0 && posts.length}</p> */}
 
         <div className=" w-full  mt-10   h-auto mx-auto">
-           {/* Search and Filter Section */}
+          {/* Search and Filter Section */}
           {posts.length > 0 && (
             <div className="flex justify-center">
               <div className="w-11/12 mx-auto max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-2xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
@@ -313,22 +300,22 @@ const filteredPosts = useMemo(() => {
                   type="text"
                   placeholder="Search posts, topics, or categories"
                   value={searchTerm}
-                  onChange={(e)=>{setSearchTerm(e.target.value)}}
+                  onChange={(e) => {
+                    setSearchTerm(e.target.value);
+                  }}
                   className="bg-transparent w-full focus:outline-none text-sm text-white placeholder-gray-400"
                 />
               </div>
             </div>
           )}
           {posts.length > 0 && (
-             <div
-                className={`w-full sticky top-0 z-40
+            <div
+              className={`w-full sticky top-0 z-40
                 ${isStickyActive ? "bg-gray-900 " : "bg-transparent"}`}
-              >
-
-      
-              <div 
-              // className="flex md:max-w-5xl md:w-fit mt-10 scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto"
-              className="flex w-full px-3  md:w-fit md:max-w-7xl  mt-2 py-5 z-50 scrollbar-hide mx-auto items-center justify-start gap-3 md:mb-5 overflow-x-auto"
+            >
+              <div
+                // className="flex md:max-w-5xl md:w-fit mt-10 scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto"
+                className="flex w-full px-3  md:w-fit md:max-w-7xl  mt-2 py-5 z-50 scrollbar-hide mx-auto items-center justify-start gap-3 md:mb-5 overflow-x-auto"
               >
                 {/* All Button */}
                 <div
@@ -341,8 +328,6 @@ const filteredPosts = useMemo(() => {
                 >
                   All
                 </div>
-                
-
 
                 {/* Dynamic Categories */}
                 {getUniqueCategories(posts).map((data, index) => (
@@ -359,18 +344,14 @@ const filteredPosts = useMemo(() => {
                   </div>
                 ))}
               </div>
-             
-                    </div>
+            </div>
           )}
 
           {loader && !posts.length > 0 && <PillLoader />}
 
-         
-
           <div className="md:w-full md:px-2 grid grid-cols-1 w-full mx-auto md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-10 mt-7 md:mt-10 h-auto">
             {/* Posts Grid */}
             {filteredPosts?.map((data, index) => (
-           
               <article
                 key={data._id}
                 className="
@@ -397,10 +378,8 @@ const filteredPosts = useMemo(() => {
                   </Link>
 
                   <div className="leading-tight">
-                    <p
-                    className="text-sm font-semibold text-white">
+                    <p className="text-sm font-semibold text-white">
                       {data.authorName}
- 
                     </p>
                     <p className="text-xs text-gray-400">
                       {getTimeAgo(data.timestamp)}
@@ -427,48 +406,45 @@ const filteredPosts = useMemo(() => {
                   
                 </Link> */}
 
-                  <div
+                <div
                   // to={`/viewpage/${data.authoremail}/${data._id}`}
                   // onClick={() => postViews(data.authoremail, data._id)}
                   className="block relative"
                 >
                   <Link
-                   to={`/viewpage/${data.authoremail}/${data._id}`}
-                  onClick={() => postViews(data.authoremail, data._id)}
+                    to={`/viewpage/${data.authoremail}/${data._id}`}
+                    onClick={() => postViews(data.authoremail, data._id)}
                   >
                     <img
-                    src={
-                      data.image
-                        ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.image}`
-                        : blog1
-                    }
-                    alt={data.title}
-                    className="w-full  h-60 transition-transform
+                      src={
+                        data.image
+                          ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.image}`
+                          : blog1
+                      }
+                      alt={data.title}
+                      className="w-full  h-60 transition-transform
                                        duration-500  md:hover:scale-[1.05]  md:h-48  object-cover"
-                  />
+                    />
                   </Link>
-                
 
-                   <span
-                            onClick={() => {
-                              // deletePost(data._id);
-                              setDelPostId(data._id)
-                              setShowConfirm(true)
-                            }}
-                            // // className="absolute top-2 cursor-pointer right-2 bg-red-500 text-white text-xs font-medium px-2 py-1 rounded"
-                            className="absolute top-3 cursor-pointer right-3   md:text-xl  text-2xl font-medium  rounded"
-                          >
-                            {/* Del */}
-                            <IoRemoveOutline  className="bg-red-500 rounded-full text-white" />
-                          </span>
+                  <span
+                    onClick={() => {
+                      // deletePost(data._id);
+                      setDelPostId(data._id);
+                      setShowConfirm(true);
+                    }}
+                    // // className="absolute top-2 cursor-pointer right-2 bg-red-500 text-white text-xs font-medium px-2 py-1 rounded"
+                    className="absolute top-3 cursor-pointer right-3   md:text-xl  text-2xl font-medium  rounded"
+                  >
+                    {/* Del */}
+                    <IoRemoveOutline className="bg-red-500 rounded-full text-white" />
+                  </span>
                 </div>
-               
 
                 <div className="px-4 py-4 space-y-2">
                   <h3 className="text-base font-semibold text-white line-clamp-1">
                     {/* {data.title} */}
                     {highlightText(data.title, debouncedSearch)}
-                    
                   </h3>
 
                   <p className="text-xs text-gray-400  line-clamp-2  md:line-clamp-1 ">
@@ -550,14 +526,14 @@ const filteredPosts = useMemo(() => {
               //   loading...
               // </p>
               <div className="col-span-full flex justify-center">
-              <div className="relative flex items-center justify-center">
-                {/* Outer Oval Ring */}
-                <div className="w-7 h-7 border-2 border-neutral-700 border-t-emerald-400 rounded-full animate-spin" />
+                <div className="relative flex items-center justify-center">
+                  {/* Outer Oval Ring */}
+                  <div className="w-7 h-7 border-2 border-neutral-700 border-t-emerald-400 rounded-full animate-spin" />
 
-                {/* Inner Glow Pulse */}
-                {/* <div className="absolute w-10 h-10 md:w-12 md:h-12 bg-emerald-500/20 rounded-full blur-md animate-pulse" /> */}
+                  {/* Inner Glow Pulse */}
+                  {/* <div className="absolute w-10 h-10 md:w-12 md:h-12 bg-emerald-500/20 rounded-full blur-md animate-pulse" /> */}
+                </div>
               </div>
-            </div>
             )}
 
             {!hasMore && posts.length > 0 && (
@@ -567,17 +543,26 @@ const filteredPosts = useMemo(() => {
             )}
           </div>
           {posts.length == 0 && !loader && (
-            <div className="flex h-[70vh] flex-col justify-center items-center gap-5 ">
-              <span className="text-gray-400 max-w-xs md:max-w-md flex justify-center items-center text-center ">
+            <div className="flex h-[70vh] flex-col justify-center items-center md:gap-3 ">
+              <img
+                className="w-60 md:w-80 "
+                src={empty_state_post}
+                alt=""
+              />
+              <div className="flex flex-col justify-center items-center gap-3 md:gap-3">
                 {" "}
-                Your workspace is empty! Start creating your posts.{" "}
-              </span>
-              <Link
-                to="/addPost"
-                className="text-sm cursor-pointer hover:bg-green-700 bg-green-600 transition-all duration-400 text-white font-medium rounded-md px-4 p-2"
-              >
-                + Create New Post
-              </Link>
+                <span className="text-gray-400 max-w-xs md:max-w-md text-sm flex justify-center items-center text-center ">
+                  {" "}
+                  Your workspace is empty! Start creating your posts.{" "}
+                </span>
+                <Link
+                  to="/addPost"
+                  className="text-xs cursor-pointer hover:bg-green-700 bg-green-600 transition-all duration-400 text-white font-medium rounded-md px-4 p-2"
+                >
+                  + Create New Post
+                </Link>
+              </div>
+
               {/* <span className="text-white/50 md:text-2xl  text-center w-full">
                Else please check your internet connection.{" "}
               </span> */}
@@ -622,7 +607,9 @@ const filteredPosts = useMemo(() => {
                 Cancel
               </button>
               <button
-                onClick={()=> {deletePost(delPostId)}}
+                onClick={() => {
+                  deletePost(delPostId);
+                }}
                 className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded hover:bg-red-700 transition"
                 disabled={loading}
               >

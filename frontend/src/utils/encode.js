@@ -21,7 +21,7 @@ export const storeItem = (key, value) => {
 };
 
 
-console.log('secrete key', SALT)
+// console.log('secrete key', SALT)
 export const getItem = (key) => {
   const raw = localStorage.getItem(key);
   if (!raw) return null;

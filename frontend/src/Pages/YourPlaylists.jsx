@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import Footer from "../ui/Footer";
 import { IoSearchOutline } from "react-icons/io5";
 import Fuse from "fuse.js";
+import empty_state_post from "../assets/empty_state_post.png";
 // import user from "../images/user.png";
 const YourPlaylist = () => {
   const {
@@ -219,16 +220,23 @@ useEffect(() => {
           <TutorPlaylistGridSkeleton />
         )}
         {tutorPlayListByEmail?.length == 0 && !loading && (
-          <div className="flex h-[70vh] flex-col justify-center items-center gap-5 ">
-            <p className="text-gray-400 flex justify-center items-center text-center ">
-              No playlists available!
+          <div className="flex h-[70vh] flex-col justify-center items-center md:gap-3 ">
+             <img
+                            className="w-60 md:w-80 "
+                            src={empty_state_post}
+                            alt=""
+                          />
+            <div className="flex flex-col justify-center items-center gap-3 md:gap-3">
+            <p className="text-gray-400 max-w-xs md:max-w-md text-sm flex justify-center items-center text-center">
+               Your workspace is empty! Organize your posts into playlist.{" "}
             </p>
             <Link
               to="/addTutorPlaylist"
-              className="text-sm  cursor-pointer hover:bg-green-700 bg-green-600 transition-all duration-400 text-white font-medium rounded-md px-4 p-2"
+              className="text-xs cursor-pointer hover:bg-green-700 bg-green-600 transition-all duration-400 text-white font-medium rounded-md px-4 p-2"
             >
               + Create New Playlist
             </Link>
+            </div>
           </div>
         )}
       </div>
