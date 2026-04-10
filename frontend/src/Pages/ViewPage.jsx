@@ -57,7 +57,8 @@ function ViewPage() {
   const [bookMarkId, setBookMarkId] = useState([]);
   const myProfile = localStorage.getItem("profile");
   // const { sheetRef, handleDragStart } = useDragSheet(setViewComments);
-  const sheetRef = useRef(null)
+  const sheetRef = useRef(null);
+  const [isInputFocused, setIsInputFocused] = useState(false);
 
   // Fetch post data
   useEffect(() => {
@@ -943,10 +944,11 @@ function ViewPage() {
                     bg-gray-900 border-t border-[#30363d]
                     rounded-t-2xl
                     flex flex-col
-                    h-[75vh]
+                    
                     transition-transform duration-300 ease-out
-                    ${viewComments ? "translate-y-0 h-[65vh] md:h-[75vh]" : "translate-y-full"}
+                    ${viewComments ? "translate-y-0" : "translate-y-full"}
                   `}
+                  style={{ height: isInputFocused ? "50vh" : "75vh" }}
                 >
                   {/* Drag handle */}
                   <div
@@ -1003,6 +1005,8 @@ function ViewPage() {
                         onKeyDown={(e) => e.key === "Enter" && postComment()}
                         placeholder="Leave a comment..."
                         className="flex-1 bg-transparent outline-none text-sm text-gray-300 placeholder-gray-600"
+                        onFocus={() => setIsInputFocused(true)}
+                        onBlur={() => setIsInputFocused(false)}
                       />
                       <button
                         onClick={postComment}
