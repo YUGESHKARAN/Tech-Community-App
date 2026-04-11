@@ -37,6 +37,7 @@ function ViewEditPost() {
   const [customTitle, setCustomTitle] = useState("");
   // const [loading, setLoading] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
+  const [oldCategory, setOldCategory] = useState("")
 
   const [postLinks, setPostLinks] = useState([]);
 
@@ -130,6 +131,7 @@ function ViewEditPost() {
       setSinglePostData(postData);
       setTitle(postData.title);
       setCategory(postData.category);
+      setOldCategory(postData.category);
       setPostLinks(postData.links || []);
       setDescription(postData.description || "");
       setImage(postData.image || "");
@@ -948,13 +950,26 @@ function ViewEditPost() {
                 </div>
               )}
 
+              {/* Selected Category */}
+              <div className=" flex items-center gap-3 rounded-xl">
+                  <label className="text-sm text-gray-300 font-medium">
+                  Category 
+                </label>
+
+                <span className="text-sm text-emerald-400 ">  {oldCategory}</span>
+
+              </div>
+
               
 
               {/* Category */}
-              <div className="  rounded-xl">
+              <div className=" flex flex-col rounded-xl">
                 <label className="text-sm text-gray-300 font-medium">
-                  Category <span className="text-red-500">*</span>
+                  Update Category <span className="text-red-500">*</span>
                 </label>
+
+                
+              
                 <select
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
@@ -975,6 +990,8 @@ function ViewEditPost() {
                   </option>
                   <option value="Others">Others</option>
                 </select>
+
+                
 
                 {category === "Others" && (
                   <input
