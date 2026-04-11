@@ -50,6 +50,12 @@ function ProfilePage() {
 
   const deleteAuthor = async () => {
     setShowConfirm(true);
+    
+    if (!password){
+      toast.warning("Required", "Your password is required to delete the account");
+      setShowConfirm(false)
+      return ""
+    }
     setLoading(true);
 
     try {
@@ -1443,7 +1449,7 @@ function ProfilePage() {
             </div>
 
             <p className="text-sm text-gray-400 mb-5 leading-relaxed">
-              This action is permanent. All your data, posts, and profile
+              This action is permanent. All your data and profile
               information will be erased and cannot be recovered.
             </p>
 
