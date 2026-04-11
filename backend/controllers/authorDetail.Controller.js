@@ -743,14 +743,16 @@ const resetPassword = async (req, res) => {
 };
 
 const notificationAuthor = async (req, res) => {
-  const { email } = req.body;
+  const { email } = req.params;
   try {
     const author = await Author.findOne({ email: { $eq: email } });
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
     }
 
-    res.json({ notifications: author.notification });
+    // console.log("message queues called!")
+
+    res.json({ notifications: author.notification, announcements: author.announcement });
   } catch (err) {
     console.error("Error fetching notifications:", err);
     res.status(500).json({ message: "Server error" });

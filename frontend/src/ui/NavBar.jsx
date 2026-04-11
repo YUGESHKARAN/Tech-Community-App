@@ -86,9 +86,13 @@ function NavBar() {
   // Fetch stored notifications from the server
   const fetchNotifications = async () => {
     try {
-      const response = await axiosInstance.get(`/blog/author/${userEmail}`);
-      setNote(response.data.notification);
-      setAnnouncement(response.data.announcement);
+      // const response = await axiosInstance.get(`/blog/author/${userEmail}`);
+      // setNote(response.data.notification);
+      // setAnnouncement(response.data.announcement);
+      
+      const response = await axiosInstance.get(`/blog/author/queueMessage/${userEmail}`);
+      setNote(response.data.notifications);
+      setAnnouncement(response.data.announcements);
       //   console.log("author email data", response.data.notification)
     } catch (error) {
       console.error("Error fetching notifications:", error);

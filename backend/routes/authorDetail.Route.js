@@ -59,7 +59,7 @@ router.put("/follow/:email", limiter, authenticateToken, updateFollowers);
 router.delete("/:email", limiter, authenticateToken, deleteAuthor);
 router.delete("/deleteByAdmin/:authorEmail", limiter, authenticateToken, deleteAuthorByAdmin);
 
-router.get('/notification', authenticateToken, notificationAuthor);
+router.get('/queueMessage/:email', authenticateToken, notificationAuthor);
 router.delete('/notification/delete', limiter, authenticateToken, notificationAuthorDelete);
 router.delete('/notification/deleteall', limiter, authenticateToken, notificationAuthorDeleteAll);
 
