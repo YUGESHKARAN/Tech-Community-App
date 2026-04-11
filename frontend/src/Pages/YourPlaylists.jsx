@@ -84,7 +84,7 @@ useEffect(() => {
       filtered = filtered.filter((playlist)=> playlist.domain === playlistCategory)
     }
    
-    return filtered
+    return [...filtered].reverse()
 
   }, [tutorPlayListByEmail,searchTerm, playlistCategory, debouncedSearch ])
 
@@ -175,7 +175,7 @@ useEffect(() => {
               mt-7
         "
           >
-            {filteredPlaylist?.reverse().map((playlist) => (
+            {filteredPlaylist?.map((playlist) => (
               <div key={playlist._id} className="min-w-[150px]  sm:min-w-0">
                 <YourPlaylistCard
                   playlist={playlist}

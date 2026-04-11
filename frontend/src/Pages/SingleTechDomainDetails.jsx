@@ -527,9 +527,9 @@ function SingleTechDomainDetails() {
         {statsLoader ? (
           <div className="flex w-fit mx-auto md:mx-0 flex-wrap rounded-xl overflow-hidden border border-white/5 divide-x divide-white/5 animate-pulse">
             {[
-              { label: "Members" },
-              { label: "Posts" },
               { label: "Coordinators" },
+              { label: "Posts" },
+              { label: "Members" },
             ].map(({ label }, i) => (
               <div
                 key={i}
@@ -546,9 +546,9 @@ function SingleTechDomainDetails() {
         ) : (
           <div className="flex w-fit mx-auto md:mx-0 flex-wrap rounded-xl overflow-hidden border border-white/5 divide-x divide-white/5">
             {[
-              { label: "Members", value: categoryStats?.followerscount || 0 },
-              { label: "Posts", value: categoryStats?.postscount || 0 },
               { label: "Coordinators", value: categoryStats?.authorcount || 0 },
+              { label: "Posts", value: categoryStats?.postscount || 0 },
+              { label: "Members", value: categoryStats?.followerscount || 0 },
             ].map(({ label, value }, i) => (
               <div key={i} className="flex flex-col px-7 py-4 bg-white/[0.03]">
                 <span className="text-xl font-medium text-center text-white tracking-tight">
