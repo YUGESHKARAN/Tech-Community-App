@@ -15,6 +15,10 @@ import toast from "../components/toaster/Toast";
 import { getItem } from "../utils/encode";
 import AnnouncementSkeleton from "../components/loaders/AnnouncementSkeleton";
 import empty_state_announcement from "../assets/empty_announcement_state.png";
+import { CiSquareRemove } from "react-icons/ci";
+import { IoMdClose, IoMdCloseCircle } from "react-icons/io";
+import { AiFillCloseCircle, AiFillCloseSquare } from "react-icons/ai";
+import { LiaWindowCloseSolid } from "react-icons/lia";
 function Announcement() {
   const username = localStorage.getItem("username");
   // const email = localStorage.getItem("email");
@@ -598,9 +602,11 @@ function Announcement() {
 
                     <button
                       onClick={() => deleteAnnouncement(item._id)}
-                      className="text-slate-500 text-xs md:text-sm hover:text-red-400 transition"
+                      // className="text-slate-500 border border-neutral-700 md:border-neutral-700 md:rounded  md:p-0.5  text-xs md:text-sm hover:text-red-400 transition"
                     >
-                      ✕
+                      {/* ✕ */}
+                      {/* <IoMdClose /> */}
+                      <AiFillCloseSquare   className="text-lg md:text-xl text-gray-700 font-normal  md:hover:text-gray-600 transition-all duration-300" />
                     </button>
                   </div>
 
