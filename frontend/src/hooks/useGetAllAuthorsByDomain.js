@@ -9,11 +9,11 @@ const useGetAllAuthorsByDomain = (domain) => {
      const decodedCategory = decodeURIComponent(domain);
     const fetchCoordinators = async () => {
             setLoading(true);
-            console.log("decodedCategory", decodedCategory);
+            // console.log("decodedCategory", decodedCategory);
         try{
 
             const response  = await axiosInstance.get(`/blog/author/getAllAuthorsByDomain/${decodedCategory}`);
-                console.log("response", response.data);
+                // console.log("response", response.data);
             if (response.status === 200){
                 setCoordinators(response.data.filteredAuthors);
             }

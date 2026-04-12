@@ -18,10 +18,13 @@ function TutorPlaylist() {
   // const role = localStorage.getItem("role");
   const role = getItem("role");
   const [domain, setDomain] = useState("");
-  const { posts, loading, hasMore } = useGetPostsByCategory(email, domain);
+  const { posts, loading, hasMore, postCount } = useGetPostsByCategory(
+    email,
+    domain,
+  );
 
   // const { coordinators, fetchCoordinators } = useFetchCoordinators(role);
-  
+
   const { coordinators } = useGetAllAuthorsByDomain(domain);
   const [title, setTitle] = useState("");
   const [postIds, setPostIds] = useState([]);
@@ -95,18 +98,13 @@ function TutorPlaylist() {
   const filteredCoordinators = useMemo(() => {
     if (!domain) return [];
 
-    return coordinators.filter(
-      (coord) =>
-
-        coord.email !== email,
-    );
+    return coordinators.filter((coord) => coord.email !== email);
     // const finalCoordinators = coordinators.filter((coord) => coord.email !== email);
 
     // return [...finalCoordinators]
   }, [coordinators, domain]);
 
-
-const [debouncedSearch, setDebouncedSearch] = useState(searchCollaborator);
+  const [debouncedSearch, setDebouncedSearch] = useState(searchCollaborator);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -124,9 +122,10 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchCollaborator);
   }, [filteredCoordinators]);
 
   const searchedCoordinators = useMemo(() => {
-   
-    let filtered = [...filteredCoordinators].filter((author)=> author.email !== email);
-     
+    let filtered = [...filteredCoordinators].filter(
+      (author) => author.email !== email,
+    );
+
     // if (!searchCollaborator) return filteredCoordinators;
     // const query = searchCollaborator.toLowerCase();
     // return filteredCoordinators.filter((coord) => {
@@ -142,18 +141,19 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchCollaborator);
       filtered = fuse.search(debouncedSearch).map((r) => r.item);
     }
 
-    
-    return filtered.filter((coord)=>{
+    return filtered.filter((coord) => {
       const alreadySelected = collaboratorsData.some(
         (col) => col.email?.toLowerCase() === coord.email?.toLowerCase(),
       );
-      return coord && !alreadySelected
-    })
+      return coord && !alreadySelected;
+    });
+  }, [
+    filteredCoordinators,
+    searchCollaborator,
+    debouncedSearch,
+    collaboratorsData,
+  ]);
 
-  }, [filteredCoordinators, searchCollaborator, debouncedSearch, collaboratorsData]);
-
-
-  
   const handleCollaborators = (email, name, img) => {
     setCollaboratorsData((prev) => {
       const exists = prev.some((col) => col.email === email);
@@ -180,9 +180,9 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchCollaborator);
   };
 
   // console.log("posts", posts);
-  console.log("domain", domain);
+  // console.log("domain", domain);
 
-  console.log('filteredCoordinators', filteredCoordinators)
+  // console.log('filteredCoordinators', filteredCoordinators)
 
   return (
     // bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800
@@ -228,42 +228,41 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchCollaborator);
           </div>
 
           {/* Content */}
-            <ul className="space-y-2 text-xs md:text-sm text-gray-300 leading-relaxed">
-                    <li className="flex items-start gap-2">
-                      <span className=" mt-[2px]">•</span>
-                      <p>
-                        Organize your <span className="">published posts</span>{" "}
-                        into domain-specific playlists.
-                      </p>
-                    </li>
+          <ul className="space-y-2 text-xs md:text-sm text-gray-300 leading-relaxed">
+            <li className="flex items-start gap-2">
+              <span className=" mt-[2px]">•</span>
+              <p>
+                Organize your <span className="">published posts</span> into
+                domain-specific playlists.
+              </p>
+            </li>
 
-                    <li className="flex items-start gap-2">
-                      <span className=" mt-[2px]">•</span>
-                      <p>
-                        A playlist must contain at least{" "}
-                        <span className="">two posts</span> for meaningful
-                        grouping.
-                      </p>
-                    </li>
+            <li className="flex items-start gap-2">
+              <span className=" mt-[2px]">•</span>
+              <p>
+                A playlist must contain at least{" "}
+                <span className="">two posts</span> for meaningful grouping.
+              </p>
+            </li>
 
-                    <li className="flex items-start gap-2">
-                      <span className=" mt-[2px]">•</span>
-                      <p>
-                        Add <span className="">collaborators</span> who
-                        contributed to the content, resources, or development.
-                      </p>
-                    </li>
+            <li className="flex items-start gap-2">
+              <span className=" mt-[2px]">•</span>
+              <p>
+                Add <span className="">collaborators</span> who contributed to
+                the content, resources, or development.
+              </p>
+            </li>
 
-                    <li className="flex items-start gap-2">
-                      <span className=" mt-[2px]">•</span>
-                      <p>
-                        <span className="text-gray-400">(Optional)</span> Upload
-                        a thumbnail
-                        <span className=""> (1280 × 720 px)</span> for better
-                        visibility.
-                      </p>
-                    </li>
-                  </ul>
+            <li className="flex items-start gap-2">
+              <span className=" mt-[2px]">•</span>
+              <p>
+                <span className="text-gray-400">(Optional)</span> Upload a
+                thumbnail
+                <span className=""> (1280 × 720 px)</span> for better
+                visibility.
+              </p>
+            </li>
+          </ul>
         </div>
       </div>
 
@@ -348,49 +347,44 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchCollaborator);
               {/* Search Results */}
               {searchCollaborator && (
                 <div className="absolute top-full mt-2 w-full bg-gray-900 border border-gray-700 rounded-xl shadow-xl z-20 emerald-scrollbar overflow-y-auto max-h-48 ">
-                  { searchedCoordinators.length > 0 ? searchedCoordinators.map( (collaborator, index) => (
-                    <div
-                      key={index}
-                      onClick={() =>
-                        handleCollaborators(
-                          collaborator.email,
-                          collaborator.authorname,
-                          collaborator.profile,
-                        )
-                      }
-                      className="flex items-center gap-3 px-4 py-2 hover:bg-gray-800 cursor-pointer"
-                    >
-                      <img
-                        src={
-                          collaborator.profile
-                            ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${collaborator.profile}`
-                            : user
+                  {searchedCoordinators.length > 0 ? (
+                    searchedCoordinators.map((collaborator, index) => (
+                      <div
+                        key={index}
+                        onClick={() =>
+                          handleCollaborators(
+                            collaborator.email,
+                            collaborator.authorname,
+                            collaborator.profile,
+                          )
                         }
-                        className="w-6 h-6 rounded-full bg-gray-400 object-cover border border-emerald-400"
-                        alt=""
-                      />
-                      <span className="text-sm text-gray-200">
-                        
-                        {collaborator.authorname}
+                        className="flex items-center gap-3 px-4 py-2 hover:bg-gray-800 cursor-pointer"
+                      >
+                        <img
+                          src={
+                            collaborator.profile
+                              ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${collaborator.profile}`
+                              : user
+                          }
+                          className="w-6 h-6 rounded-full bg-gray-400 object-cover border border-emerald-400"
+                          alt=""
+                        />
+                        <span className="text-sm text-gray-200">
+                          {collaborator.authorname}
+                        </span>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="px-4 py-2 ">
+                      <span className="text-sm text-gray-200 ">
+                        {domain.length > 0
+                          ? " No authors found!"
+                          : "Select domain to hook collaborators"}
                       </span>
                     </div>
-                  ))
-                  :
-                  <div className="px-4 py-2 ">                 
-                     <span className="text-sm text-gray-200 ">
-                      {domain.length>0?' No authors found!':'Select domain to hook collaborators'}
-                      
-                      </span>
-                    </div>
-                  
-                  }
-                  
-                  
-                
+                  )}
                 </div>
               )}
-
-
             </div>
 
             {/* Playlist Title */}
@@ -410,7 +404,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchCollaborator);
             {/* Thumbnail */}
             <div className="flex flex-col gap-2">
               <label className="text-sm text-gray-300 font-medium">
-                Playlist Thumbnail 
+                Playlist Thumbnail
                 {/* <span className="text-red-500">*</span> */}
               </label>
 
@@ -470,59 +464,118 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchCollaborator);
         {/* RIGHT — POSTS */}
 
         <div className="lg:col-span-2 mt-7 md:mt-0 lg:w-11/12 space-y-6 h-fit">
-          {posts?.length > 0 && (
-            <h2 className="text-xl text-center md:text-left font-semibold text-white">
-              Select Posts for Playlist
+          {/* {posts?.length > 0 && <div className="md:flex items-center justify-between ">
+            <h2 className="text-xl text-center md:text-left  font-semibold text-white  md:text-emerald-500">
+              Select Posts to Create Playlist
             </h2>
+            <p className="text-gray-300 text-xs">Posts selected {postIds?.length ??0} of {postCount}</p>
+          </div>} */}
+
+          {posts?.length > 0 && (
+            <div className="flex flex-col px-4 gap-3">
+              <div className="flex items-center justify-between gap-3">
+                {/* Left — icon + title */}
+                <div className="flex items-center gap-2.5">
+                  {/* <div className="w-[34px] h-[34px] rounded-[10px] bg-emerald-500/10 border border-emerald-500/25 flex items-center justify-center flex-shrink-0">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <rect x="1" y="3" width="10" height="2" rx="1" fill="#10b981"/>
+            <rect x="1" y="7" width="8"  height="2" rx="1" fill="#10b981"/>
+            <rect x="1" y="11" width="6" height="2" rx="1" fill="#10b981"/>
+            <circle cx="13" cy="10" r="2.5" stroke="#10b981" strokeWidth="1.5"/>
+            <line x1="13" y1="7" x2="13" y2="5" stroke="#10b981" strokeWidth="1.5" strokeLinecap="round"/>
+          </svg>
+        </div> */}
+                  <div>
+                    <p className="text-[15px] font-medium text-white leading-tight">
+                      Select posts to create playlist
+                    </p>
+                    <p className="text-[11px] text-gray-500 mt-0.5">
+                      Tap a post to add it to your playlist
+                    </p>
+                  </div>
+                </div>
+
+                {/* Right — count pill */}
+                <div className="flex items-center gap-1.5 bg-gray-900 border border-gray-800 rounded-full px-2.5 py-1 text-gray-300 text-xs flex-shrink-0">
+                  <div className="w-5 h-5 rounded-full text-emerald-400 bg-emerald-600/20 flex items-center justify-center text-[11px] font-semibold ">
+                    {postIds?.length ?? 0}
+                  </div>
+                  <span className="text-xs text-gray-300">of {postCount}</span>
+                  Selected
+                </div>
+              </div>
+
+              {/* Progress bar */}
+              {/* <div className="w-full h-1 bg-gray-800 rounded-full overflow-hidden">
+      <div
+        className="h-full bg-emerald-500 rounded-full transition-all duration-300"
+        style={{ width: `${((postIds?.length ?? 0) / postCount) * 100}%` }}
+      />
+    </div> */}
+            </div>
           )}
 
-          <div className="grid grid-cols-1 sm:grid-cols-3  md:max-h-[700px] emerald-scrollbar md:overflow-y-auto gap-3 md:gap-5">
-            {posts?.map((data, index) => (
-              <div
-                key={index}
-                onClick={() => handlePostIds(data._id)}
-                className={`rounded-2xl border p-4 cursor-pointer transition-all duration-300
+          <div className="grid grid-cols-1 sm:grid-cols-3  md:max-h-[780px] emerald-scrollbar md:overflow-y-auto gap-3 p-4 md:gap-5">
+            {posts?.map((data) => {
+              const selIndex = postIds.indexOf(data._id);
+              const isSelected = selIndex !== -1;
+              return (
+                <div
+                  key={data._id}
+                  onClick={() => handlePostIds(data._id)}
+                  className={`rounded-2xl border p-4 cursor-pointer transition-all relative duration-300
                 ${
                   postIds.includes(data._id)
                     ? "border-emerald-500 bg-emerald-500/10"
                     : "border-gray-700 bg-gray-900 "
                 }`}
-              >
-                <div className="flex items-center gap-2 mb-3">
-                  <div>
-                    <p className="md:text-sm text-xs line-clamp-1 font-medium text-white">
-                      {data.title}
-                    </p>
-                    <p className="text-xs text-gray-400">
-                      {getTimeAgo(data.timestamp)}
-                    </p>
+                >
+                  {/* Selection order badge */}
+                  {isSelected && (
+                    <div
+                      className="absolute -top-2.5 -left-2.5 w-6 h-6 rounded-full bg-emerald-500
+                       flex items-center justify-center
+                      text-white text-[11px] font-semibold z-10
+                      animate-[popIn_0.2s_cubic-bezier(0.34,1.56,0.64,1)]"
+                    >
+                      {selIndex + 1}
+                    </div>
+                  )}
+
+                  <div className="flex items-center gap-2 mb-3">
+                    <div>
+                      <p className="md:text-sm text-xs line-clamp-1 font-medium text-white">
+                        {data.title}
+                      </p>
+                      <p className="text-xs text-gray-400">
+                        {getTimeAgo(data.timestamp)}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Image */}
+                  <img
+                    src={
+                      data.image
+                        ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.image}`
+                        : blog1
+                    }
+                    className="w-full h-48 md:h-36 rounded-xl object-cover mb-3"
+                    alt=""
+                  />
+
+                  {/* Meta */}
+                  <div className="flex justify-between items-center text-xs">
+                    <span className="text-gray-400">
+                      {data.views.length} views
+                    </span>
+                    <span className="px-2 py-1 inline-block rounded-full text-emerald-400 bg-emerald-600/20">
+                      {data.category}
+                    </span>
                   </div>
                 </div>
-
-                {/* Image */}
-                <img
-                  src={
-                    data.image
-                      ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.image}`
-                      : blog1
-                  }
-                  className="w-full h-48 md:h-36 rounded-xl object-cover mb-3"
-                  alt=""
-                />
-
-                {/* Meta */}
-                <div className="flex justify-between items-center text-xs">
-                  <span className="text-gray-400">
-                    {data.views.length} views
-                  </span>
-                  <span className="px-2 py-1 inline-block rounded-full text-emerald-400 bg-emerald-600/20">
-                    {data.category}
-                  </span>
-                </div>
-              </div>
-            ))}
-            
-
+              );
+            })}
 
             {!posts.length > 0 && loading && <BlogMiniSkeleton />}
             {posts.length > 0 && loading && (
@@ -532,7 +585,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchCollaborator);
             )}
 
             {!hasMore && posts?.length > 0 && (
-              <p className="text-center col-span-full py-4 text-gray-500">
+              <p className="text-center text-[10px] md:text-xs col-span-full py-4 text-gray-500">
                 No more posts
               </p>
             )}
@@ -609,11 +662,11 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchCollaborator);
 
         {/* SUBMIT */}
         {posts?.length > 0 && (
-          <div className="lg:col-span-3 md:hidden mt-7 flex justify-start ">
+          <div className="lg:col-span-3 p-4 md:hidden md:mt-7 flex justify-start ">
             <button
               type="submit"
               disabled={loader}
-              className="md:px-5 px-5 py-2 md:py-2 bg-emerald-600/20 hover:bg-emerald-500/20
+              className="md:px-5 p-5 py-2 md:py-2 bg-emerald-600/20 hover:bg-emerald-500/20
                          rounded-md text-xs md:text-sm   text-emerald-400 transition-all duration-300 disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed"
             >
               {loader ? "Creating Playlist..." : "Create Playlist"}
@@ -622,7 +675,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchCollaborator);
         )}
       </form>
 
-      <Footer/>
+      <Footer />
     </div>
   );
 }

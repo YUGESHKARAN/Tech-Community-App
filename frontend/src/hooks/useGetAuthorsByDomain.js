@@ -9,7 +9,7 @@ const useGetAuthorsByDomain = (domain) => {
      const decodedCategory = decodeURIComponent(domain);
     const fetchCoordinators = async () => {
             setLoading(true);
-            console.log("decodedCategory", decodedCategory);
+            // console.log("decodedCategory", decodedCategory);
         try{
 
             const response  = await axiosInstance.get(`/blog/author/getAuthorsByDomain/${decodedCategory}`);

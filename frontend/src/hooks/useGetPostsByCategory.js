@@ -5,6 +5,7 @@ import axiosInstance from "../instances/Axiosinstances";
 const useGetPostsByCategory = (email, domain) => {
   const [posts, setPosts] = useState([]);
   const [page, setPage] = useState(1);
+  const [postCount, setPostCount] = useState(0)
 //   const [limit] = useState(10);
 const limit = 30
   const [hasMore, setHasMore] = useState(true);
@@ -31,7 +32,6 @@ const limit = 30
       );
 
       const data = response.data;
-
       // ✅ Prevent duplicates
       setPosts((prev) => {
         const existingIds = new Set(prev.map((p) => p._id));
@@ -70,6 +70,7 @@ const fetchInitial = async () => {
     setPosts(response.data.posts || []);
     setHasMore(response.data.hasMore);
     setPage(2); // next page
+      setPostCount(response.data.totalPosts)
   } catch (err) {
     console.error(err);
   } finally {
@@ -115,6 +116,7 @@ useEffect(() => {
     posts,
     loading,
     hasMore,
+    postCount,
     getPostByCategory,
   };
 };
