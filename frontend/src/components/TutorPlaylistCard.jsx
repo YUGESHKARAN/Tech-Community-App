@@ -141,7 +141,7 @@ const TutorPlaylistCard = ({ playlist, setPlaylistCategory,debouncedSearch }) =>
                         : user
                     }
                     alt={collab.name}
-                    className="h-6 w-6 rounded-full border-2 border-teal-600 bg-white"
+                    className="h-6 w-6 rounded-full border-2 border-teal-600 bg-gray-400"
                   />
                 ))}
                 <img
@@ -151,7 +151,7 @@ const TutorPlaylistCard = ({ playlist, setPlaylistCategory,debouncedSearch }) =>
                       : user
                   }
                   // alt={collab.name}
-                  className="h-6 w-6 rounded-full border-2 border-teal-600 bg-white"
+                  className="h-6 w-6 rounded-full border-2 border-teal-600 bg-gray-400"
                 />
               </div>
               <div

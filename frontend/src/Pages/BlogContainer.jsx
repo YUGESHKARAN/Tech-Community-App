@@ -153,8 +153,7 @@ function BlogContainer({ activeTab, setActiveTab }) {
         },
       );
 
-      if (response.status === 200) {
-        setPosts((prevPosts) =>
+       setPosts((prevPosts) =>
           prevPosts.map((post) =>
             post._id === postId
               ? {
@@ -166,7 +165,21 @@ function BlogContainer({ activeTab, setActiveTab }) {
               : post,
           ),
         );
-      }
+
+      // if (response.status === 200) {
+      //   setPosts((prevPosts) =>
+      //     prevPosts.map((post) =>
+      //       post._id === postId
+      //         ? {
+      //             ...post,
+      //             likes: post.likes.includes(email)
+      //               ? post.likes.filter((like) => like !== email) // Unlike the post
+      //               : [...post.likes, email], // Like the post
+      //           }
+      //         : post,
+      //     ),
+      //   );
+      // }
     } catch (err) {
       console.error("Error updating views:", err);
     }
@@ -402,7 +415,7 @@ function BlogContainer({ activeTab, setActiveTab }) {
                               ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.profile}`
                               : user
                           }
-                          className="w-9 h-9 rounded-full bg-white object-cover border border-gray-700"
+                          className="w-9 h-9 rounded-full bg-gray-700 object-cover border border-gray-900"
                           alt={data.authorname}
                         />
                       </Link>

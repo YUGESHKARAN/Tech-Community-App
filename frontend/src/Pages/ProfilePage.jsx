@@ -1419,7 +1419,7 @@ function ProfilePage() {
             </div>
 
             {/* ── Submit row ──────────────────────────────────────── */}
-            <div className="mt-7 md:mt-4 border-t border-white/[0.05]">
+            <div className="mt-7 md:mt-4 ">
               <button 
                 type="submit"
                 disabled={loading || !updateButton}

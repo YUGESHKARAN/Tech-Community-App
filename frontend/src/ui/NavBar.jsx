@@ -30,7 +30,7 @@ import { BsFillMenuButtonWideFill, BsPersonWorkspace } from "react-icons/bs";
 import getTimeAgo from "../components/DateCovertion";
 import toast from "../components/toaster/Toast"
 import { MdDashboard } from "react-icons/md";
-import { getItem, removeItem } from "../utils/encode";
+import { getItem, removeItem, storeItem } from "../utils/encode";
 
 
 function NavBar() {
@@ -93,6 +93,8 @@ function NavBar() {
       const response = await axiosInstance.get(`/blog/author/queueMessage/${userEmail}`);
       setNote(response.data.notifications);
       setAnnouncement(response.data.announcements);
+      storeItem('notiCount',response.data.notifications.length )
+      storeItem('announceCount',response.data.announcements.length )
       //   console.log("author email data", response.data.notification)
     } catch (error) {
       console.error("Error fetching notifications:", error);
@@ -103,10 +105,15 @@ function NavBar() {
     fetchNotifications();
   }, [userEmail]);
 
+  const notiCount = getItem("notiCount"); 
+  const announceCount = getItem("announceCount"); 
+  
+
 
 
   const deleteSigleNotification = async (userEmail, notificationId) => {
-    setNote((note)=> note.filter((n)=> n._id !== notificationId))
+    setNote((note)=> note.filter((n)=> n._id !== notificationId));
+    storeItem('notiCount', notiCount-1)
     try {
       const response = await axiosInstance.delete(
         `/blog/author/notification/delete?email=${userEmail}&notificationId=${notificationId}`,
@@ -123,7 +130,8 @@ function NavBar() {
   };
 
   const deleteAllNotification = async (userEmail) => {
-    if (note.length===0) return;
+    if (notiCount===0) return;
+    storeItem('notiCount', 0)
     const confirm = window.confirm(
       "Are you sure want to delete all the notifications",
     );
@@ -282,12 +290,12 @@ function NavBar() {
             <MdAnnouncement className="text-xl  mr-1" />
             <sup
               className={`${
-                announcement.length > 0
+                announceCount > 0
                   ? "text-[10px] bg-green-600 w-4 h-4 flex items-center justify-center rounded-full text-white"
                   : "text-[10px]  flex items-center justify-center rounded-full text-white"
               }`}
             >
-              {announcement.length > 0 ? announcement.length : ""}
+              {announceCount > 0 ? announceCount : ""}
             </sup>
           </Link>
         </li>
@@ -337,12 +345,12 @@ function NavBar() {
           />
           <sup
             className={`${
-              note.length > 0
+              notiCount > 0
                 ? "text-[10px] bg-red-500 w-4 h-4 flex items-center justify-center rounded-full text-white"
                 : "text-[10px]  flex items-center justify-center rounded-full text-white"
             }`}
           >
-            {note.length > 0 ? note.length : ""}
+            {notiCount > 0 ? notiCount : ""}
           </sup>
         </div>
       </div>
@@ -513,7 +521,7 @@ function NavBar() {
             icon={<MdAnnouncement />}
             title="Updates"
             subtitle="Announcements"
-            badge={announcement?.length}
+            badge={announceCount}
             close={setIsSidebarOpen}
           />
         </div>

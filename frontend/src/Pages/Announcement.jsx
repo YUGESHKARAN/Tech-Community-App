@@ -12,7 +12,7 @@ import { MdAnnouncement } from "react-icons/md";
 import getTimeAgo from "../components/DateCovertion";
 
 import toast from "../components/toaster/Toast";
-import { getItem } from "../utils/encode";
+import { getItem, storeItem } from "../utils/encode";
 import AnnouncementSkeleton from "../components/loaders/AnnouncementSkeleton";
 import empty_state_announcement from "../assets/empty_announcement_state.png";
 import { CiSquareRemove } from "react-icons/ci";
@@ -45,6 +45,7 @@ function Announcement() {
   const [password, setPassword] = useState("");
   const [showConfirm, setShowConfirm] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const announceCount = getItem("announceCount");
   const [fieldErrors, setFieldErrors] = useState({
     title: "",
     message: "",
@@ -64,6 +65,7 @@ function Announcement() {
       const response = await axiosInstance.get(`/blog/author/${email}`);
       // console.log("announcement", response.data.announcement);
       setAnnouncement(response.data.announcement);
+      storeItem("announceCount", response.data.announcement.length)
     } catch (err) {
       console.log("error", err);
     } finally {
@@ -174,6 +176,7 @@ function Announcement() {
       "Are you sure you want to delete this announcement?",
     );
     if (!verify) return;
+    if( announceCount>0) {storeItem('announceCount',announceCount-1)}
     try {
       const response = await axiosInstance.delete(
         `/blog/author/announcements/${id}`,
