@@ -336,7 +336,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchCollaborator);
                             ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.img}`
                             : user
                         }
-                        className="w-6 h-6 rounded-full object-cover border border-emerald-400 bg-white"
+                        className="w-6 h-6 rounded-full object-cover border border-emerald-400 bg-gray-400"
                         alt=""
                       />
                       <span className="text-xs text-gray-200">{data.name}</span>
@@ -366,7 +366,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchCollaborator);
                             ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${collaborator.profile}`
                             : user
                         }
-                        className="w-6 h-6 rounded-full bg-white object-cover border border-emerald-400"
+                        className="w-6 h-6 rounded-full bg-gray-400 object-cover border border-emerald-400"
                         alt=""
                       />
                       <span className="text-sm text-gray-200">

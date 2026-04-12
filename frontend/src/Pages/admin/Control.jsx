@@ -321,7 +321,7 @@ function Control() {
         <h1
         className={`${
           roleFilter === "admin" || roleFilter === ""
-            ? " mx-4 text-center text-2xl md:text-3xl mb-6 font-semibold  text-white"
+            ? " mx-4 text-center text-sm md:text-base  tracking-widest uppercase text-gray-400  font-semibold mb-6"
             : "hidden"
         }`}
       >
@@ -418,8 +418,8 @@ function Control() {
                   disabled={email === author.email}
                 >
                   <option value="admin">Admin</option>
-                  <option value="coordinator">Contributors</option>
-                  <option value="student">Users</option>
+                  <option value="coordinator">Contributor</option>
+                  <option value="student">User</option>
                 </select>
 
                 <button
@@ -528,7 +528,7 @@ function Control() {
           )}
 
           {searchQuery.length === 0 && !adminHashMore && (
-            <p className="text-center col-span-full py-4 text-gray-500">
+            <p className=" text-center text-[10px] md:text-xs col-span-full py-4 text-gray-500">
               No more Admins
             </p>
           )}
@@ -542,7 +542,7 @@ function Control() {
       <h1
         className={`${
           roleFilter === "coordinator" || roleFilter === ""
-            ? " mx-4 text-center text-2xl md:text-3xl mb-6 font-semibold  text-white"
+            ? " mx-4 text-center text-sm md:text-base  tracking-widest uppercase text-gray-400  font-semibold mb-6"
             : "hidden"
         }`}
       >
@@ -635,8 +635,8 @@ function Control() {
                   onChange={(e) => handleRoleChange(author.id, e.target.value)}
                 >
                   <option value="admin">Admin</option>
-                  <option value="coordinator">Contributors</option>
-                  <option value="student">Users</option>
+                  <option value="coordinator">Contributor</option>
+                  <option value="student">User</option>
                 </select>
 
                 <button
@@ -710,7 +710,7 @@ function Control() {
           )}
 
           { searchQuery.length === 0 && !coordinatorHashMore && (
-            <p className="text-center col-span-full py-4 text-gray-500">
+            <p className=" text-center text-[10px] md:text-xs col-span-full py-4 text-gray-500">
               No more Contributors
             </p>
           )}
@@ -725,7 +725,7 @@ function Control() {
       <h1
         className={`${
           roleFilter === "student" || roleFilter === ""
-            ? " mx-4 text-center text-2xl md:text-3xl mb-6 font-semibold  text-white"
+            ? " mx-4 text-center text-sm md:text-base  tracking-widest uppercase text-gray-400  font-semibold mb-6"
             : "hidden"
         }`}
       >
@@ -801,8 +801,8 @@ function Control() {
                   value={updatedRoles[author.id] || author.role}
                   onChange={(e) => handleRoleChange(author.id, e.target.value)}
                 >
-                  <option value="student">Users</option>
-                  <option value="coordinator">Contributors</option>
+                  <option value="student">User</option>
+                  <option value="coordinator">Contributor</option>
                 </select>
 
                 <button
@@ -836,7 +836,7 @@ function Control() {
           )}
 
           { searchQuery.length === 0 && !studentHashMore && (
-            <p className="text-center col-span-full py-4 text-gray-500">
+            <p className=" text-center text-[10px] md:text-xs col-span-full py-4 text-gray-500">
               No more Users
             </p>
           )}
