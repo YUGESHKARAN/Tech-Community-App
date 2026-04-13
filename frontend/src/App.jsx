@@ -30,6 +30,7 @@ import YourPlaylist from "./Pages/YourPlaylists.jsx";
 import EditTutorPlaylist from "./Pages/EditTutoPlaylist.jsx";
 import ScrollToTop from "./components/ScrollTop.jsx";
 import Dashboard from "./Pages/admin/Dashboard.jsx";
+import SingleDomainPosts from "./components/SingleDomainPosts.jsx";
 function App() {
   return (
     <AuthProvider>
@@ -94,6 +95,8 @@ function App() {
               element={<ProtectedRoute element={<SingleTechDomainDetails />} />}
             />
 
+           
+
             <Route
               path="/yourposts"
               element={<ProtectedRoute element={<YourPost />} />}
@@ -134,6 +137,8 @@ function App() {
               path="/announcement"
               element={<ProtectedRoute element={<Announcement />} />}
             />
+
+            
 
             <Route
               path="/control"

@@ -575,6 +575,58 @@ const getUniqueCategoriesByAuthor = async (req, res) => {
   }
 };
 
+const getPostsByDomain = async (req, res) => {
+  try {
+    const { domain } = req.params;
+    const decodedDomain = decodeURIComponent(domain);
+    let { page = 1, limit = 10 } = req.query;
+    // console.log("domain", decodedDomain,"page", page, "limit", limit)
+
+    page = parseInt(page);
+    limit = parseInt(limit);
+
+    const skip = (page - 1) * limit;
+
+    // ✅ Find all authors
+    const authors = await Author.find({});
+
+    if (!authors || authors.length === 0) {
+      return res.status(404).json({ message: "No authors found" });
+    }
+
+    // ✅ Collect all posts from all authors filtered by domain/category
+    const allPosts = [];
+    authors.forEach((author) => {
+      const postsInDomain = (author.posts || []).filter(
+        (post) => post.category === decodedDomain
+      );
+      // Add author info to each post for context
+      postsInDomain.forEach((post) => {
+        allPosts.push({
+          ...post.toObject ? post.toObject() : post,
+          authorEmail: author.email,
+          authorName: author.authorname,
+          profile: author.profile,
+        });
+      });
+    });
+
+    // ✅ Pagination
+    const paginatedPosts = allPosts.slice(skip, skip + limit);
+
+    return res.status(200).json({
+      posts: paginatedPosts,
+      currentPage: page,
+      totalPages: Math.ceil(allPosts.length / limit),
+      totalPosts: allPosts.length,
+      hasMore: skip + limit < allPosts.length,
+    });
+  } catch (err) {
+    console.error("Error:", err.message);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
 module.exports = {
   addTutorPlayList,
   getAllTutorPlaylist,
@@ -585,5 +637,6 @@ module.exports = {
   getBookmarkedPlaylists,
   getRecommendedTutorPlaylist,
   getPostsByAuthorsCategory,
-  getUniqueCategoriesByAuthor
+  getUniqueCategoriesByAuthor,
+  getPostsByDomain
 };

@@ -19,6 +19,7 @@ import toast from "../components/toaster/Toast";
 import { getItem } from "../utils/encode";
 import { MdCardMembership } from "react-icons/md";
 import useGetCommunityAnalytics from "../hooks/useGetCommunityAnalytics";
+import SingleDomainPosts from "../components/SingleDomainPosts";
 function SingleTechDomainDetails() {
   const { category } = useParams();
   const decodedCategory = decodeURIComponent(category);
@@ -51,7 +52,7 @@ function SingleTechDomainDetails() {
       );
 
       const newAuthors = response.data.filteredAuthors;
-      console.log("response data", response.data);
+      // console.log("response data", response.data);
 
       if (!newAuthors || newAuthors.length === 0) {
         setHasMore(false);
@@ -175,6 +176,7 @@ function SingleTechDomainDetails() {
   }, [communities]);
 
   // console.log("categoryStats", categoryStats);
+  const [showPosts, setShowPosts] = useState(false);  
 
   return (
     // <div className="w-full h-auto bg-gray-900  relative text-white">
@@ -551,7 +553,15 @@ function SingleTechDomainDetails() {
               { label: "Members", value: categoryStats?.followerscount || 0 },
             ].map(({ label, value }, i) => (
               <div key={i} className="flex flex-col px-7 py-4 bg-white/[0.03]">
-                <span className="text-xl font-medium text-center text-white tracking-tight">
+                {/* <span className="text-xl font-medium text-center text-white tracking-tight">
+                  {value}
+                </span> */}
+
+                <span
+                  className={`text-xl font-medium text-center tracking-tight ${label === "Posts" ? "text-emerald-400" : "text-white"}`}
+                  onClick={()=>{setShowPosts(label === "Posts" ? true : false) }}
+                >
+                  {/* {label === "Posts" ? <Link to={`/community/posts/${encodeURIComponent(decodedCategory)}`}>{value}</Link> : value} */}
                   {value}
                 </span>
                 <span className="text-xs text-gray-500 mt-0.5">{label}</span>
@@ -562,7 +572,7 @@ function SingleTechDomainDetails() {
       </div>
 
       {/* ── MAIN CONTENT ───────────────────────────────────────── */}
-      <main className="w-full mx-auto px-4 md:px-10 pb-16">
+    {!showPosts?  <main className="w-full mx-auto px-4 md:px-10 pb-16">
         {/* ── COORDINATORS ─────────────────────────────────────── */}
         {authors.filter((a) => a.role === "coordinator").length > 0 && (
           <section className="mt-10">
@@ -826,7 +836,9 @@ function SingleTechDomainDetails() {
               <StudentGridSkeleton />
             </section>
           )}
-      </main>
+      </main>:
+      <SingleDomainPosts category={decodedCategory} />
+        }
 
       <Footer />
     </div>

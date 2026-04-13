@@ -21,6 +21,7 @@ import BlogSkeleton from "../components/loaders/BlogSkeleton";
 import PillLoader from "../components/loaders/PillSkeleton";
 import Fuse from "fuse.js";
 import highlightText from "../hooks/highlightText";
+import { getItem } from "../utils/encode";
 function SingleAuthorPosts() {
   const [searchTerm, setSearchTerm] = useState("");
   const [posts, setPosts] = useState([]);
@@ -29,6 +30,7 @@ function SingleAuthorPosts() {
   const [authorName, setAuthorName] = useState("");
   const [authorProfile, setAuthorProfile] = useState("");
   const { email } = useParams();
+  const userEmail =getItem("email");
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const limit = 50;
@@ -108,7 +110,7 @@ function SingleAuthorPosts() {
   const postViews = async (authorEmail, postId) => {
     try {
       await axiosInstance.put(`/blog/posts/views/${authorEmail}/${postId}`, {
-        emailAuthor: email,
+        emailAuthor: userEmail,
       });
     } catch (err) {
       console.error("Error updating views:", err);
@@ -138,7 +140,7 @@ function SingleAuthorPosts() {
     // }
     try {
       const response =  await axiosInstance.put(`/blog/posts/likes/${authorEmail}/${postId}`, {
-        emailAuthor: email,
+        emailAuthor: userEmail,
       });
 
       if (response.status === 200){

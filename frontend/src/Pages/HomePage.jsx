@@ -17,82 +17,84 @@ import { BsPersonWorkspace } from "react-icons/bs";
 import { motion, AnimatePresence } from "framer-motion";
 import { getItem } from "../utils/encode";
 function HomePage() {
-  const username = localStorage.getItem("username");
+  // const username = localStorage.getItem("username");
 
-  const [categoryCount, setCategoryCount] = useState(0);
-  const [announcement, setAnnouncement] = useState([]);
-  // const email = localStorage.getItem("email");
-  const email = getItem("email");
-  const role = getItem("role");
+  // const [categoryCount, setCategoryCount] = useState(0);
+  // const [announcement, setAnnouncement] = useState([]);
+  // // const email = localStorage.getItem("email");
+  // const email = getItem("email");
+  // const role = getItem("role");
   
 
-  const [openDashboard, setOpenDashboard] = useState(false);
-  const dashboardRef = useRef(null);
-  const dashboardButtonRef = useRef(null);
-  const location = useLocation();
+  // const [openDashboard, setOpenDashboard] = useState(false);
+  // const dashboardRef = useRef(null);
+  // const dashboardButtonRef = useRef(null);
+  // const location = useLocation();
 
-  useEffect(() => {
-    setOpenDashboard(false);
-  }, [location.pathname]);
+  // useEffect(() => {
+  //   setOpenDashboard(false);
+  // }, [location.pathname]);
 
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (
-        dashboardRef.current &&
-        !dashboardRef.current.contains(e.target) &&
-        dashboardButtonRef.current &&
-        !dashboardButtonRef.current.contains(e.target)
-      ) {
-        setOpenDashboard(false);
-      }
-    };
+  // useEffect(() => {
+  //   const handleClickOutside = (e) => {
+  //     if (
+  //       dashboardRef.current &&
+  //       !dashboardRef.current.contains(e.target) &&
+  //       dashboardButtonRef.current &&
+  //       !dashboardButtonRef.current.contains(e.target)
+  //     ) {
+  //       setOpenDashboard(false);
+  //     }
+  //   };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  //   document.addEventListener("mousedown", handleClickOutside);
+  //   return () => document.removeEventListener("mousedown", handleClickOutside);
+  // }, []);
 
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
-        e.preventDefault();
-        setOpenDashboard((prev) => !prev);
-      }
-      if (e.key === "Escape") {
-        setOpenDashboard(false);
-      }
-    };
+  // useEffect(() => {
+  //   const handleKeyDown = (e) => {
+  //     if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+  //       e.preventDefault();
+  //       setOpenDashboard((prev) => !prev);
+  //     }
+  //     if (e.key === "Escape") {
+  //       setOpenDashboard(false);
+  //     }
+  //   };
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  //   window.addEventListener("keydown", handleKeyDown);
+  //   return () => window.removeEventListener("keydown", handleKeyDown);
+  // }, []);
 
-  const getData = async () => {
-    try {
-      // const response = await axios.get(`https://node-blog-app-seven.vercel.app/blog/posts/`);
-      const response = await axiosInstance.get(`/blog/posts/`);
-      // console.log("data", response.data);
-      setCategoryCount(response.data.count);
-      // setPosts(response.data.posts);
-    } catch (err) {
-      console.log("Error", err);
-    }
-  };
+  // const getData = async () => {
+  //   try {
+  //     // const response = await axios.get(`https://node-blog-app-seven.vercel.app/blog/posts/`);
+  //     const response = await axiosInstance.get(`/blog/posts/`);
+  //     // console.log("data", response.data);
+  //     setCategoryCount(response.data.count);
+  //     // setPosts(response.data.posts);
+  //   } catch (err) {
+  //     console.log("Error", err);
+  //   }
+  // };
 
-  const getAuthorData = async () => {
-    try {
-      // const response = await axios.get(`https://node-blog-app-seven.vercel.app/blog/posts/`);
-      const response = await axiosInstance.get(`/blog/author/${email}`);
-      // console.log("data", response.data);
-      setAnnouncement(response.data.announcement);
-    } catch (err) {
-      console.log("Error", err);
-    }
-  };
+ 
 
-  useEffect(() => {
-    getData();
-    getAuthorData();
-  }, []);
+  // const getAuthorData = async () => {
+  //   try {
+  //     // const response = await axios.get(`https://node-blog-app-seven.vercel.app/blog/posts/`);
+  //     const response = await axiosInstance.get(`/blog/author/${email}`);
+  //     // console.log("data", response.data);
+  //     setAnnouncement(response.data.announcement);
+  //   } catch (err) {
+  //     console.log("Error", err);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   getData();
+  //   getAuthorData();
+  // }, []);
 
   const [activeTab, setActiveTab] = useState(
     localStorage.getItem("dashboardTab") || "posts",

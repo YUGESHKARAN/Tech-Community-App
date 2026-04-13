@@ -324,7 +324,9 @@ function NavBar() {
 
       <div className="transition-all flex items-center duration-200 hover:text-white">
         <div className="text-white xl:flex justify-end w-full hidden font-semibold items-center gap-1 mr-3 text-sm">
-          <Link to="/profile" className="flex  items-center gap-1">
+          <Link to="/profile"
+     
+           className="flex  items-center gap-1">
             {profile !== "undefined" ? (
               <img
                 src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`}
@@ -638,7 +640,7 @@ function NavIcon({ to, icon, label, close }) {
   return (
     <Link
       to={to}
-      onClick={() => close(false)}
+      onClick={() => close && close(false)}
       className="flex flex-col items-center gap-0
                  text-white/70 hover:text-white transition"
     >
@@ -666,7 +668,7 @@ function NavTile({ to, icon, title, subtitle, badge, close }) {
   return (
     <Link
       to={to}
-      onClick={() => close(false)}
+      onClick={() => close && close(false)}
       className="relative rounded-2xl p-4
                  bg-white/5 hover:bg-white/10 transition"
     >

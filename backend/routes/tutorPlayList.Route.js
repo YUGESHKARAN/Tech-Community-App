@@ -13,7 +13,8 @@ const {
   getBookmarkedPlaylists,
   getRecommendedTutorPlaylist,
     getPostsByAuthorsCategory,
-  getUniqueCategoriesByAuthor
+  getUniqueCategoriesByAuthor,
+  getPostsByDomain
 } = require("../controllers/tutorPlayList.Controller");
 const authenticateToken = require('../middleware/authMiddleware')
 const router = express.Router();
@@ -34,5 +35,6 @@ router.delete("/delete/:id", limiter, authenticateToken, deleteTutorPlayList);
 
 router.get("/:email/:category", limiter, authenticateToken, getPostsByAuthorsCategory);
 router.get("/categories/playlist/:email", limiter, authenticateToken, getUniqueCategoriesByAuthor);
+router.get('/posts/domain/:domain', limiter, authenticateToken, getPostsByDomain);
 
 module.exports = router;
