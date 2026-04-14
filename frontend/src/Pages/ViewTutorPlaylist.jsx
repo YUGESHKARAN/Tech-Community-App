@@ -223,7 +223,7 @@ function ViewTutorPlaylist() {
         {!loading && (
           <div className="grid w-full mx-auto md:h-screen grid-cols-1 lg:grid-cols-2 lg:gap-8 gap-6">
             {/* LEFT PANEL (Banner + Info) */}
-            <div className="lg:col-span-1 md:hidden  p-1 md:sticky top-4 self-start  md:p-0 space-y-4">
+            <div className="lg:col-span-1 md:hidden  p-1 md:sticky top-4 self-start  md:p-0 space-y-2 md:space-y-4">
               {/* Banner */}
               <div className="relative rounded-xl   overflow-hidden bg-black border border-gray-700">
                 <img
