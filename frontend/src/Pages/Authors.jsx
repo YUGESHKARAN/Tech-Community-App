@@ -264,7 +264,7 @@ const recommendedAuthors = useMemo(() => {
   
       {/* Recommended authors */}
       {recommendedAuthors?.length > 0 && (
-        <h2 className="w-full px-4 mx-auto tracking-widest  text-left text-lg text-green-400 md:text-2xl font-semibold">
+        <h2 className="w-full px-4 mx-auto tracking-wide  text-left text-lg text-green-400 md:text-2xl font-semibold">
           Recommended
         </h2>
       )}

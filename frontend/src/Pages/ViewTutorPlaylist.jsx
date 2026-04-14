@@ -83,14 +83,14 @@ function ViewTutorPlaylist() {
 
   const addBookMarkPostIdPlaylist = async (_id) => {
     // e.preventDefault()
-    console.log("bookmark id", _id);
+    // console.log("bookmark id", _id);
     try {
       const response = await axiosInstance.post(
         `/blog/posts/bookmarkPosts/${email}`,
         { postId: _id },
       );
       if (response.status === 200) {
-          setPlaylistBookMarkId((prev) => {
+        setPlaylistBookMarkId((prev) => {
           if (prev.includes(_id)) {
             // toast.success("bookmark removed successfully");
             return prev.filter((id) => id !== _id);
@@ -106,7 +106,7 @@ function ViewTutorPlaylist() {
     }
   };
 
-    const addBookMarkPostId = async (_id) => {
+  const addBookMarkPostId = async (_id) => {
     // e.preventDefault()
     // console.log("bookmark id", _id);
     try {
@@ -115,7 +115,7 @@ function ViewTutorPlaylist() {
         { postId: _id },
       );
       if (response.status === 200) {
-          setBookMarkId((prev) => {
+        setBookMarkId((prev) => {
           if (prev.includes(_id)) {
             // toast.success("bookmark removed successfully");
             return prev.filter((id) => id !== _id);
@@ -164,23 +164,26 @@ function ViewTutorPlaylist() {
   const postLikes = async (authorEmail, postId) => {
     // e.preventDefault();
     try {
-       const response =  await axiosInstance.put(`/blog/posts/likes/${authorEmail}/${postId}`, {
-        emailAuthor: email,
-      });
-
-      if (response.status === 200){
-          setPlaylistPosts((prevPosts) =>
-        prevPosts.map((post) =>
-          post._id === postId
-            ? {
-                ...post,
-                likes: post.likes.includes(email)
-                  ? post.likes.filter((like) => like !== email) // Unlike the post
-                  : [...post.likes, email], // Like the post
-              }
-            : post,
-        ),
+      const response = await axiosInstance.put(
+        `/blog/posts/likes/${authorEmail}/${postId}`,
+        {
+          emailAuthor: email,
+        },
       );
+
+      if (response.status === 200) {
+        setPlaylistPosts((prevPosts) =>
+          prevPosts.map((post) =>
+            post._id === postId
+              ? {
+                  ...post,
+                  likes: post.likes.includes(email)
+                    ? post.likes.filter((like) => like !== email) // Unlike the post
+                    : [...post.likes, email], // Like the post
+                }
+              : post,
+          ),
+        );
       }
 
       // getTutorPlaylist();
@@ -243,7 +246,7 @@ function ViewTutorPlaylist() {
 
               {/* Playlist Info */}
               <div className="space-y-2">
-                <h1 className="text-xl md:hidden font-semibold">
+                <h1 className="text-xl tracking-wide max-w-sm md:hidden font-semibold">
                   {playlistData.title}
                 </h1>
                 <div className="flex relative justify-between items-center ">
@@ -252,7 +255,7 @@ function ViewTutorPlaylist() {
                     {/* Author */}
 
                     <div className="">
-                      <h1 className="font-semibold flex items-center gap-1 mb-1 md:text-base text-gray-300 text-sm ">
+                      <h1 className="font-semibold uppercase tracking-wide flex items-center gap-1 mb-1  text-gray-400 text-[11px]">
                         Contributors
                         <span
                           onClick={() => {
@@ -277,15 +280,6 @@ function ViewTutorPlaylist() {
                           setShowContributors(!showContributors);
                         }}
                       >
-                        <img
-                          src={
-                            playlistData.profile
-                              ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.profile}`
-                              : user
-                          }
-                          // alt={collab.name}
-                          className="h-6 md:h-7 w-6 md:w-7 rounded-full border-2 border-teal-600 bg-white"
-                        />
                         {playlistData?.collaborators?.map((collab) => (
                           <img
                             key={collab._id}
@@ -295,16 +289,26 @@ function ViewTutorPlaylist() {
                                 : user
                             }
                             alt={collab.name}
-                            className="h-6 md:h-7 w-6 md:w-7 rounded-full border-2 border-teal-600 bg-white"
+                            className="h-6 md:h-7 w-6 md:w-7 rounded-full border border-teal-600 bg-gray-300"
                           />
                         ))}
+
+                        <img
+                          src={
+                            playlistData.profile
+                              ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.profile}`
+                              : user
+                          }
+                          // alt={collab.name}
+                          className="h-6 md:h-7 w-6 md:w-7 rounded-full border border-teal-600 bg-gray-300"
+                        />
                       </div>
 
                       {/* Contributors details */}
                       <div
                         className={`${
                           showContributors
-                            ? " w-full flex flex-col justify-center gap-1"
+                            ? " w-full flex flex-col justify-center gap-0.5"
                             : "hidden "
                         } `}
                       >
@@ -319,7 +323,7 @@ function ViewTutorPlaylist() {
                                 : user
                             }
                             alt=""
-                            className="h-6 md:h-7 w-6 md:w-7 bg-white  rounded-full object-cover border border-green-400"
+                            className="h-6 md:h-7 w-6 md:w-7 bg-gray-300  rounded-full object-cover border border-green-400"
                           />
                           {playlistData.name}{" "}
                           <span className="text-gray-200">(Author)</span>
@@ -337,7 +341,7 @@ function ViewTutorPlaylist() {
                                   : user
                               }
                               alt=""
-                              className="h-6 md:h-7 w-6 md:w-7 bg-white  rounded-full object-cover border border-green-400"
+                              className="h-6 md:h-7 w-6 md:w-7 bg-gray-300  rounded-full object-cover border border-green-400"
                             />
                             {data.name}
                           </Link>
@@ -380,8 +384,8 @@ function ViewTutorPlaylist() {
                 </div>
               </div>
             </div>
-           
-             {/* LEFT PANEL (Banner + Info) */}
+
+            {/* LEFT PANEL (Banner + Info) */}
             <div className="lg:col-span-1 hidden md:block md:sticky top-6 self-start space-y-4">
               {/* HERO BANNER */}
               <div className="relative rounded-2xl overflow-hidden border border-gray-800 shadow-xl group">
@@ -403,21 +407,22 @@ function ViewTutorPlaylist() {
                 />
 
                 {/* Gradient Overlay */}
-                <div 
-                 onClick={() =>
+                <div
+                  onClick={() =>
                     handleImageClick(
                       playlistData.thumbnail
                         ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.thumbnail}`
                         : blog1,
                     )
                   }
-                className="absolute inset-0 bg-gradient-to-t cursor-pointer from-black via-black/10 to-transparent" />
+                  className="absolute inset-0 bg-gradient-to-t cursor-pointer from-black via-black/10 to-transparent"
+                />
 
                 {/* Title + Meta */}
                 <div className="absolute bottom-4 left-4 right-4 space-y-2">
-                  <h1 className="text-xl md:text-2xl font-semibold text-white leading-snug">
+                  {/* <h1 className="text-xl md:text-2xl font-semibold text-white leading-snug">
                     {playlistData.title}
-                  </h1>
+                  </h1> */}
 
                   <div className="flex items-center justify-between">
                     <p className="text-xs md:text-sm text-gray-300">
@@ -454,138 +459,137 @@ function ViewTutorPlaylist() {
 
               {/* CONTRIBUTORS CARD */}
               <div className="flex p-4 relative border border-neutral-700/70 rounded-lg  justify-between items-center ">
-                  {/* left content */}
-                  <div className="flex flex-col items-start gap-2">
-                    {/* Author */}
+                {/* left content */}
+                <div className="flex flex-col items-start gap-2">
+                  {/* Author */}
 
-                    <div className="">
-                      <h1 className="font-semibold flex items-center gap-1 mb-1 md:text-base text-gray-300 text-sm ">
-                        Contributors
-                        <span
-                          onClick={() => {
-                            setShowContributors(!showContributors);
-                          }}
-                          className=" cursor-pointer  "
-                        >
-                          {!showContributors ? (
-                            <MdArrowDropDown className="text-xl" />
-                          ) : (
-                            <IoMdArrowDropup className="text-xl" />
-                          )}
-                        </span>
-                      </h1>
-
-                      {/* Contributors profile */}
-                      <div
-                        className={`${
-                          !showContributors ? "flex -space-x-2" : "hidden "
-                        } cursor-pointer `}
+                  <div className="">
+                    <h1 className="font-medium tracking-wide uppercase flex items-center gap-2 mb-1 text-gray-400 text-xs ">
+                      Contributors
+                      <span
                         onClick={() => {
                           setShowContributors(!showContributors);
                         }}
+                        className=" cursor-pointer  "
                       >
-                        
-                        {playlistData?.collaborators?.map((collab) => (
-                          <img
-                            key={collab._id}
-                            src={
-                              collab.profile
-                                ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${collab.profile}`
-                                : user
-                            }
-                            alt={collab.name}
-                            className="h-6 md:h-7 w-6 md:w-7 rounded-full border-2 border-teal-600 bg-gray-400"
-                          />
-                        ))}
+                        {!showContributors ? (
+                          <MdArrowDropDown className="text-xl" />
+                        ) : (
+                          <IoMdArrowDropup className="text-xl" />
+                        )}
+                      </span>
+                    </h1>
+
+                    {/* Contributors profile */}
+                    <div
+                      className={`${
+                        !showContributors ? "flex -space-x-2" : "hidden "
+                      } cursor-pointer `}
+                      onClick={() => {
+                        setShowContributors(!showContributors);
+                      }}
+                    >
+                      {playlistData?.collaborators?.map((collab) => (
+                        <img
+                          key={collab._id}
+                          src={
+                            collab.profile
+                              ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${collab.profile}`
+                              : user
+                          }
+                          alt={collab.name}
+                          className="h-6 md:h-7 w-6 md:w-7 rounded-full border-2 border-teal-600 bg-gray-400"
+                        />
+                      ))}
+                      <img
+                        src={
+                          playlistData.profile
+                            ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.profile}`
+                            : user
+                        }
+                        // alt={collab.name}
+                        className="h-6 md:h-7 w-6 md:w-7 rounded-full border-2 border-teal-600 bg-gray-400"
+                      />
+                    </div>
+
+                    {/* Contributors details */}
+                    <div
+                      className={`${
+                        showContributors
+                          ? " w-full flex flex-col justify-center gap-0.5"
+                          : "hidden "
+                      } `}
+                    >
+                      <Link
+                        to={`/viewProfile/${playlistData.email}`}
+                        className="flex hover:bg-gray-400/20 items-center cursor-pointer gap-2  text-gray-400 text-xs p-1 rounded-md"
+                      >
                         <img
                           src={
                             playlistData.profile
                               ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.profile}`
                               : user
                           }
-                          // alt={collab.name}
-                          className="h-6 md:h-7 w-6 md:w-7 rounded-full border-2 border-teal-600 bg-gray-400"
+                          alt=""
+                          className="h-6 md:h-7 w-6 md:w-7 bg-gray-400  rounded-full object-cover border border-teal-600"
                         />
-                      </div>
-
-                      {/* Contributors details */}
-                      <div
-                        className={`${
-                          showContributors
-                            ? " w-full flex flex-col justify-center gap-1"
-                            : "hidden "
-                        } `}
-                      >
+                        {playlistData.name}{" "}
+                        <span className="text-gray-200">(Author)</span>
+                      </Link>
+                      {playlistData?.collaborators?.map((data, index) => (
                         <Link
-                          to={`/viewProfile/${playlistData.email}`}
+                          to={`/viewProfile/${data.email}`}
+                          key={index}
                           className="flex hover:bg-gray-400/20 items-center cursor-pointer gap-2  text-gray-400 text-xs p-1 rounded-md"
                         >
                           <img
                             src={
-                              playlistData.profile
-                                ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.profile}`
+                              data.profile
+                                ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.profile}`
                                 : user
                             }
                             alt=""
                             className="h-6 md:h-7 w-6 md:w-7 bg-gray-400  rounded-full object-cover border border-teal-600"
                           />
-                          {playlistData.name}{" "}
-                          <span className="text-gray-200">(Author)</span>
+                          {data.name}
                         </Link>
-                        {playlistData?.collaborators?.map((data, index) => (
-                          <Link
-                            to={`/viewProfile/${data.email}`}
-                            key={index}
-                            className="flex hover:bg-gray-400/20 items-center cursor-pointer gap-2  text-gray-400 text-xs p-1 rounded-md"
-                          >
-                            <img
-                              src={
-                                data.profile
-                                  ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.profile}`
-                                  : user
-                              }
-                              alt=""
-                              className="h-6 md:h-7 w-6 md:w-7 bg-gray-400  rounded-full object-cover border border-teal-600"
-                            />
-                            {data.name}
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* right content */}
-                  <div className=" absolute top-4 right-4 flex flex-col items-start gap-2">
-                    {/* <p className="text-sm text-gray-400">
-                      Playlist • {playlistData?.post_ids?.length}
-                    </p> */}
-
-                    <div className="flex items-center gap-2">
-                      <div
-                        onClick={() => {
-                          addBookMarkPostIdPlaylist(playlistData._id);
-                        }}
-                        className="cursor-pointer flex items-center md:text-xl gap-1 text-teal-300 hover:text-teal-300"
-                      >
-                        {Array.isArray(playlistbookMarkId) &&
-                        playlistbookMarkId.includes(playlistData._id) ? (
-                          <PiBookmarksSimpleFill className="text-teal-500" />
-                        ) : (
-                          <PiBookmarksSimpleLight />
-                        )}
-                      </div>
-
-                      <div
-                        onClick={() =>
-                          sharePlayList(playlistData.title, playlistData._id)
-                        }
-                        className="cursor-pointer flex items-center gap-1 hover:text-teal-300"
-                      >
-                        <IoShareSocial className="md:text-xl text-teal-400" />
-                      </div>
+                      ))}
                     </div>
                   </div>
                 </div>
+
+                {/* right content */}
+                <div className=" absolute top-4 right-4 flex flex-col items-start gap-2">
+                  {/* <p className="text-sm text-gray-400">
+                      Playlist • {playlistData?.post_ids?.length}
+                    </p> */}
+
+                  <div className="flex items-center gap-2">
+                    <div
+                      onClick={() => {
+                        addBookMarkPostIdPlaylist(playlistData._id);
+                      }}
+                      className="cursor-pointer flex items-center md:text-lg gap-1 text-teal-300 hover:text-teal-300"
+                    >
+                      {Array.isArray(playlistbookMarkId) &&
+                      playlistbookMarkId.includes(playlistData._id) ? (
+                        <PiBookmarksSimpleFill className="text-teal-500" />
+                      ) : (
+                        <PiBookmarksSimpleLight />
+                      )}
+                    </div>
+
+                    <div
+                      onClick={() =>
+                        sharePlayList(playlistData.title, playlistData._id)
+                      }
+                      className="cursor-pointer flex items-center gap-1 hover:text-teal-300"
+                    >
+                      <IoShareSocial className="md:text-xl text-teal-400" />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* RIGHT PANEL (Playlist Posts) */}
@@ -619,18 +623,20 @@ function ViewTutorPlaylist() {
 
                   {/* Video Info */}
                   <div className="flex flex-col w-11/12 md:w-11/12 justify-between">
-                    <Link 
-                    // to={`/viewpage/playlist/${playlistData.email}/${post._id}`}
-                    to={`/viewpage/${playlistData.email}/${post._id}`}
-                    onClick={() => postViews(playlistData.email, post._id)}
-                    className="text-sm font-medium line-clamp-2">
+                    <Link
+                      // to={`/viewpage/playlist/${playlistData.email}/${post._id}`}
+                      to={`/viewpage/${playlistData.email}/${post._id}`}
+                      onClick={() => postViews(playlistData.email, post._id)}
+                      className="text-sm font-medium line-clamp-2"
+                    >
                       {post.title}
                     </Link>
-                      <Link
-                    // to={`/viewpage/playlist/${playlistData.email}/${post._id}`}
-                    to={`/viewpage/${playlistData.email}/${post._id}`}
-                    onClick={() => postViews(playlistData.email, post._id)}
-                    className="md:text-xs text-xs text-gray-300 line-clamp-1 md:line-clamp-2">
+                    <Link
+                      // to={`/viewpage/playlist/${playlistData.email}/${post._id}`}
+                      to={`/viewpage/${playlistData.email}/${post._id}`}
+                      onClick={() => postViews(playlistData.email, post._id)}
+                      className="md:text-xs text-xs text-gray-300 line-clamp-1 md:line-clamp-2"
+                    >
                       {/* {post.description?.slice(0, 50)}... */}
                       {post.description}
                     </Link>
@@ -766,97 +772,97 @@ function ViewTutorPlaylist() {
 
 export default ViewTutorPlaylist;
 
-  // //Contributors section
-  // <div className="bg-gray-900/70 backdrop-blur-md border border-gray-800 rounded-xl p-4 space-y-3">
+// //Contributors section
+// <div className="bg-gray-900/70 backdrop-blur-md border border-gray-800 rounded-xl p-4 space-y-3">
 
-  //   <div className="flex items-center justify-between">
+//   <div className="flex items-center justify-between">
 
-  //     <h2 className="text-sm text-gray-300 font-semibold flex items-center gap-1">
-  //       Contributors
-  //     </h2>
+//     <h2 className="text-sm text-gray-300 font-semibold flex items-center gap-1">
+//       Contributors
+//     </h2>
 
-  //     <button
-  //       onClick={() => setShowContributors(!showContributors)}
-  //       className="text-gray-400 hover:text-white transition"
-  //     >
-  //       {showContributors ? (
-  //         <IoMdArrowDropup className="text-xl" />
-  //       ) : (
-  //         <MdArrowDropDown className="text-xl" />
-  //       )}
-  //     </button>
+//     <button
+//       onClick={() => setShowContributors(!showContributors)}
+//       className="text-gray-400 hover:text-white transition"
+//     >
+//       {showContributors ? (
+//         <IoMdArrowDropup className="text-xl" />
+//       ) : (
+//         <MdArrowDropDown className="text-xl" />
+//       )}
+//     </button>
 
-  //   </div>
+//   </div>
 
-  //   {/* Avatar Stack */}
-  //   {!showContributors && (
-  //     <div
-  //       className="flex -space-x-3 cursor-pointer"
-  //       onClick={() => setShowContributors(true)}
-  //     >
-  //       <img
-  //         src={
-  //           playlistData.profile
-  //             ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.profile}`
-  //             : user
-  //         }
-  //         className="w-8 h-8 rounded-full border-2 border-teal-500 object-cover bg-white"
-  //       />
+//   {/* Avatar Stack */}
+//   {!showContributors && (
+//     <div
+//       className="flex -space-x-3 cursor-pointer"
+//       onClick={() => setShowContributors(true)}
+//     >
+//       <img
+//         src={
+//           playlistData.profile
+//             ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.profile}`
+//             : user
+//         }
+//         className="w-8 h-8 rounded-full border-2 border-teal-500 object-cover bg-white"
+//       />
 
-  //       {playlistData?.collaborators?.map((collab) => (
-  //         <img
-  //           key={collab._id}
-  //           src={
-  //             collab.profile
-  //               ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${collab.profile}`
-  //               : user
-  //           }
-  //           className="w-8 h-8 rounded-full border-2 border-teal-500 object-cover bg-white"
-  //         />
-  //       ))}
-  //     </div>
-  //   )}
+//       {playlistData?.collaborators?.map((collab) => (
+//         <img
+//           key={collab._id}
+//           src={
+//             collab.profile
+//               ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${collab.profile}`
+//               : user
+//           }
+//           className="w-8 h-8 rounded-full border-2 border-teal-500 object-cover bg-white"
+//         />
+//       ))}
+//     </div>
+//   )}
 
-  //   {/* Contributor List */}
-  //   {showContributors && (
-  //     <div className="space-y-2">
+//   {/* Contributor List */}
+//   {showContributors && (
+//     <div className="space-y-2">
 
-  //       <Link
-  //         to={`/viewProfile/${playlistData.email}`}
-  //         className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-800 transition"
-  //       >
-  //         <img
-  //           src={
-  //             playlistData.profile
-  //               ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.profile}`
-  //               : user
-  //           }
-  //           className="w-8 h-8 rounded-full object-cover border border-teal-400 bg-white"
-  //         />
-  //         <span className="text-sm text-gray-200">
-  //           {playlistData.name} <span className="text-gray-400">(Author)</span>
-  //         </span>
-  //       </Link>
+//       <Link
+//         to={`/viewProfile/${playlistData.email}`}
+//         className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-800 transition"
+//       >
+//         <img
+//           src={
+//             playlistData.profile
+//               ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.profile}`
+//               : user
+//           }
+//           className="w-8 h-8 rounded-full object-cover border border-teal-400 bg-white"
+//         />
+//         <span className="text-sm text-gray-200">
+//           {playlistData.name} <span className="text-gray-400">(Author)</span>
+//         </span>
+//       </Link>
 
-  //       {playlistData?.collaborators?.map((data) => (
-  //         <Link
-  //           key={data._id}
-  //           to={`/viewProfile/${data.email}`}
-  //           className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-800 transition"
-  //         >
-  //           <img
-  //             src={
-  //               data.profile
-  //                 ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.profile}`
-  //                 : user
-  //             }
-  //             className="w-8 h-8 rounded-full object-cover border border-teal-400 bg-white"
-  //           />
-  //           <span className="text-sm text-gray-300">{data.name}</span>
-  //         </Link>
-  //       ))}
+//       {playlistData?.collaborators?.map((data) => (
+//         <Link
+//           key={data._id}
+//           to={`/viewProfile/${data.email}`}
+//           className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-800 transition"
+//         >
+//           <img
+//             src={
+//               data.profile
+//                 ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.profile}`
+//                 : user
+//             }
+//             className="w-8 h-8 rounded-full object-cover border border-teal-400 bg-white"
+//           />
+//           <span className="text-sm text-gray-300">{data.name}</span>
+//         </Link>
+//       ))}
 
-  //     </div>
-  //   )}
+//     </div>
+//   )}
 
-  // </div>
+// </div>
