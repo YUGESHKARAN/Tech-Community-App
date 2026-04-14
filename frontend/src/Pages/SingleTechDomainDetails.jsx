@@ -725,7 +725,7 @@ function SingleTechDomainDetails() {
 
         {/* ── MEMBERS ──────────────────────────────────────────── */}
         {(filter==="Members" || filter==="") && authors.filter((a) => a.role === "student").length > 0 && (
-          <section className="mt-4">
+          <section className="mt-10">
             <p className="text-xs text-center md:text-sm font-medium tracking-widest uppercase md:text-gray-400 text-gray-500 mb-4">
               Community Members
             </p>
