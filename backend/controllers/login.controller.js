@@ -56,7 +56,7 @@ const verifyUser =  async (req,res) => {
         }
 
         // const token = jwt.sign(payload, process.env.JWT_TOKEN_ACCESS_KEY, { expiresIn: '1h' })
-        const token = jwt.sign(payload, process.env.JWT_TOKEN_ACCESS_KEY)
+        const token = jwt.sign(payload, process.env.JWT_TOKEN_ACCESS_KEY, {expiresIn:"1d"})
         // const token = null
         res.status(200).json({message:"Login Successfull",token,author:payload}) ;
 

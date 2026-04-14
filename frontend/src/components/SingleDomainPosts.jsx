@@ -154,9 +154,9 @@ const filteredPosts = useMemo(() => {
       ));
     };
   console.log("domain posts---", posts)
-  console.log("domain postCount---", postCount)
+  // console.log("domain postCount---", postCount)
   return (
-     <div className="relative min-h-screen md:py-8">
+     <div className="relative min-h-screen">
 
     
       {/* Search */}
@@ -184,7 +184,7 @@ const filteredPosts = useMemo(() => {
               className="bg-[#0f172a] overflow-hidden shadow-2xl transition-transform duration-500 md:mb-4"
             >
               <div className="flex items-center gap-3 px-4 py-3">
-                <Link to={`/viewProfile/${data.authoremail}`}>
+                <Link to={`/viewProfile/${data.authorEmail}`}>
                   <img
                     src={
                       data.profile
@@ -202,8 +202,8 @@ const filteredPosts = useMemo(() => {
               </div>
 
               <Link
-                to={`/viewpage/${data.authoremail}/${data._id}`}
-                onClick={() => postViews(data.authoremail, data._id)}
+                to={`/viewpage/${data.authorEmail}/${data._id}`}
+                onClick={() => postViews(data.authorEmail, data._id)}
                 className="block"
               >
                 <img
@@ -229,7 +229,7 @@ const filteredPosts = useMemo(() => {
               <div className="flex items-center justify-between px-4 pb-7">
                 <div className="flex items-center gap-3 text-gray-400">
                   <button
-                    onClick={() => postLikes(data.authoremail, data._id)}
+                    onClick={() => postLikes(data.authorEmail, data._id)}
                     className="flex items-center gap-1 text-teal-500"
                   >
                     {(data.likes || []).includes(email) ? (
@@ -241,15 +241,15 @@ const filteredPosts = useMemo(() => {
                   </button>
 
                   <button
-                    onClick={() => sharePost(data.title, data.authoremail, data._id)}
+                    onClick={() => sharePost(data.title, data.authorEmail, data._id)}
                     className="text-teal-500"
                   >
                     <IoShareSocial className="text-xs" />
                   </button>
 
                   <Link
-                    to={`/viewpage/${data.authoremail}/${data._id}`}
-                    onClick={() => postViews(data.authoremail, data._id)}
+                    to={`/viewpage/${data.authorEmail}/${data._id}`}
+                    onClick={() => postViews(data.authorEmail, data._id)}
                     className="flex items-center gap-1 text-xs text-gray-500"
                   >
                     <span className="text-xs">{data.views.length}</span> views

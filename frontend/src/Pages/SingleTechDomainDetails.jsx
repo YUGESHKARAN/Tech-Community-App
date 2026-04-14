@@ -39,6 +39,7 @@ function SingleTechDomainDetails() {
   const [followAuthorLoaderId, setFollowAuthorLoaderId] = useState(null);
   const fetchingRef = useRef(false);
   const { communities, loading: statsLoader } = useGetCommunityAnalytics();
+  const [filter, setFilter] = useState("")
 
   const authorsDetails = async () => {
     if (fetchingRef.current || loading || !hasMore) return;
@@ -558,8 +559,9 @@ function SingleTechDomainDetails() {
                 </span> */}
 
                 <span
-                  className={`text-xl font-medium text-center tracking-tight ${label === "Posts" ? "text-emerald-400" : "text-white"}`}
-                  onClick={()=>{setShowPosts(label === "Posts" ? true : false) }}
+                  className={`text-xl cursor-pointer font-medium text-center tracking-tight text-white`}
+                  // onClick={()=>{setShowPosts(label === "Posts" ? true : false) }}
+                  onClick={()=>{setFilter(label)}}
                 >
                   {/* {label === "Posts" ? <Link to={`/community/posts/${encodeURIComponent(decodedCategory)}`}>{value}</Link> : value} */}
                   {value}
@@ -572,9 +574,11 @@ function SingleTechDomainDetails() {
       </div>
 
       {/* ── MAIN CONTENT ───────────────────────────────────────── */}
-    {!showPosts?  <main className="w-full mx-auto px-4 md:px-10 pb-16">
+    {filter!=='Posts'? 
+    
+    <main className="w-full mx-auto px-4 md:px-10 pb-16">
         {/* ── COORDINATORS ─────────────────────────────────────── */}
-        {authors.filter((a) => a.role === "coordinator").length > 0 && (
+        {(filter==="Coordinators" || filter==="") && authors.filter((a) => a.role === "coordinator").length > 0 && (
           <section className="mt-10">
             <p className="text-xs text-center md:text-sm font-medium tracking-widest uppercase md:text-gray-400 text-gray-500 mb-4">
               Community Coordinators
@@ -703,7 +707,7 @@ function SingleTechDomainDetails() {
         )}
 
         {/* Coordinator skeleton */}
-        {loading &&
+        {loading && (filter==="Coordinators" || filter==="") &&
           authors.filter((a) => a.role === "coordinator").length === 0 && (
             <section className="mt-10">
               <p className="text-xs text-center md:text-sm font-medium tracking-widest uppercase md:text-gray-400 text-gray-500 mb-4">
@@ -714,13 +718,13 @@ function SingleTechDomainDetails() {
           )}
 
         {/* ── DIVIDER ────────────────────────────────────────────── */}
-        {authors.filter((a) => a.role === "coordinator").length > 0 &&
+        {authors.filter((a) => a.role === "coordinator").length > 0 && filter==="" &&
           authors.filter((a) => a.role === "student").length > 0 && (
             <hr className="border-white/5 mt-10" />
           )}
 
         {/* ── MEMBERS ──────────────────────────────────────────── */}
-        {authors.filter((a) => a.role === "student").length > 0 && (
+        {(filter==="Members" || filter==="") && authors.filter((a) => a.role === "student").length > 0 && (
           <section className="mt-4">
             <p className="text-xs text-center md:text-sm font-medium tracking-widest uppercase md:text-gray-400 text-gray-500 mb-4">
               Community Members
