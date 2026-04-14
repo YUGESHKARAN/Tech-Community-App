@@ -36,16 +36,13 @@ const s3 = new S3Client({
 //   }
 // };
 
-
-
-
 // const getAllTutorPlaylist = async (req, res) => {
 //   try {
 //     const page = parseInt(req.query.page) || 1;
 //     const limit = parseInt(req.query.limit) || 10;
 
 //     const skip = (page - 1) * limit;
-     
+
 //     console.log("")
 //     const tutorPlaylist = await TutorPlayList.find({})
 //       .skip(skip)
@@ -72,9 +69,7 @@ const getAllTutorPlaylist = async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
-    const tutorPlaylist = await TutorPlayList.find({})
-      .skip(skip)
-      .limit(limit);
+    const tutorPlaylist = await TutorPlayList.find({}).skip(skip).limit(limit);
 
     const count = await TutorPlayList.countDocuments();
 
@@ -83,7 +78,7 @@ const getAllTutorPlaylist = async (req, res) => {
     res.status(200).json({
       message: "all users playlist",
       data: tutorPlaylist,
-      count
+      count,
     });
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -92,38 +87,35 @@ const getAllTutorPlaylist = async (req, res) => {
 
 const getRecommendedTutorPlaylist = async (req, res) => {
   try {
-    const {email} = req.params ;
+    const { email } = req.params;
 
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
-    const currentAuthor  = Author.findOne({ email: { $eq: email }})
-    if (!currentAuthor){
-      return res.status(404).json({"message":"author not found"}) ;
+    const currentAuthor = Author.findOne({ email: { $eq: email } });
+    if (!currentAuthor) {
+      return res.status(404).json({ message: "author not found" });
     }
 
     const authorCommunity = currentAuthor.community || [];
     const authorFollowers = currentAuthor.followers || [];
 
-    const authorFollowersSet = new Set(authorFollowers)
+    const authorFollowersSet = new Set(authorFollowers);
 
-    const tutorPlaylist = await TutorPlayList.find({})
-      .skip(skip)
-      .limit(limit);
+    const tutorPlaylist = await TutorPlayList.find({}).skip(skip).limit(limit);
 
-    const priorityPlaylist = []
-    const othersPlaylist = []
+    const priorityPlaylist = [];
+    const othersPlaylist = [];
 
-    for (const playlist of tutorPlaylist){
+    for (const playlist of tutorPlaylist) {
       const inFollowing = authorFollowersSet.has(playlist.email);
-      const inCommunity = authorCommunity.includes(playlist.domain); 
+      const inCommunity = authorCommunity.includes(playlist.domain);
 
-      if (inFollowing || inCommunity){
-        priorityPlaylist.push(playlist)
-      }
-      else{
-        othersPlaylist.push(playlist)
+      if (inFollowing || inCommunity) {
+        priorityPlaylist.push(playlist);
+      } else {
+        othersPlaylist.push(playlist);
       }
     }
 
@@ -135,13 +127,11 @@ const getRecommendedTutorPlaylist = async (req, res) => {
       }
       return a;
     };
-   
-    const recommendedPart = shuffle(priorityPlaylist)
-    const remainingPart = shuffle(othersPlaylist)
 
-    const finalPlaylist = [...recommendedPart, ...remainingPart]
-    
-    
+    const recommendedPart = shuffle(priorityPlaylist);
+    const remainingPart = shuffle(othersPlaylist);
+
+    const finalPlaylist = [...recommendedPart, ...remainingPart];
 
     const count = await TutorPlayList.countDocuments();
 
@@ -151,15 +141,12 @@ const getRecommendedTutorPlaylist = async (req, res) => {
     res.status(200).json({
       message: "recommended playlist",
       data: finalPlaylist,
-      count
+      count,
     });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
-
-
-
 
 // const getPlaylistByEmail = async (req, res) => {
 //   try {
@@ -179,7 +166,6 @@ const getRecommendedTutorPlaylist = async (req, res) => {
 //   }
 // };
 
-
 const getPlaylistByEmail = async (req, res) => {
   try {
     const { email } = req.params;
@@ -189,51 +175,56 @@ const getPlaylistByEmail = async (req, res) => {
     // console.log(`playlist page ${page} limit ${limit}`);
     if (!email) return res.status(400).json({ message: "email required" });
 
-    const tutorPlayList = await TutorPlayList.find({ email }).skip(skip).limit(limit);
+    const tutorPlayList = await TutorPlayList.find({ email })
+      .skip(skip)
+      .limit(limit);
 
     // if (!tutorPlayList || tutorPlayList.length == 0) {
     //   return res.status(204).json({ message: "Playlist is empty" });
     // }
     const playlistCountByEmail = tutorPlayList.length;
 
-    res.status(200).json({message:"individual user playlist", data: tutorPlayList, count:playlistCountByEmail });
+    res
+      .status(200)
+      .json({
+        message: "individual user playlist",
+        data: tutorPlayList,
+        count: playlistCountByEmail,
+      });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
 
-
-const getPlaylistById = async(req,res)=>{
-
-  try{
-
-    const {playlistId} = req.params
-    const playList = await TutorPlayList.findOne({_id:playlistId})
+const getPlaylistById = async (req, res) => {
+  try {
+    const { playlistId } = req.params;
+    const playList = await TutorPlayList.findOne({ _id: playlistId });
     const email = playList.email;
     const domain = playList.domain;
 
-    const author = await Author.findOne({ email: { $eq: email }});
+    const author = await Author.findOne({ email: { $eq: email } });
 
-    const playlistPostIds = (playList.post_ids || []).map(id=> id.toString());
-    
+    const playlistPostIds = (playList.post_ids || []).map((id) =>
+      id.toString(),
+    );
+
     // build a map of author's posts (filtered by domain) for O(1) lookup
     const postsById = {};
-    (author.posts || []).forEach(post => {
+    (author.posts || []).forEach((post) => {
       if (post.category === domain) {
         postsById[String(post._id)] = post;
       }
     });
 
     // preserve order from playList.post_ids
-    const posts = playlistPostIds.map(id => postsById[id]).filter(Boolean);
-    
-    res.status(200).json({data:playList, posts:posts})
+    const posts = playlistPostIds.map((id) => postsById[id]).filter(Boolean);
 
+    res.status(200).json({ data: playList, posts: posts });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
-  catch(err){
-    res.status(500).json({message:err.message})
-  }
-}
+};
 
 const addTutorPlayList = async (req, res) => {
   try {
@@ -243,7 +234,7 @@ const addTutorPlayList = async (req, res) => {
       return res.status(400).json({ message: "playlist data required" });
     }
 
-    const user = await Author.findOne({ email: { $eq: email }});
+    const user = await Author.findOne({ email: { $eq: email } });
     // console.log("user",user);
 
     if (!user) {
@@ -256,8 +247,8 @@ const addTutorPlayList = async (req, res) => {
     const collaborators = [];
 
     collaboratorsEmail = Array.isArray(collaboratorsEmail)
-    ? collaboratorsEmail
-    : [collaboratorsEmail];
+      ? collaboratorsEmail
+      : [collaboratorsEmail];
 
     if (collaboratorsEmail && collaboratorsEmail.length > 0) {
       for (const collabEmail of collaboratorsEmail) {
@@ -287,7 +278,6 @@ const addTutorPlayList = async (req, res) => {
       : "";
 
     if (req.file) {
-  
       // S3 Integration
       const params = {
         Bucket: bucketName,
@@ -316,7 +306,7 @@ const addTutorPlayList = async (req, res) => {
       .status(201)
       .json({ message: "Playlist created successfully", data: tutorPlaylist });
   } catch (err) {
-    console.log("error",err.message)
+    console.log("error", err.message);
     res.status(500).json({ message: err.message });
   }
 };
@@ -331,11 +321,9 @@ const updateTutorPlayList = async (req, res) => {
     const playList = await TutorPlayList.findById(id);
     // console.log("Found playlist:", playList);
 
-    if (playList===null) {
-
+    if (playList === null) {
       return res.status(404).json({ message: "Playlist not found" });
     }
-
 
     if (title) {
       playList.title = title;
@@ -344,14 +332,13 @@ const updateTutorPlayList = async (req, res) => {
       playList.domain = domain;
     }
 
-     const tutorPlaylistFolder = "TutorPlaylist/";
+    const tutorPlaylistFolder = "TutorPlaylist/";
 
     const uniqueFilename = req.file
       ? `${tutorPlaylistFolder}${uuidv4()}-${req.file.originalname}`
       : "";
 
     if (req.file) {
-  
       // S3 Integration
       const params = {
         Bucket: bucketName,
@@ -384,10 +371,9 @@ const updateTutorPlayList = async (req, res) => {
       playList.thumbnail = uniqueFilename;
     }
 
-
     const collaborators = [];
 
- // Normalize collaboratorsEmail to an array (handles single string input)
+    // Normalize collaboratorsEmail to an array (handles single string input)
     let collaboratorsEmailsArr = collaboratorsEmail;
     if (collaboratorsEmailsArr && !Array.isArray(collaboratorsEmailsArr)) {
       collaboratorsEmailsArr = [collaboratorsEmailsArr];
@@ -414,7 +400,6 @@ const updateTutorPlayList = async (req, res) => {
 
     if (postIds !== undefined) playList.post_ids = postIds;
 
-
     // playList.post_ids = postIds;
 
     playList.collaborators = collaborators;
@@ -428,43 +413,36 @@ const updateTutorPlayList = async (req, res) => {
   }
 };
 
+const deleteTutorPlayList = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const tutorPlayListData = await TutorPlayList.findById(id);
 
-const deleteTutorPlayList = async(req,res)=>{
-    try{
-
-        const {id} = req.params;
-        const tutorPlayListData = await TutorPlayList.findById(id);
-
-        if(!tutorPlayListData){
-            return res.status(404).json({message:"Playlist not found"});
-        }
-
-        if(tutorPlayListData.thumbnail){
-            try{
-                const deleteParams = {
-                    Bucket: bucketName,
-                    Key: tutorPlayListData.thumbnail,   
-                };
-                const deleteCommand = new DeleteObjectCommand(deleteParams);
-                await s3.send(deleteCommand);
-            }
-            catch(err){
-                console.log("Error deleting thumbnail from S3:", err);
-            }
-        }
-        const tutorPlayList = await TutorPlayList.findByIdAndDelete(id);
-        if(!tutorPlayList){
-            return res.status(404).json({message:"Playlist not found"});
-        }   
-        res.status(200).json({message:"Playlist deleted successfully"});
-
+    if (!tutorPlayListData) {
+      return res.status(404).json({ message: "Playlist not found" });
     }
-    catch(err){
-        res.status(500).json({message:err.message});
+
+    if (tutorPlayListData.thumbnail) {
+      try {
+        const deleteParams = {
+          Bucket: bucketName,
+          Key: tutorPlayListData.thumbnail,
+        };
+        const deleteCommand = new DeleteObjectCommand(deleteParams);
+        await s3.send(deleteCommand);
+      } catch (err) {
+        console.log("Error deleting thumbnail from S3:", err);
+      }
     }
-}
-
-
+    const tutorPlayList = await TutorPlayList.findByIdAndDelete(id);
+    if (!tutorPlayList) {
+      return res.status(404).json({ message: "Playlist not found" });
+    }
+    res.status(200).json({ message: "Playlist deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
 
 const getBookmarkedPlaylists = async (req, res) => {
   try {
@@ -476,7 +454,9 @@ const getBookmarkedPlaylists = async (req, res) => {
     if (!email) return res.status(400).json({ message: "email required" });
 
     // adjust "postBookmark" to the actual field name on your Author schema if different
-    const author = await Author.findOne({ email: { $eq: email }}).select("postBookmark");
+    const author = await Author.findOne({ email: { $eq: email } }).select(
+      "postBookmark",
+    );
     if (!author) return res.status(404).json({ message: "author not found" });
 
     const playlistIds = (author.postBookmark || [])
@@ -487,10 +467,14 @@ const getBookmarkedPlaylists = async (req, res) => {
       return res.status(200).json({ message: "No playlists", playlists: [] });
     }
 
-    const playlists = await TutorPlayList.find({ _id: { $in: playlistIds } }).lean();
+    const playlists = await TutorPlayList.find({
+      _id: { $in: playlistIds },
+    }).lean();
 
     const map = new Map(playlists.map((p) => [p._id.toString(), p]));
-    const orderedPlaylists = playlistIds.map((id) => map.get(id)).filter(Boolean);
+    const orderedPlaylists = playlistIds
+      .map((id) => map.get(id))
+      .filter(Boolean);
     const paginatedPlaylists = orderedPlaylists.slice(skip, skip + limit);
 
     return res.status(200).json({
@@ -501,7 +485,9 @@ const getBookmarkedPlaylists = async (req, res) => {
     });
   } catch (err) {
     console.error("getBookmarkedPlaylists error:", err);
-    return res.status(500).json({ message: "server error", error: err.message });
+    return res
+      .status(500)
+      .json({ message: "server error", error: err.message });
   }
 };
 
@@ -519,7 +505,7 @@ const getPostsByAuthorsCategory = async (req, res) => {
     const skip = (page - 1) * limit;
 
     // ✅ Find author
-    const author = await Author.findOne({ email: { $eq: email }});
+    const author = await Author.findOne({ email: { $eq: email } });
 
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
@@ -527,7 +513,7 @@ const getPostsByAuthorsCategory = async (req, res) => {
 
     // ✅ Filter posts by category
     const filteredPosts = author.posts.filter(
-      (post) => post.category === category
+      (post) => post.category === category,
     );
 
     // ✅ Pagination
@@ -546,12 +532,11 @@ const getPostsByAuthorsCategory = async (req, res) => {
   }
 };
 
-
 const getUniqueCategoriesByAuthor = async (req, res) => {
   try {
     const { email } = req.params;
 
-    const author = await Author.findOne({ email: { $eq: email }});
+    const author = await Author.findOne({ email: { $eq: email } });
 
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
@@ -560,10 +545,8 @@ const getUniqueCategoriesByAuthor = async (req, res) => {
     // ✅ Extract unique categories
     const categories = [
       ...new Set(
-        author.posts
-          .map((post) => post.category)
-          .filter(Boolean) // remove null/undefined
-      ), 
+        author.posts.map((post) => post.category).filter(Boolean), // remove null/undefined
+      ),
     ];
 
     return res.status(200).json({
@@ -598,12 +581,12 @@ const getPostsByDomain = async (req, res) => {
     const allPosts = [];
     authors.forEach((author) => {
       const postsInDomain = (author.posts || []).filter(
-        (post) => post.category === decodedDomain
+        (post) => post.category === decodedDomain,
       );
       // Add author info to each post for context
       postsInDomain.forEach((post) => {
         allPosts.push({
-          ...post.toObject ? post.toObject() : post,
+          ...(post.toObject ? post.toObject() : post),
           authorEmail: author.email,
           authorName: author.authorname,
           profile: author.profile,
@@ -611,15 +594,26 @@ const getPostsByDomain = async (req, res) => {
       });
     });
 
+    const shuffle = (arr) => {
+      const a = arr.slice();
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    };
+
+    const allPostsRecommended = shuffle(allPosts);
+
     // ✅ Pagination
-    const paginatedPosts = allPosts.slice(skip, skip + limit);
+    const paginatedPosts = allPostsRecommended.slice(skip, skip + limit);
 
     return res.status(200).json({
       posts: paginatedPosts,
       currentPage: page,
-      totalPages: Math.ceil(allPosts.length / limit),
-      totalPosts: allPosts.length,
-      hasMore: skip + limit < allPosts.length,
+      totalPages: Math.ceil(allPostsRecommended.length / limit),
+      totalPosts: allPostsRecommended.length,
+      hasMore: skip + limit < allPostsRecommended.length,
     });
   } catch (err) {
     console.error("Error:", err.message);
@@ -638,5 +632,5 @@ module.exports = {
   getRecommendedTutorPlaylist,
   getPostsByAuthorsCategory,
   getUniqueCategoriesByAuthor,
-  getPostsByDomain
+  getPostsByDomain,
 };
