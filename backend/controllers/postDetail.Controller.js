@@ -292,8 +292,8 @@ const getRecommendedPosts = async (req, res) => {
 
         return sorted.map((post) => ({
           ...post.toObject(),
-          authorname: author.authorname,
-          authoremail: author.email,
+          authorName: author.authorname,
+          authorEmail: author.email,
           profile: author.profile || "",
           role: author.role,
           community: author.community,
@@ -386,7 +386,7 @@ const getSingleAuthorPosts = async (req, res) => {
       .flatMap((post) => ({
         ...post.toObject(),
         authorName: author.authorname,
-        authoremail: author.email,
+        authorEmail: author.email,
         profile: author.profile || "",
         role: author.role,
         community: author.community,
@@ -1114,8 +1114,8 @@ const getBookmarkedPosts = async (req, res) => {
         if (pid && postIds.includes(pid) && !postMap.has(pid)) {
           postMap.set(pid, {
             ...p.toObject(),
-            authorname: a.authorname,
-            authoremail: a.email,
+            authorName: a.authorname,
+            authorEmail: a.email,
             profile: a.profile || "",
             role: a.role,
             community: a.community,

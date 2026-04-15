@@ -25,6 +25,7 @@ import TutorPlaylistGridSkeleton from "../components/loaders/TutorPlaylistGridSk
 import Fuse from "fuse.js";
 import highlightText from "../hooks/highlightText.jsx";
 import { getItem } from "../utils/encode.js";
+import PostsComponent from "../components/PostsComponent.jsx";
 
 function BlogContainer({ activeTab, setActiveTab }) {
   const { tutorPlayList, loading:playlistLoading } = useTutorPlaylist();
@@ -257,7 +258,7 @@ function BlogContainer({ activeTab, setActiveTab }) {
 
   const fuse = useMemo(() => {
     return new Fuse(posts, {
-      keys: ["title", "description", "category", "authorname", "community"],
+      keys: ["title", "description", "category", "authorName", "community"],
       threshold: 0.3, // lower = stricter search
     });
   }, [posts]);
@@ -274,7 +275,7 @@ function BlogContainer({ activeTab, setActiveTab }) {
     //       post.title?.toLowerCase().includes(query) ||
     //       post.description?.toLowerCase().includes(query) ||
     //       post.category?.toLowerCase().includes(query) ||
-    //       post.authorname?.toLowerCase().includes(query)
+    //       post.authorName?.toLowerCase().includes(query)
     //   );
     // }
 
@@ -309,7 +310,7 @@ function BlogContainer({ activeTab, setActiveTab }) {
   //     )
   //   );
   // };
-
+// console.log("posts", posts)
   return (
     <div className="min-h-screen relative  ">
       <div className="flex-col w-full md:gap-16 relative flex-wrap justify-center h-auto mx-auto">
@@ -394,6 +395,7 @@ function BlogContainer({ activeTab, setActiveTab }) {
                   Recommended Posts
                 </h2> */}
 
+                <PostsComponent filteredPosts={filteredPosts} posts={posts} setPosts={setPosts} loading={loading} hasMore={hasMore} debouncedSearch={debouncedSearch}  postCategory={postCategory} setPostCategory={setPostCategory}/>
               <div className="mx-auto grid grid-cols-1 md:px-2 w-full  mx-auto  md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-10 mt-5 md:mt-10 h-auto">
                 {filteredPosts?.map((data, index) => (
                   <article
@@ -408,7 +410,7 @@ function BlogContainer({ activeTab, setActiveTab }) {
                     "
                   >
                     <div className="flex items-center gap-3 px-4 py-3">
-                      <Link to={`/viewProfile/${data.authoremail}`}>
+                      <Link to={`/viewProfile/${data.authorEmail}`}>
                         <img
                           src={
                             data.profile
@@ -416,14 +418,14 @@ function BlogContainer({ activeTab, setActiveTab }) {
                               : user
                           }
                           className="w-9 h-9 rounded-full bg-gray-700 object-cover border border-gray-900"
-                          alt={data.authorname}
+                          alt={data.authorName}
                         />
                       </Link>
 
                       <div className="leading-tight">
                         <p className="text-sm font-semibold text-white">
-                          {/* {data.authorname} */}
-                          {highlightText(data.authorname, debouncedSearch)}
+                          {/* {data.authorName} */}
+                          {highlightText(data.authorName, debouncedSearch)}
                         </p>
                         <p className="text-xs text-gray-400">
                           {getTimeAgo(data.timestamp)}
@@ -432,8 +434,8 @@ function BlogContainer({ activeTab, setActiveTab }) {
                     </div>
 
                     <Link
-                      to={`/viewpage/${data.authoremail}/${data._id}`}
-                      onClick={() => postViews(data.authoremail, data._id)}
+                      to={`/viewpage/${data.authorEmail}/${data._id}`}
+                      onClick={() => postViews(data.authorEmail, data._id)}
                       className="block "
                     >
                       <img
@@ -462,9 +464,9 @@ function BlogContainer({ activeTab, setActiveTab }) {
                     <div className="flex items-center justify-between px-4 pb-7 ">
                       <div className="flex items-center gap-3 text-gray-400">
                         {/* <Link
-                            to={`/viewpage/${data.authoremail}/${data._id}`}
+                            to={`/viewpage/${data.authorEmail}/${data._id}`}
                             onClick={() =>
-                              postViews(data.authoremail, data._id)
+                              postViews(data.authorEmail, data._id)
                             }
                             className="flex items-center gap-1 text-xs text-gray-500"
                           >
@@ -473,7 +475,7 @@ function BlogContainer({ activeTab, setActiveTab }) {
                           </Link> */}
 
                         <button
-                          onClick={() => postLikes(data.authoremail, data._id)}
+                          onClick={() => postLikes(data.authorEmail, data._id)}
                           className="flex items-center gap-1 text-teal-500"
                         >
                           {(data.likes || []).includes(email) ? (
@@ -488,7 +490,7 @@ function BlogContainer({ activeTab, setActiveTab }) {
 
                         <button
                           onClick={() =>
-                            sharePost(data.title, data.authoremail, data._id)
+                            sharePost(data.title, data.authorEmail, data._id)
                           }
                           className="text-teal-500"
                         >
@@ -508,8 +510,8 @@ function BlogContainer({ activeTab, setActiveTab }) {
                         </button>
 
                         <Link
-                          to={`/viewpage/${data.authoremail}/${data._id}`}
-                          onClick={() => postViews(data.authoremail, data._id)}
+                          to={`/viewpage/${data.authorEmail}/${data._id}`}
+                          onClick={() => postViews(data.authorEmail, data._id)}
                           className="flex items-center gap-1 text-xs text-gray-500"
                         >
                           <span className="text-xs">{data.views.length}</span>{" "}
@@ -595,7 +597,7 @@ function BlogContainer({ activeTab, setActiveTab }) {
           "
                     >
                       <div className="flex items-center gap-3 px-4 py-3">
-                        <Link to={`/viewProfile/${data.authoremail}`}>
+                        <Link to={`/viewProfile/${data.authorEmail}`}>
                           <img
                             src={
                               data.profile
@@ -603,13 +605,13 @@ function BlogContainer({ activeTab, setActiveTab }) {
                                 : user
                             }
                             className="w-9 h-9 rounded-full object-cover border border-gray-700"
-                            alt={data.authorname}
+                            alt={data.authorName}
                           />
                         </Link>
 
                         <div className="leading-tight">
                           <p className="text-sm font-semibold text-white">
-                            {data.authorname}
+                            {data.authorName}
                           </p>
                           <p className="text-xs text-gray-400">
                             {getTimeAgo(data.timestamp)}
@@ -618,8 +620,8 @@ function BlogContainer({ activeTab, setActiveTab }) {
                       </div>
 
                       <Link
-                        to={`/viewpage/${data.authoremail}/${data._id}`}
-                        onClick={() => postViews(data.authoremail, data._id)}
+                        to={`/viewpage/${data.authorEmail}/${data._id}`}
+                        onClick={() => postViews(data.authorEmail, data._id)}
                         className="block"
                       >
                         <img
@@ -646,9 +648,9 @@ function BlogContainer({ activeTab, setActiveTab }) {
                       <div className="flex items-center justify-between px-4 py-3 border-t border-gray-800">
                         <div className="flex items-center gap-4 text-gray-400">
                           <Link
-                            to={`/viewpage/${data.authoremail}/${data._id}`}
+                            to={`/viewpage/${data.authorEmail}/${data._id}`}
                             onClick={() =>
-                              postViews(data.authoremail, data._id)
+                              postViews(data.authorEmail, data._id)
                             }
                             className="flex items-center gap-1 hover:text-blue-400"
                           >
@@ -658,7 +660,7 @@ function BlogContainer({ activeTab, setActiveTab }) {
 
                           <button
                             onClick={(e) =>
-                              postLikes(data.authoremail, data._id, e)
+                              postLikes(data.authorEmail, data._id, e)
                             }
                             className="flex items-center gap-1 hover:text-blue-400"
                           >
@@ -674,7 +676,7 @@ function BlogContainer({ activeTab, setActiveTab }) {
 
                           <button
                             onClick={() =>
-                              sharePost(data.title, data.authoremail, data._id)
+                              sharePost(data.title, data.authorEmail, data._id)
                             }
                             className="hover:text-blue-400"
                           >

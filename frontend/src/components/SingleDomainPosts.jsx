@@ -16,6 +16,8 @@ import { Link } from "react-router-dom";
 import user from "../images/user.png";
 import axiosInstance from "../instances/Axiosinstances";
 import { MdGroups } from "react-icons/md";
+import PostsComponent from "./PostsComponent";
+import { use } from "react";
 
 function SingleDomainPosts({category}) {
 //   const { category } = useParams();
@@ -23,6 +25,7 @@ function SingleDomainPosts({category}) {
   const { posts, loading, hasMore, postCount, setPosts } = useGetPostsByCommunity(category);
   const [searchTerm, setSearchTerm] = useState("");
   const email = getItem("email")
+  const [postCategory, setPostCategory] = useState("")
 
    const postViews = async (authorEmail, postId) => {
     try {
@@ -153,7 +156,7 @@ const filteredPosts = useMemo(() => {
         </React.Fragment>
       ));
     };
-  console.log("domain posts---", posts)
+  // console.log("domain posts---", posts)
   // console.log("domain postCount---", postCount)
   return (
      <div className="relative min-h-screen">
@@ -177,7 +180,7 @@ const filteredPosts = useMemo(() => {
 
       {/* Posts Grid */}
       <div className="flex relative w-full mx-auto md:px-10 pb-16  flex-wrap justify-center h-auto mx-auto">
-        <div className="md:w-full grid grid-cols-1 w-full mx-auto md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-10 mt-2 h-auto">
+        {/* <div className="md:w-full grid grid-cols-1 w-full mx-auto md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-10 mt-2 h-auto">
           {filteredPosts?.map((data) => (
             <article
               key={data._id}
@@ -278,7 +281,9 @@ const filteredPosts = useMemo(() => {
               No more posts
             </p>
           )}
-        </div>
+        </div> */}
+
+        <PostsComponent filteredPosts={filteredPosts} posts={posts} loading={loading} hasMore={hasMore} setPosts={setPosts} debouncedSearch={debouncedSearch}  setPostCategory={setPostCategory}/>
       </div>
     </div>
   )

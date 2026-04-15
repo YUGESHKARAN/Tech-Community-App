@@ -365,7 +365,7 @@ function YourPost() {
                 "
               >
                 <div className="flex items-center gap-3 px-4 py-3">
-                  <Link to={`/viewProfile/${data.authoremail}`}>
+                  <Link to={`/viewProfile/${data.authorEmail}`}>
                     <img
                       src={
                         data.profile
@@ -388,8 +388,8 @@ function YourPost() {
                 </div>
 
                 {/* <Link
-                  to={`/viewpage/${data.authoremail}/${data._id}`}
-                  onClick={() => postViews(data.authoremail, data._id)}
+                  to={`/viewpage/${data.authorEmail}/${data._id}`}
+                  onClick={() => postViews(data.authorEmail, data._id)}
                   className="block"
                 >
                   <img
@@ -407,13 +407,13 @@ function YourPost() {
                 </Link> */}
 
                 <div
-                  // to={`/viewpage/${data.authoremail}/${data._id}`}
-                  // onClick={() => postViews(data.authoremail, data._id)}
+                  // to={`/viewpage/${data.authorEmail}/${data._id}`}
+                  // onClick={() => postViews(data.authorEmail, data._id)}
                   className="block relative"
                 >
                   <Link
-                    to={`/viewpage/${data.authoremail}/${data._id}`}
-                    onClick={() => postViews(data.authoremail, data._id)}
+                    to={`/viewpage/${data.authorEmail}/${data._id}`}
+                    onClick={() => postViews(data.authorEmail, data._id)}
                   >
                     <img
                       src={
@@ -455,9 +455,9 @@ function YourPost() {
                 <div className="flex items-center justify-between px-4 pb-7 ">
                   <div className="flex items-center gap-3 text-gray-400">
                     {/* <Link
-                                            to={`/viewpage/${data.authoremail}/${data._id}`}
+                                            to={`/viewpage/${data.authorEmail}/${data._id}`}
                                             onClick={() =>
-                                              postViews(data.authoremail, data._id)
+                                              postViews(data.authorEmail, data._id)
                                             }
                                             className="flex items-center gap-1 text-xs text-gray-500"
                                           >
@@ -466,7 +466,7 @@ function YourPost() {
                                           </Link> */}
 
                     <button
-                      onClick={() => postLikes(data.authoremail, data._id)}
+                      onClick={() => postLikes(data.authorEmail, data._id)}
                       className="flex items-center gap-1 text-teal-500"
                     >
                       {(data.likes || []).includes(email) ? (
@@ -481,14 +481,14 @@ function YourPost() {
 
                     <button
                       onClick={() =>
-                        sharePost(data.title, data.authoremail, data._id)
+                        sharePost(data.title, data.authorEmail, data._id)
                       }
                       className="text-teal-500"
                     >
                       <IoShareSocial className="text-xs" />
                     </button>
 
-                    {data.authoremail === email && (
+                    {data.authorEmail === email && (
                       <Link
                         to={`/EditPost/${data._id}`}
                         className="text-teal-400 hover:text-teal-300"
@@ -497,8 +497,8 @@ function YourPost() {
                       </Link>
                     )}
                     <Link
-                      to={`/viewpage/${data.authoremail}/${data._id}`}
-                      onClick={() => postViews(data.authoremail, data._id)}
+                      to={`/viewpage/${data.authorEmail}/${data._id}`}
+                      onClick={() => postViews(data.authorEmail, data._id)}
                       className="flex items-center gap-1 text-xs text-gray-500"
                     >
                       <span className="text-xs">{data.views.length}</span> views

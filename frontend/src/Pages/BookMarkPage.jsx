@@ -32,7 +32,7 @@ function BookMarkPage() {
   const [posts, setPosts] = useState([]);
   const [postCategory, setPostCategory] = useState("");
   const [loader, setLoader] = useState(false);
-  const [authorName, setAuthorName] = useState("");
+  const [authorName, setauthorName] = useState("");
   const [authorProfile, setAuthorProfile] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
   const [bookMarkId, setBookMarkId] = useState([]);
@@ -51,7 +51,7 @@ function BookMarkPage() {
   //     if (response.status == 200) {
   //       setPosts(response.data.posts);
   //       setBookMarkId(response.data.postIds);
-  //       setAuthorName(response.data.authorName);
+  //       setauthorName(response.data.authorName);
   //       setAuthorProfile(response.data.profile);
   //     }
   //   } catch (err) {
@@ -98,7 +98,7 @@ function BookMarkPage() {
 
         // Maintain exact same behavior for metadata
         setBookMarkId((prev) => [...prev, ...response.data.postIds]);
-        setAuthorName(response.data.authorName);
+        setauthorName(response.data.authorName);
         setAuthorProfile(response.data.profile);
 
         setPage((prev) => prev + 1);
@@ -424,7 +424,7 @@ function BookMarkPage() {
                     "
                     >
                       <div className="flex items-center gap-3 px-4 py-3">
-                        <Link to={`/viewProfile/${data.authoremail}`}>
+                        <Link to={`/viewProfile/${data.authorEmail}`}>
                           <img
                             src={
                               data.profile
@@ -432,13 +432,13 @@ function BookMarkPage() {
                                 : user
                             }
                             className="w-9 h-9 rounded-full bg-gray-700 object-cover border border-gray-900"
-                            alt={data.authorname}
+                            alt={data.authorName}
                           />
                         </Link>
 
                         <div className="leading-tight">
                           <p className="text-sm font-semibold text-white">
-                            {data.authorname}
+                            {data.authorName}
                           </p>
                           <p className="text-xs text-gray-400">
                             {getTimeAgo(data.timestamp)}
@@ -447,8 +447,8 @@ function BookMarkPage() {
                       </div>
 
                       <Link
-                        to={`/viewpage/${data.authoremail}/${data._id}`}
-                        onClick={() => postViews(data.authoremail, data._id)}
+                        to={`/viewpage/${data.authorEmail}/${data._id}`}
+                        onClick={() => postViews(data.authorEmail, data._id)}
                         className="block"
                       >
                         <img
@@ -479,7 +479,7 @@ function BookMarkPage() {
 
                           <button
                             onClick={() =>
-                              postLikes(data.authoremail, data._id)
+                              postLikes(data.authorEmail, data._id)
                             }
                             className="flex items-center gap-1 text-teal-500"
                           >
@@ -495,7 +495,7 @@ function BookMarkPage() {
 
                           <button
                             onClick={() =>
-                              sharePost(data.title, data.authoremail, data._id)
+                              sharePost(data.title, data.authorEmail, data._id)
                             }
                             className="text-teal-500"
                           >
@@ -514,9 +514,9 @@ function BookMarkPage() {
                             )}
                           </button>
                           <Link
-                            to={`/viewpage/${data.authoremail}/${data._id}`}
+                            to={`/viewpage/${data.authorEmail}/${data._id}`}
                             onClick={() =>
-                              postViews(data.authoremail, data._id)
+                              postViews(data.authorEmail, data._id)
                             }
                             className="flex items-center gap-1 text-xs text-gray-500"
                           >

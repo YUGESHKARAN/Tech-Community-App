@@ -22,6 +22,7 @@ import PillLoader from "../components/loaders/PillSkeleton";
 import Fuse from "fuse.js";
 import highlightText from "../hooks/highlightText";
 import { getItem } from "../utils/encode";
+import PostsComponent from "../components/PostsComponent";
 function SingleAuthorPosts() {
   const [searchTerm, setSearchTerm] = useState("");
   const [posts, setPosts] = useState([]);
@@ -254,6 +255,8 @@ const filteredPosts = useMemo(() => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // console.log("posts", posts)
+
   return (
     <div className="w-full reltive min-h-screen  bg-gray-900  h-auto reltive  ">
       <NavBar />
@@ -374,10 +377,8 @@ const filteredPosts = useMemo(() => {
         </div>
 
         <div className="flex relative  w-full md:mx-2 flex-wrap justify-center h-auto mx-auto">
-          
-          
 
-          <div className="md:w-full grid grid-cols-1 w-full mx-auto md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-10 mt-7 md:mt-10 h-auto">
+          {/* <div className="md:w-full grid grid-cols-1 w-full mx-auto md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-10 mt-7 md:mt-10 h-auto">
             {filteredPosts?.map((data, index) => (
               
 
@@ -435,7 +436,7 @@ const filteredPosts = useMemo(() => {
 
                 <div className="px-4 py-4 space-y-2">
                   <h3 className="text-base font-semibold text-white line-clamp-1">
-                    {/* {data.title} */}
+              
                      {highlightText(data.title, debouncedSearch)}
                   </h3>
 
@@ -446,16 +447,7 @@ const filteredPosts = useMemo(() => {
 
                 <div className="flex items-center justify-between px-4 pb-7 ">
                   <div className="flex items-center gap-3 text-gray-400">
-                    {/* <Link
-                                            to={`/viewpage/${data.authoremail}/${data._id}`}
-                                            onClick={() =>
-                                              postViews(data.authoremail, data._id)
-                                            }
-                                            className="flex items-center gap-1 text-xs text-gray-500"
-                                          >
-                                       
-                                            <span className="text-xs">{data.views.length}</span> views
-                                          </Link> */}
+
 
                     <button
                       onClick={(e) => postLikes(data.authoremail, data._id)}
@@ -480,17 +472,7 @@ const filteredPosts = useMemo(() => {
                       <IoShareSocial className="text-xs" />
                     </button>
 
-                    {/* <button
-                                            onClick={() => addBookMarkPostId(data._id)}
-                                            className="text-teal-500"
-                                          >
-                                            {Array.isArray(bookMarkId) &&
-                                            bookMarkId.includes(data._id) ? (
-                                              <PiBookmarksSimpleFill className="text-teal-600 text-xs" />
-                                            ) : (
-                                              <PiBookmarksSimpleLight />
-                                            )}
-                                          </button> */}
+          
                     <Link
                       to={`/viewpage/${data.authoremail}/${data._id}`}
                       onClick={() => postViews(data.authoremail, data._id)}
@@ -514,22 +496,14 @@ const filteredPosts = useMemo(() => {
                 </div>
               </article>
             ))}
-            {/* {loading && <p className="text-center col-span-full py-4">Loading...</p>}
-            
-              
-                    {!hasMore && (
-                      <p className="text-center col-span-full py-4 text-gray-500">No more posts</p>
-                    )} */}
+     
 
             {!posts.length > 0 && loader && <BlogSkeleton />}
             {posts.length > 0 && loader && (
               <div className="col-span-full flex justify-center">
               <div className="relative flex items-center justify-center">
-                {/* Outer Oval Ring */}
+                
                 <div className="w-7 h-7 border-2 border-neutral-700 border-t-emerald-400 rounded-full animate-spin" />
-
-                {/* Inner Glow Pulse */}
-                {/* <div className="absolute w-10 h-10 md:w-12 md:h-12 bg-emerald-500/20 rounded-full blur-md animate-pulse" /> */}
               </div>
             </div>
             )}
@@ -539,7 +513,9 @@ const filteredPosts = useMemo(() => {
                 No more posts
               </p>
             )}
-          </div>
+          </div> */}
+
+           <PostsComponent filteredPosts={filteredPosts} posts={posts} loading={loader} hasMore={hasMore} debouncedSearch={debouncedSearch}  setPostCategory={setPostCategory} setPosts={setPosts}/>
         </div>
       </div>
       <Footer />
