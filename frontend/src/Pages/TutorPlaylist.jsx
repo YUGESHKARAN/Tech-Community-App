@@ -419,7 +419,7 @@ function TutorPlaylist() {
                 file:cursor-pointer"
               />
               {!previewThumbnail && (
-                <div className="w-80 h-40 mt-3 rounded-xl flex items-center justify-center bg-gray-700">
+                <div className="md:max-w-80 w-80 h-40 mt-3 rounded-xl flex items-center justify-center bg-gray-700">
                   <p className="text-gray-400 text-xs">No Thumbnail</p>
                 </div>
               )}
@@ -441,7 +441,7 @@ function TutorPlaylist() {
                   <img
                     src={previewThumbnail}
                     alt="Preview"
-                    className="w-80 h-40   object-cover rounded-xl border border-gray-700"
+                    className="md:max-w-80 w-full h-40   object-cover rounded-xl border border-gray-700"
                     // className="w-full h-48 md:h-[28vh] object-cover rounded-xl border border-gray-700"
                   />
                 </div>
@@ -472,7 +472,7 @@ function TutorPlaylist() {
           </div>} */}
 
           {posts?.length > 0 && (
-            <div className="flex flex-col px-4 gap-3">
+            <div className="flex flex-col p-2 md:p-4 gap-3">
               <div className="flex items-center justify-between gap-3">
                 {/* Left — icon + title */}
                 <div className="flex items-center gap-2.5">
@@ -496,7 +496,7 @@ function TutorPlaylist() {
                 </div>
 
                 {/* Right — count pill */}
-                <div className="flex items-center gap-1.5 bg-gray-900 border border-gray-800 rounded-full px-2.5 py-1 text-gray-300 text-xs flex-shrink-0">
+                <div className="flex  items-center gap-1.5 bg-gray-900 border border-gray-800 rounded-full px-2.5 py-1 text-gray-300 text-xs flex-shrink-0">
                   <div className="w-5 h-5 rounded-full text-emerald-400 bg-emerald-600/20 flex items-center justify-center text-[11px] font-semibold ">
                     {postIds?.length ?? 0}
                   </div>
@@ -515,7 +515,7 @@ function TutorPlaylist() {
             </div>
           )}
 
-          <div className="grid grid-cols-1 sm:grid-cols-3  md:max-h-[780px] emerald-scrollbar md:overflow-y-auto gap-3 p-4 md:gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-3  md:max-h-[780px] emerald-scrollbar md:overflow-y-auto gap-3 px-2 py-4 md:p-4 gap-3 md:gap-5">
             {posts?.map((data) => {
               const selIndex = postIds.indexOf(data._id);
               const isSelected = selIndex !== -1;
@@ -677,6 +677,322 @@ function TutorPlaylist() {
 
       <Footer />
     </div>
+
+
+//     <div className="w-full min-h-screen bg-gray-900 text-white">
+//   <NavBar />
+
+//   {/* ── HEADER ───────────────────────────── */}
+//   <div className="w-full">
+//     <div className="w-full mx-auto px-4 py-4 flex items-center justify-between">
+//       <div>
+//         <h1 className="text-2xl md:text-3xl font-semibold tracking-tight">
+//           Create Playlist
+//         </h1>
+//         <p className="text-xs text-gray-500 mt-1">
+//           Organize and publish domain-specific content
+//         </p>
+//       </div>
+//     </div>
+//   </div>
+
+//   {/* ── MAIN LAYOUT ─────────────────────── */}
+//   <form
+//     onSubmit={hanldeSubmit}
+//     className="w-full mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-6"
+//   >
+
+//     {/* ═════════ LEFT SIDEBAR ═════════ */}
+//     {/* ═════════ LEFT SIDEBAR ═════════ */}
+// <div className="lg:sticky top-6 h-fit">
+
+//   <div className="bg-gray-900 border border-white/[0.05] rounded-2xl p-5 space-y-6">
+
+//     {/* Header */}
+//     <div className="pb-3 border-b border-white/[0.05]">
+//       <h2 className="text-sm font-semibold">Playlist Setup</h2>
+//       <p className="text-[11px] text-gray-500 mt-1">
+//         Basic configuration
+//       </p>
+//     </div>
+
+//     {/* ── GUIDELINES (NEW) ── */}
+//     <div className="
+//       rounded-xl
+//       border border-emerald-500/20
+//       bg-gradient-to-br from-emerald-500/5 to-transparent
+//       p-4 space-y-3
+//     ">
+//       <p className="text-[12px] font-semibold text-white">
+//         Playlist Guidelines
+//       </p>
+
+//       <ul className="space-y-2 text-[11px] text-gray-300 leading-relaxed">
+//         <li className="flex gap-2">
+//           <span>•</span>
+//           <p>
+//             Organize your <span className="text-white">published posts</span> into playlists.
+//           </p>
+//         </li>
+
+//         <li className="flex gap-2">
+//           <span>•</span>
+//           <p>
+//             Minimum <span className="text-white">2 posts</span> required.
+//           </p>
+//         </li>
+
+//         <li className="flex gap-2">
+//           <span>•</span>
+//           <p>
+//             Add <span className="text-white">collaborators</span> if needed.
+//           </p>
+//         </li>
+
+//         <li className="flex gap-2">
+//           <span>•</span>
+//           <p>
+//             Optional thumbnail <span className="text-gray-400">(1280×720)</span>.
+//           </p>
+//         </li>
+//       </ul>
+//     </div>
+
+//     {/* Domain */}
+//     <div className="space-y-2">
+//       <p className="text-[11px] uppercase text-gray-500">Domain</p>
+//       <select
+//         value={domain}
+//         onChange={(e) => {
+//           setPostIds([]);
+//           setCollaboratorsData([]);
+//           setDomain(e.target.value);
+//         }}
+//         className="w-full bg-gray-950 border border-white/[0.08] rounded-lg px-3 py-2 text-sm focus:border-emerald-500/40 outline-none"
+//       >
+//         <option value="">Choose Domain</option>
+//         {categories.map((c, i) => (
+//           <option key={i} value={c}>{c}</option>
+//         ))}
+//       </select>
+//     </div>
+
+//     {/* Title */}
+//     <div className="space-y-2">
+//       <p className="text-[11px] uppercase text-gray-500">Title</p>
+//       <input
+//         type="text"
+//         value={title}
+//         onChange={(e) => setTitle(e.target.value)}
+//         placeholder="Enter playlist title"
+//         className="w-full bg-gray-950 border border-white/[0.08] rounded-lg px-3 py-2 text-sm focus:border-emerald-500/40 outline-none"
+//       />
+//     </div>
+
+//     {/* Collaborators */}
+//     <div className="space-y-3 relative">
+//       <p className="text-[11px] uppercase text-gray-500">Collaborators</p>
+
+//       <input
+//         type="text"
+//         placeholder="Search collaborators"
+//         value={searchCollaborator}
+//         onChange={(e) => setSearchCollaborator(e.target.value)}
+//         className="w-full bg-gray-950 border border-white/[0.08] rounded-lg px-3 py-2 text-sm focus:border-emerald-500/40 outline-none"
+//       />
+
+//       {collaboratorsData.length > 0 && (
+//         <div className="flex flex-wrap gap-2">
+//           {collaboratorsData.map((data, i) => (
+//             <div
+//               key={i}
+//               onClick={() =>
+//                 handleCollaborators(
+//                   data.email,
+//                   data.authorname,
+//                   data.profile
+//                 )
+//               }
+//               className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] cursor-pointer"
+//             >
+//               <img
+//                 src={
+//                   data.img
+//                     ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.img}`
+//                     : user
+//                 }
+//                 className="w-5 h-5 rounded-full border border-emerald-400"
+//               />
+//               <span className="text-[11px]">{data.name}</span>
+//             </div>
+//           ))}
+//         </div>
+//       )}
+
+//       {searchCollaborator && (
+//         <div className="absolute w-full mt-1 bg-gray-900 border border-white/[0.08] rounded-lg max-h-48 overflow-y-auto z-20">
+//           {searchedCoordinators.length > 0 ? (
+//             searchedCoordinators.map((c, i) => (
+//               <div
+//                 key={i}
+//                 onClick={() =>
+//                   handleCollaborators(
+//                     c.email,
+//                     c.authorname,
+//                     c.profile
+//                   )
+//                 }
+//                 className="flex items-center gap-2 px-3 py-2 hover:bg-white/[0.05] cursor-pointer"
+//               >
+//                 <img
+//                   src={
+//                     c.profile
+//                       ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${c.profile}`
+//                       : user
+//                   }
+//                   className="w-5 h-5 rounded-full border border-emerald-400"
+//                 />
+//                 <span className="text-xs">{c.authorname}</span>
+//               </div>
+//             ))
+//           ) : (
+//             <p className="text-xs text-gray-500 px-3 py-2">
+//               {domain ? "No authors found" : "Select domain first"}
+//             </p>
+//           )}
+//         </div>
+//       )}
+//     </div>
+
+//     {/* Thumbnail */}
+//     <div className="space-y-2">
+//       <p className="text-[11px] uppercase text-gray-500">Thumbnail</p>
+
+//       <input
+//         type="file"
+//         accept="image/*"
+//         onChange={handleChnageThumbnail}
+//         ref={thumbnailInputRef}
+//         className="text-xs text-gray-400 file:bg-emerald-500/20 file:text-emerald-400 file:px-2 file:py-1 file:rounded-md file:border-0"
+//       />
+
+//       {!previewThumbnail ? (
+//         <div className="h-32 bg-white/[0.03] border border-dashed border-white/[0.08] rounded-lg flex items-center justify-center text-xs text-gray-500">
+//           No preview
+//         </div>
+//       ) : (
+//         <div>
+//           <img
+//             src={previewThumbnail}
+//             className="w-full h-32 object-cover rounded-lg border border-white/[0.08]"
+//           />
+//           <p
+//             onClick={() => {
+//               setPreviewThumbnail(null);
+//               setThumbnail(null);
+//             }}
+//             className="text-xs text-red-400 mt-1 cursor-pointer"
+//           >
+//             Remove
+//           </p>
+//         </div>
+//       )}
+//     </div>
+
+//     {/* Submit */}
+//     <button
+//       type="submit"
+//       disabled={loader}
+//       className="w-full py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-emerald-400 text-sm hover:bg-emerald-500/20 disabled:opacity-50"
+//     >
+//       {loader ? "Creating..." : "Create Playlist"}
+//     </button>
+
+//   </div>
+// </div>
+
+//     {/* ═════════ RIGHT CONTENT ═════════ */}
+//     <div className="space-y-4">
+
+//       {/* Top bar */}
+//       {posts?.length > 0 && (
+//         <div className="flex items-center justify-between bg-gray-900 border border-white/[0.05] rounded-xl px-4 py-3">
+//           <div>
+//             <p className="text-sm font-medium">
+//               Select posts
+//             </p>
+//             <p className="text-xs text-gray-500">
+//               Choose posts for playlist
+//             </p>
+//           </div>
+
+//           <div className="text-xs bg-gray-800 px-3 py-1 rounded-full">
+//             {postIds?.length ?? 0} / {postCount}
+//           </div>
+//         </div>
+//       )}
+
+//       {/* Posts Grid */}
+//       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+
+//         {posts?.map((data) => {
+//           const selIndex = postIds.indexOf(data._id);
+//           const isSelected = selIndex !== -1;
+
+//           return (
+//             <div
+//               key={data._id}
+//               onClick={() => handlePostIds(data._id)}
+//               className={`rounded-xl border p-3 cursor-pointer transition
+//               ${isSelected
+//                   ? "border-emerald-500 bg-emerald-500/10"
+//                   : "border-white/[0.05] bg-gray-900"
+//               }`}
+//             >
+//               {isSelected && (
+//                 <div className="absolute text-xs bg-emerald-500 text-black px-2 py-0.5 rounded-full">
+//                   {selIndex + 1}
+//                 </div>
+//               )}
+
+//               <p className="text-sm font-medium line-clamp-1">
+//                 {data.title}
+//               </p>
+
+//               <img
+//                 src={
+//                   data.image
+//                     ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.image}`
+//                     : blog1
+//                 }
+//                 className="w-full h-36 object-cover rounded-lg my-2"
+//               />
+
+//               <div className="flex justify-between text-xs text-gray-400">
+//                 <span>{data.views.length} views</span>
+//                 <span className="text-emerald-400">
+//                   {data.category}
+//                 </span>
+//               </div>
+//             </div>
+//           );
+//         })}
+
+//         {loading && <BlogMiniSkeleton />}
+
+//         {!posts?.length && !loading && (
+//           <div className="col-span-full text-center py-20 text-gray-500 text-sm">
+//             Select a domain to view posts
+//           </div>
+//         )}
+        
+//       </div>
+//     </div>
+
+//   </form>
+
+//   <Footer />
+// </div>
   );
 }
 

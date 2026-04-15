@@ -391,7 +391,7 @@ function EditTutorPlaylist() {
               />
 
               {!previewThumbnail && (
-                <div className="w-80 h-40 mt-3 rounded-xl flex items-center justify-center bg-gray-700">
+                <div className="md:max-w-80 w-80 h-40 mt-3 rounded-xl flex items-center justify-center bg-gray-700">
                   <p className="text-gray-400 text-xs">No Thumbnail</p>
                 </div>
               )}
@@ -413,7 +413,7 @@ function EditTutorPlaylist() {
                   <img
                     src={previewThumbnail}
                     alt="Preview"
-                    className="w-80 h-40 max-w-xs  object-cover rounded-xl border border-gray-700"
+                    className="md:max-w-80 w-full h-40 max-w-xs  object-cover rounded-xl border border-gray-700"
                   />
                 </div>
               )}
@@ -442,7 +442,7 @@ function EditTutorPlaylist() {
           )} */}
 
            {posts?.length > 0 && (
-            <div className="flex flex-col px-4 gap-3">
+            <div className="flex  flex-col p-2 md:p-4 gap-3">
               <div className="flex items-center justify-between gap-3">
                 {/* Left — icon + title */}
                 <div className="flex items-center gap-2.5">
@@ -486,7 +486,7 @@ function EditTutorPlaylist() {
           )}
 
 
-          <div className="grid grid-cols-1 sm:grid-cols-3  md:max-h-[800px] emerald-scrollbar md:overflow-y-auto p-4 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-3  md:max-h-[800px] emerald-scrollbar md:overflow-y-auto px-2 py-4 md:p-4 gap-3 md:gap-5">
             {posts?.map((data) => {
                const selIndex = postIds.indexOf(data._id);
               const isSelected = selIndex !== -1;
