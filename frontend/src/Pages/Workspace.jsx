@@ -23,8 +23,8 @@ function Workspace() {
           <h1 className="text-2xl flex items-center gap-4 md:text-4xl font-semibold tracking-wide">
             <BsPersonWorkspace /> Workspace
           </h1>
-          <p className="text-gray-400 mt-2 text-sm md:text-base">
-            Manage your posts and playlists content effectively
+          <p className="text-gray-400 mt-2 text-sm">
+            Manage your posts and playlists content
           </p>
         </div>
 
@@ -56,7 +56,7 @@ function Workspace() {
 
         {/* Quick Actions */}
         <section className="md:mb-12 mb-7">
-          <h2 className="text-lg md:text-xl font-semibold mb-4">
+          <h2 className="text-lg md:text-xl text-white font-semibold mb-4">
             Quick Actions
           </h2>
 
@@ -79,7 +79,7 @@ function Workspace() {
 
         {/* Management Section */}
         <section>
-          <h2 className="text-lg md:text-xl font-semibold mb-4">
+          <h2 className="text-lg text-white md:text-xl font-semibold mb-4">
             Manage Content
           </h2>
 

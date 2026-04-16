@@ -196,14 +196,14 @@ function EditTutorPlaylist() {
     collaboratorsData,
   ]);
 
-  const handleCollaborators = (email, name, img) => {
+  const handleCollaborators = (email, name, profile) => {
     setCollaboratorsData((prev) => {
       const exists = prev.some((col) => col.email === email);
 
       if (exists) {
         return prev.filter((col) => col.email !== email);
       } else {
-        return [...prev, { email, name, img }];
+        return [...prev, { email, name, profile }];
       }
     });
 
@@ -222,13 +222,29 @@ function EditTutorPlaylist() {
   };
 
   // console.log("filteredPosts",filteredPosts)
+    const avatarColor = (name) => {
+  const colors = [
+    "#10b981",
+    "#3b82f6",
+    "#f59e0b",
+    "#ec4899",
+    "#8b5cf6",
+    "#06b6d4",
+    "#f97316",
+  ];
+  return colors[(name?.charCodeAt(0) ?? 0) % colors.length];
+};
+
+const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
+
+
 
   return (
     <div className="w-full min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 relative">
       <NavBar />
-      <div className="md:mb-8 mt-4 px-3 md:px-4 flex items-center justify-between">
+      <div className="md:mb-8 mt-4 px-4 flex items-center justify-between">
         <div>
-          <h1 className="md:text-3xl text-2xl font-bold font-bold text-white tracking-tight">
+          <h1 className="md:text-3xl text-2xl font-semibold   text-white tracking-tight">
             Update Playlist
           </h1>
           <p className="text-xs text-gray-400 mt-1">
@@ -240,12 +256,13 @@ function EditTutorPlaylist() {
 
       <form
         onSubmit={hanldeSubmit}
-        className="w-full mx-auto px-3 md:px-4 pb-10 md:grid gap-10 lg:gap-4 lg:grid-cols-3"
+        // className="w-full mx-auto px-3 md:px-4 pb-10 md:grid gap-10 lg:gap-4 lg:grid-cols-3"
+        className="w-full mx-auto px-4 pb-6 grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-6"
       >
         {/* LEFT — PLAYLIST DETAILS */}
-        <div className="lg:col-span-1 lg:w-11/12 md:bg-gray-900/70   md:border border-gray-800 rounded-2xl space-y-8">
-          <div className="p-2 md:p-6 space-y-8 shadow-lg">
-            <h2 className="text-xl hidden md:block font-semibold text-white">
+        <div className="lg:col-span-1 md:bg-gray-900/70   md:border border-gray-800 rounded-lg space-y-8">
+          <div className="p-2 md:p-6 space-y-7 shadow-lg">
+            <h2 className="text-lg hidden  tracking-wide lg:block font-semibold text-emerald-400">
               Playlist Details
             </h2>
 
@@ -301,7 +318,7 @@ function EditTutorPlaylist() {
                       }
                       className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-800 border border-gray-700 cursor-pointer hover:bg-gray-700 transition"
                     >
-                      <img
+                      {/* <img
                         src={
                           data.img
                             ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.img}`
@@ -309,7 +326,20 @@ function EditTutorPlaylist() {
                         }
                         className="w-6 h-6 rounded-full object-cover border border-emerald-400 bg-gray-400"
                         alt=""
-                      />
+                      /> */}
+                       {data.profile?
+                              <img
+                        src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.profile}`}
+                        className="w-6 h-6 rounded-full object-cover border border-emerald-400 bg-gray-400"
+                        alt=""
+                      />:
+                       <div
+                            className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold text-white shrink-0"
+                            style={{ backgroundColor: avatarColor(data.name) }}
+                          >
+                            {initials(data.name)}
+                          </div>
+                      }
                       <span className="text-xs text-gray-200">{data.name}</span>
                     </div>
                   ))}
@@ -332,7 +362,7 @@ function EditTutorPlaylist() {
                         }
                         className="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-800 cursor-pointer"
                       >
-                        <img
+                        {/* <img
                           src={
                             collaborator.profile
                               ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${collaborator.profile}`
@@ -340,7 +370,19 @@ function EditTutorPlaylist() {
                           }
                           className="w-6 h-6 rounded-full bg-gray-400 object-cover border border-emerald-400"
                           alt=""
-                        />
+                        /> */}
+                         { collaborator.profile? <img
+                          src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${collaborator.profile}`}
+                          className="w-6 h-6 rounded-full bg-gray-400 object-cover border border-emerald-400"
+                          alt=""
+                        />:
+                        <div
+                            className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold text-white shrink-0"
+                            style={{ backgroundColor: avatarColor(collaborator.authorname) }}
+                          >
+                            {initials(collaborator.authorname)}
+                          </div>
+                        }
                         <span className="text-sm text-gray-200">
                           {collaborator.authorname}
                         </span>
@@ -391,7 +433,7 @@ function EditTutorPlaylist() {
               />
 
               {!previewThumbnail && (
-                <div className="md:max-w-80 w-80 h-40 mt-3 rounded-xl flex items-center justify-center bg-gray-700">
+                <div className="md:max-w-80 w-full h-40 mt-3 rounded-xl flex items-center justify-center bg-gray-700">
                   <p className="text-gray-400 text-xs">No Thumbnail</p>
                 </div>
               )}
@@ -434,7 +476,11 @@ function EditTutorPlaylist() {
 
         {/* RIGHT — POSTS */}
 
-        <div className="lg:col-span-2 mt-7 md:mt-0 lg:w-11/12 space-y-6 h-fit">
+        <div 
+        // className="lg:col-span-2 mt-7 md:mt-0 lg:w-11/12 space-y-6 h-fit"
+        className="mt-7 md:mt-0  space-y-0 h-fit"
+
+        >
           {/* {posts?.length > 0 && (
             <h2 className="text-xl text-center md:text-left font-semibold text-white">
               Select Posts for Playlist
@@ -486,7 +532,7 @@ function EditTutorPlaylist() {
           )}
 
 
-          <div className="grid grid-cols-1 sm:grid-cols-3  md:max-h-[800px] emerald-scrollbar md:overflow-y-auto px-2 py-4 md:p-4 gap-3 md:gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5  md:max-h-[800px] emerald-scrollbar md:overflow-y-auto px-2 py-4 md:p-4 gap-3 md:gap-5">
             {posts?.map((data) => {
                const selIndex = postIds.indexOf(data._id);
               const isSelected = selIndex !== -1;
@@ -562,7 +608,7 @@ function EditTutorPlaylist() {
               <div className="flex col-span-full md:h-[400px] items-center md:mt-0  my-16 text-center lg:w-11/12 mx-auto  justify-center md:w-full text-gray-400 md:text-sm text-xs  ">
                 <p className="">
                   {" "}
-                  Select domain to see posts for playlist creation.
+                  Select a domain to view posts to create playlist.
                 </p>
               </div>
             )}

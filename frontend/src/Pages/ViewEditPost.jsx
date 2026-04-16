@@ -596,7 +596,7 @@ function ViewEditPost() {
       <NavBar />
       <div className="mb-8 mt-4 px-4 flex items-center justify-between">
         <div>
-          <h1 className="md:text-3xl text-2xl font-bold font-bold text-white tracking-tight">
+          <h1 className="md:text-3xl text-2xl font-semibold   text-white tracking-tight">
             Update Post
           </h1>
           <p className="text-xs text-gray-400 mt-1">
@@ -616,7 +616,7 @@ function ViewEditPost() {
           )}
 
           {/* GRID LAYOUT */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-6">
             {/* LEFT SIDEBAR */}
             {/* Thumbnail */}
             <div className="shadow-xl border hidden md:block border-gray-800 rounded-lg bg-[#0f172a]/80 rounded-xl  p-4  md:sticky top-7 self-start ">
@@ -651,7 +651,7 @@ function ViewEditPost() {
             </div>
 
             {/* RIGHT MAIN */}
-            <div className="lg:col-span-2 bg-[#0f172a]/80 shadow-xl  border  border-gray-800 rounded-lg px-4 py-6  md:p-8 space-y-9 md:space-y-7">
+            <div className=" bg-[#0f172a]/80 shadow-xl  border  border-gray-800 rounded-lg px-4 py-6  md:p-8 space-y-9 md:space-y-7">
               {/* Title */}
               <div className="  rounded-xl">
                 <label className="text-sm text-gray-300 font-medium">

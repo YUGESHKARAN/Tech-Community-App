@@ -154,14 +154,14 @@ function TutorPlaylist() {
     collaboratorsData,
   ]);
 
-  const handleCollaborators = (email, name, img) => {
+  const handleCollaborators = (email, name, profile) => {
     setCollaboratorsData((prev) => {
       const exists = prev.some((col) => col.email === email);
 
       if (exists) {
         return prev.filter((col) => col.email !== email);
       } else {
-        return [...prev, { email, name, img }];
+        return [...prev, { email, name, profile }];
       }
     });
 
@@ -183,15 +183,30 @@ function TutorPlaylist() {
   // console.log("domain", domain);
 
   // console.log('filteredCoordinators', filteredCoordinators)
+  const avatarColor = (name) => {
+  const colors = [
+    "#10b981",
+    "#3b82f6",
+    "#f59e0b",
+    "#ec4899",
+    "#8b5cf6",
+    "#06b6d4",
+    "#f97316",
+  ];
+  return colors[(name?.charCodeAt(0) ?? 0) % colors.length];
+};
+
+const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
+
 
   return (
     // bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800
 
     <div className="w-full min-h-screen bg-gray-900 relative">
       <NavBar />
-      <div className="mb-8 mt-4 px-3 md:px-4 flex items-center justify-between">
+      <div className="mb-8 mt-4 px-4 flex items-center justify-between">
         <div>
-          <h1 className="md:text-3xl text-2xl font-bold font-bold text-white tracking-tight">
+          <h1 className="md:text-3xl text-2xl font-semibold  text-white tracking-tight">
             Create Playlist
           </h1>
           <p className="text-xs text-gray-400 mt-1">
@@ -268,12 +283,13 @@ function TutorPlaylist() {
 
       <form
         onSubmit={hanldeSubmit}
-        className="w-full mx-auto px-3 md:px-4 pb-10 md:grid gap-10 lg:gap-0 lg:grid-cols-3"
+        // className="w-full mx-auto px-3 md:px-4 pb-10 md:grid gap-10 lg:gap-0 lg:grid-cols-3"
+        className="w-full mx-auto px-4 pb-6 grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-6"
       >
         {/* LEFT — PLAYLIST DETAILS */}
-        <div className="lg:col-span-1 md:bg-gray-900/70 lg:w-11/12 md:border border-gray-800 rounded-2xl space-y-8">
-          <div className=" md:p-6 p-2 space-y-10 shadow-lg">
-            <h2 className="text-xl hidden lg:block font-semibold text-white">
+        <div className="lg:col-span-1 md:bg-gray-900/70 md:border border-gray-800 rounded-lg space-y-8">
+          <div className=" md:p-6 p-2 space-y-7 shadow-lg">
+            <h2 className="text-lg hidden  tracking-wide lg:block font-semibold text-emerald-400">
               Playlist Details
             </h2>
 
@@ -329,7 +345,7 @@ function TutorPlaylist() {
                       }
                       className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-800 border border-gray-700 cursor-pointer hover:bg-gray-700 transition"
                     >
-                      <img
+                      {/* <img
                         src={
                           data.img
                             ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.img}`
@@ -337,7 +353,20 @@ function TutorPlaylist() {
                         }
                         className="w-6 h-6 rounded-full object-cover border border-emerald-400 bg-gray-400"
                         alt=""
-                      />
+                      /> */}
+                      {data.profile?
+                              <img
+                        src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.profile}`}
+                        className="w-6 h-6 rounded-full object-cover border border-emerald-400 bg-gray-400"
+                        alt=""
+                      />:
+                       <div
+                            className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold text-white shrink-0"
+                            style={{ backgroundColor: avatarColor(data.name) }}
+                          >
+                            {initials(data.name)}
+                          </div>
+                      }
                       <span className="text-xs text-gray-200">{data.name}</span>
                     </div>
                   ))}
@@ -360,7 +389,7 @@ function TutorPlaylist() {
                         }
                         className="flex items-center gap-3 px-4 py-2 hover:bg-gray-800 cursor-pointer"
                       >
-                        <img
+                        {/* <img
                           src={
                             collaborator.profile
                               ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${collaborator.profile}`
@@ -368,7 +397,20 @@ function TutorPlaylist() {
                           }
                           className="w-6 h-6 rounded-full bg-gray-400 object-cover border border-emerald-400"
                           alt=""
-                        />
+                        /> */}
+
+                       { collaborator.profile? <img
+                          src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${collaborator.profile}`}
+                          className="w-6 h-6 rounded-full bg-gray-400 object-cover border border-emerald-400"
+                          alt=""
+                        />:
+                        <div
+                            className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold text-white shrink-0"
+                            style={{ backgroundColor: avatarColor(collaborator.authorname) }}
+                          >
+                            {initials(collaborator.authorname)}
+                          </div>
+                        }
                         <span className="text-sm text-gray-200">
                           {collaborator.authorname}
                         </span>
@@ -419,7 +461,7 @@ function TutorPlaylist() {
                 file:cursor-pointer"
               />
               {!previewThumbnail && (
-                <div className="md:max-w-80 w-80 h-40 mt-3 rounded-xl flex items-center justify-center bg-gray-700">
+                <div className="md:max-w-80 w-full h-40 mt-3 rounded-xl flex items-center justify-center bg-gray-700">
                   <p className="text-gray-400 text-xs">No Thumbnail</p>
                 </div>
               )}
@@ -463,28 +505,18 @@ function TutorPlaylist() {
 
         {/* RIGHT — POSTS */}
 
-        <div className="lg:col-span-2 mt-7 md:mt-0 lg:w-11/12 space-y-6 h-fit">
-          {/* {posts?.length > 0 && <div className="md:flex items-center justify-between ">
-            <h2 className="text-xl text-center md:text-left  font-semibold text-white  md:text-emerald-500">
-              Select Posts to Create Playlist
-            </h2>
-            <p className="text-gray-300 text-xs">Posts selected {postIds?.length ??0} of {postCount}</p>
-          </div>} */}
+        <div 
+        // className="lg:col-span-2 mt-7 md:mt-0 space-y-6 h-fit"
+        className=" mt-7 md:mt-0  space-y-0 h-fit"
+        >
+        
 
           {posts?.length > 0 && (
-            <div className="flex flex-col p-2 md:p-4 gap-3">
+            <div className="flex flex-col p-2 md:px-4 gap-3">
               <div className="flex items-center justify-between gap-3">
                 {/* Left — icon + title */}
                 <div className="flex items-center gap-2.5">
-                  {/* <div className="w-[34px] h-[34px] rounded-[10px] bg-emerald-500/10 border border-emerald-500/25 flex items-center justify-center flex-shrink-0">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <rect x="1" y="3" width="10" height="2" rx="1" fill="#10b981"/>
-            <rect x="1" y="7" width="8"  height="2" rx="1" fill="#10b981"/>
-            <rect x="1" y="11" width="6" height="2" rx="1" fill="#10b981"/>
-            <circle cx="13" cy="10" r="2.5" stroke="#10b981" strokeWidth="1.5"/>
-            <line x1="13" y1="7" x2="13" y2="5" stroke="#10b981" strokeWidth="1.5" strokeLinecap="round"/>
-          </svg>
-        </div> */}
+          
                   <div>
                     <p className="text-[15px] font-medium text-white leading-tight">
                       Select posts to create playlist
@@ -515,7 +547,7 @@ function TutorPlaylist() {
             </div>
           )}
 
-          <div className="grid grid-cols-1 sm:grid-cols-3  md:max-h-[780px] emerald-scrollbar md:overflow-y-auto gap-3 px-2 py-4 md:p-4 gap-3 md:gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 md:max-h-[780px] emerald-scrollbar md:overflow-y-auto gap-3 px-2 py-4 md:p-4 gap-3 md:gap-5">
             {posts?.map((data) => {
               const selIndex = postIds.indexOf(data._id);
               const isSelected = selIndex !== -1;
@@ -594,7 +626,7 @@ function TutorPlaylist() {
                 {/* Guidelines Card */}
                 <div
                   className="
-                    w-full
+                    w-fit
                     rounded-xl
                     border border-emerald-500/20
                     bg-gradient-to-br from-emerald-500/5 to-transparent
@@ -649,11 +681,15 @@ function TutorPlaylist() {
                       </p>
                     </li>
                   </ul>
+
+                  <p className="text-xs md:text-sm mt-5 text-gray-400 ">
+                  Select a domain to view posts to create playlist.
+                </p>
                 </div>
 
                 {/* Bottom Helper Text */}
-                <p className="text-xs md:text-sm text-gray-400 text-center">
-                  Select a domain to view posts for playlist creation.
+                <p className="text-xs md:hidden md:text-sm text-gray-400 text-center">
+                  Select a domain to view posts to create playlist.
                 </p>
               </div>
             )}
@@ -699,7 +735,7 @@ function TutorPlaylist() {
 //   {/* ── MAIN LAYOUT ─────────────────────── */}
 //   <form
 //     onSubmit={hanldeSubmit}
-//     className="w-full mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-6"
+//     className="w-full mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-[370px_1fr] gap-6"
 //   >
 
 //     {/* ═════════ LEFT SIDEBAR ═════════ */}
@@ -933,7 +969,7 @@ function TutorPlaylist() {
 //       )}
 
 //       {/* Posts Grid */}
-//       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+//       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
 
 //         {posts?.map((data) => {
 //           const selIndex = postIds.indexOf(data._id);

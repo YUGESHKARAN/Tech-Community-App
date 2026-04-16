@@ -94,9 +94,7 @@ function AddPost() {
         direction: "incoming",
       };
       setMessages((prev) => [...prev, errorMessage]);
-    } finally {
-      setIsTyping(false);
-    }
+    } 
   };
 
   const typewriterEffect = (text, sender) => {
@@ -127,7 +125,12 @@ function AddPost() {
         wordIndex++;
         setTimeout(addWord, 200); // Adjust delay for smoother/faster typing
       }
+       else {
+      // ✅ typing finished → enable button
+      setIsTyping(false);
+    }
     };
+   
 
     addWord();
   };
@@ -278,7 +281,7 @@ function AddPost() {
         <div className="w-full  mx-auto  md:px-4">
           <div className="mb-8 flex px-4 items-center justify-between">
             <div>
-              <h1 className="md:text-3xl text-2xl font-bold font-semibold text-white tracking-tight">
+              <h1 className="md:text-3xl text-2xl  font-semibold text-white tracking-tight">
                 Create New Post
               </h1>
               <p className="text-xs text-gray-400 mt-1">
@@ -307,7 +310,7 @@ function AddPost() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 px-2 md:px-0  lg:grid-cols-3 gap-4 lg:gap-0">
+          <div className="grid grid-cols-1 px-2 md:px-0  lg:grid-cols-[400px_1fr] gap-4 lg:gap-0">
             {/* LEFT COLUMN */}
             <div className="space-y-4 md:sticky top-7  self-start md:col-span-1">
               {/* Description / Tips */}
@@ -330,7 +333,7 @@ function AddPost() {
 
               {/* AI Assistant (Always visible on desktop) */}
               <div
-                className={`bg-[#0f172a]/80  lg:w-11/12 h-[450px] md:h-96 border border-emerald-500/20
+                className={`bg-[#0f172a]/80  lg:w-11/12 h-[450px] border border-emerald-500/20
       bg-gradient-to-br from-emerald-500/5 to-transparent rounded-lg md:rounded-xl px-4 py-6 md:p-6 flex flex-col
           ${!chatbot ? "hidden lg:flex" : "flex"}`}
               >
@@ -396,7 +399,9 @@ function AddPost() {
                     className="flex-1 px-4 rounded-xl border border-gray-700 py-2 bg-gray-900 text-sm outline-none text-white"
                   />
 
-                  <button className="text-2xl md:text-2xl transition-all duration-300 hover:text-gray-400 text-gray-500 block">
+                  <button 
+                  disabled={isTyping}
+                  className="text-2xl md:text-2xl transition-all duration-300 hover:text-gray-400 text-gray-500 block transition-all duration-300  disabled:text-gray-700 disabled:cursor-not-allowed">
                     {/* Send */}
                     <VscSend />
                   </button>
@@ -406,7 +411,7 @@ function AddPost() {
 
             {/* RIGHT COLUMN FORM */}
             <div
-              className={`bg-[#0f172a]/80 md:col-span-2   border  border-gray-800 rounded-lg px-4 py-6  md:p-8 shadow-xl
+              className={`bg-[#0f172a]/80   border  border-gray-800 rounded-lg px-4 py-6  md:p-8 shadow-xl
         ${chatbot ? "hidden lg:block" : "block"}`}
             >
               <form onSubmit={handleSubmit} className="space-y-9  md:space-y-7">
@@ -538,7 +543,7 @@ function AddPost() {
                   )}
 
                    {!previewImage && (
-                <div className="w-80 h-40 mt-3 rounded-xl flex items-center justify-center bg-gray-700">
+                <div className="md:max-w-80 w-full h-40 mt-3 rounded-xl flex items-center justify-center bg-gray-700">
                   <p className="text-gray-400 md:text-gray-300 text-xs">No Thumbnail</p>
                 </div>
               )}
@@ -548,7 +553,7 @@ function AddPost() {
                     <div className="mt-3">
                       <img
                         src={previewImage}
-                        className="w-80 h-40   object-cover rounded-xl border border-gray-700"
+                        className="md:max-w-80 w-full h-40   object-cover rounded-xl border border-gray-700"
                       />
                     </div>
                   )}
