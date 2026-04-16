@@ -51,6 +51,7 @@ function AddPost() {
   // const fileInputRef = useRef(null);
   const [isTyping, setIsTyping] = useState(false);
   const [chatbot, setChatbot] = useState(false);
+  const [draftMateLoading, setDraftMateLoading] = useState(false)
 
   const backendEndpoint = import.meta.env.VITE_CHATBOT_URL;
 
@@ -68,6 +69,7 @@ function AddPost() {
     setMessages((prev) => [...prev, newMessage]);
 
     setIsTyping(true);
+    setDraftMateLoading(true)
 
     try {
       const response = await axios.post(
@@ -95,6 +97,9 @@ function AddPost() {
       };
       setMessages((prev) => [...prev, errorMessage]);
     } 
+    finally{
+      setDraftMateLoading(false)
+    }
   };
 
   const typewriterEffect = (text, sender) => {
@@ -347,6 +352,7 @@ function AddPost() {
                 className="flex-1 overflow-y-auto emerald-scrollbar space-y-4 h-[600px] pr-2">
                   {messages.map((msg, idx) => (
                     <div
+                     key={msg._id || `msg-${idx}`} 
                       className={`flex  ${
                         msg.direction === "outgoing"
                           ? "justify-end"
@@ -377,7 +383,7 @@ function AddPost() {
                     </div>
                   ))}
 
-                  {isTyping && (
+                  {draftMateLoading && (
                     <div className="text-xs animate-pulse text-gray-400 italic">
                       DraftMate refining your content...
                     </div>
@@ -395,8 +401,8 @@ function AddPost() {
                 >
                   <input
                     name="message"
-                    placeholder="Ask AI to generate your post..."
-                    className="flex-1 px-4 rounded-xl border border-gray-700 py-2 bg-gray-900 text-sm outline-none text-white"
+                    placeholder="Ask DraftMate to transform your content..."
+                    className="flex-1 px-4  rounded-xl border border-gray-700 py-2 bg-gray-900 text-sm outline-none text-white"
                   />
 
                   <button 
@@ -580,7 +586,7 @@ function AddPost() {
                           setCurrentLinkUrl("");
                           setCustomTitle("");
                         }}
-                        className="text-xs bg-red-500 px-2 py-1 rounded-md hover:bg-red-600"
+                        className="text-xs bg-red-600 px-2 py-1 rounded-md hover:bg-red-700 transition-all duration-300"
                       >
                         Clear
                       </button>
@@ -648,43 +654,38 @@ function AddPost() {
                           setCustomTitle("");
                         }
                       }}
-                      className="px-4 bg-emerald-500/20 w-fit py-1 md:py-2   text-black text-emerald-400  text-xs rounded-md hover:bg-emerald-600/20"
+                      className="px-4 bg-emerald-500/20 w-fit py-1 md:py-2   text-black text-emerald-400  text-xs rounded-md hover:bg-emerald-600/20 transition-all duration-300"
                     >
                       Add
                     </button>
                   </div>
 
                   {/* LINKS LIST */}
-                  {links.length > 0 && (
-                    <div className="space-y-2 mt-3">
-                      {links.map((link, index) => (
-                        <div
-                          key={`${link.title}-${index}`}
-                          className="flex justify-between items-start bg-gray-800 border border-gray-700 outline-none rounded-md p-3"
+                   {links.length > 0 && (
+                  <div className="space-y-2 mt-2">
+                    {links.map((link, index) => (
+                      <div
+                        // key={index}
+                        key={`${link.title}-${link.url}`}
+                        className="flex justify-between bg-neutral-800 px-3 py-2 rounded-lg text-xs"
+                      >
+                        <span className="break-all">
+                          {link.title}: {link.url}
+                        </span>
+                        <button
+                          onClick={() =>
+                            setLinks((prev) =>
+                              prev.filter((_, i) => i !== index),
+                            )
+                          }
+                          className="text-red-400"
                         >
-                          <div className="text-sm break-all">
-                            <span className="font-semibold text-gray-300">
-                              {link.title}
-                            </span>
-                            <br />
-                            <span className="text-gray-400 md:text-gray-300">{link.url}</span>
-                          </div>
-
-                          <button
-                            type="button"
-                            onClick={() =>
-                              setLinks((prevLinks) =>
-                                prevLinks.filter((_, i) => i !== index),
-                              )
-                            }
-                            className="text-red-400 hover:text-red-600 text-xs ml-2"
-                          >
-                            ✕
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                          ✕
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
                 </div>
 
                 {/* DOCUMENTS */}
@@ -708,7 +709,8 @@ function AddPost() {
                     <div className="mt-3 flex flex-col gap-1.5">
                       {documents.map((doc, idx) => (
                         <div
-                          key={idx}
+                          // key={idx}
+                           key={doc.name + doc.size}
                          
 
                           className="flex items-center gap-2 bg-gray-900 px-3 py-2 rounded-lg border border-emerald-500/20 text-xs text-gray-300"

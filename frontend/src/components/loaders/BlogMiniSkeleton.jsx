@@ -1,4 +1,4 @@
-const BlogMiniSkeleton = ({ count = 12 }) => {
+const BlogMiniSkeleton = ({ count = 9 }) => {
   return (
     <>
       {Array.from({ length: count }).map((_, index) => (

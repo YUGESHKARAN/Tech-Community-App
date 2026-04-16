@@ -270,6 +270,7 @@ function LoginPage() {
             name="email"
             value={formData.email}
             onChange={handleChange}
+            autoComplete="user email"
             required
             placeholder="University Email"
             className="w-full px-4 py-2.5 text-sm bg-gray-800 text-white border border-gray-700 rounded-lg focus:outline-none focus:ring-1 focus:ring-green-500"
@@ -287,6 +288,7 @@ function LoginPage() {
               id="password"
               name="password"
               value={formData.password}
+              autoComplete="current-password"
               onChange={handleChange}
               required
               placeholder="••••••••"

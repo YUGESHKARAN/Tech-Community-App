@@ -307,12 +307,13 @@ const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
                 }}
                 className="bg-gray-950 cursor-pointer border border-gray-700 rounded-lg px-4 py-2 text-white text-sm focus:border focus:border-emerald-500/40 outline-none"
               >
-                <option value={""}>Choose Domain</option>
+                <option value={""}>{categories.length>0?'Choose Domain':'Publish a post to enable domain selection'}</option>
                 {categories.map((category, index) => (
                   <option key={index} value={category}>
                     {category}
                   </option>
                 ))}
+                
               </select>
             </div>
 
@@ -343,7 +344,7 @@ const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
                           data.profile,
                         )
                       }
-                      className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-800 border border-gray-700 cursor-pointer hover:bg-gray-700 transition"
+                      className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-900 border border-gray-700 cursor-pointer hover:bg-gray-800 transition-all duration-300"
                     >
                       {/* <img
                         src={
@@ -375,7 +376,7 @@ const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
 
               {/* Search Results */}
               {searchCollaborator && (
-                <div className="absolute top-full mt-2 w-full bg-gray-900 border border-gray-700 rounded-xl shadow-xl z-20 emerald-scrollbar overflow-y-auto max-h-48 ">
+                <div className="absolute top-full mt-2 w-full bg-gray-950  py-2 border border-gray-700 rounded-xl shadow-xl z-20 emerald-scrollbar overflow-y-auto max-h-48 ">
                   {searchedCoordinators.length > 0 ? (
                     searchedCoordinators.map((collaborator, index) => (
                       <div
@@ -387,7 +388,7 @@ const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
                             collaborator.profile,
                           )
                         }
-                        className="flex items-center gap-3 px-4 py-2 hover:bg-gray-800 cursor-pointer"
+                        className="flex items-center gap-3 px-4 py-1 transition-all duration-300 hover:bg-gray-800 cursor-pointer"
                       >
                         {/* <img
                           src={
@@ -417,7 +418,7 @@ const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
                       </div>
                     ))
                   ) : (
-                    <div className="px-4 py-2 ">
+                    <div className="px-4  ">
                       <span className="text-sm text-gray-200 ">
                         {domain.length > 0
                           ? " No authors found!"

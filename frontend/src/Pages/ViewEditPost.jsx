@@ -787,7 +787,7 @@ function ViewEditPost() {
                         setCurrentLinkUrl("");
                         setLinkId(null);
                       }}
-                      className="text-xs text-red-400 hover:text-red-300"
+                      className="text-xs bg-red-600 px-2 py-1 rounded-md hover:bg-red-700 transition-all duration-300"
                     >
                       Clear
                     </button>
@@ -861,7 +861,7 @@ function ViewEditPost() {
                         setLinkId(null);
                       }
                     }}
-                    className="px-4 bg-emerald-500/20 w-fit py-1 md:py-2   text-black text-emerald-400  text-xs rounded-md hover:bg-emerald-600/20"
+                    className="px-4 bg-emerald-500/20 w-fit py-1 md:py-2   text-black text-emerald-400  text-xs rounded-md hover:bg-emerald-600/20 transition-all duration-300"
                   >
                     Add
                   </button>
@@ -871,7 +871,8 @@ function ViewEditPost() {
                   <div className="space-y-2">
                     {links.map((link, index) => (
                       <div
-                        key={index}
+                        // key={index}
+                        key={`${link.title}-${link.url}`}
                         className="flex justify-between bg-neutral-800 px-3 py-2 rounded-lg text-xs"
                       >
                         <span className="break-all">

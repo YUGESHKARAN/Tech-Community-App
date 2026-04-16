@@ -41,7 +41,7 @@ function EditTutorPlaylist() {
   const getTutorPlaylist = async () => {
     try {
       const response = await axiosInstance.get(`/blog/playlist/${id}`);
-      console.log("data", response.data);
+      // console.log("data", response.data);
       if (response.status === 200) {
         // setPlaylistData(response.data.data);
         setPostIds(response.data.data.post_ids);
@@ -242,7 +242,7 @@ const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
   return (
     <div className="w-full min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 relative">
       <NavBar />
-      <div className="md:mb-8 mt-4 px-4 flex items-center justify-between">
+      <div className="md:mb-8 mt-4 px-4 mx-auto flex items-center justify-between">
         <div>
           <h1 className="md:text-3xl text-2xl font-semibold   text-white tracking-tight">
             Update Playlist
@@ -257,7 +257,7 @@ const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
       <form
         onSubmit={hanldeSubmit}
         // className="w-full mx-auto px-3 md:px-4 pb-10 md:grid gap-10 lg:gap-4 lg:grid-cols-3"
-        className="w-full mx-auto px-4 pb-6 grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-6"
+        className="w-full mx-auto px-3 pb-6 grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-6"
       >
         {/* LEFT — PLAYLIST DETAILS */}
         <div className="lg:col-span-1 md:bg-gray-900/70   md:border border-gray-800 rounded-lg space-y-8">
@@ -316,7 +316,7 @@ const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
                           data.profile,
                         )
                       }
-                      className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-800 border border-gray-700 cursor-pointer hover:bg-gray-700 transition"
+                      className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-900 border border-gray-700 cursor-pointer hover:bg-gray-800 transition-all duration-300"
                     >
                       {/* <img
                         src={
@@ -348,7 +348,7 @@ const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
 
               {/* Search Results */}
               {searchCollaborator && (
-                <div className="absolute top-full mt-2 w-full bg-gray-900 border border-gray-700 rounded-xl shadow-xl z-20 overflow-hidden">
+                <div className="aabsolute top-full mt-2 w-full bg-gray-950  py-2 border border-gray-700 rounded-xl shadow-xl z-20 emerald-scrollbar overflow-y-auto max-h-48 ">
                   {searchedCoordinators.length > 0 ? (
                     searchedCoordinators.map((collaborator, index) => (
                       <div
@@ -360,7 +360,7 @@ const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
                             collaborator.profile,
                           )
                         }
-                        className="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-800 cursor-pointer"
+                        className="flex items-center gap-3 px-4 py-1 hover:bg-gray-800 cursor-pointer"
                       >
                         {/* <img
                           src={
@@ -389,7 +389,7 @@ const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
                       </div>
                     ))
                   ) : (
-                    <div className="px-4 py-2 ">
+                    <div className="px-4">
                       <span className="text-sm text-gray-200 ">
                         {domain.length > 0
                           ? " No authors found!"
