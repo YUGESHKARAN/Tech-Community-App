@@ -46,188 +46,7 @@ const s3 = new S3Client({
 
 
 
-// const getAllPosts = async (req, res) => {
-//   try {
-//     const authors = await Author.find({}); // fetch all authors
-//     const allPosts =  authors.flatMap((author) => author.posts.map((post)=>({
-//       ...post.toObject(), //Conver post to a plain object
-//       authorname: author.authorname,
-//       authoremail: author.email,
-//       profie:author.profile||'',
-//       role:author.role, 
-//       community:author.community,
-      
-//     }))); // extract posts alone
 
-//        // Calculate category counts
-//      const categoryCounts = authors.flatMap((author) =>
-//       author.posts.map((post) => post.category)
-//     ).reduce((counts, category) => {
-//       counts[category] = (counts[category] || 0) + 1;
-//       return counts;
-//     }, {});
-    
-
-//     const count = Object.keys(categoryCounts).length
-
-//     res.status(200).json({ message: "All posts", posts: allPosts,count});
-//   } catch (err) {
-//     res.status(500).json({ message: "server error" });
-//   }
-// };
-
-
-// ...existing code...
-// const getRecommendedPosts = async (req, res) => {
-//   try {
-//     const { email } = req.params;
-
-//     let followedEmails = [];
-//     let authorCommunities = [];
-//     if (email) {
-//       const currentAuthor = await Author.findOne({ email: { $eq: email }}).select('following community');
-//       if (currentAuthor) {
-//         followedEmails = Array.isArray(currentAuthor.following) ? currentAuthor.following : [];
-//         authorCommunities = Array.isArray(currentAuthor.community) ? currentAuthor.community : [];
-//       }
-//     }
-
-//     // Fetch only needed authors
-//     const allAuthors = await Author.find({}).select('email authorname profile role community posts');
-
-//     // Split authors into priority (followed OR same community) and others
-//     const followedSet = new Set(followedEmails);
-//     const priorityAuthors = [];
-//     const otherAuthors = [];
-
-//     for (const a of allAuthors) {
-//       const inFollowing = followedSet.has(a.email);
-//       const inCommunity = Array.isArray(a.community) && a.community.some(c => authorCommunities.includes(c));
-//       if (inFollowing || inCommunity) priorityAuthors.push(a);
-//       else otherAuthors.push(a);
-//     }
-
-//     // Helper to flatten posts in reverse (newest first). Prefer createdAt if available.
-//     const flattenReverse = (authorsArray) => authorsArray.flatMap(author => {
-//       const posts = Array.isArray(author.posts) ? author.posts.slice() : [];
-//       const sorted = posts[0] && posts[0].createdAt
-//         ? posts.slice().sort((x, y) => new Date(y.createdAt) - new Date(x.createdAt))
-//         : posts.slice().reverse();
-
-//       return sorted.map(post => ({
-//         ...post.toObject(),
-//         authorname: author.authorname,
-//         authoremail: author.email,
-//         profile: author.profile || '',
-//         role: author.role,
-//         community: author.community,
-//       }));
-//     });
-
-//     // Priority posts first (followed OR community), then others — both in reverse/newest-first order
-//     const postsFromPriority = flattenReverse(priorityAuthors);
-//     const postsFromOthers = flattenReverse(otherAuthors);
-//     // const allPosts = [...postsFromPriority, ...postsFromOthers];
-//      // Shuffle arrays individually (Fisher–Yates) without mutating originals
-//     const shuffleArray = (arr) => {
-//       const a = arr.slice();
-//       for (let i = a.length - 1; i > 0; i--) {
-//         const j = Math.floor(Math.random() * (i + 1));
-//         [a[i], a[j]] = [a[j], a[i]];
-//       }
-//       return a;
-//     };
-
-//     const shuffledPriority = shuffleArray(postsFromPriority);
-//     const shuffledOthers = shuffleArray(postsFromOthers);
-  
-//     const allPosts = [...shuffledPriority, ...shuffledOthers];
-
-//     // category counts (unchanged)
-//     const categoryCounts = allAuthors.flatMap((author) =>
-//       author.posts.map((post) => post.category)
-//     ).reduce((counts, category) => {
-//       counts[category] = (counts[category] || 0) + 1;
-//       return counts;
-//     }, {});
-//     const count = Object.keys(categoryCounts).length;
-
-//     res.status(200).json({ message: "All posts", posts: allPosts, count });
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({ message: "server error", error: err.message });
-//   }
-// };
-
-// const getPostsByAuthorsCategory = async (req, res) => {
-//   try {
-//     const { email } = req.params;
-//     const category = decodeURIComponent(req.params.category);
-//     let { page = 1, limit = 10 } = req.query;
-
-//     console.log("category", category,"page", page, )
-
-//     page = parseInt(page);
-//     limit = parseInt(limit);
-
-//     const skip = (page - 1) * limit;
-
-//     // ✅ Find author
-//     const author = await Author.findOne({ email: { $eq: email }});
-
-//     if (!author) {
-//       return res.status(404).json({ message: "Author not found" });
-//     }
-
-//     // ✅ Filter posts by category
-//     const filteredPosts = author.posts.filter(
-//       (post) => post.category === category
-//     );
-
-//     // ✅ Pagination
-//     const paginatedPosts = filteredPosts.slice(skip, skip + limit);
-
-//     return res.status(200).json({
-//       posts: paginatedPosts,
-//       currentPage: page,
-//       totalPages: Math.ceil(filteredPosts.length / limit),
-//       totalPosts: filteredPosts.length,
-//       hasMore: skip + limit < filteredPosts.length,
-//     });
-//   } catch (err) {
-//     console.error("Error:", err.message);
-//     res.status(500).json({ message: "Server Error" });
-//   }
-// };
-
-
-// const getUniqueCategoriesByAuthor = async (req, res) => {
-//   try {
-//     const { email } = req.params;
-
-//     const author = await Author.findOne({ email: { $eq: email }});
-
-//     if (!author) {
-//       return res.status(404).json({ message: "Author not found" });
-//     }
-
-//     // ✅ Extract unique categories
-//     const categories = [
-//       ...new Set(
-//         author.posts
-//           .map((post) => post.category)
-//           .filter(Boolean) // remove null/undefined
-//       ),
-//     ];
-
-//     return res.status(200).json({
-//       categories,
-//     });
-//   } catch (err) {
-//     console.error("Error:", err.message);
-//     res.status(500).json({ message: "Server Error" });
-//   }
-// };
 
 
 
@@ -456,36 +275,6 @@ const getRecommendedPosts = async (req, res) => {
 };
 
 
-// ...existing code...
-
-
-
-// const getSingleAuthorPosts = async(req,res)=>{
-//   try{
-
-//     const {email} = req.params;
-
-//     const author = await Author.findOne({ email: { $eq: email }});
-//     if(!author){
-//       return res.status(404).json({message:`author ${email} not found`});
-//     }
-
-//     const authorPosts = author.posts.flatMap((post)=>({
-//       ...post.toObject(),
-//       authorName: author.authorname,
-//       authoremail: author.email,
-//       profile:author.profile || '',
-//       role:author.role,
-//       community:author.community,
-//     })).reverse()
-
-//     res.status(200).json({message:"author posts",data:authorPosts,authorName:author.authorname, profile:author.profile || ''} )
-
-//   }
-//   catch(err){
-//     res.status(500).json({message:err.message})
-//   }
-// }
 
 const getSingleAuthorPosts = async (req, res) => {
   try {
@@ -775,13 +564,9 @@ const addPosts = async (req, res) => {
 };
 
 
-
-
-
 const updatePost = async (req, res) => {
   const { email, postId } = req.params;
   const { title, description, category,links } = req.body;
-  // console.log("new changes", req.body)
 
   
   try {
@@ -817,9 +602,6 @@ const updatePost = async (req, res) => {
       await s3.send(command);
       imageUrl = uniqueFilename;
     }
-
-    // console.log("image",imageUrl)
-
     // Handle document uploads
     let documentUrls =post.documents || [];
     if (req.files && req.files.document) {
@@ -876,8 +658,6 @@ let parsedLinks = post.links || [];
         console.error("Failed to parse links:", err);
       }
     }
-// console.log("links",parsedLinks)
-    // Update post details
   Object.assign(post, { 
       title, 
       image: imageUrl, 
@@ -1289,87 +1069,7 @@ const getAllBookmarkIds = async (req, res) => {
 
 
 
-// const updateMessage = async(req, res)=>{
-// console.log("edit message triggred")
-//   const {email, postId, id} = req.params;
-//   const {message} = req.body;
-//   try{
-
-//     if(!email || !postId || !id){
-//       return  res.status(401).json({error:"email, postId and messageId are required!"})
-//     }
-
-//     const author = await Author.findOne({email : {$eq: email}});
-
-//     if (!author){
-//       return  res.status(404).json({error:"Author not foud!"})
-//     }
-
-//     const post = author.posts.id(postId)
-//     if(!post){
-//       return  res.status(404).json({ error: "post not found!" })
-//     }
-
-//     const comment = post.messages.id(id);
-//     if(!comment){
-//       return res.status(404).json({message: "comment not found!"})
-//     }
-//     comment.message = message.trim();
-
-//     await author.save();
-
-//     res.status(200).json({ message: "comment updated", comment})
-//   }
-
-//   catch(err){
-//     res.status(500).json({ error: err.message })
-//   }
-// }
-
-// const deleteComment = async(req, res)=>{
-//   // console.log("delete comment triggred", req.params)
-
-//   const {email, postId, id} = req.params;
-//   try{
-//     if(!email || !postId || !id){
-//        return res.status(401).json({ message: "email, postId, messageId are required!"})
-//     }
-//     const author = await Author.findOne({email: {$eq: email}})
-    
-//     if(!author){
-//       return res.status(404).json({message: "Author not found!"})
-//     }
-//     const post = author.posts.id(postId)
-
-//     if(!post){
-//       return res.status(404).json({message: "post not found!"})
-//     }
-
-//     const commentIndex = post.messages.findIndex((mesg)=>
-//     mesg._id.toString()=== id);
-    
-//      if (commentIndex === -1){
-//       return res.status(404).json({message:"comment not found!"})
-//     }
-
-//     post.messages.splice(commentIndex, 1);
-
-//     await author.save();
-
-//     res.status(200).json({ message: "comment deleted successfully"})
-//   }
-//   catch(err)
-//   {
-//     res.status(500).json({ message:err.message})
-//     console.log("error", err.message)
-//   }
-// }
-
-
-
-
 module.exports = {
-  // getAllPosts,
   getSingleAuthorPosts,
   getCategoryPosts,
   addPosts,
