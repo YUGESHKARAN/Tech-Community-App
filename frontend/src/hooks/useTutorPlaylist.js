@@ -73,7 +73,7 @@ function useTutorPlaylist() {
         setPlaylistCount(response.data.count);
       }
     } catch (err) {
-      console.error("error", err.message);
+      console.log("error", err.message);
     } finally {
       setLoading(false);
       isFetching.current = false;

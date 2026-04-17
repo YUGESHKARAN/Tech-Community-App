@@ -232,107 +232,226 @@ const s3 = new S3Client({
 
 
 
+
+// Redis cache implemented for getRecommendedPosts
+// const getRecommendedPosts = async (req, res) => {
+//   try {
+//     const { email } = req.params;
+
+//     const page = parseInt(req.query.page) || 1;
+//     const limit = Math.min(parseInt(req.query.limit) || 50, 100);
+//     // console.log("page",page, "limit",limit)
+//     // const cacheKey = `feed:${email}:page:${page}:limit:${limit}`;
+
+//     // 1. CHECK CACHE FIRST
+//     // const cachedData = await redisClient.get(cacheKey);
+
+//     // if (cachedData) {
+//     //   console.log("Serving from Redis cache");
+//     //   return res.status(200).json(JSON.parse(cachedData));
+//     // }
+
+//     // 2. IF NOT IN CACHE → FETCH FROM DB
+//     const startIndex = (page - 1) * limit;
+//     const endIndex = page * limit;
+
+//     let followedEmails = [];
+//     let authorCommunities = [];
+
+//     const currentAuthor = await Author.findOne({ email: { $eq: email }})
+//       .select("following community");
+
+//     if (currentAuthor) {
+//       followedEmails = currentAuthor.following || [];
+//       authorCommunities = currentAuthor.community || [];
+//     }
+
+//     const allAuthors = await Author.find({})
+//       .select("email authorname profile role community posts");
+
+//     const followedSet = new Set(followedEmails);
+
+//     const priorityAuthors = [];
+//     const otherAuthors = [];
+
+//     for (const author of allAuthors) {
+//       const inFollowing = followedSet.has(author.email);
+//       const inCommunity =
+//         Array.isArray(author.community) &&
+//         author.community.some((c) => authorCommunities.includes(c));
+
+//       if (inFollowing || inCommunity) priorityAuthors.push(author);
+//       else otherAuthors.push(author);
+//     }
+
+//     const flattenPosts = (authors) =>
+//       authors.flatMap((author) => {
+//         const posts = Array.isArray(author.posts) ? author.posts : [];
+
+//         const sorted = posts[0]?.createdAt
+//           ? posts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+//           : posts.reverse();
+
+//         return sorted.map((post) => ({
+//           ...post.toObject(),
+//           authorName: author.authorname,
+//           authorEmail: author.email,
+//           profile: author.profile || "",
+//           role: author.role,
+//           community: author.community,
+//         }));
+//       });
+
+//     const shuffle = (arr) => {
+//       const a = arr.slice();
+//       for (let i = a.length - 1; i > 0; i--) {
+//         const j = Math.floor(Math.random() * (i + 1));
+//         [a[i], a[j]] = [a[j], a[i]];
+//       }
+//       return a;
+//     };
+
+//     const priorityPosts = shuffle(flattenPosts(priorityAuthors));
+//     const otherPosts = shuffle(flattenPosts(otherAuthors));
+
+//     const allPosts = [...priorityPosts, ...otherPosts];
+
+//     const paginatedPosts = allPosts.slice(startIndex, endIndex);
+
+//     const responseData = {
+//       message: "Recommended posts",
+//       page,
+//       limit,
+//       totalPosts: allPosts.length,
+//       totalPages: Math.ceil(allPosts.length / limit),
+//       posts: paginatedPosts,
+//     };
+
+//     // 3. STORE IN REDIS (cache for 60 seconds)
+//     // await redisClient.setEx(cacheKey, 300, JSON.stringify(responseData));
+
+//     console.log("Serving from DB and cached to Redis");
+//     res.status(200).json(responseData);
+//   } catch (err) {
+//     console.error("Error:", err);
+//     res.status(500).json({ message: "Server error", error: err.message });
+//   }
+// };
 const getRecommendedPosts = async (req, res) => {
   try {
     const { email } = req.params;
 
     const page = parseInt(req.query.page) || 1;
-    const limit = Math.min(parseInt(req.query.limit) || 50, 100);
-    // console.log("page",page, "limit",limit)
-    // const cacheKey = `feed:${email}:page:${page}:limit:${limit}`;
+    const limit = Math.min(parseInt(req.query.limit) || 20, 50);
 
-    // 1. CHECK CACHE FIRST
-    // const cachedData = await redisClient.get(cacheKey);
+    const feedCacheKey = `postHomeFeed:${email}:full`;
 
-    // if (cachedData) {
-    //   console.log("Serving from Redis cache");
-    //   return res.status(200).json(JSON.parse(cachedData));
-    // }
+    let allPosts = [];
 
-    // 2. IF NOT IN CACHE → FETCH FROM DB
+    // 1. CHECK FULL FEED CACHE
+    const cachedFeed = await redisClient.get(feedCacheKey);
+
+    if (cachedFeed) {
+      console.log("posts Serving FULL FEED from Redis");
+      allPosts = JSON.parse(cachedFeed);
+    } else {
+      console.log("post Cache MISS → Generating feed from DB");
+
+      let followedEmails = [];
+      let authorCommunities = [];
+
+      // Get current user preferences
+      const currentAuthor = await Author.findOne({ email })
+        .select("following community");
+
+      if (currentAuthor) {
+        followedEmails = currentAuthor.following || [];
+        authorCommunities = currentAuthor.community || [];
+      }
+
+      // Get all authors (optimized fields only)
+      const allAuthors = await Author.find({})
+        .select("email authorname profile role community posts");
+
+      const followedSet = new Set(followedEmails);
+
+      const priorityAuthors = [];
+      const otherAuthors = [];
+
+      // Split authors
+      for (const author of allAuthors) {
+        const inFollowing = followedSet.has(author.email);
+        const inCommunity =
+          Array.isArray(author.community) &&
+          author.community.some((c) => authorCommunities.includes(c));
+
+        if (inFollowing || inCommunity) {
+          priorityAuthors.push(author);
+        } else {
+          otherAuthors.push(author);
+        }
+      }
+
+      // Flatten posts
+      const flattenPosts = (authors) =>
+        authors.flatMap((author) => {
+          const posts = Array.isArray(author.posts) ? author.posts : [];
+
+          return posts.map((post) => ({
+            ...post.toObject(),
+            authorName: author.authorname,
+            authorEmail: author.email,
+            profile: author.profile || "",
+            role: author.role,
+            community: author.community,
+          }));
+        });
+
+      // Shuffle (only once)
+      const shuffle = (arr) => {
+        const a = arr.slice();
+        for (let i = a.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+      };
+
+      const priorityPosts = shuffle(flattenPosts(priorityAuthors));
+      const otherPosts = shuffle(flattenPosts(otherAuthors));
+
+      allPosts = [...priorityPosts, ...otherPosts];
+
+      // Cache FULL FEED (5 mins)
+      await redisClient.setEx(feedCacheKey, 300, JSON.stringify(allPosts));
+    }
+
+    // 2. PAGINATION
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
 
-    let followedEmails = [];
-    let authorCommunities = [];
-
-    const currentAuthor = await Author.findOne({ email: { $eq: email }})
-      .select("following community");
-
-    if (currentAuthor) {
-      followedEmails = currentAuthor.following || [];
-      authorCommunities = currentAuthor.community || [];
-    }
-
-    const allAuthors = await Author.find({})
-      .select("email authorname profile role community posts");
-
-    const followedSet = new Set(followedEmails);
-
-    const priorityAuthors = [];
-    const otherAuthors = [];
-
-    for (const author of allAuthors) {
-      const inFollowing = followedSet.has(author.email);
-      const inCommunity =
-        Array.isArray(author.community) &&
-        author.community.some((c) => authorCommunities.includes(c));
-
-      if (inFollowing || inCommunity) priorityAuthors.push(author);
-      else otherAuthors.push(author);
-    }
-
-    const flattenPosts = (authors) =>
-      authors.flatMap((author) => {
-        const posts = Array.isArray(author.posts) ? author.posts : [];
-
-        const sorted = posts[0]?.createdAt
-          ? posts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-          : posts.reverse();
-
-        return sorted.map((post) => ({
-          ...post.toObject(),
-          authorName: author.authorname,
-          authorEmail: author.email,
-          profile: author.profile || "",
-          role: author.role,
-          community: author.community,
-        }));
-      });
-
-    const shuffle = (arr) => {
-      const a = arr.slice();
-      for (let i = a.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [a[i], a[j]] = [a[j], a[i]];
-      }
-      return a;
-    };
-
-    const priorityPosts = shuffle(flattenPosts(priorityAuthors));
-    const otherPosts = shuffle(flattenPosts(otherAuthors));
-
-    const allPosts = [...priorityPosts, ...otherPosts];
-
     const paginatedPosts = allPosts.slice(startIndex, endIndex);
 
+    // 3. RESPONSE
     const responseData = {
       message: "Recommended posts",
       page,
       limit,
       totalPosts: allPosts.length,
       totalPages: Math.ceil(allPosts.length / limit),
+      hasMore: endIndex < allPosts.length,
       posts: paginatedPosts,
     };
 
-    // 3. STORE IN REDIS (cache for 60 seconds)
-    // await redisClient.setEx(cacheKey, 300, JSON.stringify(responseData));
+    console.log("Feed served (cached or sliced)");
 
-    console.log("Serving from DB and cached to Redis");
     res.status(200).json(responseData);
   } catch (err) {
-    console.error("Error:", err);
-    res.status(500).json({ message: "Server error", error: err.message });
+    console.error("Error in getRecommendedPosts:", err);
+    res.status(500).json({
+      message: "Server error",
+      error: err.message,
+    });
   }
 };
 

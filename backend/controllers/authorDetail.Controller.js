@@ -264,6 +264,7 @@ const getSingleAuthor = async (req, res) => {
 //     res.status(500).json({message:"Server error", error: err.message})
 //   }
 // }
+
 const getAuthorsByDomain = async (req, res) => {
   try {
     let { category } = req.params;

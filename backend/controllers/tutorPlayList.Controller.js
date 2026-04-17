@@ -9,6 +9,8 @@ const {
 
 require("dotenv").config();
 
+const redisClient = require("../middleware/redis");
+
 const bucketName = process.env.BUCKET_NAME;
 const bucketRegion = process.env.BUCKET_REGION;
 const accessKey = process.env.ACCESS_KEY;
@@ -85,68 +87,82 @@ const getAllTutorPlaylist = async (req, res) => {
   }
 };
 
-const getRecommendedTutorPlaylist = async (req, res) => {
-  try {
-    const { email } = req.params;
+// Redis cache implemented getRecommendedTutorPlaylist
+// const getRecommendedTutorPlaylist = async (req, res) => {
+//   try {
+//     const { email } = req.params;
 
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
-    const skip = (page - 1) * limit;
+//     const page = parseInt(req.query.page) || 1;
+//     const limit = parseInt(req.query.limit) || 10;
+//     const skip = (page - 1) * limit;
 
-    const currentAuthor = Author.findOne({ email: { $eq: email } });
-    if (!currentAuthor) {
-      return res.status(404).json({ message: "author not found" });
-    }
+//     // 1. CHECK CACHE FIRST
+//     const cacheKey = `playlist:${email}:page:${page}:limit:${limit}`;
 
-    const authorCommunity = currentAuthor.community || [];
-    const authorFollowers = currentAuthor.followers || [];
+//     if (cachedData) {
+//       console.log("Serving from Redis cache");
+//       return res.status(200).json(JSON.parse(cachedData));
+//     }
 
-    const authorFollowersSet = new Set(authorFollowers);
+//     const currentAuthor = await Author.findOne({ email: { $eq: email } });
+//     if (!currentAuthor) {
+//       return res.status(404).json({ message: "author not found" });
+//     }
 
-    const tutorPlaylist = await TutorPlayList.find({}).skip(skip).limit(limit);
+//     const authorCommunity = currentAuthor.community || [];
+//     const authorFollowers = currentAuthor.followers || [];
 
-    const priorityPlaylist = [];
-    const othersPlaylist = [];
+//     const authorFollowersSet = new Set(authorFollowers);
 
-    for (const playlist of tutorPlaylist) {
-      const inFollowing = authorFollowersSet.has(playlist.email);
-      const inCommunity = authorCommunity.includes(playlist.domain);
+//     const tutorPlaylist = await TutorPlayList.find({}).skip(skip).limit(limit);
 
-      if (inFollowing || inCommunity) {
-        priorityPlaylist.push(playlist);
-      } else {
-        othersPlaylist.push(playlist);
-      }
-    }
+//     const priorityPlaylist = [];
+//     const othersPlaylist = [];
 
-    const shuffle = (arr) => {
-      const a = arr.slice();
-      for (let i = a.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [a[i], a[j]] = [a[j], a[i]];
-      }
-      return a;
-    };
+//     for (const playlist of tutorPlaylist) {
+//       const inFollowing = authorFollowersSet.has(playlist.email);
+//       const inCommunity = authorCommunity.includes(playlist.domain);
 
-    const recommendedPart = shuffle(priorityPlaylist);
-    const remainingPart = shuffle(othersPlaylist);
+//       if (inFollowing || inCommunity) {
+//         priorityPlaylist.push(playlist);
+//       } else {
+//         othersPlaylist.push(playlist);
+//       }
+//     }
 
-    const finalPlaylist = [...recommendedPart, ...remainingPart];
+//     const shuffle = (arr) => {
+//       const a = arr.slice();
+//       for (let i = a.length - 1; i > 0; i--) {
+//         const j = Math.floor(Math.random() * (i + 1));
+//         [a[i], a[j]] = [a[j], a[i]];
+//       }
+//       return a;
+//     };
 
-    const count = await TutorPlayList.countDocuments();
+//     const recommendedPart = shuffle(priorityPlaylist);
+//     const remainingPart = shuffle(othersPlaylist);
 
-    // console.log(`recomended playlist page ${page} limit ${limit}`);
-    // console.log("recommended playlist called")
+//     const finalPlaylist = [...recommendedPart, ...remainingPart];
 
-    res.status(200).json({
-      message: "recommended playlist",
-      data: finalPlaylist,
-      count,
-    });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
+//     const count = await TutorPlayList.countDocuments();
+
+//     // console.log(`recomended playlist page ${page} limit ${limit}`);
+//     // console.log("recommended playlist called")
+
+//     const responseData = {
+//       message: "recommended playlist",
+//       data: finalPlaylist,
+//       count,
+//     };
+
+//     // 3. STORE IN REDIS (cache for 5 min seconds)
+//     await redisClient.setEx(cacheKey, 300, JSON.stringify(responseData));
+//      console.log("ply content Serving from DB and cached to Redis");
+//     res.status(200).json(responseData);
+//   } catch (err) {
+//     res.status(500).json({ message: err.message });
+//   }
+// };
 
 // const getPlaylistByEmail = async (req, res) => {
 //   try {
@@ -165,6 +181,103 @@ const getRecommendedTutorPlaylist = async (req, res) => {
 //     res.status(500).json({ message: err.message });
 //   }
 // };
+const getRecommendedTutorPlaylist = async (req, res) => {
+  try {
+    const { email } = req.params;
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = Math.min(parseInt(req.query.limit) || 10, 30);
+
+    const feedCacheKey = `playlistHomeFeed:${email}:full`;
+
+    let allPlaylists = [];
+
+    //1. CHECK FULL FEED CACHE
+    const cachedFeed = await redisClient.get(feedCacheKey);
+
+    if (cachedFeed) {
+      console.log("Playlist FULL FEED from Redis");
+      allPlaylists = JSON.parse(cachedFeed);
+    } else {
+      console.log("Playlist Cache MISS → Generating from DB");
+      const currentAuthor = await Author.findOne({ email });
+
+      if (!currentAuthor) {
+        return res.status(404).json({ message: "Author not found" });
+      }
+
+      const authorCommunity = currentAuthor.community || [];
+      const authorFollowers = currentAuthor.followers || [];
+
+      const followersSet = new Set(authorFollowers);
+
+      //REMOVE skip/limit here → fetch all
+      const tutorPlaylists = await TutorPlayList.find({});
+
+      const priorityPlaylist = [];
+      const othersPlaylist = [];
+
+      // Split playlists
+      for (const playlist of tutorPlaylists) {
+        const inFollowing = followersSet.has(playlist.email);
+        const inCommunity = authorCommunity.includes(playlist.domain);
+
+        if (inFollowing || inCommunity) {
+          priorityPlaylist.push(playlist);
+        } else {
+          othersPlaylist.push(playlist);
+        }
+      }
+
+      // Shuffle once
+      const shuffle = (arr) => {
+        const a = arr.slice();
+        for (let i = a.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+      };
+
+      const recommendedPart = shuffle(priorityPlaylist);
+      const remainingPart = shuffle(othersPlaylist);
+
+      allPlaylists = [...recommendedPart, ...remainingPart];
+
+      // Cache FULL FEED
+      await redisClient.setEx(
+        feedCacheKey,
+        300,
+        JSON.stringify(allPlaylists)
+      );
+    }
+
+    // 2. PAGINATION 
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
+    const paginatedPlaylists = allPlaylists.slice(startIndex, endIndex);
+
+    // 3. RESPONSE
+    const responseData = {
+      message: "Recommended playlist",
+      page,
+      limit,
+      total: allPlaylists.length,
+      totalPages: Math.ceil(allPlaylists.length / limit),
+      hasMore: endIndex < allPlaylists.length,
+      data: paginatedPlaylists,
+    };
+
+    console.log("Playlist served (cached or sliced)");
+
+    res.status(200).json(responseData);
+  } catch (err) {
+    console.error("Error in getRecommendedTutorPlaylist:", err);
+    res.status(500).json({ message: err.message });
+  }
+};
+
 
 const getPlaylistByEmail = async (req, res) => {
   try {
@@ -184,13 +297,11 @@ const getPlaylistByEmail = async (req, res) => {
     // }
     const playlistCountByEmail = tutorPlayList.length;
 
-    res
-      .status(200)
-      .json({
-        message: "individual user playlist",
-        data: tutorPlayList,
-        count: playlistCountByEmail,
-      });
+    res.status(200).json({
+      message: "individual user playlist",
+      data: tutorPlayList,
+      count: playlistCountByEmail,
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
