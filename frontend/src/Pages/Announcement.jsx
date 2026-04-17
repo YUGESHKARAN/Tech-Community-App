@@ -310,11 +310,12 @@ function Announcement() {
                             type="text"
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
+                            placeholder="Announcement title"
                             className="w-full mt-1 px-3 py-2 bg-[#0f172a] border border-slate-700
-                     rounded-md focus:outline-none focus:border-emerald-500/20 text-sm"
+                     rounded-md focus:outline-none focus:border-emerald-500/20 text-xs"
                           />
                           {fieldErrors.title && (
-                            <p className="text-sm text-red-500 mt-1">
+                            <p className="text-xs md:text-sm text-red-500 mt-1">
                               {fieldErrors.title}
                             </p>
                           )}
@@ -328,11 +329,12 @@ function Announcement() {
                           <textarea
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
+                            placeholder="Announcement message..."
                             className="w-full mt-1 px-3 py-2 bg-[#0f172a] border border-slate-700
-                     rounded-md focus:outline-none emerald-scrollbar focus:border-emerald-500/20 text-slate-300 leading-relaxed text-xs md:text-sm"
+                     rounded-md focus:outline-none emerald-scrollbar focus:border-emerald-500/20 text-slate-300 leading-relaxed text-xs"
                           />
                           {fieldErrors.message && (
-                            <p className="text-sm text-red-500 mt-1">
+                            <p className="text-xs md:text-sm text-red-500 mt-1">
                               {fieldErrors.message}
                             </p>
                           )}
@@ -475,7 +477,7 @@ function Announcement() {
                             value={deliveredTo}
                             onChange={(e) => setDeliveredTo(e.target.value)}
                             className="mt-1 block w-full px-3 py-2 bg-[#0f172a]
-                    border border-slate-700 cursor-pointer rounded-md focus:outline-none focus:border-emerald-500/20 text-sm"
+                    border border-slate-700 cursor-pointer rounded-md focus:outline-none focus:border-emerald-500/20 text-xs md:text-sm"
                           >
                             <option value="">Choose recipients</option>
                             <option value="community">Community</option>
@@ -484,7 +486,7 @@ function Announcement() {
                           </select>
 
                           {fieldErrors.deliveredTo && (
-                            <p className="text-sm text-red-500 mt-1">
+                            <p className="text-xs md:text-sm text-red-500 mt-1">
                               {fieldErrors.deliveredTo}
                             </p>
                           )}
@@ -544,9 +546,9 @@ function Announcement() {
                           type="submit"
                           disabled={loading}
                           className="w-full py-2.5 bg-emerald-600/20 hover:bg-emerald-500/20
-                   text-emerald-400 text-sm  rounded-md transition"
+                   text-emerald-400 text-xs md:text-sm  rounded-md transition"
                         >
-                          {loading ? "Submitting..." : "Submit Announcement"}
+                          {loading ? "Publishing..." : "Publish Announcement"}
                         </button>
                       </form>
                     </div>
