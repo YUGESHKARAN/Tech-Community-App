@@ -8,7 +8,7 @@ import { HiOutlineUserCircle } from "react-icons/hi";
 import Footer from "../ui/Footer";
 import axiosInstance from "../instances/Axiosinstances";
 import { IoIosRemoveCircleOutline } from "react-icons/io";
-import { FaLinkedin } from "react-icons/fa";
+import { FaLinkedin, FaUserAlt } from "react-icons/fa";
 import { FaSquareGithub } from "react-icons/fa6";
 import { BsPersonSquare } from "react-icons/bs";
 import { ImProfile } from "react-icons/im";
@@ -857,6 +857,8 @@ function ProfilePage() {
             <h1 className="text-2xl md:text-3xl font-medium tracking-tight text-white">
               My Profile
             </h1>
+            
+          
           </div>
           <button
             onClick={() => setShowConfirm(true)}

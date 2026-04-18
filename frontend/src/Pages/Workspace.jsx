@@ -20,7 +20,7 @@ function Workspace() {
       <div className="w-ful mx-auto px-4 h-screen md:px-8 pt-4 text-white">
         {/* Header */}
         <div className="md:mb-10 mb-7">
-          <h1 className="text-2xl flex items-center gap-4 md:text-4xl font-semibold tracking-wide">
+          <h1 className="text-2xl flex items-center tracking-tight gap-4 md:text-4xl font-semibold ">
             <BsPersonWorkspace /> Workspace
           </h1>
           <p className="text-gray-400 mt-2 text-sm">
@@ -56,8 +56,8 @@ function Workspace() {
 
         {/* Quick Actions */}
         <section className="md:mb-12 mb-7">
-          <h2 className="text-lg md:text-xl text-white font-semibold mb-4">
-            Quick Actions
+          <h2 className="text-lg md:text-xl text-gray-400 tracking-tight font-semibold mb-4">
+            Create Content
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -79,7 +79,7 @@ function Workspace() {
 
         {/* Management Section */}
         <section>
-          <h2 className="text-lg text-white md:text-xl font-semibold mb-4">
+          <h2 className="text-lg text-gray-400 tracking-tight md:text-xl font-semibold mb-4">
             Manage Content
           </h2>
 

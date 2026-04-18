@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { MdDeleteForever } from "react-icons/md";
+import { MdDeleteForever, MdManageAccounts } from "react-icons/md";
 import Footer from "../../ui/Footer";
 import { IoSearch } from "react-icons/io5";
 import axiosInstance from "../../instances/Axiosinstances";
@@ -256,9 +256,16 @@ function Control() {
     // <div className="relative w-full min-h-screen h-auto  bg-gradient-to-br from-gray-900 to-gray-700">
     <div className="min-h-screen h-auto relative w-full   bg-gray-900">
       <NavBar />
-      <h1 className="md:text-4xl text-3xl font-semibold my-5 text-white text-left  w-full px-4 mx-auto">
-        Control Panel
-      </h1>
+      {/* <h1 className="md:text-4xl text-3xl font-semibold my-5 text-white text-left  w-full px-4 mx-auto">
+       <MdManageAccounts/> Control Panel
+      </h1> */}
+
+       <div className="w-full px-4 mx-auto flex items-center gap-3 pt-6 pb-3 md:py-6">
+              <MdManageAccounts className="text-green-400 text-3xl" />
+              <h1 className="text-2xl md:text-3xl font-semibold tracking-tight text-white">
+                Control Panel
+              </h1>
+            </div>
 
       {/* Search and Filter */}
       <div className="w-full px-4 py-2 mx-auto flex  md:flex-row justify-between items-center gap-4 mb-6">
@@ -431,44 +438,6 @@ function Control() {
                 </button>
               </div>
 
-              {/* {author.role === "coordinator" && (
-                <div className="mt-4 text-white">
-                  <p className="mb-1 text-sm font-semibold">
-                    Assign Tech Communities:
-                  </p>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                    {communities.map((community, idx) => (
-                      <label
-                        key={idx}
-                        className="flex items-center space-x-2 text-xs"
-                      >
-                        <input
-                          type="checkbox"
-                          checked={
-                            assignedCommunities[author.email]?.includes(
-                              community.categoryname,
-                            ) || false
-                          }
-                          onChange={() =>
-                            handleCommunityCheckbox(
-                              author.email,
-                              community.categoryname,
-                            )
-                          }
-                          className="form-checkbox accent-green-500"
-                        />
-                        <span>{community.categoryname}</span>
-                      </label>
-                    ))}
-                  </div>
-                  <button
-                    onClick={() => updateAssignedCommunities(author.email)}
-                    className="mt-2 text-xs md:text-sm bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
-                  >
-                    Save Communities
-                  </button>
-                </div>
-              )} */}
                 <div className="mt-4 text-white">
                 <p className="mb-3 text-sm ">Assign Tech Communities:</p>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-2">

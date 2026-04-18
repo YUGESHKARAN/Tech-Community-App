@@ -26,6 +26,7 @@ function TechCommunity() {
   //  const [communities, setCommunities] = useState([]);
   const {communities,loading} = useGetCommunityAnalytics();
   const [updateDomain, setUpdateDomain] = useState(null)
+  
 
 
 
@@ -194,7 +195,7 @@ function TechCommunity() {
           {/* <p className="text-[10px] font-semibold tracking-[0.3em] text-emerald-400 uppercase mb-3">
             Explore · Learn · Contribute
           </p> */}
-          <h1 className="text-2xl md:text-4xl font-bold md:font-black md:tracking-tight text-gray-200 leading-none mb-4">
+          <h1 className="text-2xl md:text-4xl font-bold   text-gray-200 leading-none mb-4">
             Tech Communities
           </h1>
           <p className="text-xs text-gray-400 max-w-sm md:max-w-md mx-auto leading-relaxed">

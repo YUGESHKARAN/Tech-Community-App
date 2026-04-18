@@ -20,6 +20,7 @@ import StudentGridSkeleton from "../components/loaders/StudentGridSkeleton ";
 import Cookies from "js-cookie";
 import Fuse from "fuse.js";
 import { getItem } from "../utils/encode";
+import highlightText from "../hooks/highlightText";
 function Authors() {
   const [authors, setAuthors] = useState([]);
   // const email = localStorage.getItem("email");
@@ -135,7 +136,7 @@ function Authors() {
   const fuse = useMemo(() => {
     return new Fuse(authors, {
       keys: ["authorName", "email"],
-      threshold: 0.3, // lower = stricter search
+      threshold: 0.2, // lower = stricter search
     });
   }, [authors]);
 
@@ -178,21 +179,7 @@ function Authors() {
     recommendtion_system();
   }, []);
 
-  // const addFollower = async (userEmail) => {
-  //   console.log("useremail", userEmail);
-  //   try {
-  //     const response = await axiosInstance.put(
-  //       `/blog/author/follow/${userEmail}`,
-  //       { emailAuthor: email },
-  //     );
-  //     if (response.status === 200) {
-  //       console.log(response.data);
-  //       authorsDetails();
-  //     }
-  //   } catch (err) {
-  //     console.log("error", err);
-  //   }
-  // };
+
 
   const addFollower = async (userEmail) => {
     try {
@@ -236,13 +223,42 @@ function Authors() {
   [recommendation]
 );
 
-const recommendedAuthors = useMemo(() => {
-  return authors.filter(
+
+let rcmdAuthors =  authors.filter(
     (author) =>
       recommendationSet.has(author.email) &&
       author.role === "coordinator"
   );
-}, [authors, recommendationSet]);
+
+  const fuse2 = useMemo(() => {
+    return new Fuse(rcmdAuthors, {
+      keys: ["authorName", "email"],
+      threshold: 0.1, // lower = stricter search
+    });
+  }, [rcmdAuthors]);
+// const recommendedAuthors = useMemo(() => {
+  
+//   return authors.filter(
+//     (author) =>
+//       recommendationSet.has(author.email) &&
+//       author.role === "coordinator"
+//   );
+// }, [authors, searchQuery, recommendationSet]);
+
+const recommendedAuthors = useMemo(() => {
+
+  let filtered =  authors.filter(
+    (author) =>
+      recommendationSet.has(author.email) &&
+      author.role === "coordinator"
+  );
+   if (debouncedSearch.trim() !== "") {
+      filtered = fuse2.search(debouncedSearch).map((r) => r.item);
+      // filtered = []
+    }
+    return  filtered
+ 
+}, [authors, searchQuery, debouncedSearch, recommendationSet]);
 
 
   return (
@@ -254,11 +270,53 @@ const recommendedAuthors = useMemo(() => {
         <span className="group text-white">My Network </span>{" "}
       </h1> */}
 
-      <div className="w-full px-4 mx-auto flex items-center gap-3 py-6">
+      <div className="w-full px-4 mx-auto flex items-center gap-3 pt-6 pb-3 md:py-6">
         <IoIosGitNetwork className="text-green-400 text-3xl" />
-        <h1 className="text-2xl md:text-3xl font-semibold text-white">
+        <h1 className="text-2xl md:text-3xl font-semibold tracking-tight text-white">
           My Network
         </h1>
+      </div>
+
+       {/* Search and Filter */}
+      <div className="w-full px-4 mx-auto flex mt-4   md:flex-row justify-between items-center gap-4  mb-6">
+        <div
+          // className="md:w-1/3 w-3/5 px-4 py-2 flex items-center gap-2 justify-center rounded-md bg-gray-600 border border-white text-xs md:text-base text-white placeholder-gray-400"
+          className="w-full max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-2xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition"
+        >
+          <IoSearch className="text-white" />
+          <input
+            type="text"
+            placeholder="Search by name or email..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            // className="w-full bg-gray-600   focus:outline-none focus:ring-0"
+            className="bg-transparent w-full focus:outline-none text-sm text-white placeholder-gray-400"
+          />
+        </div>
+
+        <select
+          value={roleFilter}
+          onChange={(e) => setRoleFilter(e.target.value)}
+          className="
+            w-32 md:w-64
+            px-3 py-2
+            rounded-full
+            bg-gray-800 backdrop-blur-md
+            border border-gray-600
+            text-xs 
+            text-white
+            shadow-md
+            cursor-pointer
+            transition-all duration-200
+            focus:outline-none
+            focus:ring-1 focus:ring-teal-500/50
+            hover:bg-gray-900
+          "
+        >
+          <option value="">All Roles</option>
+          <option value="coordinator">Contributors</option>
+          <option value="student">Users</option>
+        </select>
       </div>
 
   
@@ -294,10 +352,12 @@ const recommendedAuthors = useMemo(() => {
 
               <div className="flex-1 ">
                 <h3 className="text-sm font-semibold text-white truncate">
-                  {author.authorName}
+                  {/* {author.authorName} */}
+                  {highlightText(author.authorName, debouncedSearch)}
                 </h3>
                 <p className="text-xs text-gray-400 text-[9px] w-9/12 md:w-9/12 truncate">
-                  {author.email}
+                  {/* {author.email} */}
+                  {highlightText(author.email, debouncedSearch)}
                 </p>
               </div>
             </div>
@@ -361,54 +421,14 @@ const recommendedAuthors = useMemo(() => {
           </>
         )}
 
-      {/* Search and Filter */}
-      <div className="w-full px-4 mx-auto flex mt-7   md:flex-row justify-between items-center gap-4 md:mt-10 mb-6">
-        <div
-          // className="md:w-1/3 w-3/5 px-4 py-2 flex items-center gap-2 justify-center rounded-md bg-gray-600 border border-white text-xs md:text-base text-white placeholder-gray-400"
-          className="w-full max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-2xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition"
-        >
-          <IoSearch className="text-white" />
-          <input
-            type="text"
-            placeholder="Search by name or email..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            // className="w-full bg-gray-600   focus:outline-none focus:ring-0"
-            className="bg-transparent w-full focus:outline-none text-sm text-white placeholder-gray-400"
-          />
-        </div>
-
-        <select
-          value={roleFilter}
-          onChange={(e) => setRoleFilter(e.target.value)}
-          className="
-            w-32 md:w-64
-            px-3 py-2
-            rounded-full
-            bg-gray-800 backdrop-blur-md
-            border border-gray-600
-            text-xs 
-            text-white
-            shadow-md
-            cursor-pointer
-            transition-all duration-200
-            focus:outline-none
-            focus:ring-1 focus:ring-teal-500/50
-            hover:bg-gray-900
-          "
-        >
-          <option value="">All Roles</option>
-          <option value="coordinator">Contributors</option>
-          <option value="student">Users</option>
-        </select>
-      </div>
+     
 
       <div className="w-full px-4 mx-auto min-h-screen flex flex-col items-center text-white">
         {/* Coordinators Section */}
         {filteredAuthors.filter((author) => author.role === "coordinator")
           .length > 0 && (
           // <h2 className="text-center text-2xl md:text-4xl font-semibold mb-6 bg-gradient-to-r from-orange-400 to-yellow-300 bg-clip-text text-transparent">
-          <h2 className="w-full   text-center text-sm md:text-gray-400 tracking-widest uppercase text-gray-500  font-semibold my-6">
+          <h2 className="w-full   text-center text-sm md:text-gray-500 tracking-widest uppercase text-gray-500  font-semibold my-6">
             Contributors
           </h2>
         )}
@@ -434,9 +454,13 @@ const recommendedAuthors = useMemo(() => {
                 </Link>
 
                 <h3 className="mt-3 font-semibold text-white truncate">
-                  {author.authorName}
+                  {/* {author.authorName} */}
+                  {highlightText(author.authorName, debouncedSearch)}
                 </h3>
-                <p className="text-xs text-gray-400 mx-auto truncate">{author.email}</p>
+                <p className="text-xs text-gray-400 mx-auto truncate">
+                  {/* {author.email} */}
+                  {highlightText(author.email, debouncedSearch)}
+                  </p>
 
                 <div className="flex justify-center gap-6 mt-4 text-xs text-gray-300">
                   <span>
@@ -522,7 +546,7 @@ const recommendedAuthors = useMemo(() => {
             .length == 0 && roleFilter !== "student" &&
             loading && (
               <div className="col-span-full">
-                <h2 className="w-full   text-center text-sm md:text-gray-400 tracking-widest uppercase text-gray-500  font-semibold my-6">
+                <h2 className="w-full   text-center text-sm md:text-gray-500 tracking-widest uppercase text-gray-500  font-semibold my-6">
                   Contributors
                 </h2>
                 <CoordinatorGridSkeleton />
@@ -541,7 +565,7 @@ const recommendedAuthors = useMemo(() => {
         {/* Students Section */}
         {filteredAuthors.filter((author) => author.role === "student").length >
           0 && (
-          <h2 className={`w-full   text-center text-sm md:text-gray-400 tracking-widest uppercase text-gray-500  font-semibold  ${roleFilter=='student'?'mt-6':' mt-16'}`}>
+          <h2 className={`w-full   text-center text-sm md:text-gray-500 tracking-widest uppercase text-gray-500  font-semibold  ${roleFilter=='student'?'mt-6':' mt-16'}`}>
             Users
           </h2>
         )}
@@ -590,12 +614,14 @@ const recommendedAuthors = useMemo(() => {
 
                 {/* Name */}
                 <h3 className="mt-4 font-semibold text-sm md:text-base text-white truncate w-full">
-                  {author.authorName}
+                  {/* {author.authorName} */}
+                  {highlightText(author.authorName, debouncedSearch)}
                 </h3>
 
                 {/* Email */}
                 <p className="text-xs text-gray-400 truncate w-full">
-                  {author.email}
+                  {/* {author.email} */}
+                  {highlightText(author.email, debouncedSearch)}
                 </p> 
 
                 {/* Social Links */}
@@ -645,7 +671,7 @@ const recommendedAuthors = useMemo(() => {
              roleFilter !== "coordinator" && 
             loading && (
               <div className="col-span-full">
-                <h2 className="w-full   text-center text-sm md:text-gray-400 tracking-widest uppercase text-gray-500  font-semibold my-6">
+                <h2 className="w-full   text-center text-sm md:text-gray-500 tracking-widest uppercase text-gray-500  font-semibold my-6">
                   Users
                 </h2>
                 <StudentGridSkeleton />
@@ -679,7 +705,7 @@ const recommendedAuthors = useMemo(() => {
     //   {/* Recommended */}
     //   {recommendedAuthors.length > 0 && (
     //     <div className="w-11/12 mx-auto">
-    //       <hName="text-lg text-sm md:text-gray-400d text-green-400 mb-4">
+    //       <hName="text-lg text-sm md:text-gray-500d text-green-400 mb-4">
     //         People you may know
     //       </h2>
 

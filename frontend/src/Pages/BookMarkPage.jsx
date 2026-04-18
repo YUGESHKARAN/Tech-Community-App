@@ -279,7 +279,7 @@ function BookMarkPage() {
       <NavBar />
       <h1 className=" text-2xl mt-4 px-2  md:w-full flex items-center gap-2 mx-auto md:text-3xl font-semibold text-white tracking-wide">
         <BiBookmarkAlt />
-        <span className="group text-white"> My Bookmarks </span>{" "}
+        <span className="group tracking-tight text-white"> My Bookmarks </span>{" "}
       </h1>
 
       <div
@@ -361,7 +361,7 @@ function BookMarkPage() {
       
               <div 
               // className="flex md:max-w-5xl md:w-fit mt-10 scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto"
-              className="flex w-full px-3  md:w-fit md:max-w-7xl  mt-2 py-5 z-50 scrollbar-hide mx-auto items-center justify-start gap-3 md:mb-5 overflow-x-auto"
+              className="flex w-full px-3  md:w-fit md:max-w-7xl  md:mt-2 pt-5 md:py-5 z-50 scrollbar-hide mx-auto items-center justify-start gap-3 md:mb-5 overflow-x-auto"
               >
                 {/* All Button */}
                 <div

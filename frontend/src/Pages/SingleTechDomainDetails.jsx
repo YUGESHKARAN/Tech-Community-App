@@ -580,7 +580,7 @@ function SingleTechDomainDetails() {
         {/* ── COORDINATORS ─────────────────────────────────────── */}
         {(filter==="Coordinators" || filter==="") && authors.filter((a) => a.role === "coordinator").length > 0 && (
           <section className="mt-10">
-            <p className="text-xs text-center md:text-sm font-medium tracking-widest uppercase md:text-gray-400 text-gray-500 mb-4">
+            <p className="text-xs text-center md:text-sm font-medium tracking-widest uppercase  text-gray-500 mb-4">
               Community Coordinators
             </p>
 
@@ -710,7 +710,7 @@ function SingleTechDomainDetails() {
         {loading && (filter==="Coordinators" || filter==="") &&
           authors.filter((a) => a.role === "coordinator").length === 0 && (
             <section className="mt-10">
-              <p className="text-xs text-center md:text-sm font-medium tracking-widest uppercase md:text-gray-400 text-gray-500 mb-4">
+              <p className="text-xs text-center md:text-sm font-medium tracking-widest uppercase  text-gray-500 mb-4">
                 Community Coordinators
               </p>
               <CoordinatorGridSkeleton />
@@ -726,7 +726,7 @@ function SingleTechDomainDetails() {
         {/* ── MEMBERS ──────────────────────────────────────────── */}
         {(filter==="Members" || filter==="") && authors.filter((a) => a.role === "student").length > 0 && (
           <section className="mt-10">
-            <p className="text-xs text-center md:text-sm font-medium tracking-widest uppercase md:text-gray-400 text-gray-500 mb-4">
+            <p className="text-xs text-center md:text-sm font-medium tracking-widest uppercase  text-gray-500 mb-4">
               Community Members
             </p>
 
@@ -834,7 +834,7 @@ function SingleTechDomainDetails() {
         {loading &&
           authors.filter((a) => a.role === "student").length === 0 && (
             <section className="mt-10">
-              <p className="text-xs text-center md:text-sm font-medium tracking-widest uppercase md:text-gray-400 text-gray-500 mb-4">
+              <p className="text-xs text-center md:text-sm font-medium tracking-widest uppercase  text-gray-500 mb-4">
                 Community Members
               </p>
               <StudentGridSkeleton />

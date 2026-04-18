@@ -33,7 +33,7 @@ function HomePage() {
       <NavBar />
 
 
-      <div className=" flex items-center justify-between top-0 z-40 p-2 pl-3 md:p-0  md:pt-2 w-fit   md:ml-4 md:mx-auto">
+      <div className=" flex items-center justify-between top-0  p-2 pl-3 md:p-0  md:pt-2 w-fit   md:ml-4 md:mx-auto">
         <div className="flex items-center gap-5">
           <button
             onClick={() => setActiveTab("posts")}
