@@ -273,12 +273,12 @@ function Announcement() {
               </h3>
 
               <div className="space-y-3 text-sm">
-                <div className="flex justify-between">
+                <div className="flex  justify-between">
                   <span className="text-slate-400">Role</span>
-                  <span className="capitalize font-medium">{role}</span>
+                  <span className="capitalize  font-medium">{role}</span>
                 </div>
 
-                <div className="flex justify-between">
+                <div className="flex md:text-sm text-xs justify-between">
                   <span className="text-slate-400">Total Announcements</span>
                   <span className="font-medium">
                     {announcement?.length > 0
