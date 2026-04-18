@@ -4,6 +4,7 @@ const path = require('path');
 
 const { v4: uuidv4 } = require('uuid'); // For generating unique IDs
 const mongoose = require("mongoose");
+const axios = require("axios");
 
 const sharp = require('sharp');
 dotenv = require("dotenv");
@@ -43,13 +44,6 @@ const s3 = new S3Client({
   },
   region:bucketRegion
 })
-
-
-
-
-
-
-
 
 
 // Redis cache implemented for getRecommendedPosts
@@ -156,6 +150,7 @@ const s3 = new S3Client({
 //     res.status(500).json({ message: "Server error", error: err.message });
 //   }
 // };
+
 const getRecommendedPosts = async (req, res) => {
   try {
     const { email } = req.params;
@@ -348,8 +343,6 @@ const getCategoryPosts = async (req, res) => {
 };
 
 
-
-const axios = require("axios");
 
 async function notifyAIIngestion(post, token) {
  try{
