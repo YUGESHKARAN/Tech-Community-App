@@ -619,13 +619,20 @@ function Announcement() {
                         <h3 className="text-xs uppercase tracking-wide text-slate-400">
                           New Campaign
                         </h3>
-                        <button
+
+                            <button
+                  onClick={() => setShowAnnouncement(!showAnnouncement)}
+                  className="text-emerald-500 text-sm"
+                >
+                  ← Back
+                </button>
+                        {/* <button
                           onClick={() => setShowAnnouncement(!showAnnouncement)}
                           className="md:px-3 px-3 py-1 bg-emerald-600/20 hover:bg-emerald-500/20
                           rounded-md text-xs    text-emerald-400 transition"
                         >
                       Close
-                        </button>
+                        </button> */}
                       </div>
 
                       <form onSubmit={handleSubmit} className="space-y-5">
