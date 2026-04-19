@@ -423,7 +423,7 @@ const getAllAuthorsByDomain = async (req, res) => {
 //   }
 // };
 const updateAuthor = async (req, res) => {
-  console.log("updateAuthor called");
+  // console.log("updateAuthor called");
   const { authorname, email, role, techcommunity, links } = req.body;
 
   // fix: generate S3 key in same format used when profile was first uploaded

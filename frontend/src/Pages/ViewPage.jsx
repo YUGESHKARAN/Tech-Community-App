@@ -382,9 +382,9 @@ function ViewPage() {
   };
 
   // console.log("email", email);
-  console.log("userEmail", userEmail);
+  // console.log("userEmail", userEmail);
 
-  console.log("post id", postId);
+  // console.log("post id", postId);
   // console.log("singlepost data", singlePostData);
 
   return (

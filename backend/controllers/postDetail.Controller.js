@@ -1177,7 +1177,7 @@ const addPosts = async (req, res) => {
 //   }
 // };
 const updatePost = async (req, res) => {
-  console.log("update called");
+  // console.log("update called");
   const { email, postId } = req.params;
   const { title, description, category, links } = req.body;
 
