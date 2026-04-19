@@ -1045,134 +1045,255 @@ const addPosts = async (req, res) => {
 // };
 
 // reviewed-----------------------------------------------------
-const updatePost = async (req, res) => {
-  const { email, postId } = req.params;
-  const { title, description, category,links } = req.body;
+// const updatePost = async (req, res) => {
+//   console.log("update called")
+//   const { email, postId } = req.params;
+//   const { title, description, category,links } = req.body;
 
   
-  try {
-    const author = await Author.findOne({ email: { $eq: email }});
+//   try {
+//     const author = await Author.findOne({ email: { $eq: email }});
 
+//     if (!author) {
+//       return res.status(404).json({ message: "author not found" });
+//     }
+
+//     const post = author.posts.id(postId);
+
+//     if (!post) {
+//       return res.status(404).json({ message: "post not found" });
+//     }
+
+//     // Handle image upload
+//     let imageUrl = post.image ||[];
+//     if (req.files && req.files.image) {
+//       const buffer = await sharp(req.files.image[0].buffer)
+//         .resize({ width: 672, height: 462, fit: 'contain' })
+//         .toBuffer();
+      
+//         const uniqueFilename = `${uuidv4()}-${req.files.image[0].originalname}`;
+
+//       const params = {
+//         Bucket: bucketName,
+//         Key: uniqueFilename,
+//         Body: buffer,
+//         ContentType: req.files.image[0].mimetype
+//       };
+
+//       const command = new PutObjectCommand(params);
+//       await s3.send(command);
+//       imageUrl = uniqueFilename;
+//     }
+//     // Handle document uploads
+//     let documentUrls =post.documents || [];
+//     if (req.files && req.files.document) {
+//       documentUrls = [];
+//       for (const doc of req.files.document) {
+//          const uniqueDocName = `${uuidv4()}-${doc.originalname}`;
+//         const params = {
+//           Bucket: bucketName,
+//           Key: uniqueDocName,
+//           Body: doc.buffer,
+//           ContentType: doc.mimetype
+//         };
+
+//         const command = new PutObjectCommand(params);
+//         await s3.send(command);
+//         documentUrls.push(uniqueDocName);
+//       }
+//     }
+
+// let parsedLinks = post.links || [];
+//     // --- Parse links safely ---
+//     if (links && JSON.parse(links).length > 0) {
+//       try {
+//         const parsed = typeof links === "string" ? JSON.parse(links) : links;
+
+//         if (Array.isArray(parsed)) {
+//           incomingLinks = parsed.map((link) => ({
+//             _id: link.id ? link.id : new mongoose.Types.ObjectId(), // manually create if you want explicit IDs
+//             title: (link.title || "").trim(),
+//             url: (link.url || "").trim(),
+//           }));
+//         }
+
+//         // Replace existing links or add new ones
+//         incomingLinks.forEach((newLink) => {
+//           const existingIndex = parsedLinks.findIndex(
+//             (existing) => existing._id.toString() === newLink._id.toString()
+//           );
+
+//           if (existingIndex !== -1) {
+//             // Update existing link
+//             parsedLinks[existingIndex] = newLink;
+//           } else {
+//             // Add new link (limit to 5 max)
+//             if (parsedLinks.length < 5) {
+//               parsedLinks.push(newLink);
+//             }
+//           }
+//         });
+
+      
+//         // console.log("Updated Personal Links:", parsedLinks);
+//       } catch (err) {
+//         console.log("error", err.message)
+       
+//       }
+//     }
+//   Object.assign(post, { 
+//       title, 
+//       image: imageUrl, 
+//       description, 
+//       category,
+//       documents: documentUrls,
+//       links:parsedLinks
+//     });
+
+//     const updatedPost = await author.save();
+
+
+//     //----- Embedding doc update controller-----
+//     const updated = updatedPost.posts.id(postId);
+//     let updatedToAI = {...updated.toObject(), authorName: author.authorname, profile: author.profile || '', authorEmail: author.email};
+
+//      await notifyAIIngestion(updatedToAI, req.token).catch(err => {
+//       console.error("AI update ingestion error:", err.message);
+//     }); 
+//     //-------------------------------------------
+
+//     res.status(200).json({ 
+//       message: "Post updated successfully", 
+//       data: updatedPost 
+//     });
+
+   
+//   } catch (err) {
+//     console.log(err.message); 
+//     res.status(500).json({ 
+//       message: "Server error", 
+//       error: err.message 
+//     });
+//   }
+// };
+const updatePost = async (req, res) => {
+  console.log("update called");
+  const { email, postId } = req.params;
+  const { title, description, category, links } = req.body;
+
+  let newImageUrl = null;
+  const newDocumentUrls = [];
+
+  try {
+    const author = await Author.findOne({ email: { $eq: email } })
+      .select('authorname email profile posts');
     if (!author) {
       return res.status(404).json({ message: "author not found" });
     }
 
-    const post = author.posts.id(postId);
-
+    // fix: query Post collection directly — author.posts.id() is a subdoc method, broken after normalization
+    const post = await Post.findOne({ _id: postId, authorId: author._id });
     if (!post) {
       return res.status(404).json({ message: "post not found" });
     }
 
-    // Handle image upload
-    let imageUrl = post.image ||[];
+    // image upload
+    let imageUrl = post.image || '';
     if (req.files && req.files.image) {
       const buffer = await sharp(req.files.image[0].buffer)
         .resize({ width: 672, height: 462, fit: 'contain' })
         .toBuffer();
-      
-        const uniqueFilename = `${uuidv4()}-${req.files.image[0].originalname}`;
-
-      const params = {
-        Bucket: bucketName,
-        Key: uniqueFilename,
-        Body: buffer,
-        ContentType: req.files.image[0].mimetype
-      };
-
-      const command = new PutObjectCommand(params);
-      await s3.send(command);
+      const uniqueFilename = `${uuidv4()}-${req.files.image[0].originalname}`;
+      await s3.send(new PutObjectCommand({
+        Bucket: bucketName, Key: uniqueFilename,
+        Body: buffer, ContentType: req.files.image[0].mimetype,
+      }));
       imageUrl = uniqueFilename;
+      newImageUrl = uniqueFilename;
     }
-    // Handle document uploads
-    let documentUrls =post.documents || [];
+
+    // document uploads
+    let documentUrls = post.documents || [];
     if (req.files && req.files.document) {
       documentUrls = [];
       for (const doc of req.files.document) {
-         const uniqueDocName = `${uuidv4()}-${doc.originalname}`;
-        const params = {
-          Bucket: bucketName,
-          Key: uniqueDocName,
-          Body: doc.buffer,
-          ContentType: doc.mimetype
-        };
-
-        const command = new PutObjectCommand(params);
-        await s3.send(command);
+        const uniqueDocName = `${uuidv4()}-${doc.originalname}`;
+        await s3.send(new PutObjectCommand({
+          Bucket: bucketName, Key: uniqueDocName,
+          Body: doc.buffer, ContentType: doc.mimetype,
+        }));
         documentUrls.push(uniqueDocName);
+        newDocumentUrls.push(uniqueDocName);
       }
     }
 
-let parsedLinks = post.links || [];
-    // --- Parse links safely ---
+    // parse links
+    let parsedLinks = post.links || [];
     if (links && JSON.parse(links).length > 0) {
       try {
         const parsed = typeof links === "string" ? JSON.parse(links) : links;
-
         if (Array.isArray(parsed)) {
-          incomingLinks = parsed.map((link) => ({
-            _id: link.id ? link.id : new mongoose.Types.ObjectId(), // manually create if you want explicit IDs
+          let incomingLinks = parsed.map((link) => ({
+            _id: link.id ? link.id : new mongoose.Types.ObjectId(),
             title: (link.title || "").trim(),
-            url: (link.url || "").trim(),
+            url:   (link.url   || "").trim(),
           }));
-        }
-
-        // Replace existing links or add new ones
-        incomingLinks.forEach((newLink) => {
-          const existingIndex = parsedLinks.findIndex(
-            (existing) => existing._id.toString() === newLink._id.toString()
-          );
-
-          if (existingIndex !== -1) {
-            // Update existing link
-            parsedLinks[existingIndex] = newLink;
-          } else {
-            // Add new link (limit to 5 max)
-            if (parsedLinks.length < 5) {
-              parsedLinks.push(newLink);
+          incomingLinks.forEach((newLink) => {
+            const existingIndex = parsedLinks.findIndex(
+              (existing) => existing._id.toString() === newLink._id.toString()
+            );
+            if (existingIndex !== -1) {
+              parsedLinks[existingIndex] = newLink;
+            } else {
+              if (parsedLinks.length < 5) parsedLinks.push(newLink);
             }
-          }
-        });
-
-      
-        // console.log("Updated Personal Links:", parsedLinks);
+          });
+        }
       } catch (err) {
-        console.log("error", err.message)
-       
+        console.log("link parse error", err.message);
       }
     }
-  Object.assign(post, { 
-      title, 
-      image: imageUrl, 
-      description, 
-      category,
-      documents: documentUrls,
-      links:parsedLinks
-    });
 
-    const updatedPost = await author.save();
+    // fix: update Post document directly and save it
+    post.title       = title;
+    post.image       = imageUrl;
+    post.description = description;
+    post.category    = category;
+    post.documents   = documentUrls;
+    post.links       = parsedLinks;
 
+    let savedPost;
+    try {
+      savedPost = await post.save();
+    } catch (dbErr) {
+      // S3 cleanup if save fails
+      const cleanup = [];
+      if (newImageUrl) cleanup.push(
+        s3.send(new DeleteObjectCommand({ Bucket: bucketName, Key: newImageUrl }))
+      );
+      for (const doc of newDocumentUrls) cleanup.push(
+        s3.send(new DeleteObjectCommand({ Bucket: bucketName, Key: doc }))
+      );
+      await Promise.allSettled(cleanup);
+      throw dbErr;
+    }
 
-    //----- Embedding doc update controller-----
-    const updated = updatedPost.posts.id(postId);
-    let updatedToAI = {...updated.toObject(), authorName: author.authorname, profile: author.profile || '', authorEmail: author.email};
+    res.status(200).json({ message: "Post updated successfully", data: savedPost });
 
-     await notifyAIIngestion(updatedToAI, req.token).catch(err => {
+    // AI ingestion after response
+    const updatedToAI = {
+      ...savedPost.toObject(),
+      authorName:  author.authorname,
+      profile:     author.profile || '',
+      authorEmail: author.email,
+    };
+    notifyAIIngestion(updatedToAI, req.token).catch(err => {
       console.error("AI update ingestion error:", err.message);
-    }); 
-    //-------------------------------------------
-
-    res.status(200).json({ 
-      message: "Post updated successfully", 
-      data: updatedPost 
     });
 
-   
   } catch (err) {
-    console.log(err.message); 
-    res.status(500).json({ 
-      message: "Server error", 
-      error: err.message 
-    });
+    console.log(err.message);
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 };
 

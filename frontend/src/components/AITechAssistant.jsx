@@ -199,7 +199,7 @@ export default function AITechAssistant({ currentPostId, category, viewComments,
   }, [viewComments])
 
   //  console.log("token", token)
-  // console.log("messages", messages )
+  console.log("messages", messages )
   return (
     <>
       {/* Floating Ask Button (Mobile) */}

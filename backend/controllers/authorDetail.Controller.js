@@ -347,77 +347,171 @@ const getAllAuthorsByDomain = async (req, res) => {
 };
 
 // reviewed----------------------------------------------
-const updateAuthor = async (req, res) => {
-  const { authorname, email, role, techcommunity, links } = req.body;
-  const profile = req.file ? req.file.originalname : "";
-  try {
-    const author = await Author.findOne({ email: {$eq: req.params.email} });
+// const updateAuthor = async (req, res) => {
+//   console.log("updateAuthor called")
+//   const { authorname, email, role, techcommunity, links } = req.body;
+//   const profile = req.file ? req.file.originalname : "";
+//   try {
+//     const author = await Author.findOne({ email: {$eq: req.params.email} });
 
+//     if (!author) {
+//       return res.status(404).json({ message: "Author not found" });
+//     }
+
+//     let parsedLinks = author.personalLinks || [];
+//     // --- Parse links safely ---
+//     if (links && JSON.parse(links).length > 0) {
+//       try {
+//         const parsed = typeof links === "string" ? JSON.parse(links) : links;
+
+//         if (Array.isArray(parsed)) {
+//           incomingLinks = parsed.map((link) => ({
+//             _id: link.id ? link.id : new mongoose.Types.ObjectId(), // manually create if you want explicit IDs
+//             title: (link.title || "").trim(),
+//             url: (link.url || "").trim(),
+//           }));
+//         }
+
+//         // Replace existing links or add new ones
+//         incomingLinks.forEach((newLink) => {
+//           const existingIndex = parsedLinks.findIndex(
+//             (existing) => existing._id.toString() === newLink._id.toString(),
+//           );
+
+//           if (existingIndex !== -1) {
+//             // Update existing link
+//             parsedLinks[existingIndex] = newLink;
+//           } else {
+//             // Add new link (limit to 5 max)
+//             if (parsedLinks.length < 5) {
+//               parsedLinks.push(newLink);
+//             }
+//           }
+//         });
+
+//         // Assign updated list
+//         author.personalLinks = parsedLinks;
+//         // console.log("Updated Personal Links:", parsedLinks);
+//       } catch (err) {
+//         console.error("Failed to parse links:", err);
+//       }
+//     }
+
+//     // console.log("profile data",req.file)
+
+//     // Object.assign(post, { title, image, description, category });
+//     author.authorname = authorname;
+//     author.email = email;
+//     if (role) {
+//       author.role = role;
+//     }
+
+//     // Toggle community membership
+//     if (techcommunity) {
+//       const index = author.community.indexOf(techcommunity);
+//       if (index === -1) {
+//         author.community.push(techcommunity); // Add if not exists
+//       } else {
+//         author.community.splice(index, 1); // Remove if exists
+//       }
+//     }
+//     data = await author.save();
+//     res.status(201).json({ message: "author updated successfully", data });
+//   } catch (err) {
+//     console.log("error", err.message)
+//     res.status(500).json({ message: "server error" });
+//   }
+// };
+const updateAuthor = async (req, res) => {
+  console.log("updateAuthor called");
+  const { authorname, email, role, techcommunity, links } = req.body;
+
+  // fix: generate S3 key in same format used when profile was first uploaded
+  // Option A — no folder prefix (flat): "uuid-originalname.jpg"
+  const profile = req.file ? `${uuidv4()}-${req.file.originalname}` : null;
+
+  // Option B — with folder prefix: "Profiles/uuid-originalname.jpg"
+  // const profileFolder = "Profiles/";
+  // const profile = req.file ? `${profileFolder}${uuidv4()}-${req.file.originalname}` : null;
+
+  try {
+    const author = await Author.findOne({ email: { $eq: req.params.email } });
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
     }
 
     let parsedLinks = author.personalLinks || [];
-    // --- Parse links safely ---
     if (links && JSON.parse(links).length > 0) {
       try {
         const parsed = typeof links === "string" ? JSON.parse(links) : links;
-
         if (Array.isArray(parsed)) {
-          incomingLinks = parsed.map((link) => ({
-            _id: link.id ? link.id : new mongoose.Types.ObjectId(), // manually create if you want explicit IDs
+          let incomingLinks = parsed.map((link) => ({
+            _id:   link.id ? link.id : new mongoose.Types.ObjectId(),
             title: (link.title || "").trim(),
-            url: (link.url || "").trim(),
+            url:   (link.url   || "").trim(),
           }));
-        }
-
-        // Replace existing links or add new ones
-        incomingLinks.forEach((newLink) => {
-          const existingIndex = parsedLinks.findIndex(
-            (existing) => existing._id.toString() === newLink._id.toString(),
-          );
-
-          if (existingIndex !== -1) {
-            // Update existing link
-            parsedLinks[existingIndex] = newLink;
-          } else {
-            // Add new link (limit to 5 max)
-            if (parsedLinks.length < 5) {
-              parsedLinks.push(newLink);
+          incomingLinks.forEach((newLink) => {
+            const existingIndex = parsedLinks.findIndex(
+              (existing) => existing._id.toString() === newLink._id.toString()
+            );
+            if (existingIndex !== -1) {
+              parsedLinks[existingIndex] = newLink;
+            } else {
+              if (parsedLinks.length < 5) parsedLinks.push(newLink);
             }
-          }
-        });
-
-        // Assign updated list
-        author.personalLinks = parsedLinks;
-        // console.log("Updated Personal Links:", parsedLinks);
+          });
+          author.personalLinks = parsedLinks;
+        }
       } catch (err) {
         console.error("Failed to parse links:", err);
       }
     }
 
-    // console.log("profile data",req.file)
-
-    // Object.assign(post, { title, image, description, category });
     author.authorname = authorname;
-    author.email = email;
-    if (role) {
-      author.role = role;
+    author.email      = email;
+
+    if (profile) {
+      // upload new profile to S3
+      await s3.send(new PutObjectCommand({
+        Bucket:      bucketName,
+        Key:         profile,
+        Body:        req.file.buffer,
+        ContentType: req.file.mimetype,
+      }));
+
+      // delete old profile from S3 if one existed
+      if (author.profile) {
+        try {
+          await s3.send(new DeleteObjectCommand({
+            Bucket: bucketName,
+            Key:    author.profile,
+          }));
+        } catch (s3Err) {
+          console.error("Failed to delete old profile from S3:", s3Err.message);
+        }
+      }
+
+      author.profile = profile;
     }
 
-    // Toggle community membership
+    if (role) author.role = role;
+
     if (techcommunity) {
       const index = author.community.indexOf(techcommunity);
       if (index === -1) {
-        author.community.push(techcommunity); // Add if not exists
+        author.community.push(techcommunity);
       } else {
-        author.community.splice(index, 1); // Remove if exists
+        author.community.splice(index, 1);
       }
     }
-    data = await author.save();
-    res.status(201).json({ message: "author updated successfully", data });
+
+    const saved = await author.save();
+    const { password, otp, otpExpiresAt, ...safeData } = saved.toObject();
+
+    res.status(201).json({ message: "author updated successfully", data: safeData });
   } catch (err) {
-    res.status(500).json({ message: "server error" });
+    console.log("error", err.message);
+    res.status(500).json({ message: "server error", error: err.message });
   }
 };
 
