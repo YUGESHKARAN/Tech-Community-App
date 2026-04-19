@@ -140,7 +140,7 @@ function ProfilePage() {
 
       // console.log("links", links);
     } catch (error) {
-      console.error("Error updating profile:", error);
+      console.log("Error updating profile:", error);
       toast.error("Error updating profile");
     } finally {
       setLoading(false);

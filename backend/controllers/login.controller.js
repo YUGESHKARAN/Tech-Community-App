@@ -1,4 +1,4 @@
-const Author  = require('../models/blogAuthorSchema') ;
+const {Author}  = require('../models/blogAuthorSchema') ;
 const bcrypt = require('bcrypt') ; 
 require('dotenv').config();
 
@@ -32,7 +32,7 @@ const jwt = require('jsonwebtoken');
 // }
 
 const verifyUser =  async (req,res) => {
-
+        console.log("verify user called")
     try{
 
         const {email, password} = req.body ;
@@ -64,6 +64,7 @@ const verifyUser =  async (req,res) => {
     catch(err){
 
     //  res.send("Error" + err) ;
+    console.log("error", err.message)
     res.status(500).json({message:"Server Error"})
 
     }

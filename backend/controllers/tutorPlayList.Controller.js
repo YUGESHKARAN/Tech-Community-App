@@ -1,6 +1,6 @@
 const { v4: uuidv4 } = require("uuid");
 const TutorPlayList = require("../models/tutorPlaylistSchema");
-const Author = require("../models/blogAuthorSchema");
+const {Author, Post} = require("../models/blogAuthorSchema");
 const {
   S3Client,
   PutObjectCommand,

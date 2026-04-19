@@ -1,4 +1,4 @@
-const Author = require("../models/blogAuthorSchema");
+const {Author, Post} = require("../models/blogAuthorSchema");
 const mongoose = require("mongoose");
 // s3 integration
 const {
@@ -49,9 +49,9 @@ const sendRegistrationOTP = async (req, res) => {
   const { authorname, email, password } = req.body;
   console.log("email", email);
 
-  if (!email.endsWith("@dsuniversity.ac.in")) {
-    return res.status(400).json({ message: "Use University Email" });
-  }
+  // if (!email.endsWith("@dsuniversity.ac.in")) {
+  //   return res.status(400).json({ message: "Use University Email" });
+  // }
   if (!authorname || !password) {
     return res.status(400).json({ message: "All fields are required" });
   }

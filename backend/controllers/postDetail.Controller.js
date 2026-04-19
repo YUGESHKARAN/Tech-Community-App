@@ -1,4 +1,4 @@
-const Author = require("../models/blogAuthorSchema");
+const {Author, Post} = require("../models/blogAuthorSchema");
 
 const path = require('path');
 
@@ -424,46 +424,46 @@ const getRecommendedPosts = async (req, res) => {
 const getSingleAuthorPosts = async (req, res) => {
   try {
     const { email } = req.params;
-
     let { page = 1, limit = 10 } = req.query;
-
-    page = parseInt(page);
+    page  = parseInt(page);
     limit = parseInt(limit);
 
-    const author = await Author.findOne({ email: { $eq: email }});
+    const author = await Author.findOne({ email: { $eq: email } })
+      .select("authorname email profile role community");
+
     if (!author) {
       return res.status(404).json({ message: `author ${email} not found` });
     }
 
-    const authorPosts = author.posts
-      .flatMap((post) => ({
-        ...post.toObject(),
-        authorName: author.authorname,
+    // query Post collection directly
+    const allPosts = await Post.find({ authorId: author._id }).lean();
+
+    const authorPosts = allPosts
+      .map((post) => ({
+        ...post,
+        authorName:  author.authorname,
         authorEmail: author.email,
-        profile: author.profile || "",
-        role: author.role,
-        community: author.community,
+        profile:     author.profile || "",
+        role:        author.role,
+        community:   author.community,
       }))
       .reverse();
 
-    const startIndex = (page - 1) * limit;
+    const startIndex    = (page - 1) * limit;
     const paginatedPosts = authorPosts.slice(startIndex, startIndex + limit);
 
-    console.log(`author page: ${page} limit: ${limit}`);
-
     res.status(200).json({
-      message: "author posts",
-      data: paginatedPosts,
+      message:    "author posts",
+      data:       paginatedPosts,
       authorName: author.authorname,
-      profile: author.profile || "",
-      total: authorPosts.length,
+      profile:    author.profile || "",
+      total:      authorPosts.length,
     });
-
   } catch (err) {
+    console.log("error", err.message);
     res.status(500).json({ message: err.message });
   }
 };
-
 
 
 
@@ -1136,7 +1136,8 @@ let parsedLinks = post.links || [];
       
         // console.log("Updated Personal Links:", parsedLinks);
       } catch (err) {
-        console.error("Failed to parse links:", err);
+        console.log("error", err.message)
+       
       }
     }
   Object.assign(post, { 
@@ -1167,7 +1168,7 @@ let parsedLinks = post.links || [];
 
    
   } catch (err) {
-    console.error(err.errors); 
+    console.log(err.message); 
     res.status(500).json({ 
       message: "Server error", 
       error: err.message 
