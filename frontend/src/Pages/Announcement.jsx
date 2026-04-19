@@ -613,7 +613,7 @@ function Announcement() {
                 {/* CREATE PANEL */}
                 {showAnnouncement && (
                   <div className={`lg:pb-12 `}>
-                    <div className="bg-[#111827] border border-slate-800  rounded-lg p-6 space-y-6">
+                    <div className="bg-[#111827] border border-slate-800  rounded-lg  mb-6 md:mb-0 p-6 space-y-6">
                       <div className="flex items-center justify-between">
                         {" "}
                         <h3 className="text-xs uppercase tracking-wide text-slate-400">
@@ -911,7 +911,7 @@ function Announcement() {
               className={`${role !== "student" ? "bg-[#111827] border border-slate-800 rounded-lg p-5" : "bg-[#111827] border border-slate-800 rounded-lg p-5"}`}
             >
               <h3 className="text-xs uppercase tracking-wide text-slate-400 mb-4">
-                INBOX
+                Overview
               </h3>
 
               <div className="space-y-3 text-sm">
@@ -921,7 +921,7 @@ function Announcement() {
                 </div>
 
                 <div className="flex md:text-sm text-xs justify-between">
-                  <span className="text-slate-400">Total Announcements Received</span>
+                  <span className="text-slate-400">INBOX</span>
                   <span className="font-medium">
                     {announcement?.length > 0
                       ? announcement.length
