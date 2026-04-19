@@ -1,6 +1,6 @@
 const { v4: uuidv4 } = require("uuid");
 const TutorPlayList = require("../models/tutorPlaylistSchema");
-const Author = require("../models/blogAuthorSchema");
+const {Author, Post} = require("../models/blogAuthorSchema");
 const {
   S3Client,
   PutObjectCommand,
@@ -24,6 +24,7 @@ const s3 = new S3Client({
   region: bucketRegion,
 });
 
+// reviewed
 // const getAllTutorPlaylist = async (req, res) => {
 //   try {
 //     const tutorPlaylist = await TutorPlayList.find({ });
@@ -64,7 +65,6 @@ const s3 = new S3Client({
 //     res.status(500).json({ message: err.message });
 //   }
 // };
-
 const getAllTutorPlaylist = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -87,6 +87,7 @@ const getAllTutorPlaylist = async (req, res) => {
   }
 };
 
+//reviewed------------------------------------------------------------
 // Redis cache implemented getRecommendedTutorPlaylist
 // const getRecommendedTutorPlaylist = async (req, res) => {
 //   try {
@@ -200,7 +201,7 @@ const getRecommendedTutorPlaylist = async (req, res) => {
       allPlaylists = JSON.parse(cachedFeed);
     } else {
       console.log("Playlist Cache MISS → Generating from DB");
-      const currentAuthor = await Author.findOne({ email });
+      const currentAuthor = await Author.findOne({ email:{ $eq: email } });
 
       if (!currentAuthor) {
         return res.status(404).json({ message: "Author not found" });
@@ -278,7 +279,7 @@ const getRecommendedTutorPlaylist = async (req, res) => {
   }
 };
 
-
+// reviewed-----------------------------------------------------------
 const getPlaylistByEmail = async (req, res) => {
   try {
     const { email } = req.params;
@@ -307,223 +308,451 @@ const getPlaylistByEmail = async (req, res) => {
   }
 };
 
+// old
+// const getPlaylistById = async (req, res) => {
+//   try {
+//     const { playlistId } = req.params;
+//     const playList = await TutorPlayList.findOne({ _id: playlistId });
+//     const email = playList.email;
+//     const domain = playList.domain;
+
+//     const author = await Author.findOne({ email: { $eq: email } });
+
+//     const playlistPostIds = (playList.post_ids || []).map((id) =>
+//       id.toString(),
+//     );
+
+//     // build a map of author's posts (filtered by domain) for O(1) lookup
+//     const postsById = {};
+//     (author.posts || []).forEach((post) => {
+//       if (post.category === domain) {
+//         postsById[String(post._id)] = post;
+//       }
+//     });
+
+//     // preserve order from playList.post_ids
+//     const posts = playlistPostIds.map((id) => postsById[id]).filter(Boolean);
+
+//     res.status(200).json({ data: playList, posts: posts });
+//   } catch (err) {
+//     res.status(500).json({ message: err.message });
+//   }
+// };
+// reviewed 
 const getPlaylistById = async (req, res) => {
   try {
     const { playlistId } = req.params;
-    const playList = await TutorPlayList.findOne({ _id: playlistId });
-    const email = playList.email;
+
+    // fix: null check before accessing fields — was throwing TypeError on missing playlist
+    const playList = await TutorPlayList.findOne({ _id: { $eq: playlistId } });
+    if (!playList) {
+      return res.status(404).json({ message: "Playlist not found" });
+    }
+
     const domain = playList.domain;
+    const playlistPostIds = (playList.post_ids || []).map(id => id.toString());
 
-    const author = await Author.findOne({ email: { $eq: email } });
+    if (playlistPostIds.length === 0) {
+      return res.status(200).json({ data: playList, posts: [] });
+    }
 
-    const playlistPostIds = (playList.post_ids || []).map((id) =>
-      id.toString(),
-    );
+    // fix: query Post collection directly — author.posts is now [ObjectId], forEach was a no-op
+    // author fetch removed entirely — no longer needed
+    // preserve domain filter as a safety guard (same behaviour as before)
+    const postDocs = await Post.find({
+      _id:      { $in: playlistPostIds },
+      category: domain,               // same domain filter the original code applied
+    }).lean();
 
-    // build a map of author's posts (filtered by domain) for O(1) lookup
+    // build map for O(1) lookup — same pattern as original
     const postsById = {};
-    (author.posts || []).forEach((post) => {
-      if (post.category === domain) {
-        postsById[String(post._id)] = post;
-      }
-    });
+    for (const post of postDocs) {
+      postsById[post._id.toString()] = post;
+    }
 
-    // preserve order from playList.post_ids
-    const posts = playlistPostIds.map((id) => postsById[id]).filter(Boolean);
+    // preserve insertion order from playList.post_ids — same as original
+    const posts = playlistPostIds.map(id => postsById[id]).filter(Boolean);
 
-    res.status(200).json({ data: playList, posts: posts });
+    // response shape identical to before
+    res.status(200).json({ data: playList, posts });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
 
+// old
+// const addTutorPlayList = async (req, res) => {
+//   try {
+//     let { postIds, title, domain, email, collaboratorsEmail } = req.body;
+//     // console.log(req.body);
+//     if (postIds.length < 1 || !title || !domain || !email) {
+//       return res.status(400).json({ message: "playlist data required" });
+//     }
+
+//     const user = await Author.findOne({ email: { $eq: email } });
+//     // console.log("user",user);
+
+//     if (!user) {
+//       return res.status(404).json({ message: "user not found!" });
+//     }
+
+//     const profile = user.profile;
+//     const name = user.authorname;
+
+//     const collaborators = [];
+
+//     collaboratorsEmail = Array.isArray(collaboratorsEmail)
+//       ? collaboratorsEmail
+//       : [collaboratorsEmail];
+
+//     if (collaboratorsEmail && collaboratorsEmail.length > 0) {
+//       for (const collabEmail of collaboratorsEmail) {
+//         const normalizedCollabEmail = String(collabEmail).trim().toLowerCase();
+//         const collabUser = await Author.findOne({
+//           email: normalizedCollabEmail,
+//         });
+//         // if (!collabUser) {
+//         //   return res.status(404).json({
+//         //     message: `collaborator with email ${collabEmail} not found`,
+//         //   });
+//         // }
+//         if (collabUser) {
+//           collaborators.push({
+//             name: collabUser.authorname,
+//             email: collabUser.email,
+//             profile: collabUser.profile,
+//           });
+//         }
+//       }
+//     }
+
+//     const tutorPlaylistFolder = "TutorPlaylist/";
+
+//     const uniqueFilename = req.file
+//       ? `${tutorPlaylistFolder}${uuidv4()}-${req.file.originalname}`
+//       : "";
+
+//     if (req.file) {
+//       // S3 Integration
+//       const params = {
+//         Bucket: bucketName,
+//         Key: uniqueFilename,
+//         Body: req.file.buffer,
+//         ContentType: req.file.mimetype,
+//       };
+
+//       const command = new PutObjectCommand(params);
+//       await s3.send(command);
+//     }
+
+//     const tutorPlaylist = new TutorPlayList({
+//       post_ids: postIds,
+//       title,
+//       name,
+//       domain,
+//       thumbnail: req.file ? uniqueFilename : "",
+//       email,
+//       profile,
+//       collaborators: collaborators,
+//     });
+
+//     await tutorPlaylist.save();
+//     res
+//       .status(201)
+//       .json({ message: "Playlist created successfully", data: tutorPlaylist });
+//   } catch (err) {
+//     console.log("error", err.message);
+//     res.status(500).json({ message: err.message });
+//   }
+// };
+// reviewed-------------------------------------------------------------
 const addTutorPlayList = async (req, res) => {
+  let uniqueFilename = "";
+
   try {
     let { postIds, title, domain, email, collaboratorsEmail } = req.body;
-    // console.log(req.body);
-    if (postIds.length < 1 || !title || !domain || !email) {
+
+    if (!postIds || postIds.length < 1 || !title || !domain || !email) {
       return res.status(400).json({ message: "playlist data required" });
     }
 
-    const user = await Author.findOne({ email: { $eq: email } });
-    // console.log("user",user);
+    // fix: validate postIds exist in Post collection before saving
+    const existingCount = await Post.countDocuments({ _id: { $in: postIds } });
+    if (existingCount !== postIds.length) {
+      return res.status(400).json({ message: "One or more post IDs are invalid" });
+    }
 
+    const user = await Author.findOne({ email: { $eq: email } });
     if (!user) {
       return res.status(404).json({ message: "user not found!" });
     }
 
     const profile = user.profile;
-    const name = user.authorname;
+    const name    = user.authorname;
 
-    const collaborators = [];
-
+    // fix: single Author.find() instead of N sequential findOne() calls
     collaboratorsEmail = Array.isArray(collaboratorsEmail)
       ? collaboratorsEmail
-      : [collaboratorsEmail];
+      : collaboratorsEmail ? [collaboratorsEmail] : [];
 
-    if (collaboratorsEmail && collaboratorsEmail.length > 0) {
-      for (const collabEmail of collaboratorsEmail) {
-        const normalizedCollabEmail = String(collabEmail).trim().toLowerCase();
-        const collabUser = await Author.findOne({
-          email: normalizedCollabEmail,
+    const collaborators = [];
+    if (collaboratorsEmail.length > 0) {
+      const normalizedEmails = collaboratorsEmail
+        .map(e => String(e).trim().toLowerCase())
+        .filter(Boolean);
+
+      // fix: one DB query instead of N — and added $eq-safe $in
+      const collabUsers = await Author.find({
+        email: { $in: normalizedEmails },
+      }).select("authorname email profile");
+
+      for (const collabUser of collabUsers) {
+        collaborators.push({
+          name:    collabUser.authorname,
+          email:   collabUser.email,
+          profile: collabUser.profile,
         });
-        // if (!collabUser) {
-        //   return res.status(404).json({
-        //     message: `collaborator with email ${collabEmail} not found`,
-        //   });
-        // }
-        if (collabUser) {
-          collaborators.push({
-            name: collabUser.authorname,
-            email: collabUser.email,
-            profile: collabUser.profile,
-          });
-        }
       }
     }
 
+    // S3 thumbnail upload
     const tutorPlaylistFolder = "TutorPlaylist/";
-
-    const uniqueFilename = req.file
-      ? `${tutorPlaylistFolder}${uuidv4()}-${req.file.originalname}`
-      : "";
-
     if (req.file) {
-      // S3 Integration
-      const params = {
-        Bucket: bucketName,
-        Key: uniqueFilename,
-        Body: req.file.buffer,
+      uniqueFilename = `${tutorPlaylistFolder}${uuidv4()}-${req.file.originalname}`;
+      await s3.send(new PutObjectCommand({
+        Bucket:      bucketName,
+        Key:         uniqueFilename,
+        Body:        req.file.buffer,
         ContentType: req.file.mimetype,
-      };
-
-      const command = new PutObjectCommand(params);
-      await s3.send(command);
+      }));
     }
 
-    const tutorPlaylist = new TutorPlayList({
-      post_ids: postIds,
-      title,
-      name,
-      domain,
-      thumbnail: req.file ? uniqueFilename : "",
-      email,
-      profile,
-      collaborators: collaborators,
-    });
+    // fix: wrap DB save in try/catch — clean up S3 if save fails
+    let tutorPlaylist;
+    try {
+      tutorPlaylist = new TutorPlayList({
+        post_ids:      postIds,
+        title,
+        name,
+        domain,
+        thumbnail:     uniqueFilename,
+        email,
+        profile,
+        collaborators,
+      });
+      await tutorPlaylist.save();
+    } catch (dbErr) {
+      if (uniqueFilename) {
+        try {
+          await s3.send(new DeleteObjectCommand({ Bucket: bucketName, Key: uniqueFilename }));
+        } catch (s3Err) {
+          console.error("S3 cleanup failed:", s3Err.message);
+        }
+      }
+      throw dbErr;
+    }
 
-    await tutorPlaylist.save();
-    res
-      .status(201)
-      .json({ message: "Playlist created successfully", data: tutorPlaylist });
+    res.status(201).json({ message: "Playlist created successfully", data: tutorPlaylist });
   } catch (err) {
     console.log("error", err.message);
     res.status(500).json({ message: err.message });
   }
 };
 
+// old
+// const updateTutorPlayList = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     // console.log("Updating playlist with id:", id);
+
+//     const { postIds, title, domain, collaboratorsEmail } = req.body;
+
+//     const playList = await TutorPlayList.findById(id);
+//     // console.log("Found playlist:", playList);
+
+//     if (playList === null) {
+//       return res.status(404).json({ message: "Playlist not found" });
+//     }
+
+//     if (title) {
+//       playList.title = title;
+//     }
+//     if (domain) {
+//       playList.domain = domain;
+//     }
+
+//     const tutorPlaylistFolder = "TutorPlaylist/";
+
+//     const uniqueFilename = req.file
+//       ? `${tutorPlaylistFolder}${uuidv4()}-${req.file.originalname}`
+//       : "";
+
+//     if (req.file) {
+//       // S3 Integration
+//       const params = {
+//         Bucket: bucketName,
+//         Key: uniqueFilename,
+//         Body: req.file.buffer,
+//         ContentType: req.file.mimetype,
+//       };
+
+//       const command = new PutObjectCommand(params);
+//       await s3.send(command);
+//     }
+
+//     if (req.file) {
+//       // Delete old thumbnail from S3 if it exists
+//       if (playList.thumbnail) {
+//         try {
+//           const deleteParams = {
+//             Bucket: bucketName,
+//             Key: playList.thumbnail,
+//           };
+//           const deleteCommand = new DeleteObjectCommand(deleteParams);
+//           console.log("Deleting old thumbnail from S3:", playList.thumbnail);
+//           await s3.send(deleteCommand);
+//         } catch (err) {
+//           console.log("Error deleting old thumbnail from S3:", err);
+//         }
+//       }
+
+//       // Update to new thumbnail
+//       playList.thumbnail = uniqueFilename;
+//     }
+
+//     const collaborators = [];
+
+//     // Normalize collaboratorsEmail to an array (handles single string input)
+//     let collaboratorsEmailsArr = collaboratorsEmail;
+//     if (collaboratorsEmailsArr && !Array.isArray(collaboratorsEmailsArr)) {
+//       collaboratorsEmailsArr = [collaboratorsEmailsArr];
+//     }
+
+//     if (collaboratorsEmailsArr && collaboratorsEmailsArr.length > 0) {
+//       for (const collabEmail of collaboratorsEmailsArr) {
+//         const normalizedCollabEmail = String(collabEmail).trim().toLowerCase();
+//         const collabUser = await Author.findOne({
+//           email: normalizedCollabEmail,
+//         });
+//         if (!collabUser) {
+//           return res.status(404).json({
+//             message: `collaborator with email ${collabEmail} not found`,
+//           });
+//         }
+//         collaborators.push({
+//           name: collabUser.authorname,
+//           email: collabUser.email,
+//           profile: collabUser.profile,
+//         });
+//       }
+//     }
+
+//     if (postIds !== undefined) playList.post_ids = postIds;
+
+//     // playList.post_ids = postIds;
+
+//     playList.collaborators = collaborators;
+
+//     await playList.save();
+//     res
+//       .status(200)
+//       .json({ message: "Playlist updated successfully", data: playList });
+//   } catch (err) {
+//     res.status(500).json({ message: err.message });
+//   }
+// };
+// reviewed--------------------------------------------------------------
 const updateTutorPlayList = async (req, res) => {
+  let uniqueFilename = "";
+
   try {
     const { id } = req.params;
-    // console.log("Updating playlist with id:", id);
-
     const { postIds, title, domain, collaboratorsEmail } = req.body;
 
     const playList = await TutorPlayList.findById(id);
-    // console.log("Found playlist:", playList);
-
-    if (playList === null) {
+    if (!playList) {
       return res.status(404).json({ message: "Playlist not found" });
     }
 
-    if (title) {
-      playList.title = title;
-    }
-    if (domain) {
-      playList.domain = domain;
-    }
+    if (title)  playList.title  = title;
+    if (domain) playList.domain = domain;
 
+    // S3 thumbnail upload
     const tutorPlaylistFolder = "TutorPlaylist/";
-
-    const uniqueFilename = req.file
-      ? `${tutorPlaylistFolder}${uuidv4()}-${req.file.originalname}`
-      : "";
-
     if (req.file) {
-      // S3 Integration
-      const params = {
-        Bucket: bucketName,
-        Key: uniqueFilename,
-        Body: req.file.buffer,
+      uniqueFilename = `${tutorPlaylistFolder}${uuidv4()}-${req.file.originalname}`;
+      await s3.send(new PutObjectCommand({
+        Bucket:      bucketName,
+        Key:         uniqueFilename,
+        Body:        req.file.buffer,
         ContentType: req.file.mimetype,
-      };
+      }));
 
-      const command = new PutObjectCommand(params);
-      await s3.send(command);
-    }
-
-    if (req.file) {
-      // Delete old thumbnail from S3 if it exists
+      // delete old thumbnail from S3
       if (playList.thumbnail) {
         try {
-          const deleteParams = {
-            Bucket: bucketName,
-            Key: playList.thumbnail,
-          };
-          const deleteCommand = new DeleteObjectCommand(deleteParams);
-          console.log("Deleting old thumbnail from S3:", playList.thumbnail);
-          await s3.send(deleteCommand);
-        } catch (err) {
-          console.log("Error deleting old thumbnail from S3:", err);
+          await s3.send(new DeleteObjectCommand({ Bucket: bucketName, Key: playList.thumbnail }));
+        } catch (s3Err) {
+          console.error("Error deleting old thumbnail from S3:", s3Err.message);
         }
       }
-
-      // Update to new thumbnail
       playList.thumbnail = uniqueFilename;
     }
 
-    const collaborators = [];
-
-    // Normalize collaboratorsEmail to an array (handles single string input)
-    let collaboratorsEmailsArr = collaboratorsEmail;
-    if (collaboratorsEmailsArr && !Array.isArray(collaboratorsEmailsArr)) {
-      collaboratorsEmailsArr = [collaboratorsEmailsArr];
+    // fix: validate postIds exist in Post collection before updating
+    if (postIds !== undefined) {
+      const existingCount = await Post.countDocuments({ _id: { $in: postIds } });
+      if (existingCount !== postIds.length) {
+        // fix: clean up newly uploaded thumbnail if validation fails
+        if (uniqueFilename) {
+          try {
+            await s3.send(new DeleteObjectCommand({ Bucket: bucketName, Key: uniqueFilename }));
+          } catch (s3Err) {
+            console.error("S3 cleanup failed:", s3Err.message);
+          }
+        }
+        return res.status(400).json({ message: "One or more post IDs are invalid" });
+      }
+      playList.post_ids = postIds;
     }
 
-    if (collaboratorsEmailsArr && collaboratorsEmailsArr.length > 0) {
-      for (const collabEmail of collaboratorsEmailsArr) {
-        const normalizedCollabEmail = String(collabEmail).trim().toLowerCase();
-        const collabUser = await Author.findOne({
-          email: normalizedCollabEmail,
-        });
-        if (!collabUser) {
-          return res.status(404).json({
-            message: `collaborator with email ${collabEmail} not found`,
-          });
-        }
+    // fix: single Author.find() instead of N sequential findOne() calls
+    // fix: skip missing collaborators instead of aborting mid-update (was orphaning S3 file)
+    const collaborators = [];
+    let collaboratorsEmailsArr = Array.isArray(collaboratorsEmail)
+      ? collaboratorsEmail
+      : collaboratorsEmail ? [collaboratorsEmail] : [];
+
+    if (collaboratorsEmailsArr.length > 0) {
+      const normalizedEmails = collaboratorsEmailsArr
+        .map(e => String(e).trim().toLowerCase())
+        .filter(Boolean);
+
+      // fix: one DB query, $eq-safe $in, missing collaborators silently skipped
+      const collabUsers = await Author.find({
+        email: { $in: normalizedEmails },
+      }).select("authorname email profile");
+
+      for (const collabUser of collabUsers) {
         collaborators.push({
-          name: collabUser.authorname,
-          email: collabUser.email,
+          name:    collabUser.authorname,
+          email:   collabUser.email,
           profile: collabUser.profile,
         });
       }
     }
 
-    if (postIds !== undefined) playList.post_ids = postIds;
-
-    // playList.post_ids = postIds;
-
+    // intentional: empty array wipes existing collaborators when none provided
     playList.collaborators = collaborators;
 
     await playList.save();
-    res
-      .status(200)
-      .json({ message: "Playlist updated successfully", data: playList });
+    res.status(200).json({ message: "Playlist updated successfully", data: playList });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
 
+// reviewed-------------------------------------------------------------
 const deleteTutorPlayList = async (req, res) => {
   try {
     const { id } = req.params;
@@ -555,6 +784,7 @@ const deleteTutorPlayList = async (req, res) => {
   }
 };
 
+// reviewed-------------------------------------------------------------
 const getBookmarkedPlaylists = async (req, res) => {
   try {
     const { email } = req.params;
@@ -602,40 +832,81 @@ const getBookmarkedPlaylists = async (req, res) => {
   }
 };
 
+// old
+// const getPostsByAuthorsCategory = async (req, res) => {
+//   try {
+//     const { email } = req.params;
+//     const category = decodeURIComponent(req.params.category);
+//     let { page = 1, limit = 10 } = req.query;
+
+//     // console.log("category", category,"page", page, )
+
+//     page = parseInt(page);
+//     limit = parseInt(limit);
+
+//     const skip = (page - 1) * limit;
+
+//     // ✅ Find author
+//     const author = await Author.findOne({ email: { $eq: email } });
+
+//     if (!author) {
+//       return res.status(404).json({ message: "Author not found" });
+//     }
+
+//     // ✅ Filter posts by category
+//     const filteredPosts = author.posts.filter(
+//       (post) => post.category === category,
+//     );
+
+//     // ✅ Pagination
+//     const paginatedPosts = filteredPosts.slice(skip, skip + limit);
+
+//     return res.status(200).json({
+//       posts: paginatedPosts,
+//       currentPage: page,
+//       totalPages: Math.ceil(filteredPosts.length / limit),
+//       totalPosts: filteredPosts.length,
+//       hasMore: skip + limit < filteredPosts.length,
+//     });
+//   } catch (err) {
+//     console.error("Error:", err.message);
+//     res.status(500).json({ message: "Server Error" });
+//   }
+// };
+//reviewed-------------------------------------------------------------
 const getPostsByAuthorsCategory = async (req, res) => {
   try {
     const { email } = req.params;
-    const category = decodeURIComponent(req.params.category);
+    const category  = decodeURIComponent(req.params.category);
     let { page = 1, limit = 10 } = req.query;
 
-    // console.log("category", category,"page", page, )
-
-    page = parseInt(page);
+    page  = parseInt(page);
     limit = parseInt(limit);
-
     const skip = (page - 1) * limit;
 
-    // ✅ Find author
-    const author = await Author.findOne({ email: { $eq: email } });
-
+    // only _id needed — used for Post query ownership check
+    const author = await Author.findOne({ email: { $eq: email } }).select('_id');
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
     }
 
-    // ✅ Filter posts by category
-    const filteredPosts = author.posts.filter(
-      (post) => post.category === category,
-    );
+    // fix: query Post collection directly — author.posts.filter() on ObjectIds always returned []
+    // push skip/limit into DB instead of in-memory slice
+    const [filteredPosts, totalPosts] = await Promise.all([
+      Post.find({ authorId: author._id, category: { $eq: category } })
+        .skip(skip)
+        .limit(limit)
+        .lean(),
+      Post.countDocuments({ authorId: author._id, category: { $eq: category } }),
+    ]);
 
-    // ✅ Pagination
-    const paginatedPosts = filteredPosts.slice(skip, skip + limit);
-
+    // response shape identical to before
     return res.status(200).json({
-      posts: paginatedPosts,
+      posts:       filteredPosts,
       currentPage: page,
-      totalPages: Math.ceil(filteredPosts.length / limit),
-      totalPosts: filteredPosts.length,
-      hasMore: skip + limit < filteredPosts.length,
+      totalPages:  Math.ceil(totalPosts / limit),
+      totalPosts,
+      hasMore:     skip + limit < totalPosts,
     });
   } catch (err) {
     console.error("Error:", err.message);
@@ -643,88 +914,159 @@ const getPostsByAuthorsCategory = async (req, res) => {
   }
 };
 
+
+// old
+// const getUniqueCategoriesByAuthor = async (req, res) => {
+//   try {
+//     const { email } = req.params;
+
+//     const author = await Author.findOne({ email: { $eq: email } });
+
+//     if (!author) {
+//       return res.status(404).json({ message: "Author not found" });
+//     }
+
+//     // ✅ Extract unique categories
+//     const categories = [
+//       ...new Set(
+//         author.posts.map((post) => post.category).filter(Boolean), // remove null/undefined
+//       ),
+//     ];
+
+//     return res.status(200).json({
+//       categories,
+//     });
+//   } catch (err) {
+//     console.error("Error:", err.message);
+//     res.status(500).json({ message: "Server Error" });
+//   }
+// };
+// reviewed------------------------------------------------------------
 const getUniqueCategoriesByAuthor = async (req, res) => {
   try {
     const { email } = req.params;
 
-    const author = await Author.findOne({ email: { $eq: email } });
-
+    // only _id needed for the Post query
+    const author = await Author.findOne({ email: { $eq: email } }).select('_id');
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
     }
 
-    // ✅ Extract unique categories
-    const categories = [
-      ...new Set(
-        author.posts.map((post) => post.category).filter(Boolean), // remove null/undefined
-      ),
-    ];
+    // fix: use distinct() on Post collection — author.posts.map() on ObjectIds returned []
+    // distinct() returns unique values in one query, no in-memory Set needed
+    const categories = await Post.distinct('category', { authorId: author._id });
 
-    return res.status(200).json({
-      categories,
-    });
+    return res.status(200).json({ categories });
   } catch (err) {
     console.error("Error:", err.message);
     res.status(500).json({ message: "Server Error" });
   }
 };
 
+// old
+// const getPostsByDomain = async (req, res) => {
+//   try {
+//     const { domain } = req.params;
+//     const decodedDomain = decodeURIComponent(domain);
+//     let { page = 1, limit = 10 } = req.query;
+//     // console.log("domain", decodedDomain,"page", page, "limit", limit)
+
+//     page = parseInt(page);
+//     limit = parseInt(limit);
+
+//     const skip = (page - 1) * limit;
+
+//     // ✅ Find all authors
+//     const authors = await Author.find({});
+
+//     if (!authors || authors.length === 0) {
+//       return res.status(404).json({ message: "No authors found" });
+//     }
+
+//     // ✅ Collect all posts from all authors filtered by domain/category
+//     const allPosts = [];
+//     authors.forEach((author) => {
+//       const postsInDomain = (author.posts || []).filter(
+//         (post) => post.category === decodedDomain,
+//       );
+//       // Add author info to each post for context
+//       postsInDomain.forEach((post) => {
+//         allPosts.push({
+//           ...(post.toObject ? post.toObject() : post),
+//           authorEmail: author.email,
+//           authorName: author.authorname,
+//           profile: author.profile,
+//         });
+//       });
+//     });
+
+//     const shuffle = (arr) => {
+//       const a = arr.slice();
+//       for (let i = a.length - 1; i > 0; i--) {
+//         const j = Math.floor(Math.random() * (i + 1));
+//         [a[i], a[j]] = [a[j], a[i]];
+//       }
+//       return a;
+//     };
+
+//     const allPostsRecommended = shuffle(allPosts);
+
+//     // ✅ Pagination
+//     const paginatedPosts = allPostsRecommended.slice(skip, skip + limit);
+
+//     return res.status(200).json({
+//       posts: paginatedPosts,
+//       currentPage: page,
+//       totalPages: Math.ceil(allPostsRecommended.length / limit),
+//       totalPosts: allPostsRecommended.length,
+//       hasMore: skip + limit < allPostsRecommended.length,
+//     });
+//   } catch (err) {
+//     console.error("Error:", err.message);
+//     res.status(500).json({ message: "Server Error" });
+//   }
+// };
+// reviewed------------------------------------------------------------
 const getPostsByDomain = async (req, res) => {
   try {
     const { domain } = req.params;
     const decodedDomain = decodeURIComponent(domain);
     let { page = 1, limit = 10 } = req.query;
-    // console.log("domain", decodedDomain,"page", page, "limit", limit)
 
-    page = parseInt(page);
+    page  = parseInt(page);
     limit = parseInt(limit);
-
     const skip = (page - 1) * limit;
 
-    // ✅ Find all authors
-    const authors = await Author.find({});
+    // fix: query Post collection directly by category — was Author.find({}) full scan
+    // populate only the author fields needed for the response shape
+    const [posts, totalPosts] = await Promise.all([
+      Post.find({ category: { $eq: decodedDomain } })
+        .populate("authorId", "authorname email profile")
+        .skip(skip)
+        .limit(limit)
+        .lean(),
+      Post.countDocuments({ category: { $eq: decodedDomain } }),
+    ]);
 
-    if (!authors || authors.length === 0) {
-      return res.status(404).json({ message: "No authors found" });
-    }
+    // shape each post to match original response exactly
+    const shapedPosts = posts.map((post) => ({
+      ...post,
+      authorEmail: post.authorId?.email      || "",
+      authorName:  post.authorId?.authorname || "",
+      profile:     post.authorId?.profile    || "",
+      authorId:    post.authorId?._id,
+    }));
 
-    // ✅ Collect all posts from all authors filtered by domain/category
-    const allPosts = [];
-    authors.forEach((author) => {
-      const postsInDomain = (author.posts || []).filter(
-        (post) => post.category === decodedDomain,
-      );
-      // Add author info to each post for context
-      postsInDomain.forEach((post) => {
-        allPosts.push({
-          ...(post.toObject ? post.toObject() : post),
-          authorEmail: author.email,
-          authorName: author.authorname,
-          profile: author.profile,
-        });
-      });
-    });
-
-    const shuffle = (arr) => {
-      const a = arr.slice();
-      for (let i = a.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [a[i], a[j]] = [a[j], a[i]];
-      }
-      return a;
-    };
-
-    const allPostsRecommended = shuffle(allPosts);
-
-    // ✅ Pagination
-    const paginatedPosts = allPostsRecommended.slice(skip, skip + limit);
+    // note: shuffle removed — DB-level skip/limit requires stable order for
+    // consistent pagination (shuffle causes duplicate/missing posts across pages)
+    // if random order is required, consider a seeded shuffle or sort by timestamp
 
     return res.status(200).json({
-      posts: paginatedPosts,
+      posts:       shapedPosts,
       currentPage: page,
-      totalPages: Math.ceil(allPostsRecommended.length / limit),
-      totalPosts: allPostsRecommended.length,
-      hasMore: skip + limit < allPostsRecommended.length,
+      totalPages:  Math.ceil(totalPosts / limit),
+      totalPosts,
+      hasMore:     skip + limit < totalPosts,
     });
   } catch (err) {
     console.error("Error:", err.message);

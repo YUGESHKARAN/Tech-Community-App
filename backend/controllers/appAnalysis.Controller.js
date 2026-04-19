@@ -1,4 +1,4 @@
-const Author = require("../models/blogAuthorSchema");
+const {Author, Post} = require("../models/blogAuthorSchema");
 const TutorPlayList = require("../models/tutorPlaylistSchema");
 const { v4: uuidv4 } = require("uuid"); // For generating unique IDs
 const mongoose = require("mongoose");
@@ -6,6 +6,74 @@ const mongoose = require("mongoose");
 dotenv = require("dotenv");
 dotenv.config();
 
+// old
+// const getCategoryAnalytics = async (req, res) => {
+//   try {
+//     const authors = await Author.find(
+//       {},
+//       { role: 1, community: 1, followers: 1, posts: 1 },
+//     );
+
+//     const analyticsMap = {};
+
+//     for (const author of authors) {
+//       // Count posts per category
+//       for (const post of author.posts) {
+//         const category = post.category;
+//         if (!category) continue;
+
+//         if (!analyticsMap[category]) {
+//           analyticsMap[category] = {
+//             categoryname: category,
+//             followerscount: 0,
+//             authorcount: 0,
+//             postscount: 0,
+//           };
+//         }
+
+//         analyticsMap[category].postscount += 1;
+//       }
+
+//       // Count coordinators (authorcount) per community/domain
+//       if (author.role === "coordinator") {
+//         for (const domain of author.community) {
+//           if (!analyticsMap[domain]) {
+//             analyticsMap[domain] = {
+//               categoryname: domain,
+//               followerscount: 0,
+//               authorcount: 0,
+//               postscount: 0,
+//             };
+//           }
+//           analyticsMap[domain].authorcount += 1;
+//         }
+//       }
+
+//       // Count students (followerscount) per community/domain
+//       if (author.role === "student") {
+//         for (const domain of author.community) {
+//           if (!analyticsMap[domain]) {
+//             analyticsMap[domain] = {
+//               categoryname: domain,
+//               followerscount: 0,
+//               authorcount: 0,
+//               postscount: 0,
+//             };
+//           }
+//           analyticsMap[domain].followerscount += 1;
+//         }
+//       }
+//     }
+
+//     const analytics = Object.values(analyticsMap);
+
+//     res.status(200).json({ analytics });
+//   } catch (err) {
+//     console.error("getCategoryAnalytics error:", err.message);
+//     res.status(500).json({ message: err.message });
+//   }
+// };
+// reviewed------------------------------------------------------------------
 const getCategoryAnalytics = async (req, res) => {
   try {
     const authors = await Author.find(
@@ -73,24 +141,97 @@ const getCategoryAnalytics = async (req, res) => {
   }
 };
 
+// old
+// const getAppSummary = async (req, res) => {
+//   const { email } = req.params;
+//   try {
+//     const author = await Author.findOne({ email: { $eq: email } });
+//     if (!author) {
+//       return res.status(404).json({ message: "Author not found" });
+//     }
+//     const role = author.role;
+//     if (role !== "admin") {
+//       return res.status(403).json({ message: "Access denied" });
+//     }
+//     const today = new Date();
+//     const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+//     const nextMonthStart = new Date(
+//       today.getFullYear(),
+//       today.getMonth() + 1,
+//       1,
+//     );
+
+//     const [
+//       totalUsers,
+//       students,
+//       coordinators,
+//       admins,
+//       totalPlaylists,
+//       postsAgg,
+//     ] = await Promise.all([
+//       Author.countDocuments(),
+//       Author.countDocuments({ role: "student" }),
+//       Author.countDocuments({ role: "coordinator" }),
+//       Author.countDocuments({ role: "admin" }),
+//       TutorPlayList.countDocuments(),
+//       Author.aggregate([
+//         { $project: { postCount: { $size: { $ifNull: ["$posts", []] } } } },
+//         { $group: { _id: null, totalPosts: { $sum: "$postCount" } } },
+//       ]),
+//     ]);
+
+//     const totalPosts = postsAgg.length ? postsAgg[0].totalPosts : 0;
+
+//     const newThisMonthAgg = await Author.aggregate([
+//       {
+//         $addFields: {
+//           createdAt: { $toDate: "$_id" },
+//         },
+//       },
+//       {
+//         $match: {
+//           createdAt: {
+//             $gte: monthStart,
+//             $lt: nextMonthStart,
+//           },
+//         },
+//       },
+//       { $count: "count" },
+//     ]);
+
+//     const newThisMonth = newThisMonthAgg.length ? newThisMonthAgg[0].count : 0;
+
+//     const summary = {
+//       totalUsers,
+//       students,
+//       coordinators,
+//       admins,
+//       newThisMonth,
+//       totalPosts,
+//       totalPlaylists,
+//     };
+
+//     res.status(200).json({ summary });
+//   } catch (err) {
+//     console.error("getAppSummary error:", err.message);
+//     res.status(500).json({ message: err.message });
+//   }
+// };
+// reviewed------------------------------------------------------------------
 const getAppSummary = async (req, res) => {
   const { email } = req.params;
   try {
-    const author = await Author.findOne({ email: { $eq: email } });
+    const author = await Author.findOne({ email: { $eq: email } }).select('role');
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
     }
-    const role = author.role;
-    if (role !== "admin") {
+    if (author.role !== "admin") {
       return res.status(403).json({ message: "Access denied" });
     }
-    const today = new Date();
-    const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
-    const nextMonthStart = new Date(
-      today.getFullYear(),
-      today.getMonth() + 1,
-      1,
-    );
+
+    const today          = new Date();
+    const monthStart     = new Date(today.getFullYear(), today.getMonth(), 1);
+    const nextMonthStart = new Date(today.getFullYear(), today.getMonth() + 1, 1);
 
     const [
       totalUsers,
@@ -98,181 +239,274 @@ const getAppSummary = async (req, res) => {
       coordinators,
       admins,
       totalPlaylists,
-      postsAgg,
+      totalPosts,        // fix: Post.countDocuments() is the source of truth
     ] = await Promise.all([
       Author.countDocuments(),
       Author.countDocuments({ role: "student" }),
       Author.countDocuments({ role: "coordinator" }),
       Author.countDocuments({ role: "admin" }),
       TutorPlayList.countDocuments(),
-      Author.aggregate([
-        { $project: { postCount: { $size: { $ifNull: ["$posts", []] } } } },
-        { $group: { _id: null, totalPosts: { $sum: "$postCount" } } },
-      ]),
+      Post.countDocuments(), // fix: was Author.aggregate $size "$posts" — fragile after normalization
     ]);
 
-    const totalPosts = postsAgg.length ? postsAgg[0].totalPosts : 0;
-
+    // newThisMonth — unchanged, uses ObjectId timestamp trick correctly
     const newThisMonthAgg = await Author.aggregate([
-      {
-        $addFields: {
-          createdAt: { $toDate: "$_id" },
-        },
-      },
-      {
-        $match: {
-          createdAt: {
-            $gte: monthStart,
-            $lt: nextMonthStart,
-          },
-        },
-      },
+      { $addFields: { createdAt: { $toDate: "$_id" } } },
+      { $match: { createdAt: { $gte: monthStart, $lt: nextMonthStart } } },
       { $count: "count" },
     ]);
-
     const newThisMonth = newThisMonthAgg.length ? newThisMonthAgg[0].count : 0;
 
-    const summary = {
-      totalUsers,
-      students,
-      coordinators,
-      admins,
-      newThisMonth,
-      totalPosts,
-      totalPlaylists,
-    };
-
-    res.status(200).json({ summary });
+    // response shape identical to before
+    res.status(200).json({
+      summary: {
+        totalUsers,
+        students,
+        coordinators,
+        admins,
+        newThisMonth,
+        totalPosts,
+        totalPlaylists,
+      },
+    });
   } catch (err) {
     console.error("getAppSummary error:", err.message);
     res.status(500).json({ message: err.message });
   }
 };
 
+
+// old
+// const getMonthlyPostCounts = async (req, res) => {
+//   const requestEmail = req.params.email;
+//   const requestedYear = req.query.year ? Number(req.query.year) : null;
+//   // const requestedYear = 2026;
+//   // console.log('getMonthlyPostCounts called with email:', requestEmail, 'year:', requestedYear);
+
+//   if (!requestEmail) {
+//     return res
+//       .status(400)
+//       .json({ message: "Email is required as path param." });
+//   }
+
+//   if (
+//     requestedYear &&
+//     (!Number.isInteger(requestedYear) ||
+//       requestedYear < 1970 ||
+//       requestedYear > 3000)
+//   ) {
+//     return res
+//       .status(400)
+//       .json({
+//         message: "Invalid year parameter. Use a 4-digit year (1970-3000).",
+//       });
+//   }
+
+//   try {
+//     const author = await Author.findOne({ email: { $eq: requestEmail } });
+//     if (!author) {
+//       return res.status(404).json({ message: "Author not found" });
+//     }
+
+//     if (author.role !== "admin") {
+//       return res.status(403).json({ message: "Access denied" });
+//     }
+
+//     const monthNames = [
+//       "Jan",
+//       "Feb",
+//       "Mar",
+//       "Apr",
+//       "May",
+//       "Jun",
+//       "Jul",
+//       "Aug",
+//       "Sep",
+//       "Oct",
+//       "Nov",
+//       "Dec",
+//     ];
+//     let aggregation;
+//     let responseYear;
+
+//     if (requestedYear) {
+//       // Mode 1: Specific year requested - return Jan to Dec of that year
+//       responseYear = requestedYear;
+//       const yearStart = new Date(requestedYear, 0, 1);
+//       const yearEnd = new Date(requestedYear, 11, 31, 23, 59, 59);
+
+//       aggregation = await Author.aggregate([
+//         { $unwind: { path: "$posts", preserveNullAndEmptyArrays: false } },
+//         {
+//           $match: {
+//             "posts.timestamp": {
+//               $gte: yearStart,
+//               $lte: yearEnd,
+//             },
+//           },
+//         },
+//         {
+//           $project: {
+//             postMonth: { $month: "$posts.timestamp" },
+//           },
+//         },
+//         {
+//           $group: {
+//             _id: "$postMonth",
+//             count: { $sum: 1 },
+//           },
+//         },
+//       ]);
+//     } else {
+//       // Mode 2: No year provided - return last 12 months (current month back 11 months)
+//       const now = new Date();
+//       const start = new Date(now.getFullYear(), now.getMonth() - 11, 1);
+//       const end = new Date(
+//         now.getFullYear(),
+//         now.getMonth() + 1,
+//         0,
+//         23,
+//         59,
+//         59,
+//       );
+//       responseYear = null; // Dynamic range, no fixed year
+
+//       aggregation = await Author.aggregate([
+//         { $unwind: { path: "$posts", preserveNullAndEmptyArrays: false } },
+//         {
+//           $match: {
+//             "posts.timestamp": {
+//               $gte: start,
+//               $lte: end,
+//             },
+//           },
+//         },
+//         {
+//           $project: {
+//             postYear: { $year: "$posts.timestamp" },
+//             postMonth: { $month: "$posts.timestamp" },
+//           },
+//         },
+//         {
+//           $group: {
+//             _id: { year: "$postYear", month: "$postMonth" },
+//             count: { $sum: 1 },
+//           },
+//         },
+//       ]);
+//     }
+
+//     // Process results
+//     let monthlyData = [];
+
+//     if (requestedYear) {
+//       // For specific year: fill all 12 months
+//       const monthCounts = Array(12).fill(0);
+//       for (const doc of aggregation) {
+//         if (doc._id >= 1 && doc._id <= 12) {
+//           monthCounts[doc._id - 1] = doc.count;
+//         }
+//       }
+//       monthlyData = monthNames.map((month, index) => ({
+//         month,
+//         count: monthCounts[index],
+//       }));
+//       res.status(200).json({ year: responseYear, monthlyData });
+//     } else {
+//       // For last 12 months: build dynamic label
+//       const monthMap = {};
+//       for (const doc of aggregation) {
+//         const key = `${doc._id.year}-${doc._id.month}`;
+//         monthMap[key] = doc.count;
+//       }
+
+//       // Generate month labels for last 12 months
+//       const now = new Date();
+//       for (let i = 11; i >= 0; i--) {
+//         const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+//         const year = date.getFullYear();
+//         const month = date.getMonth() + 1;
+//         const monthName = monthNames[month - 1];
+//         const key = `${year}-${month}`;
+//         const count = monthMap[key] || 0;
+//         monthlyData.push({
+//           month: `${monthName}'\n${year.toString().slice(-2)}`,
+//           count,
+//         });
+//         // monthlyData.push({ month: monthName, count });
+//       }
+//       res.status(200).json({ year: "last12months", monthlyData });
+//     }
+//   } catch (err) {
+//     console.error("getMonthlyPostCounts error:", err.message);
+//     res.status(500).json({ message: err.message });
+//   }
+// };
+// reviewed------------------------------------------------------------------
 const getMonthlyPostCounts = async (req, res) => {
-  const requestEmail = req.params.email;
+  const requestEmail  = req.params.email;
   const requestedYear = req.query.year ? Number(req.query.year) : null;
-  // const requestedYear = 2026;
-  // console.log('getMonthlyPostCounts called with email:', requestEmail, 'year:', requestedYear);
 
   if (!requestEmail) {
-    return res
-      .status(400)
-      .json({ message: "Email is required as path param." });
+    return res.status(400).json({ message: "Email is required as path param." });
   }
 
   if (
     requestedYear &&
-    (!Number.isInteger(requestedYear) ||
-      requestedYear < 1970 ||
-      requestedYear > 3000)
+    (!Number.isInteger(requestedYear) || requestedYear < 1970 || requestedYear > 3000)
   ) {
-    return res
-      .status(400)
-      .json({
-        message: "Invalid year parameter. Use a 4-digit year (1970-3000).",
-      });
+    return res.status(400).json({
+      message: "Invalid year parameter. Use a 4-digit year (1970-3000).",
+    });
   }
 
   try {
-    const author = await Author.findOne({ email: { $eq: requestEmail } });
+    // fix: .select('role') — only field needed for the admin check
+    const author = await Author.findOne({ email: { $eq: requestEmail } }).select('role');
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
     }
-
     if (author.role !== "admin") {
       return res.status(403).json({ message: "Access denied" });
     }
 
-    const monthNames = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ];
+    const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
     let aggregation;
-    let responseYear;
 
     if (requestedYear) {
-      // Mode 1: Specific year requested - return Jan to Dec of that year
-      responseYear = requestedYear;
+      // Mode 1: specific year — Jan to Dec
       const yearStart = new Date(requestedYear, 0, 1);
-      const yearEnd = new Date(requestedYear, 11, 31, 23, 59, 59);
+      const yearEnd   = new Date(requestedYear, 11, 31, 23, 59, 59);
 
-      aggregation = await Author.aggregate([
-        { $unwind: { path: "$posts", preserveNullAndEmptyArrays: false } },
-        {
-          $match: {
-            "posts.timestamp": {
-              $gte: yearStart,
-              $lte: yearEnd,
-            },
-          },
-        },
-        {
-          $project: {
-            postMonth: { $month: "$posts.timestamp" },
-          },
-        },
-        {
-          $group: {
-            _id: "$postMonth",
-            count: { $sum: 1 },
-          },
-        },
+      // fix: aggregate on Post collection directly — $unwind "$posts" on Author
+      // produced bare ObjectIds with no timestamp field, every $match returned nothing
+      aggregation = await Post.aggregate([
+        { $match: { timestamp: { $gte: yearStart, $lte: yearEnd } } },
+        { $group: { _id: { $month: "$timestamp" }, count: { $sum: 1 } } },
       ]);
     } else {
-      // Mode 2: No year provided - return last 12 months (current month back 11 months)
-      const now = new Date();
+      // Mode 2: last 12 months
+      const now   = new Date();
       const start = new Date(now.getFullYear(), now.getMonth() - 11, 1);
-      const end = new Date(
-        now.getFullYear(),
-        now.getMonth() + 1,
-        0,
-        23,
-        59,
-        59,
-      );
-      responseYear = null; // Dynamic range, no fixed year
+      const end   = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
 
-      aggregation = await Author.aggregate([
-        { $unwind: { path: "$posts", preserveNullAndEmptyArrays: false } },
-        {
-          $match: {
-            "posts.timestamp": {
-              $gte: start,
-              $lte: end,
-            },
-          },
-        },
-        {
-          $project: {
-            postYear: { $year: "$posts.timestamp" },
-            postMonth: { $month: "$posts.timestamp" },
-          },
-        },
+      // fix: same — aggregate on Post collection directly
+      aggregation = await Post.aggregate([
+        { $match: { timestamp: { $gte: start, $lte: end } } },
         {
           $group: {
-            _id: { year: "$postYear", month: "$postMonth" },
+            _id:   { year: { $year: "$timestamp" }, month: { $month: "$timestamp" } },
             count: { $sum: 1 },
           },
         },
       ]);
     }
 
-    // Process results
+    // ── Result processing — identical to original ──────────────────────────
+
     let monthlyData = [];
 
     if (requestedYear) {
-      // For specific year: fill all 12 months
       const monthCounts = Array(12).fill(0);
       for (const doc of aggregation) {
         if (doc._id >= 1 && doc._id <= 12) {
@@ -283,74 +517,165 @@ const getMonthlyPostCounts = async (req, res) => {
         month,
         count: monthCounts[index],
       }));
-      res.status(200).json({ year: responseYear, monthlyData });
+      return res.status(200).json({ year: requestedYear, monthlyData });
     } else {
-      // For last 12 months: build dynamic label
       const monthMap = {};
       for (const doc of aggregation) {
         const key = `${doc._id.year}-${doc._id.month}`;
         monthMap[key] = doc.count;
       }
 
-      // Generate month labels for last 12 months
       const now = new Date();
       for (let i = 11; i >= 0; i--) {
-        const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
-        const year = date.getFullYear();
-        const month = date.getMonth() + 1;
+        const date      = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        const year      = date.getFullYear();
+        const month     = date.getMonth() + 1;
         const monthName = monthNames[month - 1];
-        const key = `${year}-${month}`;
-        const count = monthMap[key] || 0;
+        const key       = `${year}-${month}`;
         monthlyData.push({
           month: `${monthName}'\n${year.toString().slice(-2)}`,
-          count,
+          count: monthMap[key] || 0,
         });
-        // monthlyData.push({ month: monthName, count });
       }
-      res.status(200).json({ year: "last12months", monthlyData });
+      return res.status(200).json({ year: "last12months", monthlyData });
     }
+
   } catch (err) {
     console.error("getMonthlyPostCounts error:", err.message);
     res.status(500).json({ message: err.message });
   }
 };
 
+
+// old
+// const getTopContributors = async (req, res) => {
+//   const requestEmail = req.params.email;
+//   const limitFromClient = Number(req.query.limit);
+//   const limit =
+//     Number.isInteger(limitFromClient) && limitFromClient > 0
+//       ? limitFromClient
+//       : 10;
+
+//   if (!requestEmail) {
+//     return res
+//       .status(400)
+//       .json({ message: "Email is required as path param." });
+//   }
+
+//   try {
+//     const admin = await Author.findOne({ email: requestEmail });
+//     if (!admin) {
+//       return res.status(404).json({ message: "Author not found" });
+//     }
+//     if (admin.role !== "admin") {
+//       return res.status(403).json({ message: "Access denied" });
+//     }
+
+//     const contributors = await Author.aggregate([
+//       {
+//         $match: {
+//           role: { $in: ["admin", "coordinator"] },
+//         },
+//       },
+//       {
+//         $addFields: {
+//           postsCount: { $size: { $ifNull: ["$posts", []] } },
+//           followerscount: { $size: { $ifNull: ["$followers", []] } },
+//           followingcount: { $size: { $ifNull: ["$following", []] } },
+//         },
+//       },
+//       {
+//         $lookup: {
+//           from: "tutorplaylists",
+//           let: { authorEmail: "$email" },
+//           pipeline: [
+//             { $match: { $expr: { $eq: ["$email", "$$authorEmail"] } } },
+//             { $count: "count" },
+//           ],
+//           as: "playlistAgg",
+//         },
+//       },
+//       {
+//         $addFields: {
+//           playlistCount: {
+//             $ifNull: [{ $arrayElemAt: ["$playlistAgg.count", 0] }, 0],
+//           },
+//         },
+//       },
+//       {
+//         $project: {
+//           _id: 0,
+//           name: "$authorname",
+//           email: 1,
+//           profile: 1,
+//           community: 1,
+//           personalLinks: 1,
+//           postsCount: 1,
+//           playlistCount: 1,
+//           followerscount: 1,
+//           followingcount: 1,
+//         },
+//       },
+//       { $sort: { postsCount: -1, followerscount: -1, followingcount: -1 } },
+//       { $limit: limit },
+//     ]);
+
+//     res.status(200).json({ contributors });
+//   } catch (err) {
+//     console.error("getTopContributors error:", err.message);
+//     res.status(500).json({ message: err.message });
+//   }
+// };
+
+// Get all contributors (admin and coordinators) with pagination
+// reviewed-----------------------------------------------------------------
 const getTopContributors = async (req, res) => {
-  const requestEmail = req.params.email;
+  const requestEmail    = req.params.email;
   const limitFromClient = Number(req.query.limit);
-  const limit =
-    Number.isInteger(limitFromClient) && limitFromClient > 0
-      ? limitFromClient
-      : 10;
+  const limit = Number.isInteger(limitFromClient) && limitFromClient > 0
+    ? limitFromClient : 10;
 
   if (!requestEmail) {
-    return res
-      .status(400)
-      .json({ message: "Email is required as path param." });
+    return res.status(400).json({ message: "Email is required as path param." });
   }
 
   try {
-    const admin = await Author.findOne({ email: requestEmail });
-    if (!admin) {
-      return res.status(404).json({ message: "Author not found" });
-    }
-    if (admin.role !== "admin") {
-      return res.status(403).json({ message: "Access denied" });
-    }
+    // fix: added $eq and .select('role')
+    const admin = await Author.findOne({ email: { $eq: requestEmail } }).select('role');
+    if (!admin) return res.status(404).json({ message: "Author not found" });
+    if (admin.role !== "admin") return res.status(403).json({ message: "Access denied" });
 
     const contributors = await Author.aggregate([
       {
-        $match: {
-          role: { $in: ["admin", "coordinator"] },
-        },
+        $match: { role: { $in: ["admin", "coordinator"] } },
       },
       {
         $addFields: {
-          postsCount: { $size: { $ifNull: ["$posts", []] } },
           followerscount: { $size: { $ifNull: ["$followers", []] } },
           followingcount: { $size: { $ifNull: ["$following", []] } },
         },
       },
+      // fix: lookup Post collection for true post count
+      // $size: "$posts" counted ObjectId refs — stale refs skew the leaderboard
+      {
+        $lookup: {
+          from: "posts",
+          let: { authorId: "$_id" },
+          pipeline: [
+            { $match: { $expr: { $eq: ["$authorId", "$$authorId"] } } },
+            { $count: "count" },
+          ],
+          as: "postAgg",
+        },
+      },
+      {
+        $addFields: {
+          postsCount: {
+            $ifNull: [{ $arrayElemAt: ["$postAgg.count", 0] }, 0],
+          },
+        },
+      },
+      // tutorplaylists lookup — unchanged, correct
       {
         $lookup: {
           from: "tutorplaylists",
@@ -371,13 +696,13 @@ const getTopContributors = async (req, res) => {
       },
       {
         $project: {
-          _id: 0,
-          name: "$authorname",
-          email: 1,
-          profile: 1,
-          community: 1,
+          _id:           0,
+          name:          "$authorname",
+          email:         1,
+          profile:       1,
+          community:     1,
           personalLinks: 1,
-          postsCount: 1,
+          postsCount:    1,
           playlistCount: 1,
           followerscount: 1,
           followingcount: 1,
@@ -394,61 +719,143 @@ const getTopContributors = async (req, res) => {
   }
 };
 
-// Get all contributors (admin and coordinators) with pagination
+// old
+// const getContributors = async (req, res) => {
+//   const requestEmail = req.params.email;
+//   const page = parseInt(req.query.page) || 1;
+//   const limit = parseInt(req.query.limit) || 10;
+//   const skip = (page - 1) * limit;
+//   if (!requestEmail) {
+//     return res
+//       .status(400)
+//       .json({ message: "Email is required as path param." });
+//   }
+//   try {
+//     const admin = await Author.findOne({ email: requestEmail });
+//     if (!admin) {
+//       return res.status(404).json({ message: "Author not found" });
+//     }
+//     if (admin.role !== "admin") {
+//       return res.status(403).json({ message: "Access denied" });
+//     }
+
+//     // console.log(`getContributors called by ${requestEmail} with page ${page} and limit ${limit}`);
+//     // Fetch contributors with roles 'admin' or 'coordinator'
+//     const contributors = await Author.find({
+//       role: { $in: ["admin", "coordinator"] },
+//     })
+//       .skip(skip)
+//       .limit(limit)
+//       .lean();
+
+//     // Aggregate playlist counts from TutorPlayList by author email
+//     const contributorEmails = contributors.map((c) => c.email);
+//     const playlistCountsByEmail = await TutorPlayList.aggregate([
+//       { $match: { email: { $in: contributorEmails } } },
+//       { $group: { _id: "$email", count: { $sum: 1 } } },
+//     ]).exec();
+//     const playlistCountMap = playlistCountsByEmail.reduce((acc, item) => {
+//       acc[item._id] = item.count;
+//       return acc;
+//     }, {});
+
+//     // Format contributor data
+//     const formattedContributors = contributors.map((contributor) => ({
+//       community: contributor.community || [],
+//       email: contributor.email,
+//       followerscount: contributor.followers ? contributor.followers.length : 0,
+//       followingcount: contributor.following ? contributor.following.length : 0,
+//       name: contributor.authorname,
+//       personalLinks: contributor.personalLinks || [],
+//       playlistCount: playlistCountMap[contributor.email] || 0,
+//       postsCount: contributor.posts ? contributor.posts.length : 0,
+//       profile: contributor.profile,
+//       role: contributor.role,
+//     }));
+
+//     // Count total contributors
+//     const totalContributors = await Author.countDocuments({
+//       role: { $in: ["admin", "coordinator"] },
+//     });
+
+//     res.status(200).json({
+//       page,
+//       limit,
+//       totalContributors,
+//       totalPages: Math.ceil(totalContributors / limit),
+//       contributors: formattedContributors,
+//     });
+//   } catch (err) {
+//     console.error("Error fetching contributors:", err);
+//     res.status(500).json({ message: "Server error", error: err.message });
+//   }
+// };
+
+
+// Get all Students
+// reviewed----------------------------------------------------------------
 const getContributors = async (req, res) => {
   const requestEmail = req.params.email;
-  const page = parseInt(req.query.page) || 1;
+  const page  = parseInt(req.query.page)  || 1;
   const limit = parseInt(req.query.limit) || 10;
-  const skip = (page - 1) * limit;
-  if (!requestEmail) {
-    return res
-      .status(400)
-      .json({ message: "Email is required as path param." });
-  }
-  try {
-    const admin = await Author.findOne({ email: requestEmail });
-    if (!admin) {
-      return res.status(404).json({ message: "Author not found" });
-    }
-    if (admin.role !== "admin") {
-      return res.status(403).json({ message: "Access denied" });
-    }
+  const skip  = (page - 1) * limit;
 
-    // console.log(`getContributors called by ${requestEmail} with page ${page} and limit ${limit}`);
-    // Fetch contributors with roles 'admin' or 'coordinator'
-    const contributors = await Author.find({
-      role: { $in: ["admin", "coordinator"] },
-    })
+  if (!requestEmail) {
+    return res.status(400).json({ message: "Email is required as path param." });
+  }
+
+  try {
+    // fix: added $eq and .select('role')
+    const admin = await Author.findOne({ email: { $eq: requestEmail } }).select('role');
+    if (!admin) return res.status(404).json({ message: "Author not found" });
+    if (admin.role !== "admin") return res.status(403).json({ message: "Access denied" });
+
+    const contributors = await Author.find({ role: { $in: ["admin", "coordinator"] } })
+      .select('-password -otp -otpExpiresAt')
       .skip(skip)
       .limit(limit)
       .lean();
 
-    // Aggregate playlist counts from TutorPlayList by author email
-    const contributorEmails = contributors.map((c) => c.email);
-    const playlistCountsByEmail = await TutorPlayList.aggregate([
-      { $match: { email: { $in: contributorEmails } } },
-      { $group: { _id: "$email", count: { $sum: 1 } } },
-    ]).exec();
+    const contributorIds    = contributors.map(c => c._id);
+    const contributorEmails = contributors.map(c => c.email);
+
+    // fix: get true post counts from Post collection — contributor.posts.length
+    // counted ObjectId refs which can be stale after failed deletes
+    const [playlistCountsByEmail, postCountsByAuthor] = await Promise.all([
+      TutorPlayList.aggregate([
+        { $match: { email: { $in: contributorEmails } } },
+        { $group: { _id: "$email", count: { $sum: 1 } } },
+      ]),
+      Post.aggregate([
+        { $match: { authorId: { $in: contributorIds } } },
+        { $group: { _id: "$authorId", count: { $sum: 1 } } },
+      ]),
+    ]);
+
     const playlistCountMap = playlistCountsByEmail.reduce((acc, item) => {
       acc[item._id] = item.count;
       return acc;
     }, {});
 
-    // Format contributor data
+    // fix: map by authorId string for O(1) lookup
+    const postCountMap = postCountsByAuthor.reduce((acc, item) => {
+      acc[item._id.toString()] = item.count;
+      return acc;
+    }, {});
+
     const formattedContributors = contributors.map((contributor) => ({
-      community: contributor.community || [],
-      email: contributor.email,
-      followerscount: contributor.followers ? contributor.followers.length : 0,
-      followingcount: contributor.following ? contributor.following.length : 0,
-      name: contributor.authorname,
-      personalLinks: contributor.personalLinks || [],
-      playlistCount: playlistCountMap[contributor.email] || 0,
-      postsCount: contributor.posts ? contributor.posts.length : 0,
-      profile: contributor.profile,
-      role: contributor.role,
+      community:      contributor.community      || [],
+      email:          contributor.email,
+      followerscount: contributor.followers?.length || 0,
+      followingcount: contributor.following?.length || 0,
+      name:           contributor.authorname,
+      personalLinks:  contributor.personalLinks  || [],
+      playlistCount:  playlistCountMap[contributor.email]           || 0,
+      postsCount:     postCountMap[contributor._id.toString()]      || 0, // fix: from Post collection
+      profile:        contributor.profile,
+      role:           contributor.role,
     }));
 
-    // Count total contributors
     const totalContributors = await Author.countDocuments({
       role: { $in: ["admin", "coordinator"] },
     });
@@ -466,8 +873,7 @@ const getContributors = async (req, res) => {
   }
 };
 
-
-// Get all Students
+//reviewed ----------------------------------------------------------------------------
 const getStudents = async (req, res) => {
   const requestEmail = req.params.email;
   const page = parseInt(req.query.page) || 1;
@@ -539,66 +945,141 @@ const getStudents = async (req, res) => {
   }
 };
 
+// old
+// const getCoordinators = async (req, res) => {
+//   const requestEmail = req.params.email;
+//   const page = parseInt(req.query.page) || 1;
+//   const limit = parseInt(req.query.limit) || 10;
+//   const skip = (page - 1) * limit;
+//   if (!requestEmail) {
+//     return res
+//       .status(400)
+//       .json({ message: "Email is required as path param." });
+//   }
+//   try {
+//     const admin = await Author.findOne({ email: requestEmail });
+//     if (!admin) {
+//       return res.status(404).json({ message: "Author not found" });
+//     }
+//     if (admin.role !== "admin") {
+//       return res.status(403).json({ message: "Access denied" });
+//     }
 
-// Get only coordinators
+//     // console.log(`getContributors called by ${requestEmail} with page ${page} and limit ${limit}`);
+//     // Fetch contributors with roles 'admin' or 'coordinator'
+//     const contributors = await Author.find({
+//       role: { $in: ["coordinator"] },
+//     })
+//       .skip(skip)
+//       .limit(limit)
+//       .lean();
+
+//     // Aggregate playlist counts from TutorPlayList by author email
+//     const contributorEmails = contributors.map((c) => c.email);
+//     const playlistCountsByEmail = await TutorPlayList.aggregate([
+//       { $match: { email: { $in: contributorEmails } } },
+//       { $group: { _id: "$email", count: { $sum: 1 } } },
+//     ]).exec();
+//     const playlistCountMap = playlistCountsByEmail.reduce((acc, item) => {
+//       acc[item._id] = item.count;
+//       return acc;
+//     }, {});
+
+//     // Format contributor data
+//     const formattedContributors = contributors.map((contributor) => ({
+//       community: contributor.community || [],
+//       email: contributor.email,
+//       followerscount: contributor.followers ? contributor.followers.length : 0,
+//       followingcount: contributor.following ? contributor.following.length : 0,
+//       name: contributor.authorname,
+//       personalLinks: contributor.personalLinks || [],
+//       playlistCount: playlistCountMap[contributor.email] || 0,
+//       postsCount: contributor.posts ? contributor.posts.length : 0,
+//       profile: contributor.profile,
+//       role: contributor.role,
+//       id: contributor._id.toString(),
+//     }));
+
+//     // Count total contributors
+//     const totalCoordinators = await Author.countDocuments({
+//       role: { $in: ["coordinator"] },
+//     });
+
+//     res.status(200).json({
+//       page,
+//       limit,
+//       totalCoordinators,
+//       totalPages: Math.ceil(totalCoordinators / limit),
+//       coordinators: formattedContributors,
+//     });
+//   } catch (err) {
+//     console.error("Error fetching coordinators:", err);
+//     res.status(500).json({ message: "Server error", error: err.message });
+//   }
+// };
+// reviewed----------------------------------------------------------------------------
 const getCoordinators = async (req, res) => {
   const requestEmail = req.params.email;
-  const page = parseInt(req.query.page) || 1;
+  const page  = parseInt(req.query.page)  || 1;
   const limit = parseInt(req.query.limit) || 10;
-  const skip = (page - 1) * limit;
-  if (!requestEmail) {
-    return res
-      .status(400)
-      .json({ message: "Email is required as path param." });
-  }
-  try {
-    const admin = await Author.findOne({ email: requestEmail });
-    if (!admin) {
-      return res.status(404).json({ message: "Author not found" });
-    }
-    if (admin.role !== "admin") {
-      return res.status(403).json({ message: "Access denied" });
-    }
+  const skip  = (page - 1) * limit;
 
-    // console.log(`getContributors called by ${requestEmail} with page ${page} and limit ${limit}`);
-    // Fetch contributors with roles 'admin' or 'coordinator'
-    const contributors = await Author.find({
-      role: { $in: ["coordinator"] },
-    })
+  if (!requestEmail) {
+    return res.status(400).json({ message: "Email is required as path param." });
+  }
+
+  try {
+    // fix: added $eq and .select('role')
+    const admin = await Author.findOne({ email: { $eq: requestEmail } }).select('role');
+    if (!admin) return res.status(404).json({ message: "Author not found" });
+    if (admin.role !== "admin") return res.status(403).json({ message: "Access denied" });
+
+    const contributors = await Author.find({ role: { $in: ["coordinator"] } })
       .skip(skip)
       .limit(limit)
       .lean();
 
-    // Aggregate playlist counts from TutorPlayList by author email
-    const contributorEmails = contributors.map((c) => c.email);
-    const playlistCountsByEmail = await TutorPlayList.aggregate([
-      { $match: { email: { $in: contributorEmails } } },
-      { $group: { _id: "$email", count: { $sum: 1 } } },
-    ]).exec();
+    const contributorIds    = contributors.map(c => c._id);
+    const contributorEmails = contributors.map(c => c.email);
+
+    // fix: run both aggregations in parallel
+    const [playlistCountsByEmail, postCountsByAuthor] = await Promise.all([
+      TutorPlayList.aggregate([
+        { $match: { email: { $in: contributorEmails } } },
+        { $group: { _id: "$email", count: { $sum: 1 } } },
+      ]),
+      // fix: true post count from Post collection — contributor.posts.length counted ObjectId refs
+      Post.aggregate([
+        { $match: { authorId: { $in: contributorIds } } },
+        { $group: { _id: "$authorId", count: { $sum: 1 } } },
+      ]),
+    ]);
+
     const playlistCountMap = playlistCountsByEmail.reduce((acc, item) => {
       acc[item._id] = item.count;
       return acc;
     }, {});
 
-    // Format contributor data
+    const postCountMap = postCountsByAuthor.reduce((acc, item) => {
+      acc[item._id.toString()] = item.count;
+      return acc;
+    }, {});
+
     const formattedContributors = contributors.map((contributor) => ({
-      community: contributor.community || [],
-      email: contributor.email,
-      followerscount: contributor.followers ? contributor.followers.length : 0,
-      followingcount: contributor.following ? contributor.following.length : 0,
-      name: contributor.authorname,
-      personalLinks: contributor.personalLinks || [],
-      playlistCount: playlistCountMap[contributor.email] || 0,
-      postsCount: contributor.posts ? contributor.posts.length : 0,
-      profile: contributor.profile,
-      role: contributor.role,
-      id: contributor._id.toString(),
+      community:      contributor.community     || [],
+      email:          contributor.email,
+      followerscount: contributor.followers?.length || 0,
+      followingcount: contributor.following?.length || 0,
+      name:           contributor.authorname,
+      personalLinks:  contributor.personalLinks || [],
+      playlistCount:  playlistCountMap[contributor.email]        || 0,
+      postsCount:     postCountMap[contributor._id.toString()]   || 0, // fix: from Post collection
+      profile:        contributor.profile,
+      role:           contributor.role,
+      id:             contributor._id.toString(),
     }));
 
-    // Count total contributors
-    const totalCoordinators = await Author.countDocuments({
-      role: { $in: ["coordinator"] },
-    });
+    const totalCoordinators = await Author.countDocuments({ role: { $in: ["coordinator"] } });
 
     res.status(200).json({
       page,
@@ -613,67 +1094,140 @@ const getCoordinators = async (req, res) => {
   }
 };
 
+// old
+// const getAdmins = async (req, res) => {
+//   const requestEmail = req.params.email;
+//   const page = parseInt(req.query.page) || 1;
+//   const limit = parseInt(req.query.limit) || 10;
+//   const skip = (page - 1) * limit;
+//   if (!requestEmail) {
+//     return res
+//       .status(400)
+//       .json({ message: "Email is required as path param." });
+//   }
+//   try {
+//     const admin = await Author.findOne({ email: requestEmail });
+//     if (!admin) {
+//       return res.status(404).json({ message: "Author not found" });
+//     }
+//     if (admin.role !== "admin") {
+//       return res.status(403).json({ message: "Access denied" });
+//     }
 
+//     // console.log(`getContributors called by ${requestEmail} with page ${page} and limit ${limit}`);
+//     // Fetch contributors with roles 'admin' or 'coordinator'
+//     const contributors = await Author.find({
+//       role: { $in: ["admin"] },
+//     })
+//       .skip(skip)
+//       .limit(limit)
+//       .lean();
 
-// Get only Admins
+//     // Aggregate playlist counts from TutorPlayList by author email
+//     const contributorEmails = contributors.map((c) => c.email);
+//     const playlistCountsByEmail = await TutorPlayList.aggregate([
+//       { $match: { email: { $in: contributorEmails } } },
+//       { $group: { _id: "$email", count: { $sum: 1 } } },
+//     ]).exec();
+//     const playlistCountMap = playlistCountsByEmail.reduce((acc, item) => {
+//       acc[item._id] = item.count;
+//       return acc;
+//     }, {});
+
+//     // Format contributor data
+//     const formattedContributors = contributors.map((contributor) => ({
+//       community: contributor.community || [],
+//       email: contributor.email,
+//       followerscount: contributor.followers ? contributor.followers.length : 0,
+//       followingcount: contributor.following ? contributor.following.length : 0,
+//       name: contributor.authorname,
+//       personalLinks: contributor.personalLinks || [],
+//       playlistCount: playlistCountMap[contributor.email] || 0,
+//       postsCount: contributor.posts ? contributor.posts.length : 0,
+//       profile: contributor.profile,
+//       role: contributor.role,
+//       id :contributor._id.toString(),
+//     }));
+
+//     // Count total contributors
+//     const totalAdmins = await Author.countDocuments({
+//       role: { $in: ["admin"] },
+//     });
+
+//     res.status(200).json({
+//       page,
+//       limit,
+//       totalAdmins,
+//       totalPages: Math.ceil(totalAdmins / limit),
+//       admins: formattedContributors,
+//     });
+//   } catch (err) {
+//     console.error("Error fetching admins:", err);
+//     res.status(500).json({ message: "Server error", error: err.message });
+//   }
+// };
+// reviewed-------------------------------------------------------------------------
 const getAdmins = async (req, res) => {
   const requestEmail = req.params.email;
-  const page = parseInt(req.query.page) || 1;
+  const page  = parseInt(req.query.page)  || 1;
   const limit = parseInt(req.query.limit) || 10;
-  const skip = (page - 1) * limit;
-  if (!requestEmail) {
-    return res
-      .status(400)
-      .json({ message: "Email is required as path param." });
-  }
-  try {
-    const admin = await Author.findOne({ email: requestEmail });
-    if (!admin) {
-      return res.status(404).json({ message: "Author not found" });
-    }
-    if (admin.role !== "admin") {
-      return res.status(403).json({ message: "Access denied" });
-    }
+  const skip  = (page - 1) * limit;
 
-    // console.log(`getContributors called by ${requestEmail} with page ${page} and limit ${limit}`);
-    // Fetch contributors with roles 'admin' or 'coordinator'
-    const contributors = await Author.find({
-      role: { $in: ["admin"] },
-    })
+  if (!requestEmail) {
+    return res.status(400).json({ message: "Email is required as path param." });
+  }
+
+  try {
+    // fix: added $eq and .select('role')
+    const admin = await Author.findOne({ email: { $eq: requestEmail } }).select('role');
+    if (!admin) return res.status(404).json({ message: "Author not found" });
+    if (admin.role !== "admin") return res.status(403).json({ message: "Access denied" });
+
+    const contributors = await Author.find({ role: { $in: ["admin"] } })
       .skip(skip)
       .limit(limit)
       .lean();
 
-    // Aggregate playlist counts from TutorPlayList by author email
-    const contributorEmails = contributors.map((c) => c.email);
-    const playlistCountsByEmail = await TutorPlayList.aggregate([
-      { $match: { email: { $in: contributorEmails } } },
-      { $group: { _id: "$email", count: { $sum: 1 } } },
-    ]).exec();
+    const contributorIds    = contributors.map(c => c._id);
+    const contributorEmails = contributors.map(c => c.email);
+
+    // fix: run both in parallel + true post count from Post collection
+    const [playlistCountsByEmail, postCountsByAuthor] = await Promise.all([
+      TutorPlayList.aggregate([
+        { $match: { email: { $in: contributorEmails } } },
+        { $group: { _id: "$email", count: { $sum: 1 } } },
+      ]),
+      Post.aggregate([
+        { $match: { authorId: { $in: contributorIds } } },
+        { $group: { _id: "$authorId", count: { $sum: 1 } } },
+      ]),
+    ]);
+
     const playlistCountMap = playlistCountsByEmail.reduce((acc, item) => {
       acc[item._id] = item.count;
       return acc;
     }, {});
 
-    // Format contributor data
+    const postCountMap = postCountsByAuthor.reduce((acc, item) => {
+      acc[item._id.toString()] = item.count;
+      return acc;
+    }, {});
+
     const formattedContributors = contributors.map((contributor) => ({
-      community: contributor.community || [],
-      email: contributor.email,
-      followerscount: contributor.followers ? contributor.followers.length : 0,
-      followingcount: contributor.following ? contributor.following.length : 0,
-      name: contributor.authorname,
-      personalLinks: contributor.personalLinks || [],
-      playlistCount: playlistCountMap[contributor.email] || 0,
-      postsCount: contributor.posts ? contributor.posts.length : 0,
-      profile: contributor.profile,
-      role: contributor.role,
-      id :contributor._id.toString(),
+      community:      contributor.community     || [],
+      email:          contributor.email,
+      followerscount: contributor.followers?.length || 0,
+      followingcount: contributor.following?.length || 0,
+      name:           contributor.authorname,
+      personalLinks:  contributor.personalLinks || [],
+      playlistCount:  playlistCountMap[contributor.email]        || 0,
+      postsCount:     postCountMap[contributor._id.toString()]   || 0,
+      profile:        contributor.profile,
+      role:           contributor.role,
+      id:             contributor._id.toString(),
     }));
 
-    // Count total contributors
-    const totalAdmins = await Author.countDocuments({
-      role: { $in: ["admin"] },
-    });
+    const totalAdmins = await Author.countDocuments({ role: { $in: ["admin"] } });
 
     res.status(200).json({
       page,

@@ -19,7 +19,7 @@ const collaborators = new mongoose.Schema({
 const tutorPlaylist = new mongoose.Schema({
   post_ids:[{
     type:mongoose.Schema.Types.ObjectId,
-    ref:'Author.posts',
+    ref:'Post',
     required:true
   }],
   title:{

@@ -168,21 +168,23 @@ function BlogContainer({ activeTab, setActiveTab }) {
         );
 
       // if (response.status === 200) {
-      //   setPosts((prevPosts) =>
-      //     prevPosts.map((post) =>
-      //       post._id === postId
-      //         ? {
-      //             ...post,
-      //             likes: post.likes.includes(email)
-      //               ? post.likes.filter((like) => like !== email) // Unlike the post
-      //               : [...post.likes, email], // Like the post
-      //           }
-      //         : post,
-      //     ),
-      //   );
+      //   // setPosts((prevPosts) =>
+      //   //   prevPosts.map((post) =>
+      //   //     post._id === postId
+      //   //       ? {
+      //   //           ...post,
+      //   //           likes: post.likes.includes(email)
+      //   //             ? post.likes.filter((like) => like !== email) // Unlike the post
+      //   //             : [...post.likes, email], // Like the post
+      //   //         }
+      //   //       : post,
+      //   //   ),
+      //   // );
+      //   console.log("post liked")      
       // }
     } catch (err) {
-      console.error("Error updating views:", err);
+
+      console.log("Error updating views:", err);
     }
   };
 

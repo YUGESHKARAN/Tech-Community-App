@@ -8,7 +8,7 @@ const {
   getSingleAuthor,
   // getAuthorsByRole,
   updateAuthor,
-  updateAPassword,
+  // updateAPassword,
   deleteAuthor,
   getProfile,
   updateFollowers,
@@ -54,7 +54,7 @@ router.get("/getAllAuthorsByDomain/:category(*)", readLimiter, authenticateToken
 // router.get("/authoreByRole/:role", readLimiter, authenticateToken,getAuthorsByRole);
 
 router.put("/:email", limiter, authenticateToken, upload.single('profile'), updateAuthor);
-router.put("/password/:email", limiter, authenticateToken, updateAPassword);
+// router.put("/password/:email", limiter, authenticateToken, updateAPassword);
 router.put("/follow/:email", limiter, authenticateToken, updateFollowers);
 router.delete("/:email", limiter, authenticateToken, deleteAuthor);
 router.delete("/deleteByAdmin/:authorEmail", limiter, authenticateToken, deleteAuthorByAdmin);

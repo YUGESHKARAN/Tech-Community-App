@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const Author = require("../models/blogAuthorSchema");
+const {Author, Post} = require("../models/blogAuthorSchema");
 
 const multer = require('multer');
 const path = require('path');

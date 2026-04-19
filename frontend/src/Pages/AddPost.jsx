@@ -276,7 +276,7 @@ function AddPost() {
 }, [messages, isTyping]);
 
   // console.log("links",links)
-  console.log("documents",documents)
+  // console.log("documents",documents)
 
   return (
     <div className="min-h-screen relative bg-gray-900 text-white">
