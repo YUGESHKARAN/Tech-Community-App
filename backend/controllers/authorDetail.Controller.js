@@ -893,6 +893,154 @@ const notificationAuthorDeleteAll = async (req, res) => {
 };
 
 // reviewed-----------------------------------------------------------------------
+// const addAnnouncement = async (req, res) => {
+//   const {
+//     user, title, message, links,
+//     deliveredTo, techCommName, email, profile,
+//   } = req.body;
+
+//   try {
+//     const author = await Author.findOne({ email: { $eq: email } });
+//     if (!author) {
+//       return res.status(404).json({ message: "Author not found" });
+//     }
+
+//     // fix: validate role BEFORE any S3 upload
+//     if (!["coordinator", "admin"].includes(author.role)) {
+//       return res.status(403).json({ message: "Not allowed to post announcements" });
+//     }
+
+//     let selectedCommunities = [];
+//     if (deliveredTo === "community" && techCommName) {
+//       try {
+//         selectedCommunities = typeof techCommName === "string"
+//           ? JSON.parse(techCommName) : techCommName;
+//         if (!Array.isArray(selectedCommunities)) selectedCommunities = [];
+//       } catch {
+//         selectedCommunities = [];
+//       }
+//     }
+
+//     // S3 upload now happens AFTER role check
+//     const eventFolder = "Events/";
+//     let uniqueFilename = "";
+//     if (req.file) {
+//       uniqueFilename = `${eventFolder}${uuidv4()}-${req.file.originalname}`;
+//       const params = {
+//         Bucket: bucketName,
+//         Key: uniqueFilename,
+//         Body: req.file.buffer,
+//         ContentType: req.file.mimetype,
+//       };
+//       await s3.send(new PutObjectCommand(params));
+//     }
+
+//     let parsedLinks = [];
+//     try {
+//       parsedLinks = links ? JSON.parse(links) : [];
+//       if (!Array.isArray(parsedLinks)) parsedLinks = [];
+//     } catch {
+//       parsedLinks = [];
+//     }
+
+//     // fix: sanitize user-supplied strings before embedding in HTML email
+//     const sanitize = (str) =>
+//       String(str ?? "")
+//         .replace(/&/g, "&amp;")
+//         .replace(/</g, "&lt;")
+//         .replace(/>/g, "&gt;")
+//         .replace(/"/g, "&quot;");
+
+//     const newAnnouncement = {
+//       user, title, message, links: parsedLinks,
+//       deliveredTo, profile, authorEmail: email,
+//       poster: uniqueFilename,
+//     };
+
+//     // deliveredTo === "all" intentionally matches all authors (empty filter)
+//     let filter = {};
+//     if (deliveredTo === "coordinators") {
+//       filter.role = { $in: ["coordinator", "admin"] };
+//     } else if (deliveredTo === "community") {
+//       filter.$or = [
+//         { community: { $in: selectedCommunities } },
+//         { role: "admin" },
+//       ];
+//     }
+
+//     const recipients = await Author.find(filter).select("email");
+//     const recipientEmails = recipients.map((r) => r.email).filter(Boolean);
+
+//     if (recipientEmails.length > 0) {
+//       // fix: wrap bulkWrite in try/catch so S3 orphan can be cleaned up on failure
+//       try {
+//         const bulkOps = recipients.map((r) => ({
+//           updateOne: {
+//             filter: { email: r.email },
+//             update: { $push: { announcement: newAnnouncement } },
+//           },
+//         }));
+//         await Author.bulkWrite(bulkOps);
+//       } catch (dbErr) {
+//         // DB failed after S3 upload — delete the orphaned file
+//         if (uniqueFilename) {
+//           try {
+//             await s3.send(new DeleteObjectCommand({ Bucket: bucketName, Key: uniqueFilename }));
+//           } catch (s3Err) {
+//             console.error("S3 cleanup failed:", s3Err.message);
+//           }
+//         }
+//         throw dbErr; // re-throw so the outer catch returns 500
+//       }
+//     }
+
+//     const announcementUrl = process.env.NOTIFICATION_URL || "http://localhost:5173";
+//     const url = `${announcementUrl}/announcement`;
+
+//     const linkHtml = parsedLinks.length > 0
+//       ? `<p>Links:<br>${parsedLinks.map((link) => {
+//           const href = typeof link === "string" ? link : link?.url ?? "";
+//           return `<a href="${sanitize(href)}" target="_blank">${sanitize(href)}</a>`;
+//         }).join("<br>")}</p>`
+//       : "";
+
+//     // Respond immediately — emails sent fire-and-forget after response
+//     res.status(201).json({
+//       message: "Announcement added successfully",
+//       announcement: newAnnouncement,
+//       recipients: recipientEmails,
+//     });
+
+//     const sendEmailsSequentially = async () => {
+//       console.log(`📨 Sending announcement emails to ${recipientEmails.length} recipients...`);
+//       for (const recipient of recipientEmails) {
+//         try {
+//           await transporter.sendMail({
+//             from: `"${sanitize(user)}" <${process.env.EMAIL_USER}>`,
+//             to: recipient,
+//             subject: `Announcement: ${sanitize(title)}`,
+//             html: `
+//               <h3>New Announcement from ${sanitize(user)}</h3>
+//               <p><strong>Title:</strong> ${sanitize(title)}</p>
+//               <p>${sanitize(message)}</p>
+//               ${linkHtml}
+//               <p><a href="${url}">View Announcement</a></p>
+//             `,
+//           });
+//           await new Promise((res) => setTimeout(res, 200));
+//         } catch (err) {
+//           console.error(`❌ Failed to send email to ${recipient}:`, err.message);
+//         }
+//       }
+//       console.log("📬 All announcement emails processed.");
+//     };
+
+//     sendEmailsSequentially();
+//   } catch (error) {
+//     console.error("Error adding announcement:", error);
+//     res.status(500).json({ message: "Server error" });
+//   }
+// };
 const addAnnouncement = async (req, res) => {
   // console.log("announcement route hit");
 
