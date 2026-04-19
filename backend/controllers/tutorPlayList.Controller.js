@@ -24,6 +24,7 @@ const s3 = new S3Client({
   region: bucketRegion,
 });
 
+// reviewed
 // const getAllTutorPlaylist = async (req, res) => {
 //   try {
 //     const tutorPlaylist = await TutorPlayList.find({ });
@@ -64,7 +65,6 @@ const s3 = new S3Client({
 //     res.status(500).json({ message: err.message });
 //   }
 // };
-
 const getAllTutorPlaylist = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -181,6 +181,7 @@ const getAllTutorPlaylist = async (req, res) => {
 //     res.status(500).json({ message: err.message });
 //   }
 // };
+//reviewed------------------------------------------------------------
 const getRecommendedTutorPlaylist = async (req, res) => {
   try {
     const { email } = req.params;

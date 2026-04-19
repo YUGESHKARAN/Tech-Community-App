@@ -46,7 +46,7 @@ const s3 = new S3Client({
 })
 
 
-// Redis cache implemented for getRecommendedPosts
+// old ------------------------------------------------------
 // const getRecommendedPosts = async (req, res) => {
 //   try {
 //     const { email } = req.params;
@@ -151,15 +151,132 @@ const s3 = new S3Client({
 //   }
 // };
 
+// const getRecommendedPosts = async (req, res) => {
+//   try {
+//     const { email } = req.params;
+
+//     const page = parseInt(req.query.page) || 1;
+//     const limit = Math.min(parseInt(req.query.limit) || 20, 50);
+
+//     const feedCacheKey = `postHomeFeed:${email}:full`;
+
+//     let allPosts = [];
+
+//     // 1. CHECK FULL FEED CACHE
+//     const cachedFeed = await redisClient.get(feedCacheKey);
+
+//     if (cachedFeed) {
+//       console.log("posts Serving FULL FEED from Redis");
+//       allPosts = JSON.parse(cachedFeed);
+//     } else {
+//       console.log("post Cache MISS → Generating feed from DB");
+
+//       let followedEmails = [];
+//       let authorCommunities = [];
+
+//       // Get current user preferences
+//       const currentAuthor = await Author.findOne({ email })
+//         .select("following community");
+
+//       if (currentAuthor) {
+//         followedEmails = currentAuthor.following || [];
+//         authorCommunities = currentAuthor.community || [];
+//       }
+
+//       // Get all authors (optimized fields only)
+//       const allAuthors = await Author.find({})
+//         .select("email authorname profile role community posts");
+
+//       const followedSet = new Set(followedEmails);
+
+//       const priorityAuthors = [];
+//       const otherAuthors = [];
+
+//       // Split authors
+//       for (const author of allAuthors) {
+//         const inFollowing = followedSet.has(author.email);
+//         const inCommunity =
+//           Array.isArray(author.community) &&
+//           author.community.some((c) => authorCommunities.includes(c));
+
+//         if (inFollowing || inCommunity) {
+//           priorityAuthors.push(author);
+//         } else {
+//           otherAuthors.push(author);
+//         }
+//       }
+
+//       // Flatten posts
+//       const flattenPosts = (authors) =>
+//         authors.flatMap((author) => {
+//           const posts = Array.isArray(author.posts) ? author.posts : [];
+
+//           return posts.map((post) => ({
+//             ...post.toObject(),
+//             authorName: author.authorname,
+//             authorEmail: author.email,
+//             profile: author.profile || "",
+//             role: author.role,
+//             community: author.community,
+//           }));
+//         });
+
+//       // Shuffle (only once)
+//       const shuffle = (arr) => {
+//         const a = arr.slice();
+//         for (let i = a.length - 1; i > 0; i--) {
+//           const j = Math.floor(Math.random() * (i + 1));
+//           [a[i], a[j]] = [a[j], a[i]];
+//         }
+//         return a;
+//       };
+
+//       const priorityPosts = shuffle(flattenPosts(priorityAuthors));
+//       const otherPosts = shuffle(flattenPosts(otherAuthors));
+
+//       allPosts = [...priorityPosts, ...otherPosts];
+
+//       // Cache FULL FEED (5 mins)
+//       await redisClient.setEx(feedCacheKey, 300, JSON.stringify(allPosts));
+//     }
+
+//     // 2. PAGINATION
+//     const startIndex = (page - 1) * limit;
+//     const endIndex = page * limit;
+
+//     const paginatedPosts = allPosts.slice(startIndex, endIndex);
+
+//     // 3. RESPONSE
+//     const responseData = {
+//       message: "Recommended posts",
+//       page,
+//       limit,
+//       totalPosts: allPosts.length,
+//       totalPages: Math.ceil(allPosts.length / limit),
+//       hasMore: endIndex < allPosts.length,
+//       posts: paginatedPosts,
+//     };
+
+//     console.log("Feed served (cached or sliced)");
+
+//     res.status(200).json(responseData);
+//   } catch (err) {
+//     console.error("Error in getRecommendedPosts:", err);
+//     res.status(500).json({
+//       message: "Server error",
+//       error: err.message,
+//     });
+//   }
+// };
+
+// reviewed----------------------------------------------------
 const getRecommendedPosts = async (req, res) => {
   try {
     const { email } = req.params;
-
     const page = parseInt(req.query.page) || 1;
     const limit = Math.min(parseInt(req.query.limit) || 20, 50);
 
     const feedCacheKey = `postHomeFeed:${email}:full`;
-
     let allPosts = [];
 
     // 1. CHECK FULL FEED CACHE
@@ -171,57 +288,53 @@ const getRecommendedPosts = async (req, res) => {
     } else {
       console.log("post Cache MISS → Generating feed from DB");
 
-      let followedEmails = [];
-      let authorCommunities = [];
-
-      // Get current user preferences
-      const currentAuthor = await Author.findOne({ email })
+      // Get current user's following list and communities
+      const currentAuthor = await Author.findOne({ email: { $eq: email } })
         .select("following community");
 
-      if (currentAuthor) {
-        followedEmails = currentAuthor.following || [];
-        authorCommunities = currentAuthor.community || [];
-      }
+      const followedEmails = currentAuthor?.following || [];
+      const authorCommunities = currentAuthor?.community || [];
 
-      // Get all authors (optimized fields only)
-      const allAuthors = await Author.find({})
-        .select("email authorname profile role community posts");
+      // ── NEW: query Post collection directly instead of Author.find({}) ──
 
-      const followedSet = new Set(followedEmails);
+      // Get authorIds for followed authors and community-matched authors
+      const priorityAuthors = await Author.find({
+        $or: [
+          { email: { $in: followedEmails } },
+          { community: { $in: authorCommunities } },
+        ],
+      }).select("_id");
 
-      const priorityAuthors = [];
-      const otherAuthors = [];
+      const priorityAuthorIds = priorityAuthors.map((a) => a._id);
 
-      // Split authors
-      for (const author of allAuthors) {
-        const inFollowing = followedSet.has(author.email);
-        const inCommunity =
-          Array.isArray(author.community) &&
-          author.community.some((c) => authorCommunities.includes(c));
+      // Fetch priority posts (from followed/community authors)
+      const priorityPostDocs = await Post.find({
+        authorId: { $in: priorityAuthorIds },
+      })
+        .populate("authorId", "authorname email profile role community")
+        .lean();
 
-        if (inFollowing || inCommunity) {
-          priorityAuthors.push(author);
-        } else {
-          otherAuthors.push(author);
-        }
-      }
+      // Fetch all other posts
+      const otherPostDocs = await Post.find({
+        authorId: { $nin: priorityAuthorIds },
+      })
+        .populate("authorId", "authorname email profile role community")
+        .lean();
 
-      // Flatten posts
-      const flattenPosts = (authors) =>
-        authors.flatMap((author) => {
-          const posts = Array.isArray(author.posts) ? author.posts : [];
+      // Shape posts to match original response format exactly
+      const shapePosts = (docs) =>
+        docs.map((post) => ({
+          ...post,
+          authorName: post.authorId?.authorname || "",
+          authorEmail: post.authorId?.email || "",
+          profile: post.authorId?.profile || "",
+          role: post.authorId?.role || "",
+          community: post.authorId?.community || [],
+          // remove the nested authorId object — keep shape flat like before
+          authorId: post.authorId?._id,
+        }));
 
-          return posts.map((post) => ({
-            ...post.toObject(),
-            authorName: author.authorname,
-            authorEmail: author.email,
-            profile: author.profile || "",
-            role: author.role,
-            community: author.community,
-          }));
-        });
-
-      // Shuffle (only once)
+      // Shuffle helper
       const shuffle = (arr) => {
         const a = arr.slice();
         for (let i = a.length - 1; i > 0; i--) {
@@ -231,8 +344,8 @@ const getRecommendedPosts = async (req, res) => {
         return a;
       };
 
-      const priorityPosts = shuffle(flattenPosts(priorityAuthors));
-      const otherPosts = shuffle(flattenPosts(otherAuthors));
+      const priorityPosts = shuffle(shapePosts(priorityPostDocs));
+      const otherPosts    = shuffle(shapePosts(otherPostDocs));
 
       allPosts = [...priorityPosts, ...otherPosts];
 
@@ -242,12 +355,12 @@ const getRecommendedPosts = async (req, res) => {
 
     // 2. PAGINATION
     const startIndex = (page - 1) * limit;
-    const endIndex = page * limit;
-
+    const endIndex   = page * limit;
     const paginatedPosts = allPosts.slice(startIndex, endIndex);
 
-    // 3. RESPONSE
-    const responseData = {
+    // 3. RESPONSE — shape identical to before
+    console.log("Feed served (cached or sliced)");
+    res.status(200).json({
       message: "Recommended posts",
       page,
       limit,
@@ -255,22 +368,59 @@ const getRecommendedPosts = async (req, res) => {
       totalPages: Math.ceil(allPosts.length / limit),
       hasMore: endIndex < allPosts.length,
       posts: paginatedPosts,
-    };
-
-    console.log("Feed served (cached or sliced)");
-
-    res.status(200).json(responseData);
+    });
   } catch (err) {
     console.error("Error in getRecommendedPosts:", err);
-    res.status(500).json({
-      message: "Server error",
-      error: err.message,
-    });
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 };
 
 
+// old-------------------------------------------------------
+// const getSingleAuthorPosts = async (req, res) => {
+//   try {
+//     const { email } = req.params;
 
+//     let { page = 1, limit = 10 } = req.query;
+
+//     page = parseInt(page);
+//     limit = parseInt(limit);
+
+//     const author = await Author.findOne({ email: { $eq: email }});
+//     if (!author) {
+//       return res.status(404).json({ message: `author ${email} not found` });
+//     }
+
+//     const authorPosts = author.posts
+//       .flatMap((post) => ({
+//         ...post.toObject(),
+//         authorName: author.authorname,
+//         authorEmail: author.email,
+//         profile: author.profile || "",
+//         role: author.role,
+//         community: author.community,
+//       }))
+//       .reverse();
+
+//     const startIndex = (page - 1) * limit;
+//     const paginatedPosts = authorPosts.slice(startIndex, startIndex + limit);
+
+//     console.log(`author page: ${page} limit: ${limit}`);
+
+//     res.status(200).json({
+//       message: "author posts",
+//       data: paginatedPosts,
+//       authorName: author.authorname,
+//       profile: author.profile || "",
+//       total: authorPosts.length,
+//     });
+
+//   } catch (err) {
+//     res.status(500).json({ message: err.message });
+//   }
+// };
+
+// reviewed----------------------------------------------------
 const getSingleAuthorPosts = async (req, res) => {
   try {
     const { email } = req.params;
@@ -315,39 +465,69 @@ const getSingleAuthorPosts = async (req, res) => {
 };
 
 
+
+
+// old--------------------------------------------------------
+// const getCategoryPosts = async (req, res) => {
+//   try {
+//     // const authors = await Author.find({}); // fetch all authors
+//     const {category} = req.params;
+//     const authors = await Author.find({
+//       'posts.category': category
+//     });
+//      // Flatten posts from authors and filter by category
+//      const categoryPosts = authors.flatMap((author) =>
+//       author.posts
+//         .filter((post) => post.category === category)
+//         .map((post) => ({
+//           ...post.toObject(), // Convert post to a plain object
+//           authorname: author.authorname,
+//           authoremail: author.email,
+//           profile:author.profile || '',
+          
+//         }))
+//     );
+//     res
+//       .status(200)
+//       .json({ message: "Category posts", data: categoryPosts });
+//   } catch (err) {
+//     res.status(500).json({ message: "server error" });
+//   }
+// };
+
+// reviewed---------------------------------------------------
 const getCategoryPosts = async (req, res) => {
   try {
-    // const authors = await Author.find({}); // fetch all authors
-    const {category} = req.params;
-    const authors = await Author.find({
-      'posts.category': category
-    });
-     // Flatten posts from authors and filter by category
-     const categoryPosts = authors.flatMap((author) =>
-      author.posts
-        .filter((post) => post.category === category)
-        .map((post) => ({
-          ...post.toObject(), // Convert post to a plain object
-          authorname: author.authorname,
-          authoremail: author.email,
-          profile:author.profile || '',
-          
-        }))
-    );
-    res
-      .status(200)
-      .json({ message: "Category posts", data: categoryPosts });
+    const { category } = req.params;
+
+    // fix: query Post collection directly by category — 'posts.category' on Author no longer works
+    const posts = await Post.find({ category: { $eq: category } })
+      .populate("authorId", "authorname email profile")
+      .lean();
+
+    // Shape to match original response exactly
+    const categoryPosts = posts.map((post) => ({
+      ...post,
+      authorname: post.authorId?.authorname || "",
+      authoremail: post.authorId?.email     || "",
+      profile:     post.authorId?.profile   || "",
+      // keep authorId as the ObjectId — don't expose the nested object
+      authorId: post.authorId?._id,
+    }));
+
+    res.status(200).json({ message: "Category posts", data: categoryPosts });
   } catch (err) {
-    res.status(500).json({ message: "server error" });
+    // fix: expose err.message
+    res.status(500).json({ message: "server error", error: err.message });
   }
 };
 
 
-
+// reviewed------------------------------------------------------
 async function notifyAIIngestion(post, token) {
  try{
    console.log("post to ingest", post)
-  res = await axios.post(`${process.env.TECH_ASSISTANT_URL}/ingest`,
+ const  res = await axios.post(`${process.env.TECH_ASSISTANT_URL}/ingest`,
    post,
   {
     headers:{
@@ -361,10 +541,11 @@ async function notifyAIIngestion(post, token) {
  }
 }
 
+// reviewed-----------------------------------------------------
 async function deleteFromAIIngestion(post_id, token) {
   try{
 
-     res = await axios.delete(`${process.env.TECH_ASSISTANT_URL}/delete/${post_id}`,
+   const  res = await axios.delete(`${process.env.TECH_ASSISTANT_URL}/delete/${post_id}`,
       {
         headers:{
           "Authorization": `Bearer ${token}`
@@ -386,36 +567,206 @@ async function deleteFromAIIngestion(post_id, token) {
   }
 }
 
+// old
+// const addPosts = async (req, res) => {
+//   const { title, description, category, links } = req.body;
 
+//   try {
+//     const author = await Author.findOne({ email: req.params.email });
+//     if (!author) {
+//       return res.status(404).json({ message: "Author not found" });
+//     }
+
+//     // --- Upload image ---
+//     let imageUrl = '';
+//     if (req.files && req.files.image) {
+//       const buffer = await sharp(req.files.image[0].buffer)
+//         .resize({ width: 672, height: 462, fit: 'contain' })
+//         .toBuffer();
+
+//        const uniqueFilename = `${uuidv4()}-${req.files.image[0].originalname}`;
+//       await s3.send(new PutObjectCommand({
+//         Bucket: bucketName,
+//         Key: uniqueFilename,
+//         Body: buffer,
+//         ContentType: req.files.image[0].mimetype
+//       }));
+
+//       imageUrl = uniqueFilename;
+//     }
+
+//     // --- Upload documents ---
+//     const documentUrls = [];
+//     if (req.files && req.files.document) {
+//       for (const doc of req.files.document) {
+//         const uniqueDocName = `${uuidv4()}-${doc.originalname}`;
+//         await s3.send(new PutObjectCommand({
+//           Bucket: bucketName,
+//           Key: uniqueDocName,
+//           Body: doc.buffer,
+//           ContentType: doc.mimetype
+//         }));
+//         documentUrls.push(uniqueDocName);
+//       }
+//     }
+
+//     // --- Parse links safely ---
+//     let parsedLinks = [];
+//     try {
+//       parsedLinks = links ? JSON.parse(links) : [];
+//     } catch {
+//       parsedLinks = [];
+//     }
+
+//     // --- Create post ---
+//     const postId = new mongoose.Types.ObjectId();
+//     let postData = {
+//       _id: postId,
+//       title,
+//       image: imageUrl,
+//       description,
+//       category,
+//       documents: documentUrls,
+//       links: parsedLinks
+//     }
+//     author.posts.push(postData);
+
+//     const url = `${notificationUrl}/viewpage/${author.email}/${postId}`;
+
+//     // --- Find community authors (excluding self) ---
+//     const communityAuthors = await Author.find({
+//       // community: { $in: author.community },
+//       community: { $in: [category] },
+//       email: { $ne: author.email }
+//     }).select('email');
+
+//     const followerSet = new Set(author.followers);
+//     const communitySet = new Set();
+
+//     for (const a of communityAuthors) {
+//       if (!followerSet.has(a.email)) {
+//         communitySet.add(a.email);
+//       }
+//     }
+
+//     // --- Combined recipients (followers + non-following community members) ---
+//     const combinedRecipients = [...followerSet, ...communitySet];
+//     const followersSet = [...followerSet]
+
+//     // --- Bulk notifications ---
+//     if (combinedRecipients.length > 0) {
+//       const bulkNotifications = combinedRecipients.map(email => {
+//         const isFollower = followerSet.has(email);
+//         const message = isFollower
+//           ? `New post from ${author.authorname}: ${title}`
+//           : `${author.authorname} from your community posted: ${title}`;
+
+//         return {
+//           updateOne: {
+//             filter: { email },
+//             update: {
+//               $push: {
+//                 notification: {
+//                   postId,
+//                   user: author.authorname,
+//                   authorEmail: author.email,
+//                   message,
+//                   url,
+//                   profile: author.profile || ""
+//                 }
+//               }
+//             }
+//           }
+//         };
+//       });
+//       await Author.bulkWrite(bulkNotifications);
+//     }
+
+//     // --- Save post ---
+//     const data = await author.save();
+     
+    
+
+//     // ✅ Respond immediately (non-blocking email sending)
+//     res.status(201).json({ message: "Post added successfully", data });
+   
+//     postData['authorName'] = author.authorname;
+//     postData['profile'] = author.profile || '';
+//     postData['authorEmail'] = author.email;
+
+//     await notifyAIIngestion(postData, req.token).catch(err => {
+//       console.error("AI ingestion error:", err.message);
+//     }); 
+
+//     // --- Send emails in background ---
+//     if (followersSet.length > 0) {
+//       const sendEmailsSequentially = async (recipients, subject, html) => {
+//         for (const recipient of recipients) {
+//           try {
+//             await transporter.sendMail({
+//               from: `"${author.authorname}" <${process.env.EMAIL_USER}>`,
+//               to: recipient,
+//               subject,
+//               html
+//             });
+//             console.log(`📧 Email sent to ${recipient}`);
+//             await new Promise(res => setTimeout(res, 200)); // short delay
+//           } catch (err) {
+//             console.error(`❌ Failed to send email to ${recipient}:`, err.message);
+//           }
+          
+//         }
+//          console.log("📬 All emails processed.");
+//       };
+
+//       sendEmailsSequentially(
+//         followersSet,
+//         `New post from ${author.authorname}`,
+//         `
+//           <h3>${author.authorname} has posted a new blog!</h3>
+//           <p><strong>Title:</strong> ${title}</p>
+//           <p>${description}</p>
+//           <p><a href="${url}">Click here to view the post</a></p>
+//         `
+//       );
+//     }
+
+//   } catch (err) {
+//     console.error("❌ Server error:", err);
+//     res.status(500).json({ message: "Server error", error: err.message });
+//   }
+// };
+
+// reviewed-----------------------------------------------------
 const addPosts = async (req, res) => {
   const { title, description, category, links } = req.body;
 
+  let imageUrl = '';
+  const documentUrls = [];
+
   try {
-    const author = await Author.findOne({ email: req.params.email });
+    // fix: added $eq operator — consistent with all other controllers
+    const author = await Author.findOne({ email: { $eq: req.params.email } });
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
     }
 
     // --- Upload image ---
-    let imageUrl = '';
     if (req.files && req.files.image) {
       const buffer = await sharp(req.files.image[0].buffer)
         .resize({ width: 672, height: 462, fit: 'contain' })
         .toBuffer();
-
-       const uniqueFilename = `${uuidv4()}-${req.files.image[0].originalname}`;
+      const uniqueFilename = `${uuidv4()}-${req.files.image[0].originalname}`;
       await s3.send(new PutObjectCommand({
         Bucket: bucketName,
         Key: uniqueFilename,
         Body: buffer,
-        ContentType: req.files.image[0].mimetype
+        ContentType: req.files.image[0].mimetype,
       }));
-
       imageUrl = uniqueFilename;
     }
 
     // --- Upload documents ---
-    const documentUrls = [];
     if (req.files && req.files.document) {
       for (const doc of req.files.document) {
         const uniqueDocName = `${uuidv4()}-${doc.originalname}`;
@@ -423,7 +774,7 @@ const addPosts = async (req, res) => {
           Bucket: bucketName,
           Key: uniqueDocName,
           Body: doc.buffer,
-          ContentType: doc.mimetype
+          ContentType: doc.mimetype,
         }));
         documentUrls.push(uniqueDocName);
       }
@@ -437,40 +788,52 @@ const addPosts = async (req, res) => {
       parsedLinks = [];
     }
 
-    // --- Create post ---
-    const postId = new mongoose.Types.ObjectId();
-    let postData = {
-      _id: postId,
-      title,
-      image: imageUrl,
-      description,
-      category,
-      documents: documentUrls,
-      links: parsedLinks
-    }
-    author.posts.push(postData);
+    // fix: create Post document in Post collection — cannot push plain object into [ObjectId] array
+    let savedPost;
+    try {
+      savedPost = await Post.create({
+        authorId: author._id,
+        title,
+        image: imageUrl,
+        description,
+        category,
+        documents: documentUrls,
+        links: parsedLinks,
+      });
 
+      // push only the ObjectId ref into author.posts
+      author.posts.push(savedPost._id);
+      await author.save({ validateBeforeSave: false });
+    } catch (dbErr) {
+      // fix: S3 cleanup if DB write fails — prevent orphaned files
+      const cleanup = [];
+      if (imageUrl) cleanup.push(
+        s3.send(new DeleteObjectCommand({ Bucket: bucketName, Key: imageUrl }))
+      );
+      for (const doc of documentUrls) cleanup.push(
+        s3.send(new DeleteObjectCommand({ Bucket: bucketName, Key: doc }))
+      );
+      await Promise.allSettled(cleanup);
+      throw dbErr; // re-throw so outer catch returns 500
+    }
+
+    const postId = savedPost._id;
     const url = `${notificationUrl}/viewpage/${author.email}/${postId}`;
 
     // --- Find community authors (excluding self) ---
     const communityAuthors = await Author.find({
-      // community: { $in: author.community },
       community: { $in: [category] },
-      email: { $ne: author.email }
+      email: { $ne: author.email },
     }).select('email');
 
     const followerSet = new Set(author.followers);
     const communitySet = new Set();
-
     for (const a of communityAuthors) {
-      if (!followerSet.has(a.email)) {
-        communitySet.add(a.email);
-      }
+      if (!followerSet.has(a.email)) communitySet.add(a.email);
     }
 
-    // --- Combined recipients (followers + non-following community members) ---
     const combinedRecipients = [...followerSet, ...communitySet];
-    const followersSet = [...followerSet]
+    const followersSet = [...followerSet];
 
     // --- Bulk notifications ---
     if (combinedRecipients.length > 0) {
@@ -479,7 +842,6 @@ const addPosts = async (req, res) => {
         const message = isFollower
           ? `New post from ${author.authorname}: ${title}`
           : `${author.authorname} from your community posted: ${title}`;
-
         return {
           updateOne: {
             filter: { email },
@@ -491,72 +853,198 @@ const addPosts = async (req, res) => {
                   authorEmail: author.email,
                   message,
                   url,
-                  profile: author.profile || ""
-                }
-              }
-            }
-          }
+                  profile: author.profile || "",
+                },
+              },
+            },
+          },
         };
       });
       await Author.bulkWrite(bulkNotifications);
     }
 
-    // --- Save post ---
-    const data = await author.save();
-     
-    
+    // fix: strip sensitive fields — author.save() returns full doc with password
+    const { password, otp, otpExpiresAt, ...safeAuthor } = author.toObject();
 
-    // ✅ Respond immediately (non-blocking email sending)
-    res.status(201).json({ message: "Post added successfully", data });
-   
-    postData['authorName'] = author.authorname;
-    postData['profile'] = author.profile || '';
-    postData['authorEmail'] = author.email;
+    // Respond immediately
+    res.status(201).json({ message: "Post added successfully", data: safeAuthor });
 
-    await notifyAIIngestion(postData, req.token).catch(err => {
+    // --- AI ingestion (fire-and-forget after response) ---
+    const postDataForAI = {
+      ...savedPost.toObject(),
+      authorName: author.authorname,
+      profile: author.profile || '',
+      authorEmail: author.email,
+    };
+    notifyAIIngestion(postDataForAI, req.token).catch(err => {
       console.error("AI ingestion error:", err.message);
-    }); 
+    });
 
     // --- Send emails in background ---
     if (followersSet.length > 0) {
-      const sendEmailsSequentially = async (recipients, subject, html) => {
-        for (const recipient of recipients) {
+      const sendEmailsSequentially = async () => {
+        for (const recipient of followersSet) {
           try {
             await transporter.sendMail({
               from: `"${author.authorname}" <${process.env.EMAIL_USER}>`,
               to: recipient,
-              subject,
-              html
+              subject: `New post from ${author.authorname}`,
+              html: `
+                <h3>${author.authorname} has posted a new blog!</h3>
+                <p><strong>Title:</strong> ${title}</p>
+                <p>${description}</p>
+                <p><a href="${url}">Click here to view the post</a></p>
+              `,
             });
-            console.log(`📧 Email sent to ${recipient}`);
-            await new Promise(res => setTimeout(res, 200)); // short delay
+            console.log(`Email sent to ${recipient}`);
+            await new Promise(r => setTimeout(r, 200));
           } catch (err) {
-            console.error(`❌ Failed to send email to ${recipient}:`, err.message);
+            console.error(`Failed to send email to ${recipient}:`, err.message);
           }
-          
         }
-         console.log("📬 All emails processed.");
+        console.log("All emails processed.");
       };
-
-      sendEmailsSequentially(
-        followersSet,
-        `New post from ${author.authorname}`,
-        `
-          <h3>${author.authorname} has posted a new blog!</h3>
-          <p><strong>Title:</strong> ${title}</p>
-          <p>${description}</p>
-          <p><a href="${url}">Click here to view the post</a></p>
-        `
-      );
+      sendEmailsSequentially();
     }
 
   } catch (err) {
-    console.error("❌ Server error:", err);
+    console.error("Server error:", err);
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
 
+// old----------------------------------------------------------
+// const updatePost = async (req, res) => {
+//   const { email, postId } = req.params;
+//   const { title, description, category,links } = req.body;
 
+  
+//   try {
+//     const author = await Author.findOne({ email: { $eq: email }});
+
+//     if (!author) {
+//       return res.status(404).json({ message: "author not found" });
+//     }
+
+//     const post = author.posts.id(postId);
+
+//     if (!post) {
+//       return res.status(404).json({ message: "post not found" });
+//     }
+
+//     // Handle image upload
+//     let imageUrl = post.image ||[];
+//     if (req.files && req.files.image) {
+//       const buffer = await sharp(req.files.image[0].buffer)
+//         .resize({ width: 672, height: 462, fit: 'contain' })
+//         .toBuffer();
+      
+//         const uniqueFilename = `${uuidv4()}-${req.files.image[0].originalname}`;
+
+//       const params = {
+//         Bucket: bucketName,
+//         Key: uniqueFilename,
+//         Body: buffer,
+//         ContentType: req.files.image[0].mimetype
+//       };
+
+//       const command = new PutObjectCommand(params);
+//       await s3.send(command);
+//       imageUrl = uniqueFilename;
+//     }
+//     // Handle document uploads
+//     let documentUrls =post.documents || [];
+//     if (req.files && req.files.document) {
+//       documentUrls = [];
+//       for (const doc of req.files.document) {
+//          const uniqueDocName = `${uuidv4()}-${doc.originalname}`;
+//         const params = {
+//           Bucket: bucketName,
+//           Key: uniqueDocName,
+//           Body: doc.buffer,
+//           ContentType: doc.mimetype
+//         };
+
+//         const command = new PutObjectCommand(params);
+//         await s3.send(command);
+//         documentUrls.push(uniqueDocName);
+//       }
+//     }
+
+// let parsedLinks = post.links || [];
+//     // --- Parse links safely ---
+//     if (links && JSON.parse(links).length > 0) {
+//       try {
+//         const parsed = typeof links === "string" ? JSON.parse(links) : links;
+
+//         if (Array.isArray(parsed)) {
+//           incomingLinks = parsed.map((link) => ({
+//             _id: link.id ? link.id : new mongoose.Types.ObjectId(), // manually create if you want explicit IDs
+//             title: (link.title || "").trim(),
+//             url: (link.url || "").trim(),
+//           }));
+//         }
+
+//         // Replace existing links or add new ones
+//         incomingLinks.forEach((newLink) => {
+//           const existingIndex = parsedLinks.findIndex(
+//             (existing) => existing._id.toString() === newLink._id.toString()
+//           );
+
+//           if (existingIndex !== -1) {
+//             // Update existing link
+//             parsedLinks[existingIndex] = newLink;
+//           } else {
+//             // Add new link (limit to 5 max)
+//             if (parsedLinks.length < 5) {
+//               parsedLinks.push(newLink);
+//             }
+//           }
+//         });
+
+      
+//         // console.log("Updated Personal Links:", parsedLinks);
+//       } catch (err) {
+//         console.error("Failed to parse links:", err);
+//       }
+//     }
+//   Object.assign(post, { 
+//       title, 
+//       image: imageUrl, 
+//       description, 
+//       category,
+//       documents: documentUrls,
+//       links:parsedLinks
+//     });
+
+//     const updatedPost = await author.save();
+
+
+//     //----- Embedding doc update controller-----
+//     const updated = updatedPost.posts.id(postId);
+//     let updatedToAI = {...updated.toObject(), authorName: author.authorname, profile: author.profile || '', authorEmail: author.email};
+
+//      await notifyAIIngestion(updatedToAI, req.token).catch(err => {
+//       console.error("AI update ingestion error:", err.message);
+//     }); 
+//     //-------------------------------------------
+
+//     res.status(200).json({ 
+//       message: "Post updated successfully", 
+//       data: updatedPost 
+//     });
+
+   
+//   } catch (err) {
+//     console.error(err.errors); 
+//     res.status(500).json({ 
+//       message: "Server error", 
+//       error: err.message 
+//     });
+//   }
+// };
+
+// reviewed-----------------------------------------------------
 const updatePost = async (req, res) => {
   const { email, postId } = req.params;
   const { title, description, category,links } = req.body;
@@ -687,27 +1175,69 @@ let parsedLinks = post.links || [];
   }
 };
 
+
+// old----------------------------------------------------------
+// const removePostsLinks = async (req, res) => {
+//   try {
+//     const { email, postId } = req.params;
+//     const { linkId } = req.body;
+
+
+//     // console.log("Remove link request:", { authorEmail, linkId });
+//     if (!email || !postId || !linkId) {
+//       return res
+//         .status(400)
+//         .json({ message: "Author email, postId and link Id are required" });
+//     }
+
+//     const author = await Author.findOne({ email: { $eq: email }});
+//     if (!author) {
+//       return res.status(404).json({ message: "Author not found" });
+//     }
+
+
+//     const post = author.posts.id(postId);
+
+//     if (!post) {
+//       return res.status(404).json({ message: "post not found" });
+//     }
+
+//     const initialLength = post.links.length;
+
+//     post.links = post.links.filter(
+//       (link) => link._id.toString() !== linkId.toString()
+//     );
+//     if (post.links.length === initialLength) {
+//       return res.status(404).json({ message: "Link not found" });
+//     }
+
+//     await author.save({ validateBeforeSave: false });
+//     res.status(200).json({
+//       message: "Link removed successfully",
+//       personalLinks: post.links,
+//     });
+//   } catch (err) {
+//     res.status(500).json({ message: err.message });
+//   }
+// };
+
+// reviewed-----------------------------------------------------
 const removePostsLinks = async (req, res) => {
   try {
     const { email, postId } = req.params;
     const { linkId } = req.body;
 
-
-    // console.log("Remove link request:", { authorEmail, linkId });
     if (!email || !postId || !linkId) {
-      return res
-        .status(400)
-        .json({ message: "Author email, postId and link Id are required" });
+      return res.status(400).json({ message: "Author email, postId and link Id are required" });
     }
 
-    const author = await Author.findOne({ email: { $eq: email }});
+    const author = await Author.findOne({ email: { $eq: email } }).select('_id');
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
     }
 
-
-    const post = author.posts.id(postId);
-
+    // fix: query Post collection directly with ownership check — author.posts.id() broken after normalization
+    const post = await Post.findOne({ _id: postId, authorId: author._id });
     if (!post) {
       return res.status(404).json({ message: "post not found" });
     }
@@ -717,11 +1247,15 @@ const removePostsLinks = async (req, res) => {
     post.links = post.links.filter(
       (link) => link._id.toString() !== linkId.toString()
     );
+
     if (post.links.length === initialLength) {
       return res.status(404).json({ message: "Link not found" });
     }
 
-    await author.save({ validateBeforeSave: false });
+    // fix: save Post document directly — was author.save() in embedded pattern
+    await post.save({ validateBeforeSave: false });
+
+    // response shape kept identical — frontend expects personalLinks key
     res.status(200).json({
       message: "Link removed successfully",
       personalLinks: post.links,
@@ -731,199 +1265,385 @@ const removePostsLinks = async (req, res) => {
   }
 };
 
+// old---------------------------------------------------------
+// const deletePost = async (req, res) => {   
+//   try {
+//     const { email, postId } = req.params;
 
-const deletePost = async (req, res) => {   
+//     const author = await Author.findOne({ email: { $eq: email }});
+
+//     if (!author) {
+//       return res.status(404).json({ message: "Author not found" });
+//     }
+
+//     const postIndex = author.posts.findIndex(
+//       (post) => post._id.toString() === postId
+//     );
+
+//     const postToDelete = author.posts[postIndex];
+
+//     // Delete image from S3
+//     if (postToDelete.image) {
+//       await s3.send(new DeleteObjectCommand({
+//         Bucket: bucketName,
+//         Key: postToDelete.image
+//       }));
+//     }
+
+//     // Delete documents from S3 (including PDFs)
+//     if (postToDelete.documents && postToDelete.documents.length > 0) {
+//       const documentDeletePromises = postToDelete.documents.map(doc => 
+//         s3.send(new DeleteObjectCommand({
+//           Bucket: bucketName,
+//           Key: doc
+//         }))
+//       );
+//       await Promise.all(documentDeletePromises);
+//     }
+
+//     // Remove the post from the posts array
+//     author.posts.splice(postIndex, 1);
+
+//     // Save the updated author document
+//     const updatedAuthor = await author.save();
+
+//     // ------Embedding doc delete controller------------------------
+    
+//      await deleteFromAIIngestion(postId, req.token).catch(err => {
+//       console.error("AI update ingestion error:", err.message);
+//     });
+//     // --------------------------------------------------------------
+
+//     res.status(200).json({
+//       message: "Post deleted successfully",
+//       data: updatedAuthor,
+//     });
+
+
+//   } catch (err) {
+//     res.status(500).json({ message: "Server error", error: err.message });
+//   }
+// };
+
+// reviewed-----------------------------------------------------
+const deletePost = async (req, res) => {
   try {
     const { email, postId } = req.params;
 
-    const author = await Author.findOne({ email: { $eq: email }});
-
+    const author = await Author.findOne({ email: { $eq: email } }).select('_id authorname');
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
     }
 
-    const postIndex = author.posts.findIndex(
-      (post) => post._id.toString() === postId
+    // fix: fetch Post document directly — author.posts is [ObjectId], findIndex always returned -1
+    const postToDelete = await Post.findOne({ _id: postId, authorId: author._id });
+    if (!postToDelete) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    // fix: S3 wrapped in try/catch — don't let S3 failure block DB deletion
+    if (postToDelete.image) {
+      try {
+        await s3.send(new DeleteObjectCommand({ Bucket: bucketName, Key: postToDelete.image }));
+      } catch (s3Err) {
+        console.error("Failed to delete post image from S3:", s3Err.message);
+      }
+    }
+
+    if (postToDelete.documents?.length > 0) {
+      try {
+        await Promise.all(
+          postToDelete.documents.map(doc =>
+            s3.send(new DeleteObjectCommand({ Bucket: bucketName, Key: doc }))
+          )
+        );
+      } catch (s3Err) {
+        console.error("Failed to delete post documents from S3:", s3Err.message);
+      }
+    }
+
+    // fix: delete from Post collection and pull ref from author.posts
+    await Post.deleteOne({ _id: postId });
+    await Author.updateOne(
+      { _id: author._id },
+      { $pull: { posts: postToDelete._id } }
     );
 
-    const postToDelete = author.posts[postIndex];
-
-    // Delete image from S3
-    if (postToDelete.image) {
-      await s3.send(new DeleteObjectCommand({
-        Bucket: bucketName,
-        Key: postToDelete.image
-      }));
-    }
-
-    // Delete documents from S3 (including PDFs)
-    if (postToDelete.documents && postToDelete.documents.length > 0) {
-      const documentDeletePromises = postToDelete.documents.map(doc => 
-        s3.send(new DeleteObjectCommand({
-          Bucket: bucketName,
-          Key: doc
-        }))
-      );
-      await Promise.all(documentDeletePromises);
-    }
-
-    // Remove the post from the posts array
-    author.posts.splice(postIndex, 1);
-
-    // Save the updated author document
-    const updatedAuthor = await author.save();
-
-    // ------Embedding doc delete controller------------------------
-    
-     await deleteFromAIIngestion(postId, req.token).catch(err => {
-      console.error("AI update ingestion error:", err.message);
-    });
-    // --------------------------------------------------------------
-
+    // Respond immediately
+    // fix: return deleted post doc instead of full author doc — avoids password leak
     res.status(200).json({
       message: "Post deleted successfully",
-      data: updatedAuthor,
+      data: postToDelete,
     });
 
+    // fix: fire-and-forget after response — was blocking before res.json()
+    deleteFromAIIngestion(postId, req.token).catch(err => {
+      console.error("AI deletion error:", err.message);
+    });
 
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
 
+// old
+// const getSinglePost = async(req,res) =>{
+//   try {
+//    const { email, postId } = req.params;
 
-const getSinglePost = async(req,res) =>{
+//      // Find the author by email
+//      const author = await Author.findOne({ email: { $eq: email }});
+//      if (!author) {
+//       return res.status(404).json({ message: "Author not found" });
+//     }
+
+//      // Find the post by ID within the posts array
+//      const post = author.posts.id(postId);
+
+//      if (!post) {
+//       return res.status(404).json({ message: "Post not found" });
+//     }
+
+//    // Convert post to a plain object and include author details
+//    const postWithAuthorDetails = {
+//     ...post.toObject(),
+//     authorname: author.authorname,
+//     authoremail: author.email,
+//     profile: author.profile || '', // Default to an empty string if profile is missing
+//   };
+
+//     // Return the posts along with author details
+//     res.status(200).json({
+//       message: "Single post",
+//       data: postWithAuthorDetails,
+//     });
+//   }
+//   catch (err) {
+//     // Handle errors and send an appropriate response
+//     res.status(500).json({
+//       message: "Server error",
+//       error: err.message,
+//     });
+//   }
+// }
+
+// reviewed-----------------------------------------------------
+const getSinglePost = async (req, res) => {
   try {
-   const { email, postId } = req.params;
+    const { email, postId } = req.params;
 
-     // Find the author by email
-     const author = await Author.findOne({ email: { $eq: email }});
-     if (!author) {
+    // fix: only fetch fields needed for the response shape
+    const author = await Author.findOne({ email: { $eq: email } })
+      .select('_id authorname email profile');
+    if (!author) {
       return res.status(404).json({ message: "Author not found" });
     }
 
-     // Find the post by ID within the posts array
-     const post = author.posts.id(postId);
-
-     if (!post) {
+    // fix: query Post collection directly with ownership check
+    // author.posts.id() is a subdoc method — broken after normalization
+    const post = await Post.findOne({ _id: postId, authorId: author._id }).lean();
+    if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }
 
-   // Convert post to a plain object and include author details
-   const postWithAuthorDetails = {
-    ...post.toObject(),
-    authorname: author.authorname,
-    authoremail: author.email,
-    profile: author.profile || '', // Default to an empty string if profile is missing
-  };
+    // response shape kept identical — same fields as before
+    const postWithAuthorDetails = {
+      ...post,
+      authorname: author.authorname,
+      authoremail: author.email,
+      profile: author.profile || '',
+    };
 
-    // Return the posts along with author details
     res.status(200).json({
       message: "Single post",
       data: postWithAuthorDetails,
     });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
   }
-  catch (err) {
-    // Handle errors and send an appropriate response
-    res.status(500).json({
-      message: "Server error",
-      error: err.message,
-    });
-  }
-}
+};
 
+// old---------------------------------------------------------
+// const postView = async (req, res) => {
+//   try {
+//     const { email, id } = req.params; // Retrieve email and post ID from URL params
+//     const { emailAuthor } = req.body; // Retrieve emailAuthor from the body
+
+//     // Find the author by email
+//     const author = await Author.findOne({ email: { $eq: email }});
+
+//     // If author doesn't exist, send a 404 error
+//     if (!author) {
+//       return res.status(404).json({ message: 'Author not found' });
+//     }
+
+//     // Find the specific post by ID in the author's posts array
+//     const post = author.posts.find(post => post._id.toString() === id);
+
+//     if (!post) {
+//       return res.status(404).json({ message: 'Post not found' });
+//     }
+
+//     // Check if the emailAuthor is already in the views array of the post
+//     if (post.views.includes(emailAuthor)) {
+//       return 
+//     }
+
+//     // Add the emailAuthor to the views array
+//     post.views.push(emailAuthor);
+
+//     // Save the updated author document with the post's updated views array
+//     await author.save({ validateBeforeSave: false });
+
+//     // Respond with success and the updated views array
+//     return res.status(200).json({
+//       message: 'View added successfully',
+//       views: post.views,
+//     });
+//   } catch (err) {
+//     // If there is a server error, return a 500 error
+//     return res.status(500).json({ message: 'Server error', error: err.message });
+//   }
+// };
+
+// reviewed----------------------------------------------------
 const postView = async (req, res) => {
   try {
-    const { email, id } = req.params; // Retrieve email and post ID from URL params
-    const { emailAuthor } = req.body; // Retrieve emailAuthor from the body
+    const { email, id } = req.params;
+    const { emailAuthor } = req.body;
 
-    // Find the author by email
-    const author = await Author.findOne({ email: { $eq: email }});
-
-    // If author doesn't exist, send a 404 error
+    // verify author exists — ownership check
+    const author = await Author.findOne({ email: { $eq: email } }).select('_id');
     if (!author) {
       return res.status(404).json({ message: 'Author not found' });
     }
 
-    // Find the specific post by ID in the author's posts array
-    const post = author.posts.find(post => post._id.toString() === id);
-
+    // fix: find post in Post collection — author.posts.find() on ObjectIds always returned undefined
+    const post = await Post.findOne({ _id: id, authorId: author._id }).select('views');
     if (!post) {
       return res.status(404).json({ message: 'Post not found' });
     }
 
-    // Check if the emailAuthor is already in the views array of the post
+    // fix: bare return left request hanging — must always send a response
     if (post.views.includes(emailAuthor)) {
-      return 
+      return res.status(200).json({ message: 'Already viewed', views: post.views });
     }
 
-    // Add the emailAuthor to the views array
-    post.views.push(emailAuthor);
+    // fix: $addToSet is atomic — no fetch-mutate-save, skips pre('save') hook
+    await Post.updateOne(
+      { _id: id },
+      { $addToSet: { views: emailAuthor } }
+    );
 
-    // Save the updated author document with the post's updated views array
-    await author.save({ validateBeforeSave: false });
-
-    // Respond with success and the updated views array
     return res.status(200).json({
       message: 'View added successfully',
-      views: post.views,
+      views: [...post.views, emailAuthor],
     });
   } catch (err) {
-    // If there is a server error, return a 500 error
     return res.status(500).json({ message: 'Server error', error: err.message });
   }
 };
 
+// old---------------------------------------------------------
+// const postLikes = async (req, res) => {
+//   try {
+//     const { email, id } = req.params; // Retrieve email and post ID from URL params
+//     const { emailAuthor } = req.body; // Retrieve emailAuthor from the body
+
+//     // Find the author by email
+//     const author = await Author.findOne({ email: { $eq: email }});
+
+//     // If author doesn't exist, send a 404 error
+//     if (!author) {
+//       return res.status(404).json({ message: 'Author not found' });
+//     }
+
+//     // Find the specific post by ID in the author's posts array
+//     const post = author.posts.find(post => post._id.toString() === id);
+
+//     if (!post) {
+//       return res.status(404).json({ message: 'Post not found' });
+//     }
+
+//     // Check if the emailAuthor is already in the views array of the post
+//     if (post.likes.includes(emailAuthor)) {
+//       post.likes = post.likes.filter(like => like !== emailAuthor);
+//       // await author.save({ validateBeforeSave: false });
+//       // await followerAuthor.save({ validateBeforeSave: false });
+//       await author.save({ validateBeforeSave: false });
+//       return res.status(200).json({
+//         message: 'like removed successfully',
+//         likes: post.likes,
+//       });
+//     }
+
+//     // Add the emailAuthor to the views array
+//     post.likes.push(emailAuthor);
+
+//     // Save the updated author document with the post's updated views array
+//     await author.save({ validateBeforeSave: false });
+
+//     // Respond with success and the updated views array
+//     return res.status(200).json({
+//       message: 'like added successfully',
+//       views: post.views,
+//     });
+//   } catch (err) {
+//     // If there is a server error, return a 500 error
+//     console.log(err)
+//     return res.status(500).json({ message: 'Server error', error: err.message });
+//   }
+// };
+
+// reviewed---------------------------------------------------
 const postLikes = async (req, res) => {
   try {
-    const { email, id } = req.params; // Retrieve email and post ID from URL params
-    const { emailAuthor } = req.body; // Retrieve emailAuthor from the body
+    const { email, id } = req.params;
+    const { emailAuthor } = req.body;
 
-    // Find the author by email
-    const author = await Author.findOne({ email: { $eq: email }});
-
-    // If author doesn't exist, send a 404 error
+    // verify author exists — ownership check
+    const author = await Author.findOne({ email: { $eq: email } }).select('_id');
     if (!author) {
       return res.status(404).json({ message: 'Author not found' });
     }
 
-    // Find the specific post by ID in the author's posts array
-    const post = author.posts.find(post => post._id.toString() === id);
-
+    // fix: find post in Post collection — author.posts.find() on ObjectIds always returned undefined
+    const post = await Post.findOne({ _id: id, authorId: author._id }).select('likes');
     if (!post) {
       return res.status(404).json({ message: 'Post not found' });
     }
 
-    // Check if the emailAuthor is already in the views array of the post
+    // Unlike
     if (post.likes.includes(emailAuthor)) {
-      post.likes = post.likes.filter(like => like !== emailAuthor);
-      // await author.save({ validateBeforeSave: false });
-      // await followerAuthor.save({ validateBeforeSave: false });
-      await author.save({ validateBeforeSave: false });
+      await Post.updateOne(
+        { _id: id },
+        { $pull: { likes: emailAuthor } }
+      );
       return res.status(200).json({
         message: 'like removed successfully',
-        likes: post.likes,
+        likes: post.likes.filter(like => like !== emailAuthor),
       });
     }
 
-    // Add the emailAuthor to the views array
-    post.likes.push(emailAuthor);
+    // Like
+    await Post.updateOne(
+      { _id: id },
+      { $addToSet: { likes: emailAuthor } }
+    );
 
-    // Save the updated author document with the post's updated views array
-    await author.save({ validateBeforeSave: false });
-
-    // Respond with success and the updated views array
+    // fix: was returning views instead of likes on like-added response
     return res.status(200).json({
       message: 'like added successfully',
-      views: post.views,
+      likes: [...post.likes, emailAuthor],
     });
   } catch (err) {
-    // If there is a server error, return a 500 error
-    console.log(err)
+    console.log(err);
     return res.status(500).json({ message: 'Server error', error: err.message });
   }
 };
 
+
+// reviewed--------------------------------------------------
 const addPostBookmark = async(req,res)=>{
   try{
     const {email} = req.params;
@@ -965,73 +1685,134 @@ const addPostBookmark = async(req,res)=>{
   }
 }
 
+
+// old--------------------------------------------------------
+// const getBookmarkedPosts = async (req, res) => {
+//   try {
+//     const { email } = req.params;
+
+//     // pagination inputs
+//     const page = parseInt(req.query.page) || 1;
+//     const limit = parseInt(req.query.limit) || 10;
+//     const start = (page - 1) * limit;
+//     const end = start + limit;
+
+//     // console.log("bookmark page:", page, "limit:", limit);
+
+//     if (!email) return res.status(400).json({ message: "email required" });
+
+//     const author = await Author.findOne({ email: { $eq: email }}).select("postBookmark");
+//     if (!author) return res.status(404).json({ message: "author not found" });
+
+//     const postIds = (author.postBookmark || [])
+//       .map((id) => (id ? id.toString() : null))
+//       .filter(Boolean);
+
+//     if (postIds.length === 0) {
+//       return res.status(200).json({
+//         message: "No bookmarks",
+//         posts: [],
+//         postIds: [],
+//         count: 0,
+//       });
+//     }
+
+//     const authorsWithPosts = await Author.find({ "posts.0": { $exists: true } })
+//       .select("authorname email profile role community posts");
+
+//     const postMap = new Map();
+
+//     for (const a of authorsWithPosts) {
+//       for (const p of a.posts || []) {
+//         const pid = p._id && p._id.toString();
+//         if (pid && postIds.includes(pid) && !postMap.has(pid)) {
+//           postMap.set(pid, {
+//             ...p.toObject(),
+//             authorName: a.authorname,
+//             authorEmail: a.email,
+//             profile: a.profile || "",
+//             role: a.role,
+//             community: a.community,
+//           });
+//         }
+//       }
+//     }
+
+//     // preserve order FIRST
+//     const allBookmarkedPosts = postIds
+//       .map((id) => postMap.get(id))
+//       .filter(Boolean);
+
+//     // THEN apply pagination
+//     const paginatedPosts = allBookmarkedPosts.slice(start, end);
+
+//     const paginatedPostIds = paginatedPosts
+//       .map((p) => p?._id?.toString())
+//       .filter(Boolean);
+
+//     return res.status(200).json({
+//       message: "Bookmarked posts",
+//       count: allBookmarkedPosts.length, // unchanged meaning
+//       posts: paginatedPosts,
+//       postIds: paginatedPostIds,
+//     });
+//   } catch (err) {
+//     console.error("getBookmarkedPosts error:", err);
+//     return res.status(500).json({ message: "server error", error: err.message });
+//   }
+// };
+
+// reviewed--------------------------------------------------
 const getBookmarkedPosts = async (req, res) => {
   try {
     const { email } = req.params;
-
-    // pagination inputs
-    const page = parseInt(req.query.page) || 1;
+    const page  = parseInt(req.query.page)  || 1;
     const limit = parseInt(req.query.limit) || 10;
     const start = (page - 1) * limit;
-    const end = start + limit;
-
-    // console.log("bookmark page:", page, "limit:", limit);
+    const end   = start + limit;
 
     if (!email) return res.status(400).json({ message: "email required" });
 
-    const author = await Author.findOne({ email: { $eq: email }}).select("postBookmark");
+    const author = await Author.findOne({ email: { $eq: email } }).select("postBookmark");
     if (!author) return res.status(404).json({ message: "author not found" });
 
     const postIds = (author.postBookmark || [])
-      .map((id) => (id ? id.toString() : null))
+      .map(id => (id ? id.toString() : null))
       .filter(Boolean);
 
     if (postIds.length === 0) {
-      return res.status(200).json({
-        message: "No bookmarks",
-        posts: [],
-        postIds: [],
-        count: 0,
+      return res.status(200).json({ message: "No bookmarks", posts: [], postIds: [], count: 0 });
+    }
+
+    // fix: query Post collection directly with $in — was scanning all authors and looping a.posts (ObjectIds)
+    const postDocs = await Post.find({ _id: { $in: postIds } })
+      .populate("authorId", "authorname email profile role community")
+      .lean();
+
+    // build a map for O(1) lookup
+    const postMap = new Map();
+    for (const p of postDocs) {
+      postMap.set(p._id.toString(), {
+        ...p,
+        authorName:  p.authorId?.authorname || "",
+        authorEmail: p.authorId?.email      || "",
+        profile:     p.authorId?.profile    || "",
+        role:        p.authorId?.role       || "",
+        community:   p.authorId?.community  || [],
+        authorId:    p.authorId?._id,        // keep as ObjectId, not nested object
       });
     }
 
-    const authorsWithPosts = await Author.find({ "posts.0": { $exists: true } })
-      .select("authorname email profile role community posts");
+    // preserve bookmark insertion order, then paginate
+    const allBookmarkedPosts = postIds.map(id => postMap.get(id)).filter(Boolean);
+    const paginatedPosts     = allBookmarkedPosts.slice(start, end);
+    const paginatedPostIds   = paginatedPosts.map(p => p?._id?.toString()).filter(Boolean);
 
-    const postMap = new Map();
-
-    for (const a of authorsWithPosts) {
-      for (const p of a.posts || []) {
-        const pid = p._id && p._id.toString();
-        if (pid && postIds.includes(pid) && !postMap.has(pid)) {
-          postMap.set(pid, {
-            ...p.toObject(),
-            authorName: a.authorname,
-            authorEmail: a.email,
-            profile: a.profile || "",
-            role: a.role,
-            community: a.community,
-          });
-        }
-      }
-    }
-
-    // preserve order FIRST
-    const allBookmarkedPosts = postIds
-      .map((id) => postMap.get(id))
-      .filter(Boolean);
-
-    // THEN apply pagination
-    const paginatedPosts = allBookmarkedPosts.slice(start, end);
-
-    const paginatedPostIds = paginatedPosts
-      .map((p) => p?._id?.toString())
-      .filter(Boolean);
-
+    // response shape identical to before
     return res.status(200).json({
       message: "Bookmarked posts",
-      count: allBookmarkedPosts.length, // unchanged meaning
-      posts: paginatedPosts,
+      count:   allBookmarkedPosts.length,
+      posts:   paginatedPosts,
       postIds: paginatedPostIds,
     });
   } catch (err) {
@@ -1040,7 +1821,7 @@ const getBookmarkedPosts = async (req, res) => {
   }
 };
 
-// GET /blog/posts/bookmarkIds/:email
+//reviewed-----------------------------------------------------
 const getAllBookmarkIds = async (req, res) => {
   try {
     const { email } = req.params;

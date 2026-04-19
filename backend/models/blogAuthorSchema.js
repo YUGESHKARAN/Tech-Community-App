@@ -376,6 +376,12 @@ const postSchema = new mongoose.Schema({
   },
 });
 
+// ── Post indexes ──
+postSchema.index({ authorId: 1 });
+postSchema.index({ category: 1 });
+postSchema.index({ authorId: 1, category: 1 });
+postSchema.index({ timestamp: -1 });
+
 const Post = mongoose.model('Post', postSchema);
 
 
@@ -492,6 +498,12 @@ authorSchema.pre('save', async function (next) {
     next(new Error('Error hashing password: ' + err)); // Handle any errors during the hashing process
   }
 });
+
+// ── Author indexes ──
+authorSchema.index({ email: 1 });
+authorSchema.index({ community: 1 });
+authorSchema.index({ role: 1 });
+authorSchema.index({ community: 1, role: 1 });
 
 // Method to compare passwords during login
 authorSchema.methods.comparePassword =  function (enteredPassword) {
