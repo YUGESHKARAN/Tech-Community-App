@@ -698,7 +698,7 @@ function NavBar() {
       </ul>
 
       {/* ================= RIGHT SECTION (DESKTOP + MOBILE SYNCED) ================= */}
-      <div className="flex items-center gap-3 md:gap-4">
+      <div className="flex items-center gap-2 md:gap-4">
         <Link
           to="/announcement"
           className="relative  hidden md:block rounded-full hover:bg-white/10 transition"
@@ -778,17 +778,7 @@ function NavBar() {
           </Link>
         </div> */}
 
-                      <div className="relative md:hidden">
-            <IoMdNotifications
-              onClick={() => setShowNotification(!showNotefication)}
-              className="text-xl text-gray-300 hover:text-white transition-all duration-300 cursor-pointer transition"
-            />
-            {notiCount > 0 && (
-              <span className="absolute -top-1.5 -right-2 text-[10px] bg-red-500 w-4 h-4 flex items-center justify-center rounded-full text-white">
-                {notiCount}
-              </span>
-            )}
-          </div>
+        
         <div
           className="flex md:hidden items-center px-2 py-1
                  bg-white/5 
@@ -814,6 +804,17 @@ function NavBar() {
              
           
         </div>
+                      <div className="relative md:hidden mr-2">
+            <IoMdNotifications
+              onClick={() => setShowNotification(!showNotefication)}
+              className="text-xl text-gray-300 hover:text-white transition-all duration-300 cursor-pointer transition"
+            />
+            {notiCount > 0 && (
+              <span className="absolute -top-1.5 -right-2 text-[10px] bg-red-500 w-4 h-4 flex items-center justify-center rounded-full text-white">
+                {notiCount}
+              </span>
+            )}
+          </div>
 
         {/* 🚪 LOGOUT (DESKTOP ONLY) */}
         <button

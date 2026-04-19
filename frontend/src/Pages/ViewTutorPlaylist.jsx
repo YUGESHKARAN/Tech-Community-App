@@ -352,7 +352,7 @@ function ViewTutorPlaylist() {
 
                   {/* right content */}
                   <div className=" absolute top-0 right-0 flex flex-col items-start gap-2">
-                    <p className="text-sm text-gray-400">
+                    <p className="text-xs text-gray-400">
                       Playlist • {playlistData?.post_ids?.length}
                     </p>
 
