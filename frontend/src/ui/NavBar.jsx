@@ -173,7 +173,7 @@ function NavBar() {
   // console.log("profile",profile)
   // console.log("notification", note)
 
-  //   return (
+ //   return (
   //     <div
   //       className="
 
@@ -748,7 +748,7 @@ function NavBar() {
 
         {/* 👤 MOBILE USER */}
 
-        <div
+        {/* <div
           className="flex md:hidden items-center gap-4 px-3 py-1.5
                  bg-white/5 
                  border border-white/10
@@ -776,6 +776,43 @@ function NavBar() {
               <RiUser3Line className="text-lg text-emerald-400" />
             )}
           </Link>
+        </div> */}
+
+                      <div className="relative md:hidden">
+            <IoMdNotifications
+              onClick={() => setShowNotification(!showNotefication)}
+              className="text-xl text-gray-300 hover:text-white transition-all duration-300 cursor-pointer transition"
+            />
+            {notiCount > 0 && (
+              <span className="absolute -top-1.5 -right-2 text-[10px] bg-red-500 w-4 h-4 flex items-center justify-center rounded-full text-white">
+                {notiCount}
+              </span>
+            )}
+          </div>
+        <div
+          className="flex md:hidden items-center px-2 py-1
+                 bg-white/5 
+                 border border-white/10
+                 rounded-full transition"
+        >
+     
+
+          <Link to="/profile"
+          className="flex  items-center gap-1">
+            {profile !== "undefined" ? (
+              <img
+                src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`}
+                className="w-5 h-5 rounded-full border border-emerald-400 object-cover"
+              />
+            ) : (
+              <RiUser3Line className="text-lg text-emerald-400" />
+            )}
+            <span className="text-xs text-white  truncate max-w-[120px]">
+            Hi, {username}
+          </span>
+          </Link>
+             
+          
         </div>
 
         {/* 🚪 LOGOUT (DESKTOP ONLY) */}
@@ -1154,184 +1191,3 @@ function NavTile({ to, icon, title, subtitle, badge, close }) {
 
 export default NavBar;
 
-// return (
-//   <div
-//     className="
-//     flex items-center justify-between
-//     w-full h-16 px-3 md:px-6
-//     border-b border-slate-700/50
-//     bg-[#0b1220]
-//     backdrop-blur-md
-//     sticky top-0 z-50
-//   "
-//   >
-//     {/* LEFT — LOGO */}
-//     <div className="flex items-center w-1/2 md:w-1/5">
-//       {role !== "admin" ? (
-//         <Link to="/home">
-//           <img
-//             src={bloglogo}
-//             className="w-10 md:w-10 rounded-full"
-//             alt="Blog Logo"
-//           />
-//         </Link>
-//       ) : (
-//         <Link to="/dashboard">
-//           <img
-//             src={bloglogo}
-//             className="w-10 md:w-10 rounded-full"
-//             alt="Blog Logo"
-//           />
-//         </Link>
-//       )}
-//     </div>
-
-//     {/* CENTER — DESKTOP NAV */}
-//     <ul className="xl:flex hidden items-center justify-center gap-8 text-[11px] font-medium text-gray-400 w-3/5">
-//       {role === "admin" && (
-//         <NavIconDesktop to="/dashboard" icon={<MdDashboard />} label="Analytics" />
-//       )}
-
-//       {role !== "admin" && (
-//         <NavIconDesktop to="/home" icon={<IoHome />} label="Home" />
-//       )}
-
-//       {role === "admin" && (
-//         <NavIconDesktop to="/control" icon={<MdManageAccounts />} label="Control" />
-//       )}
-
-//       {role === "admin" && (
-//         <NavIconDesktop to="/home" icon={<IoHome />} label="Browse" />
-//       )}
-
-//       {role !== "student" && (
-//         <NavIconDesktop to="/workspace" icon={<BsPersonWorkspace />} label="Workspace" />
-//       )}
-
-//       <NavIconDesktop to="/community" icon={<MdGroups />} label="Communities" />
-
-//       <NavIconDesktop to="/authors" icon={<IoIosGitNetwork />} label="Network" />
-
-//       <NavIconDesktop to="/bookMarkPage" icon={<RiBookMarkedFill />} label="Bookmark" />
-//     </ul>
-
-//     {/* RIGHT — MODERN ACTION BAR */}
-//     <div className="hidden xl:flex items-center gap-3">
-
-//       {/* ICON GROUP */}
-//       <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-3 py-1.5">
-
-//         {/* ANNOUNCEMENT */}
-//         <Link
-//           to="/announcement"
-//           className="relative p-2 rounded-full hover:bg-white/10 transition"
-//         >
-//           <MdAnnouncement className="text-lg text-gray-300" />
-//           {announceCount > 0 && (
-//             <span className="absolute -top-1 -right-1 text-[10px] bg-emerald-500 text-white w-4 h-4 flex items-center justify-center rounded-full">
-//               {announceCount}
-//             </span>
-//           )}
-//         </Link>
-
-//         {/* NOTIFICATIONS */}
-//         <div
-//           onClick={() => setShowNotification(!showNotefication)}
-//           className="relative p-2 rounded-full hover:bg-white/10 transition cursor-pointer"
-//         >
-//           <IoMdNotifications className="text-lg text-gray-300" />
-//           {notiCount > 0 && (
-//             <span className="absolute -top-1 -right-1 text-[10px] bg-red-500 text-white w-4 h-4 flex items-center justify-center rounded-full">
-//               {notiCount}
-//             </span>
-//           )}
-//         </div>
-
-//         {/* LOGOUT */}
-//         <button
-//           onClick={exit}
-//           className="p-2 rounded-full hover:bg-red-500/10 transition"
-//         >
-//           <MdLogout className="text-lg text-red-400" />
-//         </button>
-//       </div>
-
-//       {/* PROFILE CHIP */}
-//       <Link
-//         to="/profile"
-//         className="
-//         flex items-center gap-2
-//         bg-white/5 border border-white/10
-//         hover:bg-white/10
-//         px-3 py-1.5 rounded-full
-//         transition
-//       "
-//       >
-//         {profile !== "undefined" ? (
-//           <img
-//             src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`}
-//             className="w-6 h-6 rounded-full object-cover border border-emerald-500"
-//           />
-//         ) : (
-//           <RiUser3Line className="text-lg text-emerald-400" />
-//         )}
-
-//         <span className="text-xs text-gray-200 whitespace-nowrap">
-//           Hi, {username}
-//         </span>
-//       </Link>
-//     </div>
-
-//     {/* MOBILE PROFILE (UNCHANGED) */}
-//     <div className="text-white flex justify-end w-full xl:hidden items-center gap-1 mr-3">
-//       <Link to="/profile" className="flex text-sm items-center gap-1">
-//         {profile !== "undefined" ? (
-//           <img
-//             src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`}
-//             className="w-5 h-5 border border-green-500 rounded-full object-cover"
-//           />
-//         ) : (
-//           <RiUser3Line className="text-lg text-[#0be881]" />
-//         )}
-//         <p className="truncate text-sm"> Hi,{username}</p>
-//       </Link>
-//     </div>
-
-//     {/* MOBILE MENU BUTTON */}
-//     <button onClick={toggleSidebar} className="xl:hidden ml-2 text-white">
-//       <RiMenuFoldFill className="text-xl" />
-//     </button>
-
-//     {/* ===== KEEP EVERYTHING BELOW SAME (SIDEBAR + NOTIFICATIONS) ===== */}
-//     {/* (No changes made as requested) */}
-
-//     {/* Sidebar */}
-//     <div
-//       ref={sidebarRef}
-//       className={`fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-md
-//       bg-[#0b1220]
-//       text-white shadow-2xl z-50
-//       transition-transate duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]
-//       rounded-b-3xl border border-white/10
-//       ${
-//         isSidebarOpen
-//           ? "opacity-100 translate-y-0"
-//           : "opacity-0 -translate-y-6 pointer-events-none"
-//       }`}
-//     >
-//       {/* KEEP YOUR EXISTING SIDEBAR CODE EXACTLY */}
-//     </div>
-
-//     {/* Notifications */}
-//     <div
-//       ref={notificationRef}
-//       className={`${
-//         showNotefication
-//           ? "fixed top-16 right-2 z-50 md:w-[320px] w-72 pb-4 bg-gray-900 border border-gray-700 shadow-2xl rounded-xl md:rounded-2xl transition-all duration-300"
-//           : "hidden"
-//       }`}
-//     >
-//       {/* KEEP YOUR EXISTING NOTIFICATION CODE EXACTLY */}
-//     </div>
-//   </div>
-// );

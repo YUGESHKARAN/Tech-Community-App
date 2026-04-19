@@ -324,7 +324,7 @@ function AddPost() {
       bg-gradient-to-br from-emerald-500/5 to-transparent rounded-lg md:rounded-xl px-4 py-6 md:p-6 text-gray-300"
               >
                 <h2 className="text-lg font-semibold text-white mb-3">
-                  Writing Tips
+                  Post Guidelines
                 </h2>
 
                 <ul className="space-y-2 text-sm">

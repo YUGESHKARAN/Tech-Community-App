@@ -46,6 +46,7 @@ function Announcement() {
   const [showConfirm, setShowConfirm] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const announceCount = getItem("announceCount");
+  const [showGuidelines, setShowGuidelines] = useState(false)
   const [fieldErrors, setFieldErrors] = useState({
     title: "",
     message: "",
@@ -65,7 +66,7 @@ function Announcement() {
       const response = await axiosInstance.get(`/blog/author/${email}`);
       // console.log("announcement", response.data.announcement);
       setAnnouncement(response.data.announcement);
-      storeItem("announceCount", response.data.announcement.length)
+      storeItem("announceCount", response.data.announcement.length);
     } catch (err) {
       console.log("error", err);
     } finally {
@@ -168,6 +169,8 @@ function Announcement() {
       console.error("Error submitting announcement:", error);
     } finally {
       setLoading(false);
+      setAnnouncement(false)
+      setShowGuidelines(false)
     }
   };
 
@@ -176,7 +179,9 @@ function Announcement() {
       "Are you sure you want to delete this announcement?",
     );
     if (!verify) return;
-    if( announceCount>0) {storeItem('announceCount',announceCount-1)}
+    if (announceCount > 0) {
+      storeItem("announceCount", announceCount - 1);
+    }
     try {
       const response = await axiosInstance.delete(
         `/blog/author/announcements/${id}`,
@@ -231,6 +236,314 @@ function Announcement() {
   // console.log("communityOptions", communityOptions);
   // console.log("selectedCommunities", selectedCommunities);
   // console.log("announcements", reversedAnnouncements);
+
+  function AnnouncementInfo({ className = "" }) {
+    return (
+      <div
+        className={`
+        w-full
+        rounded-2xl
+        border border-emerald-500/20
+        bg-gradient-to-br from-emerald-500/5 to-transparent
+        p-4 md:p-5
+        space-y-5
+        ${className}
+        md:my-4
+        mb-4
+      `}
+      >
+        {/* Header */}
+        {/* <div className="flex items-center gap-2">
+        <h2 className="text-sm md:text-base font-semibold text-white tracking-wide">
+        About Announcements
+        </h2>
+      </div> */}
+
+        {/* Purpose */}
+        <div className="space-y-2">
+          <p className="text-xs text-emerald-400 font-medium">Purpose</p>
+          <ul className="space-y-1.5 text-xs md:text-sm text-gray-300">
+            <li className="flex gap-2">
+              <span>•</span> Campaigns & launch events
+            </li>
+            <li className="flex gap-2">
+              <span>•</span> Hackathons & competitions
+            </li>
+            <li className="flex gap-2">
+              <span>•</span> Community meetings
+            </li>
+            <li className="flex gap-2">
+              <span>•</span> Domain-specific updates
+            </li>
+          </ul>
+        </div>
+
+        {/* What You Can Do */}
+        {/* <div className="space-y-2">
+        <p className="text-xs text-emerald-400 font-medium">What You Can Do</p>
+        <ul className="space-y-1.5 text-xs md:text-sm text-gray-300">
+          <li className="flex gap-2"><span>•</span> Stay updated on events</li>
+          <li className="flex gap-2"><span>•</span> Access shared links & resources</li>
+          <li className="flex gap-2"><span>•</span> View posters for quick insights</li>
+        </ul>
+      </div> */}
+
+        {/* Benefits */}
+        <div className="space-y-2">
+          <p className="text-xs text-emerald-400 font-medium">How It Helps</p>
+          <ul className="space-y-1.5 text-xs md:text-sm text-gray-300">
+            <li className="flex gap-2">
+              <span>•</span> Never miss important updates
+            </li>
+            <li className="flex gap-2">
+              <span>•</span> Engage with your community
+            </li>
+            <li className="flex gap-2">
+              <span>•</span> Participate in relevant events
+            </li>
+          </ul>
+        </div>
+
+        {/* Note */}
+        <div className="space-y-1">
+          <p className="text-xs text-emerald-400 font-medium">Note</p>
+          <p className="text-xs md:text-sm text-gray-300">
+            Announcements are shared by{" "}
+            <span className="text-white font-medium">Admins</span> and{" "}
+            <span className="text-white font-medium">Coordinators</span> to
+            ensure quality and relevance.
+          </p>
+        </div>
+      </div>
+    );
+  }
+  function AnnouncementGuidelines({ showAnnouncement, showGuidelines }) {
+    return (
+      <div
+        className={`
+        w-full
+        rounded-2xl
+        border border-emerald-500/20
+        bg-gradient-to-br from-emerald-500/5 to-transparent
+        p-4 md:p-5
+        space-y-5
+        mb-6
+       
+        ${showGuidelines?'block':'hidden md:block'}
+
+        ${showAnnouncement && "hidden md:hidden"}
+       
+
+      `}
+      >
+        {/* Header */}
+        <div className="flex items-center gap-2">
+          <h2 className="text-sm md:text-base font-semibold text-white tracking-wide">
+            Announcement Guidelines
+          </h2>
+        </div>
+
+        {/* Purpose */}
+        <div className="space-y-2">
+          <p className="text-xs text-emerald-400 font-medium">Purpose</p>
+          <ul className="space-y-1.5 text-xs md:text-sm text-gray-300">
+            <li className="flex gap-2">
+              <span>•</span> Campaigns, events, hackathons
+            </li>
+            <li className="flex gap-2">
+              <span>•</span> Community meetings & tech activities
+            </li>
+            <li className="flex gap-2">
+              <span>•</span>
+              Must follow{" "}
+              <span className="text-gray-400">university code of conduct</span>
+            </li>
+          </ul>
+        </div>
+
+        {/* Access */}
+        <div className="space-y-1">
+          <p className="text-xs text-emerald-400 font-medium">Access</p>
+          <p className="text-xs md:text-sm text-gray-300">
+            Only <span className="text-white font-medium">Admins</span> and{" "}
+            <span className="text-white font-medium">Coordinators</span>
+          </p>
+        </div>
+
+        {/* Steps */}
+        <div className="space-y-2">
+          <p className="text-xs text-emerald-400 font-medium">How to Create (very simple)</p>
+
+          <div className="space-y-2 text-xs md:text-sm text-gray-300">
+            <p>
+              <span className="text-white">Title:</span> Clear subject
+            </p>
+            <p>
+              <span className="text-white">Message:</span> What you communicate
+            </p>
+            <p>
+              <span className="text-white">Links:</span> Event / meeting /
+              survey
+            </p>
+            <p>
+              <span className="text-white">Poster:</span> Thumbnail with details
+            </p>
+            <p>
+              <span className="text-white">Recipients:</span>{" "}
+              <span className="text-gray-400">
+                Community / Coordinators / All Users
+              </span>
+            </p>
+          </div>
+        </div>
+
+        {/* Tips */}
+        <div className="space-y-2">
+          <p className="text-xs text-emerald-400 font-medium">Best Practices</p>
+          <ul className="space-y-1.5 text-xs md:text-sm text-gray-300">
+            <li className="flex gap-2">
+              <span>•</span> Keep it clear & short
+            </li>
+            <li className="flex gap-2">
+              <span>•</span> Add valid links & poster
+            </li>
+            <li className="flex gap-2">
+              <span>•</span> Target the right audience
+            </li>
+          </ul>
+        </div>
+        <button
+          onClick={() => setShowAnnouncement(!showAnnouncement)}
+          className="md:px-3 px-3 py-2 md:py-2 bg-emerald-600/20 hover:bg-emerald-500/20
+                rounded-md text-xs md:text-sm   text-emerald-400 transition "
+        >
+          Create Campaign
+        </button>
+      </div>
+      //     <div
+      //    className={`
+      //         w-full
+      //         rounded-2xl
+      //         border border-emerald-500/20
+      //         bg-gradient-to-br from-emerald-500/5 to-transparent
+      //         p-4 md:p-5
+      //         space-y-5
+      //         ${showAnnouncement && 'hidden'}
+      //         pb-10
+      //       `}
+      // >
+      //   {/* Header */}
+      //   <div className="flex items-center gap-2">
+      //     <h2 className="text-sm md:text-base font-semibold text-white tracking-wide">
+      //       Announcement Guidelines
+      //     </h2>
+      //   </div>
+
+      //   {/* Purpose */}
+      //   <div className="space-y-2">
+      //     <h3 className="text-xs md:text-sm font-semibold text-emerald-400">
+      //       Purpose
+      //     </h3>
+      //     <ul className="space-y-2 text-xs md:text-sm text-gray-300 leading-relaxed">
+      //       <li className="flex gap-2">
+      //         <span>•</span>
+      //         <p>Campaign launches, events, hackathons, and community meetings</p>
+      //       </li>
+      //       <li className="flex gap-2">
+      //         <span>•</span>
+      //         <p>Domain-specific initiatives and tech activities</p>
+      //       </li>
+      //       <li className="flex gap-2">
+      //         <span>•</span>
+      //         <p>
+      //           Must follow <span className="text-gray-400">university code of conduct</span>
+      //         </p>
+      //       </li>
+      //     </ul>
+      //   </div>
+
+      //   {/* Access */}
+      //   <div className="space-y-2">
+      //     <h3 className="text-xs md:text-sm font-semibold text-emerald-400">
+      //       Access Control
+      //     </h3>
+      //     <p className="text-xs md:text-sm text-gray-300">
+      //       Only <span className="text-white font-medium">Admins</span> and{" "}
+      //       <span className="text-white font-medium">Coordinators</span> can create announcements.
+      //     </p>
+      //   </div>
+
+      //   {/* How to Create */}
+      //   <div className="space-y-3">
+      //     <h3 className="text-xs md:text-sm font-semibold text-emerald-400">
+      //       How to Create
+      //     </h3>
+
+      //     <div className="space-y-3 text-xs md:text-sm text-gray-300">
+      //       <div>
+      //         <p className="text-white font-medium">1. Title / Topic</p>
+      //         <p className="text-gray-400 text-xs">
+      //           Clear and concise heading (e.g., AI/ML Hackathon 2026)
+      //         </p>
+      //       </div>
+
+      //       <div>
+      //         <p className="text-white font-medium">2. Message</p>
+      //         <p className="text-gray-400 text-xs">
+      //           Describe what you are communicating with key details
+      //         </p>
+      //       </div>
+
+      //       <div>
+      //         <p className="text-white font-medium">3. Relevant Links</p>
+      //         <p className="text-gray-400 text-xs">
+      //           Add meeting, event, or survey links
+      //         </p>
+      //       </div>
+
+      //       <div>
+      //         <p className="text-white font-medium">4. Thumbnail Poster</p>
+      //         <p className="text-gray-400 text-xs">
+      //           Upload a poster with key information and highlights
+      //         </p>
+      //       </div>
+
+      //       <div>
+      //         <p className="text-white font-medium">5. Target Audience</p>
+      //         <ul className="mt-1 space-y-1 text-gray-400 text-xs">
+      //           <li>• Community → Specific domain users</li>
+      //           <li>• Coordinators → All coordinators</li>
+      //           <li>• All Users → Entire platform</li>
+      //         </ul>
+      //       </div>
+      //     </div>
+      //   </div>
+
+      //   {/* Best Practices */}
+      //   <div className="space-y-2">
+      //     <h3 className="text-xs md:text-sm font-semibold text-emerald-400">
+      //       Best Practices
+      //     </h3>
+      //     <ul className="space-y-2 text-xs md:text-sm text-gray-300">
+      //       <li className="flex gap-2">
+      //         <span>•</span>
+      //         <p>Keep content clear and actionable</p>
+      //       </li>
+      //       <li className="flex gap-2">
+      //         <span>•</span>
+      //         <p>Avoid unnecessary or repeated announcements</p>
+      //       </li>
+      //       <li className="flex gap-2">
+      //         <span>•</span>
+      //         <p>Ensure accuracy before publishing</p>
+      //       </li>
+      //     </ul>
+      //   </div>
+      // </div>
+    );
+  }
+
+  // console.log("guidelinses", showGuidelines)
   return (
     <div className="min-h-screen  bg-[#0f172a] text-slate-200">
       <NavBar />
@@ -240,33 +553,35 @@ function Announcement() {
           <div className="w-full mx-auto px-4 md:px-6 py-8 flex justify-between items-center">
             <div>
               <h1 className="md:text-3xl text-2xl font-semibold  tracking-tight  flex items-center gap-1 justify-center">
-                <MdAnnouncement className="tetxt-2xl pt-0.5 md:pt-0 md:text-3xl " /> Announcements
+                <MdAnnouncement className="tetxt-2xl pt-0.5 md:pt-0 md:text-3xl " />{" "}
+                Announcements
               </h1>
             </div>
 
             {role !== "student" && (
               <button
-                onClick={() => setShowAnnouncement(!showAnnouncement)}
+                onClick={() => {setShowGuidelines(!showGuidelines); setShowAnnouncement(false)}}
                 className="md:px-3 px-3 py-2 md:py-2 bg-emerald-600/20 hover:bg-emerald-500/20
-                rounded-md text-xs md:text-sm   text-emerald-400 transition"
+                rounded-md text-xs md:text-sm  md:hidden text-emerald-400 transition"
               >
-                {showAnnouncement ? "Close Panel" : "New Broadcast"}
+                {showGuidelines ? "Close Panel" : "Create New"}
               </button>
             )}
           </div>
         </div>
 
         {/* ================= MAIN GRID ================= */}
-        <div className="w-full mx-auto px-3 py-2 md:px-6 md:pb-10 grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-5">
+        <div className="w-full mx-auto px-3 md:py-2 md:px-6 md:pb-10 grid grid-cols-1 lg:grid-cols-[320px_1fr] md:gap-5">
           {/* ================= LEFT RAIL ================= */}
 
           <aside
             // className={`${!showAnnouncement?'md:sticky top-7 self-start':' md:sticky top-7 self-start'}`}
-            className="lg:sticky top-7 self-start"
+            className="lg:sticky lg:overflow-y-scroll lg:h-screen emerald-scrollbar top-7 self-start"
           >
+            {role === "student" && <AnnouncementInfo />}
             {/* OVERVIEW */}
-            <div
-              className={`${showAnnouncement ? "hidden" : "bg-[#111827] border border-slate-800 rounded-lg p-5"}`}
+            {/* <div
+              className={`${role!=='student' ? "bg-[#111827] border border-slate-800 rounded-lg p-5" : "bg-[#111827] border border-slate-800 rounded-lg p-5"}`}
             >
               <h3 className="text-xs uppercase tracking-wide text-slate-400 mb-4">
                 Overview
@@ -287,17 +602,31 @@ function Announcement() {
                   </span>
                 </div>
               </div>
-            </div>
+            </div> */}
+
+            {role !== "student"  && (
+              <AnnouncementGuidelines showAnnouncement={showAnnouncement} showGuidelines={showGuidelines} />
+            )}
 
             {role !== "student" && (
               <>
                 {/* CREATE PANEL */}
                 {showAnnouncement && (
-                  <div className="lg:overflow-y-scroll lg:h-screen emerald-scrollbar  lg:pb-12">
+                  <div className={`lg:pb-12 `}>
                     <div className="bg-[#111827] border border-slate-800  rounded-lg p-6 space-y-6">
-                      <h3 className="text-xs uppercase tracking-wide text-slate-400">
-                        Create Broadcast
-                      </h3>
+                      <div className="flex items-center justify-between">
+                        {" "}
+                        <h3 className="text-xs uppercase tracking-wide text-slate-400">
+                          New Campaign
+                        </h3>
+                        <button
+                          onClick={() => setShowAnnouncement(!showAnnouncement)}
+                          className="md:px-3 px-3 py-1 bg-emerald-600/20 hover:bg-emerald-500/20
+                          rounded-md text-xs    text-emerald-400 transition"
+                        >
+                      Close
+                        </button>
+                      </div>
 
                       <form onSubmit={handleSubmit} className="space-y-5">
                         {/* TITLE */}
@@ -548,7 +877,7 @@ function Announcement() {
                           className="w-full py-2.5 bg-emerald-600/20 hover:bg-emerald-500/20
                    text-emerald-400 text-xs md:text-sm  rounded-md transition"
                         >
-                          {loading ? "Publishing..." : "Publish Announcement"}
+                          {loading ? "Publishing..." : "Publish"}
                         </button>
                       </form>
                     </div>
@@ -577,10 +906,37 @@ function Announcement() {
           </aside>
 
           {/* ================= MAIN FEED ================= */}
-          <main className="space-y-8">
+          <main className="space-y-6 md:space-y-8">
+            <div
+              className={`${role !== "student" ? "bg-[#111827] border border-slate-800 rounded-lg p-5" : "bg-[#111827] border border-slate-800 rounded-lg p-5"}`}
+            >
+              <h3 className="text-xs uppercase tracking-wide text-slate-400 mb-4">
+                INBOX
+              </h3>
+
+              <div className="space-y-3 text-sm">
+                <div className="flex  justify-between">
+                  <span className="text-slate-400">User Role</span>
+                  <span className="capitalize  font-medium">{role}</span>
+                </div>
+
+                <div className="flex md:text-sm text-xs justify-between">
+                  <span className="text-slate-400">Total Announcements Received</span>
+                  <span className="font-medium">
+                    {announcement?.length > 0
+                      ? announcement.length
+                      : "Empty"}{" "}
+                  </span>
+                </div>
+              </div>
+            </div>
             {announcement.length === 0 && !announceLoading && (
               <div className="flex h-[45vh] md:h-auto flex-col justify-center items-center gap-2 md:gap-3 ">
-                <img className="w-72 md:w-80 " src={empty_state_announcement} alt="" />
+                <img
+                  className="w-72 md:w-80 "
+                  src={empty_state_announcement}
+                  alt=""
+                />
                 <span className="text-gray-400 max-w-xs md:max-w-md text-sm flex justify-center items-center text-center ">
                   {" "}
                   Your announcements tab is empty!{" "}
@@ -611,7 +967,7 @@ function Announcement() {
                     >
                       {/* ✕ */}
                       {/* <IoMdClose /> */}
-                      <AiFillCloseSquare   className="text-lg md:text-xl text-gray-700 font-normal  md:hover:text-gray-600 transition-all duration-300" />
+                      <AiFillCloseSquare className="text-lg md:text-xl text-gray-700 font-normal  md:hover:text-gray-600 transition-all duration-300" />
                     </button>
                   </div>
 
