@@ -576,7 +576,7 @@ function SingleTechDomainDetails() {
       {/* ── MAIN CONTENT ───────────────────────────────────────── */}
     {filter!=='Posts'? 
     
-    <main className="w-full mx-auto px-4 md:px-10 pb-16">
+    <main className="w-full min-h-screen mx-auto px-4 md:px-10 pb-16">
         {/* ── COORDINATORS ─────────────────────────────────────── */}
         {(filter==="Coordinators" || filter==="") && authors.filter((a) => a.role === "coordinator").length > 0 && (
           <section className="mt-10">

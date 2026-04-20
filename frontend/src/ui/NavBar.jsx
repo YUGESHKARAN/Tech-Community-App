@@ -647,7 +647,7 @@ function NavBar() {
       </div>
 
       {/* ================= CENTER NAV ================= */}
-      <ul className="hidden xl:flex items-center justify-center gap-10 text-xs text-gray-400 font-medium w-3/5">
+      <ul className="hidden xl:flex items-center justify-center gap-3 text-xs text-gray-400 font-medium w-3/5">
         {role === "admin" && (
           <NavIconDesktop
             to="/dashboard"
@@ -701,7 +701,7 @@ function NavBar() {
       <div className="flex items-center gap-2 md:gap-4">
         <Link
           to="/announcement"
-          className="relative  hidden md:block rounded-full hover:bg-white/10 transition"
+          className="relative  hidden lg:block rounded-full hover:bg-white/10 transition"
         >
           <MdAnnouncement className="text-xl text-gray-300 hover:text-white transition-all duration-300 cursor-pointer transition" />
           {announceCount > 0 && (
@@ -712,7 +712,7 @@ function NavBar() {
         </Link>
 
         {/* 🔔 Notifications */}
-        <div className="relative hidden md:block">
+        <div className="relative hidden lg:block">
           <IoMdNotifications
             onClick={() => setShowNotification(!showNotefication)}
             className="text-xl  text-gray-300 hover:text-white transition-all duration-300 cursor-pointer transition"
@@ -727,7 +727,7 @@ function NavBar() {
         {/* 👤 USER PILL (DESKTOP) */}
         <Link
           to="/profile"
-          className="hidden xl:flex items-center gap-2 px-3 py-1.5
+          className="hidden lg:flex items-center gap-2 px-3 py-1.5
                  bg-white/5 hover:bg-white/10
                  border border-white/10
                  rounded-full transition-all duration-300 gap-2"
@@ -780,7 +780,7 @@ function NavBar() {
 
         
         <div
-          className="flex md:hidden items-center px-2 py-1
+          className="flex lg:hidden items-center px-2 py-1
                  bg-white/5 
                  border border-white/10
                  rounded-full transition"
@@ -804,7 +804,7 @@ function NavBar() {
              
           
         </div>
-                      <div className="relative md:hidden mr-2">
+                      <div className="relative lg:hidden mr-2">
             <IoMdNotifications
               onClick={() => setShowNotification(!showNotefication)}
               className="text-xl text-gray-300 hover:text-white transition-all duration-300 cursor-pointer transition"
@@ -1143,24 +1143,61 @@ function NavIcon({ to, icon, label, close }) {
 
 import {  useLocation } from "react-router-dom";
 
+// function NavIconDesktop({ to, icon, label }) {
+//   const location = useLocation();
+
+//   const isActive = location.pathname === to;
+
+//   return (
+ 
+
+//       <Link
+//       to={to}
+//       //  onClick={() => close && close(false)}
+//       className="flex flex-col items-center gap-1
+//                  text-white/70 hover:text-white transition"
+//     >
+//       <span className="text-xl text-emerald-400">{icon}</span>
+//       <span  className={`text-[11px] ${
+//           isActive ? "text-emerald-500 font-medium" : ""
+//         }`}>{label}</span>
+//     </Link>
+//   );
+// }
 function NavIconDesktop({ to, icon, label }) {
   const location = useLocation();
-
   const isActive = location.pathname === to;
 
   return (
- 
-
-      <Link
+    <Link
       to={to}
-      //  onClick={() => close && close(false)}
-      className="flex flex-col items-center gap-1
-                 text-white/70 hover:text-white transition"
+      className={`
+        relative flex items-center gap-1 px-3 py-1.5 rounded-xl
+        text-xs font-medium transition-all duration-200
+        ${
+          isActive
+            ? "text-emerald-400"
+            : "text-white/70 hover:text-white "
+        }
+      `}
     >
-      <span className="text-xl text-emerald-400">{icon}</span>
-      <span  className={`text-[11px] ${
-          isActive ? "text-emerald-500 font-medium" : ""
-        }`}>{label}</span>
+      {/* Icon */}
+      <span
+        className={`
+          text-base transition-all
+          ${isActive ? "text-emerald-400" : "text-white/70 group-hover:text-white"}
+        `}
+      >
+        {icon}
+      </span>
+
+      {/* Label */}
+      <span className="tracking-wide">{label}</span>
+
+      {/* Active Indicator (bottom glow line) */}
+      {isActive && (
+        <span className="absolute -bottom-[6px] left-1/2 -translate-x-1/2 w-4 h-[2px] bg-emerald-400 rounded-full" />
+      )}
     </Link>
   );
 }

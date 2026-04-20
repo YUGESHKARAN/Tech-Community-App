@@ -34,10 +34,10 @@ function HomePage() {
 
 
       <div className=" flex items-center justify-between top-0  p-2 pl-3 md:p-0  md:pt-2 w-fit   md:ml-4 md:mx-auto">
-        <div className="flex items-center gap-5">
+        <div className="flex items-center gap-3 md:gap-5">
           <button
             onClick={() => setActiveTab("posts")}
-            className={`relative pb-1 md:pb-2 text-sm font-medium transition-all duration-300
+            className={`relative pb-1 md:pb-2 text-[10px] md:text-sm font-medium transition-all duration-300
         ${
           activeTab === "posts"
             ? "text-white"
@@ -52,7 +52,7 @@ function HomePage() {
 
           <button
             onClick={() => setActiveTab("playlists")}
-            className={`relative pb-1 md:pb-2 text-sm font-medium transition-all duration-300
+            className={`relative pb-1 md:pb-2 text-[10px] md:text-sm font-medium transition-all duration-300
         ${
           activeTab === "playlists"
             ? "text-white"

@@ -78,36 +78,16 @@ const TutorPlaylistGrid = () => {
   // console.log("filteredPlaylist", filteredPlaylist);
   return (
     <>
-      {/* ================= SEARCH ================= */}
-      <div className="flex  w-full md:mx-0 justify-center mt-7">
-        <div className="w-full mx-auto max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-2xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
-          <IoSearchOutline className="text-xl text-gray-400" />
-          <input
-            type="text"
-            placeholder="Search playlists, topics, or domains"
-            value={searchTerm}
-            // onChange={handleSearch}
-            onChange={(e) => {
-              setSearchTerm(e.target.value);
-            }}
-            className="bg-transparent w-full focus:outline-none text-sm text-white placeholder-gray-400"
-          />
-        </div>
-      </div>
 
-      {loading && !tutorPlayList.length > 0 && <PillLoader />}
-
-     
-
-      {tutorPlayList.length > 0 && (
-         <>
-        <div
+        {loading && !tutorPlayList.length > 0 && <PillLoader />}
+      {tutorPlayList.length>0 && 
+              <div
           className={`w-full sticky top-0 z-40
                 ${isStickyActive ? "bg-gray-900 " : "bg-transparent"}`}
         >
           <div
             // className="flex md:max-w-5xl md:w-fit mt-10 scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto"
-            className="flex w-full  md:w-fit md:max-w-7xl  mt-2 py-5 z-50 scrollbar-hide mx-auto items-center justify-start gap-3 md:mb-5 overflow-x-auto"
+            className="flex w-full px-3  md:w-fit md:max-w-7xl   py-3 md:py-5 z-50 scrollbar-hide mx-auto items-center justify-start gap-3 overflow-x-auto"
           >
             {/* All Button */}
             <div
@@ -136,7 +116,30 @@ const TutorPlaylistGrid = () => {
               </div>
             ))}
           </div>
+        </div>}
+      {/* ================= SEARCH ================= */}
+      <div className="flex mx-3 md:mx-0 justify-center mb-4 mt-2 md:my-4">
+        <div className="w-full mx-auto md:max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-2xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
+          <IoSearchOutline className="text-xl text-gray-400" />
+          <input
+            type="text"
+            placeholder="Search playlists, topics, or domains"
+            value={searchTerm}
+            // onChange={handleSearch}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+            }}
+            className="bg-transparent w-full focus:outline-none text-sm text-white placeholder-gray-400"
+          />
         </div>
+      </div>
+
+  
+     
+
+      {tutorPlayList.length > 0 && (
+         <>
+
 
          <div
           // className="
@@ -148,7 +151,7 @@ const TutorPlaylistGrid = () => {
           // "
           className="
      pb-4 gap-5 md:gap-6
-    grid grid-cols-1
+    md:grid grid-cols-1
     md:grid-cols-2
     lg:grid-cols-3
     xl:grid-cols-4
@@ -157,6 +160,8 @@ const TutorPlaylistGrid = () => {
     space-y-5
     md:space-y-0
     mt-7
+     px-3 md:px-0
+    px-auto
   "
         >
           {filteredPlaylist?.map((playlist) => (

@@ -72,7 +72,7 @@ export default function AITechAssistant({ currentPostId, category, viewComments,
         suggestedQueries: res.data.suggestions || [],
       };
 
-      console.log("AI response", aiMessage);
+      // console.log("AI response", aiMessage);
 
       setMessages((prev) => [...prev, aiMessage]);
     } catch (err) {

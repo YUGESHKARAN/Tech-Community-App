@@ -928,7 +928,7 @@ function Announcement() {
                 </div>
 
                 <div className="flex md:text-sm text-xs justify-between">
-                  <span className="text-slate-400">INBOX</span>
+                  <span className="text-slate-400">Inbox</span>
                   <span className="font-medium">
                     {announcement?.length > 0
                       ? announcement.length

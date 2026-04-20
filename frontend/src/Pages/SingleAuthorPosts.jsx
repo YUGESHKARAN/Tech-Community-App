@@ -260,9 +260,9 @@ const filteredPosts = useMemo(() => {
   return (
     <div className="w-full reltive min-h-screen  bg-gray-900  h-auto reltive  ">
       <NavBar />
-      <div className="relative min-h-screen   md:py-8">
+      <div className="relative min-h-screen   md:py-8"> 
         <div className="w-full mx-auto mt-7 md:mt-0">
-          <h1 className="text-2xl px-2 md:text-3xl mb-3 font-bold text-white w-full mx-auto">
+          <h1 className="text-2xl px-2 md:text-3xl mb-3 font-semibold tracking-tight  text-white w-full mx-auto">
             Posts Page
           </h1>
           {/* Profile Header Card */}

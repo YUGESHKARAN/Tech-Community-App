@@ -315,10 +315,10 @@ function BlogContainer({ activeTab, setActiveTab }) {
 // console.log("posts", posts)
   return (
     <div className="min-h-screen relative  ">
-      <div className="flex-col w-full md:gap-16 relative flex-wrap justify-center h-auto mx-auto">
+      <div className="flex-col w-full md:gap-5 relative flex-wrap justify-center h-auto mx-auto">
         {/* Tutor Playlist section starts here */}
         {activeTab === "playlists" && (
-          <section className="space-y-4 mt-4 px-3 md:px-0 px-auto  mx-auto w-full md:w-full ">
+          <section className="space-y-4 md:px-0 px-auto  mx-auto w-full md:w-full ">
             <div className=" md:px-4 shadow-inner">
               {/* {  loading ? <TutorPlaylistGridSkeleton /> : <TutorPlaylistGrid />} */}
               {/* {tutorPlayList.length === 0 && playlistLoading ? (
@@ -334,22 +334,7 @@ function BlogContainer({ activeTab, setActiveTab }) {
 
         {activeTab === "posts" && (
           <>
-            {/* ================= SEARCH ================= */}
-            <div className="flex mx-3 md:mx-0 justify-center mt-7">
-              <div className="w-full mx-auto max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-2xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
-                <IoSearchOutline className="text-xl text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search posts, topics, or categories"
-                  value={searchTerm}
-                  // onChange={handleSearch}
-                  onChange={(e) => {
-                    setSearchTerm(e.target.value);
-                  }}
-                  className="bg-transparent w-full focus:outline-none text-sm text-white placeholder-gray-400"
-                />
-              </div>
-            </div>
+         
 
             {posts.length > 0 && (
               <div
@@ -358,7 +343,7 @@ function BlogContainer({ activeTab, setActiveTab }) {
               >
                 <div
                   // className="flex md:max-w-5xl md:w-fit mt-10 scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto"
-                  className="flex w-full px-3  md:w-fit md:max-w-7xl  mt-2 py-5 z-50 scrollbar-hide mx-auto items-center justify-start gap-3 md:mb-5 overflow-x-auto"
+                  className="flex w-full px-3  md:w-fit md:max-w-7xl   py-3 md:py-5 z-50 scrollbar-hide mx-auto items-center justify-start gap-3 overflow-x-auto"
                 >
                   {/* All Button */}
                   <div
@@ -392,13 +377,30 @@ function BlogContainer({ activeTab, setActiveTab }) {
 
             {loading && !posts.length > 0 && <PillLoader />}
 
+               {/* ================= SEARCH ================= */}
+            <div className="flex mx-3 md:mx-0 justify-center mb-4 mt-2 md:my-4 ">
+              <div className="w-full mx-auto max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-2xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
+                <IoSearchOutline className="text-xl text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search posts, topics, or categories"
+                  value={searchTerm}
+                  // onChange={handleSearch}
+                  onChange={(e) => {
+                    setSearchTerm(e.target.value);
+                  }}
+                  className="bg-transparent w-full focus:outline-none text-sm text-white placeholder-gray-400"
+                />
+              </div>
+            </div>
+
             <section className="w-full  mx-auto">
               {/* <h2 className="text-2xl mx-4 md:mx-0 md:text-4xl font-bold tracking-wide text-gray-200">
                   Recommended Posts
                 </h2> */}
 
                 {/* <PostsComponent filteredPosts={filteredPosts} posts={posts} setPosts={setPosts} loading={loading} hasMore={hasMore} debouncedSearch={debouncedSearch}  postCategory={postCategory} setPostCategory={setPostCategory}/> */}
-              <div className="mx-auto grid grid-cols-1 md:px-2 w-full  mx-auto  md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-10 mt-5 md:mt-10 h-auto">
+              <div className="mx-auto grid grid-cols-1 md:px-2 w-full  mx-auto  md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-10  h-auto">
                 {filteredPosts?.map((data, index) => (
                   <article
                     key={data._id}
