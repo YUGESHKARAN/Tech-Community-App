@@ -10,6 +10,7 @@ import Footer from "../ui/Footer";
 import { IoSearchOutline } from "react-icons/io5";
 import Fuse from "fuse.js";
 import empty_state_post from "../assets/empty_state_post.png";
+import PillLoader from "../components/loaders/PillSkeleton";
 // import user from "../images/user.png";
 const YourPlaylist = () => {
   const {
@@ -98,28 +99,13 @@ useEffect(() => {
     <div className="w-full min-h-screen bg-gray-900 h-auto reltive  ">
       <NavBar />
 
-      <h1 className=" text-2xl w-full px-4 flex items-center gap-2 mt-4 mx-auto md:text-3xl font-semibold text-white tracking-wide">
+      <h1 className=" text-2xl w-full px-4 flex items-center gap-2 mt-3 md:mt-4 mx-auto md:text-3xl font-semibold text-white tracking-wide">
         <BsPersonWorkspace />
         <span className="group text-white"> My Tutor Playlist</span>{" "}
       </h1>
 
-       {/* ================= SEARCH ================= */}
-           { tutorPlayListByEmail.length > 0 && <div className="flex  px-3 mx-auto w-full md:mx-0 justify-center mt-7">
-              <div className="w-full mx-auto max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-2xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
-                <IoSearchOutline className="text-xl text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search playlists, topics, or domains"
-                  value={searchTerm}
-                  // onChange={handleSearch}
-                  onChange={(e) => {
-                    setSearchTerm(e.target.value);
-                  }}
-                  className="bg-transparent w-full focus:outline-none text-sm text-white placeholder-gray-400"
-                />
-              </div>
-            </div>}
-          
+    
+           {loading && !tutorPlayListByEmail.length > 0 && <PillLoader />}
         {tutorPlayListByEmail.length > 0 && (
         <div
           className={`w-full sticky top-0 z-40
@@ -127,7 +113,7 @@ useEffect(() => {
         >
           <div
             // className="flex md:max-w-5xl md:w-fit mt-10 scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto"
-            className="flex w-full  md:w-fit md:max-w-7xl  mt-2 py-5 z-50 scrollbar-hide mx-auto items-center justify-start gap-3 md:mb-5 overflow-x-auto"
+            className="flex w-full px-3 mt-2 md:mt-0   md:w-fit md:max-w-7xl   py-3 md:py-5 z-50 scrollbar-hide mx-auto items-center justify-start gap-3 overflow-x-auto"
           >
             {/* All Button */}
             <div
@@ -158,8 +144,26 @@ useEffect(() => {
           </div>
         </div>
       )}
+
+       {/* ================= SEARCH ================= */}
+           { tutorPlayListByEmail.length > 0 &&  
+                 <div className="flex mx-3 md:mx-0 justify-center mb-4 mt-2 md:my-4">
+                   <div className="w-full mx-auto md:max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-2xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
+                     <IoSearchOutline className="text-xl text-gray-400" />
+                     <input
+                       type="text"
+                       placeholder="Search playlists, topics, or domains"
+                       value={searchTerm}
+                       // onChange={handleSearch}
+                       onChange={(e) => {
+                         setSearchTerm(e.target.value);
+                       }}
+                       className="bg-transparent w-full focus:outline-none text-sm text-white placeholder-gray-400"
+                     />
+                   </div>
+                 </div>}
       
-      <div className="min-h-screen w-full px-3 md:px-4 mt-4 mx-auto bg-gray-900 pb-8">
+      <div className="min-h-screen w-full px-3 md:px-4 md:mt-4 mx-auto bg-gray-900 pb-8">
         {filteredPlaylist.length > 0 && (
           <div
             className="
@@ -216,8 +220,10 @@ useEffect(() => {
           </div>
         )}
 
+        
+
         {!tutorPlayListByEmail?.length > 0 && loading && (
-          <TutorPlaylistGridSkeleton />
+         <TutorPlaylistGridSkeleton />
         )}
         {tutorPlayListByEmail?.length == 0 && !loading && (
           <div className="flex h-[70vh] flex-col justify-center items-center md:gap-3 ">

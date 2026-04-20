@@ -260,8 +260,8 @@ const filteredPosts = useMemo(() => {
   return (
     <div className="w-full reltive min-h-screen  bg-gray-900  h-auto reltive  ">
       <NavBar />
-      <div className="relative min-h-screen   md:py-8"> 
-        <div className="w-full mx-auto mt-7 md:mt-0">
+      <div className="relative min-h-screen   md:pb-8"> 
+        <div className="w-full md:px-4 mx-auto mt-3 md:mt-4 ">
           <h1 className="text-2xl px-2 md:text-3xl mb-3 font-semibold tracking-tight  text-white w-full mx-auto">
             Posts Page
           </h1>
@@ -317,64 +317,63 @@ const filteredPosts = useMemo(() => {
           </div>
         </div>
 
-       {/* Search and Filter Section */}
-        <div className="w-11/12 mt-9 mx-auto max-w-md flex items-center gap-2 justify-center">
-            <div className="w-full flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-2xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
-              <IoSearchOutline className="text-2xl text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search by title or category"
-                value={searchTerm}
-                onChange={(e)=>{setSearchTerm(e.target.value)}}
-                className="bg-transparent focus:outline-none w-full text-sm text-white placeholder-gray-400"
-              />
-            </div>
-          </div>
-        {posts.length > 0 && (
-          <div
-            className={`w-full sticky top-0 z-40
-                ${isStickyActive ? "bg-gray-900 " : "bg-transparent"}`}
-          >
-            <div
-              // className="flex md:max-w-5xl md:w-fit mt-10 scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto"
-              className="flex w-full px-3  md:w-fit md:max-w-7xl  mt-2 py-5 z-50 scrollbar-hide mx-auto items-center justify-start gap-3 md:mb-5 overflow-x-auto"
-            >
-              {/* All Button */}
+       {posts.length > 0 && (
               <div
-                onClick={() => setPostCategory("")}
-                className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1.5 md:py-2 transition-all duration-200 ${
-                  postCategory === ""
-                    ? "bg-emerald-600/20 text-emerald-400"
-                    : "bg-gray-800 text-white"
-                }`}
+                className={`w-full mt-2 md:mt-0 sticky top-0 z-40
+                ${isStickyActive ? "bg-gray-900 " : "bg-transparent"}`}
               >
-                All
-              </div>
-
-              {/* Dynamic Categories */}
-              {getUniqueCategories(posts).map((data, index) => (
                 <div
-                  key={index}
-                  onClick={() => setPostCategory(data)}
-                  className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1.5 md:py-2 transition-all duration-200 ${
-                    postCategory === data
-                      ? "bg-emerald-600/20 text-emerald-400"
-                      : "bg-gray-800 text-white"
-                  }`}
+                  // className="flex md:max-w-5xl md:w-fit mt-10 scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto"
+                  className="flex w-full px-3  md:w-fit md:max-w-7xl   py-3 md:py-5 z-50 scrollbar-hide mx-auto items-center justify-start gap-3 overflow-x-auto"
                 >
-                  {data}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-        <div className="w-full relative mx-auto">
-          {/* <h1 className="text-center text-white font-bold text-xl mt-2 md:mt-10">
-            Domains
-          </h1> */}
+                  {/* All Button */}
+                  <div
+                    onClick={() => setPostCategory("")}
+                    className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1.5 md:py-2 transition-all duration-200 ${
+                      postCategory === ""
+                        ? "bg-emerald-600/20 text-emerald-400"
+                        : "bg-gray-800 text-white"
+                    }`}
+                  >
+                    All
+                  </div>
 
-          {loader && !posts.length > 0 && <PillLoader />}
-        </div>
+                  {/* Dynamic Categories */}
+                  {getUniqueCategories(posts).map((data, index) => (
+                    <div
+                      key={index}
+                      onClick={() => setPostCategory(data)}
+                      className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1.5 md:py-2 transition-all duration-200 ${
+                        postCategory === data
+                          ? "bg-emerald-600/20 text-emerald-400"
+                          : "bg-gray-800 text-white"
+                      }`}
+                    >
+                      {data}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {loader && !posts.length > 0 && <PillLoader />}
+
+               {/* ================= SEARCH ================= */}
+            <div className="flex mx-3 md:mx-0 justify-center mb-4 mt-2 md:my-4 ">
+              <div className="w-full mx-auto max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-2xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
+                <IoSearchOutline className="text-xl text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search posts, topics, or categories"
+                  value={searchTerm}
+                  // onChange={handleSearch}
+                  onChange={(e) => {
+                    setSearchTerm(e.target.value);
+                  }}
+                  className="bg-transparent w-full focus:outline-none text-sm text-white placeholder-gray-400"
+                />
+              </div>
+            </div>
 
         <div className="flex relative  w-full md:mx-2 flex-wrap justify-center h-auto mx-auto">
 

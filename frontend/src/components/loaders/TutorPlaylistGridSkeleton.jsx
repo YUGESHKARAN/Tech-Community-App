@@ -1,6 +1,6 @@
 const TutorPlaylistCardSkeleton = () => {
   return (
-    <div className="relative w-full mt-4 md:mt-7 md:mb-0 mb-7 max-w-sm animate-pulse">
+    <div className="relative w-full mt-4 md:mt-7 md:mb-0 md:mb-7 max-w-sm animate-pulse">
       {/* STACK LAYER 3 */}
       <div className="absolute bottom-2 left-3 w-[95%] h-full bg-zinc-700 rounded-xl z-0" />
 
@@ -51,14 +51,14 @@ const TutorPlaylistGridSkeleton = () => {
       //   sm:overflow-visible
       // "
         className="
-        pb-4 gap-5 md:gap-6
+        pb-4 gap-3 md:gap-6
         grid grid-cols-1
         md:grid-cols-2
         lg:grid-cols-3
         xl:grid-cols-4
         3xl:grid-cols-5
         overflow-visible
-        space-y-5
+
         md:space-y-0
         mt-0 
       "

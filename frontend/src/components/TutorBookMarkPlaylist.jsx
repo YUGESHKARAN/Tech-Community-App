@@ -144,7 +144,7 @@ const TutorBookMarkPlaylist = () => {
             >
               <div
                 // className="flex md:max-w-5xl md:w-fit mt-10 scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto"
-                className="flex w-full  md:w-fit md:max-w-7xl  mt-2 py-5 z-50 scrollbar-hide mx-auto items-center justify-start gap-3 md:mb-5 overflow-x-auto"
+                className="flex w-full  md:w-fit md:max-w-7xl py-5 z-50 scrollbar-hide mx-auto items-center justify-start gap-3 overflow-x-auto"
               >
                 {/* All Button */}
                 <div
@@ -191,7 +191,7 @@ const TutorBookMarkPlaylist = () => {
               overflow-visible
               space-y-5
               md:space-y-0
-              mt-3
+             
             "
           >
      

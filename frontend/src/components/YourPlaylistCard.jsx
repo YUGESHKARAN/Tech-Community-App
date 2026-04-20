@@ -113,7 +113,7 @@ const YourPlaylistCard = ({ playlist, onRemove, onDelete,setPlaylistCategory, de
 };
 
 return (
-    <div className="relative  w-full mt-4 max-w-sm">
+    <div className="relative  w-full md:mt-4 max-w-sm">
       {/* STACK LAYER 3 (BACK) */}
       <div
         className="absolute bottom-2 left-3 w-[95%] h-full 

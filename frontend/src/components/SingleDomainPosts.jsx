@@ -163,8 +163,8 @@ const filteredPosts = useMemo(() => {
 
     
       {/* Search */}
-      <div className="w-11/12 mx-auto max-w-md  flex items-center gap-2 justify-center mb-8">
-        <div className="w-full flex items-center mt-9 gap-3 bg-gray-800 border border-gray-700 rounded-2xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
+      <div className="w-11/12 mx-auto max-w-md  flex items-center gap-2 justify-center mb-4 md:mb-8">
+        <div className="w-full flex items-center mt-7 md:mt-4  gap-3 bg-gray-800 border border-gray-700 rounded-2xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
           <IoSearchOutline className="text-2xl text-gray-400 flex-shrink-0" />
           <input
             type="text"

@@ -281,25 +281,61 @@ function YourPost() {
     <div className="w-full min-h-screen bg-gray-900 h-auto reltive  ">
       <NavBar />
 
-      {posts.length > 0 && (
-        <h1 className=" text-2xl mt-4 px-2  md:w-full flex items-center gap-2 mx-auto md:text-3xl font-bold text-white tracking-wide">
+          <h1 className=" text-2xl mt-3 md:mt-4 px-2  md:w-full flex items-center gap-2 mx-auto md:text-3xl font-bold text-white tracking-wide">
           <BsPersonWorkspace />
           <span className="group text-white"> My Posts</span>{" "}
         </h1>
-      )}
-      <div className="min-h-screen  pt-2 pb-8">
-        {/* <p className="text-lg text-white w-11/12 mx-auto">Posts {posts.length>0 && posts.length}</p> */}
 
-        <div className=" w-full  mt-10   h-auto mx-auto">
-          {/* Search and Filter Section */}
-          {posts.length > 0 && (
-            <div className="flex justify-center">
-              <div className="w-11/12 mx-auto max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-2xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
+        {posts.length > 0 && (
+              <div
+                className={`w-full sticky top-0 z-40
+                ${isStickyActive ? "bg-gray-900 " : "bg-transparent"}`}
+              >
+                <div
+                  // className="flex md:max-w-5xl md:w-fit mt-10 scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto"
+                  className="flex w-full px-3  md:w-fit md:max-w-7xl   py-3 md:py-5 z-50 scrollbar-hide mx-auto items-center justify-start gap-3 overflow-x-auto"
+                >
+                  {/* All Button */}
+                  <div
+                    onClick={() => setPostCategory("")}
+                    className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1.5 md:py-2 transition-all duration-200 ${
+                      postCategory === ""
+                        ? "bg-emerald-600/20 text-emerald-400"
+                        : "bg-gray-800 text-white"
+                    }`}
+                  >
+                    All
+                  </div>
+
+                  {/* Dynamic Categories */}
+                  {getUniqueCategories(posts).map((data, index) => (
+                    <div
+                      key={index}
+                      onClick={() => setPostCategory(data)}
+                      className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1.5 md:py-2 transition-all duration-200 ${
+                        postCategory === data
+                          ? "bg-emerald-600/20 text-emerald-400"
+                          : "bg-gray-800 text-white"
+                      }`}
+                    >
+                      {data}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {loader && !posts.length > 0 && <PillLoader />}
+
+               {/* ================= SEARCH ================= */}
+            <div className="flex mx-3 md:mx-0 justify-center mb-4 mt-2 md:my-4 ">
+              <div className="w-full mx-auto max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-2xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
                 <IoSearchOutline className="text-xl text-gray-400" />
                 <input
                   type="text"
                   placeholder="Search posts, topics, or categories"
                   value={searchTerm}
+                  // onChange={handleSearch}
                   onChange={(e) => {
                     setSearchTerm(e.target.value);
                   }}
@@ -307,49 +343,10 @@ function YourPost() {
                 />
               </div>
             </div>
-          )}
-          {posts.length > 0 && (
-            <div
-              className={`w-full sticky top-0 z-40
-                ${isStickyActive ? "bg-gray-900 " : "bg-transparent"}`}
-            >
-              <div
-                // className="flex md:max-w-5xl md:w-fit mt-10 scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto"
-                className="flex w-full px-3  md:w-fit md:max-w-7xl  mt-2 py-5 z-50 scrollbar-hide mx-auto items-center justify-start gap-3 md:mb-5 overflow-x-auto"
-              >
-                {/* All Button */}
-                <div
-                  onClick={() => setPostCategory("")}
-                  className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1.5 md:py-2 transition-all duration-200 ${
-                    postCategory === ""
-                      ? "bg-emerald-600/20 text-emerald-400"
-                      : "bg-gray-800 text-white"
-                  }`}
-                >
-                  All
-                </div>
+      <div className="min-h-screen  pt-2 pb-8">
+        <div className=" w-full   h-auto mx-auto">
 
-                {/* Dynamic Categories */}
-                {getUniqueCategories(posts).map((data, index) => (
-                  <div
-                    key={index}
-                    onClick={() => setPostCategory(data)}
-                    className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1.5 md:py-2 transition-all duration-200 ${
-                      postCategory === data
-                        ? "bg-emerald-600/20 text-emerald-400"
-                        : "bg-gray-800 text-white"
-                    }`}
-                  >
-                    {data}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {loader && !posts.length > 0 && <PillLoader />}
-
-          <div className="md:w-full md:px-2 grid grid-cols-1 w-full mx-auto md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-10 mt-7 md:mt-10 h-auto">
+          <div className="md:w-full md:px-2 grid grid-cols-1 w-full mx-auto md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-10 h-auto">
             {/* Posts Grid */}
             {filteredPosts?.map((data, index) => (
               <article
