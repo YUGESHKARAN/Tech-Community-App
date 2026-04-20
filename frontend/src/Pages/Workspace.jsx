@@ -14,7 +14,7 @@ import Footer from "../ui/Footer";
 
 function Workspace() {
   return (
-    <div className="w-full relative min-h-screen bg-gradient-to-br from-gray-900 to-gray-800">
+    <div className="w-full relative min-h-screen bg-gray-900">
       <NavBar />
 
       <div className="w-ful mx-auto px-4 h-screen md:px-8 pt-4 text-white">

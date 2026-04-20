@@ -394,6 +394,8 @@ function BlogContainer({ activeTab, setActiveTab }) {
               </div>
             </div>
 
+            
+
             <section className="w-full  mx-auto">
               {/* <h2 className="text-2xl mx-4 md:mx-0 md:text-4xl font-bold tracking-wide text-gray-200">
                   Recommended Posts

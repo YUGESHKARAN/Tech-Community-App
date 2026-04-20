@@ -479,7 +479,7 @@ function SingleTechDomainDetails() {
       <NavBar />
 
       {/* ── HEADER ─────────────────────────────────────────────── */}
-      <header className="px-4 md:px-10 pt-10 pb-7 border-white/5">
+      <header className="px-4 md:px-10  pt-7 md:pt-10 pb-7 border-white/5">
         <div className="w-full mx-auto md:flex flex-wrap items-start justify-between gap-5">
           {/* Title */}
           <div>
@@ -579,7 +579,7 @@ function SingleTechDomainDetails() {
     <main className="w-full min-h-screen mx-auto px-4 md:px-10 pb-16">
         {/* ── COORDINATORS ─────────────────────────────────────── */}
         {(filter==="Coordinators" || filter==="") && authors.filter((a) => a.role === "coordinator").length > 0 && (
-          <section className="mt-10">
+          <section className="mt-7">
             <p className="text-xs text-center md:text-sm font-medium tracking-widest uppercase  text-gray-500 mb-4">
               Community Coordinators
             </p>
@@ -709,7 +709,7 @@ function SingleTechDomainDetails() {
         {/* Coordinator skeleton */}
         {loading && (filter==="Coordinators" || filter==="") &&
           authors.filter((a) => a.role === "coordinator").length === 0 && (
-            <section className="mt-10">
+            <section className="mt-7">
               <p className="text-xs text-center md:text-sm font-medium tracking-widest uppercase  text-gray-500 mb-4">
                 Community Coordinators
               </p>
@@ -851,237 +851,3 @@ function SingleTechDomainDetails() {
 
 export default SingleTechDomainDetails;
 
-//     <div className="w-full min-h-screen bg-gray-900 text-white">
-//   <NavBar />
-
-//   <div className="w-full mx-auto px-4 md:px-10">
-
-//     {/* HEADER */}
-//     <section className="pt-10 md:pt-14 pb-6 border-b border-white/5">
-//       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-
-//         {/* Title */}
-//         <div>
-//           <h1 className="text-3xl md:text-5xl font-bold tracking-tight">
-//             <span className="bg-gradient-to-r from-emerald-400 via-blue-400 to-indigo-500 bg-clip-text text-transparent">
-//               {decodedCategory}
-//             </span>{" "}
-//             <span className="text-white/80">Community</span>
-//           </h1>
-
-//           <p className="text-sm text-gray-400 mt-2">
-//             Connect, collaborate and grow within this tech domain
-//           </p>
-//         </div>
-
-//         {/* Action */}
-//         <div>
-//           {role === "coordinator" || role === "admin" ? (
-//             authorCommunity.includes(decodedCategory) && (
-//               <span className="px-4 md:px-10 py-2 text-sm font-semibold rounded-xl bg-gradient-to-r from-amber-400 to-yellow-500 text-black shadow-md">
-//                 Coordinator
-//               </span>
-//             )
-//           ) : (
-//             <button
-//               onClick={() => updateCommunity(email, decodedCategory)}
-//               className={`px-5 py-2 text-sm font-semibold rounded-xl transition-all duration-300
-//               ${
-//                 authorCommunity.includes(decodedCategory)
-//                   ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30"
-//                   : "bg-white text-gray-900 hover:bg-gray-200"
-//               }`}
-//             >
-//               {authorCommunity.includes(decodedCategory)
-//                 ? "✓ Joined"
-//                 : "Join Community"}
-//             </button>
-//           )}
-//         </div>
-
-//       </div>
-//     </section>
-
-//     {/* CONTENT */}
-//     <section className="mt-10 md:mt-14 space-y-14">
-
-//       {/* ================= COORDINATORS ================= */}
-//       {authors.filter((a) => a.role === "coordinator").length > 0 && (
-//         <div>
-//           <h2 className="text-xl md:text-3xl font-semibold text-white mb-6">
-//             Community Coordinators
-//           </h2>
-
-//           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-
-//             {authors
-//               .filter((a) => a.role === "coordinator")
-//               .map((author, index) => (
-//                 <div
-//                   key={index}
-//                   className="group bg-white/[0.03] border border-white/10 rounded-2xl p-5 text-center hover:border-white/20 hover:shadow-lg transition-all duration-300"
-//                 >
-
-//                   <Link to={`/viewProfile/${author.email}`}>
-//                     <img
-//                       src={
-//                         author.profile
-//                           ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`
-//                           : user
-//                       }
-//                       className="w-20 h-20 md:w-24 md:h-24 mx-auto rounded-full object-cover border border-white/10"
-//                     />
-//                   </Link>
-
-//                   <h3 className="mt-4 text-sm md:text-base font-semibold text-white truncate">
-//                     {author.authorName}
-//                   </h3>
-
-//                   <p className="text-xs text-gray-400 truncate">
-//                     {author.email}
-//                   </p>
-
-//                   {/* Stats */}
-//                   <div className="flex justify-center gap-4 mt-4 text-xs">
-//                     <span className="text-gray-400">
-//                       <span className="text-white font-semibold">
-//                         {author.followers.length}
-//                       </span>{" "}
-//                       Followers
-//                     </span>
-
-//                     {author?.postCount > 0 && (
-//                       <span className="text-gray-400">
-//                         <span className="text-white font-semibold">
-//                           {author.postCount}
-//                         </span>{" "}
-//                         Posts
-//                       </span>
-//                     )}
-//                   </div>
-
-//                   {/* Actions */}
-//                   {author.email !== email ? (
-//                     <button
-//                       onClick={() => addFollower(author.email)}
-//                       className={`mt-5 w-full py-2 rounded-lg text-xs font-medium transition-all
-//                       ${
-//                         author.followers.includes(email)
-//                           ? "bg-white/5 text-gray-400 cursor-default"
-//                           : "bg-emerald-500 text-gray-900 hover:bg-emerald-400"
-//                       }`}
-//                     >
-//                       {author.followers.includes(email)
-//                         ? "Following"
-//                         : "Follow"}
-//                     </button>
-//                   ) : (
-//                     <div className="mt-5 py-2 rounded-lg text-xs font-medium bg-amber-400 text-black">
-//                       Coordinating
-//                     </div>
-//                   )}
-//                 </div>
-//               ))}
-
-//             {/* Loader */}
-//             {loading && (
-//               <div className="col-span-full flex justify-center py-6">
-//                 <div className="flex items-center gap-2 text-xs text-gray-400">
-//                   <div className="w-4 h-4 border-2 border-white/10 border-t-emerald-400 rounded-full animate-spin" />
-//                   Loading...
-//                 </div>
-//               </div>
-//             )}
-
-//             {!hasMore && (
-//               <p className="text-center col-span-full py-4 text-gray-500">
-//                 No more coordinators
-//               </p>
-//             )}
-//           </div>
-//         </div>
-//       )}
-
-//       {/* Skeleton if no coordinators yet */}
-//       {loading &&
-//         authors.filter((a) => a.role === "coordinator").length === 0 && (
-//           <div>
-//             <h2 className="text-xl md:text-3xl font-semibold text-white mb-6">
-//               Community Coordinators
-//             </h2>
-//             <CoordinatorGridSkeleton />
-//           </div>
-//         )}
-
-//       {/* ================= STUDENTS ================= */}
-//       {authors.filter((a) => a.role === "student").length > 0 && (
-//         <div>
-//           <h2 className="text-xl md:text-3xl font-semibold text-white mb-6">
-//             Community Members
-//           </h2>
-
-//           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-7 gap-4">
-
-//             {authors
-//               .filter((a) => a.role === "student")
-//               .map((author, index) => (
-//                 <div
-//                   key={index}
-//                   className="bg-white/[0.02] border border-white/[0.08] rounded-xl p-4 flex flex-col items-center text-center hover:bg-white/[0.04] transition"
-//                 >
-//                   <Link to={`/viewProfile/${author.email}`}>
-//                     <img
-//                       src={
-//                         author.profile
-//                           ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`
-//                           : user
-//                       }
-//                       className="w-16 h-16 md:w-20 md:h-20 rounded-full object-cover border border-white/10"
-//                     />
-//                   </Link>
-
-//                   <h3 className="mt-3 text-sm font-semibold text-white truncate w-full">
-//                     {author.authorName}
-//                   </h3>
-
-//                   <p className="text-xs text-gray-500 truncate w-full">
-//                     {author.email}
-//                   </p>
-//                 </div>
-//               ))}
-
-//             {/* Loader */}
-//             {loading && (
-//               <div className="col-span-full flex justify-center py-6">
-//                 <div className="flex items-center gap-2 text-xs text-gray-400">
-//                   <div className="w-4 h-4 border-2 border-white/10 border-t-emerald-400 rounded-full animate-spin" />
-//                   Loading...
-//                 </div>
-//               </div>
-//             )}
-
-//             {!hasMore && (
-//               <p className="text-center col-span-full py-4 text-gray-500">
-//                 No more members
-//               </p>
-//             )}
-//           </div>
-//         </div>
-//       )}
-
-//       {/* Skeleton if no students yet */}
-//       {loading &&
-//         authors.filter((a) => a.role === "student").length === 0 && (
-//           <div>
-//             <h2 className="text-xl md:text-3xl font-semibold text-white mb-6">
-//               Community Members
-//             </h2>
-//             <StudentGridSkeleton />
-//           </div>
-//         )}
-
-//     </section>
-//   </div>
-
-//   <Footer />
-// </div>

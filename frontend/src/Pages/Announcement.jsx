@@ -19,6 +19,7 @@ import { CiSquareRemove } from "react-icons/ci";
 import { IoMdClose, IoMdCloseCircle } from "react-icons/io";
 import { AiFillCloseCircle, AiFillCloseSquare } from "react-icons/ai";
 import { LiaWindowCloseSolid } from "react-icons/lia";
+
 function Announcement() {
   const username = localStorage.getItem("username");
   // const email = localStorage.getItem("email");
@@ -386,7 +387,7 @@ function Announcement() {
               survey
             </p>
             <p>
-              <span className="text-white">Poster:</span> Thumbnail with details
+              <span className="text-white">Poster:</span> Suitable Thumbnail <span className="text-xs"> (1280 × 720 px)</span>
             </p>
             <p>
               <span className="text-white">Recipients:</span>{" "}
@@ -420,128 +421,11 @@ function Announcement() {
           Create Campaign
         </button>
       </div>
-      //     <div
-      //    className={`
-      //         w-full
-      //         rounded-2xl
-      //         border border-emerald-500/20
-      //         bg-gradient-to-br from-emerald-500/5 to-transparent
-      //         p-4 md:p-5
-      //         space-y-5
-      //         ${showAnnouncement && 'hidden'}
-      //         pb-10
-      //       `}
-      // >
-      //   {/* Header */}
-      //   <div className="flex items-center gap-2">
-      //     <h2 className="text-sm md:text-base font-semibold text-white tracking-wide">
-      //       Announcement Guidelines
-      //     </h2>
-      //   </div>
-
-      //   {/* Purpose */}
-      //   <div className="space-y-2">
-      //     <h3 className="text-xs md:text-sm font-semibold text-emerald-400">
-      //       Purpose
-      //     </h3>
-      //     <ul className="space-y-2 text-xs md:text-sm text-gray-300 leading-relaxed">
-      //       <li className="flex gap-2">
-      //         <span>•</span>
-      //         <p>Campaign launches, events, hackathons, and community meetings</p>
-      //       </li>
-      //       <li className="flex gap-2">
-      //         <span>•</span>
-      //         <p>Domain-specific initiatives and tech activities</p>
-      //       </li>
-      //       <li className="flex gap-2">
-      //         <span>•</span>
-      //         <p>
-      //           Must follow <span className="text-gray-400">university code of conduct</span>
-      //         </p>
-      //       </li>
-      //     </ul>
-      //   </div>
-
-      //   {/* Access */}
-      //   <div className="space-y-2">
-      //     <h3 className="text-xs md:text-sm font-semibold text-emerald-400">
-      //       Access Control
-      //     </h3>
-      //     <p className="text-xs md:text-sm text-gray-300">
-      //       Only <span className="text-white font-medium">Admins</span> and{" "}
-      //       <span className="text-white font-medium">Coordinators</span> can create announcements.
-      //     </p>
-      //   </div>
-
-      //   {/* How to Create */}
-      //   <div className="space-y-3">
-      //     <h3 className="text-xs md:text-sm font-semibold text-emerald-400">
-      //       How to Create
-      //     </h3>
-
-      //     <div className="space-y-3 text-xs md:text-sm text-gray-300">
-      //       <div>
-      //         <p className="text-white font-medium">1. Title / Topic</p>
-      //         <p className="text-gray-400 text-xs">
-      //           Clear and concise heading (e.g., AI/ML Hackathon 2026)
-      //         </p>
-      //       </div>
-
-      //       <div>
-      //         <p className="text-white font-medium">2. Message</p>
-      //         <p className="text-gray-400 text-xs">
-      //           Describe what you are communicating with key details
-      //         </p>
-      //       </div>
-
-      //       <div>
-      //         <p className="text-white font-medium">3. Relevant Links</p>
-      //         <p className="text-gray-400 text-xs">
-      //           Add meeting, event, or survey links
-      //         </p>
-      //       </div>
-
-      //       <div>
-      //         <p className="text-white font-medium">4. Thumbnail Poster</p>
-      //         <p className="text-gray-400 text-xs">
-      //           Upload a poster with key information and highlights
-      //         </p>
-      //       </div>
-
-      //       <div>
-      //         <p className="text-white font-medium">5. Target Audience</p>
-      //         <ul className="mt-1 space-y-1 text-gray-400 text-xs">
-      //           <li>• Community → Specific domain users</li>
-      //           <li>• Coordinators → All coordinators</li>
-      //           <li>• All Users → Entire platform</li>
-      //         </ul>
-      //       </div>
-      //     </div>
-      //   </div>
-
-      //   {/* Best Practices */}
-      //   <div className="space-y-2">
-      //     <h3 className="text-xs md:text-sm font-semibold text-emerald-400">
-      //       Best Practices
-      //     </h3>
-      //     <ul className="space-y-2 text-xs md:text-sm text-gray-300">
-      //       <li className="flex gap-2">
-      //         <span>•</span>
-      //         <p>Keep content clear and actionable</p>
-      //       </li>
-      //       <li className="flex gap-2">
-      //         <span>•</span>
-      //         <p>Avoid unnecessary or repeated announcements</p>
-      //       </li>
-      //       <li className="flex gap-2">
-      //         <span>•</span>
-      //         <p>Ensure accuracy before publishing</p>
-      //       </li>
-      //     </ul>
-      //   </div>
-      // </div>
+ 
     );
   }
+
+
 
   // console.log("guidelinses", showGuidelines)
   return (
@@ -570,6 +454,8 @@ function Announcement() {
           </div>
         </div>
 
+
+
         {/* ================= MAIN GRID ================= */}
         <div className="w-full mx-auto px-3 md:py-2 md:px-6 md:pb-10 grid grid-cols-1 lg:grid-cols-[320px_1fr] md:gap-5">
           {/* ================= LEFT RAIL ================= */}
@@ -579,30 +465,7 @@ function Announcement() {
             className="lg:sticky lg:overflow-y-scroll lg:h-screen emerald-scrollbar top-7 self-start"
           >
             {role === "student" && <AnnouncementInfo />}
-            {/* OVERVIEW */}
-            {/* <div
-              className={`${role!=='student' ? "bg-[#111827] border border-slate-800 rounded-lg p-5" : "bg-[#111827] border border-slate-800 rounded-lg p-5"}`}
-            >
-              <h3 className="text-xs uppercase tracking-wide text-slate-400 mb-4">
-                Overview
-              </h3>
 
-              <div className="space-y-3 text-sm">
-                <div className="flex  justify-between">
-                  <span className="text-slate-400">Role</span>
-                  <span className="capitalize  font-medium">{role}</span>
-                </div>
-
-                <div className="flex md:text-sm text-xs justify-between">
-                  <span className="text-slate-400">Total Announcements</span>
-                  <span className="font-medium">
-                    {announcement?.length > 0
-                      ? announcement.length
-                      : "Empty"}{" "}
-                  </span>
-                </div>
-              </div>
-            </div> */}
 
             {role !== "student"  && (
               <AnnouncementGuidelines showAnnouncement={showAnnouncement} showGuidelines={showGuidelines} />
@@ -626,13 +489,7 @@ function Announcement() {
                 >
                   ← Back
                 </button>
-                        {/* <button
-                          onClick={() => setShowAnnouncement(!showAnnouncement)}
-                          className="md:px-3 px-3 py-1 bg-emerald-600/20 hover:bg-emerald-500/20
-                          rounded-md text-xs    text-emerald-400 transition"
-                        >
-                      Close
-                        </button> */}
+                
                       </div>
 
                       <form onSubmit={handleSubmit} className="space-y-5">
@@ -927,7 +784,7 @@ function Announcement() {
                   <span className="capitalize  font-medium">{role}</span>
                 </div>
 
-                <div className="flex md:text-sm text-xs justify-between">
+                <div className="flex text-sm justify-between">
                   <span className="text-slate-400">Inbox</span>
                   <span className="font-medium">
                     {announcement?.length > 0

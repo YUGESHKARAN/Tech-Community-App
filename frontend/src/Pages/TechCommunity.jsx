@@ -103,87 +103,7 @@ function TechCommunity() {
 
  
   return (
-    // <div className="min-h-screen bg-gray-900  text-white flex flex-col">
-    //   <NavBar />
 
-    //   <div className="flex-grow">
-    //     <h1 className="text-center text-3xl md:text-5xl font-extrabold mt-12 mb-8 bg-gradient-to-r from-pink-500 via-blue-400 to-yellow-400 bg-clip-text text-transparent drop-shadow-lg tracking-wide">
-    //       Tech. Communities
-    //     </h1>
-
-    //     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 px-4 md:px-6 pb-16">
-    //       {
-    //         loading? <CommunityCardSkeleton/>:
-          
-    //       communities.map((item, index) => (
-    //         <div
-    //           key={index}
-    //           className="relative group  border border-neutral-700/50 p-6 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 flex flex-col justify-between overflow-hidden"
-    //         >
-    //           {/* Glow hover effect */}
-    //           <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 via-purple-500/10 to-pink-600/10 opacity-0 group-hover:opacity-100 blur-2xl transition duration-700"/>
-
-    //           <Link to={`/techDomainDetails/${encodeURIComponent(item.categoryname)}`}>
-    //           <div className="relative z-10 p-5 bg-white/10 backdrop-blur-md rounded-2xl shadow-md hover:shadow-lg transition-all duration-300">
-    //             <h2 className="text-2xl md:text-3xl font-bold mb-4 bg-gradient-to-r from-green-400 via-blue-400 to-pink-400 bg-clip-text text-transparent drop-shadow-lg  tracking-tight">
-    //               {item.categoryname}
-    //             </h2>
-
-    //             <ul className="text-gray-200 space-y-2 text-sm md:text-base">
-    //               <li className="flex justify-between">
-    //                 <span className="font-semibold text-white">Authors:</span>
-    //                 <span>{item.authorcount}</span>
-    //               </li>
-    //               <li className="flex justify-between">
-    //                 <span className="font-semibold text-white">Posts:</span>
-    //                 <span>{item.postscount}</span>
-    //               </li>
-    //               <li className="flex justify-between">
-    //                 <span className="font-semibold text-white">Followers:</span>
-    //                 <span>{item.followerscount}</span>
-    //               </li>
-    //             </ul>
-    //           </div>
-    //           </Link>
-
-    //           {/* Buttons */}
-    //           <div className="relative z-10 mt-5 flex justify-end">
-    //             {role === "coordinator" || role === "admin" ? (
-    //               <button
-    //                 type="button"
-    //                 className={`${
-    //                   authorCommunity.includes(item.categoryname)
-    //                     ? "bg-gradient-to-r from-orange-500 to-yellow-400 text-black font-semibold md:px-5 md:py-2 text-xs md:text-base px-3 py-1.5 rounded-lg shadow-lg hover:opacity-90 transition-all duration-300"
-    //                     : "hidden"
-    //                 }`}
-    //               >
-    //                 {authorCommunity.includes(item.categoryname) &&
-    //                   "Coordinator"}
-    //               </button>
-    //             ) : (
-    //               <button
-    //                 onClick={() => updateCommunity(email, item.categoryname)}
-    //                 type="button"
-    //                 className={`font-semibold md:px-5 md:py-2 text-xs md:text-base px-3 py-1.5 rounded-lg shadow-md transition-all duration-300
-    //             ${
-    //               authorCommunity.includes(item.categoryname)
-    //                 ? "bg-emerald-600/20 text-emerald-400 "
-    //                 : "bg-white/80 text-gray-800 hover:from-gray-300 "
-    //             }`}
-    //               >
-    //                 {authorCommunity.includes(item.categoryname)
-    //                   ? "Joined"
-    //                   : "Join"}
-    //               </button>
-    //             )}
-    //           </div>
-    //         </div>
-    //       ))}
-    //     </div>
-    //   </div>
-
-    //   <Footer />
-    // </div>
 
       <div className="min-h-screen bg-gray-900 text-white flex flex-col">
       <NavBar />
@@ -191,7 +111,7 @@ function TechCommunity() {
       <div className="flex-grow px-4 pb-20">
  
         {/* ── Hero header ───────────────────────────────────────────── */}
-        <div className="pt-7 pb-12 text-center">
+        <div className="pt-7 pb-7 md:pb-12 text-center">
           {/* <p className="text-[10px] font-semibold tracking-[0.3em] text-emerald-400 uppercase mb-3">
             Explore · Learn · Contribute
           </p> */}
