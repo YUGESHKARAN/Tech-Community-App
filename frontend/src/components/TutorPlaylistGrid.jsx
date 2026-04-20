@@ -150,8 +150,8 @@ const TutorPlaylistGrid = () => {
           //   sm:overflow-visible
           // "
           className="
-     pb-4 gap-5 md:gap-6
-    md:grid grid-cols-1
+     pb-4 gap-6 md:gap-6
+    grid grid-cols-1
     md:grid-cols-2
     lg:grid-cols-3
     xl:grid-cols-4
@@ -207,7 +207,11 @@ const TutorPlaylistGrid = () => {
           No playlists available!
         </p>
       }
-      {  tutorPlayList.length===0 && loading && <TutorPlaylistGridSkeleton />}
+            {  tutorPlayList.length===0 && loading &&
+            <div className="px-auto px-3 md:px-0">
+          <TutorPlaylistGridSkeleton  />
+      </div>}
+      {/* {  tutorPlayList.length===0 && loading && <TutorPlaylistGridSkeleton  />} */}
     </>
   );
 };
