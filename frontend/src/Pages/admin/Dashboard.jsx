@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useMemo, useEffect } from "react";
 
 import {
   LayoutDashboard,
@@ -9,7 +9,6 @@ import {
   BarChart2,
   TrendingUp,
   Search,
- 
 } from "lucide-react";
 
 import NavBar from "../../ui/NavBar";
@@ -29,8 +28,8 @@ import ContributorsTableSkeleton from "../../components/loaders/dashboard/Contri
 import useGetStudents from "../../hooks/admins/useGetStudents";
 import StudentsTableSkeleton from "../../components/loaders/dashboard/StudentsTableSkeleton";
 import { getItem } from "../../utils/encode";
-
-
+import highlightText from "../../hooks/highlightText";
+import Fuse from "fuse.js";
 
 // ── Main Dashboard ─────────────────────────────────────────────────────────────
 function Dashboard() {
@@ -136,8 +135,6 @@ function Dashboard() {
               // onClick={() => scrollTo(controlRef, "control")}
             />
           </div>
-
-      
         </aside>
 
         {/* ── MAIN ─────────────────────────────────────────────────────────────── */}
@@ -154,7 +151,7 @@ function Dashboard() {
                   icon={Users}
                   change="8.2%"
                   changePositive={true}
-                /> 
+                />
                 <KPICard
                   label="Admins"
                   value={statsSummary.admins}
@@ -195,7 +192,7 @@ function Dashboard() {
             ) : (
               <KPISkeleton />
             )}
-          </section> 
+          </section>
 
           {/* ── ZONE 3: Analytics ──────────────────────────────────────── */}
           <section
@@ -389,39 +386,6 @@ function Dashboard() {
                 <CommunityMembershipSkeleton />
               )}
 
-              {/* User Growth */}
-              {/* <div className="bg-[#0f172a] border border-[#1e293b] rounded-xl p-4">
-                <p className="text-sm font-semibold text-gray-200 mb-1">
-                  User Growth
-                </p>
-                <p className="text-[10px] text-gray-500 mb-3">
-                  Monthly new registrations
-                </p>
-                <div className="flex items-end justify-between gap-1 mb-1">
-                  {MOCK_GROWTH.map((g) => (
-                    <div
-                      key={g.month}
-                      className="flex flex-col items-center gap-1 flex-1"
-                    >
-                      <span className="text-[9px] text-emerald-400 font-medium">
-                        {g.count}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-                <MiniLine data={MOCK_GROWTH} />
-                <div className="flex justify-between mt-1">
-                  {MOCK_GROWTH.map((g) => (
-                    <span
-                      key={g.month}
-                      className="text-[9px] text-gray-600 flex-1 text-center"
-                    >
-                      {g.month}
-                    </span>
-                  ))}
-                </div>
-              </div> */}
-
               {/* Top Contributors */}
               {!topContributorsLoading ? (
                 <div className="bg-[#0f172a] border border-[#1e293b] rounded-xl p-4">
@@ -443,6 +407,7 @@ function Dashboard() {
                           style={{
                             color:
                               i < 3 && ["#3ecc28", "#d4a52f", "#e0853f"][i],
+                              // i < 3 && ["#49b3ff", "#d4a52f", "#e0853f"][i],
                             // : "#8799b3",
                           }}
                         >
@@ -526,8 +491,6 @@ function Dashboard() {
 }
 
 export default Dashboard;
-
-
 
 // ── Mini bar chart ─────────────────────────────────────────────────────────────
 const MiniBar = ({ data, valueKey, labelKey, color = "#0004ff" }) => {
@@ -757,7 +720,9 @@ const KPICard = ({
         <p className="md:text-sm text-xs font-semibold md:font-bold text-gray-100">
           {label}
         </p>
-        <p className="text-[10px] text-gray-500 md:text-gray-400">{sub || label}</p>
+        <p className="text-[10px] text-gray-500 md:text-gray-400">
+          {sub || label}
+        </p>
       </div>
     </div>
     {/* Bottom — value + badge */}
@@ -765,17 +730,6 @@ const KPICard = ({
       <span className="md:text-lg text-xs bg-gray-700/60 font-medium text-white rounded-full md:px-4 md:py-1.5 px-2 py-1">
         {value && value}
       </span>
-      {/* {change && (
-        <span
-          className="flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full"
-          style={{
-            backgroundColor: changePositive ? "#10b98122" : "#ef444422",
-            color: changePositive ? "#10b981" : "#ef4444",
-          }}
-        >
-          {changePositive ? "↑" : "↓"} {change}
-        </span>
-      )} */}
     </div>
   </div>
 );
@@ -794,8 +748,6 @@ const NavItem = ({ icon: Icon, label, active, showSideBar, onClick }) => (
     {showSideBar && <span>{label}</span>}
   </button>
 );
-
-
 
 const avatarColor = (name) => {
   const colors = [
@@ -867,11 +819,34 @@ const AuthorsTable = ({
 }) => {
   // const { contributors, totalContributors, loading:contributorsLoading, error, hasMore }  = useGetContributors(email);
   const [search, setSearch] = useState("");
-  const filtered = contributors.filter(
-    (u) =>
-      u.name.toLowerCase().includes(search.toLowerCase()) ||
-      u.email.toLowerCase().includes(search.toLowerCase()),
-  );
+  const [debouncedSearch, setDebouncedSearch] = useState(search);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 300); // 300ms delay
+
+    return () => clearTimeout(timer);
+  }, [search]);
+
+  const fuse = useMemo(() => {
+    return new Fuse(contributors, {
+      keys: ["name", "email"],
+      threshold: 0.3, // lower = stricter search
+    });
+  }, [contributors]);
+
+  const filtered = useMemo(() => {
+    let filter = contributors.filter(
+      (u) =>
+        u.name.toLowerCase().includes(search.toLowerCase()) ||
+        u.email.toLowerCase().includes(search.toLowerCase()),
+    );
+    if (debouncedSearch.trim() !== "") {
+      filter = fuse.search(debouncedSearch).map((r) => r.item);
+    }
+    return filter;
+  }, [contributors, search, debouncedSearch]);
 
   return (
     <div className="bg-[#0f172a] border border-[#1e293b] rounded-2xl md:w-full  flex flex-col md:overflow-x-hidden overflow-x-scroll md:flex-1">
@@ -938,10 +913,12 @@ const AuthorsTable = ({
                         )}
                         <div className="min-w-0">
                           <p className="text-xs font-semibold text-gray-100 truncate">
-                            {u.name}
+                            {/* {u.name} */}
+                            {highlightText(u.name, debouncedSearch)}
                           </p>
                           <p className="text-[10px] text-gray-500 truncate">
-                            {u.email}
+                            {/* {u.email} */}
+                            {highlightText(u.email, debouncedSearch)}
                           </p>
                         </div>
                       </div>
@@ -1054,11 +1031,35 @@ const StudentsTable = ({
   hasMore,
 }) => {
   const [search, setSearch] = useState("");
-  const filtered = students.filter(
-    (u) =>
-      u.name.toLowerCase().includes(search.toLowerCase()) ||
-      u.email.toLowerCase().includes(search.toLowerCase()),
-  );
+  const [debouncedSearch, setDebouncedSearch] = useState(search);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 300); // 300ms delay
+
+    return () => clearTimeout(timer);
+  }, [search]);
+
+  const fuse = useMemo(() => {
+    return new Fuse(students, {
+      keys: ["name", "email"],
+      threshold: 0.3, // lower = stricter search
+    });
+  }, [students]);
+
+  const filtered = useMemo(() => {
+    let filter = students.filter(
+      (u) =>
+        u.name.toLowerCase().includes(search.toLowerCase()) ||
+        u.email.toLowerCase().includes(search.toLowerCase()),
+    );
+
+    if (debouncedSearch.trim() !== "") {
+      filter = fuse.search(debouncedSearch).map((r) => r.item);
+    }
+    return filter;
+  }, [students, debouncedSearch, search]);
 
   return (
     <div className="bg-[#0f172a] border mt-4 md:mt-0 border-[#1e293b] rounded-2xl flex flex-col  overflow-hidden md:w-[600px]">
@@ -1066,7 +1067,6 @@ const StudentsTable = ({
         title="Total Students"
         count={totalStudents}
         search={search}
-        
         onSearch={setSearch}
       />
       <div className="overflow-hidden flex pb-4  flex-col">
@@ -1113,10 +1113,12 @@ const StudentsTable = ({
                         )}
                         <div className="min-w-0">
                           <p className="text-xs font-semibold text-gray-100 truncate">
-                            {u.name}
+                            {/* {u.name} */}
+                            {highlightText(u.name, debouncedSearch)}
                           </p>
                           <p className="text-[10px] text-gray-500 truncate">
-                            {u.email}
+                            {/* {u.email} */}
+                            {highlightText(u.email, debouncedSearch)}
                           </p>
                         </div>
                       </div>

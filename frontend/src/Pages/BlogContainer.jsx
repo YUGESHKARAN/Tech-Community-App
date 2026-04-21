@@ -292,27 +292,7 @@ function BlogContainer({ activeTab, setActiveTab }) {
     return filtered;
   }, [posts, searchTerm, postCategory, debouncedSearch]);
 
-  // console.log("filteredposts", filteredPosts)
-  // console.log("posts", bookMarkId);
-  // console.log("tutorPlayList", tutorPlayList);
 
-  // const highlightText = (text, query) => {
-  //   if (!query) return text;
-
-  //   const regex = new RegExp(`(${query})`, "gi");
-  //   const parts = text.split(regex);
-
-  //   return parts.map((part, i) =>
-  //     part.toLowerCase() === query.toLowerCase() ? (
-  //       <mark key={i} className="bg-yellow-400 text-black">
-  //         {part}
-  //       </mark>
-  //     ) : (
-  //       part
-  //     )
-  //   );
-  // };
-// console.log("posts", posts)
   return (
     <div className="min-h-screen relative  ">
       <div className="flex-col w-full md:gap-5 relative flex-wrap justify-center h-auto mx-auto">
@@ -320,18 +300,12 @@ function BlogContainer({ activeTab, setActiveTab }) {
         {activeTab === "playlists" && (
           <section className="space-y-4 md:px-0 px-auto  mx-auto w-full md:w-full ">
             <div className=" md:px-4 shadow-inner">
-              {/* {  loading ? <TutorPlaylistGridSkeleton /> : <TutorPlaylistGrid />} */}
-              {/* {tutorPlayList.length === 0 && playlistLoading ? (
-                <TutorPlaylistGridSkeleton />
-              ) : (
-                <TutorPlaylistGrid />
-              )} */}
+         
                <TutorPlaylistGrid />
             </div>
           </section>
         )}
-        {/* Tutor Playlist section ends here */}
-
+        
         {activeTab === "posts" && (
           <>
          

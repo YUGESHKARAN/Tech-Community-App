@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { MdDeleteForever, MdManageAccounts } from "react-icons/md";
 import Footer from "../../ui/Footer";
 import { IoSearch } from "react-icons/io5";
@@ -14,6 +14,8 @@ import AdminCardLoader from "../../components/loaders/controls/AdminCardLoader";
 import CoordinatorLoader from "../../components/loaders/controls/CoordinatorLoader";
 import StudentLoader from "../../components/loaders/controls/StudentLoader";
 import { getItem } from "../../utils/encode";
+import highlightText from "../../hooks/highlightText";
+import Fuse from "fuse.js";
 // import Footer from "../../ui/Footer";
 function Control() {
   const [authors, setAuthors] = useState([]);
@@ -61,13 +63,28 @@ function Control() {
   } = useGetAdmins(email);
 
 
+const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchQuery);
+    }, 300); // 300ms delay
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+   const fuse = useMemo(() => {
+    return new Fuse([...admins, ...coordinators, ...students], {
+      keys: ["name", "email"],
+      threshold: 0.3, // lower = stricter search
+    });
+  }, [[...admins, ...coordinators, ...students]]);
   // Filter admins, coordinators, and students based on search and role
   useEffect(() => {
     const applyFilters = (data) => {
       let filtered = data;
 
-      if (searchQuery.trim() !== "") {
-        const query = searchQuery.toLowerCase();
+      if (debouncedSearch.trim() !== "") {
+        const query = debouncedSearch.toLowerCase();
         filtered = filtered.filter(
           (item) =>
             item.name?.toLowerCase().includes(query) ||
@@ -87,7 +104,7 @@ function Control() {
     setFilteredAdmins(applyFilters(admins));
     setFilteredCoordinators(applyFilters(coordinators));
     setFilteredStudents(applyFilters(students));
-  }, [searchQuery, roleFilter, admins, coordinators, students]);
+  }, [searchQuery, roleFilter, admins, coordinators, debouncedSearch,  students]);
 
   const handleRoleChange = (id, newRole) => {
     setUpdatedRoles((prev) => ({ ...prev, [id]: newRole }));
@@ -372,9 +389,11 @@ function Control() {
                     />
                   )}
                   <span className="text-base  flex-1 font-semibold text-gray-200 truncate">
-                    {author.name}
+                    {/* {author.name} */}
+                       {highlightText(author.name, debouncedSearch)}
                     <p className="text-gray-500 text-xs md:text-xs mb-2">
-                      {author.email}
+                      {/* {author.email} */}
+                       {highlightText(author.email, debouncedSearch)}
                     </p>
                   </span>
                 </Link>
@@ -554,9 +573,11 @@ function Control() {
                     />
                   )}
                   <span className="text-base  flex-1 font-semibold text-gray-200 truncate">
-                    {author.name}
+                    {/* {author.name} */}
+                     {highlightText(author.name, debouncedSearch)}
                     <p className="text-gray-500 text-xs md:text-xs mb-2">
-                      {author.email}
+                      {/* {author.email} */}
+                        {highlightText(author.email, debouncedSearch)}
                     </p>
                   </span>
                 </Link>
@@ -737,9 +758,11 @@ function Control() {
                     />
                   )}
                   <span className="text-base  flex-1 font-semibold text-gray-200 truncate">
-                    {author.name}
+                    {/* {author.name} */}
+                    {highlightText(author.name, debouncedSearch)}
                     <p className="text-gray-500 text-xs md:text-xs mb-2">
-                      {author.email}
+                      {/* {author.email} */}
+                       {highlightText(author.email, debouncedSearch)}
                     </p>
                   </span>
                 </Link>

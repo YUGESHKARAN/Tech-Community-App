@@ -462,7 +462,7 @@ function Announcement() {
 
           <aside
             // className={`${!showAnnouncement?'md:sticky top-7 self-start':' md:sticky top-7 self-start'}`}
-            className="lg:sticky lg:overflow-y-scroll lg:h-screen emerald-scrollbar top-7 self-start"
+            className="lg:sticky lg:overflow-y-scroll lg:h-screen scrollbar-hide top-7 self-start"
           >
             {role === "student" && <AnnouncementInfo />}
 
