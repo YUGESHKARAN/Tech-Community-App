@@ -270,112 +270,281 @@ const s3 = new S3Client({
 // };
 
 // reviewed----------------------------------------------------
+// const getRecommendedPosts = async (req, res) => {
+//   try {
+//     const { email } = req.params;
+//     const page = parseInt(req.query.page) || 1;
+//     const limit = Math.min(parseInt(req.query.limit) || 20, 50);
+
+//     const feedCacheKey = `postHomeFeed:${email}:full`;
+//     let allPosts = [];
+
+//     // 1. CHECK FULL FEED CACHE
+//     const cachedFeed = await redisClient.get(feedCacheKey);
+
+//     if (cachedFeed) {
+//       console.log("posts Serving FULL FEED from Redis");
+//       allPosts = JSON.parse(cachedFeed);
+//     } else {
+//       console.log("post Cache MISS → Generating feed from DB");
+
+//       // Get current user's following list and communities
+//       const currentAuthor = await Author.findOne({ email: { $eq: email } })
+//         .select("following community");
+
+//       const followedEmails = currentAuthor?.following || [];
+//       const authorCommunities = currentAuthor?.community || [];
+
+//       // ── NEW: query Post collection directly instead of Author.find({}) ──
+
+//       // Get authorIds for followed authors and community-matched authors
+//       const priorityAuthors = await Author.find({
+//         $or: [
+//           { email: { $in: followedEmails } },
+//           { community: { $in: authorCommunities } },
+//         ],
+//       }).select("_id");
+
+//       const priorityAuthorIds = priorityAuthors.map((a) => a._id);
+
+//       // Fetch priority posts (from followed/community authors)
+//       const priorityPostDocs = await Post.find({
+//         authorId: { $in: priorityAuthorIds },
+//       })
+//         .populate("authorId", "authorname email profile role community")
+//         .lean();
+
+//       // Fetch all other posts
+//       const otherPostDocs = await Post.find({
+//         authorId: { $nin: priorityAuthorIds },
+//       })
+//         .populate("authorId", "authorname email profile role community")
+//         .lean();
+
+//       // Shape posts to match original response format exactly
+//       const shapePosts = (docs) =>
+//         docs.map((post) => ({
+//           ...post,
+//           authorName: post.authorId?.authorname || "",
+//           authorEmail: post.authorId?.email || "",
+//           profile: post.authorId?.profile || "",
+//           role: post.authorId?.role || "",
+//           community: post.authorId?.community || [],
+//           // remove the nested authorId object — keep shape flat like before
+//           authorId: post.authorId?._id,
+//         }));
+
+//       // Shuffle helper
+//       const shuffle = (arr) => {
+//         const a = arr.slice();
+//         for (let i = a.length - 1; i > 0; i--) {
+//           const j = Math.floor(Math.random() * (i + 1));
+//           [a[i], a[j]] = [a[j], a[i]];
+//         }
+//         return a;
+//       };
+
+//       const priorityPosts = shuffle(shapePosts(priorityPostDocs));
+//       const otherPosts    = shuffle(shapePosts(otherPostDocs));
+
+//       allPosts = [...priorityPosts, ...otherPosts];
+
+//       // Cache FULL FEED (5 mins)
+//       await redisClient.setEx(feedCacheKey, 300, JSON.stringify(allPosts));
+//     }
+
+//     // 2. PAGINATION
+//     const startIndex = (page - 1) * limit;
+//     const endIndex   = page * limit;
+//     const paginatedPosts = allPosts.slice(startIndex, endIndex);
+
+//     // 3. RESPONSE — shape identical to before
+//     console.log("Feed served (cached or sliced)");
+//     res.status(200).json({
+//       message: "Recommended posts",
+//       page,
+//       limit,
+//       totalPosts: allPosts.length,
+//       totalPages: Math.ceil(allPosts.length / limit),
+//       hasMore: endIndex < allPosts.length,
+//       posts: paginatedPosts,
+//     });
+//   } catch (err) {
+//     console.error("Error in getRecommendedPosts:", err);
+//     res.status(500).json({ message: "Server error", error: err.message });
+//   }
+// };
+
+const FEED_PRIORITY_LIMIT = 200;
+const FEED_OTHER_LIMIT    = 300;
+const FEED_TTL            = 300;
+const FRESH_TTL           = 60;
+const FRESH_POST_COUNT    = 10;
+
+const scorePost = (post) => {
+  const ageHours = (Date.now() - new Date(post.timestamp).getTime()) / 36e5;
+  const recency  = Math.max(0, 1 - ageHours / 168);
+  return (
+    recency * 10 +
+    (post.likeCount    || 0) * 0.4 +
+    (post.viewCount    || 0) * 0.1 +
+    (post.commentCount || 0) * 0.5
+  );
+};
+
 const getRecommendedPosts = async (req, res) => {
   try {
     const { email } = req.params;
-    const page = parseInt(req.query.page) || 1;
+    const page  = parseInt(req.query.page) || 1;
     const limit = Math.min(parseInt(req.query.limit) || 20, 50);
 
-    const feedCacheKey = `postHomeFeed:${email}:full`;
-    let allPosts = [];
+    const feedCacheKey  = `postHomeFeed:${email}:ids`;
+    const freshCacheKey = `postHomeFeed:fresh:ids`;
 
-    // 1. CHECK FULL FEED CACHE
-    const cachedFeed = await redisClient.get(feedCacheKey);
+    // ── 1. FRESH POSTS — shared 60s cache across all users ───
+    let freshIds = [];
+    const cachedFresh = await redisClient.get(freshCacheKey);
 
-    if (cachedFeed) {
-      console.log("posts Serving FULL FEED from Redis");
-      allPosts = JSON.parse(cachedFeed);
+    if (cachedFresh) {
+      freshIds = JSON.parse(cachedFresh);
     } else {
-      console.log("post Cache MISS → Generating feed from DB");
+      const freshDocs = await Post.find({})
+        .select("_id")
+        .sort({ timestamp: -1 })
+        .limit(50)
+        .lean();
 
-      // Get current user's following list and communities
+      freshIds = freshDocs.map(p => p._id.toString());
+      await redisClient.setEx(freshCacheKey, FRESH_TTL, JSON.stringify(freshIds));
+    }
+
+    // ── 2. PERSONALISED FEED IDs ──────────────────────────────
+    let feedIds = [];
+    const cachedIds = await redisClient.get(feedCacheKey);
+
+    if (cachedIds) {
+      feedIds = JSON.parse(cachedIds);
+    } else {
       const currentAuthor = await Author.findOne({ email: { $eq: email } })
         .select("following community");
 
-      const followedEmails = currentAuthor?.following || [];
-      const authorCommunities = currentAuthor?.community || [];
+      const followedEmails    = currentAuthor?.following    || [];
+      const authorCommunities = currentAuthor?.community    || [];
 
-      // ── NEW: query Post collection directly instead of Author.find({}) ──
-
-      // Get authorIds for followed authors and community-matched authors
       const priorityAuthors = await Author.find({
         $or: [
-          { email: { $in: followedEmails } },
+          { email:     { $in: followedEmails    } },
           { community: { $in: authorCommunities } },
         ],
-      }).select("_id");
+      }).select("_id").lean();
 
-      const priorityAuthorIds = priorityAuthors.map((a) => a._id);
+      // fix: cast to ObjectId instances — aggregate $match requires this
+      const priorityAuthorIds  = priorityAuthors.map(a => new mongoose.Types.ObjectId(a._id));
+      const priorityAuthorIdSet = new Set(priorityAuthorIds.map(id => id.toString()));
 
-      // Fetch priority posts (from followed/community authors)
-      const priorityPostDocs = await Post.find({
-        authorId: { $in: priorityAuthorIds },
-      })
-        .populate("authorId", "authorname email profile role community")
-        .lean();
+      // fix: Post.aggregate() called directly — Post.find().aggregate() doesn't exist
+      const [priorityDocs, recentPostDocs] = await Promise.all([
+        Post.aggregate([
+          { $match: { authorId: { $in: priorityAuthorIds } } },
+          { $sort:  { timestamp: -1 } },
+          { $limit: FEED_PRIORITY_LIMIT },
+          { $project: {
+            _id:          1,
+            timestamp:    1,
+            likeCount:    { $size: { $ifNull: ["$likes",    []] } },
+            viewCount:    { $size: { $ifNull: ["$views",    []] } },
+            commentCount: { $size: { $ifNull: ["$messages", []] } },
+          }},
+        ]),
 
-      // Fetch all other posts
-      const otherPostDocs = await Post.find({
-        authorId: { $nin: priorityAuthorIds },
-      })
-        .populate("authorId", "authorname email profile role community")
-        .lean();
+        Post.aggregate([
+          { $sort:  { timestamp: -1 } },
+          { $limit: FEED_OTHER_LIMIT * 2 },
+          { $project: {
+            _id:          1,
+            authorId:     1,
+            timestamp:    1,
+            likeCount:    { $size: { $ifNull: ["$likes",    []] } },
+            viewCount:    { $size: { $ifNull: ["$views",    []] } },
+            commentCount: { $size: { $ifNull: ["$messages", []] } },
+          }},
+        ]),
+      ]);
 
-      // Shape posts to match original response format exactly
-      const shapePosts = (docs) =>
-        docs.map((post) => ({
-          ...post,
-          authorName: post.authorId?.authorname || "",
-          authorEmail: post.authorId?.email || "",
-          profile: post.authorId?.profile || "",
-          role: post.authorId?.role || "",
-          community: post.authorId?.community || [],
-          // remove the nested authorId object — keep shape flat like before
-          authorId: post.authorId?._id,
-        }));
+      // filter non-priority in JS — no $nin needed
+      const otherDocs = recentPostDocs
+        .filter(p => !priorityAuthorIdSet.has(p.authorId?.toString()))
+        .slice(0, FEED_OTHER_LIMIT);
 
-      // Shuffle helper
-      const shuffle = (arr) => {
-        const a = arr.slice();
-        for (let i = a.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [a[i], a[j]] = [a[j], a[i]];
-        }
-        return a;
-      };
+      const scoreAndSort = (docs) =>
+        docs
+          .map(p => ({ id: p._id.toString(), score: scorePost(p) }))
+          .sort((a, b) => b.score - a.score)
+          .map(p => p.id);
 
-      const priorityPosts = shuffle(shapePosts(priorityPostDocs));
-      const otherPosts    = shuffle(shapePosts(otherPostDocs));
+      const rankedPriorityIds = scoreAndSort(priorityDocs);
+      const rankedOtherIds    = scoreAndSort(otherDocs);
 
-      allPosts = [...priorityPosts, ...otherPosts];
+      // dedup before caching
+      const seen = new Set();
+      feedIds = [...rankedPriorityIds, ...rankedOtherIds]
+        .filter(id => {
+          if (seen.has(id)) return false;
+          seen.add(id);
+          return true;
+        });
 
-      // Cache FULL FEED (5 mins)
-      await redisClient.setEx(feedCacheKey, 300, JSON.stringify(allPosts));
+      await redisClient.setEx(feedCacheKey, FEED_TTL, JSON.stringify(feedIds));
     }
 
-    // 2. PAGINATION
-    const startIndex = (page - 1) * limit;
-    const endIndex   = page * limit;
-    const paginatedPosts = allPosts.slice(startIndex, endIndex);
+    // ── 3. MERGE FRESH + FEED — page 1 only ──────────────────
+    const feedIdSet   = new Set(feedIds);
+    const newFreshIds = freshIds.filter(id => !feedIdSet.has(id));
 
-    // 3. RESPONSE — shape identical to before
-    console.log("Feed served (cached or sliced)");
+    const mergedIds = page === 1
+      ? [...newFreshIds.slice(0, FRESH_POST_COUNT), ...feedIds]
+      : feedIds;
+
+    // ── 4. PAGINATE ON IDs THEN HYDRATE ──────────────────────
+    const startIndex = (page - 1) * limit;
+    const endIndex   = startIndex + limit;
+    const pageIds    = mergedIds.slice(startIndex, endIndex);
+
+    const pagePosts = pageIds.length > 0
+      ? await Post.find({ _id: { $in: pageIds } })
+          .populate("authorId", "authorname email profile role community")
+          .lean()
+      : [];
+
+    // restore $in order
+    const postMap      = new Map(pagePosts.map(p => [p._id.toString(), p]));
+    const orderedPosts = pageIds
+      .map(id => postMap.get(id))
+      .filter(Boolean)
+      .map(post => ({
+        ...post,
+        authorName:  post.authorId?.authorname || "",
+        authorEmail: post.authorId?.email      || "",
+        profile:     post.authorId?.profile    || "",
+        role:        post.authorId?.role       || "",
+        community:   post.authorId?.community  || [],
+        authorId:    post.authorId?._id,
+      }));
+
     res.status(200).json({
-      message: "Recommended posts",
+      message:    "Recommended posts",
       page,
       limit,
-      totalPosts: allPosts.length,
-      totalPages: Math.ceil(allPosts.length / limit),
-      hasMore: endIndex < allPosts.length,
-      posts: paginatedPosts,
+      totalPosts: mergedIds.length,
+      totalPages: Math.ceil(mergedIds.length / limit),
+      hasMore:    endIndex < mergedIds.length,
+      posts:      orderedPosts,
     });
   } catch (err) {
     console.error("Error in getRecommendedPosts:", err);
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
-
-
 // old-------------------------------------------------------
 // const getSingleAuthorPosts = async (req, res) => {
 //   try {

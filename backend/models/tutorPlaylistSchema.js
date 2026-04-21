@@ -52,7 +52,9 @@ const tutorPlaylist = new mongoose.Schema({
     default:[]
   }
 })
-
+tutorPlaylist.index({ email: 1 });
+tutorPlaylist.index({ domain: 1 });
+tutorPlaylist.index({ email: 1, domain: 1 });
 const TutorPlayList = mongoose.model('TutorPlayList', tutorPlaylist);
 
 module.exports = TutorPlayList;

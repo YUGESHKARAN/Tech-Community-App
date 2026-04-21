@@ -605,6 +605,7 @@ const postSchema = new mongoose.Schema({
     },
   },
   messages:  { type: [messageSchema], default: [] },
+  
   timestamp: { type: Date, default: Date.now },
 });
 
@@ -613,6 +614,7 @@ postSchema.index({ authorId: 1 });
 postSchema.index({ category: 1 });
 postSchema.index({ authorId: 1, category: 1 });
 postSchema.index({ timestamp: -1 });
+postSchema.index({ authorId: 1, timestamp: -1 }); 
 
 // ── Author Schema ─────────────────────────────────────────────
 const authorSchema = new mongoose.Schema({
