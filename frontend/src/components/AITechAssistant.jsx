@@ -230,7 +230,7 @@ export default function AITechAssistant({ currentPostId, category, viewComments,
 
         <button
           onClick={() => setOpen(!open)}
-          className=" bottom-4 flex md:hidden items-center gap-2 right-4 bg-gray-800/50 transition-all duration-300 active:scale-95 md:border border-neutral-800 md:border-neutral-700 text-emerald-400 text-sm md:px-5 px-3 py-1 rounded-full md:hidden z-50 shadow-xl"
+          className=" bottom-4 flex md:hidden items-center gap-2 right-4 bg-gray-800/50 transition-all duration-300 active:scale-95 md:border border-neutral-800 md:border-neutral-700 text-emerald-400 text-xs md:px-5 px-3 py-1 rounded-full md:hidden z-50 shadow-xl"
         >
          Ask AI <SiGooglegemini />
         </button>
