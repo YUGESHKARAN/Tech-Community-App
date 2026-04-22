@@ -1173,11 +1173,11 @@ function NavIconDesktop({ to, icon, label }) {
       to={to}
       className={`
         relative flex items-center gap-1 px-3 py-1.5 rounded-xl
-        text-xs font-medium transition-all duration-200
+        text-xs font-medium transition-all duration-300 group
         ${
           isActive
             ? "text-emerald-400"
-            : "text-white/70 hover:text-white "
+            : "text-white/70 group hover:text-white "
         }
       `}
     >

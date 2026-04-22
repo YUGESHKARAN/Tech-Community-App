@@ -376,7 +376,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
                 >
                   {!author.profile ? (
                     <div
-                      className="w-9 h-9 w-6 h-6 rounded-full flex items-center justify-center text-[9px] md:text-xs font-bold text-white shrink-0"
+                      className="md:w-9 md:h-9 w-6 h-6 rounded-full flex items-center justify-center text-[9px] md:text-xs font-bold text-white shrink-0"
                       style={{ backgroundColor: avatarColor(author.name) }}
                     >
                       {initials(author.name)}

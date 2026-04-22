@@ -246,7 +246,7 @@ function ViewTutorPlaylist() {
 
               {/* Playlist Info */}
               <div className="space-y-2 p-1">
-                <h1 className="text-xl tracking-wide max-w-sm md:hidden font-semibold">
+                <h1 className="text-xl  max-w-sm md:hidden font-semibold">
                   {playlistData.title}
                 </h1>
                 <div className="flex relative justify-between items-center ">

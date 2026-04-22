@@ -101,8 +101,27 @@ useEffect(() => {
 
       <h1 className=" text-2xl w-full px-4 flex items-center gap-2 mt-3 md:mt-4 mx-auto md:text-3xl font-semibold text-white tracking-wide">
         <BsPersonWorkspace />
-        <span className="group text-white"> My Tutor Playlist</span>{" "}
+        <span className="group text-white tracking-tight"> My Tutor Playlist</span>{" "}
       </h1>
+
+             {/* ================= SEARCH ================= */}
+           { tutorPlayListByEmail.length > 0 &&  
+                 <div className="flex mx-3 md:mx-0 justify-center mb-2 mt-4 md:my-4 md:mb-0 ">
+                   <div className="w-full mx-auto md:max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-2xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
+                     <IoSearchOutline className="text-xl text-gray-400" />
+                     <input
+                       type="text"
+                       placeholder="Search playlists, topics, or domains"
+                       value={searchTerm}
+                       // onChange={handleSearch}
+                       onChange={(e) => {
+                         setSearchTerm(e.target.value);
+                       }}
+                       className="bg-transparent w-full focus:outline-none text-sm text-white placeholder-gray-400"
+                     />
+                   </div>
+                 </div>}
+      
 
     
            {loading && !tutorPlayListByEmail.length > 0 && <PillLoader />}
@@ -145,24 +164,7 @@ useEffect(() => {
         </div>
       )}
 
-       {/* ================= SEARCH ================= */}
-           { tutorPlayListByEmail.length > 0 &&  
-                 <div className="flex mx-3 md:mx-0 justify-center mb-4 mt-2 md:my-4">
-                   <div className="w-full mx-auto md:max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-2xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
-                     <IoSearchOutline className="text-xl text-gray-400" />
-                     <input
-                       type="text"
-                       placeholder="Search playlists, topics, or domains"
-                       value={searchTerm}
-                       // onChange={handleSearch}
-                       onChange={(e) => {
-                         setSearchTerm(e.target.value);
-                       }}
-                       className="bg-transparent w-full focus:outline-none text-sm text-white placeholder-gray-400"
-                     />
-                   </div>
-                 </div>}
-      
+
       <div className="min-h-screen w-full px-3 md:px-4 md:mt-4 mx-auto bg-gray-900 pb-8">
         {filteredPlaylist.length > 0 && (
           <div

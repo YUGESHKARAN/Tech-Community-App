@@ -281,11 +281,27 @@ function YourPost() {
     <div className="w-full min-h-screen bg-gray-900 h-auto reltive  ">
       <NavBar />
 
-          <h1 className=" text-2xl mt-3 md:mt-4 px-2  md:w-full flex items-center gap-2 mx-auto md:text-3xl font-bold text-white tracking-wide">
+          <h1 className=" text-2xl mt-3 md:mt-4 px-2  md:w-full flex items-center gap-2 mx-auto md:text-3xl font-semibold text-white tracking-wide">
           <BsPersonWorkspace />
-          <span className="group text-white"> My Posts</span>{" "}
+          <span className="group text-white tracking-tight"> My Posts</span>{" "}
         </h1>
-
+        
+    {/* ================= SEARCH ================= */}
+           {posts.length > 0 &&  <div className="flex mx-3 md:mx-0 justify-center mt-4 mb-2 md:mt-0 md:mb-0 ">
+              <div className="w-full mx-auto max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-2xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
+                <IoSearchOutline className="text-xl text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search posts, topics, or categories"
+                  value={searchTerm}
+                  // onChange={handleSearch}
+                  onChange={(e) => {
+                    setSearchTerm(e.target.value);
+                  }}
+                  className="bg-transparent w-full focus:outline-none text-sm text-white placeholder-gray-400"
+                />
+              </div>
+            </div>}
         {posts.length > 0 && (
               <div
                 className={`w-full sticky top-0 z-40
@@ -327,22 +343,7 @@ function YourPost() {
 
             {loader && !posts.length > 0 && <PillLoader />}
 
-               {/* ================= SEARCH ================= */}
-            <div className="flex mx-3 md:mx-0 justify-center mb-4 mt-2 md:my-4 ">
-              <div className="w-full mx-auto max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-2xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
-                <IoSearchOutline className="text-xl text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search posts, topics, or categories"
-                  value={searchTerm}
-                  // onChange={handleSearch}
-                  onChange={(e) => {
-                    setSearchTerm(e.target.value);
-                  }}
-                  className="bg-transparent w-full focus:outline-none text-sm text-white placeholder-gray-400"
-                />
-              </div>
-            </div>
+           
       <div className="min-h-screen  pt-2 pb-8">
         <div className=" w-full   h-auto mx-auto">
 

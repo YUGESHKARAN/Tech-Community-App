@@ -317,6 +317,25 @@ const filteredPosts = useMemo(() => {
           </div>
         </div>
 
+
+        
+               {/* ================= SEARCH ================= */}
+            <div className="flex mx-3 md:mx-0 justify-center mb-2 mt-4 md:mt-6 md:mb-0 ">
+              <div className="w-full mx-auto max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-2xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
+                <IoSearchOutline className="text-xl text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search posts, topics, or categories"
+                  value={searchTerm}
+                  // onChange={handleSearch}
+                  onChange={(e) => {
+                    setSearchTerm(e.target.value);
+                  }}
+                  className="bg-transparent w-full focus:outline-none text-sm text-white placeholder-gray-400"
+                />
+              </div>
+            </div>
+
        {posts.length > 0 && (
               <div
                 className={`w-full mt-2 md:mt-0 sticky top-0 z-40
@@ -358,22 +377,6 @@ const filteredPosts = useMemo(() => {
 
             {loader && !posts.length > 0 && <PillLoader />}
 
-               {/* ================= SEARCH ================= */}
-            <div className="flex mx-3 md:mx-0 justify-center mb-4 mt-2 md:my-4 ">
-              <div className="w-full mx-auto max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-2xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
-                <IoSearchOutline className="text-xl text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search posts, topics, or categories"
-                  value={searchTerm}
-                  // onChange={handleSearch}
-                  onChange={(e) => {
-                    setSearchTerm(e.target.value);
-                  }}
-                  className="bg-transparent w-full focus:outline-none text-sm text-white placeholder-gray-400"
-                />
-              </div>
-            </div>
 
         <div className="flex relative  w-full md:mx-2 flex-wrap justify-center h-auto mx-auto">
 

@@ -232,7 +232,7 @@ export default function AITechAssistant({ currentPostId, category, viewComments,
           onClick={() => setOpen(!open)}
           className=" bottom-4 flex md:hidden items-center gap-2 right-4 bg-gray-800/50 transition-all duration-300 active:scale-95 md:border border-neutral-800 md:border-neutral-700 text-emerald-400 text-sm md:px-5 px-3 py-1 rounded-full md:hidden z-50 shadow-xl"
         >
-         AI <SiGooglegemini />
+         Ask AI <SiGooglegemini />
         </button>
 
 
@@ -539,7 +539,7 @@ export default function AITechAssistant({ currentPostId, category, viewComments,
         </div>
 
         {/* Input */}
-        <div className="p-3 md:border-t border-neutral-800 rounded-b-xl flex gap-2 bg-[#0a0f1d] md:bg-gray-950/50">
+        <div className="p-3 pb-0 md:border-t border-neutral-800 rounded-b-xl flex gap-2 bg-[#0a0f1d] md:bg-gray-950/50">
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -571,8 +571,8 @@ export default function AITechAssistant({ currentPostId, category, viewComments,
           </button>
         </div>
         {/* <ul className="text-center text-gray-300 h-10 ">
-           <li className="text-[8px] h-3"> AI can make mistakes, so double-check it</li>
-           <li className="text-[6px] h-3">Made with <span className="text-gray-400 text-[5px]">Llama-4-Scout-17B & Pinecone</span></li>
+           <li className="text-[8px] md:text-[10px] md:h-4 h-3"> AI can make mistakes, so double check it</li>
+           <li className="text-[6px]  md:text-[8px] h-3">Made with <span className="text-gray-400 text-[5px] md:text-[7px]">Llama-4-Scout-17B & Pinecone</span></li>
           </ul> */}
           
       </div>
