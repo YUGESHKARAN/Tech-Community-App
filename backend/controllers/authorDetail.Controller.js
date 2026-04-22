@@ -620,6 +620,7 @@ const deleteAuthor = async (req, res) => {
 // };
 
 // reviewd-------------------------------------------------------------------
+
 const deleteAuthorByAdmin = async (req, res) => {
   try {
     const { authorEmail } = req.params;

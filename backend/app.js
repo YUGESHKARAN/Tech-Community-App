@@ -33,11 +33,11 @@ app.use(bodyParser.json());
 const loginRouter = require("./routes/login.Route");
 const authorRouter = require("./routes/authorDetail.Route");
 const postRouter = require("./routes/postDetail.Route");
-const tutorPlaylist = require("./routes/tutorPlayList.Route")
+const tutorPlaylist = require("./routes/tutorPlayList.Route");
 
-// Analytics route
+// Admin route
 const appAnalysisRouter = require("./routes/appAnalysis.Route");
-
+const adminRouter = require("./routes/admin.Route")
 
 app.use("/blog/login", loginRouter);
 app.use("/blog/author", authorRouter);
@@ -45,6 +45,8 @@ app.use("/blog/posts", postRouter);
 app.use("/blog/playlist",tutorPlaylist);
 
 app.use("/blog/analytics", appAnalysisRouter);
+app.use("/blog/admin", adminRouter);
+
 // Trust proxy (for rate limiter IP detection)
 app.set("trust proxy", 1);
 

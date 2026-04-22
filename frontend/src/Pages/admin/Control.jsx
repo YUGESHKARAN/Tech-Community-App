@@ -148,7 +148,8 @@ function Control() {
 
     try {
       const response = await axiosInstance.delete(
-        `/blog/author/deleteByAdmin/${email}`,
+        // `/blog/author/deleteByAdmin/${email}`,
+        `/blog/admin/adminDelete/${email}`,
         { data: { email: authorEmail, password } },
       );
 
