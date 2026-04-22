@@ -138,7 +138,7 @@ function Dashboard() {
         </aside>
 
         {/* ── MAIN ─────────────────────────────────────────────────────────────── */}
-        <main className="flex-1  px-3 md:px-6 py-6 space-y-4 md:space-y-10 scrollbar-hide">
+        <main className="flex-1  px-3 md:px-6 py-6 space-y-6 md:space-y-10 scrollbar-hide">
           {/* ── ZONE 2: KPI Cards ──────────────────────────────────────── */}
           <section className="space-y-3">
             {/* Row 1 — Users */}
