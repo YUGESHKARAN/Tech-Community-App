@@ -165,7 +165,8 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
 
     try {
       const response = await axiosInstance.delete(
-        `/blog/author/deleteByAdmin/${email}`,
+        // `/blog/author/deleteByAdmin/${email}`,
+        `/blog/admin/adminDelete/${email}`,
         { data: { email: authorEmail, password } },
       );
 
@@ -175,13 +176,14 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
         setPassword("");
       }
     } catch (err) {
-      toast.error(`${response.data.message}`);
+      // toast.error(`${response.data.message}`);
+       toast.error(`unable to delete the author`);
       console.log(err);
     } finally {
       setLoading(false);
       setShowConfirm(false);
       setPassword("");
-      toast.error(`unable to delete the author`);
+     
     }
   };
 
