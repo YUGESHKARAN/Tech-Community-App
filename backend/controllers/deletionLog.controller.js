@@ -33,14 +33,15 @@ const s3 = new S3Client({
 //  HELPER — build a full snapshot of an author + their posts
 // ─────────────────────────────────────────────────────────────
 const buildSnapshot = async (author) => {
-  const posts = await Post.find({ authorId: author._id }).lean();
-  const authorObj = author.toObject ? author.toObject() : author;
+  const posts     = await Post.find({ authorId: author._id }).lean();
+  const authorObj = author.toObject ? author.toObject() : { ...author };
 
+  // fix: explicitly preserve _id — toObject() includes it but
+  // spreading a Mongoose doc without toObject() can lose it
   return {
     author: {
       ...authorObj,
-      // strip live ObjectId from _id — snapshot stores it but it
-      // is no longer a primary key in this collection
+      _id: author._id,  // explicit — never rely on spread for _id
     },
     posts,
   };
@@ -386,23 +387,32 @@ const rollbackDeletion = async (req, res) => {
       });
     }
 
-    // collision check removed — registration and login now block
-    // re-use of a deleted email, so by the time we reach here
-    // the email is guaranteed to be free
-
     const { author: authorSnap, posts: postsSnap } = log.snapshot;
 
-    await Author.collection.insertOne({
-      ...authorSnap._doc,
-      otp:          undefined,
-      otpExpiresAt: undefined,
-    });
+    // fix: build clean insert doc with original _id explicitly set
+    const rawAuthor = authorSnap.toObject ? authorSnap.toObject() : { ...authorSnap };
+    const authorToInsert = { ...rawAuthor, _id: authorSnap._id };
+    delete authorToInsert.otp;
+    delete authorToInsert.otpExpiresAt;
+
+    await Author.collection.insertOne(authorToInsert);
 
     if (postsSnap.length > 0) {
-      await Post.insertMany(postsSnap, { ordered: false });
-      const postIds = postsSnap.map(p => p._id);
+      const postDocs = postsSnap.map(p => {
+        const raw = p.toObject ? p.toObject() : { ...p };
+        return {
+          ...raw,
+          _id:      p._id,            // preserve original post ObjectId
+          authorId: authorSnap._id,   // re-link to restored author _id
+        };
+      });
+
+      await Post.insertMany(postDocs, { ordered: false });
+
+      const postIds = postDocs.map(p => p._id);
+      // match by _id — more reliable than email
       await Author.updateOne(
-        { email: authorSnap.email },
+        { _id: authorSnap._id },
         { $set: { posts: postIds } }
       );
     }

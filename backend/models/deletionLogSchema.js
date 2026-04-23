@@ -34,35 +34,27 @@ const snapshotPostSchema = new mongoose.Schema({
 }, { _id: false });
 
 const snapshotAuthorSchema = new mongoose.Schema({
-  // identity
+  _id:          { type: mongoose.Schema.Types.ObjectId }, // fix: was missing — caused id mismatch on restore
   authorname:   { type: String },
-  email:        { type: String },  // indexed on parent — used for collision check
-  password:     { type: String },  // bcrypt hash — required for restore
+  email:        { type: String },
+  password:     { type: String },
   role:         { type: String },
-  profile:      { type: String },  // S3 key
-
-  // social
+  profile:      { type: String },
   followers:    [String],
   following:    [String],
   community:    [String],
-
-  // content refs (ObjectIds — may become stale if not restored)
   posts:        [mongoose.Schema.Types.ObjectId],
   postBookmark: [mongoose.Schema.Types.ObjectId],
-
-  // sub-documents
   personalLinks: [{
     _id:   mongoose.Schema.Types.ObjectId,
     title: String,
     url:   String,
   }],
-  notification:  [mongoose.Schema.Types.Mixed],   // preserve as-is
-  announcement:  [mongoose.Schema.Types.Mixed],   // preserve as-is
-
-  // auth
-  otp:          { type: String  },
-  otpExpiresAt: { type: Date    },
-}, { _id: false });
+  notification:  [mongoose.Schema.Types.Mixed],
+  announcement:  [mongoose.Schema.Types.Mixed],
+  otp:          { type: String },
+  otpExpiresAt: { type: Date   },
+});  // fix: removed { _id: false } — was stripping the author's original _id
 
 // ── Main deletion log schema ──────────────────────────────────
 const deletionLogSchema = new mongoose.Schema({

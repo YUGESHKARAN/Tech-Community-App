@@ -59,8 +59,7 @@ function ProfilePage() {
     setLoading(true);
 
     try {
-      // const response = await axiosInstance.delete(`/blog/author/${email}`, 
-      const response = await axiosInstance.delete(`/blog/admin/delete/${email}`, 
+      const response = await axiosInstance.delete(`/blog/author/${email}`, 
       {
         data: { password },
       });
