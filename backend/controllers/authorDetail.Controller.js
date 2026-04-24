@@ -48,37 +48,6 @@ const { DeletionLog } = require("../models/deletionLogSchema");
 const sendRegistrationOTP = async (req, res) => {
   const { authorname, email, password } = req.body;
   // console.log("email", email);
-
-  if (!email.endsWith("@dsuniversity.ac.in")) {
-    return res.status(400).json({ message: "Use University Email" });
-  }
-  if (!authorname || !password) {
-    return res.status(400).json({ message: "All fields are required" });
-  }
-
-  try {
-    const authorExist = await Author.findOne({ email: { $eq: email } });
-    if (authorExist) {
-      return res.status(400).json({ message: "Author already exists" });
-    }
-
-    const otp = Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit OTP
-    await saveOTP(email, otp);
-    await sendOTPEmail(email, otp);
-
-    res.status(200).json({ message: "OTP sent to your university email" });
-  } catch (err) {
-    res.status(500).json({ message: "Failed to send OTP", error: err.message });
-    console.log("registration error", err.message);
-  }
-};
-
-// ─── Step 2: Verify OTP & create account ─────────────────────────────────────
-
-// reviewed----------------------------------------------
-const addAuthor = async (req, res) => {
-  const { authorname, password, email, otp } = req.body;
-
   const user = await Author.findOne({ email: { $eq: email } }).select(
     "password authorname email role profile",
   );
@@ -115,6 +84,38 @@ const addAuthor = async (req, res) => {
 
     return res.status(400).json({ message: "Invalid Email" });
   }
+  
+  if (!email.endsWith("@dsuniversity.ac.in")) {
+    return res.status(400).json({ message: "Use University Email" });
+  }
+  if (!authorname || !password) {
+    return res.status(400).json({ message: "All fields are required" });
+  }
+
+  try {
+    const authorExist = await Author.findOne({ email: { $eq: email } });
+    if (authorExist) {
+      return res.status(400).json({ message: "Author already exists" });
+    }
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit OTP
+    await saveOTP(email, otp);
+    await sendOTPEmail(email, otp);
+
+    res.status(200).json({ message: "OTP sent to your university email" });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to send OTP", error: err.message });
+    console.log("registration error", err.message);
+  }
+};
+
+// ─── Step 2: Verify OTP & create account ─────────────────────────────────────
+
+// reviewed----------------------------------------------
+const addAuthor = async (req, res) => {
+  const { authorname, password, email, otp } = req.body;
+
+
   if (!email.endsWith("@dsuniversity.ac.in")) {
     return res.status(400).json({ message: "Use University Email" });
   }
