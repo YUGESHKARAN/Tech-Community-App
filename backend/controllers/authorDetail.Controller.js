@@ -1,4 +1,4 @@
-const {Author, Post} = require("../models/blogAuthorSchema");
+const { Author, Post } = require("../models/blogAuthorSchema");
 const mongoose = require("mongoose");
 // s3 integration
 const {
@@ -39,7 +39,6 @@ const s3 = new S3Client({
 
 // ----------------------------------------------------------------------
 
-
 const { sendOTPEmail } = require("../utils/emailService");
 const { saveOTP, verifyOTP } = require("../utils/otpStore");
 const { DeletionLog } = require("../models/deletionLogSchema");
@@ -79,42 +78,46 @@ const sendRegistrationOTP = async (req, res) => {
 // reviewed----------------------------------------------
 const addAuthor = async (req, res) => {
   const { authorname, password, email, otp } = req.body;
-  
 
+  const user = await Author.findOne({ email: { $eq: email } }).select(
+    "password authorname email role profile",
+  );
+
+  if (!user) {
+    // fix: check deletion log before returning generic "Invalid Email"
+    const deletionRecord = await DeletionLog.findOne({
+      "snapshot.author.email": { $eq: email },
+      status: "deleted",
+    })
+      .select("_id deletionType")
+      .lean();
+
+    console.log("deletionRecord:", deletionRecord);
+
+    if (deletionRecord) {
+      let message =
+        "This account has already been deleted. Contact admin to restore your account";
+
+      if (deletionRecord.deletionType === "admin_action") {
+        message =
+          "This account has been already deleted by admin. Contact admin to restore your account.";
+      } else {
+        message =
+          "This account has already been self deleted. Contact admin to restore your account.";
+      }
+
+      return res.status(403).json({
+        message: message,
+        canRestore: true,
+        deletionType: deletionRecord.deletionType,
+      });
+    }
+
+    return res.status(400).json({ message: "Invalid Email" });
+  }
   if (!email.endsWith("@dsuniversity.ac.in")) {
     return res.status(400).json({ message: "Use University Email" });
   }
-
-  
-      if (!user) {
-        // fix: check deletion log before returning generic "Invalid Email"
-        const deletionRecord = await DeletionLog.findOne({
-          'snapshot.author.email': { $eq: email },
-          status: 'deleted',
-        }).select('_id deletionType').lean();
-  
-        console.log("deletionRecord:", deletionRecord);
-      
-        
-        if (deletionRecord) {
-         let message = "This account has already been deleted. Contact admin to restore your account";
-         
-          if(deletionRecord.deletionType === "admin_action"){
-            message = "This account has been already deleted by admin. Contact admin to restore your account."
-          }
-          else{
-            message = "This account has already been self deleted. Contact admin to restore your account."
-          }
-  
-        return res.status(403).json({
-            message: message,
-            canRestore: true,
-            deletionType: deletionRecord.deletionType,
-          });
-        }
-  
-        return res.status(400).json({ message: "Invalid Email" });
-      }
 
   const { valid, reason } = await verifyOTP(email, otp);
   if (!valid) {
@@ -195,9 +198,8 @@ const getProfile = async (req, res) => {
     const skip = (page - 1) * limit;
 
     // posts is now [ObjectId] refs — .length still gives correct count, no populate needed
-    const authorsProfile = await Author
-      .find({})
-      .select('-password -otp -otpExpiresAt')
+    const authorsProfile = await Author.find({})
+      .select("-password -otp -otpExpiresAt")
       .skip(skip)
       .limit(limit)
       .lean();
@@ -278,10 +280,9 @@ const getSingleAuthor = async (req, res) => {
   try {
     const { email } = req.params;
 
-    const author = await Author
-      .findOne({ email: { $eq: email } })
-      .select('-password -otp -otpExpiresAt')
-      .populate('posts');          // returns full post documents, not raw IDs
+    const author = await Author.findOne({ email: { $eq: email } })
+      .select("-password -otp -otpExpiresAt")
+      .populate("posts"); // returns full post documents, not raw IDs
 
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
@@ -290,7 +291,9 @@ const getSingleAuthor = async (req, res) => {
     res.status(200).json(author);
   } catch (err) {
     console.error("Error fetching author:", err);
-    res.status(500).json({ message: "Error fetching author", error: err.message });
+    res
+      .status(500)
+      .json({ message: "Error fetching author", error: err.message });
   }
 };
 
@@ -479,13 +482,13 @@ const updateAuthor = async (req, res) => {
         const parsed = typeof links === "string" ? JSON.parse(links) : links;
         if (Array.isArray(parsed)) {
           let incomingLinks = parsed.map((link) => ({
-            _id:   link.id ? link.id : new mongoose.Types.ObjectId(),
+            _id: link.id ? link.id : new mongoose.Types.ObjectId(),
             title: (link.title || "").trim(),
-            url:   (link.url   || "").trim(),
+            url: (link.url || "").trim(),
           }));
           incomingLinks.forEach((newLink) => {
             const existingIndex = parsedLinks.findIndex(
-              (existing) => existing._id.toString() === newLink._id.toString()
+              (existing) => existing._id.toString() === newLink._id.toString(),
             );
             if (existingIndex !== -1) {
               parsedLinks[existingIndex] = newLink;
@@ -501,24 +504,28 @@ const updateAuthor = async (req, res) => {
     }
 
     author.authorname = authorname;
-    author.email      = email;
+    author.email = email;
 
     if (profile) {
       // upload new profile to S3
-      await s3.send(new PutObjectCommand({
-        Bucket:      bucketName,
-        Key:         profile,
-        Body:        req.file.buffer,
-        ContentType: req.file.mimetype,
-      }));
+      await s3.send(
+        new PutObjectCommand({
+          Bucket: bucketName,
+          Key: profile,
+          Body: req.file.buffer,
+          ContentType: req.file.mimetype,
+        }),
+      );
 
       // delete old profile from S3 if one existed
       if (author.profile) {
         try {
-          await s3.send(new DeleteObjectCommand({
-            Bucket: bucketName,
-            Key:    author.profile,
-          }));
+          await s3.send(
+            new DeleteObjectCommand({
+              Bucket: bucketName,
+              Key: author.profile,
+            }),
+          );
         } catch (s3Err) {
           console.error("Failed to delete old profile from S3:", s3Err.message);
         }
@@ -541,7 +548,9 @@ const updateAuthor = async (req, res) => {
     const saved = await author.save();
     const { password, otp, otpExpiresAt, ...safeData } = saved.toObject();
 
-    res.status(201).json({ message: "author updated successfully", data: safeData });
+    res
+      .status(201)
+      .json({ message: "author updated successfully", data: safeData });
   } catch (err) {
     console.log("error", err.message);
     res.status(500).json({ message: "server error", error: err.message });
@@ -560,7 +569,7 @@ const removePersonalLinks = async (req, res) => {
         .json({ message: "Author email and link Id are required" });
     }
 
-    const author = await Author.findOne({ email: {$eq: authorEmail} });
+    const author = await Author.findOne({ email: { $eq: authorEmail } });
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
     }
@@ -583,7 +592,6 @@ const removePersonalLinks = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
-
 
 // Old
 // const deleteAuthor = async (req, res) => {
@@ -649,8 +657,10 @@ const deleteAuthor = async (req, res) => {
   const { password } = req.body;
 
   try {
-    if (!email)    return res.status(400).json({ message: "Author email required" });
-    if (!password) return res.status(400).json({ message: "Password required" });
+    if (!email)
+      return res.status(400).json({ message: "Author email required" });
+    if (!password)
+      return res.status(400).json({ message: "Password required" });
 
     const author = await Author.findOne({ email: { $eq: email } });
     if (!author) return res.status(404).json({ message: "Author not found" });
@@ -661,7 +671,9 @@ const deleteAuthor = async (req, res) => {
     // Remove profile from S3 if present
     if (author.profile) {
       try {
-        await s3.send(new DeleteObjectCommand({ Bucket: bucketName, Key: author.profile }));
+        await s3.send(
+          new DeleteObjectCommand({ Bucket: bucketName, Key: author.profile }),
+        );
       } catch (s3Err) {
         console.error("Failed to delete profile from S3:", s3Err);
       }
@@ -676,10 +688,14 @@ const deleteAuthor = async (req, res) => {
     const { password: _, otp, otpExpiresAt, ...safeAuthor } = author.toObject();
 
     console.log("author deleted", author.email);
-    return res.status(200).json({ message: "Author deleted successfully", author: safeAuthor });
+    return res
+      .status(200)
+      .json({ message: "Author deleted successfully", author: safeAuthor });
   } catch (err) {
     console.error("Error deleting author:", err);
-    return res.status(500).json({ message: "Server error", error: err.message });
+    return res
+      .status(500)
+      .json({ message: "Server error", error: err.message });
   }
 };
 
@@ -753,19 +769,25 @@ const deleteAuthorByAdmin = async (req, res) => {
     const { authorEmail } = req.params;
     const { email, password } = req.body;
 
-    if (!authorEmail) return res.status(400).json({ message: "Admin email required" });
-    if (!email)       return res.status(400).json({ message: "Author email required" });
-    if (!password)    return res.status(400).json({ message: "Password required" });
+    if (!authorEmail)
+      return res.status(400).json({ message: "Admin email required" });
+    if (!email)
+      return res.status(400).json({ message: "Author email required" });
+    if (!password)
+      return res.status(400).json({ message: "Password required" });
 
     const admin = await Author.findOne({ email: { $eq: authorEmail } });
     if (!admin) return res.status(404).json({ message: "Admin not found" });
 
     if (admin.role !== "admin") {
-      return res.status(403).json({ message: "You are not allowed to perform this action" });
+      return res
+        .status(403)
+        .json({ message: "You are not allowed to perform this action" });
     }
 
     const isMatch = await admin.comparePassword(password);
-    if (!isMatch) return res.status(401).json({ message: "Invalid admin password" });
+    if (!isMatch)
+      return res.status(401).json({ message: "Invalid admin password" });
 
     const author = await Author.findOneAndDelete({ email: { $eq: email } });
     if (!author) return res.status(404).json({ message: "Author not found" });
@@ -776,7 +798,9 @@ const deleteAuthorByAdmin = async (req, res) => {
     // fix: S3 now wrapped in try/catch — author is already deleted, don't crash on S3 failure
     if (author.profile) {
       try {
-        await s3.send(new DeleteObjectCommand({ Bucket: bucketName, Key: author.profile }));
+        await s3.send(
+          new DeleteObjectCommand({ Bucket: bucketName, Key: author.profile }),
+        );
       } catch (s3Err) {
         console.error("Failed to delete author profile from S3:", s3Err);
       }
@@ -786,13 +810,16 @@ const deleteAuthorByAdmin = async (req, res) => {
     const { password: _, otp, otpExpiresAt, ...safeAuthor } = author.toObject();
 
     console.log("Author deleted successfully:", author.email);
-    return res.status(200).json({ message: "Author deleted successfully", author: safeAuthor });
+    return res
+      .status(200)
+      .json({ message: "Author deleted successfully", author: safeAuthor });
   } catch (err) {
     console.error("Error deleting author:", err);
-    return res.status(500).json({ message: "Internal server error", error: err.message });
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: err.message });
   }
 };
-
 
 // reviewd-------------------------------------------------------------------
 const updateFollowers = async (req, res) => {
@@ -860,7 +887,6 @@ const updateFollowers = async (req, res) => {
       .json({ message: "Server error", error: err.message });
   }
 };
-
 
 // reviewd-------------------------------------------------------------------
 const sendOtp = async (req, res) => {
@@ -938,7 +964,9 @@ const resetPassword = async (req, res) => {
 
     res.status(200).json({ message: "Password reset successfully" });
   } catch (error) {
-    res.status(500).json({ message: "Error resetting password",  error: error.message  });
+    res
+      .status(500)
+      .json({ message: "Error resetting password", error: error.message });
   }
 };
 
@@ -953,7 +981,10 @@ const notificationAuthor = async (req, res) => {
 
     // console.log("message queues called!")
 
-    res.json({ notifications: author.notification, announcements: author.announcement });
+    res.json({
+      notifications: author.notification,
+      announcements: author.announcement,
+    });
   } catch (err) {
     console.error("Error fetching notifications:", err);
     res.status(500).json({ message: "Server error" });
