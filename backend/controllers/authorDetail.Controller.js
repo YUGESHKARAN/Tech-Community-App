@@ -42,6 +42,7 @@ const s3 = new S3Client({
 
 const { sendOTPEmail } = require("../utils/emailService");
 const { saveOTP, verifyOTP } = require("../utils/otpStore");
+const { DeletionLog } = require("../models/deletionLogSchema");
 
 // ─── Step 1: Validate form data & send OTP ───────────────────────────────────
 // reviewed----------------------------------------------
@@ -78,10 +79,42 @@ const sendRegistrationOTP = async (req, res) => {
 // reviewed----------------------------------------------
 const addAuthor = async (req, res) => {
   const { authorname, password, email, otp } = req.body;
+  
 
   if (!email.endsWith("@dsuniversity.ac.in")) {
     return res.status(400).json({ message: "Use University Email" });
   }
+
+  
+      if (!user) {
+        // fix: check deletion log before returning generic "Invalid Email"
+        const deletionRecord = await DeletionLog.findOne({
+          'snapshot.author.email': { $eq: email },
+          status: 'deleted',
+        }).select('_id deletionType').lean();
+  
+        console.log("deletionRecord:", deletionRecord);
+      
+        
+        if (deletionRecord) {
+         let message = "This account has already been deleted. Contact admin to restore your account";
+         
+          if(deletionRecord.deletionType === "admin_action"){
+            message = "This account has been already deleted by admin. Contact admin to restore your account."
+          }
+          else{
+            message = "This account has already been self deleted. Contact admin to restore your account."
+          }
+  
+        return res.status(403).json({
+            message: message,
+            canRestore: true,
+            deletionType: deletionRecord.deletionType,
+          });
+        }
+  
+        return res.status(400).json({ message: "Invalid Email" });
+      }
 
   const { valid, reason } = await verifyOTP(email, otp);
   if (!valid) {

@@ -30,6 +30,7 @@ import StudentsTableSkeleton from "../../components/loaders/dashboard/StudentsTa
 import { getItem } from "../../utils/encode";
 import highlightText from "../../hooks/highlightText";
 import Fuse from "fuse.js";
+import LogMonitoringPage from "./LogMonitoringPage";
 
 // ── Main Dashboard ─────────────────────────────────────────────────────────────
 function Dashboard() {
@@ -199,9 +200,14 @@ function Dashboard() {
             // ref={analyticsRef}
             className="space-y-4"
           >
-            <h2 className="md:text-2xl text-xl font-semibold text-emerald-400 ">
-              Analytics
-            </h2>
+            <div>
+              <h2 className="md:text-2xl text-xl font-semibold text-emerald-400 ">
+                Analytics
+              </h2>
+              <p className="text-xs text-gray-400">
+                Content and users trends
+              </p>
+            </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               <div className="md:hidden">
@@ -407,7 +413,7 @@ function Dashboard() {
                           style={{
                             color:
                               i < 3 && ["#3ecc28", "#d4a52f", "#e0853f"][i],
-                              // i < 3 && ["#49b3ff", "#d4a52f", "#e0853f"][i],
+                            // i < 3 && ["#49b3ff", "#d4a52f", "#e0853f"][i],
                             // : "#8799b3",
                           }}
                         >
@@ -449,9 +455,15 @@ function Dashboard() {
 
           {/* ── ZONE 4: Users Tables ──────────────────────────────────── */}
           <section className="space-y-4">
-            <h2 className="md:text-2xl text-xl font-semibold text-emerald-400">
+            <div>
+                  <h2 className="md:text-2xl text-xl font-semibold text-emerald-400">
               Users
             </h2>
+              <p className="text-xs text-gray-400">
+           Contributors and users records
+          </p>
+            </div>
+            
             <div className="md:flex overflow-hidden gap-4 items-start">
               <div>
                 {!contributorsLoading && contributors.length > 0 ? (
@@ -480,6 +492,8 @@ function Dashboard() {
               </div>
             </div>
           </section>
+
+          <LogMonitoringPage />
 
           {/* bottom padding */}
           <div className="h-10" />
@@ -784,7 +798,7 @@ const RoleBadge = ({ role }) => {
 const TableHeader = ({ title, count, search, onSearch }) => (
   <div className="flex items-center justify-between px-5 py-4 shrink-0">
     <div className="flex items-center gap-2.5">
-      <h3 className="text-sm font-bold text-white">{title}</h3>
+      <h3 className="text-sm md:text-base font-semibold text-gray-200">{title}</h3>
       <span className="text-[10px] bg-white/5 border border-white/10 text-gray-400 px-2 py-0.5 rounded-full">
         {count}
       </span>

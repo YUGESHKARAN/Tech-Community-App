@@ -105,10 +105,10 @@ const deleteAuthor = async (req, res) => {
     await Author.deleteOne({ email: author.email });
 
     // 4. S3 profile cleanup (non-blocking)
-    if (author.profile) {
-      s3.send(new DeleteObjectCommand({ Bucket: bucketName, Key: author.profile }))
-        .catch(err => console.error("S3 profile delete error:", err.message));
-    }
+    // if (author.profile) {
+    //   s3.send(new DeleteObjectCommand({ Bucket: bucketName, Key: author.profile }))
+    //     .catch(err => console.error("S3 profile delete error:", err.message));
+    // }
 
     const { password: _, otp, otpExpiresAt, ...safeAuthor } = author.toObject();
 
@@ -163,10 +163,10 @@ const deleteAuthorByAdmin = async (req, res) => {
     await Author.deleteOne({ email: author.email });
 
     // 4. S3 profile cleanup
-    if (author.profile) {
-      s3.send(new DeleteObjectCommand({ Bucket: bucketName, Key: author.profile }))
-        .catch(err => console.error("S3 profile delete error:", err.message));
-    }
+    // if (author.profile) {
+    //   s3.send(new DeleteObjectCommand({ Bucket: bucketName, Key: author.profile }))
+    //     .catch(err => console.error("S3 profile delete error:", err.message));
+    // }
 
     const { password: _, otp, otpExpiresAt, ...safeAuthor } = author.toObject();
 
@@ -198,13 +198,13 @@ const getDeletionLogs = async (req, res) => {
     }
 
     const [logs, total] = await Promise.all([
-      DeletionLog.find({ status })
+      DeletionLog.find({})
         .select('-snapshot.author.password -snapshot.author.otp -snapshot.author.otpExpiresAt')
         .sort({ deletedAt: -1 })
         .skip(skip)
         .limit(limit)
         .lean(),
-      DeletionLog.countDocuments({ status }),
+      DeletionLog.countDocuments({}),
     ]);
 
     // shape for admin view — summary only, not full snapshot
@@ -434,6 +434,40 @@ const rollbackDeletion = async (req, res) => {
   }
 };
 
+
+const deleteDeletionLog = async (req, res) => {
+  try {
+    const { adminEmail, logId } = req.params;
+    console.log("deleteDeletionLog called with:", { adminEmail, logId });
+
+    const admin = await Author.findOne({ email: { $eq: adminEmail } }).select('role');
+    if (!admin || admin.role !== 'admin') {
+      return res.status(403).json({ message: "Access denied" });
+    }
+
+    const log = await DeletionLog.findById(logId);
+    if (!log) return res.status(404).json({ message: "Deletion log not found" });
+
+    // safety guard — prevent deleting a log that can still be restored
+    if (log.status === 'deleted') {
+      return res.status(400).json({
+        message: "Cannot permanently delete an active deletion log."
+      });
+    }
+
+    await DeletionLog.deleteOne({ _id: logId });
+
+    return res.status(200).json({
+      message: "Deletion log permanently removed",
+      logId,
+      deletedStatus: log.status,  // tells caller whether it was 'restored' or 'expired'
+    });
+  } catch (err) {
+    console.error("deleteDeletionLog error:", err);
+    return res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
 // ─────────────────────────────────────────────────────────────
 //  USER — find their own deletion log by email
 //  (used when a user wants to self-restore after deleting account)
@@ -508,4 +542,5 @@ module.exports = {
   getMyDeletionLog,
   rollbackDeletion,
   expireDeletionLog,
+  deleteDeletionLog
 };

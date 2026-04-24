@@ -173,6 +173,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
       if (response.status == 200) {
         toast.success(`${response.data.message}`);
         // getAuthors();
+        await reloadRoleLists();
         setPassword("");
       }
     } catch (err) {
@@ -524,7 +525,12 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
           )}
         </div>
       ) : (
-        <AdminCardLoader roleFilter={roleFilter} />
+        adminLoading? <AdminCardLoader roleFilter={roleFilter} />
+        :
+         <p className=" text-center text-[10px] md:text-xs col-span-full py-4 text-gray-500">
+              No Admins found
+            </p>
+        
       )}
 
       {/* -------------------------------------------------Coordinators----------------------------------------------------- */}
@@ -708,7 +714,11 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
           )}
         </div>
       ) : (
-        <CoordinatorLoader roleFilter={roleFilter} />
+       coordinatorsLoading? <CoordinatorLoader roleFilter={roleFilter} />
+       :
+        <p className=" text-center text-[10px] md:text-xs col-span-full py-4 text-gray-500">
+              No Contributors found
+            </p>
       )}
 
       {/*------------------------------------------------------------- Students----------------------------------------------------------- */}
@@ -836,7 +846,9 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
           )}
         </div>
       ) : (
-        <StudentLoader roleFilter={roleFilter} />
+        studentLoading ? <StudentLoader roleFilter={roleFilter} />:  <p className=" text-center text-[10px] md:text-xs col-span-full py-4 text-gray-500">
+              No Users found
+            </p>
       )}
 
       {showConfirm && (

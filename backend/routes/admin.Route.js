@@ -9,24 +9,27 @@ const {
   getMyDeletionLog,
   rollbackDeletion,
   expireDeletionLog,
+  deleteDeletionLog
 } = require("../controllers/deletionLog.controller");
 
 const {limiter, readLimiter} = require("../middleware/rateLimitter");
 const authenticateToken = require('../middleware/authMiddleware');
+const { default: rateLimit } = require("express-rate-limit");
 
 // admin routes
-router.get("/deletionLogs/:adminEmail", getDeletionLogs);
-router.get("/deletionLogs/:adminEmail/:logId", getDeletionLogById);
-router.post("/deletionLogs/:adminEmail/:logId/expire", expireDeletionLog);
+router.get("/deletionLogs/:adminEmail", readLimiter, authenticateToken, getDeletionLogs);
+router.get("/deletionLogs/:adminEmail/:logId", readLimiter, authenticateToken,  getDeletionLogById);
+router.post("/deletionLogs/:adminEmail/:logId/expire", limiter, authenticateToken, expireDeletionLog);
 
 // restore route — admin or self
-router.post("/rollback/:logId", rollbackDeletion);
+router.post("/rollback/:logId", limiter, authenticateToken, rollbackDeletion);
 
-// user self-service
-router.get("/myDeletionLog/:email", getMyDeletionLog);
+// user self-service (not in use)
+router.get("/myDeletionLog/:email",  readLimiter, authenticateToken, getMyDeletionLog);
 
 // replace existing delete routes
-router.delete("/delete/:email", deleteAuthor);
-router.delete("/adminDelete/:authorEmail", deleteAuthorByAdmin);
+router.delete("/delete/:email", limiter, authenticateToken, deleteAuthor);
+router.delete("/adminDelete/:authorEmail", limiter, authenticateToken, deleteAuthorByAdmin);
+router.delete('/deletionLogs/:adminEmail/:logId', limiter, authenticateToken, deleteDeletionLog);
 
 module.exports = router;
