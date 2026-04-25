@@ -27,7 +27,7 @@ const useGetDeletionLog = (email) => {
       const response = await axiosInstance.get(`/blog/admin/deletionLogs/${email}?page=${currentPage}&limit=${limit}`);
       const data = response.data;
 
-      console.log("gethook data", data)
+      // console.log("gethook data", data)
 
       const total = Number(data.total ?? 0);
       const responseCount = (data.data ?? []).length;

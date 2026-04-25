@@ -107,7 +107,7 @@ useEffect(() => {
              {/* ================= SEARCH ================= */}
            { tutorPlayListByEmail.length > 0 &&  
                  <div className="flex mx-3 md:mx-0 justify-center mb-2 mt-4 md:my-4 md:mb-0 ">
-                   <div className="w-full mx-auto md:max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-2xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
+                   <div className="w-full mx-auto md:max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
                      <IoSearchOutline className="text-xl text-gray-400" />
                      <input
                        type="text"

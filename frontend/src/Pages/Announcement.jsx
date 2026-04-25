@@ -249,7 +249,7 @@ function Announcement() {
         p-4 md:p-5
         space-y-5
         ${className}
-        md:my-4
+      
         mb-4
       `}
       >

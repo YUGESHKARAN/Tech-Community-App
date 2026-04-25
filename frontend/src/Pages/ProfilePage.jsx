@@ -175,7 +175,7 @@ function ProfilePage() {
       console.log("error", err);
     }
   };
-console.log("author", author)
+// console.log("author", author)
   // console.log("profile links", profileLinks)
   return (
 //     <div className="min-h-screen relative bg-gray-900 text-white">

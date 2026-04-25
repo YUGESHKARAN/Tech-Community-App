@@ -205,7 +205,7 @@ function Dashboard() {
                 Analytics
               </h2>
               <p className="text-xs text-gray-400">
-                Content and users trends
+                Key trends and insights
               </p>
             </div>
 
