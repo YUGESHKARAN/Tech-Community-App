@@ -230,7 +230,7 @@ useEffect(() => {
         {tutorPlayListByEmail?.length == 0 && !loading && (
           <div className="flex h-[70vh] flex-col justify-center items-center md:gap-3 ">
              <img
-                            className="w-60 md:w-80 "
+                            className="w-48 md:w-80 "
                             src={empty_state_post}
                             alt=""
                           />

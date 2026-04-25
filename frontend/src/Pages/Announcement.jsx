@@ -797,7 +797,7 @@ function Announcement() {
             {announcement.length === 0 && !announceLoading && (
               <div className="flex h-[45vh] md:h-auto flex-col justify-center items-center gap-2 md:gap-3 ">
                 <img
-                  className="w-72 md:w-80 "
+                  className="w-48 md:w-80 "
                   src={empty_state_announcement}
                   alt=""
                 />
@@ -904,23 +904,7 @@ function Announcement() {
             {announceLoading && <AnnouncementSkeleton />}
           </main>
         </div>
-        {/* {selectedImage && (
-          <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
-            <div className="">
-              <img
-                src={selectedImage}
-                alt="Selected"
-                className="max-w-full w-11/12 mx-auto max-h-full"
-              />
-              <button
-                onClick={handleCloseModal}
-                className="absolute top-10 right-7"
-              >
-                <IoClose className="text-2xl" />
-              </button>
-            </div>
-          </div>
-        )} */}
+        
         {selectedImage && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
             {/* Modal Container */}

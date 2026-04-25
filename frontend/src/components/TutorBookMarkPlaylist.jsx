@@ -231,7 +231,7 @@ const TutorBookMarkPlaylist = () => {
       { bookMarPlaylist.length===0 &&!loading &&
         <div className="flex h-[70vh]  md:h-[55vh]  flex-col pt-0 md:mt-0 justify-center items-center ">
                                      <img
-                                       className="w-60 md:w-80 "
+                                       className="w-48 md:w-80 "
                                        src={empty_state_post}
                                        alt=""
                                      />
