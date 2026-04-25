@@ -21,7 +21,7 @@ const PostDetailSkeleton = () => {
         {/* LEFT COLUMN */}
         <div className="md:col-span-4 space-y-4 md:space-y-6">
           {/* Banner */}
-          <div className="h-60 md:h-96 bg-gray-800 rounded-xl border border-gray-700" />
+          <div className="h-56 md:h-96 bg-gray-800 rounded-xl border border-gray-700" />
 
           {/* AI assistant likes, share and bookmark */}
           <div className="flex items-center  justify-between md:justify-end mt-2 gap-4 my-3 md:mb-5">
