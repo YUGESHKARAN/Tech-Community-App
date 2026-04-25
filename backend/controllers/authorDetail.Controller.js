@@ -1299,11 +1299,16 @@ const addAnnouncement = async (req, res) => {
 
     // const recipientEmails = recipients.map(r => r.email).filter(Boolean);
 
-    const recipientEmails = recipients.map((r) => r.email).filter(Boolean); // remove null/undefined
+    // const recipientEmails = recipients.map((r) => r.email).filter(Boolean); // remove null/undefined
     // .filter((recipientEmail) => recipientEmail !== email); // remove sender email
 
+    const recipientEmails = recipients
+  .map((r) => r.email)
+  .filter(Boolean)
+  .filter((recipientEmail) => recipientEmail !== email); // fix: exclude sender
+
     // Bulk push announcements to DB
-    if (recipientEmails.length > 0) {
+    if (recipients.length > 0) {
       const bulkOps = recipients.map((r) => ({
         updateOne: {
           filter: { email: r.email },
@@ -1331,6 +1336,8 @@ const addAnnouncement = async (req, res) => {
             .join("<br>")}</p>`
         : "";
 
+    // console.log("recipientsEmail", recipientEmails); 
+    // console.log("recipients", recipients)
     // Respond immediately
     res.status(201).json({
       message: "Announcement added successfully",

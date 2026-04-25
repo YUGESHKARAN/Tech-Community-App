@@ -995,7 +995,10 @@ const addPosts = async (req, res) => {
       email: { $ne: author.email },
     }).select('email');
 
-    const followerSet = new Set(author.followers);
+    // const followerSet = new Set(author.followers);
+    const followerSet = new Set(
+  author.followers.filter(f => f !== author.email)  // fix: exclude self
+);
     const communitySet = new Set();
     for (const a of communityAuthors) {
       if (!followerSet.has(a.email)) communitySet.add(a.email);
