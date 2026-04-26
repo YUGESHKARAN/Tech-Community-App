@@ -81,8 +81,6 @@ const sendRegistrationOTP = async (req, res) => {
         deletionType: deletionRecord.deletionType,
       });
     }
-
-    return res.status(400).json({ message: "Invalid Email" });
   }
   
   if (!email.endsWith("@dsuniversity.ac.in")) {
