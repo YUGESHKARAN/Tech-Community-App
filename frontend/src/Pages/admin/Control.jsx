@@ -280,7 +280,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
        <MdManageAccounts/> Control Panel
       </h1> */}
 
-       <div className="w-full px-4 mx-auto flex items-center gap-3 pt-6 pb-3 md:py-6">
+       <div className="w-full px-4 mx-auto flex items-center gap-3 py-3 md:py-6">
               <MdManageAccounts className="text-green-400 text-3xl" />
               <h1 className="text-2xl md:text-3xl font-semibold tracking-tight text-white">
                 Control Panel
@@ -288,7 +288,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
             </div>
 
       {/* Search and Filter */}
-      <div className="w-full px-4 py-2 mx-auto flex  md:flex-row justify-between items-center gap-4 mb-6">
+      <div className="w-full px-4 py-2 mx-auto flex  md:flex-row justify-between items-center gap-4 mb-3 md:mb-6">
         <div
           // className="md:w-1/3 w-3/5 px-4 py-2 flex items-center gap-2 justify-center rounded-md bg-gray-600 border border-white text-xs md:text-sm text-white placeholder-gray-400"
           className="w-full max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition"

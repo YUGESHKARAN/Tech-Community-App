@@ -36,10 +36,11 @@ function SingleTechDomainDetails() {
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
   const [updateCommunityLoader, setUpdateCommunity] = useState(false);
-  const [followAuthorLoaderId, setFollowAuthorLoaderId] = useState(null);
+  // const [followAuthorLoaderId, setFollowAuthorLoaderId] = useState(null);
+  const [followLoadingIds, setFollowLoadingIds] = useState(new Set());
   const fetchingRef = useRef(false);
   const { communities, loading: statsLoader } = useGetCommunityAnalytics();
-  const [filter, setFilter] = useState("")
+  const [filter, setFilter] = useState("");
 
   const authorsDetails = async () => {
     if (fetchingRef.current || loading || !hasMore) return;
@@ -98,36 +99,73 @@ function SingleTechDomainDetails() {
 
   // --------------------------------------------------------------------------------------
 
+  // const addFollower = async (userEmail) => {
+  //   // console.log("useremail", userEmail);
+  //   setFollowAuthorLoaderId(userEmail);
+  //   try {
+  //     const response = await axiosInstance.put(
+  //       `/blog/author/follow/${userEmail}`,
+  //       { emailAuthor: email },
+  //     );
+  //     setAuthors((prev) =>
+  //       prev.map((author) => {
+  //         if (author.email === userEmail) {
+  //           const isFollowing = author.followers?.includes(email);
+
+  //           return {
+  //             ...author,
+  //             followers: isFollowing
+  //               ? author.followers.filter((f) => f !== email)
+  //               : [...(author.followers || []), email],
+  //           };
+  //         }
+  //         return author;
+  //       }),
+  //     );
+  //     // if (response.status === 200) {
+
+  //     // }
+  //   } catch (err) {
+  //     console.log("error", err);
+  //   } finally {
+  //     setFollowAuthorLoaderId(null);
+  //   }
+  // };
+
   const addFollower = async (userEmail) => {
-    // console.log("useremail", userEmail);
-    setFollowAuthorLoaderId(userEmail);
+    setFollowLoadingIds((prev) => new Set(prev).add(userEmail));
+
     try {
       const response = await axiosInstance.put(
         `/blog/author/follow/${userEmail}`,
         { emailAuthor: email },
       );
-      setAuthors((prev) =>
-        prev.map((author) => {
-          if (author.email === userEmail) {
-            const isFollowing = author.followers?.includes(email);
 
-            return {
-              ...author,
-              followers: isFollowing
-                ? author.followers.filter((f) => f !== email)
-                : [...(author.followers || []), email],
-            };
-          }
-          return author;
-        }),
-      );
-      // if (response.status === 200) {
+      if (response.status === 200) {
+        setAuthors((prev) =>
+          prev.map((author) => {
+            if (author.email === userEmail) {
+              const isFollowing = author.followers?.includes(email);
 
-      // }
+              return {
+                ...author,
+                followers: isFollowing
+                  ? author.followers.filter((f) => f !== email)
+                  : [...(author.followers || []), email],
+              };
+            }
+            return author;
+          }),
+        );
+      }
     } catch (err) {
       console.log("error", err);
     } finally {
-      setFollowAuthorLoaderId(null);
+      setFollowLoadingIds((prev) => {
+        const updated = new Set(prev);
+        updated.delete(userEmail);
+        return updated;
+      });
     }
   };
 
@@ -177,303 +215,9 @@ function SingleTechDomainDetails() {
   }, [communities]);
 
   // console.log("categoryStats", categoryStats);
-  const [showPosts, setShowPosts] = useState(false);  
+  const [showPosts, setShowPosts] = useState(false);
 
   return (
-    // <div className="w-full h-auto bg-gray-900  relative text-white">
-    //   <NavBar />
-
-    //   <div className="min-h-screen">
-    //     {/* Page Header */}
-    //    {/* HEADER */}
-    // <section className="pt-10  px-4 md:px-10 mx-auto md:pt-14 pb-6 border-b border-white/5">
-    //   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-
-    //     {/* Title */}
-    //     <div>
-    //       <h1 className="text-3xl md:text-5xl font-bold tracking-tight">
-    //         <span className="bg-gradient-to-r from-emerald-400 via-blue-400 to-indigo-500 bg-clip-text text-transparent">
-    //           {decodedCategory}
-    //         </span>{" "}
-    //         <span className="text-white/80">Community</span>
-    //       </h1>
-
-    //       <p className="text-sm text-gray-400 mt-2">
-    //         Connect, collaborate and grow within this tech domain
-    //       </p>
-    //     </div>
-
-    //     {/* Action */}
-    //     <div>
-    //       {role === "coordinator" || role === "admin" ? (
-    //         authorCommunity.includes(decodedCategory) && (
-    //           <span className="px-4 md:px-10 py-2 text-sm text-emerald-400 bg-emerald-600/20 rounded-xl shadow-md">
-    //             Coordinator
-    //           </span>
-    //         )
-    //       ) : (
-    //         <button
-    //           onClick={() => updateCommunity(email, decodedCategory)}
-    //           className={`px-5 py-2 text-sm font-semibold rounded-xl transition-all duration-300
-    //           ${
-    //             authorCommunity.includes(decodedCategory)
-    //               ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30"
-    //               : "bg-white text-gray-900 hover:bg-gray-200"
-    //           }`}
-    //         >
-    //           {authorCommunity.includes(decodedCategory)
-    //             ? "✓ Joined"
-    //             : "Join Community"}
-    //         </button>
-    //       )}
-    //     </div>
-
-    //   </div>
-    // </section>
-
-    //     {/* Content */}
-    //     <section className="w-full px-4 md:px-10 mx-auto mt-10 space-y-10 mt-0">
-    //       {/* Coordinators */}
-    //       {authors.filter((a) => a.role === "coordinator").length > 0 && (
-    //         <>
-    //        <h2 className="text-xl md:text-3xl font-semibold text-white mb-6">
-    //         Community Coordinators
-    //       </h2>
-
-    //           <div className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-2 md:gap-4">
-    //             {authors
-    //               .filter((a) => a.role === "coordinator")
-    //               .map((author, index) => (
-    //                 <div
-    //                   key={index}
-    //                   className="bg-gray-900/70 border border-gray-700 rounded-xl p-5 text-center hover:shadow-xl transition"
-    //                 >
-    //                   <Link to={`/viewProfile/${author.email}`}>
-    //                     <img
-    //                       src={
-    //                         author.profile
-    //                           ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`
-    //                           : user
-    //                       }
-    //                       className="w-24 h-24 mx-auto bg-white rounded-full object-cover border border-gray-600"
-    //                     />
-    //                   </Link>
-
-    //                   <h3 className="mt-3 font-semibold text-white truncate">
-    //                     {author.authorName}
-    //                   </h3>
-    //                   <p className="text-xs text-gray-400 truncate">
-    //                     {author.email}
-    //                   </p>
-
-    //                   <div className="flex justify-center gap-6 mt-4 text-xs text-gray-300">
-    //                     <span>
-    //                       <b className="text-white">
-    //                         {author.followers.length}
-    //                       </b>{" "}
-    //                       Followers
-    //                     </span>
-    //                  {author?.postCount>0 &&   <span>
-    //                       <b className="text-white">{author?.postCount}</b> Posts
-    //                     </span>}
-    //                   </div>
-
-    //                   {/* Social media components */}
-
-    //                   {/* {author.profileLinks?.length > 0 && (
-    //                                 <div className="flex justify-center gap-3 mt-4">
-    //                                   {author.profileLinks.map((link, i) => (
-    //                                     <Link key={i} to={link.url} target="_blank">
-    //                                       {link.title === "LinkedIn" ? (
-    //                                         <FaLinkedin className="text-gray-300 hover:text-green-400 transition" />
-    //                                       ) : link.title === "GitHub" ? (
-    //                                         <FaSquareGithub className="text-gray-300 hover:text-green-400 transition" />
-    //                                       ) : (
-    //                                         <PiLinkSimpleFill className="text-gray-300 hover:text-green-400 transition" />
-    //                                       )}
-    //                                     </Link>
-    //                                   ))}
-    //                                 </div>
-    //                               )} */}
-
-    //                   {author.email != email ? (
-    //                     <div className="mt-5">
-    //                       {author.followers.includes(email) ? (
-    //                         <button
-    //                           onClick={() => addFollower(author.email)}
-    //                           className="w-full py-2 cursor-pointer rounded-lg bg-gray-700 text-gray-300 text-sm cursor-default"
-    //                         >
-    //                           Following
-    //                         </button>
-    //                       ) : (
-    //                         <button
-    //                           onClick={() => addFollower(author.email)}
-    //                           className="w-full py-2 rounded-lg bg-green-500 text-gray-900 text-sm font-medium hover:bg-green-400 transition"
-    //                         >
-    //                           Follow
-    //                         </button>
-    //                       )}
-    //                     </div>
-    //                   ) : (
-    //                     <div className="mt-5 px-4 md:px-10 py-1.5 rounded-lg bg-gradient-to-r from-orange-500 to-yellow-500 text-black font-medium">
-    //                       Coordinating
-    //                     </div>
-    //                   )}
-    //                 </div>
-    //               ))}
-
-    //             {loading && (
-    //               <div className="col-span-full flex justify-center py-4">
-    //                   <div className="relative flex items-center justify-center">
-    //                     {/* Outer Oval Ring */}
-    //                     <div className="w-7 h-7  border-2 border-neutral-700 border-t-emerald-400 rounded-full animate-spin" />
-
-    //                     {/* Inner Glow Pulse */}
-    //                     {/* <div className="absolute w-10 h-10 md:w-12 md:h-12 bg-emerald-500/20 rounded-full blur-md animate-pulse" /> */}
-    //                   </div>
-    //                 </div>
-    //             )}
-
-    //             {!hasMore && (
-    //               <p className="text-center  col-span-full py-4 text-gray-500">
-    //                 No more coordinators
-    //               </p>
-    //             )}
-    //           </div>
-    //         </>
-    //       )}
-    //       {loading &&
-    //         authors.filter((a) => a.role === "coordinator").length == 0 && (
-    //           <div className="col-span-full">
-    //             <h2 className="text-xl md:text-3xl font-semibold text-white mb-6">
-    //               Community Coordinators
-    //             </h2>
-    //             <CoordinatorGridSkeleton />
-    //           </div>
-    //         )}
-
-    //       {/* Students */}
-    //       {authors.filter((a) => a.role === "student").length > 0 && (
-    //         <div>
-    //           <h2 className="text-xl md:text-3xl font-semibold text-white mb-6">
-    //             Community Members
-    //             {/* ({authors.filter((a) => a.role === "student").length}) */}
-    //           </h2>
-
-    //           <div className="w-full grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-7 gap-2 md:gap-4 mt-8">
-    //             {authors
-    //               .filter((a) => a.role === "student")
-    //               .map((author, index) => (
-    //                 <div
-    //                   key={index}
-    //                   className="
-    //                                 bg-gray-900/70
-    //                                 border border-gray-700
-    //                                 rounded-xl
-    //                                 p-5
-    //                                 flex flex-col items-center
-    //                                 text-center
-    //                                 shadow
-    //                                 hover:shadow-xl
-    //                                 hover:-translate-y-1
-    //                                 transition-all duration-300
-    //                               "
-    //                 >
-    //                   {/* Avatar */}
-    //                   <Link to={`/viewProfile/${author.email}`}>
-    //                     <img
-    //                       src={
-    //                         author.profile
-    //                           ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`
-    //                           : user
-    //                       }
-    //                       alt={author.authorName}
-    //                       className="
-    //                                       w-20 h-20
-    //                                       rounded-full
-    //                                       object-cover
-    //                                       border border-gray-600
-    //                                       shadow-sm
-    //                                       hover:shadow-md
-    //                                       transition
-    //                                       bg-white
-    //                                   "
-    //                     />
-    //                   </Link>
-
-    //                   {/* Name */}
-    //                   <h3 className="mt-4 font-semibold text-sm md:text-base text-white truncate w-full">
-    //                     {author.authorName}
-    //                   </h3>
-
-    //                   {/* Email */}
-    //                   <p className="text-xs text-gray-400 truncate w-full">
-    //                     {author.email}
-    //                   </p>
-
-    //                   {/* Social Links */}
-
-    //                   {/* {author.profileLinks?.length > 0 && (
-    //                                 <div className="flex justify-center gap-4 mt-4">
-    //                                   {author.profileLinks.map((link, i) => (
-    //                                     <Link
-    //                                       key={i}
-    //                                       to={link.url}
-    //                                       title={link.title}
-    //                                       target="_blank"
-    //                                       className="text-gray-400 hover:text-green-400 transition"
-    //                                     >
-    //                                       {link.title === "LinkedIn" ? (
-    //                                         <FaLinkedin className="text-lg" />
-    //                                       ) : link.title === "GitHub" ? (
-    //                                         <FaSquareGithub className="text-lg" />
-    //                                       ) : link.title === "Portfolio" ? (
-    //                                         <BsPersonSquare className="text-lg" />
-    //                                       ) : (
-    //                                         <PiLinkSimpleFill className="text-lg" />
-    //                                       )}
-    //                                     </Link>
-    //                                   ))}
-    //                                 </div>
-    //                               )} */}
-    //                 </div>
-    //               ))}
-
-    //             {loading && (
-    //               <div className="col-span-full flex justify-center py-4">
-    //                   <div className="relative flex items-center justify-center">
-    //                     {/* Outer Oval Ring */}
-    //                     <div className="w-7 h-7  border-2 border-neutral-700 border-t-emerald-400 rounded-full animate-spin" />
-
-    //                     {/* Inner Glow Pulse */}
-    //                     {/* <div className="absolute w-10 h-10 md:w-12 md:h-12 bg-emerald-500/20 rounded-full blur-md animate-pulse" /> */}
-    //                   </div>
-    //                 </div>
-    //             )}
-
-    //             {!hasMore && (
-    //               <p className="text-center  col-span-full py-4 text-gray-500">
-    //                 No more members
-    //               </p>
-    //             )}
-    //           </div>
-    //         </div>
-    //       )}
-
-    //       {loading &&
-    //         authors.filter((a) => a.role === "student").length == 0 && (
-    //           <div className="col-span-full">
-    //             <h2 className="text-xl md:text-3xl font-semibold text-white mb-6">
-    //               Community Members
-    //             </h2>
-    //             <StudentGridSkeleton />
-    //           </div>
-    //         )}
-    //     </section>
-    //   </div>
-
-    //   <Footer />
-    // </div>
 
     <div className="w-full min-h-screen bg-gray-900 text-white">
       <NavBar />
@@ -561,7 +305,9 @@ function SingleTechDomainDetails() {
                 <span
                   className={`text-xl cursor-pointer font-medium text-center tracking-tight text-white`}
                   // onClick={()=>{setShowPosts(label === "Posts" ? true : false) }}
-                  onClick={()=>{setFilter(label)}}
+                  onClick={() => {
+                    setFilter(label);
+                  }}
                 >
                   {/* {label === "Posts" ? <Link to={`/community/posts/${encodeURIComponent(decodedCategory)}`}>{value}</Link> : value} */}
                   {value}
@@ -574,58 +320,60 @@ function SingleTechDomainDetails() {
       </div>
 
       {/* ── MAIN CONTENT ───────────────────────────────────────── */}
-    {filter!=='Posts'? 
-    
-    <main className="w-full min-h-screen mx-auto px-4 md:px-10 pb-16">
-        {/* ── COORDINATORS ─────────────────────────────────────── */}
-        {(filter==="Coordinators" || filter==="") && authors.filter((a) => a.role === "coordinator").length > 0 && (
-          <section className="mt-7">
-            <p className="text-xs text-center md:text-sm font-medium tracking-widest uppercase  text-gray-500 mb-4">
-              Community Coordinators
-            </p>
+      {filter !== "Posts" ? (
+        <main className="w-full min-h-screen mx-auto px-4 md:px-10 pb-16">
+          {/* ── COORDINATORS ─────────────────────────────────────── */}
+          {(filter === "Coordinators" || filter === "") &&
+            authors.filter((a) => a.role === "coordinator").length > 0 && (
+              <section className="mt-7">
+                <p className="text-xs text-center md:text-sm font-medium tracking-widest uppercase  text-gray-500 mb-4">
+                  Community Coordinators
+                </p>
 
-            <div className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-2 md:gap-4">
-              {authors
-                .filter((a) => a.role === "coordinator")
-                .map((author, index) => (
-                  <div
-                    key={index}
-                    className="bg-gray-900/70 border border-gray-700 rounded-xl p-5 text-center hover:shadow-xl transition"
-                  >
-                    <Link to={`/viewProfile/${author.email}`}>
-                      <img
-                        src={
-                          author.profile
-                            ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`
-                            : user
-                        }
-                        className="w-24 h-24 mx-auto bg-gray-700 rounded-full object-cover border border-gray-900"
-                      />
-                    </Link>
+                <div className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-2 md:gap-4">
+                  {authors
+                    .filter((a) => a.role === "coordinator")
+                    .map((author, index) => (
+                      <div
+                        key={index}
+                        className="bg-gray-900/70 border border-gray-700 rounded-xl p-5 text-center hover:shadow-xl transition"
+                      >
+                        <Link to={`/viewProfile/${author.email}`}>
+                          <img
+                            src={
+                              author.profile
+                                ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`
+                                : user
+                            }
+                            className="w-24 h-24 mx-auto bg-gray-700 rounded-full object-cover border border-gray-900"
+                          />
+                        </Link>
 
-                    <h3 className="mt-3 font-semibold text-white truncate">
-                      {author.authorName}
-                    </h3>
-                    <p className="text-xs text-gray-400 truncate">
-                      {author.email}
-                    </p>
+                        <h3 className="mt-3 font-semibold text-white truncate">
+                          {author.authorName}
+                        </h3>
+                        <p className="text-xs text-gray-400 truncate">
+                          {author.email}
+                        </p>
 
-                    <div className="flex justify-center gap-6 mt-4 text-xs text-gray-300">
-                      <span>
-                        <b className="text-white">{author.followers.length}</b>{" "}
-                        Followers
-                      </span>
-                      {author?.postCount > 0 && (
-                        <span>
-                          <b className="text-white">{author?.postCount}</b>{" "}
-                          Posts
-                        </span>
-                      )}
-                    </div>
+                        <div className="flex justify-center gap-6 mt-4 text-xs text-gray-300">
+                          <span>
+                            <b className="text-white">
+                              {author.followers.length}
+                            </b>{" "}
+                            Followers
+                          </span>
+                          {author?.postCount > 0 && (
+                            <span>
+                              <b className="text-white">{author?.postCount}</b>{" "}
+                              Posts
+                            </span>
+                          )}
+                        </div>
 
-                    {/* Social media components */}
+                        {/* Social media components */}
 
-                    {/* {author.profileLinks?.length > 0 && (
+                        {/* {author.profileLinks?.length > 0 && (
                                     <div className="flex justify-center gap-3 mt-4">
                                       {author.profileLinks.map((link, i) => (
                                         <Link key={i} to={link.url} target="_blank">
@@ -641,102 +389,105 @@ function SingleTechDomainDetails() {
                                     </div>
                                   )} */}
 
-                    {author.email != email ? (
-                      <div className="mt-5">
-                        {author.followers.includes(email) ? (
-                          <button
-                            onClick={() => addFollower(author.email)}
-                            className="w-full py-2 cursor-pointer rounded-lg bg-gray-700 text-gray-300 text-sm cursor-default transition-all duration-400 disabled:bg-transparent"
-                            disabled={followAuthorLoaderId === author.email}
-                          >
-                            {followAuthorLoaderId === author.email ? (
-                              <div className="flex items-center py-1.5 justify-center gap-1">
-                                <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
-                                <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
-                                <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce" />
-                              </div>
+                        {author.email != email ? (
+                          <div className="mt-5">
+                            {author.followers.includes(email) ? (
+                              <button
+                                onClick={() => addFollower(author.email)}
+                                className="w-full py-2 rounded-lg bg-gray-700 text-gray-300 text-sm transition-all duration-400 disabled:bg-transparent"
+                                disabled={followLoadingIds.has(author.email)}
+                              >
+                                {followLoadingIds.has(author.email) ? (
+                                  <div className="flex items-center py-1.5 justify-center gap-1">
+                                    <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
+                                    <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
+                                    <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce" />
+                                  </div>
+                                ) : (
+                                  "Following"
+                                )}
+                              </button>
                             ) : (
-                              "Following"
+                              <button
+                                onClick={() => addFollower(author.email)}
+                                className="w-full py-2 rounded-lg bg-green-500 text-gray-900 text-sm font-medium hover:bg-green-400 transition-all duration-400 disabled:bg-transparent"
+                                disabled={followLoadingIds.has(author.email)}
+                              >
+                                {followLoadingIds.has(author.email) ? (
+                                  <div className="flex items-center py-1.5 justify-center gap-1">
+                                    <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
+                                    <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
+                                    <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce" />
+                                  </div>
+                                ) : (
+                                  "Follow"
+                                )}
+                              </button>
                             )}
-                          </button>
+                          </div>
                         ) : (
-                          <button
-                            onClick={() => addFollower(author.email)}
-                            className="w-full py-2 rounded-lg bg-green-500 text-gray-900 text-sm font-medium hover:bg-green-400 transition-all duration-400 disabled:bg-transparent"
-                            disabled={followAuthorLoaderId === author.email}
-                          >
-                            {followAuthorLoaderId === author.email ? (
-                              <div className="flex items-center py-1.5 justify-center gap-1">
-                                <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
-                                <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
-                                <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce" />
-                              </div>
-                            ) : (
-                              "Follow"
-                            )}
-                          </button>
+                          <div className="mt-5 px-4 md:px-10 py-2 text-sm font-medium text-amber-400 bg-amber-400/10 border border-amber-400/20 rounded-lg">
+                            Coordinating
+                          </div>
                         )}
                       </div>
-                    ) : (
-                      <div className="mt-5 px-4 md:px-10 py-2 text-sm font-medium text-amber-400 bg-amber-400/10 border border-amber-400/20 rounded-lg">
-                        Coordinating
+                    ))}
+
+                  {loading && (
+                    <div className="col-span-full flex justify-center py-4">
+                      <div className="relative flex items-center justify-center">
+                        {/* Outer Oval Ring */}
+                        <div className="w-7 h-7  border-2 border-neutral-700 border-t-emerald-400 rounded-full animate-spin" />
+
+                        {/* Inner Glow Pulse */}
+                        {/* <div className="absolute w-10 h-10 md:w-12 md:h-12 bg-emerald-500/20 rounded-full blur-md animate-pulse" /> */}
                       </div>
-                    )}
-                  </div>
-                ))}
+                    </div>
+                  )}
 
-              {loading && (
-                <div className="col-span-full flex justify-center py-4">
-                  <div className="relative flex items-center justify-center">
-                    {/* Outer Oval Ring */}
-                    <div className="w-7 h-7  border-2 border-neutral-700 border-t-emerald-400 rounded-full animate-spin" />
-
-                    {/* Inner Glow Pulse */}
-                    {/* <div className="absolute w-10 h-10 md:w-12 md:h-12 bg-emerald-500/20 rounded-full blur-md animate-pulse" /> */}
-                  </div>
+                  {!hasMore && (
+                    <p className="text-center text-[10px] md:text-xs col-span-full py-4 text-gray-500">
+                      No more coordinators
+                    </p>
+                  )}
                 </div>
-              )}
+              </section>
+            )}
 
-              {!hasMore && (
-                <p className="text-center text-[10px] md:text-xs col-span-full py-4 text-gray-500">
-                  No more coordinators
+          {/* Coordinator skeleton */}
+          {loading &&
+            (filter === "Coordinators" || filter === "") &&
+            authors.filter((a) => a.role === "coordinator").length === 0 && (
+              <section className="mt-7">
+                <p className="text-xs text-center md:text-sm font-medium tracking-widest uppercase  text-gray-500 mb-4">
+                  Community Coordinators
                 </p>
-              )}
-            </div>
-          </section>
-        )}
+                <CoordinatorGridSkeleton />
+              </section>
+            )}
 
-        {/* Coordinator skeleton */}
-        {loading && (filter==="Coordinators" || filter==="") &&
-          authors.filter((a) => a.role === "coordinator").length === 0 && (
-            <section className="mt-7">
-              <p className="text-xs text-center md:text-sm font-medium tracking-widest uppercase  text-gray-500 mb-4">
-                Community Coordinators
-              </p>
-              <CoordinatorGridSkeleton />
-            </section>
-          )}
+          {/* ── DIVIDER ────────────────────────────────────────────── */}
+          {authors.filter((a) => a.role === "coordinator").length > 0 &&
+            filter === "" &&
+            authors.filter((a) => a.role === "student").length > 0 && (
+              <hr className="border-white/5 mt-10" />
+            )}
 
-        {/* ── DIVIDER ────────────────────────────────────────────── */}
-        {authors.filter((a) => a.role === "coordinator").length > 0 && filter==="" &&
-          authors.filter((a) => a.role === "student").length > 0 && (
-            <hr className="border-white/5 mt-10" />
-          )}
+          {/* ── MEMBERS ──────────────────────────────────────────── */}
+          {(filter === "Members" || filter === "") &&
+            authors.filter((a) => a.role === "student").length > 0 && (
+              <section className="mt-10">
+                <p className="text-xs text-center md:text-sm font-medium tracking-widest uppercase  text-gray-500 mb-4">
+                  Community Members
+                </p>
 
-        {/* ── MEMBERS ──────────────────────────────────────────── */}
-        {(filter==="Members" || filter==="") && authors.filter((a) => a.role === "student").length > 0 && (
-          <section className="mt-10">
-            <p className="text-xs text-center md:text-sm font-medium tracking-widest uppercase  text-gray-500 mb-4">
-              Community Members
-            </p>
-
-            <div className="w-full grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-7 gap-2 md:gap-4 mt-4">
-              {authors
-                .filter((a) => a.role === "student")
-                .map((author, index) => (
-                  <div
-                    key={index}
-                    className="
+                <div className="w-full grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-7 gap-2 md:gap-4 mt-4">
+                  {authors
+                    .filter((a) => a.role === "student")
+                    .map((author, index) => (
+                      <div
+                        key={index}
+                        className="
                                     bg-gray-900/70
                                     border border-gray-700
                                     rounded-xl
@@ -748,17 +499,17 @@ function SingleTechDomainDetails() {
                                     hover:-translate-y-1
                                     transition-all duration-300
                                   "
-                  >
-                    {/* Avatar */}
-                    <Link to={`/viewProfile/${author.email}`}>
-                      <img
-                        src={
-                          author.profile
-                            ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`
-                            : user
-                        }
-                        alt={author.authorName}
-                        className="
+                      >
+                        {/* Avatar */}
+                        <Link to={`/viewProfile/${author.email}`}>
+                          <img
+                            src={
+                              author.profile
+                                ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`
+                                : user
+                            }
+                            alt={author.authorName}
+                            className="
                                           w-20 h-20
                                           rounded-full
                                           object-cover
@@ -768,22 +519,22 @@ function SingleTechDomainDetails() {
                                           transition
                                           bg-gray-700
                                       "
-                      />
-                    </Link>
+                          />
+                        </Link>
 
-                    {/* Name */}
-                    <h3 className="mt-4 font-semibold text-sm md:text-base text-white truncate w-full">
-                      {author.authorName}
-                    </h3>
+                        {/* Name */}
+                        <h3 className="mt-4 font-semibold text-sm md:text-base text-white truncate w-full">
+                          {author.authorName}
+                        </h3>
 
-                    {/* Email */}
-                    <p className="text-xs text-gray-400 truncate w-full">
-                      {author.email}
-                    </p>
+                        {/* Email */}
+                        <p className="text-xs text-gray-400 truncate w-full">
+                          {author.email}
+                        </p>
 
-                    {/* Social Links */}
+                        {/* Social Links */}
 
-                    {/* {author.profileLinks?.length > 0 && (
+                        {/* {author.profileLinks?.length > 0 && (
                                     <div className="flex justify-center gap-4 mt-4">
                                       {author.profileLinks.map((link, i) => (
                                         <Link
@@ -806,43 +557,44 @@ function SingleTechDomainDetails() {
                                       ))}
                                     </div>
                                   )} */}
-                  </div>
-                ))}
+                      </div>
+                    ))}
 
-              {loading && (
-                <div className="col-span-full flex justify-center py-4">
-                  <div className="relative flex items-center justify-center">
-                    {/* Outer Oval Ring */}
-                    <div className="w-7 h-7  border-2 border-neutral-700 border-t-emerald-400 rounded-full animate-spin" />
+                  {loading && (
+                    <div className="col-span-full flex justify-center py-4">
+                      <div className="relative flex items-center justify-center">
+                        {/* Outer Oval Ring */}
+                        <div className="w-7 h-7  border-2 border-neutral-700 border-t-emerald-400 rounded-full animate-spin" />
 
-                    {/* Inner Glow Pulse */}
-                    {/* <div className="absolute w-10 h-10 md:w-12 md:h-12 bg-emerald-500/20 rounded-full blur-md animate-pulse" /> */}
-                  </div>
+                        {/* Inner Glow Pulse */}
+                        {/* <div className="absolute w-10 h-10 md:w-12 md:h-12 bg-emerald-500/20 rounded-full blur-md animate-pulse" /> */}
+                      </div>
+                    </div>
+                  )}
+
+                  {!hasMore && (
+                    <p className="text-center text-[10px] md:text-xs col-span-full py-4 text-gray-500">
+                      No more members
+                    </p>
+                  )}
                 </div>
-              )}
+              </section>
+            )}
 
-              {!hasMore && (
-                <p className="text-center text-[10px] md:text-xs col-span-full py-4 text-gray-500">
-                  No more members
+          {/* Member skeleton */}
+          {loading &&
+            authors.filter((a) => a.role === "student").length === 0 && (
+              <section className="mt-10">
+                <p className="text-xs text-center md:text-sm font-medium tracking-widest uppercase  text-gray-500 mb-4">
+                  Community Members
                 </p>
-              )}
-            </div>
-          </section>
-        )}
-
-        {/* Member skeleton */}
-        {loading &&
-          authors.filter((a) => a.role === "student").length === 0 && (
-            <section className="mt-10">
-              <p className="text-xs text-center md:text-sm font-medium tracking-widest uppercase  text-gray-500 mb-4">
-                Community Members
-              </p>
-              <StudentGridSkeleton />
-            </section>
-          )}
-      </main>:
-      <SingleDomainPosts category={decodedCategory} />
-        }
+                <StudentGridSkeleton />
+              </section>
+            )}
+        </main>
+      ) : (
+        <SingleDomainPosts category={decodedCategory} />
+      )}
 
       <Footer />
     </div>
@@ -850,4 +602,3 @@ function SingleTechDomainDetails() {
 }
 
 export default SingleTechDomainDetails;
-

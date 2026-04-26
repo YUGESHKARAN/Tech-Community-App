@@ -37,7 +37,8 @@ function Authors() {
   const [hasMore, setHasMore] = useState(true);
   const limit = 20;
   const isFetching = useRef(false);
-  const [followAuthorLoaderId, setFollowAuthorLoaderId] = useState(null);
+  // const [followAuthorLoaderId, setFollowAuthorLoaderId] = useState(null);
+  const [followLoadingIds, setFollowLoadingIds] = useState(new Set());
 
   // const authorsDetails = async () => {
   //   try {
@@ -181,43 +182,83 @@ function Authors() {
 
 
 
-  const addFollower = async (userEmail) => {
-    try {
-      setFollowAuthorLoaderId(userEmail)
-      const response = await axiosInstance.put(
-        `/blog/author/follow/${userEmail}`,
-        { emailAuthor: email },
-      );
+  // const addFollower = async (userEmail) => {
 
-      if (response.status === 200) {
-        setAuthors((prev) =>
-          prev.map((author) => {
-            if (author.email === userEmail) {
-              const isFollowing = author.followers?.includes(email);
+  //   setFollowAuthorLoaderId(userEmail);
 
-              return {
-                ...author,
-                followers: isFollowing
-                  ? author.followers.filter((f) => f !== email)
-                  : [...(author.followers || []), email],
-              };
-            }
-            return author;
-          }),
-        );
-      }
-    } catch (err) {
-      console.log("error", err);
-    }
-    finally{
-      setFollowAuthorLoaderId(null)
-    }
-  };
+  //   try {
+      
+  //     const response = await axiosInstance.put(
+  //       `/blog/author/follow/${userEmail}`,
+  //       { emailAuthor: email },
+  //     );
+
+  //     if (response.status === 200) {
+  //       setAuthors((prev) =>
+  //         prev.map((author) => {
+  //           if (author.email === userEmail) {
+  //             const isFollowing = author.followers?.includes(email);
+
+  //             return {
+  //               ...author,
+  //               followers: isFollowing
+  //                 ? author.followers.filter((f) => f !== email)
+  //                 : [...(author.followers || []), email],
+  //             };
+  //           }
+  //           return author;
+  //         }),
+  //       );
+  //     }
+      
+  //   } catch (err) {
+  //     console.log("error", err);
+  //   }
+  //   finally{
+  //     setFollowAuthorLoaderId(null)
+  //   }
+  // };
 
   // const recommendedAuthors = authors
   //   .filter((author) => recommendation.includes(author.email))
   //   .filter((author) => author.role === "coordinator");
 
+  const addFollower = async (userEmail) => {
+  setFollowLoadingIds(prev => new Set(prev).add(userEmail));
+
+  try {
+    const response = await axiosInstance.put(
+      `/blog/author/follow/${userEmail}`,
+      { emailAuthor: email }
+    );
+
+    if (response.status === 200) {
+      setAuthors((prev) =>
+        prev.map((author) => {
+          if (author.email === userEmail) {
+            const isFollowing = author.followers?.includes(email);
+
+            return {
+              ...author,
+              followers: isFollowing
+                ? author.followers.filter((f) => f !== email)
+                : [...(author.followers || []), email],
+            };
+          }
+          return author;
+        })
+      );
+    }
+  } catch (err) {
+    console.log("error", err);
+  } finally {
+    setFollowLoadingIds(prev => {
+      const updated = new Set(prev);
+      updated.delete(userEmail);
+      return updated;
+    });
+  }
+};
   const recommendationSet = useMemo(
   () => new Set(recommendation),
   [recommendation]
@@ -270,7 +311,7 @@ const recommendedAuthors = useMemo(() => {
         <span className="group text-white">My Network </span>{" "}
       </h1> */}
 
-      <div className="w-full px-4 mx-auto flex items-center gap-3 pt-3 pb-3 md:py-6">
+      <div className="w-full px-4 mx-auto flex items-center gap-3 py-3 md:py-6">
         <IoIosGitNetwork className="text-green-400 text-3xl" />
         <h1 className="text-2xl md:text-3xl font-semibold tracking-tight text-white">
           My Network
@@ -372,41 +413,41 @@ const recommendedAuthors = useMemo(() => {
               </span>}
             </div>
 
-            <div className="mt-4">
-              {author.followers.includes(email) ? (
-                <button
-                  onClick={() => addFollower(author.email)}
-                  className="w-full py-1.5 rounded-lg bg-gray-700 text-gray-300 trim text-sm cursor-default transition-all duration-400 disabled:bg-transparent"
-                  disabled={followAuthorLoaderId === author.email}
-                >
-                    {followAuthorLoaderId === author.email ? (
-                              <div className="flex items-center py-1.5 justify-center gap-1">
-                                <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
-                                <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
-                                <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce" />
-                              </div>
-                            ) : (
-                              "Following"
-                            )}
-                </button>
-              ) : (
-                <button
-                  onClick={() => addFollower(author.email)}
-                  className="w-full py-1.5 rounded-lg bg-green-500 text-gray-900 text-sm font-medium hover:bg-green-400 transition-all duration-400 disabled:bg-transparent"
-                  disabled={followAuthorLoaderId === author.email}
-                >
-                    {followAuthorLoaderId === author.email ? (
-                              <div className="flex items-center py-1.5 justify-center gap-1">
-                                <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
-                                <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
-                                <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce" />
-                              </div>
-                            ) : (
-                              "Follow"
-                            )}
-                </button>
-              )}
-            </div>
+          <div className="mt-4">
+  {author.followers.includes(email) ? (
+    <button
+      onClick={() => addFollower(author.email)}
+      className="w-full py-2 rounded-lg bg-gray-700 text-gray-300 text-sm transition-all duration-400 disabled:bg-transparent"
+      disabled={followLoadingIds.has(author.email)}
+    >
+      {followLoadingIds.has(author.email) ? (
+        <div className="flex items-center py-1.5 justify-center gap-1">
+          <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
+          <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
+          <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce" />
+        </div>
+      ) : (
+        "Following"
+      )}
+    </button>
+  ) : (
+    <button
+      onClick={() => addFollower(author.email)}
+      className="w-full py-2 rounded-lg bg-green-500 text-gray-900 text-sm font-medium hover:bg-green-400 transition-all duration-400 disabled:bg-transparent"
+      disabled={followLoadingIds.has(author.email)}
+    >
+      {followLoadingIds.has(author.email) ? (
+        <div className="flex items-center py-1.5 justify-center gap-1">
+          <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
+          <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
+          <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce" />
+        </div>
+      ) : (
+        "Follow"
+      )}
+    </button>
+  )}
+</div>
           </div>
         ))}
       </div>
@@ -490,41 +531,41 @@ const recommendedAuthors = useMemo(() => {
                   </div>
                 )} */}
 
-                <div className="mt-5">
-                  {author.followers.includes(email) ? (
-                    <button
-                      onClick={() => addFollower(author.email)}
-                      className="w-full py-2 cursor-pointer rounded-lg bg-gray-700 text-gray-300 text-sm cursor-default transition-all duration-400 disabled:bg-transparent"
-                      disabled={followAuthorLoaderId === author.email}
-                    >
-                       {followAuthorLoaderId === author.email ? (
-                              <div className="flex items-center py-1.5 justify-center gap-1">
-                                <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
-                                <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
-                                <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce" />
-                              </div>
-                            ) : (
-                              "Following"
-                            )}
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => addFollower(author.email)}
-                      className="w-full py-2 rounded-lg bg-green-500 text-gray-900 text-sm font-medium hover:bg-green-400 transition-all duration-400 disabled:bg-transparent"
-                      disabled={followAuthorLoaderId === author.email}
-                    >
-                      {followAuthorLoaderId === author.email ? (
-                              <div className="flex items-center py-1.5 justify-center gap-1">
-                                <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
-                                <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
-                                <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce" />
-                              </div>
-                            ) : (
-                              "Follow"
-                            )}
-                    </button>
-                  )}
-                </div>
+      <div className="mt-5">
+  {author.followers.includes(email) ? (
+    <button
+      onClick={() => addFollower(author.email)}
+      className="w-full py-2 rounded-lg bg-gray-700 text-gray-300 text-sm transition-all duration-400 disabled:bg-transparent"
+      disabled={followLoadingIds.has(author.email)}
+    >
+      {followLoadingIds.has(author.email) ? (
+        <div className="flex items-center py-1.5 justify-center gap-1">
+          <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
+          <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
+          <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce" />
+        </div>
+      ) : (
+        "Following"
+      )}
+    </button>
+  ) : (
+    <button
+      onClick={() => addFollower(author.email)}
+      className="w-full py-2 rounded-lg bg-green-500 text-gray-900 text-sm font-medium hover:bg-green-400 transition-all duration-400 disabled:bg-transparent"
+      disabled={followLoadingIds.has(author.email)}
+    >
+      {followLoadingIds.has(author.email) ? (
+        <div className="flex items-center py-1.5 justify-center gap-1">
+          <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
+          <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
+          <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce" />
+        </div>
+      ) : (
+        "Follow"
+      )}
+    </button>
+  )}
+</div>
               </div>
             ))}
 
