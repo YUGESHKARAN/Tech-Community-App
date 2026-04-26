@@ -1,20 +1,20 @@
 const PostDetailSkeleton = () => {
   return (
-    <div className="w-full mx-auto px-3 md:px-4 md:px-8 py-6 pb-20 md:py-10 animate-pulse">
+    <div className="w-full mx-auto px-3 md:px-4 md:px-8 pt-3 pb-20 md:pt-4 md:pb-10 animate-pulse">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between md:mb-6">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-gray-700" />
+          <div className="md:w-10 md:h-10 w-7 h-7 rounded-full bg-gray-700" />
           <div className="space-y-2">
-            <div className="h-4 w-28 bg-gray-700 rounded" />
-            <div className="h-3 w-20 bg-gray-700 rounded" />
+            <div className="md:h-4 h-3 w-28 bg-gray-700 rounded" />
+            <div className="md:h-3 h-2 w-20 bg-gray-700 rounded" />
           </div>
         </div>
-        <div className="h-8 w-16 bg-gray-700 rounded-md" />
+        <div className="md:h-8  md:w-16 h-5 w-12 bg-gray-700 rounded-md" />
       </div>
 
       {/* Title */}
-      <div className="h-8 w-3/4 bg-gray-700 rounded mb-4 md:mb-6" />
+      <div className="md:h-8 h-5 w-3/5 bg-gray-700 rounded my-4 md:mb-6" />
 
       {/* Two Column Layout */}
       <div className="grid grid-cols-1 mt-2 md:mt-0 md:grid-cols-6 md:gap-8 gap-4 md:gap-6">

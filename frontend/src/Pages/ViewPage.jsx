@@ -393,9 +393,9 @@ function ViewPage() {
 
       {/* Main Container */}
       {!loading && (
-        <div className="w-full  mx-auto px-3  md:px-8 py-6 pb-20  md:py-10">
+        <div className="w-full  mx-auto px-3  md:px-8 pt-3 pb-20 pt-4 md:pb-10">
           {/* Header */}
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between md:mb-0">
             <div className="flex items-center gap-3">
               <Link to={`/viewProfile/${email}`}>
                 <img
@@ -404,15 +404,15 @@ function ViewPage() {
                       ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`
                       : userImg
                   }
-                  className="w-10 h-10 rounded-full object-cover bg-gray-700 border border-neutral-700/40"
+                  className="md:w-10 md:h-10 w-7 h-7 rounded-full object-cover bg-gray-700 border border-neutral-700/40"
                   alt="Author"
                 />
               </Link>
               <div>
-                <p className="text-white font-semibold text-sm md:text-base">
+                <p className="text-white font-semibold text-[11px] md:text-sm md:text-base">
                   {singlePostData.authorname}
                 </p>
-                <p className="text-xs text-gray-400">
+                <p className="md:text-xs text-[8px] text-gray-400">
                   {singlePostData.timestamp
                     ? getTimeAgo(singlePostData.timestamp)
                     : "null"}
@@ -422,16 +422,18 @@ function ViewPage() {
 
             <button
               onClick={() => navigate(-1)}
-              className="px-3 py-1.5 rounded-md bg-[#F8EFBA] text-[#182C61] text-xs md:text-sm font-medium"
+              // className="md:px-3 md:py-1.5 px-2 py-0.5 rounded-md bg-[#F8EFBA] text-[#182C61] text-[10px] md:text-sm font-medium"
+              className="text-emerald-500 px-2 md:px-3  text-xs md:text-sm"
               // className="md:px-5 px-3 py-2 md:py-2.5 bg-emerald-500/20 hover:bg-emerald-600/20 hover:bg-emerald-500/20
               //              rounded-md text-xs md:text-sm   text-emerald-400 transition"
             >
-              Back
+               ← Back
+               {/* Back */}
             </button>
           </div>
 
           {/* Title */}
-          <h1 className="text-xl md:text-3xl  font-semibold text-white mb-4 md:mb-6">
+          <h1 className="text-2xl   md:text-3xl max-w-[370px] md:max-w-4xl  font-semibold text-white mt-2 md:mb-6">
             {singlePostData.title}
           </h1>
 
@@ -440,7 +442,7 @@ function ViewPage() {
             {/* LEFT COLUMN */}
             <div className="lg:col-span-4  ">
               {/* Banner */}
-              <div className="md:rounded-xl mb-2 md:mb-6 block md:hidden rounded-md overflow-hidden border border-white/10 bg-black">
+              <div className="md:rounded-xl my-2 md:mb-6 block md:hidden rounded-md overflow-hidden border border-white/10 bg-black">
                 <img
                   src={
                     singlePostData.image
@@ -448,7 +450,7 @@ function ViewPage() {
                       : blog1
                   }
                   alt="Post"
-                  className="w-full  md:h-96 objct-cover md:object-contain cursor-pointer"
+                  className="w-full  h-64 objct-cover md:object-contain cursor-pointer"
                   onClick={() =>
                     handleImageClick(
                       singlePostData.image
@@ -792,7 +794,7 @@ function ViewPage() {
 
               {/* Videos */}
               {youtubeVideo?.length > 0 && (
-                <div className=" md:border border-neutral-700/50 rounded-lg md:rounded-xl pl-2 pt-5  md:p-5">
+                <div className=" md:border border-neutral-700/50 rounded-lg md:rounded-xl pl-2 pt-3  md:p-5">
                   <h3 className="text-base flex items-center gap-2 md:gap-3  text-slate-300 font-semibold  mb-3">
                     {/* 🎥 */}
                     <FaYoutube className="text-slate-300 text-xl" />

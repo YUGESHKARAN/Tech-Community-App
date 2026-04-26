@@ -3,7 +3,7 @@ const ProfileViewSkeleton = ({role}) => {
   return (
     <div className="bg-gray-900 text-white animate-pulse">
       {/* Page */}
-      <div className="w-full min-h-screen px-4 md:px-6 py-8 pb-24">
+      <div className="w-full min-h-screen px-4 md:px-6  pt-2 md:pt-6 pb-8 pb-24">
 
         {/* Header */}
         <div className="mb-8 px-1">

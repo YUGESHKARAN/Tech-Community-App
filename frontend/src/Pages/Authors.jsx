@@ -270,7 +270,7 @@ const recommendedAuthors = useMemo(() => {
         <span className="group text-white">My Network </span>{" "}
       </h1> */}
 
-      <div className="w-full px-4 mx-auto flex items-center gap-3 pt-6 pb-3 md:py-6">
+      <div className="w-full px-4 mx-auto flex items-center gap-3 pt-3 pb-3 md:py-6">
         <IoIosGitNetwork className="text-green-400 text-3xl" />
         <h1 className="text-2xl md:text-3xl font-semibold tracking-tight text-white">
           My Network
@@ -278,7 +278,7 @@ const recommendedAuthors = useMemo(() => {
       </div>
 
        {/* Search and Filter */}
-      <div className="w-full px-4 mx-auto flex mt-3 md:mt-4   md:flex-row justify-between items-center gap-4 mb-4 md:mb-6">
+      <div className="w-full px-4 mx-auto flex mt-2 md:mt-4   md:flex-row justify-between items-center gap-4 mb-3 md:mb-6">
         <div
           // className="md:w-1/3 w-3/5 px-4 py-2 flex items-center gap-2 justify-center rounded-md bg-gray-600 border border-white text-xs md:text-base text-white placeholder-gray-400"
           className="w-full max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition"
@@ -298,9 +298,9 @@ const recommendedAuthors = useMemo(() => {
           value={roleFilter}
           onChange={(e) => setRoleFilter(e.target.value)}
           className="
-            w-32 md:w-64
+            w-28 md:w-64
             px-3 py-2
-            rounded-full
+            rounded-2xl
             bg-gray-800 backdrop-blur-md
             border border-gray-600
             text-xs 

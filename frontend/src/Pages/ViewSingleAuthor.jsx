@@ -413,11 +413,11 @@ function ViewSingleAuthor() {
       <NavBar />
 
      {!loading? 
-     <div className="w-full min-h-screen mx-auto px-4 md:px-6 py-8 pb-24">
+     <div className="w-full min-h-screen mx-auto px-4 md:px-6 pt-2 md:pt-6 pb-8 pb-24">
 
         {/* ── Page header ──────────────────────────────────────── */}
         <div className="mb-8 px-1">
-          <p className="text-[11px] font-medium tracking-widest uppercase text-gray-500 mb-1">
+          <p className="text-[11px] font-medium tracking-widest uppercase text-gray-300 mb-1">
             Account
           </p>
           <h1 className="text-2xl md:text-3xl font-medium tracking-tight text-white">
@@ -463,7 +463,7 @@ function ViewSingleAuthor() {
                   {author.role !== "student" && followers?.length > 0 && (
                     <div className="flex-1 py-3 bg-white/[0.02]">
                       <p className="text-base font-medium text-white">{followers?.length ?? 0}</p>
-                      <p className="text-[10px] text-gray-500 mt-0.5">Followers</p>
+                      <p className="text-[10px] text-gray-400 mt-0.5">Followers</p>
                     </div>
                   )}
 
@@ -471,20 +471,20 @@ function ViewSingleAuthor() {
                     <Link to={`/singleAuthorPosts/${email}`} className="flex-1">
                       <div className="py-3 bg-white/[0.02] hover:bg-emerald-500/5 transition-colors h-full">
                         <p className="text-base font-medium text-emerald-400">{posts.length}</p>
-                        <p className="text-[10px] text-gray-500 mt-0.5">Posts</p>
+                        <p className="text-[10px] text-gray-400 mt-0.5">Posts</p>
                       </div>
                     </Link>
                   ) : author.role === "coordinator" ? (
                     <div className="flex-1 py-3 bg-white/[0.02]">
                       <p className="text-base font-medium text-gray-600">0</p>
-                      <p className="text-[10px] text-gray-500 mt-0.5">Posts</p>
+                      <p className="text-[10px] text-gray-400 mt-0.5">Posts</p>
                     </div>
                   ) : null}
 
                   {following?.length > 0 && (
                     <div className="flex-1 py-3 bg-white/[0.02]">
                       <p className="text-base font-medium text-white">{following?.length ?? 0}</p>
-                      <p className="text-[10px] text-gray-500 mt-0.5">Following</p>
+                      <p className="text-[10px] text-gray-400 mt-0.5">Following</p>
                     </div>
                   )}
                 </div>
@@ -594,7 +594,7 @@ function ViewSingleAuthor() {
                 <div className="flex flex-col gap-1.5">
                   <label
                     htmlFor="authorName"
-                    className="text-[11px] font-medium tracking-widest uppercase text-gray-500"
+                    className="text-[11px] font-medium tracking-widest uppercase text-gray-300"
                   >
                     Author Name
                   </label>
@@ -607,7 +607,7 @@ function ViewSingleAuthor() {
                       setAuthorName(e.target.value);
                       setUpdateButton(true);
                     }}
-                    className="w-full px-3.5 py-2.5 text-sm bg-gray-800/30 border border-white/[0.04] rounded-lg text-gray-500 outline-none cursor-not-allowed"
+                    className="w-full px-3.5 py-2.5 text-sm bg-gray-800/30 border border-white/[0.04] rounded-lg text-gray-400 outline-none cursor-not-allowed"
                   />
                 </div>
 
@@ -615,7 +615,7 @@ function ViewSingleAuthor() {
                 <div className="flex flex-col gap-1.5">
                   <label
                     htmlFor="email"
-                    className="text-[11px] font-medium tracking-widest uppercase text-gray-500"
+                    className="text-[11px] font-medium tracking-widest uppercase text-gray-300"
                   >
                     Author Email
                   </label>
@@ -624,7 +624,7 @@ function ViewSingleAuthor() {
                     id="email"
                     value={email}
                     readOnly
-                    className="w-full px-3.5 py-2.5 text-sm bg-gray-800/30 border border-white/[0.04] rounded-lg text-gray-500 outline-none cursor-not-allowed"
+                    className="w-full px-3.5 py-2.5 text-sm bg-gray-800/30 border border-white/[0.04] rounded-lg text-gray-400 outline-none cursor-not-allowed"
                   />
                 </div>
 
@@ -632,7 +632,7 @@ function ViewSingleAuthor() {
                 <div className="flex flex-col gap-1.5">
                   <label
                     htmlFor="role"
-                    className="text-[11px] font-medium tracking-widest uppercase text-gray-500"
+                    className="text-[11px] font-medium tracking-widest uppercase text-gray-300"
                   >
                     Author Role
                   </label>
@@ -641,14 +641,14 @@ function ViewSingleAuthor() {
                     id="role"
                     value={author.role}
                     readOnly
-                    className="w-full px-3.5 py-2.5 text-sm bg-gray-800/30 border border-white/[0.04] rounded-lg text-gray-500 outline-none cursor-not-allowed"
+                    className="w-full px-3.5 py-2.5 text-sm bg-gray-800/30 border border-white/[0.04] rounded-lg text-gray-400 outline-none cursor-not-allowed"
                   />
                 </div>
 
                 {/* Communities — below role */}
                 {author.community?.length > 0 && (
                   <div className="flex flex-col gap-2">
-                    <p className="text-[11px] font-medium tracking-widest uppercase text-gray-500">
+                    <p className="text-[11px] font-medium tracking-widest uppercase text-gray-300">
                       Communities{" "}
                       {author.role === "coordinator" ? "coordinating" : "joined"}
                     </p>
@@ -668,7 +668,7 @@ function ViewSingleAuthor() {
 
               {/* ── Right column — Bio Links ─────────────────── */}
               <div>
-                <p className="text-[11px] font-medium tracking-widest uppercase text-gray-500 mb-3">
+                <p className="text-[11px] font-medium tracking-widest uppercase text-gray-300 mb-3">
                   Bio Links
                 </p>
 
@@ -698,7 +698,7 @@ function ViewSingleAuthor() {
                             href={link.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-[10px] text-gray-500 hover:text-blue-400 transition-colors truncate block max-w-[180px]"
+                            className="text-[10px] text-gray-400 hover:text-blue-400 transition-colors truncate block max-w-[180px]"
                           >
                             {authorName}/{link.title}
                           </a>
@@ -708,8 +708,8 @@ function ViewSingleAuthor() {
                   </div>
                 ) : (
                   <div className="px-4 py-8 bg-white/[0.015] border border-dashed border-white/[0.08] rounded-xl text-center">
-                    <PiLinkSimpleFill className="text-2xl text-gray-700 mx-auto mb-2" />
-                    <p className="text-xs text-gray-600 leading-relaxed">
+                    <PiLinkSimpleFill className="text-2xl text-gray-600 mx-auto mb-2" />
+                    <p className="text-xs text-gray-500 leading-relaxed">
                       No bio links available.
                     </p>
                   </div>
