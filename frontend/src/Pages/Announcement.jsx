@@ -434,7 +434,7 @@ function Announcement() {
       <div className="min-h-screen">
         {/* ================= HEADER ================= */}
         <div className="w-full">
-          <div className="w-full mx-auto px-4 md:px-6 pt-3 py-3 md:pt-6 flex justify-between items-center">
+          <div className="w-full mx-auto px-4 md:px-6 pt-4 pb-5 md:pt-6 flex justify-between items-center">
             <div>
               <h1 className="md:text-3xl text-2xl font-semibold  tracking-tight  flex items-center gap-1 justify-center">
                 <MdAnnouncement className="tetxt-2xl pt-0.5 md:pt-0 md:text-3xl " />{" "}
