@@ -393,7 +393,7 @@ function ViewPage() {
 
       {/* Main Container */}
       {!loading && (
-        <div className="w-full  mx-auto px-3  md:px-8 pt-3 pb-20 pt-4 md:pb-10">
+        <div className="w-full xl:w-11/12  mx-auto px-3  md:px-8 pt-3 pb-20 pt-4 md:pb-10">
           {/* Header */}
           <div className="flex items-center justify-between md:mb-0">
             <div className="flex items-center gap-3">
@@ -494,8 +494,8 @@ function ViewPage() {
                   }
                   className="
                     w-full
-                    md:h-[460px]
-                    h-[440px]
+                    md:h-[400px]
+                 
                     object-cover
                     cursor-pointer
                     transition-transform duration-500

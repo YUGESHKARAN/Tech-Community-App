@@ -129,12 +129,12 @@ function NavBar() {
 
   const deleteAllNotification = async (userEmail) => {
     if (notiCount === 0) return;
-    storeItem("notiCount", 0);
+   
     const confirm = window.confirm(
       "Are you sure want to delete all the notifications",
     );
-
     if (!confirm) return;
+     storeItem("notiCount", 0);
     try {
       const response = await axiosInstance.delete(
         `/blog/author/notification/deleteall?email=${userEmail}`,

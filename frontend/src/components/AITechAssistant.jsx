@@ -253,9 +253,10 @@ export default function AITechAssistant({ currentPostId, category, viewComments,
       ${open ? "translate-y-0" : "translate-y-full md:translate-y-0"}
       z-40 flex flex-col  md:rounded-xl
       md:py-4
-      md:h-[520px]      
+          md:h-[470px]  
+          ${isInputFocused ? "h-[50vh] " : "h-[75vh]"}
     `}
-                      style={{ height: isInputFocused ? "50vh" : "75vh" }}
+    //  style={{ height: isInputFocused ? "50vh " : "75vh" }}
       >
 
         <div 

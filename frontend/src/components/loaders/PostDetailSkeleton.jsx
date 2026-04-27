@@ -1,6 +1,6 @@
 const PostDetailSkeleton = () => {
   return (
-    <div className="w-full mx-auto px-3 md:px-4 md:px-8 pt-3 pb-20 md:pt-4 md:pb-10 animate-pulse">
+    <div className="w-full xl:w-11/12 mx-auto px-3 md:px-4 md:px-8 pt-3 pb-20 md:pt-4 md:pb-10 animate-pulse">
       {/* Header */}
       <div className="flex items-center justify-between md:mb-6">
         <div className="flex items-center gap-3">
@@ -21,7 +21,7 @@ const PostDetailSkeleton = () => {
         {/* LEFT COLUMN */}
         <div className="md:col-span-4 space-y-4 md:space-y-6">
           {/* Banner */}
-          <div className="h-56 md:h-96 bg-gray-800 rounded-xl border border-gray-700" />
+          <div className="h-56 md:h-[400px] bg-gray-800 rounded-xl border border-gray-700" />
 
           {/* AI assistant likes, share and bookmark */}
           <div className="flex items-center  justify-between md:justify-end mt-2 gap-4 my-3 md:mb-5">
