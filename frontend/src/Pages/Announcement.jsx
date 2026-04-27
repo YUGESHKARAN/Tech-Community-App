@@ -795,13 +795,13 @@ function Announcement() {
               </div>
             </div>
             {announcement.length === 0 && !announceLoading && (
-              <div className="flex h-[45vh] md:h-auto flex-col justify-center items-center gap-2 md:gap-3 ">
+              <div className="flex h-[45vh] md:h-[50vh] md:h-auto flex-col justify-center items-center gap-2 md:gap-3 ">
                 <img
-                  className="w-48 md:w-80 "
+                  className="w-48 md:w-60 "
                   src={empty_state_announcement}
                   alt=""
                 />
-                <span className="text-gray-400 max-w-xs md:max-w-md text-sm flex justify-center items-center text-center ">
+                <span className="text-gray-400 max-w-xs md:text-base md:max-w-md text-sm flex justify-center items-center text-center ">
                   {" "}
                   Your announcements tab is empty!{" "}
                 </span>

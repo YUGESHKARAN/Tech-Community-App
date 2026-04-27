@@ -231,11 +231,11 @@ const TutorBookMarkPlaylist = () => {
       { bookMarPlaylist.length===0 &&!loading &&
         <div className="flex h-[70vh]  md:h-[55vh]  flex-col pt-0 md:mt-0 justify-center items-center ">
                                      <img
-                                       className="w-48 md:w-80 "
+                                       className="w-48 md:w-60 "
                                        src={empty_state_post}
                                        alt=""
                                      />
-                           <p className="text-gray-400 max-w-xs md:max-w-md text-sm flex justify-center items-center text-center">
+                           <p className="text-gray-400 max-w-xs md:text-base md:max-w-md text-sm flex justify-center items-center text-center">
                          No playlists bookmarked!
                        </p>
                        

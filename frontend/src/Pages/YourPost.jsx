@@ -543,13 +543,13 @@ function YourPost() {
           {posts.length == 0 && !loader && (
             <div className="flex h-[70vh] flex-col justify-center items-center md:gap-3 ">
               <img
-                className="w-48 md:w-80 "
+                className="w-48 md:w-60 "
                 src={empty_state_post}
                 alt=""
               />
               <div className="flex flex-col justify-center items-center gap-3 md:gap-3">
                 {" "}
-                <span className="text-gray-400 max-w-xs md:max-w-md text-sm flex justify-center items-center text-center ">
+                <span className="text-gray-400 max-w-xs md:max-w-md md:text-base text-sm flex justify-center items-center text-center ">
                   {" "}
                   Your workspace is empty! Start creating your posts.{" "}
                 </span>

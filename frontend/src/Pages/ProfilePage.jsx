@@ -418,7 +418,7 @@ function ProfilePage() {
                           onChange={(e) => setCurrentLinkTitle(e.target.value)}
                           className="w-full px-3.5 py-2.5 text-sm bg-gray-800/60 border border-white/[0.07] rounded-lg text-gray-300 outline-none focus:border-emerald-500/50 focus:bg-gray-800 transition-colors duration-200 cursor-pointer"
                         >
-                          <option value="" disabled>Select platform</option>
+                          <option value="" disabled>Add Bio Link</option>
                           {!profileLinks.some(
                             (l) => l.title === "GitHub" && currentLinkTitle !== "GitHub"
                           ) && <option value="GitHub">GitHub</option>}
@@ -647,7 +647,7 @@ function ProfilePage() {
                           onChange={(e) => setCurrentLinkTitle(e.target.value)}
                           className="w-full px-3.5 py-2.5 text-sm bg-gray-800/60 border border-white/[0.07] rounded-lg text-gray-300 outline-none focus:border-emerald-500/50 focus:bg-gray-800 transition-colors duration-200 cursor-pointer"
                         >
-                          <option value="" disabled>Select platform</option>
+                          <option value="" disabled>Add Bio Link</option>
                           {!profileLinks.some(
                             (l) => l.title === "GitHub" && currentLinkTitle !== "GitHub"
                           ) && <option value="GitHub">GitHub</option>}

@@ -302,10 +302,10 @@ function LogMonitoringPage() {
       <div className="flex flex-col md:flex-row justify-between gap-4 mb-3">
         <div>
           <h1 className="md:text-2xl text-xl font-semibold text-emerald-400">
-            Deletion Logs
+            Backup Logs
           </h1>
           <p className="text-xs text-gray-400">
-            Monitor and manage deleted users data
+            Monitor, backup and recover deleted user data
           </p>
         </div>
       </div>
@@ -341,7 +341,7 @@ function LogMonitoringPage() {
       </div>
 
 
-        <div className="flex order-1  col-span-full md:order-3 mt-6 md:mt-0  items-center gap-2 bg-white/[0.05] border border-white/10 px-3 py-2 rounded-xl w-full md:w-80">
+        <div className="flex order-1  col-span-full md:order-3 mt-6 md:mt-0  items-center gap-2 bg-white/[0.05] border border-white/10 px-3 py-2 rounded-xl w-full md:w-80 focus-within:border-emerald-500/40 transition-colors">
           <IoSearch className="text-gray-400" />
           <input
             type="text"

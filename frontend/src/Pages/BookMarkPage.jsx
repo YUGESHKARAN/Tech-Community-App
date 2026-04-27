@@ -558,11 +558,11 @@ function BookMarkPage() {
               {!loading && posts.length == 0 && (
                   <div className="flex h-[70vh] md:h-[55vh] flex-col justify-center items-center ">
                               <img
-                                className="w-48 md:w-80 "
+                                className="w-48 md:w-60 "
                                 src={empty_state_post}
                                 alt=""
                               />
-                    <p className="text-gray-400 max-w-xs md:max-w-md text-sm flex justify-center items-center text-center">
+                    <p className="text-gray-400 max-w-xs md:max-w-md text-sm md:text-base flex justify-center items-center text-center">
                   No posts bookmarked!
                 </p>
                 
