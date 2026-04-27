@@ -356,8 +356,9 @@ function LogMonitoringPage() {
       {/* TABLE */}
     {!loading && logDetails.length>0 ?  <div className="md:mt-4 mt-1 md:border  border-white/10 rounded-2xl overflow-hidden pb-2">
         {/* HEADER */}
-        <div className="hidden md:grid  grid-cols-[2fr_1fr_2fr_1.2fr_1.2fr_1.2fr_1.5fr_1fr] px-4 py-3 text-[11px] uppercase tracking-wider text-gray-400 bg-white/[0.03] border-b border-white/10">
+        <div className="hidden lg:grid  grid-cols-[2fr_1fr_1fr_2fr_1.2fr_1.2fr_1.2fr_1.5fr_1fr] px-4 py-3 text-[11px] uppercase tracking-wider text-gray-400 bg-white/[0.03] border-b border-white/10">
           <span>User</span>
+          <span>Role</span>
           <span>Status</span>
           {/* <span>Type</span> */}
           <span>Deleted By</span>
@@ -370,14 +371,14 @@ function LogMonitoringPage() {
         </div>
 
         {/* ROWS */}
-        <div className="hidden md:block divide-y divide-white/5">
+        <div className="hidden lg:block divide-y divide-white/5">
           {filteredData.map((log) => {
             const status = getStatus(log);
 
             return (
               <div
                 key={log.logId}
-                className="grid grid-cols-[2fr_1fr_2fr_1.2fr_1.2fr_1.2fr_1.5fr_1fr] items-center px-4 py-3 text-sm hover:bg-white/[0.03] transition"
+                className="grid grid-cols-[2fr_1fr_1fr_2fr_1.2fr_1.2fr_1.2fr_1.5fr_1fr] items-center px-4 py-3 text-sm hover:bg-white/[0.03] transition"
               >
                 {/* USER */}
                 <div className="flex items-center gap-3 min-w-0">
@@ -398,6 +399,11 @@ function LogMonitoringPage() {
                       {highlightText(log.authorEmail, debouncedSearch)}
                     </span>
                   </div>
+                </div>
+
+                {/* ROLE */}
+                <div className="text-xs text-gray-400">
+                  {log.authorRole}
                 </div>
 
                 {/* STATUS */}
@@ -486,7 +492,7 @@ function LogMonitoringPage() {
         </div>
 
         {/* LIST */}
-        <div className="md:hidden flex flex-col  gap-4">
+        <div className="lg:hidden flex flex-col  gap-4">
           {filteredData.map((log) => {
             const status = getStatus(log);
 
@@ -535,6 +541,10 @@ function LogMonitoringPage() {
 
                 {/* DETAILS */}
                 <div className="grid grid-cols-2 gap-y-2 text-xs text-gray-400">
+                  <span>Role</span>
+                  <span className="text-gray-300 text-right">
+                    {log.authorRole}
+                  </span>
                   <span>Type</span>
                   <span className="text-gray-300 text-right">
                     {log.deletionType}
