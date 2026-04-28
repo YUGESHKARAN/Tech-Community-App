@@ -14,11 +14,14 @@
 E-Learning & collaborative platform designed for universities and colleges, focusing on knowledge sharing and community building. The platform enables student developers to connect, collaborate, and engage through sharing their tech works, knowledges and findings, all within their institution. Developers can interact, clarify doubts via discussion section. The platform includes role-based interfaces for Students, Coordinators, and Admins to manage content, moderation, and community participation.
 
 ---
-## Home Screen
+## Playlist Screen (Student Interface)
+![Tech-Comm-App](/assets/tech-com-playlist.png)
+
+## Home Screen (Coordinator Interface)
 ![Tech-Comm-App](/assets/tech-comm-app.png)
 
-## Playlist Screen
-![Tech-Comm-App](/assets/tech-comm-playlist.png)
+## Dashboard Screen (Admin Interface)
+![Tech-Comm-App](/assets/tech-comm-admin-dashboard.png)
 
 ## Key Features
 
