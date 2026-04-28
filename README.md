@@ -9,6 +9,8 @@
 [![Pull Requests](https://img.shields.io/github/issues-pr/YUGESHKARAN/Node-Blog-App)](https://github.com/YUGESHKARAN/Node-Blog-App/pulls)
 [![Contributors](https://img.shields.io/github/contributors/YUGESHKARAN/Node-Blog-App)](https://github.com/YUGESHKARAN/Node-Blog-App/graphs/contributors)
 
+![Tech-Comm-App](/assets/tech-comm-app.png)
+
 **Welcome to the Tech. Community App!**
 
 E-Learning & collaborative platform designed for universities and colleges, focusing on knowledge sharing and community building. The platform enables student developers to connect, collaborate, and engage through sharing their tech works, knowledges and findings, all within their institution. Developers can interact, clarify doubts via discussion section. The platform includes role-based interfaces for Students, Coordinators, and Admins to manage content, moderation, and community participation.
