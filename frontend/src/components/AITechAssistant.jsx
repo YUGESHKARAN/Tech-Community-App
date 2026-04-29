@@ -10,7 +10,13 @@ import blog1 from "../images/img_not_found.png";
 import { VscSend } from "react-icons/vsc";
 import { IoSendSharp } from "react-icons/io5";
 import Cookies from "js-cookie";
-export default function AITechAssistant({ currentPostId, category, viewComments, setViewComments }) {
+import { GoArrowUpRight } from "react-icons/go";
+export default function AITechAssistant({
+  currentPostId,
+  category,
+  viewComments,
+  setViewComments,
+}) {
   const username = localStorage.getItem("username");
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -34,7 +40,6 @@ export default function AITechAssistant({ currentPostId, category, viewComments,
   ]);
 
   const askAI = async (customQuery) => {
-
     const finalQuery = customQuery || query;
     if (!finalQuery.trim()) return;
 
@@ -54,7 +59,7 @@ export default function AITechAssistant({ currentPostId, category, viewComments,
       const res = await axios.post(
         `${assistantURL}/ask`,
         {
-          query:finalQuery,
+          query: finalQuery,
           current_post_id: currentPostId,
           category,
         },
@@ -105,7 +110,6 @@ export default function AITechAssistant({ currentPostId, category, viewComments,
     }
   };
 
-
   const getYouTubeId = (url) => {
     const match = url.match(
       /(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([^&?/]+)/,
@@ -155,15 +159,14 @@ export default function AITechAssistant({ currentPostId, category, viewComments,
   // };
 
   const handleQueryClick = async (suggestion) => {
-  setQuery(suggestion);
-  askAI(suggestion);
-};
+    setQuery(suggestion);
+    askAI(suggestion);
+  };
 
   const lastUserIndex = [...messages]
     .map((m, i) => (m.role === "user" ? i : -1))
     .filter((i) => i !== -1)
     .pop();
-
 
   useEffect(() => {
     const container = containerRef.current;
@@ -192,11 +195,11 @@ export default function AITechAssistant({ currentPostId, category, viewComments,
     requestAnimationFrame(animateScroll);
   }, [messages]);
 
-  useEffect(()=>{
-    if (viewComments){
-      setOpen(false)
+  useEffect(() => {
+    if (viewComments) {
+      setOpen(false);
     }
-  }, [viewComments])
+  }, [viewComments]);
 
   //  console.log("token", token)
   // console.log("messages", messages )
@@ -212,14 +215,18 @@ export default function AITechAssistant({ currentPostId, category, viewComments,
         </button>
       )} */}
 
-     {open&& <div
-                  onClick={() => setOpen(false)}
-                  className={`absolute inset-0 duration-300 ${
-                    open ? "bg-black/60 backdrop-blur-sm transition-opacity" : "opacity-0"
-                  }`}
-                />}
+      {open && (
+        <div
+          onClick={() => setOpen(false)}
+          className={`absolute inset-0 duration-300 ${
+            open
+              ? "bg-black/60 backdrop-blur-sm transition-opacity"
+              : "opacity-0"
+          }`}
+        />
+      )}
 
-       {/* {!open && (
+      {/* {!open && (
         <button
           onClick={() => setOpen(true)}
           className=" bottom-4 flex items-center gap-2 right-4 bg-gray-900 hover:bg-gray-800 border border-neutral-700 text-emerald-400 text-sm md:px-5 px-3 py-1 rounded-full md:hidden z-50 shadow-xl"
@@ -228,16 +235,16 @@ export default function AITechAssistant({ currentPostId, category, viewComments,
         </button>
       )} */}
 
-        <button
-          onClick={() => setOpen(!open)}
-          className=" bottom-4 flex md:hidden items-center gap-2 right-4 bg-gray-800/50 transition-all duration-300 active:scale-95 md:border border-neutral-800 md:border-neutral-700 text-emerald-400 text-xs md:px-5 px-3 py-1.5 rounded-full md:hidden z-50 shadow-xl"
-        >
-         Ask AI <SiGooglegemini />
-        </button>
-
+      <button
+        onClick={() => setOpen(!open)}
+        className=" bottom-4 flex md:hidden items-center gap-2 right-4 bg-gray-800/50 transition-all duration-300 active:scale-95 md:border border-neutral-800 md:border-neutral-700 text-emerald-400 text-xs md:px-5 px-3 py-1.5 rounded-full md:hidden z-50 shadow-xl"
+      >
+        Ask AI <SiGooglegemini />
+      </button>
 
       {/* Assistant Panel */}
       {/* [#0f0f0f] */}
+      {/* [#0a0f1d]  */}
       <div
         className={`
       fixed md:static bottom-0 right-0
@@ -256,29 +263,28 @@ export default function AITechAssistant({ currentPostId, category, viewComments,
           md:h-[470px]  
           ${isInputFocused ? "h-[50vh] " : "h-[75vh]"}
     `}
-    //  style={{ height: isInputFocused ? "50vh " : "75vh" }}
+        //  style={{ height: isInputFocused ? "50vh " : "75vh" }}
       >
-
-        <div 
-        onClick={()=>{setOpen(false)}}
-        className="flex md:hidden justify-center pt-3 pb-1 shrink-0">
-                    <div className="w-9 h-1 rounded-full bg-gray-600" />
-                  </div>
+        <div
+          onClick={() => {
+            setOpen(false);
+          }}
+          className="flex md:hidden justify-center pt-3 pb-1 shrink-0"
+        >
+          <div className="w-9 h-1 rounded-full bg-gray-600" />
+        </div>
         {/* Header */}
         <div className="relative p-4 border-b text-xl border-neutral-800 flex justify-between items-center">
-          
-          <h2 className="font-bold ">
+          <h2 className="font-bold  ">
             Ask about this post <SiGooglegemini />
           </h2>
           <button
             onClick={() => setOpen(false)}
-            className="absolute top-4 right-4 md:hidden text-base md:text-base text-neutral-400"
+            className="absolute top-4 right-4 md:hidden text-xs md:text-sm text-neutral-400"
           >
             ✕
           </button>
         </div>
-
-        
 
         {/* Timeline */}
         <div
@@ -471,26 +477,23 @@ export default function AITechAssistant({ currentPostId, category, viewComments,
                   {/* Suggested Queries */}
                   {msg.suggestedQueries?.length > 0 && (
                     <div className="flex flex-col gap-2 pt-2">
-                
-
-                      {
-                        msg.suggestedQueries.map((s, i) => (
-                          <button
-                            key={i}
-                            disabled={loading}
-                            onClick={async () => {
-                              // setQuery(s);
-                              // await handleQueryClick(e);
-                               handleQueryClick(s);
-                            }}
-                            // className="bg-neutral-800 hover:bg-neutral-700 px-3 py-1.5 rounded-full text-sm"
-                            className="border border-neutral-600 w-fit text-left hover:bg-gray-800/70 px-3 md:py-1.5 transition-all duration-300 py-2 rounded-3xl text-sm disabled:opacity-50
+                      {msg.suggestedQueries.map((s, i) => (
+                        <button
+                          key={i}
+                          disabled={loading}
+                          onClick={async () => {
+                            // setQuery(s);
+                            // await handleQueryClick(e);
+                            handleQueryClick(s);
+                          }}
+                          // className="bg-neutral-800 hover:bg-neutral-700 px-3 py-1.5 rounded-full text-sm"
+                          className="border border-neutral-600 w-fit text-left hover:bg-gray-800/70 px-3 md:py-1.5 transition-all duration-300 py-2 rounded-3xl text-sm disabled:opacity-50
                               disabled:cursor-not-allowed
                               disabled:hover:bg-transparent "
-                          >
-                            {s}
-                          </button>
-                        ))}
+                        >
+                          {s}
+                        </button>
+                      ))}
 
                       {/* {idx > 0 && msg.suggestedQueries?.length > 0 && (
                         <div className="flex flex-nowarp scrollbar-hide overflow-x-auto gap-2 pt-2">
@@ -552,17 +555,16 @@ export default function AITechAssistant({ currentPostId, category, viewComments,
             onMouseOut={() => setIsInputFocused(false)}
           />
 
-           <input
+          <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && askAI()}
             placeholder="Ask your queries..."
             className="flex-1 bg-gray-800 hidden md:block border border-neutral-800 rounded-xl px-4 py-2 text-sm text-white placeholder-neutral-500 outline-none"
-
           />
 
           <button
-            onClick={()=>askAI(query)}
+            onClick={() => askAI(query)}
             disabled={loading}
             // className="bg-white text-black px-4 rounded-xl text-sm text-base block"
             className="text-2xl md:text-2xl transition-all duration-300 hover:text-gray-400 text-gray-500 block transition-all duration-300  disabled:text-gray-700 disabled:cursor-not-allowed"
@@ -571,11 +573,24 @@ export default function AITechAssistant({ currentPostId, category, viewComments,
             <VscSend />
           </button>
         </div>
-        {/* <ul className="text-center text-gray-300 h-10 ">
-           <li className="text-[8px] md:text-[10px] md:h-4 h-3"> AI can make mistakes, so double check it</li>
-           <li className="text-[6px]  md:text-[8px] h-3">Made with <span className="text-gray-400 text-[5px] md:text-[7px]">Llama-4-Scout-17B & Pinecone</span></li>
-          </ul> */}
-          
+        <ul className="text-center text-gray-300 h-10 ">
+          <li className="text-[8px] md:text-[10px] md:h-4 h-3">
+            {" "}
+            It is specially made for this platform
+          </li>
+          <li className="text-[6px] text-gray-400  md:text-[9px] h-3">
+            Visit our documentation to know more details{" "}
+            <a
+              href="/tech_community_assistant_user_guide.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-emerald-400 underline hover:text-emerald-300 transition-all duration-300 text-[5px] inline-block text-wrap md:text-[8px]"
+            >
+              {" "}
+              User guide ↗
+            </a>{" "}
+          </li>
+        </ul>
       </div>
     </>
   );

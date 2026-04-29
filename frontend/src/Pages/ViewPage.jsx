@@ -545,6 +545,7 @@ function ViewPage() {
                 // className="flex items-center  justify-between md:justify-end mt-3 mb-1 md:mb-5"
                 className="w-full mx-auto mt-3 mb-1 md:mb-5"
               >
+                   
                 {/* Actions */}
                 <div className="flex items-center md:justify-end justify-between   md:gap-3">
                   {/* AI Assistant */}
@@ -556,6 +557,17 @@ function ViewPage() {
                       setViewComments={setViewComments}
                     />
                   </div>
+
+
+                    <button
+                          onClick={() => setShowAssistant(!showAssistant)}
+                          className=" md:flex hidden  items-center gap-2  bg-gray-800/50 transition-all duration-300 active:scale-95 md:border  border-neutral-800 md:border-neutral-700 text-emerald-400 text-xs px-5 py-1.5 rounded-full shadow-xl"
+                        >
+                          Ask AI <SiGooglegemini />
+                        </button>
+
+
+               
 
                   <button
                     onClick={() => setViewComments(!viewComments)}
@@ -689,12 +701,12 @@ function ViewPage() {
 
             <div className="lg:col-span-2 space-y-2 md:relative  md:space-y-6  h-fit">
               {/* Personal Assistant */}
-              <div className="text-4xl text-white hidden md:block ">
+            {showAssistant &&  <div className="text-4xl text-white hidden md:block ">
                 <AITechAssistant
                   currentPostId={singlePostData._id}
                   category={singlePostData.category}
                 />
-              </div>
+              </div>}
 
               {/* Documents */}
               {/* bg-gradient-to-b from-slate-900/80 to-slate-800/80 */}
