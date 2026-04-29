@@ -393,7 +393,7 @@ function ViewPage() {
 
       {/* Main Container */}
       {!loading && (
-        <div className="w-full xl:w-11/12  mx-auto px-3  md:px-8 pt-3 pb-20 pt-4 md:pb-10">
+        <div className="w-full xl:w-11/12 md:transition-all md:duration-900  mx-auto px-3  md:px-8 pt-3 pb-20 pt-4 md:pb-10">
           {/* Header */}
           <div className="flex items-center justify-between md:mb-0">
             <div className="flex items-center gap-3">

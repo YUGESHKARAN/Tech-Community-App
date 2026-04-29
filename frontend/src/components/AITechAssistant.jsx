@@ -253,8 +253,9 @@ export default function AITechAssistant({
       md:relative
       text-white
       bg-[#0a0f1d] 
-       
-      border-t border-[#30363d] md:border-0
+      md:bg-gray-900
+      md:border 
+      border-t border-[#30363d] 
       rounded-t-2xl 
       transform transition-transform duration-300
       ${open ? "translate-y-0" : "translate-y-full md:translate-y-0"}
@@ -289,7 +290,7 @@ export default function AITechAssistant({
         {/* Timeline */}
         <div
           ref={containerRef}
-          className="flex-1 overflow-y-auto scrollbar-hide p-4 space-y-8"
+          className="flex-1 overflow-y-auto scrollbar-hide p-4 md:pt-0 space-y-8"
         >
           {/* Messages */}
           {messages.map((msg, idx) => (
@@ -528,7 +529,7 @@ export default function AITechAssistant({
               {/* Typing bubble */}
 
               {/* Skeleton text */}
-              <div className="bg-[#0a0f1d] md:bg-gray-950/50 border border-neutral-800 p-4 rounded-2xl space-y-4">
+              <div className="bg-[#0a0f1d] md:bg-gray-900/50 border border-neutral-800 p-4 rounded-2xl space-y-4">
                 {/* Title shimmer */}
                 <div className="h-4 w-2/3 rounded-full bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 " />
 
@@ -543,7 +544,7 @@ export default function AITechAssistant({
         </div>
 
         {/* Input */}
-        <div className="p-3 pb-0 md:border-t border-neutral-800 rounded-b-xl flex gap-2 bg-[#0a0f1d] md:bg-gray-950/50">
+        <div className="p-3 pb-0  rounded-b-xl flex gap-2 bg-[#0a0f1d] md:bg-gray-900">
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -576,10 +577,10 @@ export default function AITechAssistant({
         <ul className="text-center text-gray-300 h-10 ">
           <li className="text-[8px] md:text-[10px] md:h-4 h-3">
             {" "}
-            It is specially made for this platform
+            It's specially made for this platform ❤️
           </li>
           <li className="text-[6px] text-gray-400  md:text-[9px] h-3">
-            Visit our documentation to know more details{" "}
+            Visit our official documentation to know more details{" "}
             <a
               href="/tech_community_assistant_user_guide.pdf"
               target="_blank"
