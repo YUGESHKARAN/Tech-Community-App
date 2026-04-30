@@ -14,8 +14,8 @@ import { GoArrowUpRight } from "react-icons/go";
 export default function AITechAssistant({
   currentPostId,
   category,
-  viewComments,
-  setViewComments,
+  viewComments=null,
+  setViewComments=null,
 }) {
   const username = localStorage.getItem("username");
   const [open, setOpen] = useState(false);

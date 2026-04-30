@@ -859,6 +859,7 @@ function ViewPage() {
 
               {/* Comments */}
               {/* bg-[#161b22] */}
+                {/* ${showAssistant ? "pointer-events-none" : ""} */}
               <div
                 className={`
                    bg-gray-900
@@ -868,7 +869,7 @@ function ViewPage() {
                   md:flex md:flex-col
                   max-h-[75vh]
                   overflow-hidden
-                    ${showAssistant ? "pointer-events-none" : ""}
+                  
                   ${viewComments ? "hidden " : "flex-col"}
                  md:flex-col
                   `}
