@@ -734,7 +734,7 @@ const PostsGaugeCard = ({ data, year, setYear, target, setTarget }) => {
           ? isPositive
             ? ", higher than last month. Keep it up!"
             : ", lower than last month. Time to engage!"
-          : ", neutral performance!"}
+          : ", no performance yet!"}
       </p>
 
       {/* Sparkline */}
