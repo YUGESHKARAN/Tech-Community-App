@@ -43,6 +43,7 @@ function Dashboard() {
   const { statsSummary, statsLoader } = useStatsSummary(email);
   const [year, setYear] = useState("");
   const [target, setTarget] = useState(50);
+  const [filter, setFilter] = useState("overall");
 
   const { communities, loading: postCategoryLoading } =
     useGetCommunityAnalytics();
@@ -54,6 +55,7 @@ function Dashboard() {
   const { topContributors, topContributorsLoading } = useTopContributors(
     email,
     limit,
+    filter
   );
   const {
     contributors,
@@ -74,6 +76,27 @@ function Dashboard() {
   // console.log("topContributors", topContributors);
   // console.log("contributors", contributors);
   // console.log("students", students);
+
+  const getLast3MonthsName = () => {
+    const now = new Date();
+
+    const formatMonth = (offset) => {
+      const d = new Date(now.getFullYear(), now.getMonth() - offset, 1);
+
+      const month = d.toLocaleString("default", { month: "short" }); // May
+      const year = String(d.getFullYear()); // 26
+
+      return `${month} ${year}`;
+    };
+
+    return {
+      current_month: formatMonth(0),
+      previous_month: formatMonth(1),
+      two_months_ago: formatMonth(2),
+    };
+  };
+  const months = getLast3MonthsName();
+  // console.log("months", months);
 
   return (
     <div className="min-h-screen h-auto  relative bg-gray-900 text-white flex flex-col">
@@ -204,9 +227,7 @@ function Dashboard() {
               <h2 className="md:text-2xl text-xl font-semibold text-emerald-400 ">
                 Analytics
               </h2>
-              <p className="text-xs text-gray-400">
-                Key trends and insights
-              </p>
+              <p className="text-xs text-gray-400">Key trends and insights</p>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -395,12 +416,30 @@ function Dashboard() {
               {/* Top Contributors */}
               {!topContributorsLoading ? (
                 <div className="bg-[#0f172a] border border-[#1e293b] rounded-xl p-4">
-                  <p className="text-sm font-semibold text-gray-200 mb-1">
-                    Top 10 Contributors
-                  </p>
-                  <p className="text-[10px] text-gray-400 mb-3">
-                    Ranked by post count
-                  </p>
+                  <div className="flex justify-between items-center mb-4">
+                    <div>
+                      <p className="text-sm md:text-base  font-semibold text-gray-200">
+                        Top 10 Contributors
+                      </p>
+                      <p className="text-[9px] md:text-[10px] text-gray-400">
+                        Ranked by post count
+                      </p>
+                    </div>
+
+                    <select
+                      value={filter}
+                      onChange={(e) => setFilter(e.target.value)}
+                      className="bg-[#1e293b] text-gray-200 cursor-pointer text-xs rounded px-2 py-1 border border-[#334155]"
+                    >
+                      <option value="overall">Overall</option>
+                      {Object.keys(months).map((key) => (
+                        <option key={key} value={key}>
+                          {months[key]}
+                        </option>
+                      ))} 
+                    </select>
+                  </div>
+
                   <div className="flex overflow-y-auto scrollbar-hide h-52 flex-col gap-2">
                     {topContributors.map((u, i) => (
                       <Link
@@ -450,20 +489,38 @@ function Dashboard() {
               ) : (
                 <TopContributorsSkeleton />
               )}
+
+              {!topContributorsLoading && topContributors.length === 0 && (
+                <div className="bg-[#0f172a] border border-[#1e293b] rounded-xl p-4">
+                  <p className="text-sm font-semibold text-gray-200 mb-1">
+                    Top 10 Contributors
+                  </p>
+                  <p className="text-[10px] text-gray-400 mb-3">
+                    Ranked by post count
+                  </p>
+                  <div className="flex overflow-y-auto scrollbar-hide h-52 flex-col gap-2">
+                    <div className="w-full h-full flex flex-col items-center justify-center">
+                      <p className=" text-xs text-emerald-400">
+                        No contributors found!
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </section>
 
           {/* ── ZONE 4: Users Tables ──────────────────────────────────── */}
           <section className="space-y-4">
             <div>
-                  <h2 className="md:text-2xl text-xl font-semibold text-emerald-400">
-              Users
-            </h2>
+              <h2 className="md:text-2xl text-xl font-semibold text-emerald-400">
+                Users
+              </h2>
               <p className="text-xs text-gray-400">
-           Contributors and users records
-          </p>
+                Contributors and users records
+              </p>
             </div>
-            
+
             <div className="md:flex overflow-hidden gap-4 items-start">
               <div>
                 {!contributorsLoading && contributors.length > 0 ? (
@@ -673,9 +730,11 @@ const PostsGaugeCard = ({ data, year, setYear, target, setTarget }) => {
       <p className="text-[10px] text-gray-500 text-center mt-2 leading-relaxed">
         <span className="text-gray-300 font-semibold">{current} posts</span>{" "}
         this month
-        {isPositive
-          ? ", higher than last month. Keep it up!"
-          : ", lower than last month. Time to engage!"}
+        {current > 0
+          ? isPositive
+            ? ", higher than last month. Keep it up!"
+            : ", lower than last month. Time to engage!"
+          : ", neutral performance!"}
       </p>
 
       {/* Sparkline */}
@@ -798,7 +857,9 @@ const RoleBadge = ({ role }) => {
 const TableHeader = ({ title, count, search, onSearch }) => (
   <div className="flex items-center justify-between px-5 py-4 shrink-0">
     <div className="flex items-center gap-2.5">
-      <h3 className="text-sm md:text-base font-semibold text-gray-200">{title}</h3>
+      <h3 className="text-sm md:text-base font-semibold text-gray-200">
+        {title}
+      </h3>
       <span className="text-[10px] bg-white/5 border border-white/10 text-gray-400 px-2 py-0.5 rounded-full">
         {count}
       </span>

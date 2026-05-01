@@ -5,8 +5,14 @@ const TopContributorsSkeleton = () => {
        {/* Shimmer */}
       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-[shimmer_1.5s_infinite]" />
       {/* Header */}
-      <div className="h-4 w-40 bg-gray-700/50 rounded mb-2" />
-      <div className="h-3 w-32 bg-gray-700/40 rounded mb-4" />
+      <div className="flex justify-between items-center mb-4">
+        <div>
+          <div className="h-4 w-32 bg-gray-700/50 rounded mb-2" />
+          <div className="h-3 w-40 bg-gray-700/40 rounded" />
+        </div>
+
+        <div className="md:h-7 h-5 w-20 bg-gray-700/50 rounded" />
+      </div>
 
       {/* List */}
       <div className="flex overflow-y-auto scrollbar-hide h-52 flex-col gap-3">

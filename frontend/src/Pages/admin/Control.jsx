@@ -171,14 +171,14 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
       );
 
       if (response.status == 200) {
-        toast.success(`${response.data.message}`);
+        toast.success("Deleted",`${response.data.message}`);
         // getAuthors();
         await reloadRoleLists();
         setPassword("");
       }
     } catch (err) {
       // toast.error(`${response.data.message}`);
-       toast.error(`unable to delete the author`);
+       toast.error("Unauthorized", "unable to delete the author");
       console.log(err);
     } finally {
       setLoading(false);

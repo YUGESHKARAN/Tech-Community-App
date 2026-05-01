@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
 import axiosInstance from "../../instances/Axiosinstances";
 
-const useTopContributors = (email, limit) => {
+const useTopContributors = (email, limit, filter) => {
   const [topContributors, setTopContributors] = useState([]);
   const [topContributorsLoading, setTopContributorsLoading] = useState(true);
 
   const getTopContributors = async () => {
     try {
       setTopContributorsLoading(true);
-      const response = await axiosInstance.get(`/blog/analytics/view/top-contributors/${email}?limit=${limit}`);
+      const response = await axiosInstance.get(`/blog/analytics/view/top-contributors/${email}?limit=${limit}&filter=${filter}`);
 
       if (response.status === 200) {
         setTopContributors(response.data.contributors);
@@ -22,7 +22,7 @@ const useTopContributors = (email, limit) => {
 
   useEffect(() => {
     getTopContributors();
-  }, [email, limit]);
+  }, [email, limit, filter]);
 
   return { topContributors, topContributorsLoading, getTopContributors };
 };

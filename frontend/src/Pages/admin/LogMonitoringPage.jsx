@@ -121,7 +121,7 @@ function LogMonitoringPage() {
   //   setLogs(STATIC_LOGS);
   // }, []);
 
-  // console.log("logdetaisl", logDetails);
+  // console.log("logdetails", logDetails);
 
   // 🔹 Status logic
   const getStatus = (log) => {

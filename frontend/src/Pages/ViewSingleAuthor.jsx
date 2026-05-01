@@ -413,6 +413,7 @@ function ViewSingleAuthor() {
       <NavBar />
 
      {!loading? 
+     authorName &&
      <div className="w-full min-h-screen mx-auto px-4 md:px-6 pt-2 md:pt-6 pb-8 pb-24">
 
         {/* ── Page header ──────────────────────────────────────── */}
@@ -723,6 +724,11 @@ function ViewSingleAuthor() {
       </div>:
       <ProfileViewSkeleton role={author.role} />
 }
+{!loading && !authorName && (
+  <div className="w-full h-48 h-screen flex items-center justify-center">
+    <p className="text-gray-500">Author not found.</p>
+  </div>
+)}
       <div className="w-full">
         <Footer />
       </div>
