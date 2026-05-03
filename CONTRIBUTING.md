@@ -2,6 +2,14 @@
 
 Welcome to the Tech Community App! We appreciate your interest in contributing to our project. Please follow the guidelines below to help us maintain consistency and quality.
 
+## Issue Reporting
+If you find a bug or have suggestions for improvement, please open an issue in the repository with the following information:
+- Description of the bug or suggestion with targetted labels.
+
+## Pull Request Requirement
+
+> **All pull requests must link to an issue or discussion where a solution has been approved by a maintainer.** PRs without prior approval will be closed.
+
 ## Getting Started
 1. **Fork the Repository:** To contribute, you need to create a personal copy of the repository. Click on the 'Fork' button at the top-right corner of the page.
 2. **Clone the Forked Repository:** Use the following command to clone it to your local machine:
@@ -37,10 +45,5 @@ Please adhere to the [Code of Conduct](CODE_OF_CONDUCT.md).
    ```
    git push origin feature/my-new-feature
    ```
-4. **Create a Pull Request:** Go to the original repository and create a pull request.
-
-## Issue Reporting
-If you find a bug or have suggestions for improvement, please open an issue in the repository with the following information:
-- Description of the bug or suggestion with targetted labels.
 
 Thank you for considering contributing to the Tech Community App! We look forward to your contributions!

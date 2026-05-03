@@ -1,26 +1,41 @@
-# Tech. Community App
+<div align="center">
+  <h2>Tech. Community App</h2>
+</div>
 
 
 [![License: MIT](https://img.shields.io/github/license/YUGESHKARAN/Node-Blog-App)](./LICENSE)
-[![Node.js Version](https://img.shields.io/badge/node-%3E%3D14.0.0-brightgreen.svg)](https://nodejs.org/)
 [![GitHub forks](https://img.shields.io/github/forks/YUGESHKARAN/Node-Blog-App?style=social)](https://github.com/YUGESHKARAN/Node-Blog-App/network/members)
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D14.0.0-brightgreen.svg)](https://nodejs.org/)
 [![Last Commit](https://img.shields.io/github/last-commit/YUGESHKARAN/Node-Blog-App)](https://github.com/YUGESHKARAN/Node-Blog-App/commits/main)
-[![Issues](https://img.shields.io/github/issues/YUGESHKARAN/Node-Blog-App)](https://github.com/YUGESHKARAN/Node-Blog-App/issues)
-[![Pull Requests](https://img.shields.io/github/issues-pr/YUGESHKARAN/Node-Blog-App)](https://github.com/YUGESHKARAN/Node-Blog-App/pulls)
 [![Contributors](https://img.shields.io/github/contributors/YUGESHKARAN/Node-Blog-App)](https://github.com/YUGESHKARAN/Node-Blog-App/graphs/contributors)
+[![Issues](https://img.shields.io/github/issues/YUGESHKARAN/Node-Blog-App)](https://github.com/YUGESHKARAN/Node-Blog-App/issues)
+[![Closed Issues](https://img.shields.io/github/issues-closed/YUGESHKARAN/Node-Blog-App)](https://github.com/YUGESHKARAN/Node-Blog-App/issues?q=is%3Aissue+is%3Aclosed)
+[![Pull Requests](https://img.shields.io/github/issues-pr/YUGESHKARAN/Node-Blog-App)](https://github.com/YUGESHKARAN/Node-Blog-App/pulls)
+[![Closed PRs](https://img.shields.io/github/issues-pr-closed/YUGESHKARAN/Node-Blog-App)](https://github.com/YUGESHKARAN/Node-Blog-App/pulls?q=is%3Apr+is%3Aclosed)
+
+
 
 **Welcome to the Tech. Community App!**
 
 Developer's-Learning & collaborative platform designed for universities and colleges, focusing on knowledge sharing and community building. The platform enables student developers to connect, collaborate, and engage through sharing their tech works, knowledges and findings, all within their institution. Developers can interact, clarify doubts via discussion section. The platform includes role-based interfaces for Students, Coordinators, and Admins to manage content, moderation, and community participation.
 
----
-## Home Screen (Coordinator Interface)
+<div align="center">
+  <h4>Home Screen (Coordinator Interface)</h4>
+</div>
+
 ![Tech-Comm-App](/assets/tech-comm-app.png)
 
-## Playlist Screen (Student Interface)
+
+<div align="center">
+  <h4>Playlist Screen (Student Interface)</h4>
+</div>
+
 ![Tech-Comm-App](/assets/tech-com-playlist.png)
 
-## Tech Community Screen (Student Interface)
+<div align="center">
+  <h4>Tech Community Screen (Student Interface)</h4>
+</div>
+
 ![Tech-Comm-App](/assets/tech-community.png)
 
 ## Key Features
@@ -150,8 +165,7 @@ npm install
 ## Contributing
 
 Contributions are welcome!  
-Fork the repository and submit a pull request, or open an issue to discuss significant changes.
-
+Refere [CONTRIBUTING.md](CONTRIBUTING.md)
 ## License
 
 This project is licensed under the MIT License.
