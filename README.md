@@ -1,4 +1,4 @@
-# Tech. Community App
+## Tech. Community App
 
 
 [![License: MIT](https://img.shields.io/github/license/YUGESHKARAN/Node-Blog-App)](./LICENSE)
