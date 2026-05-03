@@ -165,8 +165,7 @@ npm install
 ## Contributing
 
 Contributions are welcome!  
-Fork the repository and submit a pull request, or open an issue to discuss significant changes.
-
+Refere [CONTRIBUTING.md](CONTRIBUTING.md)
 ## License
 
 This project is licensed under the MIT License.
