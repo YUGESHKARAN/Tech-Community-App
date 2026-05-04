@@ -32,7 +32,7 @@ const connectToDatabase = async () => {
   }
 
   console.log("Establishing new database connection");
-  
+
   await mongoose.connect(process.env.MONGODB_URL, {
     maxPoolSize: 10,
     serverSelectionTimeoutMS: 10000, // ✅ 10s instead of 5s for cold starts
