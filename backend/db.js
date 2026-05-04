@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 dotenv = require("dotenv");
 dotenv.config();
 let isConnected; // Track the connection status
-const mongodb_url = process.env.MONGDB_URL ;
+const mongodb_url = process.env.MONGODB_URL ;
 const connectToDatabase = async () => {
   if (isConnected) {
     console.log("Using existing database connection");
