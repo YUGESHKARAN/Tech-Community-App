@@ -204,7 +204,7 @@ const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
 
     <div className="w-full min-h-screen bg-gray-900 relative">
       <NavBar />
-      <div className="mb-8 mt-4 px-4 flex items-center justify-between">
+      <div className="mb-8 mt-4 px-4 md:px-12 flex items-center justify-between">
         <div>
           <h1 className="md:text-3xl text-2xl font-semibold  text-white tracking-tight">
             Create Playlist
@@ -218,7 +218,7 @@ const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
 
       {/* Guidelines Card */}
 
-      <div className=" lg:hidden block px-3 mx-auto">
+      <div className=" lg:hidden block px-3 md:px-12 mx-auto">
         <div
           className="
       w-full
@@ -284,7 +284,7 @@ const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
       <form
         onSubmit={hanldeSubmit}
         // className="w-full mx-auto px-3 md:px-4 pb-10 md:grid gap-10 lg:gap-0 lg:grid-cols-3"
-        className="w-full mx-auto px-4 pb-6 grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-6"
+        className="w-full mx-auto px-4 md:px-12 pb-6 grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-6"
       >
         {/* LEFT — PLAYLIST DETAILS */}
         <div className="lg:col-span-1 md:bg-gray-900/70 md:border border-gray-800 rounded-lg space-y-8">

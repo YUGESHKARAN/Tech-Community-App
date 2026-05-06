@@ -283,7 +283,7 @@ function AddPost() {
       <NavBar />
 
       <div className="min-h-screen   w-full pt-4 pb-8">
-        <div className="w-full  mx-auto  md:px-4">
+        <div className="w-full  mx-auto  md:px-12">
           <div className="mb-8 flex px-4 items-center justify-between">
             <div>
               <h1 className="md:text-3xl text-2xl  font-semibold text-white tracking-tight">

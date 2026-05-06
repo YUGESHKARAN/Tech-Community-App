@@ -243,7 +243,7 @@ function Announcement() {
       <div
         className={`
         w-full
-        rounded-2xl
+        rounded-lg
         border border-emerald-500/20
         bg-gradient-to-br from-emerald-500/5 to-transparent
         p-4 md:p-5
@@ -323,7 +323,7 @@ function Announcement() {
       <div
         className={`
         w-full
-        rounded-2xl
+        rounded-lg
         border border-emerald-500/20
         bg-gradient-to-br from-emerald-500/5 to-transparent
         p-4 md:p-5

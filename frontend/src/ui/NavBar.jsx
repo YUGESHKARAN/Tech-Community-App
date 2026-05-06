@@ -1031,7 +1031,7 @@ function NavBar() {
         ref={notificationRef}
         className={`${
           showNotefication
-            ? "fixed top-16 right-2 z-50 md:w-[320px] w-72 pb-4 bg-gray-900 border border-gray-700 shadow-2xl rounded-xl md:rounded-2xl transition-all duration-300"
+            ? "fixed top-16 right-2 z-50 md:w-[320px] w-72 pb-4 bg-gray-900 border border-gray-700 shadow-2xl rounded-xl md:rounded-lg transition-all duration-300"
             : "hidden"
         }`}
       >
@@ -1043,7 +1043,7 @@ function NavBar() {
 
           <button
             onClick={() => deleteAllNotification(userEmail)}
-            className="text-xs text-gray-300 hover:text-white transition"
+            className="text-xs text-gray-300 hover:text-white transition-all duration-300"
           >
             Clear all
           </button>
@@ -1092,7 +1092,7 @@ function NavBar() {
               {/* Delete Button */}
               <button
                 onClick={() => deleteSigleNotification(userEmail, data._id)}
-                className="absolute top-3 right-3 md:opacity-0 group-hover:opacity-50 transition text-gray-500 hover:text-red-300"
+                className="absolute top-3 right-3 md:opacity-0 group-hover:opacity-50 transition text-gray-400 hover:text-red-300"
               >
                 <IoIosClose size={18} />
               </button>

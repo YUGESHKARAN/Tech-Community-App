@@ -539,7 +539,7 @@ const messageSchema = new mongoose.Schema({
 });
 
 const notificationSchema = new mongoose.Schema({
-  postId:      { type: mongoose.Schema.Types.ObjectId, ref: 'Post', required: true },
+  postId:      { type: mongoose.Schema.Types.ObjectId, ref: 'Post', required: false },
   user:        { type: String, required: true  },
   message:     { type: String, required: true  },
   profile:     { type: String, required: false },
