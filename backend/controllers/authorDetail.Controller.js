@@ -16,6 +16,8 @@ const otpGenerator = require("otp-generator");
 const { json } = require("body-parser");
 const { ReturnDocument } = require("mongodb");
 
+const notificationUrl = process.env.NOTIFICATION_URL || "http://localhost:5173";
+
 const transporter = nodemailer.createTransport({
   service: process.env.EMAIL_PROVIDER, // Or your preferred email provider
   auth: {
@@ -82,10 +84,10 @@ const sendRegistrationOTP = async (req, res) => {
       });
     }
   }
-  
-  if (!email.endsWith("@dsuniversity.ac.in")) {
-    return res.status(400).json({ message: "Use University Email" });
-  }
+
+  // if (!email.endsWith("@dsuniversity.ac.in")) {
+  //   return res.status(400).json({ message: "Use University Email" });
+  // }
   if (!authorname || !password) {
     return res.status(400).json({ message: "All fields are required" });
   }
@@ -113,15 +115,41 @@ const sendRegistrationOTP = async (req, res) => {
 const addAuthor = async (req, res) => {
   const { authorname, password, email, otp } = req.body;
 
-
-  if (!email.endsWith("@dsuniversity.ac.in")) {
-    return res.status(400).json({ message: "Use University Email" });
-  }
+  // if (!email.endsWith("@dsuniversity.ac.in")) {
+  //   return res.status(400).json({ message: "Use University Email" });
+  // }
 
   const { valid, reason } = await verifyOTP(email, otp);
   if (!valid) {
     return res.status(400).json({ message: reason });
   }
+
+  // ── welcome content ───────────────────────────────────────
+  const adminUser = "Admin";
+  const adminEmail = "21aid145@dsuniversity.ac.in";
+  const welcomeTitle = "Welcome to the Tech Community Platform 🎉";
+  const welcomeMsg = `Hi ${authorname}, Welcome aboard! Your account has been successfully created, and you are now ready to explore the platform.\n
+        Get started by setting up your profile, joining tech communities that match your interests, and connecting with fellow contributors. You can explore recommended content on your home feed, participate in post's discussions, and stay updated through notifications and announcements.\n
+        We're glad to have you here and look forward to your active participation.`;
+
+    // If you need assistance at any point, refer to the user guide available within the platform. \n
+
+  const url = `${notificationUrl}/announcement`;
+
+  const newAnnouncement = {
+    user: adminUser,
+    title: welcomeTitle,
+    message: welcomeMsg,
+    authorEmail: adminEmail,
+    deliveredTo: "all",
+  };
+
+  const newNotification = {
+    user: adminUser,
+    authorEmail: adminEmail,
+    message: `Hi ${authorname}, Welcome to the Tech Community platform 🎉! Your account is ready now.`,
+    url,
+  };
 
   try {
     const authorExist = await Author.findOne({ email: { $eq: email } });
@@ -129,7 +157,13 @@ const addAuthor = async (req, res) => {
       return res.status(400).json({ message: "Author already exists" });
     }
 
-    const newAuthor = new Author({ authorname, password, email });
+    const newAuthor = new Author({
+      authorname,
+      password,
+      email,
+      announcement: [newAnnouncement], 
+      notification: [newNotification], 
+    });
     await newAuthor.save();
 
     res.status(201).json({ message: "Author created successfully", newAuthor });
@@ -1301,9 +1335,9 @@ const addAnnouncement = async (req, res) => {
     // .filter((recipientEmail) => recipientEmail !== email); // remove sender email
 
     const recipientEmails = recipients
-  .map((r) => r.email)
-  .filter(Boolean)
-  .filter((recipientEmail) => recipientEmail !== email); // fix: exclude sender
+      .map((r) => r.email)
+      .filter(Boolean)
+      .filter((recipientEmail) => recipientEmail !== email); // fix: exclude sender
 
     // Bulk push announcements to DB
     if (recipients.length > 0) {
@@ -1334,7 +1368,7 @@ const addAnnouncement = async (req, res) => {
             .join("<br>")}</p>`
         : "";
 
-    // console.log("recipientsEmail", recipientEmails); 
+    // console.log("recipientsEmail", recipientEmails);
     // console.log("recipients", recipients)
     // Respond immediately
     res.status(201).json({

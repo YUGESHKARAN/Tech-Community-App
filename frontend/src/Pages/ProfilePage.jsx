@@ -166,7 +166,7 @@ function ProfilePage() {
         setProfileLinks((prev)=>
           prev.filter((link)=> link._id!==linkId)
         )
-        toast.success('Deleted', 'Bio link removed successfully')
+        toast.success('Removed', 'Bio link removed successfully')
         // fetchAuthor();
         setShowLinkBox(false);
       }

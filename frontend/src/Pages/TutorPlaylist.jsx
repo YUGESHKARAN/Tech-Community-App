@@ -497,7 +497,7 @@ const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
                 type="submit"
                 disabled={loader}
                 className="md:px-5 px-3 py-2 md:py-2 bg-emerald-600/20 hover:bg-emerald-500/20
-                         rounded-md text-xs md:text-sm flex items-center justiify-center gap-2   text-emerald-400 transition-all duration-300 disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed"
+                         rounded-md text-xs md:text-sm flex items-center justify-center gap-2   text-emerald-400 transition-all duration-300 disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed"
               >
               <VscGitStashApply className="md:text-base text-sm" />  {loader ? "Creating Playlist..." : "Create Playlist"}
               </button>

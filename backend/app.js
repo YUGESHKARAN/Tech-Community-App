@@ -169,7 +169,7 @@ app.use(bodyParser.json());
 // Trust proxy (must be before routes)
 app.set("trust proxy", 1);
 
-// ✅ DB connection middleware — connects per request, reuses if warm
+//  DB connection middleware — connects per request, reuses if warm
 app.use(async (req, res, next) => {
   try {
     await connectToDatabase();

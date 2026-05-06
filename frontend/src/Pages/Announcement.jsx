@@ -427,8 +427,33 @@ function Announcement() {
   }
 
 
+  const renderTextWithHashtags = (text) => {
+      if (!text) return null;
+  
+      // Convert visible "\r\n" or "\\n" into real line breaks
+      const cleanedText = text.replace(/\\r\\n|\\n|\\r\n/g, "\n");
+  
+      return cleanedText.split("\n").map((line, lineIndex) => (
+        <React.Fragment key={lineIndex}>
+          {line.split(/(\s+#\w+)/g).map((word, index) =>
+            word.startsWith("#") || word.startsWith(" #") ? (
+              <span
+                key={index}
+                className="text-md text-white font-italy font-bold"
+              >
+                {word}
+              </span>
+            ) : (
+              <React.Fragment key={index}>{word}</React.Fragment>
+            ),
+          )}
+          <br />
+        </React.Fragment>
+      ));
+    };
 
   // console.log("guidelinses", showGuidelines)
+  // console.log("announcement", reversedAnnouncements)
   return (
     <div className="min-h-screen  bg-[#0f172a] text-slate-200">
       <NavBar />
@@ -742,7 +767,7 @@ function Announcement() {
                           className="w-full py-2.5 bg-emerald-600/20 hover:bg-emerald-500/20
                    text-emerald-400 text-xs md:text-sm flex items-center justify-center gap-2 rounded-md transition"
                         >
-                         <VscGitStashApply className="md:text-base text-sm" /> {loading ? "Publishing..." : "Publish"}
+                         <VscGitStashApply className="md:text-base text-sm " /> {loading ? "Publishing..." : "Publish"}
                           
                         </button>
                       </form>
@@ -818,8 +843,9 @@ function Announcement() {
                 >
                   <div className="flex justify-between items-start">
                     <div>
-                      <h2 className="text-xl font-semibold text-white">
-                        {item.title}
+                      <h2 className="md:text-xl text-lg max-w-[360px] md:max-w-full font-semibold text-white">
+                     
+                    {item.title} 
                       </h2>
                       <div className="text-xs text-slate-400 mt-1">
                         {/* {item.timestamp?.slice(0, 10)} */}
@@ -838,7 +864,8 @@ function Announcement() {
                   </div>
 
                   <div className="md:text-sm text-xs text-slate-300 leading-relaxed">
-                    {item.message}
+                    {/* {item.message} */}
+                    {renderTextWithHashtags(item.message)}
                   </div>
 
                   {item.poster && item.poster !== "undefined" && (
@@ -888,7 +915,7 @@ function Announcement() {
                           />
                         ) : (
                           <div className="md:w-9 md:h-9 w-8 h-8 rounded-full object-cover border border-gray-300">
-                            <HiOutlineUserCircle className="text-[#786fa6] bg-white rounded-full w-full h-full " />
+                            <HiOutlineUserCircle className="text-[#786fa6] bg-gray-300 rounded-full w-full h-full " />
                           </div>
                         )}
                       </Link>

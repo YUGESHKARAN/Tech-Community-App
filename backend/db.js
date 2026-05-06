@@ -35,12 +35,12 @@ const connectToDatabase = async () => {
 
   await mongoose.connect(process.env.MONGODB_URL, {
     maxPoolSize: 10,
-    serverSelectionTimeoutMS: 10000, // ✅ 10s instead of 5s for cold starts
-    socketTimeoutMS: 45000,          // ✅ keep socket alive longer
-    bufferCommands: false,           // ✅ fail fast, don't queue commands
+    serverSelectionTimeoutMS: 10000, // 10s instead of 5s for cold starts
+    socketTimeoutMS: 45000,          // keep socket alive longer
+    bufferCommands: false,           // fail fast, don't queue commands
   });
 
-  isConnected = mongoose.connection.readyState === 1; // ✅ strict boolean check
+  isConnected = mongoose.connection.readyState === 1; //strict boolean check
   console.log("MongoDB connected");
 };
 
