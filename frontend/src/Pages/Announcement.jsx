@@ -266,6 +266,9 @@ function Announcement() {
           <p className="text-xs text-emerald-400 font-medium">Purpose</p>
           <ul className="space-y-1.5 text-xs md:text-sm text-gray-300">
             <li className="flex gap-2">
+              <span>•</span> Platform updates
+            </li>
+            <li className="flex gap-2">
               <span>•</span> Campaigns & launch events
             </li>
             <li className="flex gap-2">
@@ -349,6 +352,7 @@ function Announcement() {
         <div className="space-y-2">
           <p className="text-xs text-emerald-400 font-medium">Purpose</p>
           <ul className="space-y-1.5 text-xs md:text-sm text-gray-300">
+            
             <li className="flex gap-2">
               <span>•</span> Campaigns, events, hackathons
             </li>
