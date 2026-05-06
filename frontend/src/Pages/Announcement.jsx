@@ -19,6 +19,7 @@ import { CiSquareRemove } from "react-icons/ci";
 import { IoMdClose, IoMdCloseCircle } from "react-icons/io";
 import { AiFillCloseCircle, AiFillCloseSquare } from "react-icons/ai";
 import { LiaWindowCloseSolid } from "react-icons/lia";
+import { VscGitStashApply } from "react-icons/vsc";
 
 function Announcement() {
   const username = localStorage.getItem("username");
@@ -434,7 +435,7 @@ function Announcement() {
       <div className="min-h-screen">
         {/* ================= HEADER ================= */}
         <div className="w-full">
-          <div className="w-full mx-auto px-4 md:px-6 pt-4 pb-5 md:pt-6 flex justify-between items-center">
+          <div className="w-full mx-auto px-4 md:px-12 pt-4 pb-5 md:pt-6 flex justify-between items-center">
             <div>
               <h1 className="md:text-3xl text-2xl font-semibold  tracking-tight  flex items-center gap-1 justify-center">
                 <MdAnnouncement className="tetxt-2xl pt-0.5 md:pt-0 md:text-3xl " />{" "}
@@ -457,7 +458,7 @@ function Announcement() {
 
 
         {/* ================= MAIN GRID ================= */}
-        <div className="w-full mx-auto px-3 md:py-2 md:px-6 md:pb-10 grid grid-cols-1 lg:grid-cols-[320px_1fr] md:gap-5">
+        <div className="w-full mx-auto px-3 md:py-2 md:px-12 md:pb-10 grid grid-cols-1 lg:grid-cols-[320px_1fr] md:gap-5">
           {/* ================= LEFT RAIL ================= */}
 
           <aside
@@ -739,9 +740,10 @@ function Announcement() {
                           type="submit"
                           disabled={loading}
                           className="w-full py-2.5 bg-emerald-600/20 hover:bg-emerald-500/20
-                   text-emerald-400 text-xs md:text-sm  rounded-md transition"
+                   text-emerald-400 text-xs md:text-sm flex items-center justify-center gap-2 rounded-md transition"
                         >
-                          {loading ? "Publishing..." : "Publish"}
+                         <VscGitStashApply className="md:text-base text-sm" /> {loading ? "Publishing..." : "Publish"}
+                          
                         </button>
                       </form>
                     </div>

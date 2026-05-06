@@ -9,7 +9,7 @@ import { ReactTyped } from "react-typed";
 import axiosInstance from "../instances/Axiosinstances";
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 import glow from "../assets/glow.png";
-import { VscSend } from "react-icons/vsc";
+import { VscGitStashApply, VscGitStashPop, VscSend } from "react-icons/vsc";
 import Cookies from "js-cookie";
 import { getItem } from "../utils/encode";
 
@@ -733,9 +733,9 @@ function AddPost() {
                     type="submit"
                     disabled={loading}
                     className="md:px-5 px-3 py-2 md:py-2.5 bg-emerald-600/20 hover:bg-emerald-500/20
-                         rounded-md text-xs md:text-sm  text-emerald-400 transition-all duration-300 disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed"
+                         rounded-md text-xs md:text-sm flex items-center justify-center gap-2 text-emerald-400 transition-all duration-300 disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed"
                   >
-                    {loading ? "Submitting..." : "Publish Post"}
+                   <VscGitStashApply className="md:text-base text-sm"/> {loading ? "Publishing..." : "Publish Post"}
                   </button>
                 </div>
               </form>
