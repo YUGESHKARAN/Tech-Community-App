@@ -1,5 +1,5 @@
 <div align="center">
-  <h2>Tech. Community App</h2>
+  <h3>Tech. Community App</h3>
 </div>
 
 
@@ -17,7 +17,9 @@
 
 **Welcome to the Tech. Community App!**
 
-Developer's-Learning & collaborative platform designed for universities and colleges, focusing on knowledge sharing and community building. The platform enables student developers to connect, collaborate, and engage through sharing their tech works, knowledges and findings, all within their institution. Developers can interact, clarify doubts via discussion section. The platform includes role-based interfaces for Students, Coordinators, and Admins to manage content, moderation, and community participation.
+Developer's-Learning & collaborative platform designed for universities and colleges, focusing on knowledge sharing and community building. The platform enables student developers to connect, collaborate, and engage through sharing their tech works, knowledge and findings, all within their institution. Developers can interact, clarify doubts via discussion section. The platform includes role-based interfaces for Students, Coordinators, and Admins to manage content, moderation, and community participation.
+
+---
 
 <div align="center">
   <h4>Home Screen (Coordinator Interface)</h4>
@@ -25,19 +27,21 @@ Developer's-Learning & collaborative platform designed for universities and coll
 
 ![Tech-Comm-App](/assets/tech-comm-app.png)
 
-
+---
 <div align="center">
   <h4>Playlist Screen (Student Interface)</h4>
 </div>
 
 ![Tech-Comm-App](/assets/tech-com-playlist.png)
 
+---
 <div align="center">
   <h4>Tech Community Screen (Student Interface)</h4>
 </div>
 
 ![Tech-Comm-App](/assets/tech-community.png)
 
+---
 ## Key Features
 
 * **User Authentication** –Secure registration and login with role-based access using JWT.
@@ -168,6 +172,6 @@ Contributions are welcome!
 Refere [CONTRIBUTING.md](CONTRIBUTING.md)
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the [MIT](LICENSE) License.
 
 ---
