@@ -85,9 +85,9 @@ const sendRegistrationOTP = async (req, res) => {
     }
   }
 
-  // if (!email.endsWith("@dsuniversity.ac.in")) {
-  //   return res.status(400).json({ message: "Use University Email" });
-  // }
+  if (!email.endsWith("@dsuniversity.ac.in")) {
+    return res.status(400).json({ message: "Use University Email" });
+  }
   if (!authorname || !password) {
     return res.status(400).json({ message: "All fields are required" });
   }
@@ -115,9 +115,9 @@ const sendRegistrationOTP = async (req, res) => {
 const addAuthor = async (req, res) => {
   const { authorname, password, email, otp } = req.body;
 
-  // if (!email.endsWith("@dsuniversity.ac.in")) {
-  //   return res.status(400).json({ message: "Use University Email" });
-  // }
+  if (!email.endsWith("@dsuniversity.ac.in")) {
+    return res.status(400).json({ message: "Use University Email" });
+  }
 
   const { valid, reason } = await verifyOTP(email, otp);
   if (!valid) {
