@@ -575,7 +575,7 @@ function AddPost() {
                 <div className="space-y-3 w-full ">
                   <div className="flex w-full items-center justify-between">
                     <label className="text-sm text-gray-400 md:text-gray-300 font-medium">
-                      Project Links
+                      Project Links (Max-10)
                     </label>
 
                     {currentLinkTitle.length > 0 && (

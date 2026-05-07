@@ -298,7 +298,7 @@ function ViewEditPost() {
               {singlePostData.links?.length > 0 && (
                 <div className="  rounded-xl">
                   <h1 className="text-sm text-gray-300 mb-2 font-medium">
-                    Current Links <span className="text-red-500">*</span>
+                    Current Links  <span className="text-red-500">*</span> 
                   </h1>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -361,7 +361,7 @@ function ViewEditPost() {
               <div className="  rounded-xl space-y-2">
                 <div className="flex justify-between items-center">
                   <label className="text-sm text-gray-300 font-medium">
-                    Links <span className="text-red-500">*</span>
+                    Links (Max-10) 
                   </label>
                   {currentLinkTitle.length > 0 && (
                     <button
