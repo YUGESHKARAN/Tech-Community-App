@@ -51,7 +51,7 @@ function AddPost() {
   // const fileInputRef = useRef(null);
   const [isTyping, setIsTyping] = useState(false);
   const [chatbot, setChatbot] = useState(false);
-  const [draftMateLoading, setDraftMateLoading] = useState(false)
+  const [draftMateLoading, setDraftMateLoading] = useState(false);
 
   const backendEndpoint = import.meta.env.VITE_CHATBOT_URL;
 
@@ -69,7 +69,7 @@ function AddPost() {
     setMessages((prev) => [...prev, newMessage]);
 
     setIsTyping(true);
-    setDraftMateLoading(true)
+    setDraftMateLoading(true);
 
     try {
       const response = await axios.post(
@@ -96,9 +96,8 @@ function AddPost() {
         direction: "incoming",
       };
       setMessages((prev) => [...prev, errorMessage]);
-    } 
-    finally{
-      setDraftMateLoading(false)
+    } finally {
+      setDraftMateLoading(false);
     }
   };
 
@@ -129,13 +128,11 @@ function AddPost() {
         });
         wordIndex++;
         setTimeout(addWord, 200); // Adjust delay for smoother/faster typing
+      } else {
+        // ✅ typing finished → enable button
+        setIsTyping(false);
       }
-       else {
-      // ✅ typing finished → enable button
-      setIsTyping(false);
-    }
     };
-   
 
     addWord();
   };
@@ -171,6 +168,7 @@ function AddPost() {
   const [currentLinkUrl, setCurrentLinkUrl] = useState("");
   const [previewImage, setPreviewImage] = useState("");
   const [customCategory, setCustomCategory] = useState("");
+  const [preview, setPreview] = useState(false);
   const imageInputRef = useRef(null); // Add this at the top of your component
   // const [showLinkBox, setShowLinkBox] = useState(false);
   const handleSubmit = async (e) => {
@@ -243,7 +241,7 @@ function AddPost() {
       setCategory("");
       setImage(null);
       setLinks([]);
-     
+
       // navigate("/home");
       navigate("/yourposts");
     } catch (error) {
@@ -254,26 +252,90 @@ function AddPost() {
   };
 
   const onDocumentsChange = (e) => {
-    setDocuments([])
+    setDocuments([]);
     const files = Array.from(e.target.files); // Convert FileList to Array
     setDocuments(files);
   };
 
   const containerRef = useRef(null);
   useEffect(() => {
-  const el = containerRef.current;
-  if (!el) return;
+    const el = containerRef.current;
+    if (!el) return;
 
-  const isNearBottom =
-    el.scrollHeight - el.scrollTop - el.clientHeight < 100;
+    const isNearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 100;
 
-  if (isNearBottom) {
-    el.scrollTo({
-      top: el.scrollHeight,
-      behavior: "smooth",
+    if (isNearBottom) {
+      el.scrollTo({
+        top: el.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  }, [messages, isTyping]);
+
+  const renderTextWithHashtags = (text) => {
+    if (!text) return null;
+
+    const cleanedText = text
+      .replace(/\\r\\n/g, "\n")
+      .replace(/\\n/g, "\n")
+      .replace(/\\r/g, "\n");
+
+    return cleanedText.split("\n").map((line, lineIndex) => {
+      const parts = line.split(/(\*\*.*?\*\*|#{1,6}[^\n]+|\s?#\w+)/gm);
+
+      return (
+        <React.Fragment key={lineIndex}>
+          {parts.map((part, index) => {
+            if (!part) return null;
+
+            const trimmed = part.trim();
+
+            // ---------- Markdown Headings ----------
+            // Supports:
+            // ###Heading
+            // ### Heading
+            if (/^#{1,6}/.test(trimmed)) {
+              return (
+                <span
+                  key={index}
+                  className="font-semibold md:text-xl text-sm text-white"
+                >
+                  {trimmed.replace(/^#{1,6}\s*/, "")}
+                </span>
+              );
+            }
+
+            // ---------- Bold ----------
+            if (trimmed.startsWith("**") && trimmed.endsWith("**")) {
+              return (
+                <span key={index} className="font-semibold text-white">
+                  {trimmed.replace(/\*\*/g, "")}
+                </span>
+              );
+            }
+
+            // ---------- Hashtags ----------
+            if (/^(\s)?#\w+/.test(part)) {
+              return (
+                <span key={index} className="text-emerald-400 font-medium">
+                  {part}
+                </span>
+              );
+            }
+
+            // ---------- Normal ----------
+            return (
+              <React.Fragment key={index}>
+                {part.replace(/\\\*/g, "*").replace(/\\\\/g, "\\")}
+              </React.Fragment>
+            );
+          })}
+
+          <br />
+        </React.Fragment>
+      );
     });
-  }
-}, [messages, isTyping]);
+  };
 
   // console.log("links",links)
   // console.log("documents",documents)
@@ -348,11 +410,12 @@ function AddPost() {
                 </h2>
 
                 <div
-                ref={containerRef}
-                className="flex-1 overflow-y-auto emerald-scrollbar space-y-4 h-[600px] pr-2">
+                  ref={containerRef}
+                  className="flex-1 overflow-y-auto emerald-scrollbar space-y-4 h-[600px] pr-2"
+                >
                   {messages.map((msg, idx) => (
                     <div
-                     key={msg._id || `msg-${idx}`} 
+                      key={msg._id || `msg-${idx}`}
                       className={`flex  ${
                         msg.direction === "outgoing"
                           ? "justify-end"
@@ -377,7 +440,7 @@ function AddPost() {
                               : "bg-emerald-700/20 text-gray-200 md:mr-5 rounded-bl-md"
                           }
                         `}
-                       >
+                      >
                         {msg.message}
                       </div>
                     </div>
@@ -405,9 +468,10 @@ function AddPost() {
                     className="flex-1 px-4  rounded-xl border border-gray-700 py-2 bg-gray-900 text-sm outline-none text-white"
                   />
 
-                  <button 
-                  disabled={isTyping}
-                  className="text-2xl md:text-2xl transition-all duration-300 hover:text-gray-400 text-gray-500 block transition-all duration-300  disabled:text-gray-700 disabled:cursor-not-allowed">
+                  <button
+                    disabled={isTyping}
+                    className="text-2xl md:text-2xl transition-all duration-300 hover:text-gray-400 text-gray-500 block transition-all duration-300  disabled:text-gray-700 disabled:cursor-not-allowed"
+                  >
                     {/* Send */}
                     <VscSend />
                   </button>
@@ -443,26 +507,130 @@ function AddPost() {
                 </div>
 
                 {/* DESCRIPTION */}
-                <div>
+                {/* <div>
                   <label className="text-sm text-gray-400 md:text-gray-300 font-medium">
                     Description <span className="text-red-500">*</span>
                   </label>
 
-                  <textarea
-                    rows="6"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    placeholder="Write your post description..."
-                    className="w-full mt-2  focus:border focus:border-emerald-500/40 emerald-scrollbar px-4 py-3 rounded-md bg-gray-900 border border-gray-700 outline-none  text-white text-xs leading-relaxed"
-                  />
+                  <div className="relative">
+                    <div>
+                      <span onClick={()=>{setPreview(false)}}>Editor</span>
+                      <span onClick={()=>{setPreview(true)}}>Preview</span>
+                    </div>
 
+                  
+
+                    {
+                      preview?
+                    <div className="w-full min-h-40 h-auto mt-2  focus:border focus:border-emerald-500/40 emerald-scrollbar px-4 py-3 rounded-md bg-gray-900 border border-gray-700 outline-none  text-white text-xs leading-relaxed">
+                      {renderTextWithHashtags(description)}
+                    </div>
+                    :
+                    <textarea
+                      rows="6"
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      placeholder="Write your post description..."
+                      className="w-full mt-2  focus:border focus:border-emerald-500/40 emerald-scrollbar px-4 py-3 rounded-md bg-gray-900 border border-gray-700 outline-none  text-white text-xs leading-relaxed"
+                    />}
+                  </div>
                   {fieldErrors.description && (
                     <p className="text-xs text-red-500 mt-1">
                       {fieldErrors.description}
                     </p>
                   )}
-                </div>
+                </div> */}
 
+                <div>
+                  {/* Label */}
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="text-sm text-gray-300 font-medium tracking-wide">
+                      Description <span className="text-red-500">*</span>
+                    </label>
+
+                    {/* Tabs */}
+                    <div className="flex items-center bg-gray-900 border border-gray-700 rounded-lg p-1">
+                      <button
+                        type="button"
+                        onClick={() => setPreview(false)}
+                        className={`px-3 py-1 text-[11px] outline-none   rounded-md transition-all duration-200 ${
+                          !preview
+                            ? "bg-emerald-500/20 text-emerald-400 "
+                            : "text-gray-400 hover:text-white"
+                        }`}
+                      >
+                        Editor
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setPreview(true)}
+                        className={`px-3 py-1 text-[11px] outline-none  rounded-md transition-all duration-200 ${
+                          preview
+                            ? "bg-emerald-500/20 text-emerald-400 "
+                            : "text-gray-400 hover:text-white"
+                        }`}
+                      >
+                        Preview
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Editor / Preview Wrapper */}
+                  <div className="relative">
+                    {/* Top subtle glow */}
+                    <div className="absolute inset-0 rounded-xl bg-emerald-500/[0.02] pointer-events-none" />
+
+                    {preview ? (
+                      <div
+                        className="
+                          w-full min-h-40 h-auto
+                          px-4 py-3
+                          rounded-md
+                          bg-gray-900
+                          border border-gray-700
+                          text-white text-xs md:text-sm
+                          leading-relaxed
+                          emerald-scrollbar
+                          overflow-auto
+                          whitespace-pre-wrap
+                        "
+                      >
+                        {description?.trim()?.length > 0 ? (
+                          renderTextWithHashtags(description)
+                        ) : (
+                          <span className="text-gray-500">
+                            Preview content will appear here...
+                          </span>
+                        )}
+                      </div>
+                    ) : (
+                      <textarea
+                        rows="6"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        placeholder="Write your post description..."
+                        className="w-full mt-2  focus:border focus:border-emerald-500/40 emerald-scrollbar px-4 py-3 rounded-md bg-gray-900 border border-gray-700 outline-none  text-white text-xs leading-relaxed"
+                      />
+                    )}
+                  </div>
+
+                  {/* Footer Info */}
+                  <div className="flex items-center justify-between mt-2">
+                   
+
+                    <span className="md:text-[11px] text-[9px] text-gray-500">
+                      {description?.length} characters
+                    </span>
+                  </div>
+
+                  {/* Error */}
+                  {fieldErrors.description && (
+                    <p className="text-xs text-red-500 mt-2">
+                      {fieldErrors.description}
+                    </p>
+                  )}
+                </div>
                 {/* CATEGORY */}
                 <div>
                   <label className="text-sm text-gray-400 md:text-gray-300 font-medium">
@@ -495,23 +663,21 @@ function AddPost() {
                       {fieldErrors.category}
                     </p>
                   )}
-                       {category === "Others" && (
-                  <input
-                    type="text"
-                    value={customCategory}
-                    onChange={(e) => setCustomCategory(e.target.value)}
-                    placeholder="Enter domain name"
-                    className="w-full mt-2 px-4 py-2 rounded-md bg-gray-900 border border-gray-700 outline-none  outline-none text-white text-xs md:text-sm"
-                  />
-                )}
-                {fieldErrors.finalCategory && (
+                  {category === "Others" && (
+                    <input
+                      type="text"
+                      value={customCategory}
+                      onChange={(e) => setCustomCategory(e.target.value)}
+                      placeholder="Enter domain name"
+                      className="w-full mt-2 px-4 py-2 rounded-md bg-gray-900 border border-gray-700 outline-none  outline-none text-white text-xs md:text-sm"
+                    />
+                  )}
+                  {fieldErrors.finalCategory && (
                     <p className="text-xs text-red-500 mt-1">
                       {fieldErrors.finalCategory}
                     </p>
                   )}
                 </div>
-
-           
 
                 {/* THUMBNAIL */}
                 <div>
@@ -548,11 +714,13 @@ function AddPost() {
                     </button>
                   )}
 
-                   {!previewImage && (
-                <div className="md:max-w-80 w-full h-40 mt-3 rounded-xl flex items-center justify-center bg-gray-700">
-                  <p className="text-gray-400 md:text-gray-300 text-xs">No Thumbnail</p>
-                </div>
-              )}
+                  {!previewImage && (
+                    <div className="md:max-w-80 w-full h-40 mt-3 rounded-xl flex items-center justify-center bg-gray-700">
+                      <p className="text-gray-400 md:text-gray-300 text-xs">
+                        No Thumbnail
+                      </p>
+                    </div>
+                  )}
 
                   {/* PREVIEW */}
                   {previewImage && (
@@ -661,31 +829,31 @@ function AddPost() {
                   </div>
 
                   {/* LINKS LIST */}
-                   {links.length > 0 && (
-                  <div className="space-y-2 mt-2">
-                    {links.map((link, index) => (
-                      <div
-                        // key={index}
-                        key={`${link.title}-${link.url}`}
-                        className="flex justify-between bg-neutral-800 px-3 py-2 rounded-lg text-xs"
-                      >
-                        <span className="break-all">
-                          {link.title}: {link.url}
-                        </span>
-                        <button
-                          onClick={() =>
-                            setLinks((prev) =>
-                              prev.filter((_, i) => i !== index),
-                            )
-                          }
-                          className="text-red-400"
+                  {links.length > 0 && (
+                    <div className="space-y-2 mt-2">
+                      {links.map((link, index) => (
+                        <div
+                          // key={index}
+                          key={`${link.title}-${link.url}`}
+                          className="flex justify-between bg-neutral-800 px-3 py-2 rounded-lg text-xs"
                         >
-                          ✕
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                          <span className="break-all">
+                            {link.title}: {link.url}
+                          </span>
+                          <button
+                            onClick={() =>
+                              setLinks((prev) =>
+                                prev.filter((_, i) => i !== index),
+                              )
+                            }
+                            className="text-red-400"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 {/* DOCUMENTS */}
@@ -710,12 +878,12 @@ function AddPost() {
                       {documents.map((doc, idx) => (
                         <div
                           // key={idx}
-                           key={doc.name + doc.size}
-                         
-
+                          key={doc.name + doc.size}
                           className="flex items-center gap-2 bg-gray-900 px-3 py-2 rounded-lg border border-emerald-500/20 text-xs text-gray-300"
                         >
-                          <span className="text-emerald-400 font-semibold shrink-0">{idx + 1}.</span>
+                          <span className="text-emerald-400 font-semibold shrink-0">
+                            {idx + 1}.
+                          </span>
                           <span className="truncate">{doc.name}</span>
                           <span className="ml-auto text-gray-500 shrink-0">
                             {(doc.size / 1024).toFixed(1)} KB
@@ -725,7 +893,6 @@ function AddPost() {
                     </div>
                   )}
                 </div>
-                  
 
                 {/* SUBMIT */}
                 <div className="pt-4">
@@ -735,7 +902,8 @@ function AddPost() {
                     className="md:px-5 px-3 py-2 md:py-2.5 bg-emerald-600/20 hover:bg-emerald-500/20
                          rounded-md text-xs md:text-sm flex items-center justify-center gap-2 text-emerald-400 transition-all duration-300 disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed"
                   >
-                   <VscGitStashApply className="md:text-base text-sm"/> {loading ? "Publishing..." : "Publish Post"}
+                    <VscGitStashApply className="md:text-base text-sm" />{" "}
+                    {loading ? "Publishing..." : "Publish Post"}
                   </button>
                 </div>
               </form>
@@ -744,7 +912,6 @@ function AddPost() {
         </div>
       </div>
       <Footer />
-     
     </div>
   );
 }

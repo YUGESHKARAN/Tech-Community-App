@@ -790,7 +790,7 @@ function ProfilePage() {
 
             <p className="text-sm text-gray-400 mb-5 leading-relaxed">
               This action is permanent. All your data and profile
-              information will be erased and cannot be recovered.
+              information will be erased and may not be recovered.
             </p>
 
             <div className="mb-5">

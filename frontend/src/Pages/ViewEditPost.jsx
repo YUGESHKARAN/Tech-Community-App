@@ -38,8 +38,9 @@ function ViewEditPost() {
   // const [loading, setLoading] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
   const [oldCategory, setOldCategory] = useState("")
-
+ 
   const [postLinks, setPostLinks] = useState([]);
+  const [preview, setPreview] = useState(false);
 
   const { PostId } = useParams(); //Accessing Post Id of selected post
   // console.log("PostId", PostId);
@@ -170,6 +171,70 @@ function ViewEditPost() {
     }
   };
 
+   const renderTextWithHashtags = (text) => {
+      if (!text) return null;
+  
+      const cleanedText = text
+        .replace(/\\r\\n/g, "\n")
+        .replace(/\\n/g, "\n")
+        .replace(/\\r/g, "\n");
+  
+      return cleanedText.split("\n").map((line, lineIndex) => {
+        const parts = line.split(/(\*\*.*?\*\*|#{1,6}[^\n]+|\s?#\w+)/gm);
+  
+        return (
+          <React.Fragment key={lineIndex}>
+            {parts.map((part, index) => {
+              if (!part) return null;
+  
+              const trimmed = part.trim();
+  
+              // ---------- Markdown Headings ----------
+              // Supports:
+              // ###Heading
+              // ### Heading
+              if (/^#{1,6}/.test(trimmed)) {
+                return (
+                  <span
+                    key={index}
+                    className="font-semibold md:text-xl text-sm text-white"
+                  >
+                    {trimmed.replace(/^#{1,6}\s*/, "")}
+                  </span>
+                );
+              }
+  
+              // ---------- Bold ----------
+              if (trimmed.startsWith("**") && trimmed.endsWith("**")) {
+                return (
+                  <span key={index} className="font-semibold text-white">
+                    {trimmed.replace(/\*\*/g, "")}
+                  </span>
+                );
+              }
+  
+              // ---------- Hashtags ----------
+              if (/^(\s)?#\w+/.test(part)) {
+                return (
+                  <span key={index} className="text-emerald-400 font-medium">
+                    {part}
+                  </span>
+                );
+              }
+  
+              // ---------- Normal ----------
+              return (
+                <React.Fragment key={index}>
+                  {part.replace(/\\\*/g, "*").replace(/\\\\/g, "\\")}
+                </React.Fragment>
+              );
+            })}
+  
+            <br />
+          </React.Fragment>
+        );
+      });
+    };
 
   // console.log("single post data", singlePostData);
   // console.log("selectedDocs", selectedDocs)
@@ -251,7 +316,7 @@ function ViewEditPost() {
               </div>
 
               {/* Description */}
-              <div className="  rounded-xl">
+              {/* <div className="  rounded-xl">
                 <label className="text-sm text-gray-300 font-medium">
                   Description <span className="text-red-500">*</span>
                 </label>
@@ -262,7 +327,91 @@ function ViewEditPost() {
                   placeholder={description}
                   className="w-full mt-2  focus:border focus:border-emerald-500/40 emerald-scrollbar px-4 py-3 rounded-md bg-gray-900 border border-gray-700 outline-none  text-white text-xs leading-relaxed"
                 />
-              </div>
+              </div> */}
+              <div>
+                  {/* Label */}
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="text-sm text-gray-300 font-medium tracking-wide">
+                      Description <span className="text-red-500">*</span>
+                    </label>
+
+                    {/* Tabs */}
+                    <div className="flex items-center bg-gray-900 border border-gray-700 rounded-lg p-1">
+                      <button
+                        type="button"
+                        onClick={() => setPreview(false)}
+                        className={`px-3 py-1 text-[11px] outline-none   rounded-md transition-all duration-200 ${
+                          !preview
+                            ? "bg-emerald-500/20 text-emerald-400 "
+                            : "text-gray-400 hover:text-white"
+                        }`}
+                      >
+                        Editor
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setPreview(true)}
+                        className={`px-3 py-1 text-[11px] outline-none  rounded-md transition-all duration-200 ${
+                          preview
+                            ? "bg-emerald-500/20 text-emerald-400 "
+                            : "text-gray-400 hover:text-white"
+                        }`}
+                      >
+                        Preview
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Editor / Preview Wrapper */}
+                  <div className="relative">
+                    {/* Top subtle glow */}
+                    <div className="absolute inset-0 rounded-xl bg-emerald-500/[0.02] pointer-events-none" />
+
+                    {preview ? (
+                      <div
+                        className="
+                          w-full min-h-40 h-auto
+                          px-4 py-3
+                          rounded-md
+                          bg-gray-900
+                          border border-gray-700
+                          text-white text-xs md:text-sm
+                          leading-relaxed
+                          emerald-scrollbar
+                          overflow-auto
+                          whitespace-pre-wrap
+                        "
+                      >
+                        {description?.trim()?.length > 0 ? (
+                          renderTextWithHashtags(description)
+                        ) : (
+                          <span className="text-gray-500">
+                            Preview content will appear here...
+                          </span>
+                        )}
+                      </div>
+                    ) : (
+                      <textarea
+                        rows="6"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        placeholder="Write your post description..."
+                        className="w-full mt-2  focus:border focus:border-emerald-500/40 emerald-scrollbar px-4 py-3 rounded-md bg-gray-900 border border-gray-700 outline-none  text-white text-xs leading-relaxed"
+                      />
+                    )}
+                  </div>
+
+                  {/* Footer Info */}
+                  <div className="flex items-center justify-between mt-2">
+                   
+
+                    <span className="md:text-[11px] text-[9px] text-gray-500">
+                      {description?.length} characters
+                    </span>
+                  </div>
+
+                </div>
 
               {/* Thumbnail */}
               <div className="rounded-xl block md:hidden ">
