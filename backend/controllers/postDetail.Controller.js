@@ -695,7 +695,14 @@ const getCategoryPosts = async (req, res) => {
 // reviewed------------------------------------------------------
 async function notifyAIIngestion(post, token) {
  try{
-   console.log("post to ingest", post)
+   console.log("post to ingest: ", post._id);
+   console.log("post authorId: ", post.authorId);
+   console.log("post title: ", post.title);
+   console.log("post documents: ", post.documents);
+   console.log("post description: ", post.description);
+   console.log("post category: ", post.category);
+   console.log("post authorName: ", post.authorName);
+   console.log("post authorEmail: ", post.authorEmail);
  const  res = await axios.post(`${process.env.TECH_ASSISTANT_URL}/ingest`,
    post,
   {
@@ -1353,6 +1360,8 @@ const updatePost = async (req, res) => {
   const { email, postId } = req.params;
   const { title, description, category, links } = req.body;
 
+  // console.log("links",links)
+
   let newImageUrl = null;
   const newDocumentUrls = [];
 
@@ -1400,31 +1409,66 @@ const updatePost = async (req, res) => {
     }
 
     // parse links
-    let parsedLinks = post.links || [];
-    if (links && JSON.parse(links).length > 0) {
+    // let parsedLinks = post.links || [];
+    let parsedLinks = post.links ? post.links.map(l => l.toObject ? l.toObject() : l) : [];
+
+    // if (links && JSON.parse(links).length > 0) {
+    if (links) {
       try {
         const parsed = typeof links === "string" ? JSON.parse(links) : links;
-        if (Array.isArray(parsed)) {
-          let incomingLinks = parsed.map((link) => ({
-            _id: link.id ? link.id : new mongoose.Types.ObjectId(),
-            title: (link.title || "").trim(),
-            url:   (link.url   || "").trim(),
-          }));
-          incomingLinks.forEach((newLink) => {
-            const existingIndex = parsedLinks.findIndex(
-              (existing) => existing._id.toString() === newLink._id.toString()
-            );
-            if (existingIndex !== -1) {
-              parsedLinks[existingIndex] = newLink;
-            } else {
-              if (parsedLinks.length < 5) parsedLinks.push(newLink);
-            }
-          });
+        // if (Array.isArray(parsed)) {
+        //   let incomingLinks = parsed.map((link) => ({
+        //     _id: link.id ? link.id : new mongoose.Types.ObjectId(),
+        //     title: (link.title || "").trim(),
+        //     url:   (link.url   || "").trim(),
+        //   }));
+        //   incomingLinks.forEach((newLink) => {
+        //     const existingIndex = parsedLinks.findIndex(
+        //       (existing) => existing._id.toString() === newLink._id.toString()
+        //     );
+        //     if (existingIndex !== -1) {
+        //       parsedLinks[existingIndex] = newLink;
+        //     } else {
+        //       if (parsedLinks.length < 5) parsedLinks.push(newLink);
+        //     }
+        //   });
+        // }
+
+        if (Array.isArray(parsed) && parsed.length > 0) {
+      parsed.forEach((link) => {
+        const hasId = link.id && link.id !== "null" && link.id !== null;
+
+        if (hasId) {
+          // UPDATE existing link — find by id
+          const existingIndex = parsedLinks.findIndex(
+            (existing) => existing._id.toString() === link.id.toString()
+          );
+          if (existingIndex !== -1) {
+            // update in place
+            parsedLinks[existingIndex] = {
+              ...parsedLinks[existingIndex],
+              title: (link.title || "").trim(),
+              url:   (link.url   || "").trim(),
+            };
+          }
+        } else {
+          // ADD new link — id is null or missing
+          if (parsedLinks.length < 10) {
+            parsedLinks.push({
+              _id:   new mongoose.Types.ObjectId(),
+              title: (link.title || "").trim(),
+              url:   (link.url   || "").trim(),
+            });
+          }
         }
+      });
+    }
+    
       } catch (err) {
         console.log("link parse error", err.message);
       }
     }
+    
 
     // fix: update Post document directly and save it
     post.title       = title;
@@ -1449,7 +1493,7 @@ const updatePost = async (req, res) => {
       await Promise.allSettled(cleanup);
       throw dbErr;
     }
-
+    //  console.log("posts links---", post.links)
     res.status(200).json({ message: "Post updated successfully", data: savedPost });
 
     // AI ingestion after response

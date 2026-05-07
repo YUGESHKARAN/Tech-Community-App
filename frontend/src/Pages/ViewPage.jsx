@@ -817,13 +817,13 @@ const renderTextWithHashtags = (text) => {
                             href={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${doc}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="group flex items-center gap-3 md:px-4 px-3 py-1.5 md:py-2.5
+                            className="group flex items-center gap-3 px-3 py-1.5 
                             rounded-xl border border-slate-600/40
                             bg-slate-800/60 hover:bg-slate-800
                             transition"
                           >
-                            <div className="md:w-8 md:h-8 h-5 w-5 flex items-center justify-center rounded-lg bg-slate-700/70">
-                              <MdOutlineDescription className="text-slate-200 text-sm md:text-lg" />
+                            <div className="md:w-6 md:h-6 h-5 w-5 flex items-center justify-center rounded-lg bg-slate-700/70">
+                              <MdOutlineDescription className="text-slate-200 text-sm " />
                             </div>
 
                             <span className="text-xs text-slate-200 max-w-[180px] truncate">
@@ -854,19 +854,19 @@ const renderTextWithHashtags = (text) => {
                               href={link.url}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="group flex items-center gap-3 md:px-4 px-3 py-1.5 md:py-2.5
+                              className="group flex items-center gap-3 px-3 py-1.5
                             rounded-xl border border-blue-500/20
                             bg-gradient-to-r from-blue-600/10 to-blue-400/5
                             hover:from-blue-600/20 hover:to-blue-400/10
                             transition"
                             >
-                              <div className="md:w-8 md:h-8 h-5 w-5 flex items-center justify-center rounded-lg bg-blue-600/20">
+                              <div className="md:w-6 md:h-6 h-5 w-5 flex items-center justify-center rounded-lg bg-blue-600/20">
                                 {link.title === "GitHub" ? (
-                                  <FaGithub className="text-blue-300 text-sm md:text-lg" />
+                                  <FaGithub className="text-blue-300 text-sm " />
                                 ) : link.title === "Demo" ? (
-                                  <MdPlayCircleOutline className="text-blue-300 text-sm md:text-lg" />
+                                  <MdPlayCircleOutline className="text-blue-300 text-sm " />
                                 ) : (
-                                  <MdOutlineLink className="text-blue-300 text-sm md:text-lg" />
+                                  <MdOutlineLink className="text-blue-300 text-sm " />
                                 )}
                               </div>
 
