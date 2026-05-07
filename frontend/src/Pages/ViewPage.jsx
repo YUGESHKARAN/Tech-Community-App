@@ -250,32 +250,109 @@ function ViewPage() {
     setSelectedImage(null);
   };
 
-  const renderTextWithHashtags = (text) => {
-    if (!text) return null;
+  // const renderTextWithHashtags = (text) => {
+  //   if (!text) return null;
 
-    // Convert visible "\r\n" or "\\n" into real line breaks
-    const cleanedText = text.replace(/\\r\\n|\\n|\\r\n/g, "\n");
+  //   // Convert visible "\r\n" or "\\n" into real line breaks
+  //   const cleanedText = text.replace(/\\r\\n|\\n|\\r\n/g, "\n");
 
-    return cleanedText.split("\n").map((line, lineIndex) => (
+  //   return cleanedText.split("\n").map((line, lineIndex) => (
+  //     <React.Fragment key={lineIndex}>
+  //       {line.split(/(\s+#\w+)/g).map((word, index) =>
+  //         word.startsWith("#") || word.startsWith(" #") ? (
+  //           <span
+  //             key={index}
+  //             className="text-md text-white font-italy font-bold"
+  //           >
+  //             {word}
+  //           </span>
+  //         ) : (
+  //           <React.Fragment key={index}>{word}</React.Fragment>
+  //         ),
+  //       )}
+  //       <br />
+  //     </React.Fragment>
+  //   ));
+  // };
+
+const renderTextWithHashtags = (text) => {
+  if (!text) return null;
+
+  const cleanedText = text
+    .replace(/\\r\\n/g, "\n")
+    .replace(/\\n/g, "\n")
+    .replace(/\\r/g, "\n");
+
+  return cleanedText.split("\n").map((line, lineIndex) => {
+    const parts = line.split(
+      /(\*\*.*?\*\*|#{1,6}[^\n]+|\s?#\w+)/gm
+    );
+
+    return (
       <React.Fragment key={lineIndex}>
-        {line.split(/(\s+#\w+)/g).map((word, index) =>
-          word.startsWith("#") || word.startsWith(" #") ? (
-            <span
-              key={index}
-              className="text-md text-white font-italy font-bold"
-            >
-              {word}
-            </span>
-          ) : (
-            <React.Fragment key={index}>{word}</React.Fragment>
-          ),
-        )}
+        {parts.map((part, index) => {
+          if (!part) return null;
+
+          const trimmed = part.trim();
+
+          // ---------- Markdown Headings ----------
+          // Supports:
+          // ###Heading
+          // ### Heading
+          if (/^#{1,6}/.test(trimmed)) {
+            return (
+              <span
+                key={index}
+                className="font-semibold md:text-xl text-sm text-white"
+              >
+                {trimmed.replace(/^#{1,6}\s*/, "")}
+              </span>
+            );
+          }
+
+          // ---------- Bold ----------
+          if (
+            trimmed.startsWith("**") &&
+            trimmed.endsWith("**")
+          ) {
+            return (
+              <span
+                key={index}
+                className="font-semibold text-white"
+              >
+                {trimmed.replace(/\*\*/g, "")}
+              </span>
+            );
+          }
+
+          // ---------- Hashtags ----------
+          if (/^(\s)?#\w+/.test(part)) {
+            return (
+              <span
+                key={index}
+                className="text-emerald-400 font-medium"
+              >
+                {part}
+              </span>
+            );
+          }
+
+          // ---------- Normal ----------
+          return (
+            <React.Fragment key={index}>
+              {part
+                .replace(/\\\*/g, "*")
+                .replace(/\\\\/g, "\\")}
+            </React.Fragment>
+          );
+        })}
+
         <br />
       </React.Fragment>
-    ));
-  };
+    );
+  });
+};
 
-  // console.log("profile",profile)
   const getYouTubeId = (url) => {
     const match = url.match(
       /(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([^&?/]+)/,
@@ -433,7 +510,7 @@ function ViewPage() {
           </div>
 
           {/* Title */}
-          <h1 className="text-2xl   md:text-3xl max-w-[370px] md:max-w-4xl  font-semibold text-white mt-2 md:mb-6">
+          <h1 className="text-xl   md:text-3xl max-w-[370px] md:max-w-4xl  font-semibold text-gray-200 mt-2 md:mb-6">
             {singlePostData.title}
           </h1>
 
