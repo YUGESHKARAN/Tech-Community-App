@@ -29,7 +29,8 @@ function ViewSingleAuthor() {
   const authorEmail = getItem("email");
   const [profileLinks, setProfileLinks] = useState([]); // New state for profile links
   const [followAuthorLoaderId, setFollowAuthorLoaderId] = useState(null);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
+  const [bioDescription, setBioDescription] = useState("")
 
 
   const fetchAuthor = async () => {
@@ -45,6 +46,7 @@ function ViewSingleAuthor() {
       setFollowing(authorData.following);
       setProfileLinks(authorData.personalLinks);
       setPosts(authorData.posts);
+      setBioDescription(authorData.bio)
     } catch (err) {
       console.log(err);
     }
@@ -430,32 +432,59 @@ function ViewSingleAuthor() {
         <div className="grid md:grid-cols-[300px_1fr] gap-4 items-start">
 
           {/* ══ LEFT — Profile card ══════════════════════════════ */}
-          <div className="bg-gray-800/40 border border-white/[0.06] rounded-2xl p-4 text-center">
+          <div className="bg-gray-800/40 relative border border-white/[0.06] rounded-2xl p-4  text-center">
 
             {/* Avatar */}
-            <div className="relative w-fit mx-auto mb-5">
+            <div className="relative w-fit mx-auto mt-3 md:mb-3 mb-4">
               {author.profile ? (
                 <img
                   src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`}
                   alt="Profile"
-                  className="w-28 h-28 md:w-32 md:h-32 rounded-full object-cover border-2 border-emerald-500/60"
+                  className="w-28 h-28 rounded-full object-cover border-2 border-emerald-500/60"
                 />
               ) : (
-                <div className="w-28 h-28 md:w-32 md:h-32 flex items-center justify-center rounded-full bg-gray-800 border-2 border-white/10">
+                <div className="w-28 h-28 flex items-center justify-center rounded-full bg-gray-800 border-2 border-white/10">
                   <HiOutlineUserCircle className="text-gray-600 text-7xl md:text-8xl" />
                 </div>
               )}
             </div>
 
             {/* Name */}
-            <h2 className="text-base font-medium text-white mb-1">
+            <h2 className="text-xl font-medium  text-white my-1">
               {authorName}
             </h2>
 
             {/* Role pill */}
-            <span className="inline-block px-2.5 py-0.5 text-[10px] font-medium tracking-wide uppercase rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 mb-5">
-              {author.role}
-            </span>
+             <span 
+                // className="inline-block px-2.5 absolute right-4 top-4 py-0.5 text-[10px] font-medium tracking-wide uppercase rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 mb-5"
+                className="px-2.5 py-0.5 absolute right-4 top-4  text-xs font-medium text-amber-400 bg-amber-400/10 border border-amber-400/20 rounded-lg"
+                >
+                  {author.role.charAt(0).toUpperCase()}{author.role.slice(1)}
+                </span>
+
+                
+
+                {
+                  bioDescription &&
+                    <div className="mb-5 pl-1 mt-3  text-left">
+                      {/* <p className="text-[11px] tracking-widest uppercase text-gray-400 pb-1 font-medium">
+                      About
+                    </p> */}
+                   <div
+                      className={`  w-full
+                  text-xs 
+                  leading-relaxed
+                  whitespace-pre-wrap
+                  text-gray-300
+                  break-words
+                  ${bioDescription.length>50?'text-left md:pl-0 pl-2':'text-center md:px-2'}
+                 
+                  `}
+                    >
+                    {bioDescription}
+                    </div>
+                    </div>
+                }
 
             {/* Stats row */}
             {author.role !== "student" &&
@@ -558,15 +587,15 @@ function ViewSingleAuthor() {
                   <button
                     onClick={() => addFollower(email)}
                     className="
-          px-5 py-2 rounded-lg
-            bg-emerald-400 text-black
-            text-sm font-semibold
-            md:hover:bg-emerald-600
-            border border-neutral-700
-            transition-all duration-300
-             
-            cursor-pointer transition-all duration-400 disabled:border-none disabled:bg-transparent
-          "
+                      px-5 py-2 rounded-lg
+                        bg-emerald-400 text-black
+                        text-sm font-semibold
+                        md:hover:bg-emerald-600
+                        border border-neutral-700
+                        transition-all duration-300
+                        
+                        cursor-pointer transition-all duration-400 disabled:border-none disabled:bg-transparent
+                      "
                     disabled={followAuthorLoaderId === email}
                   >
                     {followAuthorLoaderId === email ? (

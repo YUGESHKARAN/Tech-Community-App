@@ -493,7 +493,7 @@ const getAllAuthorsByDomain = async (req, res) => {
 // };
 const updateAuthor = async (req, res) => {
   // console.log("updateAuthor called");
-  const { authorname, email, role, techcommunity, links } = req.body;
+  const { authorname, email, role, techcommunity, links, bio } = req.body;
 
   // fix: generate S3 key in same format used when profile was first uploaded
   // Option A — no folder prefix (flat): "uuid-originalname.jpg"
@@ -538,6 +538,7 @@ const updateAuthor = async (req, res) => {
 
     author.authorname = authorname;
     author.email = email;
+    author.bio = bio;
 
     if (profile) {
       // upload new profile to S3
