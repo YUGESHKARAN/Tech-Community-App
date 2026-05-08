@@ -513,13 +513,20 @@ function LogMonitoringPage() {
                 {/* TOP */}
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div
-                      className="w-8 h-8 rounded-full flex items-center justify-center text-[9px] font-bold text-white shrink-0"
-                      style={{ backgroundColor: avatarColor(log.authorName) }}
-                    >
-                      {/* {log.authorName?.charAt(0)?.toUpperCase()} */}
-                      {initials(log.authorName)}
-                    </div>
+                     {log.profile
+                  ?
+                   <img src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${log.profile}`} alt="" 
+                  className="w-8 h-8 rounded-full border border-green-400 object-contain"
+                  />
+                  
+                  :
+
+                  <div    
+                    className="w-8 h-8 rounded-full flex items-center justify-center text-[9px] font-bold text-white shrink-0"
+                    style={{ backgroundColor: avatarColor(log.authorName) }}
+                  >
+                    {initials(log.authorName)}
+                  </div>}
 
                     <div>
                       <p className="text-sm font-medium">
