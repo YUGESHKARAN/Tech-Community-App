@@ -1485,8 +1485,11 @@ const updateRole = async (req, res) => {
       Now you have full administrative access to manage and oversee the platform, including:
 
       • Access to the Admin Dashboard with key platform trends, post insights, and contributor performance analytics.
+
       • Full user management and control capabilities.
+
       • Access to user deletion logs and deleted account rollback controls.
+      
       • Permission to manage and update user roles and communities.`
   
       const studentMsg = `
