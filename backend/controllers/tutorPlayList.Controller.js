@@ -1034,85 +1034,84 @@ const getBookmarkedPlaylists = async (req, res) => {
 };
 
 // old
+//reviewed-------------------------------------------------------------
 // const getPostsByAuthorsCategory = async (req, res) => {
 //   try {
 //     const { email } = req.params;
 //     const category = decodeURIComponent(req.params.category);
 //     let { page = 1, limit = 10 } = req.query;
 
-//     // console.log("category", category,"page", page, )
-
 //     page = parseInt(page);
 //     limit = parseInt(limit);
-
 //     const skip = (page - 1) * limit;
 
-//     // ✅ Find author
-//     const author = await Author.findOne({ email: { $eq: email } });
-
+//     // only _id needed — used for Post query ownership check
+//     const author = await Author.findOne({ email: { $eq: email } }).select(
+//       "_id",
+//     );
 //     if (!author) {
 //       return res.status(404).json({ message: "Author not found" });
 //     }
 
-//     // ✅ Filter posts by category
-//     const filteredPosts = author.posts.filter(
-//       (post) => post.category === category,
-//     );
+//     // fix: query Post collection directly — author.posts.filter() on ObjectIds always returned []
+//     // push skip/limit into DB instead of in-memory slice
+//     const [filteredPosts, totalPosts] = await Promise.all([
+//       Post.find({ authorId: author._id, category: { $eq: category } })
+//         .skip(skip)
+//         .limit(limit)
+//         .lean(),
+//       Post.countDocuments({
+//         authorId: author._id,
+//         category: { $eq: category },
+//       }),
+//     ]);
 
-//     // ✅ Pagination
-//     const paginatedPosts = filteredPosts.slice(skip, skip + limit);
-
+//     // response shape identical to before
 //     return res.status(200).json({
-//       posts: paginatedPosts,
+//       posts: filteredPosts,
 //       currentPage: page,
-//       totalPages: Math.ceil(filteredPosts.length / limit),
-//       totalPosts: filteredPosts.length,
-//       hasMore: skip + limit < filteredPosts.length,
+//       totalPages: Math.ceil(totalPosts / limit),
+//       totalPosts,
+//       hasMore: skip + limit < totalPosts,
 //     });
 //   } catch (err) {
 //     console.error("Error:", err.message);
 //     res.status(500).json({ message: "Server Error" });
 //   }
 // };
-//reviewed-------------------------------------------------------------
+
 const getPostsByAuthorsCategory = async (req, res) => {
   try {
     const { email } = req.params;
-    const category = decodeURIComponent(req.params.category);
+    const category  = decodeURIComponent(req.params.category);
     let { page = 1, limit = 10 } = req.query;
 
-    page = parseInt(page);
+    page  = parseInt(page);
     limit = parseInt(limit);
     const skip = (page - 1) * limit;
 
-    // only _id needed — used for Post query ownership check
-    const author = await Author.findOne({ email: { $eq: email } }).select(
-      "_id",
-    );
+    const author = await Author.findOne({ email: { $eq: email } }).select("_id");
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
     }
 
-    // fix: query Post collection directly — author.posts.filter() on ObjectIds always returned []
-    // push skip/limit into DB instead of in-memory slice
+    // fix: when category is "all" omit the category filter entirely
+    const isAll   = !category || category === "All";
+    const filter  = isAll
+      ? { authorId: author._id }
+      : { authorId: author._id, category: { $eq: category } };
+
     const [filteredPosts, totalPosts] = await Promise.all([
-      Post.find({ authorId: author._id, category: { $eq: category } })
-        .skip(skip)
-        .limit(limit)
-        .lean(),
-      Post.countDocuments({
-        authorId: author._id,
-        category: { $eq: category },
-      }),
+      Post.find(filter).sort({ timestamp: -1 }).skip(skip).limit(limit).lean(),
+      Post.countDocuments(filter),
     ]);
 
-    // response shape identical to before
     return res.status(200).json({
-      posts: filteredPosts,
+      posts:       filteredPosts,
       currentPage: page,
-      totalPages: Math.ceil(totalPosts / limit),
+      totalPages:  Math.ceil(totalPosts / limit),
       totalPosts,
-      hasMore: skip + limit < totalPosts,
+      hasMore:     skip + limit < totalPosts,
     });
   } catch (err) {
     console.error("Error:", err.message);

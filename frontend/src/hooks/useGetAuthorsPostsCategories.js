@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axiosInstance from "../instances/Axiosinstances";
 
 const useGetAuthorsPostsCategories = (email) => {
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState(['All']);
 
   const getCategories = async () => {
     try {
@@ -11,7 +11,8 @@ const useGetAuthorsPostsCategories = (email) => {
         `/blog/playlist/categories/playlist/${email}`,
       );
 
-      setCategories(response.data.categories);
+      // setCategories(response.data.categories);
+       setCategories(['All', ...(response.data.categories || [])]);
 
     } catch (err) {
       console.error(err);

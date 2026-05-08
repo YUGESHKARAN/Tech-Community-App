@@ -619,6 +619,7 @@ postSchema.index({ authorId: 1, timestamp: -1 });
 // ── Author Schema ─────────────────────────────────────────────
 const authorSchema = new mongoose.Schema({
   authorname: { type: String, required: true },
+  bio: { type: String, required: false },
   role:       { type: String, enum: ['student', 'coordinator', 'admin'], default: 'student' },
   community:  { type: [String], default: [] },
   announcement: [announcementSchema],

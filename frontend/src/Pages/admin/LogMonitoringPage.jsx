@@ -382,12 +382,21 @@ function LogMonitoringPage() {
               >
                 {/* USER */}
                 <div className="flex items-center gap-3 min-w-0">
-                  <div
+
+                  {log.profile
+                  ?
+                   <img src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${log.profile}`} alt="" 
+                  className="w-8 h-8 rounded-full object-contain"
+                  />
+                  
+                  :
+
+                  <div    
                     className="w-8 h-8 rounded-full flex items-center justify-center text-[9px] font-bold text-white shrink-0"
                     style={{ backgroundColor: avatarColor(log.authorName) }}
                   >
                     {initials(log.authorName)}
-                  </div>
+                  </div>}
 
                   <div className="flex flex-col min-w-0">
                     <span className="truncate font-medium">

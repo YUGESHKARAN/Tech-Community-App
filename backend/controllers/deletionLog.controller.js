@@ -218,6 +218,7 @@ const getDeletionLogs = async (req, res) => {
       restoredBy:    log.restoredBy,
       deletedBy:     log.deletedBy,
       authorEmail:   log.snapshot.author.email,
+      profile:       log.snapshot.author.profile,
       authorName:    log.snapshot.author.authorname,
       authorRole:    log.snapshot.author.role,
       postCount:     log.snapshot.posts.length,

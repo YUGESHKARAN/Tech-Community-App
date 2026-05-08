@@ -36,6 +36,7 @@ const snapshotPostSchema = new mongoose.Schema({
 const snapshotAuthorSchema = new mongoose.Schema({
   _id:          { type: mongoose.Schema.Types.ObjectId }, // fix: was missing — caused id mismatch on restore
   authorname:   { type: String },
+  bio:   { type: String },
   email:        { type: String },
   password:     { type: String },
   role:         { type: String },
