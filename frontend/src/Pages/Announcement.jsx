@@ -431,30 +431,83 @@ function Announcement() {
   }
 
 
-  const renderTextWithHashtags = (text) => {
-      if (!text) return null;
-  
-      // Convert visible "\r\n" or "\\n" into real line breaks
-      const cleanedText = text.replace(/\\r\\n|\\n|\\r\n/g, "\n");
-  
-      return cleanedText.split("\n").map((line, lineIndex) => (
-        <React.Fragment key={lineIndex}>
-          {line.split(/(\s+#\w+)/g).map((word, index) =>
-            word.startsWith("#") || word.startsWith(" #") ? (
+const renderTextWithHashtags = (text) => {
+  if (!text) return null;
+
+  const cleanedText = text
+    .replace(/\\r\\n/g, "\n")
+    .replace(/\\n/g, "\n")
+    .replace(/\\r/g, "\n");
+
+  return cleanedText.split("\n").map((line, lineIndex) => {
+    const parts = line.split(
+      /(\*\*.*?\*\*|#{1,6}[^\n]+|\s?#\w+)/gm
+    );
+
+    return (
+      <React.Fragment key={lineIndex}>
+        {parts.map((part, index) => {
+          if (!part) return null;
+
+          const trimmed = part.trim();
+
+          // ---------- Markdown Headings ----------
+          // Supports:
+          // ###Heading
+          // ### Heading
+          if (/^#{1,6}/.test(trimmed)) {
+            return (
               <span
                 key={index}
-                className="text-md text-white font-italy font-bold"
+                className="font-semibold md:text-xl text-sm text-white"
               >
-                {word}
+                {trimmed.replace(/^#{1,6}\s*/, "")}
               </span>
-            ) : (
-              <React.Fragment key={index}>{word}</React.Fragment>
-            ),
-          )}
-          <br />
-        </React.Fragment>
-      ));
-    };
+            );
+          }
+
+          // ---------- Bold ----------
+          if (
+            trimmed.startsWith("**") &&
+            trimmed.endsWith("**")
+          ) {
+            return (
+              <span
+                key={index}
+                className="font-semibold text-white"
+              >
+                {trimmed.replace(/\*\*/g, "")}
+              </span>
+            );
+          }
+
+          // ---------- Hashtags ----------
+          if (/^(\s)?#\w+/.test(part)) {
+            return (
+              <span
+                key={index}
+                className="text-white font-medium"
+              >
+                {part}
+              </span>
+            );
+          }
+
+          // ---------- Normal ----------
+          return (
+            <React.Fragment key={index}>
+              {part
+                .replace(/\\\*/g, "*")
+                .replace(/\\\\/g, "\\")}
+            </React.Fragment>
+          );
+        })}
+
+        <br />
+      </React.Fragment>
+    );
+  });
+};
 
   // console.log("guidelinses", showGuidelines)
   // console.log("announcement", reversedAnnouncements)

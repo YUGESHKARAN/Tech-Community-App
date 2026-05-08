@@ -126,7 +126,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
     }
   };
 
-  const updateRole = async (email, id) => {
+  const updateRole = async (userEmail, id) => {
    
     const roleToUpdate = updatedRoles[id];
     if (!roleToUpdate) {
@@ -138,8 +138,8 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
 
     try {
       const response = await axiosInstance.put(
-        "/blog/author/control/updateRole",
-        { role: roleToUpdate, email },
+        `/blog/author/control/updateRole/${email}`,
+        { role: roleToUpdate, userEmail },
       );
       if (response.status === 200) {
        

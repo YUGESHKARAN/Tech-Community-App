@@ -68,7 +68,7 @@ router.delete('/notification/deleteall', limiter, authenticateToken, notificatio
 router.post("/announcement/add", limiter, authenticateToken, upload.single('poster'), addAnnouncement);
 router.delete('/announcements/:announcementId', limiter, authenticateToken, deleteAnnouncement);
 router.delete('/announcementsByAdmin/:email', limiter, authenticateToken, deleteAllAnnouncementByAdmin);
-router.put("/control/updateRole", limiter, authenticateToken, upload.none(), updateRole);
+router.put("/control/updateRole/:email", limiter, authenticateToken, upload.none(), updateRole);
 router.put("/control/updateCommunity", limiter, authenticateToken, updateTechCommunity);
 router.put("/control/coordinatorUpdate", limiter, authenticateToken, updateTechCommunityCoordinator);
 

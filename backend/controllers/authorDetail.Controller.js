@@ -1441,17 +1441,86 @@ const deleteAnnouncement = async (req, res) => {
 
 // reviewed-----------------------------------------------------------------------
 const updateRole = async (req, res) => {
-  const { email, role } = req.body;
-  console.log("Update role request received:", req.body);
+  const {email} = req.params;
+  // console.log('params email', email);
+  const { userEmail, role } = req.body;
+  // console.log("Update role request received:", req.body);
+  
   try {
-    console.log("logged");
+    // console.log("logged");
 
-    const author = await Author.findOne({ email: { $eq: email } });
+    const admin= await Author.findOne({email:{$eq:email}});
+
+    if(!admin){
+      return res.status(404).json({message:"Admin not found"})
+    }
+
+    if(admin.role !== "admin"){
+      return res.status(403).json({message:"You are not allowed to perform this action"})
+    }
+
+    const author = await Author.findOne({ email: { $eq: userEmail } });
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
     }
 
+      // ── Role Update content ───────────────────────────────────────
+  const adminUser = admin.authorname;
+  const adminEmail = admin.email ;
+  const roleTitle = "📢 Author role updated";
+
+  const coordinatorMsg = `Hi ${author.authorname},
+
+        Your role has been updated to **Coordinator**.
+
+        Now you have access to a dedicated workspace where you can create and manage your own posts,  playlists and community content. In addition, you have access to publish campaign, event, and community-related announcements through the Announcement section.
+
+        We’re excited to have you contribute to building and growing the community.`;
+
+    // If you need assistance at any point, refer to the user guide available within the platform. \n
+  const adminMsg = `Hi ${author.authorname},
+
+      Your role has been successfully updated to **Admin**.
+
+      Now you have full administrative access to manage and oversee the platform, including:
+
+      • Access to the Admin Dashboard with key platform trends, post insights, and contributor performance analytics.
+      • Full user management and control capabilities.
+      • Access to user deletion logs and deleted account rollback controls.
+      • Permission to manage and update user roles and communities.`
+  
+      const studentMsg = `
+      Hi ${author.authorname},
+
+      Your role has been changed to **Student**. For more details contanct admin.
+      `
+
+  const url = `${notificationUrl}/announcement`;
+
+  
+    const roleMessage = role=='coordinator'? coordinatorMsg : role==='admin'? adminMsg:studentMsg;
+
+  const newAnnouncement = {
+    user: adminUser,
+    title: roleTitle,
+    message: roleMessage,
+    authorEmail: adminEmail,
+    deliveredTo: "all",
+  };
+
+  const newNotification = {
+    user: adminUser,
+    authorEmail: adminEmail,
+    message: `Hi ${author.authorname}, Your role has been updated to ${role}.`,
+    url,
+  };
+   
+
+
     author.role = role;
+    author.announcement.push(newAnnouncement);
+    author.notification.push(newNotification);
+    
     await author.save({ validateBeforeSave: false });
     res.status(200).json({ message: "Role updated successfully", author });
   } catch (err) {
