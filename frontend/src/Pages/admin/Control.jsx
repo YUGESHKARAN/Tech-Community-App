@@ -379,7 +379,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
                 >
                   {!author.profile ? (
                     <div
-                      className="md:w-9 md:h-9 w-6 h-6 rounded-full flex items-center justify-center text-[9px] md:text-xs font-bold text-white shrink-0"
+                      className="w-9 h-9  rounded-full flex items-center justify-center text-[9px] md:text-xs font-bold text-white shrink-0"
                       style={{ backgroundColor: avatarColor(author.name) }}
                     >
                       {initials(author.name)}
@@ -388,7 +388,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
                     <img
                       src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`}
                       alt=""
-                      className="w-9 h-9 w-6 h-6 border border-green-500/70 rounded-full object-cover"
+                      className="w-9 h-9  border border-green-500/70 rounded-full object-cover"
                     />
                   )}
                   <span className="text-base  flex-1 font-semibold text-gray-200 truncate">
@@ -568,7 +568,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
                 >
                   {!author.profile ? (
                     <div
-                      className="w-9 h-9 w-6 h-6 rounded-full flex items-center justify-center text-[9px] md:text-xs font-bold text-white shrink-0"
+                      className="w-9 h-9 rounded-full flex items-center justify-center text-[9px] md:text-xs font-bold text-white shrink-0"
                       style={{ backgroundColor: avatarColor(author.name) }}
                     >
                       {initials(author.name)}
@@ -577,7 +577,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
                     <img
                       src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`}
                       alt=""
-                      className="w-9 h-9 w-6 h-6 border border-green-500/70 rounded-full object-cover"
+                      className="w-9 h-9 border border-green-500/70 rounded-full object-cover"
                     />
                   )}
                   <span className="text-base  flex-1 font-semibold text-gray-200 truncate">
@@ -757,7 +757,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
                 >
                   {!author.profile ? (
                     <div
-                      className="w-9 h-9 w-6 h-6 rounded-full flex items-center justify-center text-[9px] md:text-xs font-bold text-white shrink-0"
+                      className="w-9 h-9  rounded-full flex items-center justify-center text-[9px] md:text-xs font-bold text-white shrink-0"
                       style={{ backgroundColor: avatarColor(author.name) }}
                     >
                       {initials(author.name)}
@@ -766,7 +766,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
                     <img
                       src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`}
                       alt=""
-                      className="w-9 h-9 w-6 h-6 border border-green-500/70 rounded-full object-cover"
+                      className="w-9 h-9  border border-green-500/70 rounded-full object-cover"
                     />
                   )}
                   <span className="text-base  flex-1 font-semibold text-gray-200 truncate">
