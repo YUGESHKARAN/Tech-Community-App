@@ -1467,13 +1467,13 @@ const updateRole = async (req, res) => {
       // ── Role Update content ───────────────────────────────────────
   const adminUser = admin.authorname;
   const adminEmail = admin.email ;
-  const roleTitle = "📢 Author role updated";
+  const roleTitle = "📢 Author Role Updated";
 
   const coordinatorMsg = `Hi ${author.authorname},
 
         Your role has been updated to **Coordinator**.
 
-        Now you have access to a dedicated workspace where you can create and manage your own posts,  playlists and community content. In addition, you have access to publish campaign, event, and community-related announcements through the Announcement section.
+        Now you have access to a dedicated workspace where you can create and manage your posts,  playlists and community content. In addition, you have access to publish campaign, event, and community-related announcements through the Announcement section.
 
         We’re excited to have you contribute to building and growing the community.`;
 
@@ -1484,7 +1484,7 @@ const updateRole = async (req, res) => {
 
       Now you have full administrative access to manage and oversee the platform, including:
 
-      • Access to the Admin Dashboard with key platform trends, post insights, and contributor performance analytics.
+      • Access to the Admin Dashboard with key platform trends, post insights and contributor performance analytics.
 
       • Full user management and control capabilities.
 

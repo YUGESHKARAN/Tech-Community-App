@@ -1,10 +1,9 @@
-
 // ─────────────────────────────────────────────────────────────
 //  deletionLog.controller.js
 // ─────────────────────────────────────────────────────────────
-const mongoose  = require('mongoose');
-const { Author, Post }  = require('../models/blogAuthorSchema');
-const { DeletionLog }   = require('../models/deletionLogSchema');
+const mongoose = require("mongoose");
+const { Author, Post } = require("../models/blogAuthorSchema");
+const { DeletionLog } = require("../models/deletionLogSchema");
 // const { DeleteObjectCommand } = require('@aws-sdk/client-s3');
 // const { s3, bucketName }      = require('../config/s3');
 
@@ -28,12 +27,13 @@ const s3 = new S3Client({
   region: bucketRegion,
 });
 
+const notificationUrl = process.env.NOTIFICATION_URL || "http://localhost:5173";
 
 // ─────────────────────────────────────────────────────────────
 //  HELPER — build a full snapshot of an author + their posts
 // ─────────────────────────────────────────────────────────────
 const buildSnapshot = async (author) => {
-  const posts     = await Post.find({ authorId: author._id }).lean();
+  const posts = await Post.find({ authorId: author._id }).lean();
   const authorObj = author.toObject ? author.toObject() : { ...author };
 
   // fix: explicitly preserve _id — toObject() includes it but
@@ -41,7 +41,7 @@ const buildSnapshot = async (author) => {
   return {
     author: {
       ...authorObj,
-      _id: author._id,  // explicit — never rely on spread for _id
+      _id: author._id, // explicit — never rely on spread for _id
     },
     posts,
   };
@@ -54,8 +54,8 @@ const buildSnapshot = async (author) => {
 // ─────────────────────────────────────────────────────────────
 const createDeletionLog = async ({
   authorToDelete,
-  deletedBy,        // { email, name, role }
-  deletionType,     // 'self' | 'admin_action'
+  deletedBy, // { email, name, role }
+  deletionType, // 'self' | 'admin_action'
 }) => {
   const snapshot = await buildSnapshot(authorToDelete);
 
@@ -78,8 +78,10 @@ const deleteAuthor = async (req, res) => {
   console.log("deleteAuthor called");
 
   try {
-    if (!email)    return res.status(400).json({ message: "Author email required" });
-    if (!password) return res.status(400).json({ message: "Password required" });
+    if (!email)
+      return res.status(400).json({ message: "Author email required" });
+    if (!password)
+      return res.status(400).json({ message: "Password required" });
 
     const author = await Author.findOne({ email: { $eq: email } });
     if (!author) return res.status(404).json({ message: "Author not found" });
@@ -92,10 +94,10 @@ const deleteAuthor = async (req, res) => {
       authorToDelete: author,
       deletedBy: {
         email: author.email,
-        name:  author.authorname,
-        role:  author.role,
+        name: author.authorname,
+        role: author.role,
       },
-      deletionType: 'self',
+      deletionType: "self",
     });
 
     // 2. delete posts from Post collection
@@ -113,13 +115,15 @@ const deleteAuthor = async (req, res) => {
     const { password: _, otp, otpExpiresAt, ...safeAuthor } = author.toObject();
 
     return res.status(200).json({
-      message:   "Author deleted successfully",
-      author:    safeAuthor,
-      logId:     log._id,   // return logId so user can reference it for restore
+      message: "Author deleted successfully",
+      author: safeAuthor,
+      logId: log._id, // return logId so user can reference it for restore
     });
   } catch (err) {
     console.error("deleteAuthor error:", err);
-    return res.status(500).json({ message: "Server error", error: err.message });
+    return res
+      .status(500)
+      .json({ message: "Server error", error: err.message });
   }
 };
 
@@ -128,19 +132,24 @@ const deleteAuthor = async (req, res) => {
 // ─────────────────────────────────────────────────────────────
 const deleteAuthorByAdmin = async (req, res) => {
   try {
-    const { authorEmail } = req.params;       // admin's email
-    const { email, password } = req.body;     // target author + admin password
+    const { authorEmail } = req.params; // admin's email
+    const { email, password } = req.body; // target author + admin password
 
-    if (!authorEmail) return res.status(400).json({ message: "Admin email required" });
-    if (!email)       return res.status(400).json({ message: "Author email required" });
-    if (!password)    return res.status(400).json({ message: "Password required" });
+    if (!authorEmail)
+      return res.status(400).json({ message: "Admin email required" });
+    if (!email)
+      return res.status(400).json({ message: "Author email required" });
+    if (!password)
+      return res.status(400).json({ message: "Password required" });
 
     const admin = await Author.findOne({ email: { $eq: authorEmail } });
     if (!admin) return res.status(404).json({ message: "Admin not found" });
-    if (admin.role !== 'admin') return res.status(403).json({ message: "Access denied" });
+    if (admin.role !== "admin")
+      return res.status(403).json({ message: "Access denied" });
 
     const isMatch = await admin.comparePassword(password);
-    if (!isMatch) return res.status(401).json({ message: "Invalid admin password" });
+    if (!isMatch)
+      return res.status(401).json({ message: "Invalid admin password" });
 
     const author = await Author.findOne({ email: { $eq: email } });
     if (!author) return res.status(404).json({ message: "Author not found" });
@@ -150,10 +159,10 @@ const deleteAuthorByAdmin = async (req, res) => {
       authorToDelete: author,
       deletedBy: {
         email: admin.email,
-        name:  admin.authorname,
-        role:  admin.role,
+        name: admin.authorname,
+        role: admin.role,
       },
-      deletionType: 'admin_action',
+      deletionType: "admin_action",
     });
 
     // 2. delete posts
@@ -172,12 +181,14 @@ const deleteAuthorByAdmin = async (req, res) => {
 
     return res.status(200).json({
       message: "Author deleted successfully",
-      author:  safeAuthor,
-      logId:   log._id,
+      author: safeAuthor,
+      logId: log._id,
     });
   } catch (err) {
     console.error("deleteAuthorByAdmin error:", err);
-    return res.status(500).json({ message: "Internal server error", error: err.message });
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: err.message });
   }
 };
 
@@ -187,19 +198,23 @@ const deleteAuthorByAdmin = async (req, res) => {
 const getDeletionLogs = async (req, res) => {
   try {
     const { adminEmail } = req.params;
-    const page   = parseInt(req.query.page)   || 1;
-    const limit  = parseInt(req.query.limit)  || 20;
-    const status = req.query.status || 'deleted';  // filter by status
-    const skip   = (page - 1) * limit;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const status = req.query.status || "deleted"; // filter by status
+    const skip = (page - 1) * limit;
 
-    const admin = await Author.findOne({ email: { $eq: adminEmail } }).select('role');
-    if (!admin || admin.role !== 'admin') {
+    const admin = await Author.findOne({ email: { $eq: adminEmail } }).select(
+      "role",
+    );
+    if (!admin || admin.role !== "admin") {
       return res.status(403).json({ message: "Access denied" });
     }
 
     const [logs, total] = await Promise.all([
       DeletionLog.find({})
-        .select('-snapshot.author.password -snapshot.author.otp -snapshot.author.otpExpiresAt')
+        .select(
+          "-snapshot.author.password -snapshot.author.otp -snapshot.author.otpExpiresAt",
+        )
         .sort({ deletedAt: -1 })
         .skip(skip)
         .limit(limit)
@@ -208,20 +223,20 @@ const getDeletionLogs = async (req, res) => {
     ]);
 
     // shape for admin view — summary only, not full snapshot
-    const data = logs.map(log => ({
-      logId:         log._id,
-      status:        log.status,
-      deletionType:  log.deletionType,
-      deletedAt:     log.deletedAt,
-      expiresAt:     log.expiresAt,
-      restoredAt:    log.restoredAt,
-      restoredBy:    log.restoredBy,
-      deletedBy:     log.deletedBy,
-      authorEmail:   log.snapshot.author.email,
-      profile:       log.snapshot.author.profile,
-      authorName:    log.snapshot.author.authorname,
-      authorRole:    log.snapshot.author.role,
-      postCount:     log.snapshot.posts.length,
+    const data = logs.map((log) => ({
+      logId: log._id,
+      status: log.status,
+      deletionType: log.deletionType,
+      deletedAt: log.deletedAt,
+      expiresAt: log.expiresAt,
+      restoredAt: log.restoredAt,
+      restoredBy: log.restoredBy,
+      deletedBy: log.deletedBy,
+      authorEmail: log.snapshot.author.email,
+      profile: log.snapshot.author.profile,
+      authorName: log.snapshot.author.authorname,
+      authorRole: log.snapshot.author.role,
+      postCount: log.snapshot.posts.length,
     }));
 
     return res.status(200).json({
@@ -233,7 +248,9 @@ const getDeletionLogs = async (req, res) => {
     });
   } catch (err) {
     console.error("getDeletionLogs error:", err);
-    return res.status(500).json({ message: "Server error", error: err.message });
+    return res
+      .status(500)
+      .json({ message: "Server error", error: err.message });
   }
 };
 
@@ -244,13 +261,17 @@ const getDeletionLogById = async (req, res) => {
   try {
     const { adminEmail, logId } = req.params;
 
-    const admin = await Author.findOne({ email: { $eq: adminEmail } }).select('role');
-    if (!admin || admin.role !== 'admin') {
+    const admin = await Author.findOne({ email: { $eq: adminEmail } }).select(
+      "role",
+    );
+    if (!admin || admin.role !== "admin") {
       return res.status(403).json({ message: "Access denied" });
     }
 
     const log = await DeletionLog.findById(logId)
-      .select('-snapshot.author.password -snapshot.author.otp -snapshot.author.otpExpiresAt')
+      .select(
+        "-snapshot.author.password -snapshot.author.otp -snapshot.author.otpExpiresAt",
+      )
       .lean();
 
     if (!log) return res.status(404).json({ message: "Log not found" });
@@ -258,7 +279,9 @@ const getDeletionLogById = async (req, res) => {
     return res.status(200).json({ log });
   } catch (err) {
     console.error("getDeletionLogById error:", err);
-    return res.status(500).json({ message: "Server error", error: err.message });
+    return res
+      .status(500)
+      .json({ message: "Server error", error: err.message });
   }
 };
 
@@ -358,31 +381,35 @@ const getDeletionLogById = async (req, res) => {
 
 const rollbackDeletion = async (req, res) => {
   try {
-    const { logId }      = req.params;
+    const { logId } = req.params;
     const { restoredBy } = req.body;
 
     if (!restoredBy) {
       return res.status(400).json({ message: "restoredBy email required" });
     }
 
-    const restorer = await Author.findOne({ email: { $eq: restoredBy } })
-      .select('role authorname');
+    const restorer = await Author.findOne({
+      email: { $eq: restoredBy },
+    }).select("role authorname");
     if (!restorer) {
       return res.status(404).json({ message: "Restorer account not found" });
     }
 
     const log = await DeletionLog.findById(logId);
-    if (!log) return res.status(404).json({ message: "Deletion log not found" });
+    if (!log)
+      return res.status(404).json({ message: "Deletion log not found" });
 
-    const isAdmin      = restorer.role === 'admin';
-    const isSelfRestore = log.deletionType === 'self' &&
-                          log.snapshot.author.email === restoredBy;
+    const isAdmin = restorer.role === "admin";
+    const isSelfRestore =
+      log.deletionType === "self" && log.snapshot.author.email === restoredBy;
 
     if (!isAdmin && !isSelfRestore) {
-      return res.status(403).json({ message: "Not authorised to restore this account" });
+      return res
+        .status(403)
+        .json({ message: "Not authorised to restore this account" });
     }
 
-    if (log.status !== 'deleted') {
+    if (log.status !== "deleted") {
       return res.status(400).json({
         message: `Cannot restore — log status is '${log.status}'`,
       });
@@ -390,69 +417,121 @@ const rollbackDeletion = async (req, res) => {
 
     const { author: authorSnap, posts: postsSnap } = log.snapshot;
 
+    // If you need assistance at any point, refer to the user guide available within the platform. \n
+
+    const url = `${notificationUrl}/announcement`;
+    const restorerName = restorer.authorname;
+    const restorerEmail = restorer.email;
+    const restoredName = authorSnap.authorname;
+    const deletedAt = log.deletedAt
+      ? new Date(log.deletedAt).toDateString()
+      : "unknown date";
+
+    const recoveryMessage = `
+      Hi ${restoredName},
+
+      Your account has been successfully recovered. Your account was deleted on **${deletedAt}** and has now been fully restored. 
+      
+      All your previous data — posts, followers, communities, and personal links — are restored.
+
+      Welcome back to the Tech Community Platform.
+`;
+
+    const newAnnouncement = {
+       _id:   new mongoose.Types.ObjectId(), 
+      user: restorerName,
+      title: "📢 Account Recovered Successfully",
+      message: recoveryMessage,
+      authorEmail: restorerEmail,
+      deliveredTo: "all",
+    };
+
+    const newNotification = {
+      _id:         new mongoose.Types.ObjectId(), 
+      user: restorerName,
+      authorEmail: restorerEmail,
+      message: `Welcome back, Your account has been successfully recovered !`,
+      url,
+    };
+
     // fix: build clean insert doc with original _id explicitly set
-    const rawAuthor = authorSnap.toObject ? authorSnap.toObject() : { ...authorSnap };
-    const authorToInsert = { ...rawAuthor, _id: authorSnap._id };
+    const rawAuthor = authorSnap.toObject
+      ? authorSnap.toObject()
+      : { ...authorSnap };
+
+    const authorToInsert = {
+      ...rawAuthor,
+      _id: authorSnap._id, 
+      
+      // push notification and announcement at restore time
+      notification: [...(rawAuthor.notification || []), newNotification],
+      announcement: [...(rawAuthor.announcement || []), newAnnouncement],
+      
+    };
     delete authorToInsert.otp;
     delete authorToInsert.otpExpiresAt;
 
     await Author.collection.insertOne(authorToInsert);
 
     if (postsSnap.length > 0) {
-      const postDocs = postsSnap.map(p => {
+      const postDocs = postsSnap.map((p) => {
         const raw = p.toObject ? p.toObject() : { ...p };
         return {
           ...raw,
-          _id:      p._id,            // preserve original post ObjectId
-          authorId: authorSnap._id,   // re-link to restored author _id
+          _id: p._id, // preserve original post ObjectId
+          authorId: authorSnap._id, // re-link to restored author _id
         };
       });
 
       await Post.insertMany(postDocs, { ordered: false });
 
-      const postIds = postDocs.map(p => p._id);
+      const postIds = postDocs.map((p) => p._id);
       // match by _id — more reliable than email
       await Author.updateOne(
         { _id: authorSnap._id },
-        { $set: { posts: postIds } }
+        { $set: { posts: postIds } },
       );
     }
 
-    log.status     = 'restored';
+    log.status = "restored";
     log.restoredAt = new Date();
     log.restoredBy = restoredBy;
     await log.save();
 
     return res.status(200).json({
-      message:       "Account and posts restored successfully",
+      message: "Account and posts restored successfully",
       restoredEmail: authorSnap.email,
-      postCount:     postsSnap.length,
-      logId:         log._id,
+      postCount: postsSnap.length,
+      logId: log._id,
     });
   } catch (err) {
     console.error("rollbackDeletion error:", err);
-    return res.status(500).json({ message: "Server error", error: err.message });
+    return res
+      .status(500)
+      .json({ message: "Server error", error: err.message });
   }
 };
-
 
 const deleteDeletionLog = async (req, res) => {
   try {
     const { adminEmail, logId } = req.params;
     console.log("deleteDeletionLog called with:", { adminEmail, logId });
 
-    const admin = await Author.findOne({ email: { $eq: adminEmail } }).select('role');
-    if (!admin || admin.role !== 'admin') {
+    const admin = await Author.findOne({ email: { $eq: adminEmail } }).select(
+      "role",
+    );
+    if (!admin || admin.role !== "admin") {
       return res.status(403).json({ message: "Access denied" });
     }
 
     const log = await DeletionLog.findById(logId);
-    if (!log) return res.status(404).json({ message: "Deletion log not found" });
+    if (!log)
+      return res.status(404).json({ message: "Deletion log not found" });
 
     // safety guard — prevent deleting a log that can still be restored
-    if (log.status === 'deleted') {
+    if (log.status === "deleted") {
       return res.status(400).json({
-        message: "Cannot permanently delete an active deletion log."
+        message: "Cannot permanently delete an active deletion log.",
       });
     }
 
@@ -461,11 +540,13 @@ const deleteDeletionLog = async (req, res) => {
     return res.status(200).json({
       message: "Deletion log permanently removed",
       logId,
-      deletedStatus: log.status,  // tells caller whether it was 'restored' or 'expired'
+      deletedStatus: log.status, // tells caller whether it was 'restored' or 'expired'
     });
   } catch (err) {
     console.error("deleteDeletionLog error:", err);
-    return res.status(500).json({ message: "Server error", error: err.message });
+    return res
+      .status(500)
+      .json({ message: "Server error", error: err.message });
   }
 };
 
@@ -478,30 +559,36 @@ const getMyDeletionLog = async (req, res) => {
     const { email } = req.params;
 
     const log = await DeletionLog.findOne({
-      'snapshot.author.email': { $eq: email },
-      status: 'deleted',
+      "snapshot.author.email": { $eq: email },
+      status: "deleted",
     })
-      .select('_id status deletedAt deletionType deletedBy expiresAt snapshot.posts snapshot.author.authorname snapshot.author.email snapshot.author.role')
+      .select(
+        "_id status deletedAt deletionType deletedBy expiresAt snapshot.posts snapshot.author.authorname snapshot.author.email snapshot.author.role",
+      )
       .sort({ deletedAt: -1 })
       .lean();
 
     if (!log) {
-      return res.status(404).json({ message: "No deletion record found for this email" });
+      return res
+        .status(404)
+        .json({ message: "No deletion record found for this email" });
     }
 
     return res.status(200).json({
-      logId:       log._id,
-      status:      log.status,
-      deletedAt:   log.deletedAt,
-      deletionType:log.deletionType,
-      expiresAt:   log.expiresAt,
-      authorName:  log.snapshot.author.authorname,
+      logId: log._id,
+      status: log.status,
+      deletedAt: log.deletedAt,
+      deletionType: log.deletionType,
+      expiresAt: log.expiresAt,
+      authorName: log.snapshot.author.authorname,
       authorEmail: log.snapshot.author.email,
-      postCount:   log.snapshot.posts.length,
+      postCount: log.snapshot.posts.length,
     });
   } catch (err) {
     console.error("getMyDeletionLog error:", err);
-    return res.status(500).json({ message: "Server error", error: err.message });
+    return res
+      .status(500)
+      .json({ message: "Server error", error: err.message });
   }
 };
 
@@ -512,26 +599,32 @@ const expireDeletionLog = async (req, res) => {
   try {
     const { adminEmail, logId } = req.params;
 
-    const admin = await Author.findOne({ email: { $eq: adminEmail } }).select('role');
-    if (!admin || admin.role !== 'admin') {
+    const admin = await Author.findOne({ email: { $eq: adminEmail } }).select(
+      "role",
+    );
+    if (!admin || admin.role !== "admin") {
       return res.status(403).json({ message: "Access denied" });
     }
 
     const log = await DeletionLog.findById(logId);
     if (!log) return res.status(404).json({ message: "Log not found" });
 
-    if (log.status === 'restored') {
+    if (log.status === "restored") {
       return res.status(400).json({ message: "Cannot expire a restored log" });
     }
 
-    log.status    = 'expired';
-    log.expiresAt = new Date();  // triggers immediate TTL cleanup on next MongoDB pass
+    log.status = "expired";
+    log.expiresAt = new Date(); // triggers immediate TTL cleanup on next MongoDB pass
     await log.save();
 
-    return res.status(200).json({ message: "Log marked as expired", logId: log._id });
+    return res
+      .status(200)
+      .json({ message: "Log marked as expired", logId: log._id });
   } catch (err) {
     console.error("expireDeletionLog error:", err);
-    return res.status(500).json({ message: "Server error", error: err.message });
+    return res
+      .status(500)
+      .json({ message: "Server error", error: err.message });
   }
 };
 
@@ -543,5 +636,5 @@ module.exports = {
   getMyDeletionLog,
   rollbackDeletion,
   expireDeletionLog,
-  deleteDeletionLog
+  deleteDeletionLog,
 };
