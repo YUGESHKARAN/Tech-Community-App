@@ -170,7 +170,7 @@ function Dashboard() {
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
                 <KPICard
                   label="Total Users"
-                  value={statsSummary.totalUsers}
+                  value={statsSummary?.totalUsers || 0}
                   sub="All members"
                   icon={Users}
                   change="8.2%"
@@ -178,7 +178,7 @@ function Dashboard() {
                 />
                 <KPICard
                   label="Admins"
-                  value={statsSummary.admins}
+                  value={statsSummary?.admins || 0}
                   sub="Chief Control"
                   icon={ShieldCheck}
                   accent="#ec4899"
@@ -186,7 +186,7 @@ function Dashboard() {
 
                 <KPICard
                   label="Coordinators"
-                  value={statsSummary.coordinators}
+                  value={statsSummary?.coordinators || 0}
                   sub="Contributors"
                   icon={UserCog}
                   accent="#f59e0b"
@@ -196,7 +196,7 @@ function Dashboard() {
 
                 <KPICard
                   label="Students"
-                  value={statsSummary.students}
+                  value={statsSummary?.students || 0}
                   sub="Users"
                   icon={GraduationCap}
                   accent="#3b82f6"
@@ -206,7 +206,7 @@ function Dashboard() {
 
                 <KPICard
                   label="New Entry"
-                  value={`+${statsSummary.newThisMonth}`}
+                  value={`+${statsSummary?.newThisMonth || 0}`}
                   sub="This Month"
                   icon={TrendingUp}
                   change="11%"
