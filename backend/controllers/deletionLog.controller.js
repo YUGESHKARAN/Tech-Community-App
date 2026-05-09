@@ -390,7 +390,7 @@ const rollbackDeletion = async (req, res) => {
 
     const restorer = await Author.findOne({
       email: { $eq: restoredBy },
-    }).select("role authorname");
+    }).select("role authorname email");
     if (!restorer) {
       return res.status(404).json({ message: "Restorer account not found" });
     }
