@@ -440,7 +440,7 @@ const rollbackDeletion = async (req, res) => {
     const newAnnouncement = {
        _id:   new mongoose.Types.ObjectId(), 
       user: restorerName,
-      title: "📢 Account Recovered Successfully",
+      title: "♻️ Account Recovered Successfully",
       message: recoveryMessage,
       authorEmail: restorerEmail,
       deliveredTo: "all",

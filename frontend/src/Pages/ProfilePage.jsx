@@ -453,7 +453,7 @@ function ProfilePage() {
               {/* ══ RIGHT — Form ═════════════════════════════════════ */}
               <form
                 onSubmit={handleSubmit}
-                className="bg-gray-800/40 border border-white/[0.06] rounded-2xl  p-6 md:p-8 md:pb-6 "
+                className="bg-gray-800/40 border border-white/[0.06] rounded-2xl mt-6 md:mt-0  p-6 md:p-8 md:pb-6 "
               >
                 <div className="grid md:grid-cols-2 gap-6">
                   {/* ── Left form column ────────────────────────────── */}
