@@ -23,7 +23,13 @@ function EditTutorPlaylist() {
   const [domain, setDomain] = useState("");
   // const { posts, getAuthorPosts } = useGetAuthorPosts(email);
 
-  const { coordinators } = useGetAllAuthorsByDomain(domain);
+  // const { coordinators } = useGetAllAuthorsByDomain(domain);
+   const {
+      coordinators,
+      loading: hookClabLoading,
+      hasMore: hookClabHasMore,
+      total,
+    } = useGetAllAuthorsByDomain(domain);
   const [title, setTitle] = useState("");
   const [postIds, setPostIds] = useState([]);
   // const [filteredCoordinators, setFilteredCoordinators] = useState([])
@@ -397,6 +403,32 @@ const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
                       </span>
                     </div>
                   )}
+
+                  {searchedCoordinators.length > 0 &&
+                    hookClabHasMore &&
+                    hookClabLoading && (
+                      <div className="px-4  ">
+                        <div className="w-full flex justify-center">
+                          <div className="relative flex items-center justify-center">
+                            {/* Outer Oval Ring */}
+                            <div className="w-4 h-4  border-2 border-neutral-700 border-t-emerald-400 rounded-full animate-spin" />
+
+                            {/* Inner Glow Pulse */}
+                            {/* <div className="absolute w-10 h-10 md:w-12 md:h-12 bg-emerald-500/20 rounded-full blur-md animate-pulse" /> */}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                   {searchedCoordinators.length > 0 &&
+                    !hookClabHasMore &&
+                    !hookClabLoading && (
+                      <div className="px-4 flex items-center justify-center ">
+                        <span className="text-[10px] text-gray-200 ">
+                          No more coordinators!
+                        </span>
+                      </div>
+                    )}
                 </div>
               )}
             </div>

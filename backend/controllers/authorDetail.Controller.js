@@ -387,27 +387,70 @@ const getAuthorsByDomain = async (req, res) => {
 };
 
 // reviewed----------------------------------------------
+// const getAllAuthorsByDomain = async (req, res) => {
+//   try {
+//     let { category } = req.params;
+
+//     category = decodeURIComponent(category);
+
+//     const filteredAuthors = await Author.find(
+//       {
+//         community: { $in: [category] },
+//         role: { $in: ["admin", "coordinator"] },
+//       },
+//       "authorname email profile",
+//     );
+
+//     const total = await Author.countDocuments({
+//       community: { $in: [category] },
+//     });
+
+//     res.status(200).json({
+//       filteredAuthors,
+//       total,
+//     });
+//   } catch (err) {
+//     console.log("Error fetching authors by domain:", err.message);
+//     res.status(500).json({ message: "Server error", error: err.message });
+//   }
+// };
+
 const getAllAuthorsByDomain = async (req, res) => {
   try {
     let { category } = req.params;
-
     category = decodeURIComponent(category);
 
-    const filteredAuthors = await Author.find(
-      {
-        community: { $in: [category] },
-        role: { $in: ["admin", "coordinator"] },
-      },
-      "authorname email profile",
-    );
+    const page  = parseInt(req.query.page)  || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip  = (page - 1) * limit;
 
-    const total = await Author.countDocuments({
-      community: { $in: [category] },
-    });
+    console.log("hook colaborator page", page)
+    console.log("category", category)
+    const isAll = !category || category === "All";
+
+    const filter = isAll
+      ? { role: { $in: ["admin", "coordinator"] } }
+      : { community: { $in: [category] }, role: { $in: ["admin", "coordinator"] } };
+
+    const countFilter = isAll
+      ? { role: { $in: ["admin", "coordinator"] } }
+      : { community: { $in: [category] } };
+
+    const [filteredAuthors, total] = await Promise.all([
+      Author.find(filter, "authorname email profile")
+        .skip(skip)
+        .limit(limit)
+        .lean(),
+      Author.countDocuments(countFilter),
+    ]);
 
     res.status(200).json({
       filteredAuthors,
       total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+      hasMore:    skip + limit < total,
     });
   } catch (err) {
     console.log("Error fetching authors by domain:", err.message);
