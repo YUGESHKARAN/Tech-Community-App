@@ -6,7 +6,7 @@ import Footer from "../ui/Footer";
 import axiosInstance from "../instances/Axiosinstances";
 // import { format } from 'date-fns';
 import { Link } from "react-router-dom";
-import { HiOutlineUserCircle } from "react-icons/hi";
+import { HiOutlineInformationCircle, HiOutlineUserCircle } from "react-icons/hi";
 import { IoClose } from "react-icons/io5";
 import { MdAnnouncement } from "react-icons/md";
 import getTimeAgo from "../components/DateCovertion";
@@ -20,6 +20,8 @@ import { IoMdClose, IoMdCloseCircle } from "react-icons/io";
 import { AiFillCloseCircle, AiFillCloseSquare } from "react-icons/ai";
 import { LiaWindowCloseSolid } from "react-icons/lia";
 import { VscGitStashApply } from "react-icons/vsc";
+import { GoInfo } from "react-icons/go";
+import { BsInfo, BsInfoCircle } from "react-icons/bs";
 
 function Announcement() {
   const username = localStorage.getItem("username");
@@ -56,6 +58,7 @@ function Announcement() {
   });
 
   const [announceLoading, setAnnounceLoading] = useState(false);
+  const [showInfo, setShowInfo] = useState(false)
 
   // const announcementUrl =
   //   role === "admin"
@@ -239,7 +242,7 @@ function Announcement() {
   // console.log("selectedCommunities", selectedCommunities);
   // console.log("announcements", reversedAnnouncements);
 
-  function AnnouncementInfo({ className = "" }) {
+  function AnnouncementInfo({ className = "", showInfo }) {
     return (
       <div
         className={`
@@ -250,6 +253,7 @@ function Announcement() {
         p-4 md:p-5
         space-y-5
         ${className}
+         ${showInfo?'block':'hidden md:block'}
       
         mb-4
       `}
@@ -518,11 +522,18 @@ const renderTextWithHashtags = (text) => {
         {/* ================= HEADER ================= */}
         <div className="w-full">
           <div className="w-full mx-auto px-4 md:px-12 pt-4 pb-5 md:pt-6 flex justify-between items-center">
-            <div>
+            <div className="flex items-center justify-center gap-1">
               <h1 className="md:text-3xl text-2xl font-semibold  tracking-tight  flex items-center gap-1 justify-center">
                 <MdAnnouncement className="tetxt-2xl pt-0.5 md:pt-0 md:text-3xl " />{" "}
                 Announcements
               </h1>
+              
+            {
+              role==='student' &&
+              <span 
+              onClick={()=>{setShowInfo(!showInfo)}}
+              className="text-emerald-400 md:hidden text-[10px]"><BsInfoCircle /></span>
+            }
             </div>
 
             {role !== "student" && (
@@ -534,6 +545,9 @@ const renderTextWithHashtags = (text) => {
                 {showGuidelines ? "Close Panel" : "Create New"}
               </button>
             )}
+
+            
+
           </div>
         </div>
 
@@ -547,7 +561,7 @@ const renderTextWithHashtags = (text) => {
             // className={`${!showAnnouncement?'md:sticky top-7 self-start':' md:sticky top-7 self-start'}`}
             className="lg:sticky lg:overflow-y-scroll lg:h-screen scrollbar-hide top-7 self-start"
           >
-            {role === "student" && <AnnouncementInfo />}
+            {role === "student" && <AnnouncementInfo showInfo={showInfo} />}
 
 
             {role !== "student"  && (
