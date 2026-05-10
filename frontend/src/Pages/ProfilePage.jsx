@@ -181,6 +181,23 @@ function ProfilePage() {
       console.log("error", err);
     }
   };
+
+  const RoleBadge = ({ role }) => {
+  const styles = {
+    admin: { bg: "#ec489918", color: "#ec4899", label: "Admin" },
+    coordinator: { bg: "#f59e0b18", color: "#f59e0b", label: "Coordinator" },
+    student: { bg: "#3b82f618", color: "#3b82f6", label: "Student" },
+  };
+  const s = styles[role] ?? styles.student;
+  return (
+    <span
+      className="text-xs font-semibold px-2.5 py-1 md:px-3 md:py-1.5 md:text-xs border border-amber-400/20 rounded-lg"
+      style={{ backgroundColor: s.bg, color: s.color }}
+    >
+      {s.label}
+    </span>
+  );
+};
   // console.log("author", author)
   // console.log("profile links", profileLinks)
   return (
@@ -257,10 +274,13 @@ function ProfilePage() {
                 {/* Role pill */}
                 <span 
                 // className="inline-block px-2.5 absolute right-4 top-4 py-0.5 text-[10px] font-medium tracking-wide uppercase rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 mb-5"
-                className="px-2.5 py-0.5 absolute right-4 top-4  text-xs font-medium text-amber-400 bg-amber-400/10 border border-amber-400/20 rounded-lg"
+                // className="px-2.5 py-0.5 absolute right-4 top-4  text-xs font-medium text-amber-400 bg-amber-400/10 border border-amber-400/20 rounded-lg"
+                className=" absolute right-4 top-4 "
                 >
-                  {role.charAt(0).toUpperCase()}{role.slice(1)}
+                  <RoleBadge role={role} />
+                  {/* {role.charAt(0).toUpperCase()}{role.slice(1)} */}
                 </span>
+                
 
                 {/* Bio Section */}
                 <div className="mb-5 mt-3 px-1 text-left">
@@ -384,7 +404,7 @@ function ProfilePage() {
                     following?.length > 0 ||
                     posts.length > 0) && (
                     <div className="flex justify-center gap-px mb-6 rounded-xl overflow-hidden border border-white/[0.06]">
-                      {author.role !== "student" && followers?.length > 0 && (
+                      {author.role === "coordinator" && followers?.length > 0 && (
                         <div className="flex-1 py-3 bg-white/[0.02]">
                           <p className="text-base font-medium text-white">
                             {followers?.length ?? 0}
