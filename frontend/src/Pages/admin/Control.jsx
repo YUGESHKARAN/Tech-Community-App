@@ -375,11 +375,11 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
               <div className="flex justify-between items-center text-xl font-semibold text-white">
                 <Link
                   to={`/viewProfile/${author.email}`}
-                  className="flex items-start gap-2"
+                  className="flex items-start min-w-0 gap-2"
                 >
                   {!author.profile ? (
                     <div
-                      className="w-9 h-9  rounded-full flex items-center justify-center text-[9px] md:text-xs font-bold text-white shrink-0"
+                      className="w-9 h-9  rounded-full flex items-center justify-center  text-[9px] md:text-xs font-bold text-white shrink-0"
                       style={{ backgroundColor: avatarColor(author.name) }}
                     >
                       {initials(author.name)}
@@ -391,10 +391,10 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
                       className="w-9 h-9  border border-green-500/70 rounded-full object-cover"
                     />
                   )}
-                  <span className="text-base  flex-1 font-semibold text-gray-200 truncate">
+                  <span className="text-base truncate flex-1 min-w-0 font-semibold text-gray-200 truncate">
                     {/* {author.name} */}
                        {highlightText(author.name, debouncedSearch)}
-                    <p className="text-gray-500 text-xs md:text-xs mb-2">
+                    <p className="text-gray-500 truncate text-xs md:text-xs mb-2">
                       {/* {author.email} */}
                        {highlightText(author.email, debouncedSearch)}
                     </p>
@@ -564,7 +564,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
               <div className="flex justify-between items-center text-xl font-semibold text-white">
                 <Link
                   to={`/viewProfile/${author.email}`}
-                  className="flex items-start gap-2"
+                  className="flex items-start min-w-0 gap-2"
                 >
                   {!author.profile ? (
                     <div
@@ -580,10 +580,10 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
                       className="w-9 h-9 border border-green-500/70 rounded-full object-cover"
                     />
                   )}
-                  <span className="text-base  flex-1 font-semibold text-gray-200 truncate">
+                  <span className="text-base truncate flex-1 min-w-0 font-semibold text-gray-200 truncate">
                     {/* {author.name} */}
                      {highlightText(author.name, debouncedSearch)}
-                    <p className="text-gray-500 text-xs md:text-xs mb-2">
+                    <p className="text-gray-500 truncate text-xs md:text-xs mb-2">
                       {/* {author.email} */}
                         {highlightText(author.email, debouncedSearch)}
                     </p>
@@ -753,7 +753,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
               <div className="flex justify-between items-center text-xl font-semibold text-white">
                 <Link
                   to={`/viewProfile/${author.email}`}
-                  className="flex items-start gap-2"
+                  className="flex items-start min-w-0 gap-2"
                 >
                   {!author.profile ? (
                     <div
@@ -769,10 +769,10 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
                       className="w-9 h-9  border border-green-500/70 rounded-full object-cover"
                     />
                   )}
-                  <span className="text-base  flex-1 font-semibold text-gray-200 truncate">
+                  <span className="text-xs min-w-0  flex-1 font-semibold text-gray-200">
                     {/* {author.name} */}
-                    {highlightText(author.name, debouncedSearch)}
-                    <p className="text-gray-500 text-xs md:text-xs mb-2">
+                    <p className="truncate"> {highlightText(author.name, debouncedSearch)}</p>
+                    <p className="text-gray-500 truncate text-xs md:text-xs mb-2">
                       {/* {author.email} */}
                        {highlightText(author.email, debouncedSearch)}
                     </p>
