@@ -1033,7 +1033,7 @@ const renderTextWithHashtags = (text) => {
                   ref={sheetRef}
                   className={`
                     fixed bottom-0 left-0 right-0
-                    bg-gray-900 border-t border-[#30363d]
+                    bg-[#0a0f1d] border-t border-[#30363d]
                     rounded-t-2xl
                     flex flex-col
                     
@@ -1088,7 +1088,7 @@ const renderTextWithHashtags = (text) => {
                   </div>
 
                   {/* Input flush to bottom, no gap */}
-                  <div className="shrink-0 px-3 py-3 border-t border-[#21262d] bg-gray-900">
+                  <div className="shrink-0 px-3 py-3 border-t border-[#21262d] bg-[#0a0f1d]">
                     <div className="flex items-center gap-2 bg-[#161b22] border border-[#30363d] rounded-xl px-3 py-2.5 focus-within:border-emerald-500/50 transition-colors">
                       <input
                         type="text"
