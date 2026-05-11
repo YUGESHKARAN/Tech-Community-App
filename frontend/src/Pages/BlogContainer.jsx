@@ -80,7 +80,7 @@ function BlogContainer({ activeTab, setActiveTab }) {
         setPage((prev) => prev + 1);
       }
     } catch (err) {
-      console.error(err);
+      console.log("error",err.message);
     }
 
     setLoading(false);

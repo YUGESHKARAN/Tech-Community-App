@@ -1631,6 +1631,31 @@ const updateTechCommunityCoordinator = async (req, res) => {
   }
 };
 
+
+const deleteAllAnnouncements = async(req, res)=>{
+  try{
+      const {email} = req.params;
+
+      if(!email){
+        return res.status(400).json({message: "author email required"})
+      }
+
+      const author = await Author.findOne({email:{$eq:email} });
+
+      if (!author){
+        return  res.status(404).json({message:"author not found!"})
+      }
+
+      author.announcement = []
+      await author.save()
+
+    res.status(200).json({message:"All announcements deleted !"})
+  }
+  catch(err){
+    res.status(500).json({message:"Server Error", error: err.message})
+  }
+}
+
 // reviewed-----------------------------------------------------------------------
 const deleteAllAnnouncementByAdmin = async (req, res) => {
   try {
@@ -1740,5 +1765,6 @@ module.exports = {
   deleteAllAnnouncementByAdmin,
   getAuthorsByDomain,
   getAllAuthorsByDomain,
+  deleteAllAnnouncements
   // getAllAnnouncements
 };

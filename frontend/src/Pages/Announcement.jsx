@@ -1,12 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
 // import axiosInstance from 'axiosInstance';
 import NavBar from "../ui/NavBar";
-import { RiChatDeleteFill, RiDeleteBack2Fill } from "react-icons/ri";
+import { RiChatDeleteFill, RiDeleteBack2Fill, RiDeleteBin6Line } from "react-icons/ri";
 import Footer from "../ui/Footer";
 import axiosInstance from "../instances/Axiosinstances";
 // import { format } from 'date-fns';
 import { Link } from "react-router-dom";
-import { HiOutlineInformationCircle, HiOutlineUserCircle } from "react-icons/hi";
+import {
+  HiOutlineInformationCircle,
+  HiOutlineUserCircle,
+} from "react-icons/hi";
 import { IoClose } from "react-icons/io5";
 import { MdAnnouncement } from "react-icons/md";
 import getTimeAgo from "../components/DateCovertion";
@@ -50,7 +53,7 @@ function Announcement() {
   const [showConfirm, setShowConfirm] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const announceCount = getItem("announceCount");
-  const [showGuidelines, setShowGuidelines] = useState(false)
+  const [showGuidelines, setShowGuidelines] = useState(false);
   const [fieldErrors, setFieldErrors] = useState({
     title: "",
     message: "",
@@ -58,12 +61,9 @@ function Announcement() {
   });
 
   const [announceLoading, setAnnounceLoading] = useState(false);
-  const [showInfo, setShowInfo] = useState(false)
+  const [showInfo, setShowInfo] = useState(false);
 
-  // const announcementUrl =
-  //   role === "admin"
-  //     ? `/blog/author/getAllAnnouncemnet/${email}`
-  //     : `/blog/author/${email}`;
+  const [msgClearLoader, setMsgClearLoader] = useState(false);
 
   const fetchAllAnnouncement = async () => {
     try {
@@ -174,8 +174,8 @@ function Announcement() {
       console.error("Error submitting announcement:", error);
     } finally {
       setLoading(false);
-      setAnnouncement(false)
-      setShowGuidelines(false)
+      setShowAnnouncement(false);
+      setShowGuidelines(false);
     }
   };
 
@@ -253,7 +253,7 @@ function Announcement() {
         p-4 md:p-5
         space-y-5
         ${className}
-         ${showInfo?'block':'hidden md:block'}
+         ${showInfo ? "block" : "hidden md:block"}
       
         mb-4
       `}
@@ -338,7 +338,7 @@ function Announcement() {
         space-y-5
         mb-6
        
-        ${showGuidelines?'block':'hidden md:block'}
+        ${showGuidelines ? "block" : "hidden md:block"}
 
         ${showAnnouncement && "hidden md:hidden"}
        
@@ -356,7 +356,6 @@ function Announcement() {
         <div className="space-y-2">
           <p className="text-xs text-emerald-400 font-medium">Purpose</p>
           <ul className="space-y-1.5 text-xs md:text-sm text-gray-300">
-            
             <li className="flex gap-2">
               <span>•</span> Campaigns, events, hackathons
             </li>
@@ -382,7 +381,9 @@ function Announcement() {
 
         {/* Steps */}
         <div className="space-y-2">
-          <p className="text-xs text-emerald-400 font-medium">How to Create (very simple)</p>
+          <p className="text-xs text-emerald-400 font-medium">
+            How to Create (very simple)
+          </p>
 
           <div className="space-y-2 text-xs md:text-sm text-gray-300">
             <p>
@@ -396,7 +397,8 @@ function Announcement() {
               survey
             </p>
             <p>
-              <span className="text-white">Poster:</span> Suitable Thumbnail <span className="text-xs"> (1280 × 720 px)</span>
+              <span className="text-white">Poster:</span> Suitable Thumbnail{" "}
+              <span className="text-xs"> (1280 × 720 px)</span>
             </p>
             <p>
               <span className="text-white">Recipients:</span>{" "}
@@ -430,88 +432,104 @@ function Announcement() {
           Create Campaign
         </button>
       </div>
- 
     );
   }
 
+  const renderTextWithHashtags = (text) => {
+    if (!text) return null;
 
-const renderTextWithHashtags = (text) => {
-  if (!text) return null;
+    const cleanedText = text
+      .replace(/\\r\\n/g, "\n")
+      .replace(/\\n/g, "\n")
+      .replace(/\\r/g, "\n");
 
-  const cleanedText = text
-    .replace(/\\r\\n/g, "\n")
-    .replace(/\\n/g, "\n")
-    .replace(/\\r/g, "\n");
+    return cleanedText.split("\n").map((line, lineIndex) => {
+      const parts = line.split(/(\*\*.*?\*\*|#{1,6}[^\n]+|\s?#\w+)/gm);
 
-  return cleanedText.split("\n").map((line, lineIndex) => {
-    const parts = line.split(
-      /(\*\*.*?\*\*|#{1,6}[^\n]+|\s?#\w+)/gm
+      return (
+        <React.Fragment key={lineIndex}>
+          {parts.map((part, index) => {
+            if (!part) return null;
+
+            const trimmed = part.trim();
+
+            // ---------- Markdown Headings ----------
+            // Supports:
+            // ###Heading
+            // ### Heading
+            if (/^#{1,6}/.test(trimmed)) {
+              return (
+                <span
+                  key={index}
+                  className="font-semibold md:text-xl text-sm text-white"
+                >
+                  {trimmed.replace(/^#{1,6}\s*/, "")}
+                </span>
+              );
+            }
+
+            // ---------- Bold ----------
+            if (trimmed.startsWith("**") && trimmed.endsWith("**")) {
+              return (
+                <span key={index} className="font-semibold text-white">
+                  {trimmed.replace(/\*\*/g, "")}
+                </span>
+              );
+            }
+
+            // ---------- Hashtags ----------
+            if (/^(\s)?#\w+/.test(part)) {
+              return (
+                <span key={index} className="text-white font-medium">
+                  {part}
+                </span>
+              );
+            }
+
+            // ---------- Normal ----------
+            return (
+              <React.Fragment key={index}>
+                {part.replace(/\\\*/g, "*").replace(/\\\\/g, "\\")}
+              </React.Fragment>
+            );
+          })}
+
+          <br />
+        </React.Fragment>
+      );
+    });
+  };
+
+  const clearAllAnnouncements = async () => {
+    if (reversedAnnouncements.length === 0) {
+      return;
+    }
+
+    const verify = window.confirm(
+      "Are you sure you want to delete all announcements?",
     );
 
-    return (
-      <React.Fragment key={lineIndex}>
-        {parts.map((part, index) => {
-          if (!part) return null;
+    if (!verify) {
+      return;
+    }
 
-          const trimmed = part.trim();
+    setMsgClearLoader(true);
+    try {
+      const response = await axiosInstance.delete(
+        `/blog/author/deleteAnnouncements/${email}`,
+      );
 
-          // ---------- Markdown Headings ----------
-          // Supports:
-          // ###Heading
-          // ### Heading
-          if (/^#{1,6}/.test(trimmed)) {
-            return (
-              <span
-                key={index}
-                className="font-semibold md:text-xl text-sm text-white"
-              >
-                {trimmed.replace(/^#{1,6}\s*/, "")}
-              </span>
-            );
-          }
-
-          // ---------- Bold ----------
-          if (
-            trimmed.startsWith("**") &&
-            trimmed.endsWith("**")
-          ) {
-            return (
-              <span
-                key={index}
-                className="font-semibold text-white"
-              >
-                {trimmed.replace(/\*\*/g, "")}
-              </span>
-            );
-          }
-
-          // ---------- Hashtags ----------
-          if (/^(\s)?#\w+/.test(part)) {
-            return (
-              <span
-                key={index}
-                className="text-white font-medium"
-              >
-                {part}
-              </span>
-            );
-          }
-
-          // ---------- Normal ----------
-          return (
-            <React.Fragment key={index}>
-              {part
-                .replace(/\\\*/g, "*")
-                .replace(/\\\\/g, "\\")}
-            </React.Fragment>
-          );
-        })}
-
-        <br />
-      </React.Fragment>
-    );
-  });
-};
+      setAnnouncement([]);
+      if (response.status === 200) {
+        toast.info(
+          "Announcements Cleared",
+          "All announcements have been successfully removed.",
+        );
+      }
+    } catch (err) {
+      console.log("error", err.message);
+    }
+  };
 
   // console.log("guidelinses", showGuidelines)
   // console.log("announcement", reversedAnnouncements)
@@ -522,36 +540,38 @@ const renderTextWithHashtags = (text) => {
         {/* ================= HEADER ================= */}
         <div className="w-full">
           <div className="w-full mx-auto px-4 md:px-12 pt-4 pb-5 md:pt-6 flex justify-between items-center">
-            <div className="flex items-center justify-center gap-1">
+            <div className="flex items-center justify-center gap-2">
               <h1 className="md:text-3xl text-2xl font-semibold  tracking-tight  flex items-center gap-1 justify-center">
                 <MdAnnouncement className="tetxt-2xl pt-0.5 md:pt-0 md:text-3xl " />{" "}
                 Announcements
               </h1>
-              
-            {
-              role==='student' &&
-              <span 
-              onClick={()=>{setShowInfo(!showInfo)}}
-              className="text-emerald-400 md:hidden text-[10px]"><BsInfoCircle /></span>
-            }
+
+              {role === "student" && (
+                <span
+                  onClick={() => {
+                    setShowInfo(!showInfo);
+                  }}
+                  className="text-emerald-400 md:hidden text-xs"
+                >
+                  <BsInfoCircle />
+                </span>
+              )}
             </div>
 
             {role !== "student" && (
               <button
-                onClick={() => {setShowGuidelines(!showGuidelines); setShowAnnouncement(false)}}
+                onClick={() => {
+                  setShowGuidelines(!showGuidelines);
+                  setShowAnnouncement(false);
+                }}
                 className="md:px-3 px-3 py-2 md:py-2 bg-emerald-600/20 hover:bg-emerald-500/20
                 rounded-md text-xs md:text-sm  md:hidden text-emerald-400 transition"
               >
                 {showGuidelines ? "Close Panel" : "Create New"}
               </button>
             )}
-
-            
-
           </div>
         </div>
-
-
 
         {/* ================= MAIN GRID ================= */}
         <div className="w-full mx-auto px-3 md:py-2 md:px-12 md:pb-10 grid grid-cols-1 lg:grid-cols-[320px_1fr] md:gap-5">
@@ -563,9 +583,11 @@ const renderTextWithHashtags = (text) => {
           >
             {role === "student" && <AnnouncementInfo showInfo={showInfo} />}
 
-
-            {role !== "student"  && (
-              <AnnouncementGuidelines showAnnouncement={showAnnouncement} showGuidelines={showGuidelines} />
+            {role !== "student" && (
+              <AnnouncementGuidelines
+                showAnnouncement={showAnnouncement}
+                showGuidelines={showGuidelines}
+              />
             )}
 
             {role !== "student" && (
@@ -579,14 +601,12 @@ const renderTextWithHashtags = (text) => {
                         <h3 className="text-xs uppercase tracking-wide text-slate-400">
                           New Campaign
                         </h3>
-
-                            <button
-                  onClick={() => setShowAnnouncement(!showAnnouncement)}
-                  className="text-emerald-500 text-sm"
-                >
-                  ← Back
-                </button>
-                
+                        <button
+                          onClick={() => setShowAnnouncement(!showAnnouncement)}
+                          className="text-emerald-500 text-sm"
+                        >
+                          ← Back
+                        </button>
                       </div>
 
                       <form onSubmit={handleSubmit} className="space-y-5">
@@ -838,8 +858,8 @@ const renderTextWithHashtags = (text) => {
                           className="w-full py-2.5 bg-emerald-600/20 hover:bg-emerald-500/20
                    text-emerald-400 text-xs md:text-sm flex items-center justify-center gap-2 rounded-md transition"
                         >
-                         <VscGitStashApply className="md:text-base text-sm " /> {loading ? "Publishing..." : "Publish"}
-                          
+                          <VscGitStashApply className="md:text-base text-sm " />{" "}
+                          {loading ? "Publishing..." : "Publish"}
                         </button>
                       </form>
                     </div>
@@ -872,19 +892,30 @@ const renderTextWithHashtags = (text) => {
             <div
               className={`${role !== "student" ? "bg-[#111827] border border-slate-800 rounded-lg p-5" : "bg-[#111827] border border-slate-800 rounded-lg p-5"}`}
             >
-              <h3 className="text-xs uppercase tracking-wide text-slate-400 mb-4">
+              <div className="flex items-center justify-between ">
+                 <h3 className="text-xs uppercase tracking-wide text-emerald-400 font-semibold mb-4">
                 Overview
               </h3>
 
+              {
+                announcement.length>0 &&
+              <button 
+              onClick={()=>{clearAllAnnouncements()}}
+              className="text-xs md:text-sm text-red-500 md:hover:text-red-600 transition-all duration-300 cursor-poiter"><RiDeleteBin6Line /></button>}
+
+              </div>
+             
+            
+
               <div className="space-y-3 text-sm">
                 <div className="flex  justify-between">
-                  <span className="text-slate-400">User Role</span>
-                  <span className="capitalize  font-medium">{role}</span>
+                  <span className="text-white/70 font-medium">User Role</span>
+                  <span className="capitalize text-slate-400 ">{role}</span>
                 </div>
 
                 <div className="flex text-sm justify-between">
-                  <span className="text-slate-400">Inbox</span>
-                  <span className="font-medium">
+                  <span className="text-white/70 font-medium">Inbox</span>
+                  <span className="text-slate-400  ">
                     {announcement?.length > 0
                       ? announcement.length
                       : "Empty"}{" "}
@@ -892,6 +923,8 @@ const renderTextWithHashtags = (text) => {
                 </div>
               </div>
             </div>
+
+  
             {announcement.length === 0 && !announceLoading && (
               <div className="flex h-[45vh] md:h-[50vh] md:h-auto flex-col justify-center items-center gap-2 md:gap-3 ">
                 <img
@@ -915,8 +948,7 @@ const renderTextWithHashtags = (text) => {
                   <div className="flex justify-between items-start">
                     <div>
                       <h2 className="md:text-xl text-lg max-w-[360px] md:max-w-full font-semibold text-white">
-                     
-                    {item.title} 
+                        {item.title}
                       </h2>
                       <div className="text-xs text-slate-400 mt-1">
                         {/* {item.timestamp?.slice(0, 10)} */}
@@ -1004,7 +1036,7 @@ const renderTextWithHashtags = (text) => {
             {announceLoading && <AnnouncementSkeleton />}
           </main>
         </div>
-        
+
         {selectedImage && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
             {/* Modal Container */}

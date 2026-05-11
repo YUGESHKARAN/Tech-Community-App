@@ -27,7 +27,8 @@ const {
   deleteAllAnnouncementByAdmin,
   getAuthorsByDomain,
   sendRegistrationOTP,
-  getAllAuthorsByDomain
+  getAllAuthorsByDomain,
+  deleteAllAnnouncements
   // getAllAnnouncements
   
 } = require("../controllers/authorDetail.Controller");
@@ -67,6 +68,7 @@ router.delete('/notification/deleteall', limiter, authenticateToken, notificatio
 // router.get("/getAllAnnouncemnet/:email",limiter, authenticateToken, getAllAnnouncements);
 router.post("/announcement/add", limiter, authenticateToken, upload.single('poster'), addAnnouncement);
 router.delete('/announcements/:announcementId', limiter, authenticateToken, deleteAnnouncement);
+router.delete('/deleteAnnouncements/:email', limiter, authenticateToken, deleteAllAnnouncements)
 router.delete('/announcementsByAdmin/:email', limiter, authenticateToken, deleteAllAnnouncementByAdmin);
 router.put("/control/updateRole/:email", limiter, authenticateToken, upload.none(), updateRole);
 router.put("/control/updateCommunity", limiter, authenticateToken, updateTechCommunity);
