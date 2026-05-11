@@ -17,6 +17,7 @@ import {
   RiMenuFold3Fill,
   RiMenuFoldFill,
   RiMenuFoldLine,
+  RiMenuUnfoldFill,
   RiUser3Line,
 } from "react-icons/ri";
 import { IoIosClose, IoIosGitNetwork, IoMdNotifications } from "react-icons/io";
@@ -91,9 +92,7 @@ function NavBar() {
     }
 
     try {
-      // const response = await axiosInstance.get(`/blog/author/${userEmail}`);
-      // setNote(response.data.notification);
-      // setAnnouncement(response.data.announcement);
+
         
       const response = await axiosInstance.get(
         `/blog/author/queueMessage/${userEmail}`,
@@ -183,7 +182,7 @@ function NavBar() {
     <div
       className="
       flex items-center justify-between
-      w-full h-16 px-3 md:px-6
+      w-full h-16 px-3 pl-4 md:px-6
       border-b border-slate-700/50
       shadow-sm
       z-100
@@ -193,18 +192,21 @@ function NavBar() {
     >
       {/* ================= LEFT (LOGO) ================= */}
       <div className="flex items-center gap-3 w-1/2 md:w-1/5">
+        <button onClick={toggleSidebar} className="xl:hidden border border-neutral-700 rounded-md p-1 text-white">
+          <RiMenuUnfoldFill className="text-xl" />
+        </button>
         {role !== "admin" ? (
           <Link to="/home">
             <img
               src={bloglogo}
-              className="w-8 h-8 md:w-9 md:h-9 rounded-full"
+              className="w-7 h-7 md:w-9 md:h-9 rounded-full"
             />
           </Link>
         ) : (
           <Link to="/dashboard">
             <img
               src={bloglogo}
-              className="w-8 h-8 md:w-9 md:h-9 rounded-full"
+              className="w-7 h-7 md:w-9 md:h-9 rounded-full"
             />
           </Link>
         )}
@@ -312,37 +314,6 @@ function NavBar() {
         </Link>
 
         {/* 👤 MOBILE USER */}
-
-        {/* <div
-          className="flex md:hidden items-center gap-4 px-3 py-1.5
-                 bg-white/5 
-                 border border-white/10
-                 rounded-full transition"
-        >
-          <div className="relative">
-            <IoMdNotifications
-              onClick={() => setShowNotification(!showNotefication)}
-              className="text-xl text-gray-300 hover:text-white transition-all duration-300 cursor-pointer transition"
-            />
-            {notiCount > 0 && (
-              <span className="absolute -top-1.5 -right-2 text-[10px] bg-red-500 w-4 h-4 flex items-center justify-center rounded-full text-white">
-                {notiCount}
-              </span>
-            )}
-          </div>
-
-          <Link to="/profile">
-            {profile !== "undefined" ? (
-              <img
-                src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`}
-                className="w-6 h-6 rounded-full border border-emerald-400 object-cover"
-              />
-            ) : (
-              <RiUser3Line className="text-lg text-emerald-400" />
-            )}
-          </Link>
-        </div> */}
-
         
         <div
           className="flex lg:hidden items-center px-2 py-1
@@ -393,9 +364,9 @@ function NavBar() {
         </button>
 
         {/* ☰ MOBILE MENU */}
-        <button onClick={toggleSidebar} className="xl:hidden text-white">
+        {/* <button onClick={toggleSidebar} className="xl:hidden text-white">
           <RiMenuFoldFill className="text-xl" />
-        </button>
+        </button> */}
       </div>
 
       {/* Sidebar */}
@@ -415,14 +386,14 @@ function NavBar() {
       }`}
       >
         {/* ================= HEADER ================= */}
-        <div className="flex items-center justify-between px-5 py-4">
+        <div className="flex items-center justify-between px-5 py-4 pb-3">
           {role !== "admin" ? (
             <Link
               to="/home"
               onClick={() => setIsSidebarOpen(false)}
               className="flex items-center gap-2"
             >
-              <img src={bloglogo} alt="Logo" className="w-8 h-8 rounded-full" />
+              <img src={bloglogo} alt="Logo" className="w-7 h-7 rounded-full" />
               {/* <span className="text-sm font-semibold tracking-wide">Home</span> */}
             </Link>
           ) : (
@@ -431,7 +402,7 @@ function NavBar() {
               onClick={() => setIsSidebarOpen(false)}
               className="flex items-center gap-2"
             >
-              <img src={bloglogo} alt="Logo" className="w-9 h-9 rounded-full" />
+              <img src={bloglogo} alt="Logo" className="w-7 h-7 rounded-full" />
               {/* <span className="text-sm font-semibold tracking-wide">Home</span> */}
             </Link>
           )}
@@ -464,14 +435,7 @@ function NavBar() {
             />
           )}
 
-          {/* {role === "admin" && (
-            <NavIcon
-              to="/control"
-              icon={<MdManageAccounts />}
-              label="Controls"
-              close={setIsSidebarOpen}
-            />
-          )} */}
+       
 
           <NavIcon
             to="/community"
@@ -577,19 +541,7 @@ function NavBar() {
           />
         </div>
 
-        {/* ================= FOOTER ================= */}
-        {/* <div className="px-5 pb-5">
-          <button
-            onClick={exit}
-            className="w-full flex items-center justify-center gap-2
-                     py-2.5 rounded-xl text-sm
-                     bg-red-500/20 hover:bg-red-500/20
-                     text-red-400 transition"
-          >
-            <IoLogOutOutline />
-            Logout
-          </button>
-        </div> */}
+    
       </div>
 
       <div
@@ -632,8 +584,8 @@ function NavBar() {
                   />:
                     
                   <div className="md:w-9 md:h-9 w-8 h-8 rounded-full object-cover border border-gray-300">
-                                              <HiOutlineUserCircle className="text-[#786fa6] bg-gray-200 rounded-full w-full h-full " />
-                                            </div>
+                     <HiOutlineUserCircle className="text-[#786fa6] bg-gray-200 rounded-full w-full h-full " />
+                   </div>
                   }
                  
 
@@ -703,45 +655,11 @@ function NavIcon({ to, icon, label, close }) {
   );
 }
 
-// function NavIconDesktop({ to, icon, label }) {
-//   const [ currentLabel, setCurrentLabel] = useState("")
-//   return (
-//     <Link
-//       to={to}
-//       //  onClick={() => close && close(false)}
-//       className="flex flex-col items-center gap-1
-//                  text-white/70 hover:text-white transition"
-//     >
-//       <span className="text-xl text-emerald-400">{icon}</span>
-//       <span className="text-[11px]">{label}</span>
-//     </Link>
-//   );
-// }
 
 import {  useLocation } from "react-router-dom";
 import { HiOutlineUserCircle } from "react-icons/hi";
 
-// function NavIconDesktop({ to, icon, label }) {
-//   const location = useLocation();
 
-//   const isActive = location.pathname === to;
-
-//   return (
- 
-
-//       <Link
-//       to={to}
-//       //  onClick={() => close && close(false)}
-//       className="flex flex-col items-center gap-1
-//                  text-white/70 hover:text-white transition"
-//     >
-//       <span className="text-xl text-emerald-400">{icon}</span>
-//       <span  className={`text-[11px] ${
-//           isActive ? "text-emerald-500 font-medium" : ""
-//         }`}>{label}</span>
-//     </Link>
-//   );
-// }
 function NavIconDesktop({ to, icon, label }) {
   const location = useLocation();
   const isActive = location.pathname === to;
