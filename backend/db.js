@@ -37,7 +37,7 @@ const connectToDatabase = async () => {
     maxPoolSize: 10,
     serverSelectionTimeoutMS: 10000, // 10s instead of 5s for cold starts
     socketTimeoutMS: 45000,          // keep socket alive longer
-    bufferCommands: false,           // fail fast, don't queue commands
+    // bufferCommands: false,           // fail fast, don't queue commandss
   });
 
   isConnected = mongoose.connection.readyState === 1; //strict boolean check

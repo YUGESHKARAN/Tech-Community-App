@@ -170,14 +170,21 @@ app.use(bodyParser.json());
 app.set("trust proxy", 1);
 
 //  DB connection middleware — connects per request, reuses if warm
-app.use(async (req, res, next) => {
-  try {
-    await connectToDatabase();
-    next();
-  } catch (err) {
-    console.error("DB connection failed:", err.message);
-    return res.status(500).json({ error: "Database connection failed" });
-  }
+// app.use(async (req, res, next) => {
+//   try {
+//     await connectToDatabase();
+//     next();
+//   } catch (err) {
+//     console.error("DB connection failed:", err.message);
+//     return res.status(500).json({ error: "Database connection failed" });
+//   }
+// });
+
+// fix: connect once using singleton — safe for both serverless and long-running servers
+// connectToDatabase() checks mongoose.connection.readyState internally
+// so repeated calls on warm containers are instant no-ops
+connectToDatabase().catch(err => {
+  console.error("Initial DB connection failed:", err.message);
 });
 
 // Routes
