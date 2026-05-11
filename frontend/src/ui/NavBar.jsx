@@ -46,7 +46,8 @@ function NavBar() {
   const [showNotefication, setShowNotification] = useState(false);
   const [announcement, setAnnouncement] = useState([]);
   const [socket, setSocket] = useState(null);
-  const [currentScreen, setCurrentScreen] = useState(false) 
+  const [currentScreen, setCurrentScreen] = useState(false);
+  const [loading, setLoading] = useState(false)
   // const email = localStorage.getItem("email");
   // const email = getItem("email");
   const role = getItem("role");
@@ -85,11 +86,15 @@ function NavBar() {
 
   // Fetch stored notifications from the server
   const fetchNotifications = async () => {
+    if (note.length===0){
+      setLoading(true)
+    }
+
     try {
       // const response = await axiosInstance.get(`/blog/author/${userEmail}`);
       // setNote(response.data.notification);
       // setAnnouncement(response.data.announcement);
-
+        
       const response = await axiosInstance.get(
         `/blog/author/queueMessage/${userEmail}`,
       );
@@ -100,6 +105,9 @@ function NavBar() {
       //   console.log("author email data", response.data.notification)
     } catch (error) {
       console.error("Error fetching notifications:", error);
+    }
+    finally{
+      setLoading(false)
     }
   };
 
@@ -662,8 +670,15 @@ function NavBar() {
           ))}
         </div>
 
+         {loading && (
+          <div className="flex flex-col items-center justify-center py-10 text-gray-400 text-sm">
+            {/* <span className="text-2xl mb-2">🔔</span> */}
+            Loading...
+          </div>
+        )}
+
         {/* Empty State */}
-        {note.length === 0 && (
+        {note.length === 0 && !loading && (
           <div className="flex flex-col items-center justify-center py-10 text-gray-400 text-sm">
             {/* <span className="text-2xl mb-2">🔔</span> */}
             No notifications yet
