@@ -48,7 +48,7 @@ function NavBar() {
   const [announcement, setAnnouncement] = useState([]);
   const [socket, setSocket] = useState(null);
   const [currentScreen, setCurrentScreen] = useState(false);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   // const email = localStorage.getItem("email");
   // const email = getItem("email");
   const role = getItem("role");
@@ -87,13 +87,11 @@ function NavBar() {
 
   // Fetch stored notifications from the server
   const fetchNotifications = async () => {
-    if (note.length===0){
-      setLoading(true)
+    if (note.length === 0) {
+      setLoading(true);
     }
 
     try {
-
-        
       const response = await axiosInstance.get(
         `/blog/author/queueMessage/${userEmail}`,
       );
@@ -104,9 +102,8 @@ function NavBar() {
       //   console.log("author email data", response.data.notification)
     } catch (error) {
       console.error("Error fetching notifications:", error);
-    }
-    finally{
-      setLoading(false)
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -136,12 +133,12 @@ function NavBar() {
 
   const deleteAllNotification = async (userEmail) => {
     if (notiCount === 0) return;
-   
+
     const confirm = window.confirm(
       "Are you sure want to delete all the notifications",
     );
     if (!confirm) return;
-     storeItem("notiCount", 0);
+    storeItem("notiCount", 0);
     try {
       const response = await axiosInstance.delete(
         `/blog/author/notification/deleteall?email=${userEmail}`,
@@ -177,7 +174,6 @@ function NavBar() {
     };
   }, []);
 
-
   return (
     <div
       className="
@@ -188,11 +184,13 @@ function NavBar() {
       z-100
 
       "
-  
     >
       {/* ================= LEFT (LOGO) ================= */}
       <div className="flex items-center gap-3 w-1/2 md:w-1/5">
-        <button onClick={toggleSidebar} className="xl:hidden border border-neutral-700 rounded-md p-1 text-white">
+        <button
+          onClick={toggleSidebar}
+          className="xl:hidden border border-neutral-700 rounded-md p-1 text-white"
+        >
           <RiMenuUnfoldFill className="text-xl" />
         </button>
         {role !== "admin" ? (
@@ -265,8 +263,6 @@ function NavBar() {
 
       {/* ================= RIGHT SECTION (DESKTOP + MOBILE SYNCED) ================= */}
       <div className="flex items-center gap-2 md:gap-4">
-       
-
         {/* 🔔 Notifications */}
         <div className="relative hidden lg:block">
           <IoMdNotifications
@@ -279,7 +275,7 @@ function NavBar() {
             </span>
           )}
         </div>
-         <Link
+        <Link
           to="/announcement"
           className="relative  hidden lg:block rounded-full hover:bg-white/10 transition"
         >
@@ -314,17 +310,14 @@ function NavBar() {
         </Link>
 
         {/* 👤 MOBILE USER */}
-        
+
         <div
           className="flex lg:hidden items-center px-2 py-1
                  bg-white/5 
                  border border-white/10
                  rounded-full transition"
         >
-     
-
-          <Link to="/profile"
-          className="flex  items-center gap-1">
+          <Link to="/profile" className="flex  items-center gap-1">
             {profile !== "undefined" ? (
               <img
                 src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`}
@@ -334,23 +327,21 @@ function NavBar() {
               <RiUser3Line className="text-lg text-emerald-400" />
             )}
             <span className="text-xs text-white  truncate max-w-[120px]">
-            Hi, {username}
-          </span>
+              Hi, {username}
+            </span>
           </Link>
-             
-          
         </div>
-                      <div className="relative lg:hidden mr-2">
-            <IoMdNotifications
-              onClick={() => setShowNotification(!showNotefication)}
-              className="text-xl text-gray-300 hover:text-white transition-all duration-300 cursor-pointer transition"
-            />
-            {notiCount > 0 && (
-              <span className="absolute -top-1.5 -right-2 text-[10px] bg-red-500 w-4 h-4 flex items-center justify-center rounded-full text-white">
-                {notiCount}
-              </span>
-            )}
-          </div>
+        <div className="relative lg:hidden mr-2">
+          <IoMdNotifications
+            onClick={() => setShowNotification(!showNotefication)}
+            className="text-xl text-gray-300 hover:text-white transition-all duration-300 cursor-pointer transition"
+          />
+          {notiCount > 0 && (
+            <span className="absolute -top-1.5 -right-2 text-[10px] bg-red-500 w-4 h-4 flex items-center justify-center rounded-full text-white">
+              {notiCount}
+            </span>
+          )}
+        </div>
 
         {/* 🚪 LOGOUT (DESKTOP ONLY) */}
         <button
@@ -434,8 +425,6 @@ function NavBar() {
               close={setIsSidebarOpen}
             />
           )}
-
-       
 
           <NavIcon
             to="/community"
@@ -540,8 +529,6 @@ function NavBar() {
             close={setIsSidebarOpen}
           />
         </div>
-
-    
       </div>
 
       <div
@@ -571,39 +558,41 @@ function NavBar() {
           {[...note].reverse().map((data, index) => (
             <div
               key={index}
-              className="group relative px-4 py-3 md:hover:bg-gray-800 transition duration-200"
+              className="group relative px-4 py-3 md:hover:bg-gray-800   transition duration-200"
             >
-              <Link to={data.url} className="flex gap-3 items-start">
+              <Link to={data.url} className="flex gap-3  items-start">
                 {/* Avatar */}
                 <div className="relative flex-shrink-0">
-                  {data.profile?
-                   <img
-                    src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.profile}`}
-                    alt="Profile"
-                    className="w-9 h-9 rounded-full object-cover bg-gray-400 border border-gray-600"
-                  />:
-                    
-                  <div className="md:w-9 md:h-9 w-8 h-8 rounded-full object-cover border border-gray-300">
-                     <HiOutlineUserCircle className="text-[#786fa6] bg-gray-200 rounded-full w-full h-full " />
-                   </div>
-                  }
-                 
-
+                  {data.profile ? (
+                    <img
+                      src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.profile}`}
+                      alt="Profile"
+                      className="w-9 h-9 rounded-full object-cover bg-gray-400 border border-gray-600"
+                    />
+                  ) : (
+                    <div className="md:w-9 md:h-9 w-8 h-8 rounded-full object-cover border border-gray-300">
+                      <HiOutlineUserCircle className="text-[#786fa6] bg-gray-200 rounded-full w-full h-full " />
+                    </div>
+                  )}
 
                   {/* Activity indicator */}
                   <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 rounded-full border border-gray-900"></span>
                 </div>
 
                 {/* Content */}
-                <div className="flex flex-col flex-1 min-w-0">
+                <div className="flex relative  flex-col flex-1 min-w-0">
                   <p className="text-sm text-white font-medium truncate">
                     {data.user}
                   </p>
 
-                  <p className="text-xs text-gray-400 line-clamp-2">
+                  <p 
+                  
+                  className="text-xs  md:mt-1 line-clamp-2 text-gray-400 "
+                  >
                     {data.message || "You got a notification"}
 
                   </p>
+               
 
                   <span className="text-[10px] text-gray-500 mt-1">
                     {getTimeAgo(data.timestamp)}
@@ -614,7 +603,7 @@ function NavBar() {
               {/* Delete Button */}
               <button
                 onClick={() => deleteSigleNotification(userEmail, data._id)}
-                className="absolute top-3 right-3 md:opacity-0 group-hover:opacity-50 transition text-gray-400 hover:text-red-300"
+                className="absolute top-3 right-3 md:opacity-0 group-hover:opacity-50 transition text-gray-400 md:hover:text-red-300"
               >
                 <IoIosClose size={18} />
               </button>
@@ -622,7 +611,7 @@ function NavBar() {
           ))}
         </div>
 
-         {loading && (
+        {loading && (
           <div className="flex flex-col items-center justify-center py-10 text-gray-400 text-sm">
             {/* <span className="text-2xl mb-2">🔔</span> */}
             Loading...
@@ -655,10 +644,8 @@ function NavIcon({ to, icon, label, close }) {
   );
 }
 
-
-import {  useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { HiOutlineUserCircle } from "react-icons/hi";
-
 
 function NavIconDesktop({ to, icon, label }) {
   const location = useLocation();
@@ -724,4 +711,3 @@ function NavTile({ to, icon, title, subtitle, badge, close }) {
 }
 
 export default NavBar;
-

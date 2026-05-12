@@ -23,10 +23,6 @@ function TutorPlaylist() {
     email,
     domain,
   );
-
-  // const { coordinators, fetchCoordinators } = useFetchCoordinators(role);
-
-  // const { coordinators } = useGetAllAuthorsByDomain(domain);
   const {
     coordinators,
     loading: hookClabLoading,
@@ -106,9 +102,7 @@ function TutorPlaylist() {
     if (!domain) return [];
 
     return coordinators.filter((coord) => coord.email !== email);
-    // const finalCoordinators = coordinators.filter((coord) => coord.email !== email);
 
-    // return [...finalCoordinators]
   }, [coordinators, domain]);
 
   const [debouncedSearch, setDebouncedSearch] = useState(searchCollaborator);
@@ -133,16 +127,6 @@ function TutorPlaylist() {
       (author) => author.email !== email,
     );
 
-    // if (!searchCollaborator) return filteredCoordinators;
-    // const query = searchCollaborator.toLowerCase();
-    // return filteredCoordinators.filter((coord) => {
-    //   const authorMatch = coord.authorname?.toLowerCase().includes(query);
-    //   const emailMatch = coord.email?.toLowerCase().includes(query);
-    //   const alreadySelected = collaboratorsData.some(
-    //     (col) => col.email?.toLowerCase() === coord.email?.toLowerCase(),
-    //   );
-    //   return (authorMatch || emailMatch) && !alreadySelected;
-    // });
 
     if (debouncedSearch.trim() !== "") {
       filtered = fuse.search(debouncedSearch).map((r) => r.item);
@@ -186,10 +170,7 @@ function TutorPlaylist() {
     });
   };
 
-  // console.log("posts", posts);
-  // console.log("domain", domain);
 
-  // console.log('filteredCoordinators', filteredCoordinators)
   const avatarColor = (name) => {
     const colors = [
       "#10b981",
@@ -314,11 +295,11 @@ function TutorPlaylist() {
                 className="bg-gray-950 cursor-pointer border border-gray-700 rounded-lg px-4 py-2 text-white text-sm focus:border focus:border-emerald-500/40 outline-none"
               >
                 <option value={""}>
-                  {categories.length > 0
+                  {categories.length > 1
                     ? "Choose Domain"
                     : "Publish a post to enable domain selection"}
                 </option>
-                {categories.map((category, index) => (
+                {categories.length > 1 && categories.map((category, index) => (
                   <option key={index} value={category}>
                     {category}
                   </option>

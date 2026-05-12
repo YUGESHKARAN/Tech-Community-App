@@ -2,6 +2,9 @@ const { v4: uuidv4 } = require("uuid");
 const TutorPlayList = require("../models/tutorPlaylistSchema");
 const { Author, Post } = require("../models/blogAuthorSchema");
 const mongoose = require("mongoose");
+
+require('dotenv').config();
+
 const {
   S3Client,
   PutObjectCommand,
@@ -25,6 +28,7 @@ const s3 = new S3Client({
   region: bucketRegion,
 });
 
+const notificationUrl = process.env.NOTIFICATION_URL || "http://localhost:5173";
 // reviewed
 // const getAllTutorPlaylist = async (req, res) => {
 //   try {
@@ -89,208 +93,185 @@ const getAllTutorPlaylist = async (req, res) => {
 };
 
 //reviewed------------------------------------------------------------
-// Redis cache implemented getRecommendedTutorPlaylist
+
+// const PLAYLIST_PRIORITY_LIMIT = 100;
+// const PLAYLIST_OTHER_LIMIT    = 200;
+// const PLAYLIST_FEED_TTL       = 300;
+// const PLAYLIST_FRESH_TTL      = 60;
+// const PLAYLIST_FRESH_COUNT    = 5;
+
+// const scorePlaylists = (playlist) => {
+//   const ageHours = (Date.now() -
+//     new mongoose.Types.ObjectId(playlist._id).getTimestamp()) / 36e5;
+//   const recency  = Math.max(0, 1 - ageHours / 168);
+//   // collaboratorCount already computed by aggregate $size — no .length needed
+//   const collabs  = (playlist.collaboratorCount || 0) * 0.3;
+//   return recency * 10 + collabs;
+// };
+
 // const getRecommendedTutorPlaylist = async (req, res) => {
 //   try {
 //     const { email } = req.params;
-
-//     const page = parseInt(req.query.page) || 1;
-//     const limit = parseInt(req.query.limit) || 10;
-//     const skip = (page - 1) * limit;
-
-//     // 1. CHECK CACHE FIRST
-//     const cacheKey = `playlist:${email}:page:${page}:limit:${limit}`;
-
-//     if (cachedData) {
-//       console.log("Serving from Redis cache");
-//       return res.status(200).json(JSON.parse(cachedData));
-//     }
-
-//     const currentAuthor = await Author.findOne({ email: { $eq: email } });
-//     if (!currentAuthor) {
-//       return res.status(404).json({ message: "author not found" });
-//     }
-
-//     const authorCommunity = currentAuthor.community || [];
-//     const authorFollowers = currentAuthor.followers || [];
-
-//     const authorFollowersSet = new Set(authorFollowers);
-
-//     const tutorPlaylist = await TutorPlayList.find({}).skip(skip).limit(limit);
-
-//     const priorityPlaylist = [];
-//     const othersPlaylist = [];
-
-//     for (const playlist of tutorPlaylist) {
-//       const inFollowing = authorFollowersSet.has(playlist.email);
-//       const inCommunity = authorCommunity.includes(playlist.domain);
-
-//       if (inFollowing || inCommunity) {
-//         priorityPlaylist.push(playlist);
-//       } else {
-//         othersPlaylist.push(playlist);
-//       }
-//     }
-
-//     const shuffle = (arr) => {
-//       const a = arr.slice();
-//       for (let i = a.length - 1; i > 0; i--) {
-//         const j = Math.floor(Math.random() * (i + 1));
-//         [a[i], a[j]] = [a[j], a[i]];
-//       }
-//       return a;
-//     };
-
-//     const recommendedPart = shuffle(priorityPlaylist);
-//     const remainingPart = shuffle(othersPlaylist);
-
-//     const finalPlaylist = [...recommendedPart, ...remainingPart];
-
-//     const count = await TutorPlayList.countDocuments();
-
-//     // console.log(`recomended playlist page ${page} limit ${limit}`);
-//     // console.log("recommended playlist called")
-
-//     const responseData = {
-//       message: "recommended playlist",
-//       data: finalPlaylist,
-//       count,
-//     };
-
-//     // 3. STORE IN REDIS (cache for 5 min seconds)
-//     await redisClient.setEx(cacheKey, 300, JSON.stringify(responseData));
-//      console.log("ply content Serving from DB and cached to Redis");
-//     res.status(200).json(responseData);
-//   } catch (err) {
-//     res.status(500).json({ message: err.message });
-//   }
-// };
-
-// const getPlaylistByEmail = async (req, res) => {
-//   try {
-//     const { email } = req.params;
-//     if (!email) return res.status(400).json({ message: "email required" });
-
-//     const tutorPlayList = await TutorPlayList.find({ email });
-
-//     // if (!tutorPlayList || tutorPlayList.length == 0) {
-//     //   return res.status(204).json({ message: "Playlist is empty" });
-//     // }
-//     const playlistCountByEmail = tutorPlayList.length;
-
-//     res.status(200).json({message:"individual user playlist", data: tutorPlayList, count:playlistCountByEmail });
-//   } catch (err) {
-//     res.status(500).json({ message: err.message });
-//   }
-// };
-// const getRecommendedTutorPlaylist = async (req, res) => {
-//   try {
-//     const { email } = req.params;
-
-//     const page = parseInt(req.query.page) || 1;
+//     const page  = parseInt(req.query.page) || 1;
 //     const limit = Math.min(parseInt(req.query.limit) || 10, 30);
 
-//     const feedCacheKey = `playlistHomeFeed:${email}:full`;
+//     const feedCacheKey  = `playlistHomeFeed:${email}:ids`;
+//     const freshCacheKey = `playlistHomeFeed:fresh:ids`;
 
-//     let allPlaylists = [];
+//     // ── 1. FRESH PLAYLISTS — shared 60s cache ────────────────
+//     let freshIds = [];
+//     const cachedFresh = await redisClient.get(freshCacheKey);
 
-//     //1. CHECK FULL FEED CACHE
-//     const cachedFeed = await redisClient.get(feedCacheKey);
-
-//     if (cachedFeed) {
-//       console.log("Playlist FULL FEED from Redis");
-//       allPlaylists = JSON.parse(cachedFeed);
+//     if (cachedFresh) {
+//       freshIds = JSON.parse(cachedFresh);
 //     } else {
-//       console.log("Playlist Cache MISS → Generating from DB");
-//       const currentAuthor = await Author.findOne({ email:{ $eq: email } });
+//       // select _id only — no collaborators array fetched
+//       const freshDocs = await TutorPlayList.find({})
+//         .select("_id")
+//         .sort({ _id: -1 })
+//         .limit(20)
+//         .lean();
+
+//       freshIds = freshDocs.map(p => p._id.toString());
+//       await redisClient.setEx(freshCacheKey, PLAYLIST_FRESH_TTL, JSON.stringify(freshIds));
+//     }
+
+//     // ── 2. PERSONALISED FEED IDs ──────────────────────────────
+//     let feedIds = [];
+//     const cachedIds = await redisClient.get(feedCacheKey);
+
+//     if (cachedIds) {
+//       feedIds = JSON.parse(cachedIds);
+//     } else {
+//       const currentAuthor = await Author.findOne({ email: { $eq: email } })
+//         .select("community following");
 
 //       if (!currentAuthor) {
 //         return res.status(404).json({ message: "Author not found" });
 //       }
 
 //       const authorCommunity = currentAuthor.community || [];
-//       const authorFollowers = currentAuthor.followers || [];
+//       const authorFollowing  = currentAuthor.following  || [];
 
-//       const followersSet = new Set(authorFollowers);
+//       // opt: use aggregate $size for collaboratorCount — same pattern as post feed
+//       // avoids fetching full collaborators array just to call .length
+//       const [priorityDocs, recentDocs] = await Promise.all([
+//         TutorPlayList.aggregate([
+//           {
+//             $match: {
+//               $or: [
+//                 { email:  { $in: authorFollowing  } },
+//                 { domain: { $in: authorCommunity  } },
+//               ],
+//             },
+//           },
+//           { $sort:  { _id: -1 } },
+//           { $limit: PLAYLIST_PRIORITY_LIMIT },
+//           {
+//             $project: {
+//               _id:               1,
+//               email:             1,
+//               domain:            1,
+//               collaboratorCount: { $size: { $ifNull: ["$collaborators", []] } },
+//             },
+//           },
+//         ]),
 
-//       //REMOVE skip/limit here → fetch all
-//       const tutorPlaylists = await TutorPlayList.find({});
+//         TutorPlayList.aggregate([
+//           { $sort:  { _id: -1 } },
+//           { $limit: PLAYLIST_OTHER_LIMIT * 2 },
+//           {
+//             $project: {
+//               _id:               1,
+//               email:             1,
+//               domain:            1,
+//               collaboratorCount: { $size: { $ifNull: ["$collaborators", []] } },
+//             },
+//           },
+//         ]),
+//       ]);
 
-//       const priorityPlaylist = [];
-//       const othersPlaylist = [];
+//       const priorityEmailSet = new Set(authorFollowing);
+//       const priorityDomainSet = new Set(authorCommunity);
+//       const priorityIdSet    = new Set(priorityDocs.map(p => p._id.toString()));
 
-//       // Split playlists
-//       for (const playlist of tutorPlaylists) {
-//         const inFollowing = followersSet.has(playlist.email);
-//         const inCommunity = authorCommunity.includes(playlist.domain);
+//       const otherDocs = recentDocs
+//         .filter(p =>
+//           !priorityIdSet.has(p._id.toString()) &&
+//           !priorityEmailSet.has(p.email) &&
+//           !priorityDomainSet.has(p.domain)
+//         )
+//         .slice(0, PLAYLIST_OTHER_LIMIT);
 
-//         if (inFollowing || inCommunity) {
-//           priorityPlaylist.push(playlist);
-//         } else {
-//           othersPlaylist.push(playlist);
-//         }
-//       }
+//       const scoreAndSort = (docs) =>
+//         docs
+//           .map(p => ({ id: p._id.toString(), score: scorePlaylists(p) }))
+//           .sort((a, b) => b.score - a.score)
+//           .map(p => p.id);
 
-//       // Shuffle once
-//       const shuffle = (arr) => {
-//         const a = arr.slice();
-//         for (let i = a.length - 1; i > 0; i--) {
-//           const j = Math.floor(Math.random() * (i + 1));
-//           [a[i], a[j]] = [a[j], a[i]];
-//         }
-//         return a;
-//       };
+//       const rankedPriorityIds = scoreAndSort(priorityDocs);
+//       const rankedOtherIds    = scoreAndSort(otherDocs);
 
-//       const recommendedPart = shuffle(priorityPlaylist);
-//       const remainingPart = shuffle(othersPlaylist);
+//       // dedup before caching — prevents duplicate IDs on concurrent misses
+//       const seen = new Set();
+//       feedIds = [...rankedPriorityIds, ...rankedOtherIds]
+//         .filter(id => {
+//           if (seen.has(id)) return false;
+//           seen.add(id);
+//           return true;
+//         });
 
-//       allPlaylists = [...recommendedPart, ...remainingPart];
-
-//       // Cache FULL FEED
-//       await redisClient.setEx(
-//         feedCacheKey,
-//         300,
-//         JSON.stringify(allPlaylists)
-//       );
+//       await redisClient.setEx(feedCacheKey, PLAYLIST_FEED_TTL, JSON.stringify(feedIds));
 //     }
 
-//     // 2. PAGINATION
+//     // ── 3. MERGE FRESH + FEED — page 1 only ──────────────────
+//     const feedIdSet   = new Set(feedIds);
+//     const newFreshIds = freshIds.filter(id => !feedIdSet.has(id));
+
+//     const mergedIds = page === 1
+//       ? [...newFreshIds.slice(0, PLAYLIST_FRESH_COUNT), ...feedIds]
+//       : feedIds;
+
+//     // ── 4. PAGINATE ON IDs THEN HYDRATE ──────────────────────
 //     const startIndex = (page - 1) * limit;
-//     const endIndex = page * limit;
+//     const endIndex   = startIndex + limit;
+//     const pageIds    = mergedIds.slice(startIndex, endIndex);
 
-//     const paginatedPlaylists = allPlaylists.slice(startIndex, endIndex);
+//     const pagePlaylists = pageIds.length > 0
+//       ? await TutorPlayList.find({ _id: { $in: pageIds } }).lean()
+//       : [];
 
-//     // 3. RESPONSE
-//     const responseData = {
-//       message: "Recommended playlist",
+//     // restore $in order
+//     const playlistMap      = new Map(pagePlaylists.map(p => [p._id.toString(), p]));
+//     const orderedPlaylists = pageIds.map(id => playlistMap.get(id)).filter(Boolean);
+
+//     res.status(200).json({
+//       message:    "Recommended playlist",
 //       page,
 //       limit,
-//       total: allPlaylists.length,
-//       totalPages: Math.ceil(allPlaylists.length / limit),
-//       hasMore: endIndex < allPlaylists.length,
-//       data: paginatedPlaylists,
-//     };
-
-//     console.log("Playlist served (cached or sliced)");
-
-//     res.status(200).json(responseData);
+//       total:      mergedIds.length,
+//       totalPages: Math.ceil(mergedIds.length / limit),
+//       hasMore:    endIndex < mergedIds.length,
+//       data:       orderedPlaylists,
+//     });
 //   } catch (err) {
 //     console.error("Error in getRecommendedTutorPlaylist:", err);
 //     res.status(500).json({ message: err.message });
 //   }
 // };
+
 const PLAYLIST_PRIORITY_LIMIT = 100;
 const PLAYLIST_OTHER_LIMIT    = 200;
 const PLAYLIST_FEED_TTL       = 300;
 const PLAYLIST_FRESH_TTL      = 60;
 const PLAYLIST_FRESH_COUNT    = 5;
+const PLAYLIST_FRESH_LOCK_KEY = 'playlistHomeFeed:fresh:rebuilding';
 
 const scorePlaylists = (playlist) => {
   const ageHours = (Date.now() -
     new mongoose.Types.ObjectId(playlist._id).getTimestamp()) / 36e5;
-  const recency  = Math.max(0, 1 - ageHours / 168);
-  // collaboratorCount already computed by aggregate $size — no .length needed
-  const collabs  = (playlist.collaboratorCount || 0) * 0.3;
+  const recency = Math.max(0, 1 - ageHours / 168);
+  const collabs = (playlist.collaboratorCount || 0) * 0.3;
   return recency * 10 + collabs;
 };
 
@@ -303,22 +284,44 @@ const getRecommendedTutorPlaylist = async (req, res) => {
     const feedCacheKey  = `playlistHomeFeed:${email}:ids`;
     const freshCacheKey = `playlistHomeFeed:fresh:ids`;
 
-    // ── 1. FRESH PLAYLISTS — shared 60s cache ────────────────
+    // ── 1. FRESH PLAYLISTS — shared 60s cache with mutex ─────
     let freshIds = [];
     const cachedFresh = await redisClient.get(freshCacheKey);
 
     if (cachedFresh) {
       freshIds = JSON.parse(cachedFresh);
     } else {
-      // select _id only — no collaborators array fetched
-      const freshDocs = await TutorPlayList.find({})
-        .select("_id")
-        .sort({ _id: -1 })
-        .limit(20)
-        .lean();
+      const freshLock = await redisClient.get(PLAYLIST_FRESH_LOCK_KEY);
 
-      freshIds = freshDocs.map(p => p._id.toString());
-      await redisClient.setEx(freshCacheKey, PLAYLIST_FRESH_TTL, JSON.stringify(freshIds));
+      if (freshLock) {
+        // another request is rebuilding — wait briefly then use whatever is ready
+        await new Promise(r => setTimeout(r, 150));
+        const retryFresh = await redisClient.get(freshCacheKey);
+        freshIds = retryFresh ? JSON.parse(retryFresh) : [];
+      } else {
+        // acquire lock — expires in 5s
+        await redisClient.setEx(PLAYLIST_FRESH_LOCK_KEY, 5, '1');
+        try {
+          const freshDocs = await TutorPlayList.find({})
+            .select("_id")
+            .sort({ _id: -1 })
+            .limit(20)
+            .lean();
+
+          freshIds = freshDocs.map(p => p._id.toString());
+
+          // jitter ±15s — prevents fresh + personal feed expiring simultaneously
+          const jitter = Math.floor(Math.random() * 30);
+          await redisClient.setEx(
+            freshCacheKey,
+            PLAYLIST_FRESH_TTL + jitter,
+            JSON.stringify(freshIds)
+          );
+        } finally {
+          // always release lock even if query fails
+          await redisClient.del(PLAYLIST_FRESH_LOCK_KEY);
+        }
+      }
     }
 
     // ── 2. PERSONALISED FEED IDs ──────────────────────────────
@@ -338,8 +341,6 @@ const getRecommendedTutorPlaylist = async (req, res) => {
       const authorCommunity = currentAuthor.community || [];
       const authorFollowing  = currentAuthor.following  || [];
 
-      // opt: use aggregate $size for collaboratorCount — same pattern as post feed
-      // avoids fetching full collaborators array just to call .length
       const [priorityDocs, recentDocs] = await Promise.all([
         TutorPlayList.aggregate([
           {
@@ -376,9 +377,9 @@ const getRecommendedTutorPlaylist = async (req, res) => {
         ]),
       ]);
 
-      const priorityEmailSet = new Set(authorFollowing);
+      const priorityEmailSet  = new Set(authorFollowing);
       const priorityDomainSet = new Set(authorCommunity);
-      const priorityIdSet    = new Set(priorityDocs.map(p => p._id.toString()));
+      const priorityIdSet     = new Set(priorityDocs.map(p => p._id.toString()));
 
       const otherDocs = recentDocs
         .filter(p =>
@@ -397,7 +398,6 @@ const getRecommendedTutorPlaylist = async (req, res) => {
       const rankedPriorityIds = scoreAndSort(priorityDocs);
       const rankedOtherIds    = scoreAndSort(otherDocs);
 
-      // dedup before caching — prevents duplicate IDs on concurrent misses
       const seen = new Set();
       feedIds = [...rankedPriorityIds, ...rankedOtherIds]
         .filter(id => {
@@ -406,7 +406,16 @@ const getRecommendedTutorPlaylist = async (req, res) => {
           return true;
         });
 
-      await redisClient.setEx(feedCacheKey, PLAYLIST_FEED_TTL, JSON.stringify(feedIds));
+      // fix: never cache empty feed — prevents empty window after TTL
+      if (feedIds.length > 0) {
+        // jitter ±30s — spreads users across wider expiry window
+        const jitter = Math.floor(Math.random() * 60);
+        await redisClient.setEx(
+          feedCacheKey,
+          PLAYLIST_FEED_TTL + jitter,
+          JSON.stringify(feedIds)
+        );
+      }
     }
 
     // ── 3. MERGE FRESH + FEED — page 1 only ──────────────────
@@ -417,16 +426,18 @@ const getRecommendedTutorPlaylist = async (req, res) => {
       ? [...newFreshIds.slice(0, PLAYLIST_FRESH_COUNT), ...feedIds]
       : feedIds;
 
+    // fix: fallback to freshIds if both caches expired simultaneously
+    const finalIds = mergedIds.length > 0 ? mergedIds : freshIds;
+
     // ── 4. PAGINATE ON IDs THEN HYDRATE ──────────────────────
     const startIndex = (page - 1) * limit;
     const endIndex   = startIndex + limit;
-    const pageIds    = mergedIds.slice(startIndex, endIndex);
+    const pageIds    = finalIds.slice(startIndex, endIndex);
 
     const pagePlaylists = pageIds.length > 0
       ? await TutorPlayList.find({ _id: { $in: pageIds } }).lean()
       : [];
 
-    // restore $in order
     const playlistMap      = new Map(pagePlaylists.map(p => [p._id.toString(), p]));
     const orderedPlaylists = pageIds.map(id => playlistMap.get(id)).filter(Boolean);
 
@@ -434,9 +445,9 @@ const getRecommendedTutorPlaylist = async (req, res) => {
       message:    "Recommended playlist",
       page,
       limit,
-      total:      mergedIds.length,
-      totalPages: Math.ceil(mergedIds.length / limit),
-      hasMore:    endIndex < mergedIds.length,
+      total:      finalIds.length,
+      totalPages: Math.ceil(finalIds.length / limit),
+      hasMore:    endIndex < finalIds.length,
       data:       orderedPlaylists,
     });
   } catch (err) {
@@ -474,36 +485,7 @@ const getPlaylistByEmail = async (req, res) => {
   }
 };
 
-// old
-// const getPlaylistById = async (req, res) => {
-//   try {
-//     const { playlistId } = req.params;
-//     const playList = await TutorPlayList.findOne({ _id: playlistId });
-//     const email = playList.email;
-//     const domain = playList.domain;
 
-//     const author = await Author.findOne({ email: { $eq: email } });
-
-//     const playlistPostIds = (playList.post_ids || []).map((id) =>
-//       id.toString(),
-//     );
-
-//     // build a map of author's posts (filtered by domain) for O(1) lookup
-//     const postsById = {};
-//     (author.posts || []).forEach((post) => {
-//       if (post.category === domain) {
-//         postsById[String(post._id)] = post;
-//       }
-//     });
-
-//     // preserve order from playList.post_ids
-//     const posts = playlistPostIds.map((id) => postsById[id]).filter(Boolean);
-
-//     res.status(200).json({ data: playList, posts: posts });
-//   } catch (err) {
-//     res.status(500).json({ message: err.message });
-//   }
-// };
 // reviewed
 const getPlaylistById = async (req, res) => {
   try {
@@ -548,18 +530,27 @@ const getPlaylistById = async (req, res) => {
   }
 };
 
-// old
+
+// reviewed-------------------------------------------------------------
 // const addTutorPlayList = async (req, res) => {
+//   let uniqueFilename = "";
+
 //   try {
 //     let { postIds, title, domain, email, collaboratorsEmail } = req.body;
-//     // console.log(req.body);
-//     if (postIds.length < 1 || !title || !domain || !email) {
+
+//     if (!postIds || postIds.length < 1 || !title || !domain || !email) {
 //       return res.status(400).json({ message: "playlist data required" });
 //     }
 
-//     const user = await Author.findOne({ email: { $eq: email } });
-//     // console.log("user",user);
+//     // fix: validate postIds exist in Post collection before saving
+//     const existingCount = await Post.countDocuments({ _id: { $in: postIds } });
+//     if (existingCount !== postIds.length) {
+//       return res
+//         .status(400)
+//         .json({ message: "One or more post IDs are invalid" });
+//     }
 
+//     const user = await Author.findOne({ email: { $eq: email } });
 //     if (!user) {
 //       return res.status(404).json({ message: "user not found!" });
 //     }
@@ -567,64 +558,87 @@ const getPlaylistById = async (req, res) => {
 //     const profile = user.profile;
 //     const name = user.authorname;
 
-//     const collaborators = [];
-
+//     // fix: single Author.find() instead of N sequential findOne() calls
 //     collaboratorsEmail = Array.isArray(collaboratorsEmail)
 //       ? collaboratorsEmail
-//       : [collaboratorsEmail];
+//       : collaboratorsEmail
+//         ? [collaboratorsEmail]
+//         : [];
 
-//     if (collaboratorsEmail && collaboratorsEmail.length > 0) {
-//       for (const collabEmail of collaboratorsEmail) {
-//         const normalizedCollabEmail = String(collabEmail).trim().toLowerCase();
-//         const collabUser = await Author.findOne({
-//           email: normalizedCollabEmail,
+//     const collaborators = [];
+//     if (collaboratorsEmail.length > 0) {
+//       const normalizedEmails = collaboratorsEmail
+//         .map((e) => String(e).trim().toLowerCase())
+//         .filter(Boolean);
+
+//       // fix: one DB query instead of N — and added $eq-safe $in
+//       const collabUsers = await Author.find({
+//         email: { $in: normalizedEmails },
+//       }).select("authorname email profile");
+
+//       for (const collabUser of collabUsers) {
+//         collaborators.push({
+//           name: collabUser.authorname,
+//           email: collabUser.email,
+//           profile: collabUser.profile,
 //         });
-//         // if (!collabUser) {
-//         //   return res.status(404).json({
-//         //     message: `collaborator with email ${collabEmail} not found`,
-//         //   });
-//         // }
-//         if (collabUser) {
-//           collaborators.push({
-//             name: collabUser.authorname,
-//             email: collabUser.email,
-//             profile: collabUser.profile,
-//           });
-//         }
 //       }
 //     }
 
+//     // S3 thumbnail upload
 //     const tutorPlaylistFolder = "TutorPlaylist/";
-
-//     const uniqueFilename = req.file
-//       ? `${tutorPlaylistFolder}${uuidv4()}-${req.file.originalname}`
-//       : "";
-
 //     if (req.file) {
-//       // S3 Integration
-//       const params = {
-//         Bucket: bucketName,
-//         Key: uniqueFilename,
-//         Body: req.file.buffer,
-//         ContentType: req.file.mimetype,
-//       };
-
-//       const command = new PutObjectCommand(params);
-//       await s3.send(command);
+//       uniqueFilename = `${tutorPlaylistFolder}${uuidv4()}-${req.file.originalname}`;
+//       await s3.send(
+//         new PutObjectCommand({
+//           Bucket: bucketName,
+//           Key: uniqueFilename,
+//           Body: req.file.buffer,
+//           ContentType: req.file.mimetype,
+//         }),
+//       );
 //     }
 
-//     const tutorPlaylist = new TutorPlayList({
-//       post_ids: postIds,
-//       title,
-//       name,
-//       domain,
-//       thumbnail: req.file ? uniqueFilename : "",
-//       email,
-//       profile,
-//       collaborators: collaborators,
-//     });
+//     // fix: wrap DB save in try/catch — clean up S3 if save fails
+//     let tutorPlaylist;
+//     try {
+//       tutorPlaylist = new TutorPlayList({
+//         post_ids: postIds,
+//         title,
+//         name,
+//         domain,
+//         thumbnail: uniqueFilename,
+//         email,
+//         profile,
+//         collaborators,
+//       });
+//       await tutorPlaylist.save();
+//     } catch (dbErr) {
+//       if (uniqueFilename) {
+//         try {
+//           await s3.send(
+//             new DeleteObjectCommand({
+//               Bucket: bucketName,
+//               Key: uniqueFilename,
+//             }),
+//           );
+//         } catch (s3Err) {
+//           console.error("S3 cleanup failed:", s3Err.message);
+//         }
+//       }
+//       throw dbErr;
+//     }
+  
+//     const playlistId = tutorPlaylist._id
+//     const url = `${notificationUrl}/viewplaylist/${playlistId}`;
+//     const newNotification = {
+//     user: name,
+//     authorEmail: email,
+//     message: ``,
+//     url,
+//     profile,
+//   };
 
-//     await tutorPlaylist.save();
 //     res
 //       .status(201)
 //       .json({ message: "Playlist created successfully", data: tutorPlaylist });
@@ -633,7 +647,6 @@ const getPlaylistById = async (req, res) => {
 //     res.status(500).json({ message: err.message });
 //   }
 // };
-// reviewed-------------------------------------------------------------
 const addTutorPlayList = async (req, res) => {
   let uniqueFilename = "";
 
@@ -644,12 +657,9 @@ const addTutorPlayList = async (req, res) => {
       return res.status(400).json({ message: "playlist data required" });
     }
 
-    // fix: validate postIds exist in Post collection before saving
     const existingCount = await Post.countDocuments({ _id: { $in: postIds } });
     if (existingCount !== postIds.length) {
-      return res
-        .status(400)
-        .json({ message: "One or more post IDs are invalid" });
+      return res.status(400).json({ message: "One or more post IDs are invalid" });
     }
 
     const user = await Author.findOne({ email: { $eq: email } });
@@ -658,30 +668,29 @@ const addTutorPlayList = async (req, res) => {
     }
 
     const profile = user.profile;
-    const name = user.authorname;
+    const name    = user.authorname;
 
-    // fix: single Author.find() instead of N sequential findOne() calls
     collaboratorsEmail = Array.isArray(collaboratorsEmail)
       ? collaboratorsEmail
-      : collaboratorsEmail
-        ? [collaboratorsEmail]
-        : [];
+      : collaboratorsEmail ? [collaboratorsEmail] : [];
 
-    const collaborators = [];
+    const collaborators  = [];
+    let   collabUsers    = [];
+
     if (collaboratorsEmail.length > 0) {
       const normalizedEmails = collaboratorsEmail
-        .map((e) => String(e).trim().toLowerCase())
-        .filter(Boolean);
+        .map(e => String(e).trim().toLowerCase())
+        .filter(Boolean)
+        .filter(e => e !== email); // exclude playlist creator from collaborators
 
-      // fix: one DB query instead of N — and added $eq-safe $in
-      const collabUsers = await Author.find({
+      collabUsers = await Author.find({
         email: { $in: normalizedEmails },
       }).select("authorname email profile");
 
       for (const collabUser of collabUsers) {
         collaborators.push({
-          name: collabUser.authorname,
-          email: collabUser.email,
+          name:    collabUser.authorname,
+          email:   collabUser.email,
           profile: collabUser.profile,
         });
       }
@@ -691,25 +700,22 @@ const addTutorPlayList = async (req, res) => {
     const tutorPlaylistFolder = "TutorPlaylist/";
     if (req.file) {
       uniqueFilename = `${tutorPlaylistFolder}${uuidv4()}-${req.file.originalname}`;
-      await s3.send(
-        new PutObjectCommand({
-          Bucket: bucketName,
-          Key: uniqueFilename,
-          Body: req.file.buffer,
-          ContentType: req.file.mimetype,
-        }),
-      );
+      await s3.send(new PutObjectCommand({
+        Bucket:      bucketName,
+        Key:         uniqueFilename,
+        Body:        req.file.buffer,
+        ContentType: req.file.mimetype,
+      }));
     }
 
-    // fix: wrap DB save in try/catch — clean up S3 if save fails
     let tutorPlaylist;
     try {
       tutorPlaylist = new TutorPlayList({
-        post_ids: postIds,
+        post_ids:      postIds,
         title,
         name,
         domain,
-        thumbnail: uniqueFilename,
+        thumbnail:     uniqueFilename,
         email,
         profile,
         collaborators,
@@ -718,12 +724,7 @@ const addTutorPlayList = async (req, res) => {
     } catch (dbErr) {
       if (uniqueFilename) {
         try {
-          await s3.send(
-            new DeleteObjectCommand({
-              Bucket: bucketName,
-              Key: uniqueFilename,
-            }),
-          );
+          await s3.send(new DeleteObjectCommand({ Bucket: bucketName, Key: uniqueFilename }));
         } catch (s3Err) {
           console.error("S3 cleanup failed:", s3Err.message);
         }
@@ -731,118 +732,50 @@ const addTutorPlayList = async (req, res) => {
       throw dbErr;
     }
 
-    res
-      .status(201)
-      .json({ message: "Playlist created successfully", data: tutorPlaylist });
+    const playlistId = tutorPlaylist._id;
+    const url        = `${notificationUrl}/viewplaylist/${playlistId}`;
+
+    // respond immediately before sending notifications
+    res.status(201).json({ message: "Playlist created successfully", data: tutorPlaylist });
+
+    // ── send notifications to collaborators (fire-and-forget) ─
+    if (collabUsers.length > 0) {
+      const notificationMessage = `${name} added you as a collaborator on the playlist "${title}" in the ${domain} domain.`;
+
+      const bulkOps = collabUsers.map(collabUser => ({
+        updateOne: {
+          filter: { email: collabUser.email },
+          update: {
+            $push: {
+              notification: {
+                _id:         new mongoose.Types.ObjectId(),
+                user:        name,
+                authorEmail: email,
+                message:     notificationMessage,
+                profile:     profile || "",
+                url,
+                postId:      new mongoose.Types.ObjectId(), // placeholder
+                timestamp:   new Date(),
+              },
+            },
+          },
+        },
+      }));
+
+      Author.bulkWrite(bulkOps).catch(err => {
+        console.error("Collaborator notification bulkWrite failed:", err.message);
+      });
+    }
+
   } catch (err) {
     console.log("error", err.message);
     res.status(500).json({ message: err.message });
   }
 };
 
-// old
-// const updateTutorPlayList = async (req, res) => {
-//   try {
-//     const { id } = req.params;
-//     // console.log("Updating playlist with id:", id);
 
-//     const { postIds, title, domain, collaboratorsEmail } = req.body;
 
-//     const playList = await TutorPlayList.findById(id);
-//     // console.log("Found playlist:", playList);
-
-//     if (playList === null) {
-//       return res.status(404).json({ message: "Playlist not found" });
-//     }
-
-//     if (title) {
-//       playList.title = title;
-//     }
-//     if (domain) {
-//       playList.domain = domain;
-//     }
-
-//     const tutorPlaylistFolder = "TutorPlaylist/";
-
-//     const uniqueFilename = req.file
-//       ? `${tutorPlaylistFolder}${uuidv4()}-${req.file.originalname}`
-//       : "";
-
-//     if (req.file) {
-//       // S3 Integration
-//       const params = {
-//         Bucket: bucketName,
-//         Key: uniqueFilename,
-//         Body: req.file.buffer,
-//         ContentType: req.file.mimetype,
-//       };
-
-//       const command = new PutObjectCommand(params);
-//       await s3.send(command);
-//     }
-
-//     if (req.file) {
-//       // Delete old thumbnail from S3 if it exists
-//       if (playList.thumbnail) {
-//         try {
-//           const deleteParams = {
-//             Bucket: bucketName,
-//             Key: playList.thumbnail,
-//           };
-//           const deleteCommand = new DeleteObjectCommand(deleteParams);
-//           console.log("Deleting old thumbnail from S3:", playList.thumbnail);
-//           await s3.send(deleteCommand);
-//         } catch (err) {
-//           console.log("Error deleting old thumbnail from S3:", err);
-//         }
-//       }
-
-//       // Update to new thumbnail
-//       playList.thumbnail = uniqueFilename;
-//     }
-
-//     const collaborators = [];
-
-//     // Normalize collaboratorsEmail to an array (handles single string input)
-//     let collaboratorsEmailsArr = collaboratorsEmail;
-//     if (collaboratorsEmailsArr && !Array.isArray(collaboratorsEmailsArr)) {
-//       collaboratorsEmailsArr = [collaboratorsEmailsArr];
-//     }
-
-//     if (collaboratorsEmailsArr && collaboratorsEmailsArr.length > 0) {
-//       for (const collabEmail of collaboratorsEmailsArr) {
-//         const normalizedCollabEmail = String(collabEmail).trim().toLowerCase();
-//         const collabUser = await Author.findOne({
-//           email: normalizedCollabEmail,
-//         });
-//         if (!collabUser) {
-//           return res.status(404).json({
-//             message: `collaborator with email ${collabEmail} not found`,
-//           });
-//         }
-//         collaborators.push({
-//           name: collabUser.authorname,
-//           email: collabUser.email,
-//           profile: collabUser.profile,
-//         });
-//       }
-//     }
-
-//     if (postIds !== undefined) playList.post_ids = postIds;
-
-//     // playList.post_ids = postIds;
-
-//     playList.collaborators = collaborators;
-
-//     await playList.save();
-//     res
-//       .status(200)
-//       .json({ message: "Playlist updated successfully", data: playList });
-//   } catch (err) {
-//     res.status(500).json({ message: err.message });
-//   }
-// };
-// reviewed--------------------------------------------------------------
+// reviewed
 const updateTutorPlayList = async (req, res) => {
   let uniqueFilename = "";
 
@@ -1035,50 +968,6 @@ const getBookmarkedPlaylists = async (req, res) => {
 
 // old
 //reviewed-------------------------------------------------------------
-// const getPostsByAuthorsCategory = async (req, res) => {
-//   try {
-//     const { email } = req.params;
-//     const category = decodeURIComponent(req.params.category);
-//     let { page = 1, limit = 10 } = req.query;
-
-//     page = parseInt(page);
-//     limit = parseInt(limit);
-//     const skip = (page - 1) * limit;
-
-//     // only _id needed — used for Post query ownership check
-//     const author = await Author.findOne({ email: { $eq: email } }).select(
-//       "_id",
-//     );
-//     if (!author) {
-//       return res.status(404).json({ message: "Author not found" });
-//     }
-
-//     // fix: query Post collection directly — author.posts.filter() on ObjectIds always returned []
-//     // push skip/limit into DB instead of in-memory slice
-//     const [filteredPosts, totalPosts] = await Promise.all([
-//       Post.find({ authorId: author._id, category: { $eq: category } })
-//         .skip(skip)
-//         .limit(limit)
-//         .lean(),
-//       Post.countDocuments({
-//         authorId: author._id,
-//         category: { $eq: category },
-//       }),
-//     ]);
-
-//     // response shape identical to before
-//     return res.status(200).json({
-//       posts: filteredPosts,
-//       currentPage: page,
-//       totalPages: Math.ceil(totalPosts / limit),
-//       totalPosts,
-//       hasMore: skip + limit < totalPosts,
-//     });
-//   } catch (err) {
-//     console.error("Error:", err.message);
-//     res.status(500).json({ message: "Server Error" });
-//   }
-// };
 
 const getPostsByAuthorsCategory = async (req, res) => {
   try {

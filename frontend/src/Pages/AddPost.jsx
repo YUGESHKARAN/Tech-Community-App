@@ -337,7 +337,74 @@ function AddPost() {
     });
   };
 
+  //   const renderTextWithHashtags = (text) => {
+  //   if (!text) return null;
+
+  //   const cleanedText = text
+  //     .replace(/\\r\\n/g, "\n")
+  //     .replace(/\\n/g, "\n")
+  //     .replace(/\\r/g, "\n");
+
+  //   return cleanedText.split("\n").map((line, lineIndex) => {
+  //     const parts = line.split(/(\*\*.*?\*\*|#{1,6}[^\n]+|\s?#\w+)/gm);
+
+  //     return (
+  //       <React.Fragment key={lineIndex}>
+  //         {parts.map((part, index) => {
+  //           if (!part) return null;
+
+  //           const trimmed = part.trim();
+
+  //           // ---------- Markdown Headings ----------
+  //           // Supports:
+  //           // ###Heading
+  //           // ### Heading
+  //           if (/^#{1,6}/.test(trimmed)) {
+  //             return (
+  //               <span
+  //                 key={index}
+  //                 className="font-semibold md:text-sm text-xs text-white"
+  //               >
+  //                 {trimmed.replace(/^#{1,6}\s*/, "")}
+  //               </span>
+  //             );
+  //           }
+
+  //           // ---------- Bold ----------
+  //           if (trimmed.startsWith("**") && trimmed.endsWith("**")) {
+  //             return (
+  //               <span key={index} className="font-semibold md:text-sm text-xs text-white">
+  //                 {trimmed.replace(/\*\*/g, "")}
+  //               </span>
+  //             );
+  //           }
+
+  //           // ---------- Hashtags ----------
+  //           if (/^(\s)?#\w+/.test(part)) {
+  //             return (
+  //               <span key={index} className="text-white md:text-sm text-xs font-medium">
+  //                 {part}
+  //               </span>
+  //             );
+  //           }
+
+  //           // ---------- Normal ----------
+  //           return (
+  //             <React.Fragment key={index}>
+  //               {part.replace(/\\\*/g, "*").replace(/\\\\/g, "\\")}
+  //             </React.Fragment>
+  //           );
+  //         })}
+
+  //         <br />
+  //       </React.Fragment>
+  //     );
+  //   });
+  // };
+
   // console.log("links",links)
+  
+  
   // console.log("documents",documents)
 
   return (
@@ -465,7 +532,7 @@ function AddPost() {
                   <input
                     name="message"
                     placeholder="Ask DraftMate to transform your content..."
-                    className="flex-1 px-4  rounded-xl border border-gray-700 py-2 bg-gray-900 text-sm outline-none text-white"
+                    className="flex-1 px-4  rounded-xl border border-gray-700 py-2 bg-gray-900 text-xs outline-none text-white"
                   />
 
                   <button
