@@ -54,6 +54,7 @@ function Announcement() {
   const [selectedImage, setSelectedImage] = useState(null);
   const announceCount = getItem("announceCount");
   const [showGuidelines, setShowGuidelines] = useState(false);
+  const [preview, setPreview] = useState(false);
   const [fieldErrors, setFieldErrors] = useState({
     title: "",
     message: "",
@@ -500,6 +501,71 @@ function Announcement() {
     });
   };
 
+    const renderTextWithHashtags2 = (text) => {
+    if (!text) return null;
+
+    const cleanedText = text
+      .replace(/\\r\\n/g, "\n")
+      .replace(/\\n/g, "\n")
+      .replace(/\\r/g, "\n");
+
+    return cleanedText.split("\n").map((line, lineIndex) => {
+      const parts = line.split(/(\*\*.*?\*\*|#{1,6}[^\n]+|\s?#\w+)/gm);
+
+      return (
+        <React.Fragment key={lineIndex}>
+          {parts.map((part, index) => {
+            if (!part) return null;
+
+            const trimmed = part.trim();
+
+            // ---------- Markdown Headings ----------
+            // Supports:
+            // ###Heading
+            // ### Heading
+            if (/^#{1,6}/.test(trimmed)) {
+              return (
+                <span
+                  key={index}
+                  className="font-semibold md:text-sm text-xs text-white"
+                >
+                  {trimmed.replace(/^#{1,6}\s*/, "")}
+                </span>
+              );
+            }
+
+            // ---------- Bold ----------
+            if (trimmed.startsWith("**") && trimmed.endsWith("**")) {
+              return (
+                <span key={index} className="font-semibold md:text-sm text-xs text-white">
+                  {trimmed.replace(/\*\*/g, "")}
+                </span>
+              );
+            }
+
+            // ---------- Hashtags ----------
+            if (/^(\s)?#\w+/.test(part)) {
+              return (
+                <span key={index} className="text-white md:text-sm text-xs font-medium">
+                  {part}
+                </span>
+              );
+            }
+
+            // ---------- Normal ----------
+            return (
+              <React.Fragment key={index}>
+                {part.replace(/\\\*/g, "*").replace(/\\\\/g, "\\")}
+              </React.Fragment>
+            );
+          })}
+
+          <br />
+        </React.Fragment>
+      );
+    });
+  };
+
   const clearAllAnnouncements = async () => {
     if (reversedAnnouncements.length === 0) {
       return;
@@ -633,16 +699,83 @@ function Announcement() {
 
                         {/* MESSAGE */}
                         <div>
+                        <div className="flex items-center justify-between mb-2">
                           <label className="block text-sm font-medium text-slate-300">
                             Message <span className="text-red-500">*</span>
                           </label>
-                          <textarea
+                            {/* Tabs */}
+                    <div className="flex items-center bg-gray-900 border border-gray-700 rounded-lg p-1">
+                      <button
+                        type="button"
+                        onClick={() => setPreview(false)}
+                        className={`px-2 py-0.5 text-[10px] outline-none   rounded-md transition-all duration-200 ${
+                          !preview
+                            ? "bg-emerald-500/20 text-emerald-400 "
+                            : "text-gray-400 hover:text-white"
+                        }`}
+                      >
+                        Editor
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setPreview(true)}
+                        className={`px-2 py-0.5 text-[10px] outline-none  rounded-md transition-all duration-200 ${
+                          preview
+                            ? "bg-emerald-500/20 text-emerald-400 "
+                            : "text-gray-400 hover:text-white"
+                        }`}
+                      >
+                        Preview
+                      </button>
+                    </div>
+                    </div>
+                          {/* <textarea
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
                             placeholder="Announcement message..."
                             className="w-full mt-1 px-3 py-2 bg-[#0f172a] border border-slate-700
                      rounded-md focus:outline-none emerald-scrollbar focus:border-emerald-500/20 text-slate-300 leading-relaxed text-xs"
-                          />
+                          /> */}
+
+                           {/* Editor / Preview Wrapper */}
+                  <div className="relative">
+                    {/* Top subtle glow */}
+                    <div className="absolute inset-0 rounded-xl bg-emerald-500/[0.02] pointer-events-none" />
+
+                    {preview ? (
+                      <div
+                        className="
+                          w-full min-h-20 h-auto
+                          px-4 py-3
+                          rounded-md
+                          bg-gray-900
+                          border border-gray-700
+                          text-white text-xs 
+                          leading-relaxed
+                          emerald-scrollbar
+                          overflow-auto
+                          whitespace-pre-wrap
+                        "
+                      >
+                        {message?.trim()?.length > 0 ? (
+                          renderTextWithHashtags2(message)
+                        ) : (
+                          <span className="text-gray-500">
+                            Preview content will appear here...
+                          </span>
+                        )}
+                      </div>
+                    ) : (
+                      <textarea
+                        value={message}
+                            onChange={(e) => setMessage(e.target.value)}
+                            placeholder="Announcement message..."
+                       
+                        className="w-full mt-2  focus:border focus:border-emerald-500/40 emerald-scrollbar px-4 py-3 rounded-md bg-gray-900 border border-gray-700 outline-none  text-white text-xs leading-relaxed"
+                      />
+                    )}
+                  </div>
                           {fieldErrors.message && (
                             <p className="text-xs md:text-sm text-red-500 mt-1">
                               {fieldErrors.message}
