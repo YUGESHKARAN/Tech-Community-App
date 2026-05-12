@@ -436,71 +436,164 @@ function Announcement() {
     );
   }
 
-  const renderTextWithHashtags = (text) => {
-    if (!text) return null;
+const renderTextWithHashtags = (text) => {
+  if (!text) return null;
 
-    const cleanedText = text
-      .replace(/\\r\\n/g, "\n")
-      .replace(/\\n/g, "\n")
-      .replace(/\\r/g, "\n");
+  const cleanedText = text
+    .replace(/\\r\\n/g, "\n")
+    .replace(/\\n/g, "\n")
+    .replace(/\\r/g, "\n");
 
-    return cleanedText.split("\n").map((line, lineIndex) => {
-      const parts = line.split(/(\*\*.*?\*\*|#{1,6}[^\n]+|\s?#\w+)/gm);
+  return cleanedText.split("\n").map((line, lineIndex) => {
+    // Handle empty lines for spacing
+    if (!line.trim()) {
+      return <div key={lineIndex} className="h-3" />;
+    }
 
-      return (
-        <React.Fragment key={lineIndex}>
-          {parts.map((part, index) => {
-            if (!part) return null;
+    const parts = line.split(
+      /(\*\*.*?\*\*|#{1,6}[^\n]+|\s?#\w+)/gm
+    );
 
-            const trimmed = part.trim();
+    return (
+      <div
+        key={lineIndex}
+        className="
+          text-gray-300
+          text-sm
+          md:text-[15px]
+          leading-relaxed
+          break-words
+          mb-2
+        "
+      >
+        {parts.map((part, index) => {
+          if (!part) return null;
 
-            // ---------- Markdown Headings ----------
-            // Supports:
-            // ###Heading
-            // ### Heading
-            if (/^#{1,6}/.test(trimmed)) {
-              return (
-                <span
-                  key={index}
-                  className="font-semibold md:text-xl text-sm text-white"
-                >
-                  {trimmed.replace(/^#{1,6}\s*/, "")}
-                </span>
-              );
-            }
+          const trimmed = part.trim();
 
-            // ---------- Bold ----------
-            if (trimmed.startsWith("**") && trimmed.endsWith("**")) {
-              return (
-                <span key={index} className="font-semibold text-white">
-                  {trimmed.replace(/\*\*/g, "")}
-                </span>
-              );
-            }
+          // ---------- Markdown Headings ----------
+          if (/^#{1,6}/.test(trimmed)) {
+            const level =
+              trimmed.match(/^#{1,6}/)?.[0].length || 1;
 
-            // ---------- Hashtags ----------
-            if (/^(\s)?#\w+/.test(part)) {
-              return (
-                <span key={index} className="text-white font-medium">
-                  {part}
-                </span>
-              );
-            }
+            const headingClasses = {
+              1: "text-xl md:text-2xl font-semibold text-white block my-4",
+              2: "text-lg md:text-xl font-semibold text-white block my-3",
+              3: "text-base md:text-lg font-semibold text-white block my-2",
+              4: "text-sm md:text-base font-semibold text-white block my-2",
+              5: "text-sm font-semibold text-white block my-1",
+              6: "text-xs font-semibold text-white block my-1",
+            };
 
-            // ---------- Normal ----------
             return (
-              <React.Fragment key={index}>
-                {part.replace(/\\\*/g, "*").replace(/\\\\/g, "\\")}
-              </React.Fragment>
+              <div
+                key={index}
+                className={headingClasses[level]}
+              >
+                {trimmed.replace(/^#{1,6}\s*/, "")}
+              </div>
             );
-          })}
+          }
 
-          <br />
-        </React.Fragment>
-      );
-    });
-  };
+          // ---------- Bold ----------
+          if (
+            trimmed.startsWith("**") &&
+            trimmed.endsWith("**")
+          ) {
+            return (
+              <strong
+                key={index}
+                className="
+                  font-semibold
+                  text-white
+                "
+              >
+                {trimmed.replace(/\*\*/g, "")}
+              </strong>
+            );
+          }
 
+          // ---------- Unordered List ----------
+          if (/^- /.test(trimmed)) {
+            return (
+              <div
+                key={index}
+                className="
+                  flex
+                  items-start
+                  gap-2
+                  my-1
+                  text-gray-300
+                  leading-relaxed
+                "
+              >
+                <span className="text-white mt-[2px]">
+                  •
+                </span>
+
+                <span>
+                  {trimmed.replace(/^- /, "")}
+                </span>
+              </div>
+            );
+          }
+
+          // ---------- Ordered List ----------
+          if (/^\d+\.\s/.test(trimmed)) {
+            const number =
+              trimmed.match(/^\d+/)?.[0];
+
+            return (
+              <div
+                key={index}
+                className="
+                  flex
+                  items-start
+                  gap-2
+                  my-1
+                  text-gray-300
+                  leading-relaxed
+                "
+              >
+                <span className="text-white">
+                  {number}.
+                </span>
+
+                <span>
+                  {trimmed.replace(/^\d+\.\s/, "")}
+                </span>
+              </div>
+            );
+          }
+
+          // ---------- Hashtags ----------
+          if (/^(\s)?#\w+/.test(part)) {
+            return (
+              <span
+                key={index}
+                className="
+                  text-white
+                  font-medium
+                "
+              >
+                {part}
+              </span>
+            );
+          }
+
+          // ---------- Normal Text ----------
+          return (
+            <React.Fragment key={index}>
+              {part
+                .replace(/\\\*/g, "*")
+                .replace(/\\\\/g, "\\")}
+            </React.Fragment>
+          );
+        })}
+      </div>
+    );
+  });
+};
     const renderTextWithHashtags2 = (text) => {
     if (!text) return null;
 
@@ -527,7 +620,7 @@ function Announcement() {
               return (
                 <span
                   key={index}
-                  className="font-semibold md:text-sm text-xs text-white"
+                  className="font-semibold  md:text-sm text-xs text-white"
                 >
                   {trimmed.replace(/^#{1,6}\s*/, "")}
                 </span>
@@ -1099,7 +1192,7 @@ function Announcement() {
                     </button>
                   </div>
 
-                  <div className="md:text-sm text-xs text-slate-300 leading-relaxed">
+                  <div className="md:text-sm text-xs leading-relaxed text-slate-300 ">
                     {/* {item.message} */}
                     {renderTextWithHashtags(item.message)}
                   </div>

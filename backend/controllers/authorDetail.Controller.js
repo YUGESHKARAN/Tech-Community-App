@@ -1517,34 +1517,37 @@ const updateRole = async (req, res) => {
         Your role has been updated to **Coordinator**.
 
         Now you have access to a dedicated workspace where you can create and manage your posts, playlists and community content. In addition, you have access to publish campaign, event, and community-related announcements through the Announcement section.
-
+       
         We’re excited to have you contribute to building and growing the community.`;
 
     // If you need assistance at any point, refer to the user guide available within the platform. \n
+  // const adminMsg = `Hi ${author.authorname},
+  //     Your role has been successfully updated to **Admin**.
+  //     Now you have full administrative access to manage and oversee the platform, including:
+  //     • Access to the Admin Dashboard with key platform trends, post insights and contributor performance analytics.
+  //     • Full user management and control capabilities.
+  //     • Access to user deletion logs and deleted account rollback controls.
+  //     • Permission to manage and update user roles and communities.`
+
   const adminMsg = `Hi ${author.authorname},
 
-      Your role has been successfully updated to **Admin**.
+Your role has been successfully updated to **Admin**.
 
-      Now you have full administrative access to manage and oversee the platform, including:
+Now you have full administrative access to manage and oversee the platform, including:
+- Access to the Admin Dashboard with key platform trends, post insights and contributor performance analytics.
+- Full user management and control capabilities.
+- Access to user deletion logs and deleted account rollback controls.
+- Permission to manage and update user roles and communities.`
 
-      • Access to the Admin Dashboard with key platform trends, post insights and contributor performance analytics.
-
-      • Full user management and control capabilities.
-
-      • Access to user deletion logs and deleted account rollback controls.
-      
-      • Permission to manage and update user roles and communities.`
-  
-      const studentMsg = `
+  const studentMsg = `
       Hi ${author.authorname},
-
       Your role has been changed to **Student**. For more details contanct admin.
       `
 
   const url = `${notificationUrl}/announcement`;
 
   
-    const roleMessage = role=='coordinator'? coordinatorMsg : role==='admin'? adminMsg:studentMsg;
+  const roleMessage = role=='coordinator'? coordinatorMsg : role==='admin'? adminMsg:studentMsg;
 
   const newAnnouncement = {
     user: adminUser,

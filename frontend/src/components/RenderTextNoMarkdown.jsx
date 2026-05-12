@@ -1,4 +1,6 @@
 import React from "react";
+import { twMerge } from "tailwind-merge";
+import clsx from "clsx";
 
 function RenderTextNoMarkdown({ text, className = "" }) {
   if (!text) return null;
@@ -16,7 +18,12 @@ function RenderTextNoMarkdown({ text, className = "" }) {
 
   return (
     <span
-      className={`text-xs  line-clamp-2  md:line-clamp-2  text-gray-400 break-words ${className}`}
+      className={twMerge(
+        clsx(
+          "text-xs text-gray-400 line-clamp-2 break-words",
+          className
+        )
+      )}
     >
       {cleanedText}
     </span>

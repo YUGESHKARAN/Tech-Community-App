@@ -6,6 +6,6 @@ export default {
   theme: {
    
   },
-  plugins: [],
+  plugins: [require("@tailwindcss/typography")],
 }
 

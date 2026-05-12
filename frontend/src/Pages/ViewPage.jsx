@@ -33,6 +33,8 @@ import { PiBookmarksSimpleFill, PiBookmarksSimpleLight } from "react-icons/pi";
 // import useDragSheet from "../hooks/useDragHeader.js";
 import { FaYoutube } from "react-icons/fa6";
 import { getItem } from "../utils/encode.js";
+import RenderTextWithHashtags from "../components/RenderTextWithHashtags.jsx";
+import RenderTextNoMarkdown from "../components/RenderTextNoMarkdown.jsx";
 
 function ViewPage() {
   const user = localStorage.getItem("username");
@@ -749,7 +751,8 @@ const renderTextWithHashtags = (text) => {
                 {singlePostData.description && showContent ? (
                   <>
                     <p className="text-sm md:text-sm text-gray-300 leading-relaxed break-words">
-                      {renderTextWithHashtags(singlePostData.description)}
+                      {/* {renderTextWithHashtags(singlePostData.description)} */}
+                        <RenderTextWithHashtags text = {singlePostData.description}/>
                     </p>
                     <span
                       onClick={() => setShowContent(false)}
@@ -761,7 +764,9 @@ const renderTextWithHashtags = (text) => {
                 ) : (
                   <>
                     <p className="text-sm md:text-sm text-gray-300 line-clamp-5 leading-relaxed break-words">
-                      {renderTextWithHashtags(singlePostData.description)}
+                      {/* {renderTextWithHashtags(singlePostData.description)} */}
+                      {/* <RenderTextWithHashtags text = {singlePostData.description}/> */}
+                      <RenderTextNoMarkdown text={singlePostData.description} className="text-gray-300 leading-relaxed  line-clamp-3 md:line-clamp-4 md:text-sm md:leading-6"/>
                     </p>
                     <span
                       onClick={() => setShowContent(true)}

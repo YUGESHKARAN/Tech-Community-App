@@ -12,6 +12,7 @@ import glow from "../assets/glow.png";
 import { VscGitStashApply, VscGitStashPop, VscSend } from "react-icons/vsc";
 import Cookies from "js-cookie";
 import { getItem } from "../utils/encode";
+import RenderTextWithHashtags from "../components/RenderTextWithHashtags";
 
 function AddPost() {
   const [title, setTitle] = useState("");
@@ -272,70 +273,70 @@ function AddPost() {
     }
   }, [messages, isTyping]);
 
-  const renderTextWithHashtags = (text) => {
-    if (!text) return null;
+  // const renderTextWithHashtags = (text) => {
+  //   if (!text) return null;
 
-    const cleanedText = text
-      .replace(/\\r\\n/g, "\n")
-      .replace(/\\n/g, "\n")
-      .replace(/\\r/g, "\n");
+  //   const cleanedText = text
+  //     .replace(/\\r\\n/g, "\n")
+  //     .replace(/\\n/g, "\n")
+  //     .replace(/\\r/g, "\n");
 
-    return cleanedText.split("\n").map((line, lineIndex) => {
-      const parts = line.split(/(\*\*.*?\*\*|#{1,6}[^\n]+|\s?#\w+)/gm);
+  //   return cleanedText.split("\n").map((line, lineIndex) => {
+  //     const parts = line.split(/(\*\*.*?\*\*|#{1,6}[^\n]+|\s?#\w+)/gm);
 
-      return (
-        <React.Fragment key={lineIndex}>
-          {parts.map((part, index) => {
-            if (!part) return null;
+  //     return (
+  //       <React.Fragment key={lineIndex}>
+  //         {parts.map((part, index) => {
+  //           if (!part) return null;
 
-            const trimmed = part.trim();
+  //           const trimmed = part.trim();
 
-            // ---------- Markdown Headings ----------
-            // Supports:
-            // ###Heading
-            // ### Heading
-            if (/^#{1,6}/.test(trimmed)) {
-              return (
-                <span
-                  key={index}
-                  className="font-semibold md:text-xl text-sm text-white"
-                >
-                  {trimmed.replace(/^#{1,6}\s*/, "")}
-                </span>
-              );
-            }
+  //           // ---------- Markdown Headings ----------
+  //           // Supports:
+  //           // ###Heading
+  //           // ### Heading
+  //           if (/^#{1,6}/.test(trimmed)) {
+  //             return (
+  //               <span
+  //                 key={index}
+  //                 className="font-semibold md:text-xl text-sm text-white"
+  //               >
+  //                 {trimmed.replace(/^#{1,6}\s*/, "")}
+  //               </span>
+  //             );
+  //           }
 
-            // ---------- Bold ----------
-            if (trimmed.startsWith("**") && trimmed.endsWith("**")) {
-              return (
-                <span key={index} className="font-semibold text-white">
-                  {trimmed.replace(/\*\*/g, "")}
-                </span>
-              );
-            }
+  //           // ---------- Bold ----------
+  //           if (trimmed.startsWith("**") && trimmed.endsWith("**")) {
+  //             return (
+  //               <span key={index} className="font-semibold text-white">
+  //                 {trimmed.replace(/\*\*/g, "")}
+  //               </span>
+  //             );
+  //           }
 
-            // ---------- Hashtags ----------
-            if (/^(\s)?#\w+/.test(part)) {
-              return (
-                <span key={index} className="text-emerald-400 font-medium">
-                  {part}
-                </span>
-              );
-            }
+  //           // ---------- Hashtags ----------
+  //           if (/^(\s)?#\w+/.test(part)) {
+  //             return (
+  //               <span key={index} className="text-emerald-400 font-medium">
+  //                 {part}
+  //               </span>
+  //             );
+  //           }
 
-            // ---------- Normal ----------
-            return (
-              <React.Fragment key={index}>
-                {part.replace(/\\\*/g, "*").replace(/\\\\/g, "\\")}
-              </React.Fragment>
-            );
-          })}
+  //           // ---------- Normal ----------
+  //           return (
+  //             <React.Fragment key={index}>
+  //               {part.replace(/\\\*/g, "*").replace(/\\\\/g, "\\")}
+  //             </React.Fragment>
+  //           );
+  //         })}
 
-          <br />
-        </React.Fragment>
-      );
-    });
-  };
+  //         <br />
+  //       </React.Fragment>
+  //     );
+  //   });
+  // };
 
   //   const renderTextWithHashtags = (text) => {
   //   if (!text) return null;
@@ -664,7 +665,8 @@ function AddPost() {
                         "
                       >
                         {description?.trim()?.length > 0 ? (
-                          renderTextWithHashtags(description)
+                          // renderTextWithHashtags(description)
+                          <RenderTextWithHashtags text = {description}/>
                         ) : (
                           <span className="text-gray-500">
                             Preview content will appear here...
