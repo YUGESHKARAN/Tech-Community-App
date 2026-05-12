@@ -457,14 +457,16 @@ function AddPost() {
                   Post Guidelines
                 </h2>
 
-                <ul className="space-y-2 text-sm">
-                  <li>• Use a clear descriptive title</li>
-                  <li>• Use a contextual description</li>
-                  <li>• Add useful resources like links and documents...</li>
-                  <li>• Include suitable thumbnail poster (1280×720 px)</li>
-                  <li>• Post descriptions support Markdown. Use the preview option to verify the formatting</li>
-                  <li>Note: Youtube links supports video frame</li>
-                </ul>
+               <ul className="space-y-2 text-sm list-disc pl-5">
+  <li>Use a clear and descriptive title</li>
+  <li>Provide a contextual description</li>
+  <li>Add useful resources such as links and documents</li>
+  <li>Include a suitable thumbnail poster (1280 × 720 px)</li>
+  <li>
+    Post descriptions support Markdown feature. Use the preview option to verify the content format.
+  </li>
+  <li>YouTube links support video embedding</li>
+</ul>
               </div>
 
               {/* AI Assistant (Always visible on desktop) */}
