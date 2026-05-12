@@ -26,6 +26,7 @@ import useTutorPlaylist from "../hooks/useTutorPlaylist.js";
 import useGetBookmarkPlaylist from "../hooks/useGetBookmarkPlaylist.js";
 import { getItem } from "../utils/encode.js";
 import empty_state_post from "../assets/empty_state_post.png";
+import RenderTextNoMarkdown from "../components/RenderTextNoMarkdown.jsx";
 
 function BookMarkPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -249,30 +250,7 @@ function BookMarkPage() {
   // console.log("local email", email);
   // console.log("your post",filterdPost)
 
-  const renderTextWithHashtags = (text) => {
-    if (!text) return null;
-
-    // Convert visible "\r\n" or "\\n" into real line breaks
-    const cleanedText = text.replace(/\\r\\n|\\n|\\r\n/g, " ");
-
-    return cleanedText.split("\n").map((line, lineIndex) => (
-      <React.Fragment key={lineIndex}>
-        {line.split(/(\s+#\w+)/g).map((word, index) =>
-          word.startsWith(" #") ? (
-            <span
-              key={index}
-              className="text-md text-white font-italy font-bold"
-            >
-              {word}
-            </span>
-          ) : (
-            <React.Fragment key={index}>{word}</React.Fragment>
-          ),
-        )}
-        <br />
-      </React.Fragment>
-    ));
-  };
+  
 
   return (
     <div className="w-full  bg-gray-900 h-auto reltive  ">
@@ -469,7 +447,8 @@ function BookMarkPage() {
                         </h3>
 
                         <p className="text-xs text-gray-400  line-clamp-2  md:line-clamp-1 ">
-                          {renderTextWithHashtags(data.description)}
+                          {/* {renderTextWithHashtags(data.description)} */}
+                          <RenderTextNoMarkdown text={data.description} />
                         </p>
                       </div>
 

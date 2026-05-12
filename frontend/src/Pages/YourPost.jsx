@@ -25,6 +25,7 @@ import toast from "../components/toaster/Toast";
 import user from "../images/user.png";
 import { getItem } from "../utils/encode";
 import empty_state_post from "../assets/empty_state_post.png";
+import RenderTextNoMarkdown from "../components/RenderTextNoMarkdown";
 
 function YourPost() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -211,27 +212,6 @@ function YourPost() {
     return filtered;
   }, [posts, searchTerm, postCategory, debouncedSearch]);
 
-  const renderTextWithHashtags = (text) => {
-    if (!text) return null;
-
-    // Convert visible "\r\n" or "\\n" into real line breaks
-    const cleanedText = text.replace(/\\r\\n|\\n|\\r\n/g, " ");
-
-    return cleanedText.split("\n").map((line, lineIndex) => (
-      <React.Fragment key={lineIndex}>
-        {line.split(/(\s+#\w+)/g).map((word, index) =>
-          word.startsWith(" # ") ? (
-            <span key={index} className="text-md text-white font-italy">
-              {word}
-            </span>
-          ) : (
-            <React.Fragment key={index}>{word}</React.Fragment>
-          ),
-        )}
-        <br />
-      </React.Fragment>
-    ));
-  };
 
   const [isStickyActive, setIsStickyActive] = useState(false);
   useEffect(() => {
@@ -446,7 +426,8 @@ function YourPost() {
                   </h3>
 
                   <p className="text-xs text-gray-400  line-clamp-2  md:line-clamp-1 ">
-                    {renderTextWithHashtags(data.description)}
+                    {/* {renderTextWithHashtags(data.description)} */}
+                    <RenderTextNoMarkdown text={data.description} />
                   </p>
                 </div>
 

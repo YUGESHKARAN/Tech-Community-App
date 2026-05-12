@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import { BiLike, BiSolidLike } from "react-icons/bi";
 import { IoShareSocial } from "react-icons/io5";
 import { PiBookmarksSimpleFill, PiBookmarksSimpleLight } from "react-icons/pi";
+import RenderTextNoMarkdown from "./RenderTextNoMarkdown";
 function PostsComponent({ posts, filteredPosts, loading, hasMore, debouncedSearch, setPostCategory, setPosts}) {
   const email = getItem("email");
   const [bookMarkId, setBookMarkId] = useState([]);
@@ -63,27 +64,6 @@ function PostsComponent({ posts, filteredPosts, loading, hasMore, debouncedSearc
     }
   };
 
-   const renderTextWithHashtags = (text) => {
-    if (!text) return null;
-
-    // Convert visible "\r\n" or "\\n" into real line breaks
-    const cleanedText = text.replace(/\\r\\n|\\n|\\r\n/g, " ");
-
-    return cleanedText.split("\n").map((line, lineIndex) => (
-      <React.Fragment key={lineIndex}>
-        {line.split(/(\s+#\w+)/g).map((word, index) =>
-          word.startsWith(" # ") ? (
-            <span key={index} className="text-md text-white font-italy">
-              {word}
-            </span>
-          ) : (
-            <React.Fragment key={index}>{word}</React.Fragment>
-          ),
-        )}
-        <br />
-      </React.Fragment>
-    ));
-  };
 
   const addBookMarkPostId = async (postId) => {
     try {
@@ -184,7 +164,8 @@ function PostsComponent({ posts, filteredPosts, loading, hasMore, debouncedSearc
             </h3>
 
             <p className="text-xs text-gray-400  line-clamp-2  md:line-clamp-1 ">
-              {renderTextWithHashtags(data.description)}
+              {/* {renderTextWithHashtags(data.description)} */}
+              <RenderTextNoMarkdown text={data.description} />
             </p>
           </div>
 

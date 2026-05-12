@@ -26,6 +26,7 @@ import Fuse from "fuse.js";
 import highlightText from "../hooks/highlightText.jsx";
 import { getItem } from "../utils/encode.js";
 import PostsComponent from "../components/PostsComponent.jsx";
+import RenderTextNoMarkdown from "../components/RenderTextNoMarkdown.jsx";
 
 function BlogContainer({ activeTab, setActiveTab }) {
   const { tutorPlayList, loading:playlistLoading } = useTutorPlaylist();
@@ -188,27 +189,26 @@ function BlogContainer({ activeTab, setActiveTab }) {
     }
   };
 
-  const renderTextWithHashtags = (text) => {
-    if (!text) return null;
+const renderTextWithHashtags = (text) => {
+  if (!text) return null;
 
-    // Convert visible "\r\n" or "\\n" into real line breaks
-    const cleanedText = text.replace(/\\r\\n|\\n|\\r\n/g, " ");
+  // Convert escaped line breaks into spaces
+  const cleanedText = text
+    .replace(/\\r\\n|\\n|\\r\n/g, " ")
 
-    return cleanedText.split("\n").map((line, lineIndex) => (
-      <React.Fragment key={lineIndex}>
-        {line.split(/(\s+#\w+)/g).map((word, index) =>
-          word.startsWith(" # ") ? (
-            <span key={index} className="text-md text-white font-italy">
-              {word}
-            </span>
-          ) : (
-            <React.Fragment key={index}>{word}</React.Fragment>
-          ),
-        )}
-        <br />
-      </React.Fragment>
-    ));
-  };
+    // Remove markdown symbols
+    .replace(/[#*_~`>\-\[\]\(\)!]/g, "")
+
+    // Remove extra spaces
+    .replace(/\s+/g, " ")
+    .trim();
+
+  return (
+    <span className="text-xs text-gray-400  break-words">
+      {cleanedText}
+    </span>
+  );
+};
 
   const addBookMarkPostId = async (postId) => {
     try {
@@ -413,6 +413,7 @@ function BlogContainer({ activeTab, setActiveTab }) {
                       </div>
                     </div>
 
+
                     <Link
                       to={`/viewpage/${data.authorEmail}/${data._id}`}
                       onClick={() => postViews(data.authorEmail, data._id)}
@@ -429,6 +430,7 @@ function BlogContainer({ activeTab, setActiveTab }) {
                       duration-500  md:hover:scale-[1.05]  md:h-48  object-cover"
                       />
                     </Link>
+                    
 
                     <div className="px-4 py-4 space-y-2">
                       <h3 className="text-base font-semibold text-white line-clamp-1">
@@ -436,9 +438,7 @@ function BlogContainer({ activeTab, setActiveTab }) {
                         {highlightText(data.title, debouncedSearch)}
                       </h3>
 
-                      <p className="text-xs text-gray-400  line-clamp-2  md:line-clamp-1 ">
-                        {renderTextWithHashtags(data.description)}
-                      </p>
+                         <RenderTextNoMarkdown text={data.description} />
                     </div>
 
                     <div className="flex items-center justify-between px-4 pb-7 ">

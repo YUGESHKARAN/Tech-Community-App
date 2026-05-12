@@ -13,6 +13,7 @@ import { ToastContainer, toast } from "react-toastify";
 import PlaylistDetailSkeleton from "../components/loaders/PlaylistDetailSkeleton";
 import Footer from "../ui/Footer";
 import { getItem } from "../utils/encode";
+import RenderTextNoMarkdown from "../components/RenderTextNoMarkdown";
 
 function ViewTutorPlaylist() {
   // const email = localStorage.getItem("email");
@@ -638,11 +639,12 @@ function ViewTutorPlaylist() {
                       className="md:text-xs text-xs text-gray-300 line-clamp-1 md:line-clamp-2"
                     >
                       {/* {post.description?.slice(0, 50)}... */}
-                      {post.description}
+                      {/* {post.description} */}
+                      <RenderTextNoMarkdown text={post.description} />
                     </Link>
 
                     <div className="flex justify-between items-center">
-                      <p className="text-xs text-gray-400">
+                      <p className="text-[10px] text-gray-300">
                         Views {post.views?.length}
                       </p>
                       <div className="flex items-center gap-2">
