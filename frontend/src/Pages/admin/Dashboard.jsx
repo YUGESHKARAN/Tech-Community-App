@@ -857,7 +857,7 @@ const RoleBadge = ({ role }) => {
 const TableHeader = ({ title, count, search, onSearch }) => (
   <div className="flex items-center justify-between px-5 py-4 shrink-0">
     <div className="flex items-center gap-2.5">
-      <h3 className="text-sm md:text-base font-semibold text-gray-200">
+      <h3 className="text-xs md:text-base font-semibold text-gray-200">
         {title}
       </h3>
       <span className="text-[10px] bg-white/5 border border-white/10 text-gray-400 px-2 py-0.5 rounded-full">
