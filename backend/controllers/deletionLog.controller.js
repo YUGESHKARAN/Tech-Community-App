@@ -430,7 +430,8 @@ const rollbackDeletion = async (req, res) => {
     const recoveryMessage = `
       Hi ${restoredName},
 
-      Your account has been successfully recovered. Your account was deleted on **${deletedAt}** and has now been fully restored. 
+      Your account has been successfully recovered. Your account was deleted on **${deletedAt}** and has now been fully restored.
+       
       All your previous data — posts, followers, communities, and personal links — are restored.
       
       Welcome back to the Tech Community Platform.
