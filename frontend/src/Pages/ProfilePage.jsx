@@ -210,10 +210,10 @@ function ProfilePage() {
             {/* ── Page header ──────────────────────────────────────── */}
             <div className="flex items-center justify-between mb-0 md:mb-8 px-1">
               <div>
-                <p className="text-[11px] font-medium tracking-widest uppercase text-gray-300 mb-1">
+                <p className="text-[11px] font-medium tracking-widest uppercase text-gray-300 mb-0.5">
                   Account
                 </p>
-                <h1 className="text-2xl md:text-3xl font-medium tracking-tight text-white">
+                <h1 className="text-2xl md:text-3xl font-medium tracking-tight text-emerald-400">
                   My Profile
                 </h1>
               </div>
@@ -267,7 +267,7 @@ function ProfilePage() {
                 </div>
 
                 {/* Name */}
-                <h2 className=" text-xl font-medium  text-white my-1">
+                <h2 className=" md:text-xl text-lg font-medium leading-snug text-white my-1">
                   {userName || "—"}
                 </h2>
 
@@ -755,7 +755,7 @@ function ProfilePage() {
                                     href={link.url}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-[10px] text-gray-400 hover:text-blue-400 transition-colors truncate block max-w-[180px]"
+                                    className="text-[10px] text-blue-400 hover:text-blue-500 transition-colors truncate block max-w-[180px]"
                                   >
                                     {userName}/{link.title}
                                   </a>
