@@ -14,7 +14,7 @@ import PlaylistDetailSkeleton from "../components/loaders/PlaylistDetailSkeleton
 import Footer from "../ui/Footer";
 import { getItem } from "../utils/encode";
 import RenderTextNoMarkdown from "../components/RenderTextNoMarkdown";
-
+import empty_state_post from "../assets/empty_state_post.png";
 function ViewTutorPlaylist() {
   // const email = localStorage.getItem("email");
   const email = getItem("email");
@@ -217,11 +217,11 @@ function ViewTutorPlaylist() {
     <div className="min-h-screen bg-gray-900 text-white">
       <NavBar />
 
-      <div className="w-full mx-auto px-2 min-h-screen md:h-auto md:px-8 py-6">
+      <div className="w-full mx-auto px-2 min-h-screen h-auto md:px-8 py-6">
         <h1 className="text-3xl w-full mb-7 mx-auto hidden md:block font-semibold">
           {loading ? "Loading Playlist..." : playlistData?.title}
         </h1>
-        {!loading && (
+        {!loading && Object.keys(playlistData).length> 0 && (
           <div className="grid w-full mx-auto md:h-screen grid-cols-1 lg:grid-cols-2 lg:gap-8 gap-6">
             {/* LEFT PANEL (Banner + Info) */}
             <div className="lg:col-span-1 md:hidden  p-1 md:sticky top-4 self-start  md:p-0 space-y-2 md:space-y-4">
@@ -700,6 +700,18 @@ function ViewTutorPlaylist() {
           </div>
         )}
         {loading && <PlaylistDetailSkeleton />}
+
+        {!loading &&
+        (!playlistData || Object.keys(playlistData).length === 0) && (
+          <div className="w-full h-[70vh] md:h-[55vh] flex flex-col items-center justify-center">
+            {/* <p className="text-gray-500">Playlist not found.</p> */}
+            <img className="w-48 md:w-60 " src={empty_state_post} alt="" />
+            <p className="text-gray-400 max-w-xs md:max-w-md text-sm md:text-base flex justify-center items-center text-center">
+              Playlist not found !
+            </p>
+          </div>
+        )}
+
       </div>
       <ToastContainer />
 
@@ -767,6 +779,8 @@ function ViewTutorPlaylist() {
           </div>
         </div>
       )}
+
+      
       <Footer />
     </div>
   );

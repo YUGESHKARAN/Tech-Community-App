@@ -12,7 +12,7 @@ import { BsPersonSquare } from "react-icons/bs";
 import { PiLinkSimpleFill } from "react-icons/pi";
 import { getItem } from "../utils/encode";
 import ProfileViewSkeleton from "../components/loaders/ProfileViewSkeleton";
-
+import empty_state_author from "../assets/author_not_found_2.png"
 function ViewSingleAuthor() {
   const { email } = useParams();
   // const role = localStorage.getItem("role");
@@ -429,7 +429,7 @@ function ViewSingleAuthor() {
     //   </div>
     // </div>
 
-    <div className=" bg-gray-900 text-white">
+    <div className=" bg-gray-900 min-h-screen flex flex-col justify-between text-white">
       <NavBar />
 
      {!loading? 
@@ -774,9 +774,13 @@ function ViewSingleAuthor() {
       <ProfileViewSkeleton role={author.role} />
 }
 {!loading && !authorName && (
-  <div className="w-full h-48 h-screen flex items-center justify-center">
-    <p className="text-gray-500">Author not found.</p>
-  </div>
+  <div className="w-full h-[44vh] mb-24 md:h-[55vh] flex flex-col items-center justify-center">
+              {/* <p className="text-gray-500">Post not found.</p> */}
+              <img className="w-60 md:w-72 " src={empty_state_author} alt="" />
+             <p className="text-gray-400 max-w-xs md:max-w-md text-sm md:text-base flex justify-center items-center text-center">
+                Author not found !
+              </p>
+            </div>
 )}
       <div className="w-full">
         <Footer />

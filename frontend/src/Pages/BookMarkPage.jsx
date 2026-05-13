@@ -542,7 +542,7 @@ function BookMarkPage() {
                                 alt=""
                               />
                     <p className="text-gray-400 max-w-xs md:max-w-md text-sm md:text-base flex justify-center items-center text-center">
-                  No posts bookmarked!
+                  No posts bookmarked !
                 </p>
                 
               </div>

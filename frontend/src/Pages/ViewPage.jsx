@@ -6,6 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import blog1 from "../images/img_not_found2.png";
 import Footer from "../ui/Footer";
+import empty_state_post from "../assets/empty_state_post.png";
 import {
   MdOutlineAttachFile,
   MdOutlineDescription,
@@ -60,7 +61,7 @@ function ViewPage() {
   const myProfile = localStorage.getItem("profile");
   // const { sheetRef, handleDragStart } = useDragSheet(setViewComments);
   const sheetRef = useRef(null);
-    const [isInputFocused, setIsInputFocused] = useState(false);
+  const [isInputFocused, setIsInputFocused] = useState(false);
 
   // Fetch post data
   useEffect(() => {
@@ -205,7 +206,6 @@ function ViewPage() {
 
     newSocket.on("notification", handleNotification);
 
-    
     return () => {
       newSocket.off("newMessage", handleNewMessage);
       newSocket.off("editMessage", handleEditMessage);
@@ -277,83 +277,70 @@ function ViewPage() {
   //   ));
   // };
 
-const renderTextWithHashtags = (text) => {
-  if (!text) return null;
+  const renderTextWithHashtags = (text) => {
+    if (!text) return null;
 
-  const cleanedText = text
-    .replace(/\\r\\n/g, "\n")
-    .replace(/\\n/g, "\n")
-    .replace(/\\r/g, "\n");
+    const cleanedText = text
+      .replace(/\\r\\n/g, "\n")
+      .replace(/\\n/g, "\n")
+      .replace(/\\r/g, "\n");
 
-  return cleanedText.split("\n").map((line, lineIndex) => {
-    const parts = line.split(
-      /(\*\*.*?\*\*|#{1,6}[^\n]+|\s?#\w+)/gm
-    );
+    return cleanedText.split("\n").map((line, lineIndex) => {
+      const parts = line.split(/(\*\*.*?\*\*|#{1,6}[^\n]+|\s?#\w+)/gm);
 
-    return (
-      <React.Fragment key={lineIndex}>
-        {parts.map((part, index) => {
-          if (!part) return null;
+      return (
+        <React.Fragment key={lineIndex}>
+          {parts.map((part, index) => {
+            if (!part) return null;
 
-          const trimmed = part.trim();
+            const trimmed = part.trim();
 
-          // ---------- Markdown Headings ----------
-          // Supports:
-          // ###Heading
-          // ### Heading
-          if (/^#{1,6}/.test(trimmed)) {
+            // ---------- Markdown Headings ----------
+            // Supports:
+            // ###Heading
+            // ### Heading
+            if (/^#{1,6}/.test(trimmed)) {
+              return (
+                <span
+                  key={index}
+                  className="font-semibold md:text-xl text-sm text-white"
+                >
+                  {trimmed.replace(/^#{1,6}\s*/, "")}
+                </span>
+              );
+            }
+
+            // ---------- Bold ----------
+            if (trimmed.startsWith("**") && trimmed.endsWith("**")) {
+              return (
+                <span key={index} className="font-semibold text-white">
+                  {trimmed.replace(/\*\*/g, "")}
+                </span>
+              );
+            }
+
+            // ---------- Hashtags ----------
+            if (/^(\s)?#\w+/.test(part)) {
+              return (
+                <span key={index} className="text-emerald-400 font-medium">
+                  {part}
+                </span>
+              );
+            }
+
+            // ---------- Normal ----------
             return (
-              <span
-                key={index}
-                className="font-semibold md:text-xl text-sm text-white"
-              >
-                {trimmed.replace(/^#{1,6}\s*/, "")}
-              </span>
+              <React.Fragment key={index}>
+                {part.replace(/\\\*/g, "*").replace(/\\\\/g, "\\")}
+              </React.Fragment>
             );
-          }
+          })}
 
-          // ---------- Bold ----------
-          if (
-            trimmed.startsWith("**") &&
-            trimmed.endsWith("**")
-          ) {
-            return (
-              <span
-                key={index}
-                className="font-semibold text-white"
-              >
-                {trimmed.replace(/\*\*/g, "")}
-              </span>
-            );
-          }
-
-          // ---------- Hashtags ----------
-          if (/^(\s)?#\w+/.test(part)) {
-            return (
-              <span
-                key={index}
-                className="text-emerald-400 font-medium"
-              >
-                {part}
-              </span>
-            );
-          }
-
-          // ---------- Normal ----------
-          return (
-            <React.Fragment key={index}>
-              {part
-                .replace(/\\\*/g, "*")
-                .replace(/\\\\/g, "\\")}
-            </React.Fragment>
-          );
-        })}
-
-        <br />
-      </React.Fragment>
-    );
-  });
-};
+          <br />
+        </React.Fragment>
+      );
+    });
+  };
 
   const getYouTubeId = (url) => {
     const match = url.match(
@@ -464,14 +451,14 @@ const renderTextWithHashtags = (text) => {
   // console.log("userEmail", userEmail);
 
   // console.log("post id", postId);
-  // console.log("singlepost data", singlePostData);
+  console.log("singlepost data", singlePostData);
 
   return (
-    <div className="w-full min-h-screen bg-gray-900 relative">
+    <div className="w-full min-h-screen flex flex-col justify-between bg-gray-900 relative">
       <NavBar />
 
       {/* Main Container */}
-      {!loading && (
+      {!loading && Object.keys(singlePostData).length > 0 && (
         <div className="w-full xl:w-11/12 md:transition-all md:duration-900  mx-auto px-3  md:px-8 pt-3 pb-20 pt-4 md:pb-10">
           {/* Header */}
           <div className="flex items-center justify-between md:mb-0">
@@ -506,8 +493,8 @@ const renderTextWithHashtags = (text) => {
               // className="md:px-5 px-3 py-2 md:py-2.5 bg-emerald-500/20 hover:bg-emerald-600/20 hover:bg-emerald-500/20
               //              rounded-md text-xs md:text-sm   text-emerald-400 transition"
             >
-               ← Back
-               {/* Back */}
+              ← Back
+              {/* Back */}
             </button>
           </div>
 
@@ -624,7 +611,6 @@ const renderTextWithHashtags = (text) => {
                 // className="flex items-center  justify-between md:justify-end mt-3 mb-1 md:mb-5"
                 className="w-full mx-auto mt-3 mb-1 md:mb-5"
               >
-                   
                 {/* Actions */}
                 <div className="flex items-center md:justify-end justify-between   md:gap-3">
                   {/* AI Assistant */}
@@ -637,16 +623,12 @@ const renderTextWithHashtags = (text) => {
                     />
                   </div>
 
-
-                    <button
-                          onClick={() => setShowAssistant(!showAssistant)}
-                          className=" md:flex hidden  items-center gap-2  bg-gray-800/50 transition-all duration-300 active:scale-95 md:border  border-neutral-800 md:border-neutral-700 text-emerald-400 text-xs px-5 py-1.5 rounded-full shadow-xl"
-                        >
-                          Ask AI <SiGooglegemini />
-                        </button>
-
-
-               
+                  <button
+                    onClick={() => setShowAssistant(!showAssistant)}
+                    className=" md:flex hidden  items-center gap-2  bg-gray-800/50 transition-all duration-300 active:scale-95 md:border  border-neutral-800 md:border-neutral-700 text-emerald-400 text-xs px-5 py-1.5 rounded-full shadow-xl"
+                  >
+                    Ask AI <SiGooglegemini />
+                  </button>
 
                   <button
                     onClick={() => setViewComments(!viewComments)}
@@ -752,7 +734,9 @@ const renderTextWithHashtags = (text) => {
                   <>
                     <p className="text-sm md:text-sm text-gray-300 leading-relaxed break-words">
                       {/* {renderTextWithHashtags(singlePostData.description)} */}
-                        <RenderTextWithHashtags text = {singlePostData.description}/>
+                      <RenderTextWithHashtags
+                        text={singlePostData.description}
+                      />
                     </p>
                     <span
                       onClick={() => setShowContent(false)}
@@ -766,7 +750,10 @@ const renderTextWithHashtags = (text) => {
                     <p className="text-sm md:text-sm text-gray-300 line-clamp-5 leading-relaxed break-words">
                       {/* {renderTextWithHashtags(singlePostData.description)} */}
                       {/* <RenderTextWithHashtags text = {singlePostData.description}/> */}
-                      <RenderTextNoMarkdown text={singlePostData.description} className="text-gray-300 leading-relaxed  line-clamp-3 md:line-clamp-4 md:text-sm md:leading-6"/>
+                      <RenderTextNoMarkdown
+                        text={singlePostData.description}
+                        className="text-gray-300 leading-relaxed  line-clamp-3 md:line-clamp-4 md:text-sm md:leading-6"
+                      />
                     </p>
                     <span
                       onClick={() => setShowContent(true)}
@@ -783,12 +770,14 @@ const renderTextWithHashtags = (text) => {
 
             <div className="lg:col-span-2 space-y-2 md:relative  md:space-y-6  h-fit">
               {/* Personal Assistant */}
-            {showAssistant &&  <div className="text-4xl text-white hidden md:block ">
-                <AITechAssistant
-                  currentPostId={singlePostData._id}
-                  category={singlePostData.category}
-                />
-              </div>}
+              {showAssistant && (
+                <div className="text-4xl text-white hidden md:block ">
+                  <AITechAssistant
+                    currentPostId={singlePostData._id}
+                    category={singlePostData.category}
+                  />
+                </div>
+              )}
 
               {/* Documents */}
               {/* bg-gradient-to-b from-slate-900/80 to-slate-800/80 */}
@@ -941,7 +930,7 @@ const renderTextWithHashtags = (text) => {
 
               {/* Comments */}
               {/* bg-[#161b22] */}
-                {/* ${showAssistant ? "pointer-events-none" : ""} */}
+              {/* ${showAssistant ? "pointer-events-none" : ""} */}
               <div
                 className={`
                    bg-gray-900
@@ -1072,7 +1061,10 @@ const renderTextWithHashtags = (text) => {
                       )}
                     </div>
                     <button
-                      onClick={(e) => {e.preventDefault(); setViewComments(false);}}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setViewComments(false);
+                      }}
                       className="p-1.5 rounded-md text-gray-500 hover:text-gray-300 hover:bg-white/5 transition-colors"
                     >
                       <IoClose className="text-base" />
@@ -1201,6 +1193,18 @@ const renderTextWithHashtags = (text) => {
           </div>
         </div>
       )}
+
+      {!loading &&
+        (!singlePostData || Object.keys(singlePostData).length === 0) && (
+          <div className="w-full h-[70vh] md:h-[55vh] flex flex-col items-center justify-center">
+            {/* <p className="text-gray-500">Post not found.</p> */}
+            <img className="w-48 md:w-60 " src={empty_state_post} alt="" />
+            <p className="text-gray-400 max-w-xs md:max-w-md text-sm md:text-base flex justify-center items-center text-center">
+              Post not found !
+            </p>
+          </div>
+        )}
+      <Footer />
     </div>
   );
 }
