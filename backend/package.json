@@ -11,7 +11,7 @@
   "description": "",
   "dependencies": {
     "@aws-sdk/client-s3": "^3.701.0",
-    "aws-sdk": "^1.18.0",
+    "aws-sdk": "^2.1693.0",
     "axios": "^1.15.0",
     "bcrypt": "^6.0.0",
     "body-parser": "^1.20.3",
