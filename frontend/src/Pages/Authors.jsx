@@ -391,19 +391,19 @@ const recommendedAuthors = useMemo(() => {
                 />
               </Link>
 
-              <div className="flex-1 ">
-                <h3 className="text-sm font-semibold text-white truncate">
+              <div className="flex-1 min-w-0 md:w-48 w-44">
+                <h3 className="text-sm font-semibold min-w-0 text-white truncate">
                   {/* {author.authorName} */}
                   {highlightText(author.authorName, debouncedSearch)}
                 </h3>
-                <p className="text-xs text-gray-400 text-[9px] w-9/12 md:w-9/12 truncate">
+                <p className="text-xs text-gray-400 min-w-0 text-[9px] w-9/12 md:w-9/12 truncate">
                   {/* {author.email} */}
                   {highlightText(author.email, debouncedSearch)}
                 </p>
               </div>
             </div>
 
-            <div className="flex justify-between mt-4 text-xs text-gray-300">
+            <div className={`flex mt-4 text-xs text-gray-300 ${author?.postCount>0?'justify-between':'justify-center'}`}>
               <span>
                 <b className="text-white">{author.followers.length}</b>{" "}
                 Followers
