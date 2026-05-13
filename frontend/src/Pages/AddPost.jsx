@@ -437,7 +437,7 @@ function AddPost() {
               ) : (
                 <button
                   onClick={() => setChatbot(false)}
-                  className="text-emerald-500 text-sm"
+                  className="text-emerald-500 text-xs md:text-sm"
                 >
                   ← Back
                 </button>

@@ -762,7 +762,7 @@ const renderTextWithHashtags = (text) => {
                         </h3>
                         <button
                           onClick={() => setShowAnnouncement(!showAnnouncement)}
-                          className="text-emerald-500 text-sm"
+                          className="text-emerald-500 text-xs md:text-sm"
                         >
                           ← Back
                         </button>
