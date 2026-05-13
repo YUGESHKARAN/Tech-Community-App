@@ -161,6 +161,14 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
 
   const deleteAuthorByAdmin = async () => {
     setShowConfirm(true);
+     if (!password) {
+          toast.warning(
+            "Required",
+            "Your password is required to delete the user account",
+          );
+          setShowConfirm(false);
+          return "";
+        }
     setLoading(true);
 
     try {
