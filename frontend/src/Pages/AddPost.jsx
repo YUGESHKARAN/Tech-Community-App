@@ -36,13 +36,13 @@ function AddPost() {
 
   const [messages, setMessages] = useState([
     {
-      message: `Hi ${user}! I'm DraftMate AI, your assistant for refining post descriptions. Share your draft and I’ll help transform it into clear, engaging, publish-ready content.`,
+      message: `Hi ${user}! I'm DraftMate AI, your assistant for refining post description. Share your draft and I’ll help transform it into clear, engaging, publish-ready content.`,
       sender: "bot",
       direction: "incoming",
     },
     {
       message:
-        "Your enhanced content will automatically appear in the Description tab, where you can review or edit it",
+        "Your enhanced content will automatically appear in the Description tab, where you can preview or edit it",
       sender: "bot",
       direction: "incoming",
     },
@@ -463,9 +463,9 @@ function AddPost() {
   <li>Add useful resources such as links and documents</li>
   <li>Include a suitable thumbnail poster (1280 × 720 px)</li>
   <li>
-    Post descriptions support Markdown feature. Use the preview option to verify the content format.
+    Post description support Markdown feature. Use the preview option to verify the content format.
   </li>
-  <li>YouTube links support video embedding</li>
+  <li>YouTube links support video embedding </li>
 </ul>
               </div>
 
