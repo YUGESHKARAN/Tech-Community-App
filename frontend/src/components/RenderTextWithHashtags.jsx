@@ -229,6 +229,7 @@ const RenderTextWithHashtags = ({ text }) => {
                     rounded-md
                     transition-all
                     opacity-0
+                    group-hover:opacity-100
                     outline-none
                     ${copied && "text-green-400"}
                   `}
@@ -238,10 +239,10 @@ const RenderTextWithHashtags = ({ text }) => {
 
                 <code
                   className={`
-          ${className}
-          overflow-scroll
-          scrollbar-hide
-        `}
+                  ${className}
+                  overflow-scroll
+                  scrollbar-hide
+                `}
                   {...props}
                 >
                   {children}
