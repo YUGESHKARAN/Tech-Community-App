@@ -329,7 +329,7 @@ function ViewEditPost() {
                   className="w-full mt-2  focus:border focus:border-emerald-500/40 emerald-scrollbar px-4 py-3 rounded-md bg-gray-900 border border-gray-700 outline-none  text-white text-xs leading-relaxed"
                 />
               </div> */}
-              <div>
+              <div className="scrollbar-hide">
                   {/* Label */}
                   <div className="flex items-center justify-between mb-2">
                     <label className="text-sm text-gray-300 font-medium tracking-wide">
@@ -365,14 +365,17 @@ function ViewEditPost() {
                   </div>
 
                   {/* Editor / Preview Wrapper */}
-                  <div className="relative">
+                  <div className="relative ">
                     {/* Top subtle glow */}
                     <div className="absolute inset-0 rounded-xl bg-emerald-500/[0.02] pointer-events-none" />
 
                     {preview ? (
                       <div
                         className="
-                          w-full min-h-40 h-auto
+                          w-full min-h-40 h-[300px]
+                          
+                          overflow-y-auto
+                          scrollbar-hide
                           px-4 py-3
                           rounded-md
                           bg-gray-900
@@ -381,12 +384,16 @@ function ViewEditPost() {
                           leading-relaxed
                           emerald-scrollbar
                           overflow-auto
+                          scrollbar-hide
+                          break-words
+                          
+
                        
                         "
                       >
                         {description?.trim()?.length > 0 ? (
                           // renderTextWithHashtags(description)
-                          <RenderTextWithHashtags text = {description}/>
+                          <RenderTextWithHashtags text = {description} className={"overflow-x-auto scrollbar-hide"}/>
                         ) : (
                           <span className="text-gray-500">
                             Preview content will appear here...
@@ -395,7 +402,7 @@ function ViewEditPost() {
                       </div>
                     ) : (
                       <textarea
-                        rows="6"
+                        rows="10"
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                         placeholder="Write your post description..."

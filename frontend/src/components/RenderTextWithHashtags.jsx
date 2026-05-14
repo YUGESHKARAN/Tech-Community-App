@@ -18,11 +18,11 @@ const RenderTextWithHashtags = ({ text }) => {
   className="
     prose
     prose-invert
-
+  
     prose-sm
     md:prose-sm
 
-    max-w-none
+    max-w-5xl
 
     text-[13px]
     leading-6
@@ -70,7 +70,7 @@ const RenderTextWithHashtags = ({ text }) => {
     prose-pre:border-[#30363d]
     prose-pre:rounded-lg
     prose-pre:p-3
-
+    scrollbar-hide
     prose-blockquote:border-emerald-500
     prose-blockquote:text-gray-300
 
@@ -154,31 +154,119 @@ li({ children }) {
     </li>
   );
 },
-    code({ inline, children, className, ...props }) {
-      if (inline) {
-        return (
-          <code
-            className="
-              bg-[#161b22]
-              text-white
-              px-1.5
-              py-0.5
-              rounded-md
-              text-sm
-            "
-            {...props}
-          >
-            {children}
-          </code>
-        );
-      }
+    // code({ inline, children, className, ...props }) {
+    //   if (inline) {
+    //     return (
+    //       <code
+    //         className="
+    //           bg-[#161b22]
+    //           text-white
+    //           px-1.5
+    //           py-0.5
+    //           rounded-md
+    //           text-sm
+    //           overflow-scroll
+    //           scrollbar-hide
+    //         "
+    //         {...props}
+    //       >
+    //         {children}
+    //       </code>
+    //     );
+    //   }
 
-      return (
-        <code className={className} {...props}>
-          {children}
-        </code>
-      );
-    },
+    //   return (
+    //     <code className={`${className}  overflow-scroll
+    //           scrollbar-hide`} {...props}>
+    //       {children}
+    //     </code>
+    //   );
+    // },
+
+ code({ inline, children, className, ...props }) {
+  const [copied, setCopied] = React.useState(false);
+
+  const codeText = String(children).replace(/\n$/, "");
+
+  const handleCopy = async (e) => {
+    e.preventDefault();
+    try {
+      await navigator.clipboard.writeText(codeText);
+
+      setCopied(true);
+
+      setTimeout(() => {
+        setCopied(false);
+      }, 1000);
+    } catch (error) {
+      console.error("Copy failed:", error);
+    }
+  };
+
+  if (inline) {
+    return (
+      <code
+        className="
+          bg-[#161b22]
+          text-white
+          px-1.5
+          py-0.5
+          rounded-md
+          text-sm
+          overflow-scroll
+          scrollbar-hide
+        "
+        {...props}
+      >
+        {children}
+      </code>
+    );
+  }
+
+  return (
+    <div className="relative group">
+      <button
+        onClick={handleCopy}
+        className={`
+            absolute
+          top-2
+          right-2
+          z-10
+
+          text-[10px]
+          text-gray-300
+
+          bg-[#21262d]
+          hover:bg-[#30363d]
+
+          px-2
+          py-1
+
+          rounded-md
+          transition-all
+
+          opacity-0
+          outline-none
+          group-hover:opacity-100
+          ${copied && 'text-green-400'}
+          `}
+      >
+        {copied ? "✓" : "Copy"}
+      </button>
+
+      <code
+        className={`
+          ${className}
+          overflow-scroll
+          scrollbar-hide
+        `}
+        {...props}
+      >
+        {children}
+      </code>
+    </div>
+  );
+},
   }}
 >
   {cleanedText}
