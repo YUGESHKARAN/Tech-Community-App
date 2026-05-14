@@ -463,7 +463,7 @@ function AddPost() {
   <li>Add useful resources such as links and documents</li>
   <li>Include a suitable thumbnail poster (1280 × 720 px)</li>
   <li>
-    Post description support Markdown feature. Use the preview option to verify the content format.
+    Post description support Markdown features. Use the preview option to verify the content format.
   </li>
   <li>YouTube links support video embedding </li>
 </ul>
