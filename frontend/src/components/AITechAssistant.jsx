@@ -580,7 +580,7 @@ export default function AITechAssistant({
             It's specially made for this platform ❤️
           </li>
           <li className="text-[6px] text-gray-400  md:text-[9px] h-3">
-            Visit our official documentation to know more details{" "}
+            Visit our documentation to know more details{" "}
             <a
               href="/tech_community_assistant_user_guide.pdf"
               target="_blank"
