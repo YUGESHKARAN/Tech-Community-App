@@ -379,7 +379,7 @@ function TutorPlaylist() {
                             collaborator.profile,
                           )
                         }
-                        className="flex items-center gap-3 px-4 py-1 transition-all duration-300 hover:bg-gray-800 cursor-pointer"
+                        className="flex items-center gap-3 min-w-0 px-4 py-1 transition-all duration-300 hover:bg-gray-800 cursor-pointer"
                       >
                         {/* <img
                           src={
@@ -409,7 +409,7 @@ function TutorPlaylist() {
                             {initials(collaborator.authorname)}
                           </div>
                         )}
-                        <span className="text-sm text-gray-200">
+                        <span className="text-sm truncate text-gray-200">
                           {collaborator.authorname}
                         </span>
                         {hookClabHasMore && hookClabLoading && (
