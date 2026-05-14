@@ -394,7 +394,7 @@ function SingleTechDomainDetails() {
                             {author.followers.includes(email) ? (
                               <button
                                 onClick={() => addFollower(author.email)}
-                                className="w-full py-2 rounded-lg bg-gray-800 text-gray-400 text-sm transition-all duration-400 disabled:bg-transparent"
+                                className="w-full py-2 rounded-lg bg-gray-800  outline-none text-gray-400 text-sm transition-all duration-400 disabled:bg-transparent"
                                 disabled={followLoadingIds.has(author.email)}
                               >
                                 {followLoadingIds.has(author.email) ? (
@@ -411,7 +411,7 @@ function SingleTechDomainDetails() {
                               <button
                                 onClick={() => addFollower(author.email)}
                                 // className="w-full py-2 rounded-lg bg-green-500 text-gray-900 text-sm font-medium hover:bg-green-400 transition-all duration-400 disabled:bg-transparent"
-                                className={`w-full py-2 rounded-lg text-green-400  ${!followLoadingIds.has(author.email)?'focus:border-0 focus:outline-0 border border-green-700':'border-0'} text-sm font-medium hover:text-green-500 transition-all duration-400 disabled:bg-transparent
+                                className={`w-full py-2 rounded-lg text-green-400 text-green-400 outline-none  ${!followLoadingIds.has(author.email)?' border border-green-700':'border-0'} text-sm font-medium hover:text-green-300 hover:border-green-600 transition-all duration-400 disabled:bg-transparent
 `}                                disabled={followLoadingIds.has(author.email)}
                               >
                                 {followLoadingIds.has(author.email) ? (
