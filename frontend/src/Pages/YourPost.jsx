@@ -339,6 +339,7 @@ function YourPost() {
                    transition-transform
                    duration-500
                    md:mb-4
+                   relative
                   
                 "
               >
@@ -365,29 +366,11 @@ function YourPost() {
                   </div>
                 </div>
 
-                {/* <Link
-                  to={`/viewpage/${data.authorEmail}/${data._id}`}
-                  onClick={() => postViews(data.authorEmail, data._id)}
-                  className="block"
-                >
-                  <img
-                    src={
-                      data.image
-                        ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.image}`
-                        : blog1
-                    }
-                    alt={data.title}
-                    className="w-full  h-60 transition-transform
-                                    relative   duration-500  md:hover:scale-[1.05]  md:h-48  object-cover"
-                  />
-
-                  
-                </Link> */}
+              
 
                 <div
-                  // to={`/viewpage/${data.authorEmail}/${data._id}`}
-                  // onClick={() => postViews(data.authorEmail, data._id)}
-                  className="block relative"
+            
+                  className="block "
                 >
                   <Link
                     to={`/viewpage/${data.authorEmail}/${data._id}`}
@@ -412,11 +395,22 @@ function YourPost() {
                       setShowConfirm(true);
                     }}
                     // // className="absolute top-2 cursor-pointer right-2 bg-red-500 text-white text-xs font-medium px-2 py-1 rounded"
-                    className="absolute top-3 cursor-pointer right-3   md:text-xl  text-2xl font-medium  rounded"
+                    className="absolute top-4 cursor-pointer right-14 md:right-12  text-xl font-medium  rounded-md"
                   >
-                    {/* Del */}
-                    <IoRemoveOutline className="bg-red-500 rounded-full text-white" />
+                    
+                    <IoRemoveOutline className="bg-red-500 rounded-md text-white" />
                   </span>
+
+                  {data.authorEmail === email && (
+                      <Link
+                        to={`/EditPost/${data._id}`}
+                        className="text-teal-400 absolute top-4 right-6 md:right-3 border border-emerald-400 rounded-md p-0.5  hover:text-teal-300"
+                      >
+                        <MdEdit className=" text-sm  " />
+                      </Link>
+                    )}
+
+                
                 </div>
 
                 <div className="px-4 py-4 space-y-2">
@@ -433,17 +427,7 @@ function YourPost() {
 
                 <div className="flex items-center justify-between px-4 pb-7 ">
                   <div className="flex items-center gap-3 text-gray-400">
-                    {/* <Link
-                                            to={`/viewpage/${data.authorEmail}/${data._id}`}
-                                            onClick={() =>
-                                              postViews(data.authorEmail, data._id)
-                                            }
-                                            className="flex items-center gap-1 text-xs text-gray-500"
-                                          >
-                                       
-                                            <span className="text-xs">{data.views.length}</span> views
-                                          </Link> */}
-
+          
                     <button
                       onClick={() => postLikes(data.authorEmail, data._id)}
                       className="flex items-center gap-1 text-teal-500"
@@ -467,14 +451,7 @@ function YourPost() {
                       <IoShareSocial className="text-xs" />
                     </button>
 
-                    {data.authorEmail === email && (
-                      <Link
-                        to={`/EditPost/${data._id}`}
-                        className="text-teal-400 hover:text-teal-300"
-                      >
-                        <MdEdit className="text-sm" />
-                      </Link>
-                    )}
+                    
                     <Link
                       to={`/viewpage/${data.authorEmail}/${data._id}`}
                       onClick={() => postViews(data.authorEmail, data._id)}
