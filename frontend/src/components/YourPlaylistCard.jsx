@@ -151,17 +151,25 @@ return (
             )}
           </Link>
           {/* Delete Playlist */}
-          <span
+          <div className="absolute top-3 right-3 flex gap-3 items-center rounded-lg bg-gray-800/90 px-3 py-2">
+             <span
             onClick={() => {
               // deletePlaylist(_id);
                setShowConfirm(true);
             }}
             // className="absolute top-2 cursor-pointer right-2 bg-red-500 text-white text-xs font-medium px-2 py-1 rounded"
-            className="absolute top-3 cursor-pointer right-3   md:text-xl  text-2xl font-medium  rounded"
+            className=" cursor-pointer  text-2xl font-medium  rounded"
           >
             {/* Del */}
-            <IoRemoveOutline  className="bg-red-500 rounded-full text-white" />
+            <IoRemoveOutline  className="bg-red-500 rounded-lg text-white" />
           </span>
+
+          <Link  to={`/editPlaylist/${_id}`}>
+                <MdEdit className="text-2xl rounded-lg border border-emerald-800 p-1 bg-emerald-300 text-emerald-800 cursor-pointer" />
+              </Link>
+
+          </div>
+         
 
           {/* Playlist Badge */}
           <span className="absolute top-3 left-3 bg-emerald-600 text-white text-xs font-medium px-2 py-1 rounded">
@@ -185,9 +193,7 @@ return (
 
           <div className="flex items-center justify-between ">
             <div className="flex items-center gap-3">
-              {/* <span className="inline-block text-xs md:text-xs bg-emerald-600/20 text-emerald-400 px-3 py-1 rounded-lg">
-                {domain}
-              </span> */}
+            
 
               <div className="flex -space-x-2">
                               
@@ -225,9 +231,7 @@ return (
                   <PiBookmarksSimpleLight className="text-teal-500 text-base cursor-pointer" />
                 )}
               </div>
-              <Link to={`/editPlaylist/${_id}`}>
-                <MdEdit className="text-sm text-teal-500 cursor-pointer" />
-              </Link>
+              
             </div>
 
             <span 
@@ -238,30 +242,7 @@ return (
              
               </span>
 
-            {/* <div className="flex -space-x-2">
-                
-                {collaborators.length>0 && collaborators.slice(0, 3).map((collab) => (
-                  <img
-                    key={collab._id}
-                    src={
-                      collab.profile
-                        ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${collab.profile}`
-                        : user
-                    }
-                    alt={collab.name}
-                    className="h-6 w-6 rounded-full border-2 border-teal-600 bg-white"
-                  />
-                ))}
-                  <img
-                  src={
-                    profile
-                      ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`
-                      : user
-                  }
-                  // alt={collab.name}
-                  className="h-6 w-6 rounded-full border-2 border-teal-600 bg-white"
-                />
-              </div> */}
+           
           </div>
         </div>
       </div>
