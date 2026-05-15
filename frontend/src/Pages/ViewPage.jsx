@@ -1087,6 +1087,9 @@ function ViewPage() {
                   {/* Input flush to bottom, no gap */}
                   <div className="shrink-0 px-3 py-3 border-t border-[#21262d] bg-[#0a0f1d]">
                     <div className="flex items-center gap-2 bg-[#161b22] border border-[#30363d] rounded-xl px-3 py-2.5 focus-within:border-emerald-500/50 transition-colors">
+                    <form autoComplete="off">
+
+
                       <input
                         type="text"
                         value={newMessage}
@@ -1102,6 +1105,7 @@ function ViewPage() {
                         // onBlur={() => setIsInputFocused(false)}
                         onMouseOut={() => setIsInputFocused(false)}
                       />
+                      </form>
                       <button
                         onClick={postComment}
                         className="p-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 rounded-lg transition-colors"
@@ -1123,6 +1127,8 @@ function ViewPage() {
               >
                 <div className="max-w-7xl mx-auto px-3 py-2.5 flex items-center gap-2.5">
                   <div className="flex-1 flex items-center gap-2 bg-[#161b22] border border-[#30363d] rounded-lg px-3 py-2 focus-within:border-emerald-500/50 transition-colors">
+
+                                <form autoComplete="off">
                     <input
                       type="text"
                       value={newMessage}
@@ -1135,6 +1141,7 @@ function ViewPage() {
                       autoCapitalize="off"
                       spellCheck={false}
                     />
+                    </form>
                   </div>
                   <button
                     onClick={postComment}
