@@ -8,6 +8,7 @@ import { MdEdit } from "react-icons/md";
 import { IoIosRemoveCircleOutline } from "react-icons/io";
 import toast from "./toaster/Toast.jsx";
 import axiosInstance from "../instances/Axiosinstances.jsx";
+import { Link } from "react-router-dom";
 
 const CommentsBox = ({ messages, setMessages, viewComments, userEmail, email, postId, socket }) => {
   const commentBoxRef = useRef(null);
@@ -129,6 +130,9 @@ useEffect(() => {
               className="w-7 h-7 bg-white rounded-full object-cover flex-shrink-0 ring-1 ring-white/10"
               alt="User Avatar"
             /> */}
+            <Link
+            to={`/viewProfile/${msg.email}`}
+            >
             {
               msg.profile ? <img
               src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${msg.profile}`}
@@ -143,6 +147,7 @@ useEffect(() => {
                     </div>
 
             }
+            </Link>
 
             {/* Bubble */}
             <div className="flex-1 min-w-0">
