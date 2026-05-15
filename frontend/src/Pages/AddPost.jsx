@@ -655,7 +655,10 @@ function AddPost() {
                     {preview ? (
                       <div
                         className="
-                          w-full min-h-40 h-auto
+                            w-full min-h-40 h-[300px]
+                          
+                          overflow-y-auto
+                          scrollbar-hide
                           px-4 py-3
                           rounded-md
                           bg-gray-900
@@ -664,7 +667,8 @@ function AddPost() {
                           leading-relaxed
                           emerald-scrollbar
                           overflow-auto
-                          whitespace-pre-wrap
+                          scrollbar-hide
+                          break-words
                         "
                       >
                         {description?.trim()?.length > 0 ? (

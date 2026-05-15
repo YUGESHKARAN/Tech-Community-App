@@ -22,7 +22,7 @@ const RenderTextWithHashtags = ({ text }) => {
           prose-sm
           md:prose-sm
 
-          max-w-5xl
+          max-w-4xl
 
           text-[13px]
           leading-6
