@@ -451,7 +451,7 @@ function ViewPage() {
   // console.log("userEmail", userEmail);
 
   // console.log("post id", postId);
-  console.log("singlepost data", singlePostData);
+  // console.log("singlepost data", singlePostData);
 
   return (
     <div className="w-full min-h-screen flex flex-col justify-between bg-gray-900 relative">
@@ -1094,6 +1094,10 @@ function ViewPage() {
                         onKeyDown={(e) => e.key === "Enter" && postComment()}
                         placeholder="Leave a comment..."
                         className="flex-1 bg-transparent outline-none text-sm text-gray-300 placeholder-gray-600"
+                        autoComplete="off"
+                        autoCorrect="off"
+                        autoCapitalize="off"
+                        spellCheck={false}
                         onFocus={() => setIsInputFocused(true)}
                         // onBlur={() => setIsInputFocused(false)}
                         onMouseOut={() => setIsInputFocused(false)}
@@ -1126,6 +1130,10 @@ function ViewPage() {
                       onKeyDown={(e) => e.key === "Enter" && postComment()}
                       placeholder="Leave a comment…"
                       className="flex-1 bg-transparent outline-none text-sm text-gray-300 placeholder-gray-600"
+                      autoComplete="off"
+                      autoCorrect="off"
+                      autoCapitalize="off"
+                      spellCheck={false}
                     />
                   </div>
                   <button
