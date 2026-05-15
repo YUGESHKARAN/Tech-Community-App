@@ -596,105 +596,140 @@ function ViewTutorPlaylist() {
             {/* RIGHT PANEL (Playlist Posts) */}
             <div className="lg:col-span-1 md:overflow-y-scroll mt-0 scrollbar-hide space-y-2 md:space-y-2">
               {playlistPosts.map((post, index) => (
-                <div
-                  key={post._id}
-                  className="flex gap-4  p-2  bg-gray-900 rounded-lg border md:border-neutral-800 border-neutral-800 transition"
-                >
-                  {/* Video Thumbnail */}
-                  <Link
-                    // to={`/viewpage/playlist/${playlistData.email}/${post._id}`}
-                    to={`/viewpage/${playlistData.email}/${post._id}`}
-                    onClick={() => postViews(playlistData.email, post._id)}
-                    className="relative w-48 h-20 md:min-w-0 md:h-24 rounded-md overflow-hidden"
-                  >
-                    <img
-                      // src={post.thumbnail}
-                      src={
-                        post.image
-                          ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${post.image}`
-                          : blog1
-                      }
-                      alt={post.title}
-                      className="w-full h-full object-cover"
-                    />
-                    <span className="absolute bottom-1 right-1 bg-black/80 text-xs px-1.5 py-0.5 rounded">
-                      {index + 1}
-                    </span>
-                  </Link>
+              <div
+                key={post._id}
+                className="
+                  flex gap-3
+                  p-2
+                  bg-gray-900
+                  rounded-lg
+                  border border-neutral-800
+                  transition
+                  overflow-hidden
+                  w-full
+                "
+              >
+                
+        {/* Thumbnail */}
+        <Link
+          to={`/viewpage/${playlistData.email}/${post._id}`}
+          onClick={() => postViews(playlistData.email, post._id)}
+          className="
+            relative
+            w-28
+            md:w-40
+            h-20
+            md:h-24
+            flex-shrink-0
+            rounded-md
+            overflow-hidden
+          "
+        >
+          <img
+            src={
+              post.image
+                ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${post.image}`
+                : blog1
+            }
+            alt={post.title}
+            className="w-full h-full object-cover"
+          />
 
-                  {/* Video Info */}
-                  <div className="flex flex-col w-11/12 md:w-11/12 justify-between">
-                    <Link
-                      // to={`/viewpage/playlist/${playlistData.email}/${post._id}`}
-                      to={`/viewpage/${playlistData.email}/${post._id}`}
-                      onClick={() => postViews(playlistData.email, post._id)}
-                      className="text-sm font-medium line-clamp-2"
-                    >
-                      {post.title}
-                    </Link>
-                    <Link
-                      // to={`/viewpage/playlist/${playlistData.email}/${post._id}`}
-                      to={`/viewpage/${playlistData.email}/${post._id}`}
-                      onClick={() => postViews(playlistData.email, post._id)}
-                      className="md:text-xs text-xs text-gray-300 line-clamp-1 md:line-clamp-2"
-                    >
-                      {/* {post.description?.slice(0, 50)}... */}
-                      {/* {post.description} */}
-                      <RenderTextNoMarkdown text={post.description} />
-                    </Link>
+          <span className="absolute bottom-1 right-1 bg-black/80 text-xs px-1.5 py-0.5 rounded">
+            {index + 1}
+          </span>
+        </Link>
 
-                    <div className="flex justify-between items-center">
-                      <p className="text-[10px] text-gray-300">
-                        Views {post.views?.length}
-                      </p>
-                      <div className="flex items-center gap-2">
-                        <button
-                          type="button"
-                          onClick={(e) =>
-                            postLikes(playlistData.email, post._id, e)
-                          }
-                          className="cursor-pointer flex items-center gap-1 hover:text-teal-300 bg-transparent border-0 disabled:opacity-50"
-                        >
-                          {(post.likes || []).includes(email) ? (
-                            <BiSolidLike className="text-sm text-teal-400" />
-                          ) : (
-                            <BiLike className="text-sm text-teal-400" />
-                          )}
-                          <span className="text-[9px] text-white">
-                            {post.likes && post.likes.length > 0
-                              ? post.likes.length
-                              : ""}
-                          </span>
-                        </button>
+  {/* Content */}
+  <div className="flex flex-col flex-1 min-w-0 justify-between">
+    
+    {/* Title */}
+    <Link
+      to={`/viewpage/${playlistData.email}/${post._id}`}
+      onClick={() => postViews(playlistData.email, post._id)}
+      className="
+        text-sm
+        font-medium
+        line-clamp-2
+        break-words
+        text-white
+      "
+    >
+      {post.title}
+    </Link>
 
-                        <div
-                          onClick={() =>
-                            sharePost(post.title, playlistData.email, post._id)
-                          }
-                          className="cursor-pointer flex items-center gap-1 hover:text-teal-300"
-                        >
-                          <IoShareSocial className="text-sm text-teal-400" />
-                        </div>
+    {/* Description */}
+    <Link
+      to={`/viewpage/${playlistData.email}/${post._id}`}
+      onClick={() => postViews(playlistData.email, post._id)}
+      className="
+        text-xs
+        text-gray-300
+        line-clamp-2
+        overflow-hidden
+        break-words
+      "
+    >
+      <RenderTextNoMarkdown text={post.description} />
+    </Link>
 
-                        <div className="flex items-center gap-2">
-                          <div
-                            onClick={() => {
-                              addBookMarkPostId(post._id);
-                            }}
-                            className="cursor-pointer flex items-center gap-1 text-teal-300 hover:text-teal-300"
-                          >
-                            {Array.isArray(bookMarkId) &&
-                            bookMarkId.includes(post._id) ? (
-                              <PiBookmarksSimpleFill className="text-teal-500" />
-                            ) : (
-                              <PiBookmarksSimpleLight />
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+    {/* Footer */}
+    <div className="flex justify-between items-center pt-1">
+      <p className="text-[10px] text-gray-300 whitespace-nowrap">
+        Views {post.views?.length}
+      </p>
+
+      <div className="flex items-center gap-2 flex-shrink-0">
+        
+        {/* Like */}
+        <button
+          type="button"
+          onClick={(e) =>
+            postLikes(playlistData.email, post._id, e)
+          }
+          className="cursor-pointer flex items-center gap-1 hover:text-teal-300 bg-transparent border-0 disabled:opacity-50"
+        >
+          {(post.likes || []).includes(email) ? (
+            <BiSolidLike className="text-sm text-teal-400" />
+          ) : (
+            <BiLike className="text-sm text-teal-400" />
+          )}
+
+          <span className="text-[9px] text-white">
+            {post.likes && post.likes.length > 0
+              ? post.likes.length
+              : ""}
+          </span>
+        </button>
+
+        {/* Share */}
+        <div
+          onClick={() =>
+            sharePost(post.title, playlistData.email, post._id)
+          }
+          className="cursor-pointer flex items-center gap-1 hover:text-teal-300"
+        >
+          <IoShareSocial className="text-sm text-teal-400" />
+        </div>
+
+        {/* Bookmark */}
+        <div
+          onClick={() => {
+            addBookMarkPostId(post._id);
+          }}
+          className="cursor-pointer flex items-center gap-1 text-teal-300 hover:text-teal-300"
+        >
+          {Array.isArray(bookMarkId) &&
+          bookMarkId.includes(post._id) ? (
+            <PiBookmarksSimpleFill className="text-teal-500" />
+          ) : (
+            <PiBookmarksSimpleLight />
+          )}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
               ))}
             </div>
           </div>
@@ -716,19 +751,6 @@ function ViewTutorPlaylist() {
       <ToastContainer />
 
       {/* Image Modal */}
-      {/* {selectedImage && (
-              <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center">
-                <img
-                  src={selectedImage}
-                  className="max-w-5xl md:h-96 object-contain w-11/12"
-                  alt="Preview"
-                />
-                <IoClose
-                  onClick={handleCloseModal}
-                  className="absolute top-6 right-6 text-white text-2xl cursor-pointer"
-                />
-              </div>
-            )} */}
       {selectedImage && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
           {/* Modal Container */}
@@ -788,97 +810,4 @@ function ViewTutorPlaylist() {
 
 export default ViewTutorPlaylist;
 
-// //Contributors section
-// <div className="bg-gray-900/70 backdrop-blur-md border border-gray-800 rounded-xl p-4 space-y-3">
 
-//   <div className="flex items-center justify-between">
-
-//     <h2 className="text-sm text-gray-300 font-semibold flex items-center gap-1">
-//       Contributors
-//     </h2>
-
-//     <button
-//       onClick={() => setShowContributors(!showContributors)}
-//       className="text-gray-400 hover:text-white transition"
-//     >
-//       {showContributors ? (
-//         <IoMdArrowDropup className="text-xl" />
-//       ) : (
-//         <MdArrowDropDown className="text-xl" />
-//       )}
-//     </button>
-
-//   </div>
-
-//   {/* Avatar Stack */}
-//   {!showContributors && (
-//     <div
-//       className="flex -space-x-3 cursor-pointer"
-//       onClick={() => setShowContributors(true)}
-//     >
-//       <img
-//         src={
-//           playlistData.profile
-//             ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.profile}`
-//             : user
-//         }
-//         className="w-8 h-8 rounded-full border-2 border-teal-500 object-cover bg-white"
-//       />
-
-//       {playlistData?.collaborators?.map((collab) => (
-//         <img
-//           key={collab._id}
-//           src={
-//             collab.profile
-//               ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${collab.profile}`
-//               : user
-//           }
-//           className="w-8 h-8 rounded-full border-2 border-teal-500 object-cover bg-white"
-//         />
-//       ))}
-//     </div>
-//   )}
-
-//   {/* Contributor List */}
-//   {showContributors && (
-//     <div className="space-y-2">
-
-//       <Link
-//         to={`/viewProfile/${playlistData.email}`}
-//         className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-800 transition"
-//       >
-//         <img
-//           src={
-//             playlistData.profile
-//               ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.profile}`
-//               : user
-//           }
-//           className="w-8 h-8 rounded-full object-cover border border-teal-400 bg-white"
-//         />
-//         <span className="text-sm text-gray-200">
-//           {playlistData.name} <span className="text-gray-400">(Author)</span>
-//         </span>
-//       </Link>
-
-//       {playlistData?.collaborators?.map((data) => (
-//         <Link
-//           key={data._id}
-//           to={`/viewProfile/${data.email}`}
-//           className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-800 transition"
-//         >
-//           <img
-//             src={
-//               data.profile
-//                 ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.profile}`
-//                 : user
-//             }
-//             className="w-8 h-8 rounded-full object-cover border border-teal-400 bg-white"
-//           />
-//           <span className="text-sm text-gray-300">{data.name}</span>
-//         </Link>
-//       ))}
-
-//     </div>
-//   )}
-
-// </div>

@@ -20,7 +20,18 @@ function RenderTextNoMarkdown({ text, className = "" }) {
     <span
       className={twMerge(
         clsx(
-          "text-xs text-gray-400 line-clamp-2 break-words",
+          ` block
+         
+          min-w-0
+         
+        
+          break-words
+          text-wap
+          whitespace-normal
+          line-clamp-2
+          text-xs
+         
+          text-gray-400`,
           className
         )
       )}
