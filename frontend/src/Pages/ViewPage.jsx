@@ -499,16 +499,17 @@ function ViewPage() {
           </div>
 
           {/* Title */}
-          <h1 className="text-xl   md:text-3xl max-w-[370px] md:max-w-4xl  font-semibold text-gray-200 mt-2 md:mb-6">
+          <h1 className="text-xl  pl-1 md:pl-0 md:text-3xl max-w-[370px] md:max-w-4xl  font-semibold text-gray-200 mt-2 mb-1  md:mb-4">
             {singlePostData.title}
           </h1>
+          
 
           {/* Two Column Layout */}
           <div className="grid grid-cols-1  lg:grid-cols-6 md:gap-8 gap-2">
             {/* LEFT COLUMN */}
             <div className="lg:col-span-4  ">
               {/* Banner */}
-              <div className="md:rounded-xl my-2 md:mb-6 block md:hidden rounded-md overflow-hidden border border-white/10 bg-black">
+              <div className="md:rounded-xl my-2 md:mb-6 hidden rounded-md overflow-hidden border border-white/10 bg-black">
                 <img
                   src={
                     singlePostData.image
@@ -533,16 +534,20 @@ function ViewPage() {
                   group
                   md:rounded-xl
                 
-                  rounded-lg
+                  rounded-2xl
                   overflow-hidden
-                  border border-neutral-700/50
+
+                  border border-emerald-900
                   bg-black
                   shadow-xl
-                  hidden md:block
+                 block
+
                   cursor-pointer
-                  mb-2 md:mb-6
+                  mt-2 md:mt-0 md:mb-6
                 "
               >
+                   
+                
                 {/* Image */}
                 <img
                   src={
@@ -561,7 +566,7 @@ function ViewPage() {
                   className="
                     w-full
                     md:h-[400px]
-                 
+                  
                     object-cover
                     cursor-pointer
                     transition-transform duration-500
@@ -595,11 +600,11 @@ function ViewPage() {
                   "
                 >
                   <div className="space-y-1">
-                    {/* <h2 className="text-sm md:text-lg font-semibold text-white line-clamp-2">
+                    {/* <h2 className="text-xl   md:text-3xl max-w-[370px] md:max-w-4xl md:hidden  font-semibold text-white">
                       {singlePostData.title}
                     </h2> */}
 
-                    <p className="text-xs text-gray-300">
+                    <p className="block text-xs text-gray-300">
                       {singlePostData.category}
                     </p>
                   </div>
