@@ -682,7 +682,7 @@ function AddPost() {
                       </div>
                     ) : (
                       <textarea
-                        rows="6"
+                        rows="10"
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                         placeholder="Write your post description..."

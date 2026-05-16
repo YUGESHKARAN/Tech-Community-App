@@ -599,13 +599,16 @@ function ViewPage() {
                     items-end
                   "
                 >
-                  <div className="space-y-1">
+                  <div className="space-y-1 flex items-center justify-between w-full">
                     {/* <h2 className="text-xl   md:text-3xl max-w-[370px] md:max-w-4xl md:hidden  font-semibold text-white">
                       {singlePostData.title}
                     </h2> */}
 
-                    <p className="block text-xs text-gray-300">
+                    <p className="block text-sm md:text-lg text-gray-300">
                       {singlePostData.category}
+                    </p>
+                     <p className=" text-[10px] md:text-xs text-gray-400">
+                       {singlePostData.views?.length && `Views ${singlePostData.views.length}` }
                     </p>
                   </div>
                 </div>
