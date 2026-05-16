@@ -18,6 +18,8 @@ import {
   RiMenuFoldFill,
   RiMenuFoldLine,
   RiMenuUnfoldFill,
+  RiNotification2Line,
+  RiNotification3Line,
   RiUser3Line,
 } from "react-icons/ri";
 import { IoIosClose, IoIosGitNetwork, IoMdNotifications } from "react-icons/io";
@@ -266,6 +268,7 @@ function NavBar() {
         {/* 🔔 Notifications */}
         <div className="relative hidden lg:block">
           <IoMdNotifications
+          // <RiNotification3Line
             onClick={() => setShowNotification(!showNotefication)}
             className="text-xl  text-gray-300 hover:text-white transition-all duration-300 cursor-pointer transition"
           />
@@ -332,7 +335,8 @@ function NavBar() {
           </Link>
         </div>
         <div className="relative lg:hidden mr-2">
-          <IoMdNotifications
+          {/* <IoMdNotifications */}
+          <RiNotification3Line
             onClick={() => setShowNotification(!showNotefication)}
             className="text-xl text-gray-300 hover:text-white transition-all duration-300 cursor-pointer transition"
           />
