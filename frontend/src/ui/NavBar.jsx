@@ -338,7 +338,7 @@ function NavBar() {
           {/* <IoMdNotifications */}
           <RiNotification3Line
             onClick={() => setShowNotification(!showNotefication)}
-            className="text-xl text-gray-300 hover:text-white transition-all duration-300 cursor-pointer transition"
+            className="text-lg text-gray-300 hover:text-white transition-all duration-300 cursor-pointer transition"
           />
           {notiCount > 0 && (
             <span className="absolute -top-1.5 -right-2 text-[10px] bg-red-500 w-4 h-4 flex items-center justify-center rounded-full text-white">
