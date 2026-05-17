@@ -84,8 +84,10 @@ function BlogContainer({ activeTab, setActiveTab }) {
       console.log("error",err.message);
     }
 
-    setLoading(false);
+    finally{
+      setLoading(false);
     isFetching.current = false;
+    }
   };
 
   useEffect(() => {

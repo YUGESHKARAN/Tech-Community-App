@@ -242,7 +242,20 @@ function TechCommunity() {
                           />
                           Coordinator
                         </div>
-                      ) : null
+                      ) : <div
+                          className="w-full flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-semibold border"
+                          style={{
+                            background: `${accent.from}12`,
+                            borderColor: `${accent.from}30`,
+                            color: accent.from,
+                          }}
+                        >
+                          <span
+                            className="w-1.5 h-1.5 rounded-full"
+                            style={{ backgroundColor: accent.from }}
+                          />
+                          {role==='admin'?'Maintainer':'Viewer'}
+                        </div>
                     ) : (
                       <button
                         // onClick={() => updateCommunity(email, item.categoryname)}
