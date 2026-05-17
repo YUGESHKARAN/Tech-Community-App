@@ -47,11 +47,21 @@ function ViewEditPost() {
   // console.log("PostId", PostId);
 
   const onImageChange = (e) => {
-    console.log(e.target.files[0]);
-    const file = e.target.files[0];
+    const file = e.target.files && e.target.files[0];
+
+    if (!file) {
+      return;
+    }
+
+    if (!file.type || !file.type.startsWith("image/")) {
+      toast.error("Please select a valid image file.");
+      setPreviewImage(null);
+      setImage(null);
+      return;
+    }
 
     setPreviewImage(URL.createObjectURL(file)); // Show preview
-    setImage(e.target.files[0]);
+    setImage(file);
   };
 
   const handleSubmit = async (e) => {
