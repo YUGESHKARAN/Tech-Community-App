@@ -954,7 +954,6 @@ const addPosts = async (req, res) => {
               html: `
                 <h3>${author.authorname} has posted a new blog!</h3>
                 <p><strong>Title:</strong> ${title}</p>
-                <p>${description}</p>
                 <p><a href="${url}">Click here to view the post</a></p>
               `,
             });

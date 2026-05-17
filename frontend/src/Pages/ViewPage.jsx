@@ -822,7 +822,7 @@ function ViewPage() {
                             className="group flex items-center gap-3 px-3 py-1.5 
                             rounded-xl border border-slate-600/40
                             bg-slate-800/60 hover:bg-slate-800
-                            transition"
+                            transition-all duration-300"
                           >
                             <div className="md:w-6 md:h-6 h-5 w-5 flex items-center justify-center rounded-lg bg-slate-700/70">
                               <MdOutlineDescription className="text-slate-200 text-sm " />
@@ -860,7 +860,7 @@ function ViewPage() {
                             rounded-xl border border-blue-500/20
                             bg-gradient-to-r from-blue-600/10 to-blue-400/5
                             hover:from-blue-600/20 hover:to-blue-400/10
-                            transition"
+                            transition-all duration-300"
                             >
                               <div className="md:w-6 md:h-6 h-5 w-5 flex items-center justify-center rounded-lg bg-blue-600/20">
                                 {link.title === "GitHub" ? (
