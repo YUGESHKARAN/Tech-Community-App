@@ -23,8 +23,9 @@ import { IoMdClose, IoMdCloseCircle } from "react-icons/io";
 import { AiFillCloseCircle, AiFillCloseSquare } from "react-icons/ai";
 import { LiaWindowCloseSolid } from "react-icons/lia";
 import { VscGitStashApply } from "react-icons/vsc";
-import { GoInfo } from "react-icons/go";
+import { GoAlertFill, GoInfo } from "react-icons/go";
 import { BsInfo, BsInfoCircle } from "react-icons/bs";
+import { TbAlertTriangleFilled } from "react-icons/tb";
 
 function Announcement() {
   const username = localStorage.getItem("username");
@@ -784,8 +785,8 @@ const renderTextWithHashtags = (text) => {
                      rounded-md focus:outline-none focus:border-emerald-500/20 text-xs"
                           />
                           {fieldErrors.title && (
-                            <p className="text-xs md:text-sm text-red-500 mt-1">
-                              {fieldErrors.title}
+                            <p className="text-xs md:text-sm flex items-center gap-1 text-red-500 mt-1">
+                             <TbAlertTriangleFilled /> {fieldErrors.title}
                             </p>
                           )}
                         </div>
@@ -870,8 +871,8 @@ const renderTextWithHashtags = (text) => {
                     )}
                   </div>
                           {fieldErrors.message && (
-                            <p className="text-xs md:text-sm text-red-500 mt-1">
-                              {fieldErrors.message}
+                            <p className="text-xs md:text-sm flex items-center gap-1 text-red-500 mt-1">
+                             <TbAlertTriangleFilled />  {fieldErrors.message}
                             </p>
                           )}
                         </div>
@@ -1022,8 +1023,8 @@ const renderTextWithHashtags = (text) => {
                           </select>
 
                           {fieldErrors.deliveredTo && (
-                            <p className="text-xs md:text-sm text-red-500 mt-1">
-                              {fieldErrors.deliveredTo}
+                            <p className="text-xs md:text-sm flex items-center gap-1 text-red-500 mt-1">
+                             <TbAlertTriangleFilled /> {fieldErrors.deliveredTo}
                             </p>
                           )}
                         </div>

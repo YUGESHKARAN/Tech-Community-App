@@ -13,7 +13,7 @@ import { VscGitStashApply, VscGitStashPop, VscSend } from "react-icons/vsc";
 import Cookies from "js-cookie";
 import { getItem } from "../utils/encode";
 import RenderTextWithHashtags from "../components/RenderTextWithHashtags";
-
+import { TbAlertTriangleFilled } from "react-icons/tb";
 function AddPost() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -571,8 +571,8 @@ function AddPost() {
                   />
 
                   {fieldErrors.title && (
-                    <p className="text-xs text-red-500 mt-1">
-                      {fieldErrors.title}
+                    <p className="text-xs md:text-sm flex items-center gap-1 text-red-500 mt-1">
+                      <TbAlertTriangleFilled/> {fieldErrors.title}
                     </p>
                   )}
                 </div>
@@ -702,8 +702,8 @@ function AddPost() {
 
                   {/* Error */}
                   {fieldErrors.description && (
-                    <p className="text-xs text-red-500 mt-2">
-                      {fieldErrors.description}
+                    <p className="text-xs md:text-sm flex items-center gap-1 text-red-500 mt-2">
+                       <TbAlertTriangleFilled />  {fieldErrors.description}
                     </p>
                   )}
                 </div>
@@ -735,8 +735,8 @@ function AddPost() {
                   </select>
 
                   {fieldErrors.category && (
-                    <p className="text-xs text-red-500 mt-1">
-                      {fieldErrors.category}
+                    <p className="text-xs md:text-sm flex items-center gap-1 text-red-500 mt-1">
+                       <TbAlertTriangleFilled />  {fieldErrors.category}
                     </p>
                   )}
                   {category === "Others" && (
@@ -749,8 +749,8 @@ function AddPost() {
                     />
                   )}
                   {fieldErrors.finalCategory && (
-                    <p className="text-xs text-red-500 mt-1">
-                      {fieldErrors.finalCategory}
+                    <p className="text-xs md:text-sm flex items-center gap-1 text-red-500 mt-1">
+                       <TbAlertTriangleFilled /> {fieldErrors.finalCategory}
                     </p>
                   )}
                 </div>
@@ -809,8 +809,8 @@ function AddPost() {
                   )}
 
                   {fieldErrors.image && (
-                    <p className="text-xs text-red-500 mt-1">
-                      {fieldErrors.image}
+                    <p className="text-xs md:text-sm flex items-center gap-1 text-red-500 mt-1">
+                     <TbAlertTriangleFilled />   {fieldErrors.image}
                     </p>
                   )}
                 </div>
