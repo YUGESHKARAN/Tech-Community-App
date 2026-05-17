@@ -674,7 +674,7 @@ function ProfilePage() {
                                 setCustomTitle("");
                                 setLinkId(null);
                               } else if (titleToUse) {
-                                toast.error("Please enter a valid http(s) URL.");
+   toast.error("Invalid URL","Please enter a valid http(s) URL.");
                               }
                             }}
                             className="self-start px-4 py-2 text-xs font-medium rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition-colors"
