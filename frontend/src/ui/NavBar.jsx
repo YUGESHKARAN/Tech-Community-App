@@ -338,10 +338,10 @@ function NavBar() {
           {/* <IoMdNotifications */}
           <RiNotification3Line
             onClick={() => setShowNotification(!showNotefication)}
-            className="text-[25px] text-gray-300 rounded-md p-0.5 border border-neutral-600 hover:text-white transition-all duration-300 cursor-pointer transition"
+            className="text-[25px] text-gray-300 rounded-md p-[3px] border border-neutral-600 hover:text-white transition-all duration-300 cursor-pointer transition"
           />
           {notiCount > 0 && (
-            <span className="absolute -top-1.5 -right-2 text-[10px] bg-red-500 w-4 h-4 flex items-center justify-center rounded-full text-white">
+            <span className="absolute -top-1 -right-1.5 text-[10px] bg-red-500 w-4 h-4 flex items-center justify-center rounded-full text-white">
               {notiCount}
             </span>
           )}
