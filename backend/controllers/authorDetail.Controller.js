@@ -1428,16 +1428,45 @@ const addAnnouncement = async (req, res) => {
       );
       for (const recipient of recipientEmails) {
         try {
+          const escapeHtml = (value) =>
+            String(value ?? "")
+              .replace(/&/g, "&amp;")
+              .replace(/</g, "&lt;")
+              .replace(/>/g, "&gt;")
+              .replace(/"/g, "&quot;")
+              .replace(/'/g, "&#39;");
+
+          const safeUser = escapeHtml(user);
+          const safeTitle = escapeHtml(title);
+          const safeMessage = escapeHtml(message);
+          const safeUrl = escapeHtml(url);
+          const safeLinkHtml = Array.isArray(parsedLinks)
+            ? parsedLinks
+                .map((link) => {
+                  if (typeof link === "string") {
+                    const safeLink = escapeHtml(link);
+                    return `<p><a href="${safeLink}" target="_blank" rel="noopener noreferrer">${safeLink}</a></p>`;
+                  }
+                  if (link && typeof link === "object") {
+                    const href = escapeHtml(link.url || link.href || "");
+                    const text = escapeHtml(link.label || link.text || href);
+                    return `<p><a href="${href}" target="_blank" rel="noopener noreferrer">${text}</a></p>`;
+                  }
+                  return "";
+                })
+                .join("")
+            : "";
+
           await transporter.sendMail({
             from: `"${user}" <${process.env.EMAIL_USER}>`,
             to: recipient,
             subject: `Announcement: ${title}`,
             html: `
-              <h3>New Announcement from ${user}</h3>
-              <p><strong>Title:</strong> ${title}</p>
-              <p>${message}</p>
-              ${linkHtml}
-              <p><a href="${url}">View Announcement</a></p>
+              <h3>New Announcement from ${safeUser}</h3>
+              <p><strong>Title:</strong> ${safeTitle}</p>
+              <p>${safeMessage}</p>
+              ${safeLinkHtml}
+              <p><a href="${safeUrl}">View Announcement</a></p>
             `,
           });
           // console.log(` Email sent to: ${recipient}`);
