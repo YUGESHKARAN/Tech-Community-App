@@ -54,7 +54,7 @@ function ViewEditPost() {
     }
 
     if (!file.type || !file.type.startsWith("image/")) {
-      toast.error("Please select a valid image file.");
+      toast.error("Format Error","Please select a valid image file.");
       setPreviewImage(null);
       setImage(null);
       return;
