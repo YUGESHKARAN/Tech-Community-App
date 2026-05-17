@@ -36,6 +36,18 @@ function ProfilePage() {
   const [previewImage, setPreviewImage] = useState(null);
   const [bioDescription, setBioDescription] = useState("");
 
+  const sanitizeUrl = (rawUrl) => {
+    try {
+      const parsed = new URL(rawUrl);
+      if (parsed.protocol === "http:" || parsed.protocol === "https:") {
+        return parsed.toString();
+      }
+      return null;
+    } catch {
+      return null;
+    }
+  };
+
   const [links, setLinks] = useState([]);
   const [currentLinkTitle, setCurrentLinkTitle] = useState("");
   const [currentLinkUrl, setCurrentLinkUrl] = useState("");
@@ -646,10 +658,13 @@ function ProfilePage() {
                                 currentLinkTitle === "Others"
                                   ? customTitle?.trim()
                                   : currentLinkTitle.trim();
-                              if (titleToUse && currentLinkUrl.trim()) {
+                              const sanitizedUrl = sanitizeUrl(
+                                currentLinkUrl.trim()
+                              );
+                              if (titleToUse && sanitizedUrl) {
                                 const newLink = {
                                   title: titleToUse,
-                                  url: currentLinkUrl.trim(),
+                                  url: sanitizedUrl,
                                   id: linkId,
                                 };
                                 setLinks([...links, newLink]);
@@ -658,6 +673,8 @@ function ProfilePage() {
                                 setCurrentLinkUrl("");
                                 setCustomTitle("");
                                 setLinkId(null);
+                              } else if (titleToUse) {
+   toast.error("Invalid URL","Please enter a valid http(s) URL.");
                               }
                             }}
                             className="self-start px-4 py-2 text-xs font-medium rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition-colors"
