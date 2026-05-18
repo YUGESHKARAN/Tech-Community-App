@@ -43,6 +43,18 @@ function ViewEditPost() {
   const [postLinks, setPostLinks] = useState([]);
   const [preview, setPreview] = useState(false);
 
+    const sanitizeUrl = (rawUrl) => {
+    try {
+      const parsed = new URL(rawUrl);
+      if (parsed.protocol === "http:" || parsed.protocol === "https:") {
+        return parsed.toString();
+      }
+      return null;
+    } catch {
+      return null;
+    }
+  };
+
   const { PostId } = useParams(); //Accessing Post Id of selected post
   // console.log("PostId", PostId);
 
@@ -613,6 +625,33 @@ function ViewEditPost() {
                         setLinkId(null);
                       }
                     }}
+
+                     onClick={() => {
+                              const titleToUse =
+                                currentLinkTitle === "Others"
+                                  ? customTitle?.trim()
+                                  : currentLinkTitle.trim();
+                              const sanitizedUrl = sanitizeUrl(
+                                currentLinkUrl.trim(),
+                              );
+                              if (titleToUse && sanitizedUrl) {
+                                const newLink = {
+                                  title: titleToUse,
+                                  url: sanitizedUrl,
+                                  id: linkId,
+                                };
+                                setLinks([...links, newLink]);
+                                setCurrentLinkTitle("");
+                                setCurrentLinkUrl("");
+                                setCustomTitle("");
+                                setLinkId(null);
+                              } else if (titleToUse) {
+                                toast.error(
+                                  "Invalid URL",
+                                  "Please enter a valid http(s) URL.",
+                                );
+                              }
+                            }}
                     className="px-4 bg-emerald-500/20 w-fit py-1 md:py-2   text-black text-emerald-400  text-xs rounded-md hover:bg-emerald-600/20 transition-all duration-300"
                   >
                     Add

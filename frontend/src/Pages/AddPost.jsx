@@ -14,6 +14,7 @@ import Cookies from "js-cookie";
 import { getItem } from "../utils/encode";
 import RenderTextWithHashtags from "../components/RenderTextWithHashtags";
 import { TbAlertTriangleFilled } from "react-icons/tb";
+import toast from "../components/toaster/Toast";
 function AddPost() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -160,6 +161,18 @@ function AddPost() {
 
       const preview = URL.createObjectURL(file);
       setPreviewImage(preview);
+    }
+  };
+
+   const sanitizeUrl = (rawUrl) => {
+    try {
+      const parsed = new URL(rawUrl);
+      if (parsed.protocol === "http:" || parsed.protocol === "https:") {
+        return parsed.toString();
+      }
+      return null;
+    } catch {
+      return null;
     }
   };
 
@@ -879,25 +892,50 @@ function AddPost() {
                     {/* ADD BUTTON */}
                     <button
                       type="button"
-                      onClick={() => {
-                        const titleToUse =
-                          currentLinkTitle === "Others"
-                            ? customTitle?.trim()
-                            : currentLinkTitle.trim();
+                      // onClick={() => {
+                      //   const titleToUse =
+                      //     currentLinkTitle === "Others"
+                      //       ? customTitle?.trim()
+                      //       : currentLinkTitle.trim();
 
-                        if (titleToUse && currentLinkUrl.trim()) {
-                          const newLink = {
-                            title: titleToUse,
-                            url: currentLinkUrl.trim(),
-                          };
+                      //   if (titleToUse && currentLinkUrl.trim()) {
+                      //     const newLink = {
+                      //       title: titleToUse,
+                      //       url: currentLinkUrl.trim(),
+                      //     };
 
-                          setLinks([...links, newLink]);
+                      //     setLinks([...links, newLink]);
 
-                          setCurrentLinkTitle("");
-                          setCurrentLinkUrl("");
-                          setCustomTitle("");
-                        }
-                      }}
+                      //     setCurrentLinkTitle("");
+                      //     setCurrentLinkUrl("");
+                      //     setCustomTitle("");
+                      //   }
+                      // }}
+
+                         onClick={() => {
+                              const titleToUse =
+                                currentLinkTitle === "Others"
+                                  ? customTitle?.trim()
+                                  : currentLinkTitle.trim();
+                              const sanitizedUrl = sanitizeUrl(
+                                currentLinkUrl.trim(),
+                              );
+                              if (titleToUse && sanitizedUrl) {
+                                const newLink = {
+                                  title: titleToUse,
+                                  url: sanitizedUrl
+                                };
+                                setLinks([...links, newLink]);
+                                setCurrentLinkTitle("");
+                                setCurrentLinkUrl("");
+                                setCustomTitle("");
+                              } else if (titleToUse) {
+                                toast.error(
+                                  "Invalid URL",
+                                  "Please enter a valid http(s) URL.",
+                                );
+                              }
+                            }}
                       className="px-4 bg-emerald-500/20 w-fit py-1 md:py-2   text-black text-emerald-400  text-xs rounded-md hover:bg-emerald-600/20 transition-all duration-300"
                     >
                       Add
