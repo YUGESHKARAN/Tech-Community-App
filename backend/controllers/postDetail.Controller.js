@@ -15,6 +15,13 @@ const redisClient = require("../middleware/redis");
 
 const nodemailer = require('nodemailer')
 
+const escapeHtml = (value) => String(value)
+  .replace(/&/g, '&amp;')
+  .replace(/</g, '&lt;')
+  .replace(/>/g, '&gt;')
+  .replace(/"/g, '&quot;')
+  .replace(/'/g, '&#39;');
+
 const transporter = nodemailer.createTransport({
   service: process.env.EMAIL_PROVIDER, // Or your preferred email provider
   auth: {
@@ -947,13 +954,15 @@ const addPosts = async (req, res) => {
       const sendEmailsSequentially = async () => {
         for (const recipient of followersSet) {
           try {
+            const safeAuthorName = escapeHtml(author.authorname);
+            const safeTitle = escapeHtml(title);
             await transporter.sendMail({
-              from: `"${author.authorname}" <${process.env.EMAIL_USER}>`,
+              from: `"${safeAuthorName}" <${process.env.EMAIL_USER}>`,
               to: recipient,
-              subject: `New post from ${author.authorname}`,
+              subject: `New post from ${safeAuthorName}`,
               html: `
-                <h3>${author.authorname} has posted a new blog!</h3>
-                <p><strong>Title:</strong> ${title}</p>
+                <h3>${safeAuthorName} has posted a new blog!</h3>
+                <p><strong>Title:</strong> ${safeTitle}</p>
                 <p><a href="${url}">Click here to view the post</a></p>
               `,
             });
