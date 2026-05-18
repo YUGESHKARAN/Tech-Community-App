@@ -353,17 +353,17 @@ const renderTextWithHashtags = (text) => {
                     <div
                       key={index}
                       onClick={() => setPostCategory(data)}
-                      className={`w-full text-nowrap block cursor-pointer rounded-md  text-xs px-3 py-1.5 md:py-2 transition-all duration-200 ${
+                      className={` text-nowrap block cursor-pointer rounded-md  text-xs px-3 py-1.5 md:py-2 transition-all duration-200 ${
                         postCategory === data
                           ? "bg-emerald-600/20 text-emerald-400"
                           : "bg-gray-800 text-white"
                       }`}
                     >
-                      {data}
+                      {/* {data} */}
                     </div>
                   ))}
                 </div>
-              </div>
+              </div>  
             )}
 
             {loading && !posts.length > 0 && <PillLoader />}
