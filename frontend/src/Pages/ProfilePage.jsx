@@ -137,7 +137,7 @@ function ProfilePage() {
     localStorage.setItem("username", authorName);
     formData.append("email", authorEmail);
     formData.append("links", JSON.stringify(links));
-    formData.append("bio", bioDescription )
+    formData.append("bio", bioDescription);
 
     if (image !== "") {
       formData.append("profile", image);
@@ -166,7 +166,7 @@ function ProfilePage() {
     } finally {
       setLoading(false);
       setUpdateButton(false);
-      setBioEdit(false)
+      setBioEdit(false);
     }
   };
 
@@ -195,21 +195,21 @@ function ProfilePage() {
   };
 
   const RoleBadge = ({ role }) => {
-  const styles = {
-    admin: { bg: "#ec489918", color: "#ec4899", label: "Admin" },
-    coordinator: { bg: "#f59e0b18", color: "#f59e0b", label: "Coordinator" },
-    student: { bg: "#3b82f618", color: "#3b82f6", label: "Student" },
+    const styles = {
+      admin: { bg: "#ec489918", color: "#ec4899", label: "Admin" },
+      coordinator: { bg: "#f59e0b18", color: "#f59e0b", label: "Coordinator" },
+      student: { bg: "#3b82f618", color: "#3b82f6", label: "Student" },
+    };
+    const s = styles[role] ?? styles.student;
+    return (
+      <span
+        className="text-xs font-semibold px-2.5 py-1 md:px-3 md:py-1.5 md:text-xs border border-amber-400/20 rounded-lg"
+        style={{ backgroundColor: s.bg, color: s.color }}
+      >
+        {s.label}
+      </span>
+    );
   };
-  const s = styles[role] ?? styles.student;
-  return (
-    <span
-      className="text-xs font-semibold px-2.5 py-1 md:px-3 md:py-1.5 md:text-xs border border-amber-400/20 rounded-lg"
-      style={{ backgroundColor: s.bg, color: s.color }}
-    >
-      {s.label}
-    </span>
-  );
-};
   // console.log("author", author)
   // console.log("profile links", profileLinks)
   return (
@@ -284,15 +284,14 @@ function ProfilePage() {
                 </h2>
 
                 {/* Role pill */}
-                <span 
-                // className="inline-block px-2.5 absolute right-4 top-4 py-0.5 text-[10px] font-medium tracking-wide uppercase rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 mb-5"
-                // className="px-2.5 py-0.5 absolute right-4 top-4  text-xs font-medium text-amber-400 bg-amber-400/10 border border-amber-400/20 rounded-lg"
-                className=" absolute right-4 top-4 "
+                <span
+                  // className="inline-block px-2.5 absolute right-4 top-4 py-0.5 text-[10px] font-medium tracking-wide uppercase rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 mb-5"
+                  // className="px-2.5 py-0.5 absolute right-4 top-4  text-xs font-medium text-amber-400 bg-amber-400/10 border border-amber-400/20 rounded-lg"
+                  className=" absolute right-4 top-4 "
                 >
                   <RoleBadge role={role} />
                   {/* {role.charAt(0).toUpperCase()}{role.slice(1)} */}
                 </span>
-                
 
                 {/* Bio Section */}
                 <div className="mb-5 mt-3 px-1 text-left">
@@ -349,12 +348,10 @@ function ProfilePage() {
                         rows={4}
                         maxLength={220}
                         value={bioDescription}
-                        onChange={(e) => 
-                        {
+                        onChange={(e) => {
                           setBioDescription(e.target.value);
-                          setUpdateButton(true)
-                        }
-                        }
+                          setUpdateButton(true);
+                        }}
                         placeholder="Write a short bio..."
                         className="
                         w-full
@@ -416,16 +413,17 @@ function ProfilePage() {
                     following?.length > 0 ||
                     posts.length > 0) && (
                     <div className="flex justify-center gap-px mb-6 rounded-xl overflow-hidden border border-white/[0.06]">
-                      {author.role === "coordinator" && followers?.length > 0 && (
-                        <div className="flex-1 py-3 bg-white/[0.02]">
-                          <p className="text-base font-medium text-white">
-                            {followers?.length ?? 0}
-                          </p>
-                          <p className="text-[10px] text-gray-400 mt-0.5">
-                            Followers
-                          </p>
-                        </div>
-                      )}
+                      {author.role === "coordinator" &&
+                        followers?.length > 0 && (
+                          <div className="flex-1 py-3 bg-white/[0.02]">
+                            <p className="text-base font-medium text-white">
+                              {followers?.length ?? 0}
+                            </p>
+                            <p className="text-[10px] text-gray-400 mt-0.5">
+                              Followers
+                            </p>
+                          </div>
+                        )}
 
                       {author.role !== "student" && posts.length > 0 ? (
                         <Link to="/yourposts" className="flex-1">
@@ -529,25 +527,27 @@ function ProfilePage() {
                       />
                     </div>
 
-                        {/* Communities — below role */}
-                {author.community?.length > 0 && (
-                  <div className="flex flex-col gap-2">
-                    <p className="text-[11px] font-medium tracking-widest uppercase text-gray-300">
-                      Communities{" "}
-                      {author.role === "coordinator" ? "coordinating" : "joined"}
-                    </p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {author.community.map((com, i) => (
-                        <span
-                          key={i}
-                          className="px-2.5 py-1 text-[10px] font-medium bg-white/[0.03] text-gray-400 border border-white/[0.06] rounded-full"
-                        >
-                          {com}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                    {/* Communities — below role */}
+                    {author.community?.length > 0 && (
+                      <div className="flex flex-col gap-2">
+                        <p className="text-[11px] font-medium tracking-widest uppercase text-gray-300">
+                          Communities{" "}
+                          {author.role === "coordinator"
+                            ? "coordinating"
+                            : "joined"}
+                        </p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {author.community.map((com, i) => (
+                            <span
+                              key={i}
+                              className="px-2.5 py-1 text-[10px] font-medium bg-white/[0.03] text-gray-400 border border-white/[0.06] rounded-full"
+                            >
+                              {com}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
 
                     {/* Role */}
                     {/* <div className="flex flex-col gap-1.5">
@@ -659,7 +659,7 @@ function ProfilePage() {
                                   ? customTitle?.trim()
                                   : currentLinkTitle.trim();
                               const sanitizedUrl = sanitizeUrl(
-                                currentLinkUrl.trim()
+                                currentLinkUrl.trim(),
                               );
                               if (titleToUse && sanitizedUrl) {
                                 const newLink = {
@@ -674,7 +674,10 @@ function ProfilePage() {
                                 setCustomTitle("");
                                 setLinkId(null);
                               } else if (titleToUse) {
-   toast.error("Invalid URL","Please enter a valid http(s) URL.");
+                                toast.error(
+                                  "Invalid URL",
+                                  "Please enter a valid http(s) URL.",
+                                );
                               }
                             }}
                             className="self-start px-4 py-2 text-xs font-medium rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition-colors"
@@ -732,9 +735,6 @@ function ProfilePage() {
                         </div>
                       )}
                     </div>
-
-                   
-                    
                   </div>
 
                   {/* ── Right form column ─────────────────────────────── */}
@@ -914,10 +914,13 @@ function ProfilePage() {
                                 currentLinkTitle === "Others"
                                   ? customTitle?.trim()
                                   : currentLinkTitle.trim();
-                              if (titleToUse && currentLinkUrl.trim()) {
+                              const sanitizedUrl = sanitizeUrl(
+                                currentLinkUrl.trim(),
+                              );
+                              if (titleToUse && sanitizedUrl) {
                                 const newLink = {
                                   title: titleToUse,
-                                  url: currentLinkUrl.trim(),
+                                  url: sanitizedUrl,
                                   id: linkId,
                                 };
                                 setLinks([...links, newLink]);
@@ -926,6 +929,11 @@ function ProfilePage() {
                                 setCurrentLinkUrl("");
                                 setCustomTitle("");
                                 setLinkId(null);
+                              } else if (titleToUse) {
+                                toast.error(
+                                  "Invalid URL",
+                                  "Please enter a valid http(s) URL.",
+                                );
                               }
                             }}
                             className="self-start px-4 py-2 text-xs font-medium rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition-colors"
