@@ -132,7 +132,7 @@ function ViewSingleAuthor() {
           <p className="text-[11px] font-medium tracking-widest uppercase text-gray-300 mb-0.5">
             Account
           </p>
-          <h1 className="text-2xl md:text-3xl font-medium tracking-tight text-emerald-400">
+          <h1 className="text-xl md:text-3xl font-medium tracking-tight text-emerald-400">
             Profile Page
           </h1>
         </div>
