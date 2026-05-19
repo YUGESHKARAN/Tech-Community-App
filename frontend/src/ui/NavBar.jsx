@@ -682,7 +682,7 @@ function NavBar() {
   ref={notificationRef}
   className={`${
     showAddContent && !showNotefication
-      ? "fixed top-16 right-3 z-50 px-2 w-60 overflow-hidden rounded-2xl border border-[#30363d] bg-gray-900 shadow-2xl"
+      ? "fixed top-16 right-12 z-50 px-2 py-1 w-52 overflow-hidden rounded-2xl border border-[#30363d] bg-gray-900 shadow-2xl"
       : "hidden"
   }`}
 >
@@ -694,8 +694,8 @@ function NavBar() {
     <button
       className="
         w-full flex items-center gap-3
-        px-4 py-2.5
-        text-sm text-gray-100
+        pl-2 py-1.5
+        text-[13px] text-gray-100
         hover:bg-gray-800/70
         transition-all duration-200
         rounded-lg
@@ -713,8 +713,8 @@ function NavBar() {
     <button
       className="
         w-full flex items-center gap-3
-        px-4 py-2.5
-        text-sm text-gray-100
+        pl-2 py-1.5
+        text-[13px] text-gray-100
         hover:bg-gray-800/70
         transition-all duration-200
         rounded-lg
@@ -732,8 +732,8 @@ function NavBar() {
     <button
       className="
         w-full flex items-center gap-3
-        px-4 py-2.5
-        text-sm text-gray-100
+        pl-2 py-1.5
+        text-[13px] text-gray-100
         hover:bg-gray-800/70
         transition-all duration-200
         rounded-lg
