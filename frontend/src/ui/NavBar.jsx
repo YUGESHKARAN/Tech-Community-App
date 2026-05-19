@@ -693,16 +693,16 @@ function NavBar() {
     >
     <button
       className="
-        w-full flex items-center gap-3
+        w-full flex items-center gap-2
         pl-2 py-1.5
-        text-[13px] text-gray-100
+        text-sm text-gray-100
         hover:bg-gray-800/70
         transition-all duration-200
         rounded-lg
 
       "
     >
-      <FiPlusCircle className="text-[16px] text-gray-400" />
+      <FiPlusCircle className="text-[17px] text-gray-400" />
       <span>Add New Post</span>
     </button>
     </Link>
@@ -712,15 +712,15 @@ function NavBar() {
    >
     <button
       className="
-        w-full flex items-center gap-3
+        w-full flex items-center gap-2
         pl-2 py-1.5
-        text-[13px] text-gray-100
+        text-sm text-gray-100
         hover:bg-gray-800/70
         transition-all duration-200
         rounded-lg
       "
     >
-      <FiLayers className="text-[16px] text-gray-400" />
+      <FiLayers className="text-[17px] text-gray-400" />
       <span>Create New Playlist</span>
     </button>
    
@@ -731,15 +731,15 @@ function NavBar() {
    >
     <button
       className="
-        w-full flex items-center gap-3
+        w-full flex items-center gap-2
         pl-2 py-1.5
-        text-[13px] text-gray-100
+        text-sm text-gray-100
         hover:bg-gray-800/70
         transition-all duration-200
         rounded-lg
       "
     >
-      <VscGitStashApply className="text-[16px] text-gray-400" />
+      <VscGitStashApply className="text-[17px] text-gray-400" />
       <span>Create New Campaign</span>
     </button>
     </Link>
