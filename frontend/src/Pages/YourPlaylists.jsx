@@ -99,7 +99,7 @@ useEffect(() => {
     <div className="w-full min-h-screen bg-gray-900 h-auto reltive  ">
       <NavBar />
 
-      <h1 className=" text-2xl w-full px-4 md:px-6 flex items-center gap-2 mt-3 md:mt-4 mx-auto md:text-3xl font-semibold text-white tracking-wide">
+      <h1 className=" text-xl w-full px-4 md:px-6 flex items-center gap-2 mt-3 md:mt-4 mx-auto md:text-3xl font-semibold text-white tracking-wide">
         <BsPersonWorkspace />
         <span className="group text-white tracking-tight"> My Tutor Playlist</span>{" "}
       </h1>
