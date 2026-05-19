@@ -311,7 +311,7 @@ const renderTextWithHashtags = (text) => {
         {activeTab === "posts" && (
           <>
             {/* ================= SEARCH ================= */}
-            <div className="flex mx-3 md:mx-0 justify-center mb-2 mt-2 md:mt-4 md:mb-0 ">
+            {/* <div className="flex mx-3 md:mx-0 justify-center mb-2 mt-2 md:mt-4 md:mb-0 ">
               <div className="w-full mx-auto max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
                 <IoSearchOutline className="text-xl text-gray-400" />
                 <input
@@ -325,7 +325,7 @@ const renderTextWithHashtags = (text) => {
                   className="bg-transparent w-full focus:outline-none text-sm text-white placeholder-gray-400"
                 />
               </div>
-            </div>
+            </div> */}
 
             {posts.length > 0 && (
               <div
