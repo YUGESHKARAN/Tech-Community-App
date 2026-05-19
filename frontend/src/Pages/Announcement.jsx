@@ -278,7 +278,7 @@ function Announcement() {
               <span>•</span> Campaigns & launch events
             </li>
             <li className="flex gap-2">
-              <span>•</span> Hackathons & competitions
+              <span>•</span> Hackathons & competitions updates
             </li>
             <li className="flex gap-2">
               <span>•</span> Community meetings
