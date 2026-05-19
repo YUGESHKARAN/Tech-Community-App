@@ -10,7 +10,7 @@ import {
   MdPostAdd,
 } from "react-icons/md";
 import { IoHome, IoLogOut, IoLogOutOutline, IoPeople } from "react-icons/io5";
-import { FaUserAlt } from "react-icons/fa";
+import { FaPlus, FaUserAlt } from "react-icons/fa";
 import bloglogo from "../assets/bloglogo.png";
 import {
   RiBookMarkedFill,
@@ -22,10 +22,23 @@ import {
   RiNotification3Line,
   RiUser3Line,
 } from "react-icons/ri";
+
+      import {
+  FiFileText,
+  FiFolderPlus,
+  FiUpload,
+  FiGrid,
+  FiLayers,
+  FiPlusCircle,
+} from "react-icons/fi";
+
+
+
+import { GoPlus } from "react-icons/go";
 import { IoIosClose, IoIosGitNetwork, IoMdNotifications } from "react-icons/io";
 import { GlobalStateContext } from "../GlobalStateContext";
 import { TfiAnnouncement, TfiMenuAlt } from "react-icons/tfi";
-import { VscMenu } from "react-icons/vsc";
+import { VscGitStashApply, VscMenu } from "react-icons/vsc";
 import axiosInstance from "../instances/Axiosinstances";
 import user from "../images/user.png";
 import { CiMenuKebab } from "react-icons/ci";
@@ -51,6 +64,8 @@ function NavBar() {
   const [socket, setSocket] = useState(null);
   const [currentScreen, setCurrentScreen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showAddContent, setShowAddContent] = useState(false);
+
   // const email = localStorage.getItem("email");
   // const email = getItem("email");
   const role = getItem("role");
@@ -167,6 +182,7 @@ function NavBar() {
         !notificationRef.current.contains(event.target)
       ) {
         setShowNotification(false); // Close notification on outside click
+        setShowAddContent(false)
       }
     };
 
@@ -318,7 +334,8 @@ function NavBar() {
           className="flex lg:hidden items-center px-2 py-1
                  bg-white/5 
                  border border-white/10
-                 rounded-full transition"
+                 rounded-full transition
+                 mr-1"
         >
           <Link to="/profile" className="flex  items-center gap-1">
             {profile !== "undefined" ? (
@@ -334,6 +351,17 @@ function NavBar() {
             </span>
           </Link>
         </div>
+
+        {
+          role!=='student' &&
+          <div className="relative lg:hidden mr-0.5">
+          {/* <IoMdNotifications */}
+          <GoPlus  
+            onClick={() => setShowAddContent(!showAddContent)}
+            className="text-[27px] text-gray-300 rounded-md p-[5px] border border-neutral-600 hover:text-white transition-all duration-300 cursor-pointer transition"
+          />
+        </div>}
+
         <div className="relative lg:hidden mr-2">
           {/* <IoMdNotifications */}
           <RiNotification3Line
@@ -345,7 +373,9 @@ function NavBar() {
               {notiCount}
             </span>
           )}
+        
         </div>
+        
 
         {/* 🚪 LOGOUT (DESKTOP ONLY) */}
         <button
@@ -538,7 +568,7 @@ function NavBar() {
       <div
         ref={notificationRef}
         className={`${
-          showNotefication
+          showNotefication && !showAddContent
             ? "fixed top-16 right-2 z-50 md:w-[320px] w-72 pb-4 bg-gray-900 border border-gray-700 shadow-2xl rounded-xl md:rounded-lg transition-all duration-300"
             : "hidden"
         }`}
@@ -630,6 +660,126 @@ function NavBar() {
           </div>
         )}
       </div>
+
+      {/* <div
+        ref={notificationRef}
+        className={`${
+          showAddContent
+            ? "fixed top-16 right-2 z-50 md:w-[250px] w-52 pb-4 bg-gray-900 border border-gray-700 shadow-2xl rounded-xl md:rounded-lg transition-all duration-300"
+            : "hidden"
+        }`}
+      >
+
+      Add New Post
+      Create New Playlist
+      Create New Campaign
+      Manage Posts
+      Manage Playlists
+      </div> */}
+
+
+<div
+  ref={notificationRef}
+  className={`${
+    showAddContent && !showNotefication
+      ? "fixed top-16 right-3 z-50 px-2 w-60 overflow-hidden rounded-2xl border border-[#30363d] bg-gray-900 shadow-2xl"
+      : "hidden"
+  }`}
+>
+  {/* Top Section */}
+  <div className="py-1.5">
+    <Link
+    to="/addPost"
+    >
+    <button
+      className="
+        w-full flex items-center gap-3
+        px-4 py-2.5
+        text-sm text-gray-100
+        hover:bg-gray-800/70
+        transition-all duration-200
+        rounded-lg
+
+      "
+    >
+      <FiPlusCircle className="text-[16px] text-gray-400" />
+      <span>Add New Post</span>
+    </button>
+    </Link>
+   
+   <Link
+   to="/addTutorPlaylist"
+   >
+    <button
+      className="
+        w-full flex items-center gap-3
+        px-4 py-2.5
+        text-sm text-gray-100
+        hover:bg-gray-800/70
+        transition-all duration-200
+        rounded-lg
+      "
+    >
+      <FiLayers className="text-[16px] text-gray-400" />
+      <span>Create New Playlist</span>
+    </button>
+   
+   </Link>
+
+   <Link
+   to="/announcement"
+   >
+    <button
+      className="
+        w-full flex items-center gap-3
+        px-4 py-2.5
+        text-sm text-gray-100
+        hover:bg-gray-800/70
+        transition-all duration-200
+        rounded-lg
+      "
+    >
+      <VscGitStashApply className="text-[16px] text-gray-400" />
+      <span>Create New Campaign</span>
+    </button>
+    </Link>
+
+  </div>
+
+  {/* Divider */}
+  {/* <div className="border-t border-[#21262d]" />
+
+  
+  <div className="py-1.5">
+    <button
+      className="
+        w-full flex items-center gap-3
+        px-4 py-2.5
+        text-sm text-gray-100
+        hover:bg-[#161b22]
+        transition-all duration-150
+      "
+    >
+      <FiGrid className="text-[16px] text-gray-400" />
+      <span>Manage Posts</span>
+    </button>
+
+    <button
+      className="
+        w-full flex items-center gap-3
+        px-4 py-2.5
+        text-sm text-gray-100
+        hover:bg-[#161b22]
+        transition-all duration-150
+      "
+    >
+      <FiLayers className="text-[16px] text-gray-400" />
+      <span>Manage Playlists</span>
+    </button>
+  </div> */}
+</div>
+
+      
     </div>
   );
 }
