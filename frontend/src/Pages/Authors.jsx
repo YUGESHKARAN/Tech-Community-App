@@ -312,8 +312,8 @@ const recommendedAuthors = useMemo(() => {
       </h1> */}
 
       <div className="w-full px-4 mx-auto flex items-center gap-3 py-3 md:pt-6">
-        <IoIosGitNetwork className="text-green-400 text-3xl" />
-        <h1 className="text-2xl md:text-3xl font-semibold tracking-tight text-white">
+        <IoIosGitNetwork className="text-green-400 text-xl md:text-3xl" />
+        <h1 className="text-xl md:text-3xl font-semibold tracking-tight text-white">
           My Network
         </h1>
       </div>

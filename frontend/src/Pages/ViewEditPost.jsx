@@ -604,27 +604,27 @@ function ViewEditPost() {
 
                   <button
                     type="button"
-                    onClick={() => {
-                      const titleToUse =
-                        currentLinkTitle === "Others"
-                          ? customTitle?.trim()
-                          : currentLinkTitle.trim();
+                    // onClick={() => {
+                    //   const titleToUse =
+                    //     currentLinkTitle === "Others"
+                    //       ? customTitle?.trim()
+                    //       : currentLinkTitle.trim();
 
-                      if (titleToUse && currentLinkUrl.trim()) {
-                        setLinks([
-                          ...links,
-                          {
-                            title: titleToUse,
-                            url: currentLinkUrl.trim(),
-                            id: linkId,
-                          },
-                        ]);
-                        setCurrentLinkTitle("");
-                        setCurrentLinkUrl("");
-                        setCustomTitle("");
-                        setLinkId(null);
-                      }
-                    }}
+                    //   if (titleToUse && currentLinkUrl.trim()) {
+                    //     setLinks([
+                    //       ...links,
+                    //       {
+                    //         title: titleToUse,
+                    //         url: currentLinkUrl.trim(),
+                    //         id: linkId,
+                    //       },
+                    //     ]);
+                    //     setCurrentLinkTitle("");
+                    //     setCurrentLinkUrl("");
+                    //     setCustomTitle("");
+                    //     setLinkId(null);
+                    //   }
+                    // }}
 
                      onClick={() => {
                               const titleToUse =

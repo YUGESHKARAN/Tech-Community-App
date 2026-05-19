@@ -429,7 +429,7 @@ function AddPost() {
         <div className="w-full  mx-auto  md:px-12">
           <div className="mb-8 flex px-4 items-center justify-between">
             <div>
-              <h1 className="md:text-3xl text-2xl  font-semibold text-white tracking-tight">
+              <h1 className="md:text-3xl text-xl  font-semibold text-white tracking-tight">
                 Create New Post
               </h1>
               <p className="text-xs text-gray-400 mt-1">
@@ -471,15 +471,15 @@ function AddPost() {
                 </h2>
 
                <ul className="space-y-2 text-sm list-disc pl-5">
-  <li>Use a clear and descriptive title</li>
-  <li>Provide a contextual description</li>
-  <li>Add useful resources such as links and documents</li>
-  <li>Include a suitable thumbnail poster (1280 × 720 px)</li>
-  <li>
-    Post description support Markdown features. Use the preview option to verify the content format.
-  </li>
-  <li>YouTube links support video embedding </li>
-</ul>
+                <li>Use a clear and descriptive title</li>
+                <li>Provide a contextual description</li>
+                <li>Add useful resources such as links and documents</li>
+                <li>Include a suitable thumbnail poster (1280 × 720 px)</li>
+                <li>
+                  Post description support Markdown features. Use the preview option to verify the content format.
+                </li>
+                <li>YouTube links support video embedding </li>
+              </ul>
               </div>
 
               {/* AI Assistant (Always visible on desktop) */}

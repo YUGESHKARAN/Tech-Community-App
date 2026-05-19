@@ -193,7 +193,7 @@ function TutorPlaylist() {
       <NavBar />
       <div className="mb-8 mt-4 px-4 md:px-12 flex items-center justify-between">
         <div>
-          <h1 className="md:text-3xl text-2xl font-semibold  text-white tracking-tight">
+          <h1 className="md:text-3xl text-xl font-semibold  text-white tracking-tight">
             Create Playlist
           </h1>
           <p className="text-xs text-gray-400 mt-1">
