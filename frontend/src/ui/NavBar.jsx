@@ -182,6 +182,25 @@ function NavBar() {
         !notificationRef.current.contains(event.target)
       ) {
         setShowNotification(false); // Close notification on outside click
+
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+ const addContentRef = useRef();
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        addContentRef.current &&
+        !addContentRef.current.contains(event.target)
+      ) {
+       
         setShowAddContent(false)
       }
     };
@@ -679,7 +698,7 @@ function NavBar() {
 
 
 <div
-  ref={notificationRef}
+  ref={addContentRef}
   className={`${
     showAddContent && !showNotefication
       ? "fixed top-16 right-12 z-50 px-2 py-1 w-52 overflow-hidden rounded-2xl border border-[#30363d] bg-gray-900 shadow-2xl"
