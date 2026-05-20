@@ -12,7 +12,7 @@ const TutorPlaylistGrid = () => {
   const { tutorPlayList, playlistCount, loading, hasMore } = useTutorPlaylist();
   const [playlistCategory, setPlaylistCategory] = useState("");
   // const [searchTerm, setSearchTerm] = useState("");
-    const { searchTerm, setSearchTerm } = useContext(GlobalStateContext );
+    const { searchTerm, setSearchTerm, inputValue, setInputValue } = useContext(GlobalStateContext );
   const [isStickyActive, setIsStickyActive] = useState(false);
   useEffect(() => {
     const handleScroll = () => {
@@ -109,7 +109,7 @@ const TutorPlaylistGrid = () => {
           >
             {/* All Button */}
             <div
-              onClick={() => {setPlaylistCategory(""); setSearchTerm("")}}
+              onClick={() => {setPlaylistCategory(""); setSearchTerm(""); setInputValue("")}}
               className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1.5 md:py-2 transition-all duration-200 ${
                 playlistCategory === ""
                   ? "bg-emerald-600/20 text-emerald-400"

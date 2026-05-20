@@ -67,10 +67,10 @@ function NavBar() {
   const [loading, setLoading] = useState(false);
   const [showAddContent, setShowAddContent] = useState(false);
   const [showSearchModal, setShowSearchModal] = useState(false);
-   const { searchTerm, setSearchTerm } =
+   const { searchTerm, setSearchTerm, inputValue, setInputValue } =
       useContext(GlobalStateContext);
 
-  const [inputValue, setInputValue] = useState(searchTerm || "");
+  // const [inputValue, setInputValue] = useState(searchTerm || "");
 
   // const email = localStorage.getItem("email");
   // const email = getItem("email");
@@ -314,32 +314,36 @@ function NavBar() {
 
  <div
   onClick={() => setShowSearchModal(true)}
-  className="
-    group
+  className={`
+  group
     flex items-center gap-2
     px-3 md:py-2 py-1.5
     w-[120px] md:w-[190px]
     rounded-lg
-    
     bg-[#0f172a]/80
-    border  border-neutral-600
+    border  
    hover:border-emerald-500/30
     hover:bg-[#111827]
 
     transition-all duration-200
     cursor-pointer
     backdrop-blur-sm
-  "
+
+    ${searchTerm?'border-emerald-700':'border-neutral-600'}
+    
+    `}
 >
   {/* Search Icon */}
   <IoIosSearch
-    className="
+    className={`
       text-[17px]
-      text-gray-500
+      
       group-hover:text-emerald-400
       transition-colors duration-200
       shrink-0
-    "
+      ${searchTerm?'text-emerald-400':'text-gray-500'}
+
+      `}
   />
 
   {/* Search Text */}
@@ -371,22 +375,20 @@ function NavBar() {
           setShowSearchModal(false);
           setInputValue("")
         }}
-        className="
-          flex items-center justify-center
+        className={`
+            flex items-center justify-center
           w-4 h-4
           rounded-full
-          border border-neutral-600
-          p-0.5
+          border 
+          p-1
           text-[10px]
-          text-gray-500
-
+          
         
-          hover:text-gray-400
-          hover:border-gray-400
+
+        ${searchTerm?'text-emerald-400 border-emerald-600 hover:text-emerald-300 hover:border-emerald-600':'text-gray-500 hover:text-gray-400 hover:border-gray-400 border-neutral-600'}
 
           transition-all duration-300
-          shrink-0
-        "
+          shrink-0`}
       >
         ✕
       </button>
@@ -435,7 +437,7 @@ function NavBar() {
             <RiUser3Line className="text-lg text-emerald-400" />
           )}
 
-          <span className="text-xs text-white font-medium truncate max-w-[120px]">
+          <span className="text-xs text-gray-200  truncate max-w-[120px]">
             Hi, {username}
           </span>
         </Link>

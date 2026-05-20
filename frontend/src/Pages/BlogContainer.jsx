@@ -34,7 +34,7 @@ function BlogContainer({ activeTab, setActiveTab }) {
   const { tutorPlayList, loading:playlistLoading } = useTutorPlaylist();
   // const [searchTerm, setSearchTerm] = useState("");
   // const [searchParams] = useSearchParams();
-  const { searchTerm, setSearchTerm } = useContext(GlobalStateContext );
+  const { searchTerm, setSearchTerm, inputValue, setInputValue } = useContext(GlobalStateContext );
   const [posts, setPosts] = useState([]);
   const [postCategory, setPostCategory] = useState("");
   const [loader, setLoader] = useState(false);
@@ -275,18 +275,6 @@ const renderTextWithHashtags = (text) => {
   const filteredPosts = useMemo(() => {
     let filtered = [...posts];
 
-    // if (searchTerm.trim() !== "") {
-    //   const query = searchTerm.toLowerCase();
-
-    //   filtered = filtered.filter(
-    //     (post) =>
-    //       post.title?.toLowerCase().includes(query) ||
-    //       post.description?.toLowerCase().includes(query) ||
-    //       post.category?.toLowerCase().includes(query) ||
-    //       post.authorName?.toLowerCase().includes(query)
-    //   );
-    // }
-
     if (debouncedSearch.trim() !== "") {
       filtered = fuse.search(debouncedSearch).map((r) => r.item);
     }
@@ -343,7 +331,7 @@ const renderTextWithHashtags = (text) => {
                 >
                   {/* All Button */}
                   <div
-                    onClick={() => {setPostCategory(""); setSearchTerm("")}}
+                    onClick={() => {setPostCategory(""); setSearchTerm(""); setInputValue("")}}
                     className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1.5 md:py-2 transition-all duration-200 ${
                       postCategory === ""
                         ? "bg-emerald-600/20 text-emerald-400"

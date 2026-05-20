@@ -122,7 +122,7 @@ function SearchModal({ open, setOpen, inputValue, setInputValue }) {
   useEffect(() => {
   const timer = setTimeout(() => {
     setSearchTerm(inputValue);
-  }, 400);
+  }, 200);
 
   return () => clearTimeout(timer);
 }, [inputValue]);
