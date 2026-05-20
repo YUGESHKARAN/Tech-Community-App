@@ -318,9 +318,9 @@ function NavBar() {
     group
     flex items-center gap-2
     px-3 md:py-2 py-1.5
-    w-[150px] md:w-[190px]
+    w-[120px] md:w-[190px]
     rounded-lg
-
+    
     bg-[#0f172a]/80
     border  border-neutral-600
    hover:border-emerald-500/30
@@ -359,7 +359,7 @@ function NavBar() {
         max-w-[100px]
       "
     >
-      {searchTerm || "Search Content..."}
+      {searchTerm || "Search posts..."}
     </span>
 
     {/* Clear */}
@@ -380,10 +380,11 @@ function NavBar() {
           text-[10px]
           text-gray-500
 
-          hover:bg-white/10
-          hover:text-white
+        
+          hover:text-gray-400
+          hover:border-gray-400
 
-          transition-all duration-200
+          transition-all duration-300
           shrink-0
         "
       >
@@ -444,7 +445,7 @@ function NavBar() {
 
         {
           role!=='student' &&
-          <div className="relative lg:hidden mr-0.5">
+          <div className="relative lg:hidden ">
           {/* <IoMdNotifications */}
           <GoPlus  
             onClick={() => setShowAddContent(!showAddContent)}
@@ -452,7 +453,7 @@ function NavBar() {
           />
         </div>}
 
-        <div className="relative lg:hidden mr-1">
+        <div className="relative lg:hidden">
           {/* <IoMdNotifications */}
           <RiNotification3Line
             onClick={() => setShowNotification(!showNotefication)}
