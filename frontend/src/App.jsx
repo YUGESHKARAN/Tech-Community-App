@@ -33,133 +33,261 @@ import Dashboard from "./Pages/admin/Dashboard.jsx";
 import SingleDomainPosts from "./components/SingleDomainPosts.jsx";
 function App() {
   return (
-    <AuthProvider>
-      <GlobalStateProvider>
-        <Router>
-          <ScrollToTop/>
-          <Analytics/>
+    // <AuthProvider>
+    //   <GlobalStateProvider>
+    //     <Router>
+    //       <ScrollToTop/>
+    //       <Analytics/>
 
-          <Routes>
-            {/* Public Routes for Login & Register */}
-            <Route path="/" element={<Login />} />
-            <Route path="/changePassword" element={<ChangePassword />} />
-            <Route path="/register" element={<Register />} />
+    //       <Routes>
+    //         {/* Public Routes for Login & Register */}
+    //         <Route path="/" element={<Login />} />
+    //         <Route path="/changePassword" element={<ChangePassword />} />
+    //         <Route path="/register" element={<Register />} />
            
 
-            {/* Protected Route */}
-            <Route
-              path="/home"
-              element={<ProtectedRoute element={<HomePage />} />}
-            />
-            <Route
-              path="/addPost"
-              element={<ProtectedRoute element={<AddPost />} />}
-            />
+    //         {/* Protected Route */}
+    //         <Route
+    //           path="/home"
+    //           element={<ProtectedRoute element={<HomePage />} />}
+    //         />
+    //         <Route
+    //           path="/addPost"
+    //           element={<ProtectedRoute element={<AddPost />} />}
+    //         />
 
-            <Route
-              path="/EditPost/:PostId"
-              element={<ProtectedRoute element={<ViewEditPost />} />}
-            />
+    //         <Route
+    //           path="/EditPost/:PostId"
+    //           element={<ProtectedRoute element={<ViewEditPost />} />}
+    //         />
 
-            <Route
-              path="/viewProfile/:email"
-              element={<ProtectedRoute element={<ViewSingleAuthor />} />}
-            />
+    //         <Route
+    //           path="/viewProfile/:email"
+    //           element={<ProtectedRoute element={<ViewSingleAuthor />} />}
+    //         />
 
-            <Route
-              path="/viewpage/:email/:id"
-              element={<ProtectedRoute element={<ViewPage />} />}
-            />
+    //         <Route
+    //           path="/viewpage/:email/:id"
+    //           element={<ProtectedRoute element={<ViewPage />} />}
+    //         />
 
-            <Route
-              path="/viewpage/playlist/:email/:id"
-              element={<ProtectedRoute element={<ViewPostPlaylist />} />}
-            />
+    //         <Route
+    //           path="/viewpage/playlist/:email/:id"
+    //           element={<ProtectedRoute element={<ViewPostPlaylist />} />}
+    //         />
 
-            <Route
-              path="/viewplaylist/:playlistId"
-              element={<ProtectedRoute element={<ViewTutorPlaylist />} />}
-            />
+    //         <Route
+    //           path="/viewplaylist/:playlistId"
+    //           element={<ProtectedRoute element={<ViewTutorPlaylist />} />}
+    //         />
 
-            <Route
-              path="/profile"
-              element={<ProtectedRoute element={<ProfilePage />} />}
-            />
-            <Route
-              path="/authors"
-              element={<ProtectedRoute element={<Authors />} />}
-            />
+    //         <Route
+    //           path="/profile"
+    //           element={<ProtectedRoute element={<ProfilePage />} />}
+    //         />
+    //         <Route
+    //           path="/authors"
+    //           element={<ProtectedRoute element={<Authors />} />}
+    //         />
 
-            <Route
-              path="/techDomainDetails/:category"
-              element={<ProtectedRoute element={<SingleTechDomainDetails />} />}
-            />
+    //         <Route
+    //           path="/techDomainDetails/:category"
+    //           element={<ProtectedRoute element={<SingleTechDomainDetails />} />}
+    //         />
 
            
 
-            <Route
-              path="/yourposts"
-              element={<ProtectedRoute element={<YourPost />} />}
-            />
+    //         <Route
+    //           path="/yourposts"
+    //           element={<ProtectedRoute element={<YourPost />} />}
+    //         />
 
-            <Route
-              path="/addTutorPlaylist"
-              element={<ProtectedRoute element={<TutorPlaylist />} />}
-            />
+    //         <Route
+    //           path="/addTutorPlaylist"
+    //           element={<ProtectedRoute element={<TutorPlaylist />} />}
+    //         />
 
-            <Route
-              path="/yourTutorPlaylists"
-              element={<ProtectedRoute element={<YourPlaylist />} />}
-            />
+    //         <Route
+    //           path="/yourTutorPlaylists"
+    //           element={<ProtectedRoute element={<YourPlaylist />} />}
+    //         />
 
-            <Route
-              path="/editPlaylist/:id"
-              element={<ProtectedRoute element={<EditTutorPlaylist />} />}
-            />
+    //         <Route
+    //           path="/editPlaylist/:id"
+    //           element={<ProtectedRoute element={<EditTutorPlaylist />} />}
+    //         />
 
-            <Route
-              path="/workspace"
-              element={<ProtectedRoute element={<Workspace />} />}
-            />
+    //         <Route
+    //           path="/workspace"
+    //           element={<ProtectedRoute element={<Workspace />} />}
+    //         />
 
-            <Route
-              path="/singleAuthorPosts/:email"
-              element={<ProtectedRoute element={<SingleAuthorPosts />} />}
-            />
+    //         <Route
+    //           path="/singleAuthorPosts/:email"
+    //           element={<ProtectedRoute element={<SingleAuthorPosts />} />}
+    //         />
 
-            <Route
-              // path="/bookMarkPage/:email"
-              path="/bookMarkPage"
-              element={<ProtectedRoute element={<BookMarkPage />} />}
-            />
+    //         <Route
+    //           // path="/bookMarkPage/:email"
+    //           path="/bookMarkPage"
+    //           element={<ProtectedRoute element={<BookMarkPage />} />}
+    //         />
 
-            <Route
-              path="/announcement"
-              element={<ProtectedRoute element={<Announcement />} />}
-            />
+    //         <Route
+    //           path="/announcement"
+    //           element={<ProtectedRoute element={<Announcement />} />}
+    //         />
 
             
 
-            <Route
-              path="/control"
-              element={<ProtectedRoute element={<Control />} requiredRole="admin" />}
-            />
+    //         <Route
+    //           path="/control"
+    //           element={<ProtectedRoute element={<Control />} requiredRole="admin" />}
+    //         />
 
-            <Route
-              path="/dashboard"
-              element={<ProtectedRoute element={<Dashboard />} requiredRole="admin" />}
-            />
+    //         <Route
+    //           path="/dashboard"
+    //           element={<ProtectedRoute element={<Dashboard />} requiredRole="admin" />}
+    //         />
 
-            <Route
-              path="/community"
-              element={<ProtectedRoute element={<TechCommunity />} />}
-            />
-          </Routes>
+    //         <Route
+    //           path="/community"
+    //           element={<ProtectedRoute element={<TechCommunity />} />}
+    //         />
+    //       </Routes>
           
-        </Router>
-      </GlobalStateProvider>
-    </AuthProvider>
+    //     </Router>
+    //   </GlobalStateProvider>
+    // </AuthProvider>
+
+    <GlobalStateProvider>
+  <AuthProvider>
+    <Router>
+            <ScrollToTop/>
+            <Analytics/>
+
+            <Routes>
+              {/* Public Routes for Login & Register */}
+              <Route path="/" element={<Login />} />
+              <Route path="/changePassword" element={<ChangePassword />} />
+              <Route path="/register" element={<Register />} />
+            
+
+              {/* Protected Route */}
+              <Route
+                path="/home"
+                element={<ProtectedRoute element={<HomePage />} />}
+              />
+              <Route
+                path="/addPost"
+                element={<ProtectedRoute element={<AddPost />} />}
+              />
+
+              <Route
+                path="/EditPost/:PostId"
+                element={<ProtectedRoute element={<ViewEditPost />} />}
+              />
+
+              <Route
+                path="/viewProfile/:email"
+                element={<ProtectedRoute element={<ViewSingleAuthor />} />}
+              />
+
+              <Route
+                path="/viewpage/:email/:id"
+                element={<ProtectedRoute element={<ViewPage />} />}
+              />
+
+              <Route
+                path="/viewpage/playlist/:email/:id"
+                element={<ProtectedRoute element={<ViewPostPlaylist />} />}
+              />
+
+              <Route
+                path="/viewplaylist/:playlistId"
+                element={<ProtectedRoute element={<ViewTutorPlaylist />} />}
+              />
+
+              <Route
+                path="/profile"
+                element={<ProtectedRoute element={<ProfilePage />} />}
+              />
+              <Route
+                path="/authors"
+                element={<ProtectedRoute element={<Authors />} />}
+              />
+
+              <Route
+                path="/techDomainDetails/:category"
+                element={<ProtectedRoute element={<SingleTechDomainDetails />} />}
+              />
+
+            
+
+              <Route
+                path="/yourposts"
+                element={<ProtectedRoute element={<YourPost />} />}
+              />
+
+              <Route
+                path="/addTutorPlaylist"
+                element={<ProtectedRoute element={<TutorPlaylist />} />}
+              />
+
+              <Route
+                path="/yourTutorPlaylists"
+                element={<ProtectedRoute element={<YourPlaylist />} />}
+              />
+
+              <Route
+                path="/editPlaylist/:id"
+                element={<ProtectedRoute element={<EditTutorPlaylist />} />}
+              />
+
+              <Route
+                path="/workspace"
+                element={<ProtectedRoute element={<Workspace />} />}
+              />
+
+              <Route
+                path="/singleAuthorPosts/:email"
+                element={<ProtectedRoute element={<SingleAuthorPosts />} />}
+              />
+
+              <Route
+                // path="/bookMarkPage/:email"
+                path="/bookMarkPage"
+                element={<ProtectedRoute element={<BookMarkPage />} />}
+              />
+
+              <Route
+                path="/announcement"
+                element={<ProtectedRoute element={<Announcement />} />}
+              />
+
+              
+
+              <Route
+                path="/control"
+                element={<ProtectedRoute element={<Control />} requiredRole="admin" />}
+              />
+
+              <Route
+                path="/dashboard"
+                element={<ProtectedRoute element={<Dashboard />} requiredRole="admin" />}
+              />
+
+              <Route
+                path="/community"
+                element={<ProtectedRoute element={<TechCommunity />} />}
+              />
+            </Routes>
+            
+    </Router>
+  </AuthProvider>
+</GlobalStateProvider>
   );
 }
 
 export default App;
+

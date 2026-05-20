@@ -35,7 +35,7 @@ import {
 
 
 import { GoPlus } from "react-icons/go";
-import { IoIosClose, IoIosGitNetwork, IoMdNotifications } from "react-icons/io";
+import { IoIosClose, IoIosGitNetwork, IoIosSearch, IoMdNotifications } from "react-icons/io";
 import { GlobalStateContext } from "../GlobalStateContext";
 import { TfiAnnouncement, TfiMenuAlt } from "react-icons/tfi";
 import { VscGitStashApply, VscMenu } from "react-icons/vsc";
@@ -47,6 +47,7 @@ import getTimeAgo from "../components/DateCovertion";
 import toast from "../components/toaster/Toast";
 import { MdDashboard } from "react-icons/md";
 import { getItem, removeItem, storeItem } from "../utils/encode";
+import SearchModal from "../components/SearchModal";
 
 function NavBar() {
   const { logout } = useAuth();
@@ -65,6 +66,11 @@ function NavBar() {
   const [currentScreen, setCurrentScreen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showAddContent, setShowAddContent] = useState(false);
+  const [showSearchModal, setShowSearchModal] = useState(false);
+   const { searchTerm, setSearchTerm } =
+      useContext(GlobalStateContext);
+
+  const [inputValue, setInputValue] = useState(searchTerm || "");
 
   // const email = localStorage.getItem("email");
   // const email = getItem("email");
@@ -300,6 +306,92 @@ function NavBar() {
 
       {/* ================= RIGHT SECTION (DESKTOP + MOBILE SYNCED) ================= */}
       <div className="flex items-center gap-2 md:gap-4">
+        {/* <div className="rounded-lg border border-neutral-600 flex items-center gap-2 px-3 py-1.5 focus-within:ring-1 focus-within:ring-teal-500/40 transition">
+             <IoIosSearch className="text-gray-400" />
+             <input type="text" className="text-xs bg-gray-900 max-w-24 focus:outline-none border-0 text-gray-500" placeholder="Search" />
+ 
+        </div> */}
+
+ <div
+  onClick={() => setShowSearchModal(true)}
+  className="
+    group
+    flex items-center gap-2
+    px-3 md:py-2 py-1.5
+    w-[150px] md:w-[190px]
+    rounded-lg
+
+    bg-[#0f172a]/80
+    border  border-neutral-600
+   hover:border-emerald-500/30
+    hover:bg-[#111827]
+
+    transition-all duration-200
+    cursor-pointer
+    backdrop-blur-sm
+  "
+>
+  {/* Search Icon */}
+  <IoIosSearch
+    className="
+      text-[17px]
+      text-gray-500
+      group-hover:text-emerald-400
+      transition-colors duration-200
+      shrink-0
+    "
+  />
+
+  {/* Search Text */}
+  <div
+    className="
+      flex items-center justify-between
+      flex-1 gap-2
+      overflow-hidden
+    "
+  >
+    <span
+      className="
+        text-xs
+        md:text-gray-300
+        text-gray-400
+        truncate
+        max-w-[100px]
+      "
+    >
+      {searchTerm || "Search Content..."}
+    </span>
+
+    {/* Clear */}
+    {searchTerm && !showSearchModal && (
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          setSearchTerm("");
+          setShowSearchModal(false);
+          setInputValue("")
+        }}
+        className="
+          flex items-center justify-center
+          w-4 h-4
+          rounded-full
+          border border-neutral-600
+          p-0.5
+          text-[10px]
+          text-gray-500
+
+          hover:bg-white/10
+          hover:text-white
+
+          transition-all duration-200
+          shrink-0
+        "
+      >
+        ✕
+      </button>
+    )}
+  </div>
+</div>
         {/* 🔔 Notifications */}
         <div className="relative hidden lg:block">
           <IoMdNotifications
@@ -349,7 +441,32 @@ function NavBar() {
 
         {/* 👤 MOBILE USER */}
 
-        <div
+
+        {
+          role!=='student' &&
+          <div className="relative lg:hidden mr-0.5">
+          {/* <IoMdNotifications */}
+          <GoPlus  
+            onClick={() => setShowAddContent(!showAddContent)}
+            className="text-[27px] text-gray-300 rounded-md p-[5px] border border-neutral-600 hover:text-white transition-all duration-300 cursor-pointer transition"
+          />
+        </div>}
+
+        <div className="relative lg:hidden mr-1">
+          {/* <IoMdNotifications */}
+          <RiNotification3Line
+            onClick={() => setShowNotification(!showNotefication)}
+            className="text-[27px] text-gray-300 rounded-md p-[5px] border border-neutral-600 hover:text-white transition-all duration-300 cursor-pointer transition"
+          />
+          {notiCount > 0 && (
+            <span className="absolute -top-1 -right-1.5 text-[10px] bg-red-500 w-4 h-4 flex items-center justify-center rounded-full text-white">
+              {notiCount}
+            </span>
+          )}
+        
+        </div>
+
+         {/* <div
           className="flex lg:hidden items-center px-2 py-1
                  bg-white/5 
                  border border-white/10
@@ -369,30 +486,30 @@ function NavBar() {
               Hi, {username}
             </span>
           </Link>
-        </div>
+        </div> */}
 
-        {
-          role!=='student' &&
-          <div className="relative lg:hidden mr-0.5">
-          {/* <IoMdNotifications */}
-          <GoPlus  
-            onClick={() => setShowAddContent(!showAddContent)}
-            className="text-[27px] text-gray-300 rounded-md p-[5px] border border-neutral-600 hover:text-white transition-all duration-300 cursor-pointer transition"
-          />
-        </div>}
-
-        <div className="relative lg:hidden mr-2">
-          {/* <IoMdNotifications */}
-          <RiNotification3Line
-            onClick={() => setShowNotification(!showNotefication)}
-            className="text-[27px] text-gray-300 rounded-md p-[5px] border border-neutral-600 hover:text-white transition-all duration-300 cursor-pointer transition"
-          />
-          {notiCount > 0 && (
-            <span className="absolute -top-1 -right-1.5 text-[10px] bg-red-500 w-4 h-4 flex items-center justify-center rounded-full text-white">
-              {notiCount}
-            </span>
-          )}
-        
+         <div
+          className="
+            flex lg:hidden items-center
+            w-[28px] h-[28px]
+            items-center justify-center
+            border border-neutral-600
+            rounded-full transition
+          "
+        >
+          <Link to="/profile" className="  items-center gap-1">
+            {profile !== "undefined" ? (
+              <img
+                src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`}
+                className="w-[27px] h-[27px] rounded-full border border-emerald-400 object-cover"
+              />
+            ) : (
+              <RiUser3Line className="text-2xl px-1 py-1 px-auto text-center text-emerald-400" />
+            )}
+            {/* <span className="text-xs text-white  truncate max-w-[120px]">
+              Hi, {username}
+            </span> */}
+          </Link>
         </div>
         
 
@@ -797,6 +914,13 @@ function NavBar() {
     </button>
   </div> */}
 </div>
+
+<SearchModal
+  open={showSearchModal}
+  setOpen={setShowSearchModal}
+  inputValue = {inputValue}
+  setInputValue = {setInputValue}
+/>
 
       
     </div>

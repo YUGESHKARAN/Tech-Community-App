@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import TutorPlaylistCard from "./TutorPlaylistCard";
 import useTutorPlaylist from "../hooks/useTutorPlaylist";
 import { IoSearchOutline } from "react-icons/io5";
@@ -6,11 +6,13 @@ import Fuse from "fuse.js";
 import TutorPlaylist from "../Pages/TutorPlaylist";
 import TutorPlaylistGridSkeleton from "./loaders/TutorPlaylistGridSkeleton";
 import PillLoader from "./loaders/PillSkeleton";
+import { GlobalStateContext } from "../GlobalStateContext";
 
 const TutorPlaylistGrid = () => {
   const { tutorPlayList, playlistCount, loading, hasMore } = useTutorPlaylist();
   const [playlistCategory, setPlaylistCategory] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
+  // const [searchTerm, setSearchTerm] = useState("");
+    const { searchTerm, setSearchTerm } = useContext(GlobalStateContext );
   const [isStickyActive, setIsStickyActive] = useState(false);
   useEffect(() => {
     const handleScroll = () => {
@@ -107,7 +109,7 @@ const TutorPlaylistGrid = () => {
           >
             {/* All Button */}
             <div
-              onClick={() => setPlaylistCategory("")}
+              onClick={() => {setPlaylistCategory(""); setSearchTerm("")}}
               className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1.5 md:py-2 transition-all duration-200 ${
                 playlistCategory === ""
                   ? "bg-emerald-600/20 text-emerald-400"

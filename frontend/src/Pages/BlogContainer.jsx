@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, { useState, useEffect, useRef, useMemo, useContext } from "react";
 import { Link } from "react-router-dom";
 import {
   IoSearchOutline,
@@ -27,10 +27,14 @@ import highlightText from "../hooks/highlightText.jsx";
 import { getItem } from "../utils/encode.js";
 import PostsComponent from "../components/PostsComponent.jsx";
 import RenderTextNoMarkdown from "../components/RenderTextNoMarkdown.jsx";
+// import { useSearchParams } from "react-router-dom";
+import { GlobalStateContext } from "../GlobalStateContext.jsx";
 
 function BlogContainer({ activeTab, setActiveTab }) {
   const { tutorPlayList, loading:playlistLoading } = useTutorPlaylist();
-  const [searchTerm, setSearchTerm] = useState("");
+  // const [searchTerm, setSearchTerm] = useState("");
+  // const [searchParams] = useSearchParams();
+  const { searchTerm, setSearchTerm } = useContext(GlobalStateContext );
   const [posts, setPosts] = useState([]);
   const [postCategory, setPostCategory] = useState("");
   const [loader, setLoader] = useState(false);
@@ -290,6 +294,7 @@ const renderTextWithHashtags = (text) => {
     if (postCategory !== "") {
       filtered = filtered.filter((post) => post.category === postCategory);
     }
+    
 
     return filtered;
   }, [posts, searchTerm, postCategory, debouncedSearch]);
@@ -338,7 +343,7 @@ const renderTextWithHashtags = (text) => {
                 >
                   {/* All Button */}
                   <div
-                    onClick={() => setPostCategory("")}
+                    onClick={() => {setPostCategory(""); setSearchTerm("")}}
                     className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1.5 md:py-2 transition-all duration-200 ${
                       postCategory === ""
                         ? "bg-emerald-600/20 text-emerald-400"
