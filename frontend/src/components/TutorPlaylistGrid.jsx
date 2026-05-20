@@ -7,12 +7,14 @@ import TutorPlaylist from "../Pages/TutorPlaylist";
 import TutorPlaylistGridSkeleton from "./loaders/TutorPlaylistGridSkeleton";
 import PillLoader from "./loaders/PillSkeleton";
 import { GlobalStateContext } from "../GlobalStateContext";
+import empty_state_post from "../assets/empty_state_post.png";
 
 const TutorPlaylistGrid = () => {
   const { tutorPlayList, playlistCount, loading, hasMore } = useTutorPlaylist();
   const [playlistCategory, setPlaylistCategory] = useState("");
   // const [searchTerm, setSearchTerm] = useState("");
-    const { searchTerm, setSearchTerm, inputValue, setInputValue } = useContext(GlobalStateContext );
+  const { searchTerm, setSearchTerm, inputValue, setInputValue } =
+    useContext(GlobalStateContext);
   const [isStickyActive, setIsStickyActive] = useState(false);
   useEffect(() => {
     const handleScroll = () => {
@@ -80,7 +82,7 @@ const TutorPlaylistGrid = () => {
   // console.log("filteredPlaylist", filteredPlaylist);
   return (
     <>
-    {/* ================= SEARCH ================= */}
+      {/* ================= SEARCH ================= */}
       {/* <div className="flex mx-3 md:mx-0 justify-center mb-2 mt-2 md:mt-4 md:mb-0">
         <div className="w-full mx-auto md:max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
           <IoSearchOutline className="text-xl text-gray-400" />
@@ -97,9 +99,9 @@ const TutorPlaylistGrid = () => {
         </div>
       </div> */}
 
-        {loading && !tutorPlayList.length > 0 && <PillLoader />}
-      {tutorPlayList.length>0 && 
-              <div
+      {loading && !tutorPlayList.length > 0 && <PillLoader />}
+      {tutorPlayList.length > 0 && (
+        <div
           className={`w-full sticky top-0 z-40
                 ${isStickyActive ? "bg-gray-900 " : "bg-transparent"}`}
         >
@@ -109,7 +111,11 @@ const TutorPlaylistGrid = () => {
           >
             {/* All Button */}
             <div
-              onClick={() => {setPlaylistCategory(""); setSearchTerm(""); setInputValue("")}}
+              onClick={() => {
+                setPlaylistCategory("");
+                setSearchTerm("");
+                setInputValue("");
+              }}
               className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1.5 md:py-2 transition-all duration-200 ${
                 playlistCategory === ""
                   ? "bg-emerald-600/20 text-emerald-400"
@@ -134,25 +140,20 @@ const TutorPlaylistGrid = () => {
               </div>
             ))}
           </div>
-        </div>}
-      
-
-  
-     
+        </div>
+      )}
 
       {tutorPlayList.length > 0 && (
-         <>
-
-
-         <div
-          // className="
-          //   flex gap-6 overflow-x-auto pb-4
-          //   sm:grid sm:grid-cols-2
-          //   lg:grid-cols-3
-          //   xl:grid-cols-5
-          //   sm:overflow-visible
-          // "
-          className="
+        <>
+          <div
+            // className="
+            //   flex gap-6 overflow-x-auto pb-4
+            //   sm:grid sm:grid-cols-2
+            //   lg:grid-cols-3
+            //   xl:grid-cols-5
+            //   sm:overflow-visible
+            // "
+            className="
      pb-4 gap-6 md:gap-6
     grid grid-cols-1
     md:grid-cols-2
@@ -166,54 +167,60 @@ const TutorPlaylistGrid = () => {
      px-3 md:px-0
     px-auto
   "
-        >
-          {filteredPlaylist?.map((playlist) => (
-            <div
-              key={playlist._id}
-              // className="min-w-[200px]  sm:min-w-0 "
-              className="min-w-[150px]  sm:min-w-0 "
-            >
-              <TutorPlaylistCard
-                playlist={playlist}
-                setPlaylistCategory={setPlaylistCategory}
-                debouncedSearch={debouncedSearch}
-              />
-            </div>
-          ))}
-
-          {loading && tutorPlayList?.length > 0 && (
-            <div className="col-span-full flex justify-center">
-              <div className="relative flex items-center justify-center">
-                {/* Outer Oval Ring */}
-                <div className="w-7 h-7 border-2 border-neutral-700 border-t-emerald-400 rounded-full animate-spin" />
-
-                {/* Inner Glow Pulse */}
-                {/* <div className="absolute w-10 h-10 md:w-12 md:h-12 bg-emerald-500/20 rounded-full blur-md animate-pulse" /> */}
+          >
+            {filteredPlaylist?.map((playlist) => (
+              <div
+                key={playlist._id}
+                // className="min-w-[200px]  sm:min-w-0 "
+                className="min-w-[150px]  sm:min-w-0 "
+              >
+                <TutorPlaylistCard
+                  playlist={playlist}
+                  setPlaylistCategory={setPlaylistCategory}
+                  debouncedSearch={debouncedSearch}
+                />
               </div>
-            </div>
-          )}
-          {!hasMore && (
-            <p className="text-center text-[10px] md:text-xs col-span-full py-4 text-gray-500">
-              No more playlists
-            </p>
-          )}
+            ))}
 
-          
-        </div>
+            {loading && tutorPlayList?.length > 0 && (
+              <div className="col-span-full flex justify-center">
+                <div className="relative flex items-center justify-center">
+                  {/* Outer Oval Ring */}
+                  <div className="w-7 h-7 border-2 border-neutral-700 border-t-emerald-400 rounded-full animate-spin" />
 
+                  {/* Inner Glow Pulse */}
+                  {/* <div className="absolute w-10 h-10 md:w-12 md:h-12 bg-emerald-500/20 rounded-full blur-md animate-pulse" /> */}
+                </div>
+              </div>
+            )}
+            {!hasMore && filteredPlaylist?.length > 0 && (
+              <p className="text-center text-[10px] md:text-xs col-span-full py-4 text-gray-500">
+                No more playlists
+              </p>
+            )}
+          </div>
         </>
       )}
 
-     
-      {
-        tutorPlayList?.length===0 && !loading && <p className="text-gray-400 flex justify-center items-center h-56 text-center py-4">
+      {!loading && filteredPlaylist?.length == 0 && (
+        <div className="flex h-[70vh] md:h-[55vh] flex-col justify-center items-center ">
+          <img className="w-48 md:w-60 " src={empty_state_post} alt="" />
+          <p className="text-gray-400 max-w-xs md:max-w-md text-sm md:text-base flex justify-center items-center text-center">
+            No playlist available !
+          </p>
+        </div>
+      )}
+
+      {tutorPlayList?.length === 0 && !loading && (
+        <p className="text-gray-400 flex justify-center items-center h-56 text-center py-4">
           No playlists available!
         </p>
-      }
-            {  tutorPlayList.length===0 && loading &&
-            <div className="px-auto px-3 md:px-0">
-          <TutorPlaylistGridSkeleton  />
-      </div>}
+      )}
+      {tutorPlayList.length === 0 && loading && (
+        <div className="px-auto px-3 md:px-0">
+          <TutorPlaylistGridSkeleton />
+        </div>
+      )}
       {/* {  tutorPlayList.length===0 && loading && <TutorPlaylistGridSkeleton  />} */}
     </>
   );

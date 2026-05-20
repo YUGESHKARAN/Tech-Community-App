@@ -14,7 +14,7 @@ import axiosInstance from "../instances/Axiosinstances";
 import { PiBookmarksSimpleFill, PiBookmarksSimpleLight } from "react-icons/pi";
 // import { toast } from "react-toastify";
 import user from "../images/user.png";
-import { ToastContainer, toast } from "react-toastify";
+import empty_state_post from "../assets/empty_state_post.png";
 
 import useTutorPlaylist from "../hooks/useTutorPlaylist";
 import TutorPlaylistGrid from "../components/TutorPlaylistGrid.jsx";
@@ -31,10 +31,11 @@ import RenderTextNoMarkdown from "../components/RenderTextNoMarkdown.jsx";
 import { GlobalStateContext } from "../GlobalStateContext.jsx";
 
 function BlogContainer({ activeTab, setActiveTab }) {
-  const { tutorPlayList, loading:playlistLoading } = useTutorPlaylist();
+  const { tutorPlayList, loading: playlistLoading } = useTutorPlaylist();
   // const [searchTerm, setSearchTerm] = useState("");
   // const [searchParams] = useSearchParams();
-  const { searchTerm, setSearchTerm, inputValue, setInputValue } = useContext(GlobalStateContext );
+  const { searchTerm, setSearchTerm, inputValue, setInputValue } =
+    useContext(GlobalStateContext);
   const [posts, setPosts] = useState([]);
   const [postCategory, setPostCategory] = useState("");
   const [loader, setLoader] = useState(false);
@@ -85,12 +86,10 @@ function BlogContainer({ activeTab, setActiveTab }) {
         setPage((prev) => prev + 1);
       }
     } catch (err) {
-      console.log("error",err.message);
-    }
-
-    finally{
+      console.log("error", err.message);
+    } finally {
       setLoading(false);
-    isFetching.current = false;
+      isFetching.current = false;
     }
   };
 
@@ -161,18 +160,18 @@ function BlogContainer({ activeTab, setActiveTab }) {
         },
       );
 
-       setPosts((prevPosts) =>
-          prevPosts.map((post) =>
-            post._id === postId
-              ? {
-                  ...post,
-                  likes: post.likes.includes(email)
-                    ? post.likes.filter((like) => like !== email) // Unlike the post
-                    : [...post.likes, email], // Like the post
-                }
-              : post,
-          ),
-        );
+      setPosts((prevPosts) =>
+        prevPosts.map((post) =>
+          post._id === postId
+            ? {
+                ...post,
+                likes: post.likes.includes(email)
+                  ? post.likes.filter((like) => like !== email) // Unlike the post
+                  : [...post.likes, email], // Like the post
+              }
+            : post,
+        ),
+      );
 
       // if (response.status === 200) {
       //   // setPosts((prevPosts) =>
@@ -187,34 +186,31 @@ function BlogContainer({ activeTab, setActiveTab }) {
       //   //       : post,
       //   //   ),
       //   // );
-      //   console.log("post liked")      
+      //   console.log("post liked")
       // }
     } catch (err) {
-
       console.log("Error updating views:", err);
     }
   };
 
-const renderTextWithHashtags = (text) => {
-  if (!text) return null;
+  const renderTextWithHashtags = (text) => {
+    if (!text) return null;
 
-  // Convert escaped line breaks into spaces
-  const cleanedText = text
-    .replace(/\\r\\n|\\n|\\r\n/g, " ")
+    // Convert escaped line breaks into spaces
+    const cleanedText = text
+      .replace(/\\r\\n|\\n|\\r\n/g, " ")
 
-    // Remove markdown symbols
-    .replace(/[#*_~`>\-\[\]\(\)!]/g, "")
+      // Remove markdown symbols
+      .replace(/[#*_~`>\-\[\]\(\)!]/g, "")
 
-    // Remove extra spaces
-    .replace(/\s+/g, " ")
-    .trim();
+      // Remove extra spaces
+      .replace(/\s+/g, " ")
+      .trim();
 
-  return (
-    <span className="text-xs text-gray-400  break-words">
-      {cleanedText}
-    </span>
-  );
-};
+    return (
+      <span className="text-xs text-gray-400  break-words">{cleanedText}</span>
+    );
+  };
 
   const addBookMarkPostId = async (postId) => {
     try {
@@ -282,11 +278,9 @@ const renderTextWithHashtags = (text) => {
     if (postCategory !== "") {
       filtered = filtered.filter((post) => post.category === postCategory);
     }
-    
 
     return filtered;
   }, [posts, searchTerm, postCategory, debouncedSearch]);
-
 
   return (
     <div className="min-h-screen relative  ">
@@ -295,12 +289,11 @@ const renderTextWithHashtags = (text) => {
         {activeTab === "playlists" && (
           <section className="space-y-4 md:px-0 px-auto  mx-auto w-full md:w-full ">
             <div className=" md:px-4 shadow-inner">
-         
-               <TutorPlaylistGrid />
+              <TutorPlaylistGrid />
             </div>
           </section>
         )}
-        
+
         {activeTab === "posts" && (
           <>
             {/* ================= SEARCH ================= */}
@@ -331,7 +324,11 @@ const renderTextWithHashtags = (text) => {
                 >
                   {/* All Button */}
                   <div
-                    onClick={() => {setPostCategory(""); setSearchTerm(""); setInputValue("")}}
+                    onClick={() => {
+                      setPostCategory("");
+                      setSearchTerm("");
+                      setInputValue("");
+                    }}
                     className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1.5 md:py-2 transition-all duration-200 ${
                       postCategory === ""
                         ? "bg-emerald-600/20 text-emerald-400"
@@ -356,21 +353,17 @@ const renderTextWithHashtags = (text) => {
                     </div>
                   ))}
                 </div>
-              </div>  
+              </div>
             )}
 
             {loading && !posts.length > 0 && <PillLoader />}
-
-            
-
-            
 
             <section className="w-full  mx-auto">
               {/* <h2 className="text-2xl mx-4 md:mx-0 md:text-4xl font-bold tracking-wide text-gray-200">
                   Recommended Posts
                 </h2> */}
 
-                {/* <PostsComponent filteredPosts={filteredPosts} posts={posts} setPosts={setPosts} loading={loading} hasMore={hasMore} debouncedSearch={debouncedSearch}  postCategory={postCategory} setPostCategory={setPostCategory}/> */}
+              {/* <PostsComponent filteredPosts={filteredPosts} posts={posts} setPosts={setPosts} loading={loading} hasMore={hasMore} debouncedSearch={debouncedSearch}  postCategory={postCategory} setPostCategory={setPostCategory}/> */}
               <div className="mx-auto grid grid-cols-1 md:px-2 w-full  mx-auto  md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-10  h-auto">
                 {filteredPosts?.map((data, index) => (
                   <article
@@ -408,7 +401,6 @@ const renderTextWithHashtags = (text) => {
                       </div>
                     </div>
 
-
                     <Link
                       to={`/viewpage/${data.authorEmail}/${data._id}`}
                       onClick={() => postViews(data.authorEmail, data._id)}
@@ -425,7 +417,6 @@ const renderTextWithHashtags = (text) => {
                       duration-500  md:hover:scale-[1.05]  md:h-48  object-cover"
                       />
                     </Link>
-                    
 
                     <div className="px-4 py-4 space-y-2">
                       <h3 className="text-base font-semibold text-white line-clamp-1">
@@ -433,7 +424,7 @@ const renderTextWithHashtags = (text) => {
                         {highlightText(data.title, debouncedSearch)}
                       </h3>
 
-                         <RenderTextNoMarkdown text={data.description} />
+                      <RenderTextNoMarkdown text={data.description} />
                     </div>
 
                     <div className="flex items-center justify-between px-4 pb-7 ">
@@ -509,27 +500,35 @@ const renderTextWithHashtags = (text) => {
                   </article>
                 ))}
 
-                {!posts.length > 0 && loading && <BlogSkeleton />}
-                {posts.length > 0 && loading && (
-                    <div className="col-span-full flex justify-center">
-                      <div className="relative flex items-center justify-center">
-                        {/* Outer Oval Ring */}
-                        <div className="w-7 h-7  border-2 border-neutral-700 border-t-emerald-400 rounded-full animate-spin" />
+                {!posts?.length > 0 && loading && <BlogSkeleton />}
+                {posts?.length > 0 && loading && (
+                  <div className="col-span-full flex justify-center">
+                    <div className="relative flex items-center justify-center">
+                      {/* Outer Oval Ring */}
+                      <div className="w-7 h-7  border-2 border-neutral-700 border-t-emerald-400 rounded-full animate-spin" />
 
-                        {/* Inner Glow Pulse */}
-                        {/* <div className="absolute w-10 h-10 md:w-12 md:h-12 bg-emerald-500/20 rounded-full blur-md animate-pulse" /> */}
-                      </div>
+                      {/* Inner Glow Pulse */}
+                      {/* <div className="absolute w-10 h-10 md:w-12 md:h-12 bg-emerald-500/20 rounded-full blur-md animate-pulse" /> */}
                     </div>
-                 
+                  </div>
                 )}
 
-                {!hasMore && (
+                {!hasMore && filteredPosts?.length > 0 && (
                   <p className="text-center text-[10px] md:text-xs col-span-full py-4 text-gray-500">
                     No more posts
                   </p>
                 )}
               </div>
             </section>
+
+            {!loading && filteredPosts?.length == 0 && (
+              <div className="flex h-[70vh] md:h-[55vh] flex-col justify-center items-center ">
+                <img className="w-48 md:w-60 " src={empty_state_post} alt="" />
+                <p className="text-gray-400 max-w-xs md:max-w-md text-sm md:text-base flex justify-center items-center text-center">
+                  No posts availale !
+                </p>
+              </div>
+            )}
 
             {/* <section className="w-full mt-6">
               <h2 className="text-xl md:text-2xl font-semibold text-gray-200 mb-6">
@@ -699,8 +698,6 @@ const renderTextWithHashtags = (text) => {
           </>
         )}
       </div>
-
-      <ToastContainer />
     </div>
   );
 }
