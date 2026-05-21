@@ -2,7 +2,7 @@
 const AnnouncementSkeleton = () => {
   return (
     <>
-    {Array.from({ length: 4 }).map((_, index) => (
+    {Array.from({ length: 1 }).map((_, index) => (
         <div className="bg-[#111827] border border-slate-800 rounded-lg p-4 md:p-7 space-y-6 animate-pulse">
       
       {/* Header */}
