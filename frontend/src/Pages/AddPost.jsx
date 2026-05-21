@@ -563,7 +563,7 @@ function AddPost() {
                 <ul className="text-center text-gray-400 mt-2 ">
                   <li className="text-[8px] md:text-[11px] tracking-wide md:h-4 h-3">
                     {" "}
-                    Make sure to very the content before publishing it !
+                    Make sure to very the content before publishing it !!
                   </li>
                   <li className="text-[6px] text-gray-400  md:text-[9px] h-3">
                     To know more about DraftMate-AI visit {" "}
