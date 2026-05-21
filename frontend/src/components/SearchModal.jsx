@@ -183,21 +183,37 @@ function SearchModal({ open, setOpen, inputValue, setInputValue }) {
 
   return (
     <div
+      // className="
+      //   fixed inset-0 z-[999]
+      //   flex items-start justify-center
+      //   pt-16 px-4
+      // "
+
       className="
-        fixed inset-0 z-[999]
+        fixed
+        top-0 left-0
+        w-full
+        h-dvh
+        z-[999]
         flex items-start justify-center
         pt-16 px-4
+        overflow-hidden
       "
     >
       {/* Backdrop */}
      <div
-  onClick={() => setOpen(false)}
-  className={`absolute inset-0 ${
-    location.pathname !== "/home"
-      ? "bg-black/50 backdrop-blur-sm"
-      : ""
-  }`}
-/>
+      onClick={() => setOpen(false)}
+      // className={`absolute inset-0 ${
+      //   location.pathname !== "/home"
+      //     ? "bg-black/50 backdrop-blur-sm"
+      //     : ""
+      // }`}
+      className={`absolute top-0 left-0 w-full h-full ${
+      location.pathname !== "/home"
+        ? "bg-black/50 backdrop-blur-sm"
+        : ""
+      }`}
+    />
 
       {/* Modal */}
       <div
