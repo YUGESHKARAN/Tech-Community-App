@@ -279,7 +279,7 @@ function SearchModal({ open, setOpen, inputValue, setInputValue }) {
                 handleSearch();
               }
             }}
-            placeholder="Search posts and playlists contents..."
+            placeholder="Search post and playlist contents..."
             className="
               flex-1
               min-w-0
