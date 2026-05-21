@@ -317,12 +317,12 @@ function NavBar() {
   className={`
   group
     flex items-center gap-2
-    px-3 md:py-2 py-1.5
+    px-3  md:py-2 py-1.5
     w-[120px] md:w-[190px]
     rounded-lg
     bg-[#0f172a]/80
     border  
-   hover:border-emerald-500/30
+    hover:border-emerald-500/30
     hover:bg-[#111827]
 
     transition-all duration-200
@@ -350,13 +350,15 @@ function NavBar() {
   <div
     className="
       flex items-center justify-between
-      flex-1 gap-2
+      flex-1 md:gap-2
+      gap-1
       overflow-hidden
     "
   >
     <span
       className="
         text-xs
+        md:text-[13px]
         md:text-gray-300
         text-gray-400
         truncate

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import NavBar from "../ui/NavBar";
 
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Footer from "../ui/Footer";
 import Chatbot from "../images/chatbt.gif";
 import { ReactTyped } from "react-typed";
@@ -164,7 +164,7 @@ function AddPost() {
     }
   };
 
-   const sanitizeUrl = (rawUrl) => {
+  const sanitizeUrl = (rawUrl) => {
     try {
       const parsed = new URL(rawUrl);
       if (parsed.protocol === "http:" || parsed.protocol === "https:") {
@@ -417,8 +417,7 @@ function AddPost() {
   // };
 
   // console.log("links",links)
-  
-  
+
   // console.log("documents",documents)
 
   return (
@@ -470,22 +469,23 @@ function AddPost() {
                   Post Guidelines
                 </h2>
 
-               <ul className="space-y-2 text-sm list-disc pl-5">
-                <li>Use a clear and descriptive title</li>
-                <li>Provide a contextual description</li>
-                <li>Add useful resources such as links and documents</li>
-                <li>Include a suitable thumbnail poster (1280 × 720 px)</li>
-                <li>
-                  Post description support Markdown features. Use the preview option to verify the content format.
-                </li>
-                <li>YouTube links support video embedding </li>
-              </ul>
+                <ul className="space-y-2 text-sm list-disc pl-5">
+                  <li>Use a clear and descriptive title</li>
+                  <li>Provide a contextual description</li>
+                  <li>Add useful resources such as links and documents</li>
+                  <li>Include a suitable thumbnail poster (1280 × 720 px)</li>
+                  <li>
+                    Post description support Markdown features. Use the preview
+                    option to verify the content format.
+                  </li>
+                  <li>YouTube links support video embedding </li>
+                </ul>
               </div>
 
               {/* AI Assistant (Always visible on desktop) */}
               <div
                 className={`bg-[#0f172a]/80  lg:w-11/12 h-[450px] border border-emerald-500/20
-      bg-gradient-to-br from-emerald-500/5 to-transparent rounded-lg md:rounded-xl px-4 py-6 md:p-6 flex flex-col
+      bg-gradient-to-br from-emerald-500/5 to-transparent rounded-lg md:rounded-xl px-4 pt-6 pb-3 md:p-6 md:pb-4 flex flex-col
           ${!chatbot ? "hidden lg:flex" : "flex"}`}
               >
                 <h2 className="text-lg font-semibold text-white flex items-center gap-2 mb-4">
@@ -560,6 +560,22 @@ function AddPost() {
                     <VscSend />
                   </button>
                 </form>
+                <ul className="text-center text-gray-400 mt-2 ">
+                  <li className="text-[8px] md:text-[11px] tracking-wide md:h-4 h-3">
+                    {" "}
+                    Make sure to very the content before publishing it !
+                  </li>
+                  <li className="text-[6px] text-gray-400  md:text-[9px] h-3">
+                    To know more about DraftMate-AI visit {" "}
+                    <Link
+                      to={`${window.location.origin}/viewpage/yugeshkaran01@gmail.com/69fc146c5ea31bc1ac08c77d`}
+                      className="text-emerald-400 underline hover:text-emerald-300 transition-all duration-300 text-[5px] inline-block text-wrap md:text-[8px]"
+                    >
+                      {" "}
+                      DraftMate DOC ↗
+                    </Link>{" "}
+                  </li>
+                </ul>
               </div>
             </div>
 
@@ -585,7 +601,7 @@ function AddPost() {
 
                   {fieldErrors.title && (
                     <p className="text-xs md:text-sm flex items-center gap-1 text-red-500 mt-1">
-                      <TbAlertTriangleFilled/> {fieldErrors.title}
+                      <TbAlertTriangleFilled /> {fieldErrors.title}
                     </p>
                   )}
                 </div>
@@ -686,7 +702,7 @@ function AddPost() {
                       >
                         {description?.trim()?.length > 0 ? (
                           // renderTextWithHashtags(description)
-                          <RenderTextWithHashtags text = {description}/>
+                          <RenderTextWithHashtags text={description} />
                         ) : (
                           <span className="text-gray-500">
                             Preview content will appear here...
@@ -706,8 +722,6 @@ function AddPost() {
 
                   {/* Footer Info */}
                   <div className="flex items-center justify-between mt-2">
-                   
-
                     <span className="md:text-[11px] text-[9px] text-gray-500">
                       {description?.length} characters
                     </span>
@@ -716,7 +730,7 @@ function AddPost() {
                   {/* Error */}
                   {fieldErrors.description && (
                     <p className="text-xs md:text-sm flex items-center gap-1 text-red-500 mt-2">
-                       <TbAlertTriangleFilled />  {fieldErrors.description}
+                      <TbAlertTriangleFilled /> {fieldErrors.description}
                     </p>
                   )}
                 </div>
@@ -749,7 +763,7 @@ function AddPost() {
 
                   {fieldErrors.category && (
                     <p className="text-xs md:text-sm flex items-center gap-1 text-red-500 mt-1">
-                       <TbAlertTriangleFilled />  {fieldErrors.category}
+                      <TbAlertTriangleFilled /> {fieldErrors.category}
                     </p>
                   )}
                   {category === "Others" && (
@@ -763,7 +777,7 @@ function AddPost() {
                   )}
                   {fieldErrors.finalCategory && (
                     <p className="text-xs md:text-sm flex items-center gap-1 text-red-500 mt-1">
-                       <TbAlertTriangleFilled /> {fieldErrors.finalCategory}
+                      <TbAlertTriangleFilled /> {fieldErrors.finalCategory}
                     </p>
                   )}
                 </div>
@@ -823,7 +837,7 @@ function AddPost() {
 
                   {fieldErrors.image && (
                     <p className="text-xs md:text-sm flex items-center gap-1 text-red-500 mt-1">
-                     <TbAlertTriangleFilled />   {fieldErrors.image}
+                      <TbAlertTriangleFilled /> {fieldErrors.image}
                     </p>
                   )}
                 </div>
@@ -912,30 +926,28 @@ function AddPost() {
                       //   }
                       // }}
 
-                         onClick={() => {
-                              const titleToUse =
-                                currentLinkTitle === "Others"
-                                  ? customTitle?.trim()
-                                  : currentLinkTitle.trim();
-                              const sanitizedUrl = sanitizeUrl(
-                                currentLinkUrl.trim(),
-                              );
-                              if (titleToUse && sanitizedUrl) {
-                                const newLink = {
-                                  title: titleToUse,
-                                  url: sanitizedUrl
-                                };
-                                setLinks([...links, newLink]);
-                                setCurrentLinkTitle("");
-                                setCurrentLinkUrl("");
-                                setCustomTitle("");
-                              } else if (titleToUse) {
-                                toast.error(
-                                  "Invalid URL",
-                                  "Please enter a valid http(s) URL.",
-                                );
-                              }
-                            }}
+                      onClick={() => {
+                        const titleToUse =
+                          currentLinkTitle === "Others"
+                            ? customTitle?.trim()
+                            : currentLinkTitle.trim();
+                        const sanitizedUrl = sanitizeUrl(currentLinkUrl.trim());
+                        if (titleToUse && sanitizedUrl) {
+                          const newLink = {
+                            title: titleToUse,
+                            url: sanitizedUrl,
+                          };
+                          setLinks([...links, newLink]);
+                          setCurrentLinkTitle("");
+                          setCurrentLinkUrl("");
+                          setCustomTitle("");
+                        } else if (titleToUse) {
+                          toast.error(
+                            "Invalid URL",
+                            "Please enter a valid http(s) URL.",
+                          );
+                        }
+                      }}
                       className="px-4 bg-emerald-500/20 w-fit py-1 md:py-2   text-black text-emerald-400  text-xs rounded-md hover:bg-emerald-600/20 transition-all duration-300"
                     >
                       Add
