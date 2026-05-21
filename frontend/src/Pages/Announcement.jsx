@@ -1115,7 +1115,7 @@ const renderTextWithHashtags = (text) => {
           </aside>
 
           {/* ================= MAIN FEED ================= */}
-          <main className="space-y-6 md:space-y-8">
+          <main className={`space-y-6 md:space-y-8 md:block ${showGuidelines && 'hidden md:block'}`}>
             <div
               className={`${role !== "student" ? "bg-[#111827] border border-slate-800 rounded-lg p-5" : "bg-[#111827] border border-slate-800 rounded-lg p-5"}`}
             >
