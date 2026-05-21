@@ -606,7 +606,7 @@ function NavBar() {
             close={setIsSidebarOpen}
           />
 
-          {role === "admin" && (
+          {role !== "student" && (
             <NavIcon
               to="/authors"
               icon={<IoIosGitNetwork />}
@@ -673,7 +673,7 @@ function NavBar() {
               close={setIsSidebarOpen}
             />
           )}
-          {role !== "admin" && (
+          {role === "student" && (
             <NavTile
               to="/authors"
               icon={<IoIosGitNetwork />}
@@ -683,7 +683,7 @@ function NavBar() {
             />
           )}
 
-          {role == "coordinator" && (
+          {/* {role == "coordinator" && (
             <NavTile
               to="/profile"
               icon={<FaUserAlt />}
@@ -691,7 +691,7 @@ function NavBar() {
               subtitle="Account"
               close={setIsSidebarOpen}
             />
-          )}
+          )} */}
 
           <NavTile
             to="/announcement"
