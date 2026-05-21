@@ -133,7 +133,7 @@ useEffect(() => {
             <Link
             to={`/viewProfile/${msg.email}`}
             >
-            {
+            {/* {
               msg.profile ? <img
               src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${msg.profile}`}
               className="w-7 h-7 bg-white rounded-full object-cover flex-shrink-0 ring-1 ring-white/10"
@@ -146,6 +146,25 @@ useEffect(() => {
                       {initials(msg.user)}
                     </div>
 
+            } */}
+
+            {
+              msg.profile &&
+              msg.profile !== "undefined" &&
+              msg.profile.trim() !== "" ? (
+                <img
+                  src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${msg.profile}`}
+                  className="w-7 h-7 bg-white rounded-full object-cover flex-shrink-0 ring-1 ring-white/10"
+                  alt="User Avatar"
+                />
+              ) : (
+                <div
+                  className="md:w-7 md:h-7 w-6 h-6 rounded-full flex items-center justify-center text-[9px] md:text-[10px] font-semibold text-white shrink-0"
+                  style={{ backgroundColor: avatarColor(msg.user) }}
+                >
+                  {initials(msg.user)}
+                </div>
+              )
             }
             </Link>
 
