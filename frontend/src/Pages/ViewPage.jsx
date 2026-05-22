@@ -62,6 +62,7 @@ function ViewPage() {
   // const { sheetRef, handleDragStart } = useDragSheet(setViewComments);
   const sheetRef = useRef(null);
   const [isInputFocused, setIsInputFocused] = useState(false);
+  const [msgLoading, setMsgLoading] = useState(false);
 
   // Fetch post data
   useEffect(() => {
@@ -141,10 +142,14 @@ function ViewPage() {
   useEffect(() => {
     const getComments = async () => {
       try {
+        setMsgLoading(true)
         const response = await axiosInstance.get(`/blog/posts/${email}/${id}`);
         setMessages(response.data.data.messages);
       } catch (err) {
         console.error("Error fetching comments", err);
+      }
+      finally{
+        setMsgLoading(false)
       }
     };
 
@@ -986,6 +991,7 @@ function ViewPage() {
                   <CommentsBox
                     messages={messages}
                     setMessages={setMessages}
+                    msgLoading={msgLoading}
                     viewComments={viewComments}
                     userEmail={userEmail}
                     email={email}
@@ -1084,6 +1090,7 @@ function ViewPage() {
                     <CommentsBox
                       messages={messages}
                       setMessages={setMessages}
+                       msgLoading={msgLoading}
                       viewComments={viewComments}
                       userEmail={userEmail}
                       email={email}

@@ -10,7 +10,7 @@ import toast from "./toaster/Toast.jsx";
 import axiosInstance from "../instances/Axiosinstances.jsx";
 import { Link } from "react-router-dom";
 
-const CommentsBox = ({ messages, setMessages, viewComments, userEmail, email, postId, socket }) => {
+const CommentsBox = ({ messages, setMessages, viewComments, userEmail, email, msgLoading, postId, socket }) => {
   const commentBoxRef = useRef(null);
   const [isUserScrolling, setIsUserScrolling] = useState(false);
   const [menuOpenId, setMenuOpenId] = useState(null);
@@ -114,7 +114,8 @@ useEffect(() => {
         viewComments ? "h-full  md:h-96 overflow-y-auto" : " overflow-y-hidden"
       } flex flex-col scrollbar-hide transition-all duration-300`}
     >
-      {messages.length > 0 ? (
+      {messages.length > 0 && !msgLoading && 
+
         (viewComments ? messages : messages.slice(0, 1)).map((msg, index) => (
           <div
             key={msg._id || `temp-${index}`}
@@ -271,12 +272,22 @@ useEffect(() => {
             </div>
           </div>
         ))
-      ) : (
-        <div className="py-10 flex flex-col items-center gap-2 text-center">
+      
+      }
+
+       
+      {messages?.length === 0 &&  !msgLoading &&
+        <div className="py-10 flex flex-col h-full items-center justify-center gap-2 text-center">
           <span className="text-2xl">💬</span>
           <p className="text-xs text-gray-500">No comments yet. Be the first!</p>
         </div>
-      )}
+      }
+      {messages?.length === 0 && msgLoading &&
+        <div className="py-10 flex flex-col h-full items-center justify-center gap-2 text-center">
+          {/* <span className="text-2xl">💬</span> */}
+          <p className="text-xs text-gray-500">Loading...</p>
+        </div>
+      }
     </div>
   );
 };
