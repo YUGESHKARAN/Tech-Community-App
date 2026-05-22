@@ -208,11 +208,15 @@ function SearchModal({ open, setOpen, inputValue, setInputValue }) {
       //     ? "bg-black/50 backdrop-blur-sm"
       //     : ""
       // }`}
-      className={`absolute top-0 left-0 w-full h-full ${
-      location.pathname !== "/home"
-        ? "bg-black/50 backdrop-blur-sm"
-        : ""
-      }`}
+
+      // className={`absolute top-0 left-0 w-full h-full ${
+      // location.pathname !== "/home"
+      //   ? "bg-black/50 backdrop-blur-sm"
+      //   : ""
+      // }`}
+
+        className="absolute top-0 left-0 w-full h-full bg-black/50 backdrop-blur-sm "
+
     />
 
       {/* Modal */}
