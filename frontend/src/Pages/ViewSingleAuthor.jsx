@@ -12,7 +12,7 @@ import { BsPersonSquare } from "react-icons/bs";
 import { PiLinkSimpleFill } from "react-icons/pi";
 import { getItem } from "../utils/encode";
 import ProfileViewSkeleton from "../components/loaders/ProfileViewSkeleton";
-import empty_state_author from "../assets/author_not_found_2.png"
+import empty_state_author from "../assets/author_not_found_3.png"
 function ViewSingleAuthor() {
   const { email } = useParams();
   // const role = localStorage.getItem("role");
