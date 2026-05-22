@@ -27,6 +27,7 @@ function AddPost() {
   const [customTitle, setCustomTitle] = useState("");
   const token = Cookies.get("token");
   const navigate = useNavigate();
+  const fileInputRef = useRef(null);
 
   const [fieldErrors, setFieldErrors] = useState({
     title: "",
@@ -988,18 +989,64 @@ function AddPost() {
                     Source Documents
                   </label>
 
-                  <input
+                  {/* <input
                     type="file"
                     // ref={fileInputRef}
                     multiple
                     accept=".pdf,.doc,.docx"
-                    onChange={onDocumentsChange}
+                
+                  onChange={(e) => {
+                  const files = Array.from(e.target.files);
+
+                  // existing uploaded docs + new selected docs
+                  const totalFiles = documents.length + files.length;
+
+                  // max 5 files total
+                  if (totalFiles > 5) {
+                    alert(`Maximum 5 documents allowed. You already have ${documents.length} document(s).`);
+                    e.target.value = "";
+                    return;
+                  }
+
+                  onDocumentsChange(e);
+                }}
                     className="w-full mt-2 text-xs  text-gray-300 
                       file:mr-4 file:px-2 file:py-1 file:rounded-md 
                       file:border-0 file:bg-emerald-500/20 file:hover:bg-emerald-600/20 file:text-emerald-400 
                       file:cursor-pointer"
+                  /> */}
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    multiple
+                    accept=".pdf,.doc,.docx"
+                    onChange={(e) => {
+                      const files = Array.from(e.target.files);
+
+                      const totalFiles = documents.length + files.length;
+
+                      if (totalFiles > 5) {
+                        alert(
+                          `Maximum 5 documents allowed. You already have ${documents.length} document(s).`
+                        );
+
+                        e.target.value = "";
+                        return;
+                      }
+
+                      onDocumentsChange(e);
+
+                      // reset native input
+                      e.target.value = "";
+                    }}
+                    className="w-full mt-2 text-xs text-gray-300 
+                      file:mr-4 file:px-2 file:py-1 file:rounded-md 
+                      file:border-0 file:bg-emerald-500/20 
+                      file:hover:bg-emerald-600/20 
+                      file:text-emerald-400 
+                      file:cursor-pointer"
                   />
-                  {documents.length > 0 && (
+                  {/* {documents.length > 0 && (
                     <div className="mt-3 flex flex-col gap-1.5">
                       {documents.map((doc, idx) => (
                         <div
@@ -1017,7 +1064,45 @@ function AddPost() {
                         </div>
                       ))}
                     </div>
-                  )}
+                  )} */}
+              {documents.length > 0 && (
+                <div className="mt-3 flex flex-col gap-1.5">
+                  {documents.map((doc, idx) => (
+                    <div
+                      key={doc.name + doc.size}
+                      className="flex items-center justify-between gap-3 bg-gray-900 px-3 py-2 rounded-lg border border-emerald-500/20 text-xs text-gray-300"
+                    >
+                      <div className="flex items-center gap-2 overflow-hidden">
+                        <span className="text-emerald-400 font-semibold shrink-0">
+                          {idx + 1}.
+                        </span>
+
+                        <span className="truncate">
+                          {doc.name}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-3 shrink-0">
+                        <span className="text-gray-500">
+                          {(doc.size / 1024).toFixed(1)} KB
+                        </span>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setDocuments((prev) =>
+                              prev.filter((_, i) => i !== idx)
+                            );
+                          }}
+                          className="text-red-400 hover:text-red-300 transition border border-red-500/20 hover:border-red-500/40 px-2 py-1 rounded-md"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                )}
                 </div>
 
                 {/* SUBMIT */}

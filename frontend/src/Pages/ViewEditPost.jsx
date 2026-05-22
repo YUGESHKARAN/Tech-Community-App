@@ -689,7 +689,7 @@ function ViewEditPost() {
               {/* Current Documents with Edit Option */}
               { singlePostData.documents?.length > 0 && (
                 <div className="rounded-xl space-y-2">
-                  <div className="flex justify-between items-center">
+                  {/* <div className="flex justify-between items-center">
                     <label className="text-sm text-gray-300 font-medium">
                       Current Documents
                     </label>
@@ -700,6 +700,35 @@ function ViewEditPost() {
                         multiple
                         accept=".pdf,.doc,.docx"
                         onChange={onDocumentsChange}
+                        className="hidden"
+                      />
+                    </label>
+                  </div> */}
+
+                  <div className="flex justify-between items-center">
+                    <label className="text-sm text-gray-300 font-medium">
+                      Current Documents
+                    </label>
+
+                    <label className="cursor-pointer text-emerald-400 hover:text-emerald-300 transition">
+                      <MdEdit className="text-lg" />
+
+                      <input
+                        type="file"
+                        multiple
+                        accept=".pdf,.doc,.docx"
+                        onChange={(e) => {
+                          const files = Array.from(e.target.files);
+
+                          // max 5 files
+                          if (files.length + singlePostData.documents.length > 5) {
+                            alert("You can upload a maximum of 5 files.");
+                            e.target.value = "";
+                            return;
+                          }
+
+                          onDocumentsChange(e);
+                        }}
                         className="hidden"
                       />
                     </label>
@@ -724,7 +753,7 @@ function ViewEditPost() {
                     ))}
                   </div>
  
-                  {selectedDocs.length > 0 && (
+                  {/* {selectedDocs.length > 0 && (
                     <div className="pt-2 space-y-2">
                       <p className="text-xs text-gray-400 ">Newly Selected Document(s):</p>
                       <div className="flex flex-col gap-1">
@@ -736,6 +765,47 @@ function ViewEditPost() {
                           >
                             <span className="text-emerald-400 font-semibold">{idx + 1}.</span>
                             <p className="line-clamp-1">{doc}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )} */}
+                  {selectedDocs.length > 0 && (
+                    <div className="pt-2 space-y-2">
+                      <p className="text-xs text-gray-400">
+                        Newly Selected Document(s):
+                      </p>
+
+                      <div className="flex flex-col gap-1">
+                        {selectedDocs.map((doc, idx) => (
+                          <div
+                            key={doc.name + doc.size}
+                            className="flex items-center justify-between gap-3 bg-gray-900 px-3 py-2 rounded-lg border border-emerald-500/20 text-xs text-gray-300"
+                          >
+                            <div className="flex items-center gap-2 overflow-hidden">
+                              <span className="text-emerald-400 font-semibold">
+                                {idx + 1}.
+                              </span>
+
+                              <p className="line-clamp-1 truncate">
+                                {doc}
+                              </p>
+                            </div>
+
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setSelectedDocs((prev) =>
+                                  prev.filter((_, i) => i !== idx)
+                                );
+                                 setDocuments((prev) =>
+                                  prev.filter((_, i) => i !== idx)
+                                );
+                              }}
+                              className="text-red-400 hover:text-red-300 transition border border-red-500/20 hover:border-red-500/40 px-2 py-1 rounded-md"
+                            >
+                              Remove
+                            </button>
                           </div>
                         ))}
                       </div>
