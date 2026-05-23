@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import blog1 from "../images/img_not_found.png";
 import { useParams } from "react-router-dom";
 import NavBar from "../ui/NavBar";
@@ -39,7 +39,7 @@ function ViewEditPost() {
   // const [loading, setLoading] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
   const [oldCategory, setOldCategory] = useState("")
- 
+   const fileInputRef = useRef(null);
   const [postLinks, setPostLinks] = useState([]);
   const [preview, setPreview] = useState(false);
 
@@ -172,10 +172,10 @@ function ViewEditPost() {
   const removeLinks = async (linkId) => {
     try {
       const confirm = window.confirm(
-        "Are you sure you want to delete this link?",
+        "Are you sure you want to delete this link ?",
       );
       if (!confirm) {
-        setLoading(false);
+        // setLoading(false);
         return; // If user cancels, exit the function
       }
       const response = await axiosInstance.delete(
@@ -193,6 +193,40 @@ function ViewEditPost() {
       console.log("error", err);
     }
   };
+
+  const removeDoc = async(documentKey) =>{
+    console.log("postid", PostId);
+    console.log("document", documentKey)
+    try{
+      const confirm = window.confirm(
+        "Are you sure you want to delete this document ?");
+      
+        if(!confirm){
+          return;
+        }
+      
+
+        const response = await axiosInstance.delete(`/blog/posts/document/${email}/${PostId}`,
+          {
+            data:{documentKey}
+          },
+        );
+
+        if (response.status===200){
+          toast.success('Deleted', 'Document removed successfully')
+          setSinglePostData(prev => ({
+              ...prev,
+              documents: response.data.documents,
+            }));
+          }
+    }
+
+    catch(err)
+    {
+      toast.error('Error', 'Error removing the document');
+      console.log("error", err.message);
+    }
+  }
 
   //  const renderTextWithHashtags = (text) => {
   //     if (!text) return null;
@@ -262,6 +296,7 @@ function ViewEditPost() {
   // console.log("single post data", singlePostData);
   // console.log("selectedDocs", selectedDocs)
   // console.log("doc_size", doc_size)
+  // console.log("singlePostData", singlePostData)
   return (
 
     <div className="relative w-full bg-gray-900 min-h-screen">
@@ -685,6 +720,58 @@ function ViewEditPost() {
                 )}
               </div>
 
+
+              {
+                singlePostData.documents?.length === 0 && <>
+                      {/* DOCUMENTS */}
+                <div>
+                  <label className="text-sm text-gray-400 font-medium">
+                    Source Documents
+                  </label>
+
+              {documents.length > 0 && (
+                <div className="mt-3 flex flex-col gap-1.5">
+                  {documents.map((doc, idx) => (
+                    <div
+                      key={doc.name + doc.size}
+                      className="flex items-center justify-between gap-3 bg-gray-900 px-3 py-2 rounded-lg border border-emerald-500/20 text-xs text-gray-300"
+                    >
+                      <div className="flex items-center gap-2 overflow-hidden">
+                        <span className="text-emerald-400 font-semibold shrink-0">
+                          {idx + 1}.
+                        </span>
+
+                        <span className="truncate">
+                          {doc.name}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-3 shrink-0">
+                        <span className="text-gray-500">
+                          {(doc.size / 1024).toFixed(1)} KB
+                        </span>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setDocuments((prev) =>
+                              prev.filter((_, i) => i !== idx)
+                            );
+                          }}
+                          className="text-red-400 hover:text-red-300 transition border border-red-500/20 hover:border-red-500/40 px-2 py-1 rounded-md"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                )}
+                </div>
+                  
+                </>
+              }
+
               
               {/* Current Documents with Edit Option */}
               { singlePostData.documents?.length > 0 && (
@@ -741,6 +828,9 @@ function ViewEditPost() {
                         key={doc.name + doc.size}
                         className="flex flex-col gap-1  items-start "
                       >
+                        <div className="flex items-center gap-3">
+
+                        
                         <a
                           href={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${doc}`}
                           target="_blank"
@@ -749,27 +839,20 @@ function ViewEditPost() {
                         >
                           {doc.split("-").slice(5).join("-")}
                         </a>
+                        {/* Delete */}
+                          <button
+                            type="button"
+                            onClick={() => removeDoc(doc)}
+                            className="p-1 md:p-1.5 rounded-full bg-red-600 hover:bg-red-500"
+                          >
+                            <IoIosRemoveCircleOutline className="text-white text-xs md:text-sm" />
+                          </button>
+                          </div>
                       </div>
                     ))}
                   </div>
  
-                  {/* {selectedDocs.length > 0 && (
-                    <div className="pt-2 space-y-2">
-                      <p className="text-xs text-gray-400 ">Newly Selected Document(s):</p>
-                      <div className="flex flex-col gap-1">
-                        {selectedDocs.map((doc, idx) => (
-                          <div
-                            // key={idx}
-                            key={doc.name + doc.size}
-                            className="flex items-center  gap-2 w-fit md:w-fit bg-gray-900 px-3 py-2 rounded-lg border border-emerald-500/20 text-xs text-gray-300"
-                          >
-                            <span className="text-emerald-400 font-semibold">{idx + 1}.</span>
-                            <p className="line-clamp-1">{doc}</p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )} */}
+              
                   {selectedDocs.length > 0 && (
                     <div className="pt-2 space-y-2">
                       <p className="text-xs text-gray-400">
