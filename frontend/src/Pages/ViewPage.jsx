@@ -455,7 +455,7 @@ function ViewPage() {
   // console.log("email", email);
   // console.log("userEmail", userEmail);
 
-  console.log("post id", postId);
+  // console.log("post id", postId);
   // console.log("singlepost data", singlePostData);
 
   return (
@@ -627,7 +627,7 @@ function ViewPage() {
                 {/* Actions */}
                 <div className="flex items-center md:justify-end justify-between   md:gap-3">
                   {/* AI Assistant */}
-                  <div className="text-3xl block  md:hidden md:text-4xl text-white">
+                  <div className="text-3xl block border border-gray-700/50 rounded-full  md:hidden md:text-4xl text-white">
                     <AITechAssistant
                       currentPostId={singlePostData._id}
                       category={singlePostData.category}
@@ -649,7 +649,7 @@ function ViewPage() {
                       flex items-center justify-center gap-2
                       px-3 py-1 md:px-4 md:py-2
                       rounded-3xl md:rounded-full
-                      bg-gray-800/50  md:border md:border-neutral-700 border-neutral-800
+                      bg-gray-800/50  border border-gray-700/50 
                       md:hidden
                       active:scale-95
                       transition
@@ -674,7 +674,7 @@ function ViewPage() {
                       flex items-center gap-2
                       px-3 py-1.5 md:px-4 md:py-2
                       rounded-3xl md:rounded-full
-                      bg-gray-800/50  md:border md:border-neutral-700 border-neutral-800
+                      bg-gray-800/50  border border-gray-700/50 
                       
                       active:scale-95
                       transition
@@ -703,7 +703,7 @@ function ViewPage() {
                   flex items-center gap-2
                   px-3 py-1.5 md:px-4 md:py-2
                   rounded-3xl md:rounded-full
-                  bg-gray-800/50  md:border md:border-neutral-700 border-neutral-800
+                  bg-gray-800/50  border border-gray-700/50 
                   
                   active:scale-95
                   transition
@@ -722,7 +722,7 @@ function ViewPage() {
                       flex items-center gap-2
                       px-3 py-1.5 md:px-4 md:py-2
                       rounded-3xl md:rounded-full
-                      bg-gray-800/50  md:border md:border-neutral-700 border-neutral-800
+                      bg-gray-800/50  border border-gray-700/50 
                       active:scale-95
                       transition
                     "
