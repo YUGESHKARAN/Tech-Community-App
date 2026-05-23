@@ -20,6 +20,7 @@ const {
   getBookmarkedPosts,
   removePostsLinks,
   getAllBookmarkIds,
+  removePostDocument,
   // getPostsByAuthorsCategory,
   // getUniqueCategoriesByAuthor
   // updateMessage,
@@ -57,6 +58,7 @@ router.put("/likes/:email/:id", limiter, authenticateToken, postLikes)
 
 router.delete("/:email/:postId", limiter, authenticateToken,  deletePost);
 router.delete("/links/:email/:postId", limiter, authenticateToken,  removePostsLinks);
+router.delete("/document/:email/:postId",limiter, authenticateToken,  removePostDocument);
 
 // router.put("/comment/:email/:postId/:id",limiter, authenticateToken, updateMessage )
 // router.delete("/comment/:email/:postId/:id",limiter, authenticateToken, deleteComment )

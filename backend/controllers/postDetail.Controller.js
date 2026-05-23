@@ -1494,6 +1494,60 @@ const removePostsLinks = async (req, res) => {
   }
 };
 
+
+// remove documents
+const removePostDocument = async (req, res) => {
+  try {
+    const { email, postId } = req.params;
+    const { documentKey }   = req.body; // S3 key of the document to remove
+
+    if (!email || !postId || !documentKey) {
+      return res.status(400).json({
+        message: "Author email, postId and documentKey are required",
+      });
+    }
+
+    const author = await Author.findOne({ email: { $eq: email } }).select('_id');
+    if (!author) {
+      return res.status(404).json({ message: "Author not found" });
+    }
+
+    const post = await Post.findOne({ _id: postId, authorId: author._id });
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    const initialLength = post.documents.length;
+
+    post.documents = post.documents.filter(doc => doc !== documentKey);
+
+    if (post.documents.length === initialLength) {
+      return res.status(404).json({ message: "Document not found in post" });
+    }
+
+    await post.save({ validateBeforeSave: false });
+
+    // delete from S3 after DB save succeeds — don't orphan the file
+    try {
+      await s3.send(new DeleteObjectCommand({
+        Bucket: bucketName,
+        Key:    documentKey,
+      }));
+    } catch (s3Err) {
+      // S3 delete failed but DB is already updated — log and continue
+      // file becomes orphaned but post is consistent
+      console.error("S3 document delete failed:", s3Err.message);
+    }
+
+    res.status(200).json({
+      message:   "Document removed successfully",
+      documents: post.documents,
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 // old---------------------------------------------------------
 // const deletePost = async (req, res) => {   
 //   try {
@@ -2086,6 +2140,7 @@ module.exports = {
   getBookmarkedPosts,
   removePostsLinks,
   getAllBookmarkIds,
+  removePostDocument,
   // getPostsByAuthorsCategory,
   // getUniqueCategoriesByAuthor
   // updateMessage,
