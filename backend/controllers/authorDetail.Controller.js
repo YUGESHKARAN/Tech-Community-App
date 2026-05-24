@@ -18,6 +18,7 @@ const { ReturnDocument } = require("mongodb");
 
 const notificationUrl = process.env.NOTIFICATION_URL || "http://localhost:5173";
 
+
 const transporter = nodemailer.createTransport({
   service: process.env.EMAIL_PROVIDER, // Or your preferred email provider
   auth: {
@@ -1339,6 +1340,12 @@ const addAnnouncement = async (req, res) => {
       parsedLinks = [];
     }
 
+    
+    const announcementUrl =
+      process.env.NOTIFICATION_URL || "http://localhost:5173";
+
+    const url = `${announcementUrl}/announcement`;
+
     const newAnnouncement = {
       user,
       title,
@@ -1348,6 +1355,15 @@ const addAnnouncement = async (req, res) => {
       profile,
       authorEmail: email,
       poster: uniqueFilename,
+    };
+
+    // fix: author.authorname — authorname was undefined before
+    const newNotification = {
+      user,
+      authorEmail: email,
+      profile:     profile || "",
+      message:     `New announcement: "${title}"`,
+      url
     };
 
     // let filter = {};
@@ -1383,21 +1399,46 @@ const addAnnouncement = async (req, res) => {
       .filter(Boolean)
       .filter((recipientEmail) => recipientEmail !== email); // fix: exclude sender
 
-    // Bulk push announcements to DB
+    // Bulk  push both announcement AND notification in one bulkWrite
     if (recipients.length > 0) {
       const bulkOps = recipients.map((r) => ({
         updateOne: {
           filter: { email: r.email },
-          update: { $push: { announcement: newAnnouncement } },
+          update: { $push: { announcement: newAnnouncement} },
         },
       }));
       await Author.bulkWrite(bulkOps);
     }
 
-    const announcementUrl =
-      process.env.NOTIFICATION_URL || "http://localhost:5173";
+    // Push notification only to recipients excluding sender
+      if (recipientEmails.length > 0) {
+        const bulkOps = recipientEmails.map((email) => ({
+          updateOne: {
+            filter: { email },
+            update: {
+              $push: { notification: newNotification },
+            },
+          },
+        }));
 
-    const url = `${announcementUrl}/announcement`;
+        await Author.bulkWrite(bulkOps);
+      }
+    // push both announcement AND notification in one bulkWrite
+    // if (recipientEmails.length > 0) {
+    //   const bulkOps = recipientEmails.map(recipientEmail => ({
+    //     updateOne: {
+    //       filter: { email: recipientEmail },
+    //       update: {
+    //         $push: {
+    //           announcement: newAnnouncement,
+    //           notification: newNotification,
+    //         },
+    //       },
+    //     },
+    //   }));
+    //   await Author.bulkWrite(bulkOps);
+    // }
+
     const linkHtml =
       parsedLinks.length > 0
         ? `<p>Links:<br>${parsedLinks
