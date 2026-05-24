@@ -1056,7 +1056,7 @@ function ProfilePage() {
                   disabled={loading}
                   className="px-4 py-2 text-sm font-medium rounded-lg bg-red-600 text-white hover:bg-red-500 transition-colors disabled:opacity-50"
                 >
-                  {loading ? "Deleting…" : "Delete Account"}
+                  {loading ? "Deleting…" : "Delete"}
                 </button>
               </div>
             </div>
