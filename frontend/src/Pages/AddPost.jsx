@@ -709,7 +709,7 @@ function AddPost() {
                 </form>
                 <div className="flex items-center justify-center  gap-1 pt-1 pb-3 px-6">
                   <p className="text-[9px] md:text-[10px] text-gray-400 tracking-wide">
-                    Verify AI-generated content before publishing.
+                    Verify generated content before publishing.
                   </p>
 
                   <Link
