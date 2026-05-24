@@ -287,6 +287,19 @@ function AddPost() {
     }
   }, [messages, isTyping]);
 
+  const postViews = async (authorEmail) => {
+    try {
+      await axiosInstance.put(
+        `/blog/posts/views/yugeshkaran01@gmail.com/69fc146c5ea31bc1ac08c77d`,
+        {
+          emailAuthor: authorEmail,
+        },
+      );
+    } catch (err) {
+      console.error("Error updating views:", err);
+    }
+  };
+
   // const renderTextWithHashtags = (text) => {
   //   if (!text) return null;
 
@@ -484,7 +497,8 @@ function AddPost() {
               </div>
 
               {/* AI Assistant (Always visible on desktop) */}
-              <div
+
+               {/* <div
                 className={`bg-[#0f172a]/80  lg:w-11/12 h-[450px] border border-emerald-500/20
       bg-gradient-to-br from-emerald-500/5 to-transparent rounded-lg md:rounded-xl px-4 pt-6 pb-3 md:p-6 md:pb-4 flex flex-col
           ${!chatbot ? "hidden lg:flex" : "flex"}`}
@@ -557,7 +571,7 @@ function AddPost() {
                     disabled={isTyping}
                     className="text-2xl md:text-2xl transition-all duration-300 hover:text-gray-400 text-gray-500 block transition-all duration-300  disabled:text-gray-700 disabled:cursor-not-allowed"
                   >
-                    {/* Send */}
+             
                     <VscSend />
                   </button>
                 </form>
@@ -577,13 +591,149 @@ function AddPost() {
                     </Link>{" "}
                   </li>
                 </ul>
+              </div> */}
+
+             {/* backdrop-blur-xl */}
+              <div
+                className={`relative overflow-hidden
+                    bg-[#0f172a]/80
+                    border border-emerald-500/20
+                    shadow-[0_0_40px_rgba(16,185,129,0.06)]
+                    rounded-2xl
+                    lg:w-11/12
+                    h-[450px]
+                    pb-2
+                    flex flex-col
+                   
+                ${!chatbot ? "hidden lg:flex" : "flex"}`}
+              >
+                {/* Header */}
+                <div className="relative z-10 px-5 py-4 border-b border-white/[0.06] flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="relative">
+                      <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
+                        <img src={glow} className="w-5 h-5" />
+                      </div>
+                    </div>
+
+                    <div>
+                      <h2 className="text-sm font-semibold tracking-wide text-white">
+                        DraftMate AI
+                      </h2>
+
+                      <p className="text-[11px] text-gray-400 md:text-gray-400 mt-0.5">
+                        Content Refinement Assistant
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* <div className="hidden md:flex items-center gap-2 text-[10px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-full">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    Active
+                  </div> */}
+                </div>
+
+                <div
+                  ref={containerRef}
+                  className="flex-1 overflow-y-auto px-4 pt-6 pb-3 md:p-6 md:pb-4 emerald-scrollbar space-y-4 h-[600px] pr-2"
+                >
+                  {messages.map((msg, idx) => (
+                    <div
+                      key={msg._id || `msg-${idx}`}
+                      className={`flex  ${
+                        msg.direction === "outgoing"
+                          ? "justify-end"
+                          : "justify-start"
+                      }`}
+                    >
+                      <div
+                        className={`
+                          w-full
+                          px-4
+                          py-2.5
+                          rounded-2xl
+                          text-xs
+                          leading-relaxed
+                          break-words
+
+                          
+                          whitespace-pre-wrap
+                          ${
+                            msg.direction === "outgoing"
+                              ? "bg-gray-800 md:ml-5  text-white rounded-br-md"
+                              : "bg-emerald-700/20 text-gray-200 md:mr-5 rounded-bl-md"
+                          }
+                        `}
+                      >
+                        {msg.message}
+                      </div>
+                    </div>
+                  ))}
+
+                  {draftMateLoading && (
+                    <div className="flex items-center gap-3 px-1">
+                      <div className="flex items-center gap-1">
+                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-bounce [animation-delay:-0.3s]" />
+                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-bounce [animation-delay:-0.15s]" />
+                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-bounce" />
+                      </div>
+
+                      <span className="text-xs text-gray-400">
+                        DraftMate is refining your content...
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    const input = e.target.message;
+                    handleSend(input.value);
+                    input.value = "";
+                  }}
+                  className="flex pb-1 pt-4 px-4  gap-3 outline-none overflow-hidden"
+                >
+                  <input
+                    name="message"
+                    placeholder="Ask DraftMate to transform your content..."
+                    className="flex-1 px-4  rounded-xl border border-gray-700 py-2 bg-gray-900 text-xs outline-none text-white"
+                  />
+
+                  <button
+                    disabled={isTyping}
+                    className="text-2xl md:text-2xl transition-all duration-300 hover:text-gray-400 text-gray-500 block transition-all duration-300  disabled:text-gray-700 disabled:cursor-not-allowed"
+                  >
+                    <VscSend />
+                  </button>
+                </form>
+                <div className="flex items-center justify-center  gap-1 pt-1 pb-3 px-6">
+                  <p className="text-[9px] md:text-[10px] text-gray-400 tracking-wide">
+                    Verify AI-generated content before publishing.
+                  </p>
+
+                  <Link
+                    to={`${window.location.origin}/viewpage/yugeshkaran01@gmail.com/69fc146c5ea31bc1ac08c77d`}
+                    onClick={() => postViews(email)}
+                    className="
+                      text-[9px]
+                      md:text-[10px]
+                      text-emerald-400
+                      hover:text-emerald-300
+                      transition-all duration-300
+                      whitespace-nowrap
+                    "
+                  >
+                    DraftMate Docs ↗
+                  </Link>
+                </div>
               </div>
             </div>
 
             {/* RIGHT COLUMN FORM */}
             <div
               className={`bg-[#0f172a]/80   border  border-gray-800 rounded-lg px-4 py-6  md:p-8 shadow-xl
-        ${chatbot ? "hidden lg:block" : "block"}`}
+               ${chatbot ? "hidden lg:block" : "block"}`}
             >
               <form onSubmit={handleSubmit} className="space-y-9  md:space-y-7">
                 {/* TITLE */}
@@ -1027,7 +1177,7 @@ function AddPost() {
 
                       if (totalFiles > 5) {
                         alert(
-                          `Maximum 5 documents allowed. You already have ${documents.length} document(s).`
+                          `Maximum 5 documents allowed. You already have ${documents.length} document(s).`,
                         );
 
                         e.target.value = "";
@@ -1065,44 +1215,42 @@ function AddPost() {
                       ))}
                     </div>
                   )} */}
-              {documents.length > 0 && (
-                <div className="mt-3 flex flex-col gap-1.5">
-                  {documents.map((doc, idx) => (
-                    <div
-                      key={doc.name + doc.size}
-                      className="flex items-center justify-between gap-3 bg-gray-900 px-3 py-2 rounded-lg border border-emerald-500/20 text-xs text-gray-300"
-                    >
-                      <div className="flex items-center gap-2 overflow-hidden">
-                        <span className="text-emerald-400 font-semibold shrink-0">
-                          {idx + 1}.
-                        </span>
-
-                        <span className="truncate">
-                          {doc.name}
-                        </span>
-                      </div>
-
-                      <div className="flex items-center gap-3 shrink-0">
-                        <span className="text-gray-500">
-                          {(doc.size / 1024).toFixed(1)} KB
-                        </span>
-
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setDocuments((prev) =>
-                              prev.filter((_, i) => i !== idx)
-                            );
-                          }}
-                          className="text-red-400 hover:text-red-300 transition border border-red-500/20 hover:border-red-500/40 px-2 py-1 rounded-md"
+                  {documents.length > 0 && (
+                    <div className="mt-3 flex flex-col gap-1.5">
+                      {documents.map((doc, idx) => (
+                        <div
+                          key={doc.name + doc.size}
+                          className="flex items-center justify-between gap-3 bg-gray-900 px-3 py-2 rounded-lg border border-emerald-500/20 text-xs text-gray-300"
                         >
-                          Remove
-                        </button>
-                      </div>
+                          <div className="flex items-center gap-2 overflow-hidden">
+                            <span className="text-emerald-400 font-semibold shrink-0">
+                              {idx + 1}.
+                            </span>
+
+                            <span className="truncate">{doc.name}</span>
+                          </div>
+
+                          <div className="flex items-center gap-3 shrink-0">
+                            <span className="text-gray-500">
+                              {(doc.size / 1024).toFixed(1)} KB
+                            </span>
+
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setDocuments((prev) =>
+                                  prev.filter((_, i) => i !== idx),
+                                );
+                              }}
+                              className="text-red-400 hover:text-red-300 transition border border-red-500/20 hover:border-red-500/40 px-2 py-1 rounded-md"
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-                )}
+                  )}
                 </div>
 
                 {/* SUBMIT */}

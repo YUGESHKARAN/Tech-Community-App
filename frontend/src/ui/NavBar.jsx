@@ -12,6 +12,7 @@ import {
 import { IoHome, IoLogOut, IoLogOutOutline, IoPeople } from "react-icons/io5";
 import { FaPlus, FaUserAlt } from "react-icons/fa";
 import bloglogo from "../assets/bloglogo.png";
+// import bloglogo from "../assets/logo_preview.png";
 import {
   RiBookMarkedFill,
   RiMenuFold3Fill,
