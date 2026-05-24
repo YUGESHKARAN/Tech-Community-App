@@ -511,7 +511,7 @@ const getPlaylistById = async (req, res) => {
     // preserve domain filter as a safety guard (same behaviour as before)
     const postDocs = await Post.find({
       _id: { $in: playlistPostIds },
-      category: domain, // same domain filter the original code applied
+      // category: domain, // same domain filter the original code applied
     }).lean();
 
     // build map for O(1) lookup — same pattern as original
