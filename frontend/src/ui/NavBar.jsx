@@ -583,7 +583,7 @@ function NavBar() {
         </div>
 
         {/* ================= PRIMARY ICON NAV ================= */}
-        <div className="flex justify-between px-6 py-3">
+        <div className="flex justify-between px-6 pt-2 pb-3">
           {role != "admin" && (
             <NavIcon
               to="/home"
@@ -647,7 +647,7 @@ function NavBar() {
         </div>
 
         {/* ================= SECONDARY TILES ================= */}
-        <div className="grid grid-cols-2 gap-3 px-5 py-4 pb-6">
+        <div className="grid grid-cols-2 gap-3 px-5 pt-2 pb-4">
           {role == "admin" && (
             <NavTile
               to="/dashboard"
