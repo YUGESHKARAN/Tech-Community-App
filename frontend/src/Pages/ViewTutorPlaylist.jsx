@@ -246,7 +246,7 @@ function ViewTutorPlaylist() {
                   alt="Playlist Banner"
                   className="w-full h-48 md:h-[60vh]  object-cover md:object-contain"
                 />
-                <span className="absolute top-2 right-2 bg-black/80 text-white flex items-center gap-1 text-[10px] px-2 py-1 rounded-full">
+                <span className="absolute bottom-2 right-2 bg-black/80 text-white flex items-center gap-1 text-[10px] px-2 py-1 rounded-full">
                           <SlTag className="text-[11px] " />  {playlistData?.domain}
                           </span>
                 
