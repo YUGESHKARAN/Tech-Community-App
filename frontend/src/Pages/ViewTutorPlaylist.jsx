@@ -222,7 +222,7 @@ function ViewTutorPlaylist() {
           {loading ? "Loading Playlist..." : playlistData?.title}
         </h1>
         {!loading && Object.keys(playlistData).length> 0 && (
-          <div className="grid w-full mx-auto md:h-screen grid-cols-1 lg:grid-cols-2 lg:gap-8 gap-6">
+          <div className="grid w-full mx-auto md:h-screen grid-cols-1 lg:grid-cols-2 lg:gap-8 gap-0">
             {/* LEFT PANEL (Banner + Info) */}
             <div className="lg:col-span-1 md:hidden  p-1 md:sticky top-4 self-start  md:p-0 space-y-2 md:space-y-4">
               {/* Banner */}
@@ -243,6 +243,7 @@ function ViewTutorPlaylist() {
                   alt="Playlist Banner"
                   className="w-full h-48 md:h-[60vh]  object-cover md:object-contain"
                 />
+                
               </div>
 
               {/* Playlist Info */}
@@ -353,11 +354,13 @@ function ViewTutorPlaylist() {
 
                   {/* right content */}
                   <div className=" absolute top-0 right-0 flex flex-col items-start gap-2">
+                  
                     <p className="text-xs text-gray-400">
-                      Playlist • {playlistData?.post_ids?.length}
+                     Playlist • {playlistData?.post_ids?.length}
                     </p>
 
                     <div className="flex items-center gap-2">
+                      
                       <div
                         onClick={() => {
                           addBookMarkPostIdPlaylist(playlistData._id);
@@ -381,6 +384,7 @@ function ViewTutorPlaylist() {
                         <IoShareSocial className="md:text-xl text-teal-400" />
                       </div>
                     </div>
+                    
                   </div>
                 </div>
               </div>
@@ -421,9 +425,9 @@ function ViewTutorPlaylist() {
 
                 {/* Title + Meta */}
                 <div className="absolute bottom-4 left-4 right-4 space-y-2">
-                  {/* <h1 className="text-xl md:text-2xl font-semibold text-white leading-snug">
-                    {playlistData.title}
-                  </h1> */}
+                  <h1 className="text-xl md:text-2xl font-semibold text-white leading-snug">
+                    {playlistData?.domain}
+                  </h1>
 
                   <div className="flex items-center justify-between">
                     <p className="text-xs md:text-sm text-gray-300">
