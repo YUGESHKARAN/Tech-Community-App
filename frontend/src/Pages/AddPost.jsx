@@ -451,11 +451,11 @@ function AddPost() {
             </div>
 
             {/* Mobile AI toggle */}
-            <div className="lg:hidden ">
+            <div className="lg:hidden">
               {!chatbot ? (
                 <button
                   onClick={() => setChatbot(true)}
-                  className="flex items-center gap-2  outline-none px-3 py-2 text-sm rounded-lg bg-gradient-to-r from-purple-600 to-blue-500"
+                  className="flex items-center gap-2 px-3 py-1.5 text-sm rounded-lg bg-gradient-to-r from-purple-600 to-blue-500"
                 >
                   <img src={glow} className="w-4 h-4" alt="" />
                   AI
@@ -484,7 +484,6 @@ function AddPost() {
                   </button>
               )}
             </div>
-       
           </div>
 
           <div className="grid grid-cols-1 px-2 md:px-0  lg:grid-cols-[400px_1fr] gap-4 lg:gap-0">
