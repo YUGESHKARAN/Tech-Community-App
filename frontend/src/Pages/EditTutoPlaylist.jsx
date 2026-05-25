@@ -266,7 +266,7 @@ const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
         className="w-full mx-auto px-3 md:px-12 pb-6 grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-6"
       >
         {/* LEFT — PLAYLIST DETAILS */}
-        <div className="lg:col-span-1 md:bg-gray-900/70   md:border border-gray-800 rounded-lg space-y-8">
+        <div className="lg:col-span-1 md:bg-gray-900/70   md:border border-emerald-500/20 rounded-lg space-y-8">
           <div className="p-2 md:p-6 space-y-7 shadow-lg">
             <h2 className="text-lg hidden  tracking-wide lg:block font-semibold text-emerald-400">
               Playlist Details

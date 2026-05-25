@@ -747,7 +747,7 @@ function AddPost() {
 
             {/* RIGHT COLUMN FORM */}
             <div
-              className={`bg-[#0f172a]/80   border  border-gray-800 rounded-lg px-4 py-6  md:p-8 shadow-xl
+              className={`bg-[#0f172a]/80   border border-emerald-500/20 rounded-lg px-4 py-6  md:p-8 shadow-xl
                ${chatbot ? "hidden lg:block" : "block"}`}
             >
               <form onSubmit={handleSubmit} className="space-y-9  md:space-y-7">
