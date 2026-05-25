@@ -647,7 +647,7 @@ function NavBar() {
         </div>
 
         {/* ================= SECONDARY TILES ================= */}
-        <div className="grid grid-cols-2 gap-3 px-5 pt-2 pb-4">
+        <div className="grid grid-cols-2 gap-3 px-5 pt-2 pb-5">
           {role == "admin" && (
             <NavTile
               to="/dashboard"
