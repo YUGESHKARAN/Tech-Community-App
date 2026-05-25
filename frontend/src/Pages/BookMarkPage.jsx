@@ -452,7 +452,7 @@ function BookMarkPage() {
                         </p>
                       </div>
 
-                      <div className="flex items-center justify-between px-4 pb-7 ">
+                      <div className="flex items-center justify-between px-4 pb-4 ">
                         <div className="flex items-center gap-3 text-gray-400">
                        
 

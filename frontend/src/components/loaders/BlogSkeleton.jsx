@@ -20,7 +20,7 @@ const BlogSkeleton = () => {
       <div className="w-full h-48 md:h-40 bg-gray-700"></div>
 
       {/* Content Section */}
-      <div className="min-h-28 px-4 h-auto pt-4 space-y-3">
+      <div className=" px-4 h-auto pt-4 space-y-3">
         <div className="h-4 w-3/4 bg-gray-700 rounded"></div>
         <div className="h-3 w-full bg-gray-700 rounded"></div>
         <div className="h-3 w-2/3 bg-gray-700 rounded"></div>

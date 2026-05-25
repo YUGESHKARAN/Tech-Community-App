@@ -425,7 +425,7 @@ function YourPost() {
                   </p>
                 </div>
 
-                <div className="flex items-center justify-between px-4 pb-7 ">
+                <div className="flex items-center justify-between px-4 pb-4 ">
                   <div className="flex items-center gap-3 text-gray-400">
           
                     <button
@@ -489,7 +489,7 @@ function YourPost() {
                   {/* Inner Glow Pulse */}
                   {/* <div className="absolute w-10 h-10 md:w-12 md:h-12 bg-emerald-500/20 rounded-full blur-md animate-pulse" /> */}
                 </div>
-              </div>
+              </div> 
             )}
 
             {!hasMore && posts.length > 0 && (
