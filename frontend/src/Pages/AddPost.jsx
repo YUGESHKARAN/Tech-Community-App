@@ -465,7 +465,7 @@ function AddPost() {
                   onClick={() => setChatbot(false)}
                   className="
                     flex items-center gap-1.5
-                    px-2.5 py-1.5
+                    px-2.5 py-2
 
                     rounded-lg
                     bg-[#111827]
