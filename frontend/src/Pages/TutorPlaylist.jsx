@@ -191,7 +191,7 @@ function TutorPlaylist() {
 
     <div className="w-full min-h-screen bg-gray-900 relative">
       <NavBar />
-      <div className="mb-8 mt-4 px-4 md:px-12 flex items-center justify-between">
+      <div className="md:mb-8 mb-6 mt-4 px-4 md:px-12 flex items-center justify-between">
         <div>
           <h1 className="md:text-3xl text-xl font-semibold  text-white tracking-tight">
             Create Playlist
