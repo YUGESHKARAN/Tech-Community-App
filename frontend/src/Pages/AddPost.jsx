@@ -440,7 +440,7 @@ function AddPost() {
 
       <div className="min-h-screen   w-full pt-4 pb-8">
         <div className="w-full  mx-auto  md:px-12">
-          <div className="md:mb-8 mb-4 flex px-4 items-center justify-between">
+          <div className="md:mb-8 mb-6 flex px-4 items-center justify-between">
             <div>
               <h1 className="md:text-3xl text-xl  font-semibold text-white tracking-tight">
                 Create New Post
@@ -616,7 +616,7 @@ function AddPost() {
                     rounded-2xl
                     lg:w-11/12
                     md:h-[450px]
-                    h-[620px]
+                    h-[600px]
                     pb-2
                     flex flex-col
                    
