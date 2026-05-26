@@ -225,7 +225,7 @@ function ViewTutorPlaylist() {
           {loading ? "Loading Playlist..." : playlistData?.title}
         </h1>
         {!loading && Object.keys(playlistData).length> 0 && (
-          <div className="grid w-full mx-auto md:h-screen grid-cols-1 lg:grid-cols-2 lg:gap-8 gap-0">
+          <div className="grid w-full mx-auto md:h-screen grid-cols-1 lg:grid-cols-2 lg:gap-8 gap-2">
             {/* LEFT PANEL (Banner + Info) */}
             <div className="lg:col-span-1 md:hidden  p-1 md:sticky top-4 self-start  md:p-0 space-y-2 md:space-y-4">
               {/* Banner */}
