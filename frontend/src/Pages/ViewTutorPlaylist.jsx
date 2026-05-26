@@ -316,7 +316,7 @@ function ViewTutorPlaylist() {
                       <div
                         className={`${
                           showContributors
-                            ? " w-full flex flex-col justify-center gap-0.5"
+                            ? " w-full flex flex-col justify-center gap-0"
                             : "hidden "
                         } `}
                       >
