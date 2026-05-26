@@ -1588,7 +1588,7 @@ const updateRole = async (req, res) => {
 
         Now you have access to a dedicated workspace where you can create and manage your posts and playlists content. In addition, you have access to publish campaign, event, and community-related announcements through the Announcement section. 
         
-        **Logout** and **Login** back to access the Coordinator interface.
+        One time **Logout** and **Login** is required to access the Coordinator interface.
        
         We’re excited to have you contribute to building and growing the community.`;
 
@@ -1611,7 +1611,7 @@ Now you have full administrative access to manage and oversee the platform, incl
 - Access to user deletion logs and deleted account rollback controls.
 - Permission to manage and update user roles and communities.
 
-**Logout** and **Login** back to access the Admin interface.
+One time **Logout** and **Login** is required to access the Admin interface.
 `
 
   const studentMsg = `
