@@ -20,8 +20,8 @@ function Workspace() {
       <div className="w-ful mx-auto px-4 h-screen md:px-8 pt-4 text-white">
         {/* Header */}
         <div className="md:mb-10 mb-7">
-          <h1 className="text-xl flex items-center tracking-tight gap-2 md:text-4xl font-semibold ">
-            <BsPersonWorkspace /> Workspace
+          <h1 className="text-xl flex items-center tracking-tight gap-2 md:gap-3 md:text-4xl font-semibold ">
+            <BsPersonWorkspace  /> Workspace
           </h1>
           <p className="text-gray-400 mt-2 text-sm">
             Manage your posts and playlists content

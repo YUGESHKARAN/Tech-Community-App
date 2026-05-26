@@ -297,7 +297,7 @@ function TutorPlaylist() {
                 <option value={""}>
                   {categories.length > 1
                     ? "Choose Domain"
-                    : "Publish a post to enable domain selection"}
+                    : "Publish posts to enable domain selection"}
                 </option>
                 {categories.length > 1 && categories.map((category, index) => (
                   <option key={index} value={category}>

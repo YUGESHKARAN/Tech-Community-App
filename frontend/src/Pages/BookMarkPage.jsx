@@ -250,13 +250,13 @@ function BookMarkPage() {
   // console.log("local email", email);
   // console.log("your post",filterdPost)
 
-  
+  // #f8f0e8
 
   return (
     <div className="w-full  bg-gray-900 h-auto reltive  ">
       <NavBar />
-      <h1 className=" text-xl mt-3 md:mt-4 px-2  md:w-full flex items-center gap-2 mx-auto md:text-3xl font-semibold text-white tracking-wide">
-        <BiBookmarkAlt />
+      <h1 className=" text-xl mt-3 md:mt-4 px-2  md:w-full flex items-center gap-2 md:gap-3 mx-auto md:text-3xl font-semibold text-white tracking-wide">
+        <BiBookmarkAlt className="text-green-400"/>
         <span className="group tracking-tight text-white"> My Bookmarks </span>{" "}
       </h1>
 
