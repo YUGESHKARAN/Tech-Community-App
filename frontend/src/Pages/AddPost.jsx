@@ -616,7 +616,7 @@ function AddPost() {
                     rounded-2xl
                     lg:w-11/12
                     md:h-[450px]
-                    h-[650px]
+                    h-[620px]
                     pb-2
                     flex flex-col
                    
