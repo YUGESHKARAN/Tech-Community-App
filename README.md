@@ -8,7 +8,7 @@
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D14.0.0-brightgreen.svg)](https://nodejs.org/)
 [![Last Commit](https://img.shields.io/github/last-commit/YUGESHKARAN/Node-Blog-App)](https://github.com/YUGESHKARAN/Node-Blog-App/commits/main)
 [![Contributors](https://img.shields.io/github/contributors/YUGESHKARAN/Node-Blog-App)](https://github.com/YUGESHKARAN/Node-Blog-App/graphs/contributors)
-[![Issues](https://img.shields.io/github/issues/YUGESHKARAN/Node-Blog-App)](https://github.com/YUGESHKARAN/Node-Blog-App/issues)
+[![Issues](https://img.shields.io/github/issues/YUGESHKARAN/Tech-Community-App)](https://github.com/YUGESHKARAN/Tech-Community-App/issues)
 [![Closed Issues](https://img.shields.io/github/issues-closed/YUGESHKARAN/Node-Blog-App)](https://github.com/YUGESHKARAN/Node-Blog-App/issues?q=is%3Aissue+is%3Aclosed)
 [![Pull Requests](https://img.shields.io/github/issues-pr/YUGESHKARAN/Node-Blog-App)](https://github.com/YUGESHKARAN/Node-Blog-App/pulls)
 [![Closed PRs](https://img.shields.io/github/issues-pr-closed/YUGESHKARAN/Node-Blog-App)](https://github.com/YUGESHKARAN/Node-Blog-App/pulls?q=is%3Apr+is%3Aclosed)
