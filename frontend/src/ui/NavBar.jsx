@@ -834,6 +834,7 @@ function NavBar() {
   {/* Top Section */}
   <div className="py-1.5">
     <Link
+    onClick={()=>{setShowAddContent(false)}}
     to="/addPost"
     >
     <button
@@ -853,6 +854,7 @@ function NavBar() {
     </Link>
    
    <Link
+   onClick={()=>{setShowAddContent(false)}}
    to="/addTutorPlaylist"
    >
     <button
@@ -872,6 +874,7 @@ function NavBar() {
    </Link>
 
    <Link
+   onClick={()=>{setShowAddContent(false)}}
    to="/announcement"
    >
     <button
