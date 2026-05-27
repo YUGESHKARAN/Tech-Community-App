@@ -120,7 +120,7 @@ function ViewEditPost() {
         // setDocuments([]);
         // setLinkId(null);
         // navigate("/yourposts");
-        console.log("updated!!")
+        // console.log("updated!!")
       }
       setTitle("");
         setDescription("");
@@ -721,16 +721,47 @@ function ViewEditPost() {
               </div>
 
 
-              {
-                singlePostData.documents?.length === 0 && <>
-                      {/* DOCUMENTS */}
                 <div>
                   <label className="text-sm text-gray-400 font-medium">
                     Source Documents
                   </label>
+                    <input
+                    type="file"
+                    ref={fileInputRef}
+                    multiple
+                    accept=".pdf,.doc,.docx"
+                    onChange={(e) => {
+                      const files = Array.from(e.target.files);
+
+                      const totalFiles = documents.length + files.length;
+
+                      if (totalFiles > 5) {
+                        alert(
+                          `Maximum 5 documents allowed. You already have ${documents.length} document(s).`,
+                        );
+
+                        e.target.value = "";
+                        return;
+                      }
+
+                      onDocumentsChange(e);
+
+                      // reset native input
+                      e.target.value = "";
+                    }}
+                    className="w-full mt-2 text-xs text-gray-300 
+                      file:mr-4 file:px-2 file:py-1 file:rounded-md 
+                      file:border-0 file:bg-emerald-500/20 
+                      file:hover:bg-emerald-600/20 
+                      file:text-emerald-400 
+                      file:cursor-pointer"
+                  />
 
               {documents.length > 0 && (
                 <div className="mt-3 flex flex-col gap-1.5">
+                  <p className="text-xs text-gray-400">
+                        Newly Selected Document(s):
+                      </p>
                   {documents.map((doc, idx) => (
                     <div
                       key={doc.name + doc.size}
@@ -768,9 +799,6 @@ function ViewEditPost() {
                 </div>
                 )}
                 </div>
-                  
-                </>
-              }
 
               
               {/* Current Documents with Edit Option */}
@@ -797,7 +825,7 @@ function ViewEditPost() {
                       Current Documents
                     </label>
 
-                    <label className="cursor-pointer text-emerald-400 hover:text-emerald-300 transition">
+                    {/* <label className="cursor-pointer text-emerald-400 hover:text-emerald-300 transition">
                       <MdEdit className="text-lg" />
 
                       <input
@@ -818,7 +846,7 @@ function ViewEditPost() {
                         }}
                         className="hidden"
                       />
-                    </label>
+                    </label> */}
                   </div>
  
                   <div className="flex flex-col gap-2">
@@ -839,7 +867,7 @@ function ViewEditPost() {
                         >
                           {doc.split("-").slice(5).join("-")}
                         </a>
-                        {/* Delete */}
+                        
                           <button
                             type="button"
                             onClick={() => removeDoc(doc)}
@@ -853,7 +881,7 @@ function ViewEditPost() {
                   </div>
  
               
-                  {selectedDocs.length > 0 && (
+                  {/* {selectedDocs.length > 0 && (
                     <div className="pt-2 space-y-2">
                       <p className="text-xs text-gray-400">
                         Newly Selected Document(s):
@@ -893,7 +921,7 @@ function ViewEditPost() {
                         ))}
                       </div>
                     </div>
-                  )}
+                  )} */}
                 </div>
               )}
 
