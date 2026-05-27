@@ -734,6 +734,7 @@ function NavBar() {
           {[...note].reverse().map((data, index) => (
             <div
               key={index}
+              onClick={()=>{setShowNotefication(false)}}
               className="group relative px-4 py-3 md:hover:bg-gray-800   transition duration-200"
             >
               <Link to={data.url} className="flex gap-3  items-start">
