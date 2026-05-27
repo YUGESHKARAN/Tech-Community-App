@@ -61,7 +61,7 @@ function NavBar() {
   const userEmail = getItem("email");
   // const role = localStorage.getItem("role");
   const profile = localStorage.getItem("profile");
-  const [showNotefication, setShowNotification] = useState(false);
+  const [showNotification, setShowNotification] = useState(false);
   const [announcement, setAnnouncement] = useState([]);
   const [socket, setSocket] = useState(null);
   const [currentScreen, setCurrentScreen] = useState(false);
@@ -402,7 +402,7 @@ function NavBar() {
         <div className="relative hidden lg:block">
           <IoMdNotifications
           // <RiNotification3Line
-            onClick={() => setShowNotification(!showNotefication)}
+            onClick={() => setShowNotification(!showNotification)}
             className="text-xl  text-gray-300 hover:text-white transition-all duration-300 cursor-pointer transition"
           />
           {notiCount > 0 && (
@@ -461,7 +461,7 @@ function NavBar() {
         <div className="relative lg:hidden">
           {/* <IoMdNotifications */}
           <RiNotification3Line
-            onClick={() => setShowNotification(!showNotefication)}
+            onClick={() => setShowNotification(!showNotification)}
             className="text-[27px] text-gray-300 rounded-md p-[5px] border border-neutral-600 hover:text-white transition-all duration-300 cursor-pointer transition"
           />
           {notiCount > 0 && (
@@ -710,7 +710,7 @@ function NavBar() {
       <div
         ref={notificationRef}
         className={`${
-          showNotefication && !showAddContent
+          showNotification && !showAddContent
             ? "fixed top-16 right-2 z-50 md:w-[320px] w-72 pb-4 bg-gray-900 border border-gray-700 shadow-2xl rounded-xl md:rounded-lg transition-all duration-300"
             : "hidden"
         }`}
@@ -734,7 +734,7 @@ function NavBar() {
           {[...note].reverse().map((data, index) => (
             <div
               key={index}
-              onClick={()=>{setShowNotefication(false)}}
+              onClick={()=>{setShowNotification(false)}}
               className="group relative px-4 py-3 md:hover:bg-gray-800   transition duration-200"
             >
               <Link to={data.url} className="flex gap-3  items-start">
@@ -824,7 +824,7 @@ function NavBar() {
 <div
   ref={addContentRef}
   className={`${
-    showAddContent && !showNotefication
+    showAddContent && !showNotification
       ? "fixed top-16 right-12 z-50 px-2 py-1 w-52 overflow-hidden rounded-2xl border border-[#30363d] bg-gray-900 shadow-2xl"
       : "hidden"
   }`}
