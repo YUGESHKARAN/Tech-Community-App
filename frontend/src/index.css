@@ -47,7 +47,7 @@
   /* Modern Emerald Scrollbar (Dark Theme Compatible) */
 
 .emerald-scrollbar::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
 }
 
 .emerald-scrollbar::-webkit-scrollbar-track {
