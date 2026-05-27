@@ -44,7 +44,7 @@ function AddPost() {
     },
     {
       message:
-        "Your enhanced content will automatically appear in the Description tab, where you can preview or edit it",
+        "Your enhanced content will automatically appear in the Description tab, where you can preview and edit it",
       sender: "bot",
       direction: "incoming",
     },
