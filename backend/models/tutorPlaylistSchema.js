@@ -55,6 +55,7 @@ const tutorPlaylist = new mongoose.Schema({
 tutorPlaylist.index({ email: 1 });
 tutorPlaylist.index({ domain: 1 });
 tutorPlaylist.index({ email: 1, domain: 1 });
+tutorPlaylist.index({ title: 'text' });
 const TutorPlayList = mongoose.model('TutorPlayList', tutorPlaylist);
 
 module.exports = TutorPlayList;

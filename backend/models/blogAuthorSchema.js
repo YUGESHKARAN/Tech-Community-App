@@ -615,6 +615,7 @@ postSchema.index({ category: 1 });
 postSchema.index({ authorId: 1, category: 1 });
 postSchema.index({ timestamp: -1 });
 postSchema.index({ authorId: 1, timestamp: -1 }); 
+postSchema.index({ title: 'text' }); 
 
 // ── Author Schema ─────────────────────────────────────────────
 const authorSchema = new mongoose.Schema({
