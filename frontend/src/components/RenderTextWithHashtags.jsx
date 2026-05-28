@@ -105,7 +105,7 @@ const RenderTextWithHashtags = ({ text }) => {
     text-[13px]
     leading-relaxed
 
-    prose-p:my-1
+    prose-p:my-1.5
     prose-p:leading-relaxed
     prose-p:text-gray-300
 
@@ -126,10 +126,10 @@ const RenderTextWithHashtags = ({ text }) => {
     prose-h4:text-xs
     md:prose-h4:text-sm
 
-    prose-ul:my-1
-    prose-ol:my-1
+    prose-ul:my-1.5
+    prose-ol:my-1.5
 
-    prose-li:my-0
+    prose-li:my-0.5
     prose-li:leading-relaxed
     prose-li:text-gray-300
 
@@ -222,12 +222,12 @@ const RenderTextWithHashtags = ({ text }) => {
 
 
           p({ children }) {
-            return <p className="text-gray-300 leading-6 my-1">{children}</p>;
+            return <p className="text-gray-300 leading-6 my-2">{children}</p>;
           },
 
           h1({ children }) {
             return (
-              <h1 className="md:text-xl text-lg font-semibold mt-2 mb-1 text-white">
+              <h1 className="md:text-xl text-lg font-semibold mt-3 mb-1.5 text-white">
                 {children}
               </h1>
             );
@@ -235,7 +235,7 @@ const RenderTextWithHashtags = ({ text }) => {
 
           h2({ children }) {
             return (
-              <h2 className="md:text-lg text-xs font-semibold mt-2 mb-1 text-white">
+              <h2 className="md:text-lg text-xs font-semibold mt-3 mb-1.5 text-white">
                 {children}
               </h2>
             );
@@ -243,14 +243,14 @@ const RenderTextWithHashtags = ({ text }) => {
 
           h3({ children }) {
             return (
-              <h3 className="md:text-base text-xs font-semibold mt-2 mb-1 text-white">
+              <h3 className="md:text-base text-xs font-semibold mt-3 mb-1.5 text-white">
                 {children}
               </h3>
             );
           },
 
           li({ children }) {
-            return <li className="text-gray-300 leading-6 my-1">{children}</li>;
+            return <li className="text-gray-300 leading-6 my-2">{children}</li>;
           },
           // code({ inline, children, className, ...props }) {
           //   if (inline) {
