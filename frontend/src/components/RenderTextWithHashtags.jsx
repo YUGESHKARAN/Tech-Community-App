@@ -95,7 +95,8 @@ const RenderTextWithHashtags = ({ text }) => {
     >
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
-        rehypePlugins={[rehypeHighlight]}
+        // rehypePlugins={[rehypeHighlight]}
+        rehypePlugins={[rehypeRaw, rehypeHighlight]}
         components={{
           text({ children }) {
             if (typeof children !== "string") return children;
