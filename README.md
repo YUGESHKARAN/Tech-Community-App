@@ -10,8 +10,9 @@
 [![Contributors](https://img.shields.io/github/contributors/YUGESHKARAN/Tech-Community-App)](https://github.com/YUGESHKARAN/Tech-Community-App/graphs/contributors)
 [![Issues](https://img.shields.io/github/issues/YUGESHKARAN/Tech-Community-App)](https://github.com/YUGESHKARAN/Tech-Community-App/issues)
 [![Closed Issues](https://img.shields.io/github/issues-closed/YUGESHKARAN/Tech-Community-App)](https://github.com/YUGESHKARAN/Tech-Community-App/issues?q=is%3Aissue+is%3Aclosed)
-[![Pull Requests](https://img.shields.io/github/issues-pr/YUGESHKARAN/Tech-Community-App)](https://github.com/YUGESHKARAN/Tech-Community-App/pulls)
+[![Pull Requests](https://img.shields.io/github/issues-pr/YUGESHKARAN/Node-Blog-App)](https://github.com/YUGESHKARAN/Node-Blog-App/pulls)
 [![Closed PRs](https://img.shields.io/github/issues-pr-closed/YUGESHKARAN/Tech-Community-App)](https://github.com/YUGESHKARAN/Tech-Community-App/pulls?q=is%3Apr+is%3Aclosed)
+
 
 **Welcome to the Tech. Community App!**
 
