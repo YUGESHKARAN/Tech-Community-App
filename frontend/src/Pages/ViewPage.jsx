@@ -64,6 +64,27 @@ function ViewPage() {
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [msgLoading, setMsgLoading] = useState(false);
 
+// ✅ useParams at component top level — not inside useEffect or async function
+useEffect(() => {
+  const myEmail = getItem("email");
+
+  // guard: don't count self-views
+  if (!myEmail || !email || !id) return;
+  if (myEmail === email) return;
+
+  const postViews = async () => {
+    try {
+      await axiosInstance.put(`/blog/posts/views/${email}/${id}`, {
+        emailAuthor: myEmail,
+      });
+    } catch (err) {
+      console.error("Error updating views:", err);
+    }
+  };
+
+  postViews();
+}, [email, id]); // fix: add email and id as deps — re-runs if post changes
+
   // Fetch post data
   useEffect(() => {
     const getSinglePost = async () => {
