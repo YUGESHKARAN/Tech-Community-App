@@ -53,7 +53,7 @@ Developer's-Collaborative & learning  platform designed for universities and col
 ## Key Features
 
 * **User Authentication** –Secure registration and login with role-based access using JWT.
-* [**Assistant_Knowledge Hub**](https://github.com/YUGESHKARAN/Assistant_Knowledge_Hub) – In-post AI assistant that provides contextual explanations, related posts, videos, and suggested follow-up queries.
+* [**Assistant_Knowledge Hub**](https://github.com/YUGESHKARAN/Assistant_Knowledge_Hub) – In-post AI assistant that provides contextual explanations, related posts, videos, and suggest follow-up queries.
 * [**DraftMate AI**](https://github.com/YUGESHKARAN/blogChat-backend) – Content drafting assistant to refine and structure post descriptions before publishing.
 * **Post Management** – Create, edit, and publish technical posts within the community.
 * **Playlists Management** – Organize and save curated collections of posts for structured learning.
