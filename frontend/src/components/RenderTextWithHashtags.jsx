@@ -15,84 +15,157 @@ const RenderTextWithHashtags = ({ text }) => {
     .replace(/\\r/g, "\n");
 
   return (
-    <div
-      className="
-          prose
-          prose-invert
+    // <div
+    //   className="
+    //       prose
+    //       prose-invert
         
-          prose-sm
-          md:prose-sm
+    //       prose-sm
+    //       md:prose-sm
 
-          max-w-4xl
+    //       max-w-4xl
 
-          text-[13px]
-          leading-6
+    //       text-[13px]
+    //       leading-6
 
-          md:prose-p:my-2
-          prose-p:my-1
-          prose-p:leading-6
-          prose-p:text-gray-300
+    //       md:prose-p:my-2
+    //       prose-p:my-1
+    //       prose-p:leading-6
+    //       prose-p:text-gray-300
 
-          prose-headings:my-3
-          prose-headings:text-white
-          prose-headings:font-semibold
-          prose-headings:leading-snug
+    //       prose-headings:my-3
+    //       prose-headings:text-white
+    //       prose-headings:font-semibold
+    //       prose-headings:leading-snug
 
-          md:prose-h1:text-xl
-          prose-h1:text-lg
-          md:prose-h2:text-lg
-          prose-h2:text-base
-          md:prose-h3:text-base
-          prose-h3:text-sm
-          md:prose-h4:text-sm
-          prose-h4:text-xs
+    //       md:prose-h1:text-xl
+    //       prose-h1:text-lg
+    //       md:prose-h2:text-lg
+    //       prose-h2:text-base
+    //       md:prose-h3:text-base
+    //       prose-h3:text-sm
+    //       md:prose-h4:text-sm
+    //       prose-h4:text-xs
 
-          prose-strong:text-white
-          prose-strong:font-semibold
+    //       prose-strong:text-white
+    //       prose-strong:font-semibold
 
-          prose-ul:my-2
-          prose-ol:my-2
+    //       prose-ul:my-2
+    //       prose-ol:my-2
 
-          prose-li:my-1
-          prose-li:text-gray-300
-          prose-li:leading-6
+    //       prose-li:my-1
+    //       prose-li:text-gray-300
+    //       prose-li:leading-6
 
-          prose-code:text-emerald-300
-          prose-code:bg-[#161b22]
-          prose-code:px-1
-          prose-code:py-0.5
-          prose-code:rounded
+    //       prose-code:text-emerald-300
+    //       prose-code:bg-[#161b22]
+    //       prose-code:px-1
+    //       prose-code:py-0.5
+    //       prose-code:rounded
 
-          prose-code:before:content-none
-          prose-code:after:content-none
+    //       prose-code:before:content-none
+    //       prose-code:after:content-none
 
-          prose-pre:bg-[#0d1117]
-          prose-pre:border
-          prose-pre:border-[#30363d]
-          prose-pre:rounded-lg
-          prose-pre:p-3
-          scrollbar-hide
-          prose-blockquote:border-emerald-500
-          prose-blockquote:text-gray-300
+    //       prose-pre:bg-[#0d1117]
+    //       prose-pre:border
+    //       prose-pre:border-[#30363d]
+    //       prose-pre:rounded-lg
+    //       prose-pre:p-3
+    //       scrollbar-hide
+    //       prose-blockquote:border-emerald-500
+    //       prose-blockquote:text-gray-300
 
-          prose-a:text-emerald-400
-          prose-a:no-underline
-          hover:prose-a:text-emerald-300
+    //       prose-a:text-emerald-400
+    //       prose-a:no-underline
+    //       hover:prose-a:text-emerald-300
 
-          prose-hr:border-[#30363d]
+    //       prose-hr:border-[#30363d]
 
-          prose-table:text-sm
-          prose-th:border
-          prose-th:border-[#30363d]
-          prose-th:px-3
-          prose-th:py-2
+    //       prose-table:text-sm
+    //       prose-th:border
+    //       prose-th:border-[#30363d]
+    //       prose-th:px-3
+    //       prose-th:py-2
 
-          prose-td:border
-          prose-td:border-[#30363d]
-          prose-td:px-3
-          prose-td:py-2
-        "
-    >
+    //       prose-td:border
+    //       prose-td:border-[#30363d]
+    //       prose-td:px-3
+    //       prose-td:py-2
+    //     "
+    // >
+    <div
+  className="
+    prose
+    prose-invert
+
+    prose-sm
+
+    max-w-none
+
+    text-[13px]
+    leading-relaxed
+
+    prose-p:my-1
+    prose-p:leading-relaxed
+    prose-p:text-gray-300
+
+    prose-headings:my-2
+    prose-headings:leading-tight
+    prose-headings:text-white
+    prose-headings:font-semibold
+
+    prose-h1:text-lg
+    md:prose-h1:text-xl
+
+    prose-h2:text-base
+    md:prose-h2:text-lg
+
+    prose-h3:text-sm
+    md:prose-h3:text-base
+
+    prose-h4:text-xs
+    md:prose-h4:text-sm
+
+    prose-ul:my-1
+    prose-ol:my-1
+
+    prose-li:my-0
+    prose-li:leading-relaxed
+    prose-li:text-gray-300
+
+    prose-strong:text-white
+    prose-strong:font-semibold
+
+    prose-pre:my-2
+    prose-pre:p-2
+
+    prose-blockquote:my-2
+
+    prose-hr:my-3
+
+    prose-table:my-2
+
+    prose-code:text-emerald-300
+    prose-code:bg-[#161b22]
+    prose-code:px-1
+    prose-code:py-0.5
+    prose-code:rounded
+
+    prose-code:before:content-none
+    prose-code:after:content-none
+
+    prose-pre:bg-[#0d1117]
+    prose-pre:border
+    prose-pre:border-[#30363d]
+    prose-pre:rounded-lg
+
+    prose-a:text-emerald-400
+    prose-a:no-underline
+    hover:prose-a:text-emerald-300
+
+    scrollbar-hide
+  "
+>
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         // rehypePlugins={[rehypeHighlight]}
@@ -123,7 +196,7 @@ const RenderTextWithHashtags = ({ text }) => {
             items-center
             justify-center
             gap-1
-            my-2
+            mb-0.5 mt-0 md:my-1
           "
           {...props}
         >
@@ -149,12 +222,12 @@ const RenderTextWithHashtags = ({ text }) => {
 
 
           p({ children }) {
-            return <p className="text-gray-300 leading-6 my-2">{children}</p>;
+            return <p className="text-gray-300 leading-6 my-1">{children}</p>;
           },
 
           h1({ children }) {
             return (
-              <h1 className="md:text-xl text-lg font-semibold mt-4 mb-2 text-white">
+              <h1 className="md:text-xl text-lg font-semibold mt-2 mb-1 text-white">
                 {children}
               </h1>
             );
@@ -162,7 +235,7 @@ const RenderTextWithHashtags = ({ text }) => {
 
           h2({ children }) {
             return (
-              <h2 className="md:text-lg text-xs font-semibold mt-4 mb-2 text-white">
+              <h2 className="md:text-lg text-xs font-semibold mt-2 mb-1 text-white">
                 {children}
               </h2>
             );
@@ -170,7 +243,7 @@ const RenderTextWithHashtags = ({ text }) => {
 
           h3({ children }) {
             return (
-              <h3 className="md:text-base text-xs font-semibold mt-3 mb-1 text-white">
+              <h3 className="md:text-base text-xs font-semibold mt-2 mb-1 text-white">
                 {children}
               </h3>
             );
