@@ -2,6 +2,7 @@ import React from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
+import rehypeRaw from "rehype-raw";
 
 import "highlight.js/styles/github-dark.css";
 
@@ -111,6 +112,40 @@ const RenderTextWithHashtags = ({ text }) => {
               return part;
             });
           },
+
+            div({ children, ...props }) {
+      return (
+        <div
+          className="
+            flex
+            flex-wrap
+            items-center
+            justify-center
+            gap-1
+            my-2
+          "
+          {...props}
+        >
+          {children}
+        </div>
+      );
+    },
+
+    img({ src, alt }) {
+      return (
+        <img
+          src={src}
+          alt={alt}
+          className="
+            inline-block
+            my-1
+            mr-1
+            h-5
+          "
+        />
+      );
+    },
+
 
           p({ children }) {
             return <p className="text-gray-300 leading-6 my-2">{children}</p>;
