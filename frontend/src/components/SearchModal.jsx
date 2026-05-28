@@ -419,11 +419,16 @@ function SearchModal({ open, setOpen, inputValue, setInputValue }) {
   };
 
   const handlePostClick = (post) => {
+    setSearchTerm("");
+    setInputValue("");
     navigate(`/viewpage/${post.authorEmail}/${post._id}`);
     setOpen(false);
   };
 
   const handlePlaylistClick = (playlist) => {
+    setSearchTerm("");
+    setInputValue("");
+
     navigate(`/viewplaylist/${playlist._id}`);
     setOpen(false);
   };
