@@ -444,6 +444,7 @@ function SearchModal({ open, setOpen, inputValue, setInputValue }) {
         fixed top-0 left-0 w-full h-dvh z-[999]
         flex items-start justify-center
         pt-16 px-4 overflow-hidden
+        emerald-scrollbar
       "
     >
       {/* Backdrop */}
@@ -458,8 +459,10 @@ function SearchModal({ open, setOpen, inputValue, setInputValue }) {
           relative w-full max-w-2xl
           rounded-2xl border border-[#30363d]
           bg-gray-950 shadow-2xl
+          
           animate-in fade-in zoom-in-95 duration-200
           max-h-[80dvh] flex flex-col overflow-hidden
+          emerald-scrollbar
         "
       >
         {/* Search Header — unchanged */}
@@ -491,7 +494,7 @@ function SearchModal({ open, setOpen, inputValue, setInputValue }) {
 
         {/* Suggestions — only shown when there are results */}
         {searchTerm.trim().length >= 2 && (
-          <div className="overflow-y-auto flex-1">
+          <div className="overflow-y-auto scrollbar-hide flex-1">
             {sugLoading && (
               <div className="flex items-center justify-center gap-1 py-4">
                 <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
