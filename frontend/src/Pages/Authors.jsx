@@ -403,7 +403,7 @@ const recommendedAuthors = useMemo(() => {
               </div>
             </div>
 
-            <div className={`flex md:mt-4 mt-2 text-[11px] md:text-xs text-gray-300 ${author?.postCount>0?'justify-between':'justify-center'}`}>
+            <div className={`flex md:mt-4 mt-1 text-[11px] md:text-xs text-gray-300 ${author?.postCount>0?'justify-between':'justify-center'}`}>
               <span className="text-gray-400">
                 <b className="text-white">{author.followers.length}</b>{" "}
                 Followers
