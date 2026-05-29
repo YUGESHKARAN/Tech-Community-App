@@ -403,17 +403,17 @@ const recommendedAuthors = useMemo(() => {
               </div>
             </div>
 
-            <div className={`flex mt-4 text-xs text-gray-300 ${author?.postCount>0?'justify-between':'justify-center'}`}>
-              <span>
+            <div className={`flex md:mt-4 mt-2 text-[11px] md:text-xs text-gray-300 ${author?.postCount>0?'justify-between':'justify-center'}`}>
+              <span className="text-gray-400">
                 <b className="text-white">{author.followers.length}</b>{" "}
                 Followers
               </span>
-             {author?.postCount>0 && <span>
+             {author?.postCount>0 && <span className="text-gray-400">
                 <b className="text-white">{author?.postCount}</b> Posts
               </span>}
             </div>
 
-          <div className="mt-4">
+          <div className="md:mt-4 mt-3">
   {author.followers.includes(email) ? (
     <button
       onClick={() => addFollower(author.email)}
@@ -504,12 +504,12 @@ const recommendedAuthors = useMemo(() => {
                   {highlightText(author.email, debouncedSearch)}
                   </p>
 
-                <div className="flex justify-center gap-6 mt-4 text-xs text-gray-300">
-                  <span>
+                <div className="flex justify-center gap-6 mt-2 md:mt-4 text-[11px] md:text-xs text-gray-300">
+                  <span className="text-gray-400">
                     <b className="text-white">{author.followers.length}</b>{" "}
                     Followers
                   </span>
-                  {author?.postCount>0 && <span>
+                  {author?.postCount>0 && <span className="text-gray-400">
                     <b className="text-white">{author.postCount}</b> Posts
                   </span>}
                 </div>
@@ -532,7 +532,7 @@ const recommendedAuthors = useMemo(() => {
                   </div>
                 )} */}
 
-      <div className="mt-5">
+      <div className="md:mt-5 mt-3">
   {author.followers.includes(email) ? (
     <button
       onClick={() => addFollower(author.email)}
