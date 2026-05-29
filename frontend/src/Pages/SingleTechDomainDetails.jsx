@@ -390,7 +390,7 @@ function SingleTechDomainDetails() {
                                   )} */}
 
                         {author.email != email ? (
-                          <div className="mt-5">
+                          <div className="md:mt-5 mt-3">
                             {author.followers.includes(email) ? (
                               <button
                                 onClick={() => addFollower(author.email)}
