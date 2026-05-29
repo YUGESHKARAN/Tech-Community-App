@@ -4,6 +4,7 @@ const TutorPlayList = require("../models/tutorPlaylistSchema");
 
 const { v4: uuidv4 } = require("uuid"); // For generating unique IDs
 const mongoose = require("mongoose");
+const _ = require("lodash");
 
 dotenv = require("dotenv");
 dotenv.config();
@@ -18,11 +19,12 @@ const getSearchSuggestions = async (req, res) => {
     }
 
     const trimmedQuery = query.trim();
+    const safeQuery = _.escapeRegExp(trimmedQuery);
 
     // use both text search (relevance) + regex (partial prefix match)
     // text search finds whole-word matches ranked by relevance
     // regex catches partial matches text search would miss (e.g. "Gen" → "GenAI")
-    const searchRegex = new RegExp(trimmedQuery, 'i');
+    const searchRegex = new RegExp(safeQuery, 'i');
 
     const [
       postTextResults,
