@@ -79,6 +79,8 @@ function NavBar() {
 
   const exit = () => {
     // localStorage.removeItem("role");
+    setSearchTerm("");
+    setInputValue("");
     removeItem("role");
     localStorage.removeItem("username");
     // localStorage.removeItem("email");
