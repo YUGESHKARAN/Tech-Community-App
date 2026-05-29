@@ -48,14 +48,17 @@ function RenderTextNoMarkdown({ text, className = "" }) {
     // Convert escaped/new lines into spaces
     .replace(/\\r\\n|\\n|\\r|\r\n|\n|\r/g, " ")
 
+    // Remove markdown links but preserve text
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, "$1")
+
     // Remove HTML tags
     .replace(/<[^>]*>/g, "")
 
+    // Neutralize any remaining HTML-significant characters
+    .replace(/[<&>]/g, "")
+
     // Remove markdown symbols
     .replace(/[#*_~`>\-\[\]\(\)!]/g, "")
-
-    // Remove markdown links but preserve text
-    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, "$1")
 
     // Remove multiple spaces
     .replace(/\s+/g, " ")
