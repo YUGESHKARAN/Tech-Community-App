@@ -129,7 +129,7 @@ const addAuthor = async (req, res) => {
   const adminUser = "Admin";
   const adminEmail = "21aid145@dsuniversity.ac.in";
   const welcomeTitle = "Welcome to the Tech Community Platform 🎉";
-  const welcomeMsg = `Hi ${authorname}, Welcome on board! Your account has been successfully created, and you are now ready to explore the platform.\n
+  const welcomeMsg = `Hi ${authorname}, Welcome on-board! Your account has been successfully created, and you are now ready to explore the platform.\n
         Get started by setting up your profile, joining tech communities that match your interests, and connecting with fellow contributors. You can explore recommended content on your home feed, participate in post's discussions, and stay updated through notifications and announcements.\n
         We're glad to have you here and look forward to your active participation.`;
 
