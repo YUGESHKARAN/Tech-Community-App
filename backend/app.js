@@ -151,16 +151,35 @@ require("dotenv").config();
 const app = express();
 
 // Middleware setup
-app.use(
-  cors({
-    origin: ["https://blog-frontend-teal-ten.vercel.app", "http://localhost:5173"],
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-    credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+// app.use(
+//   cors({
+//     origin: ["https://blog-frontend-teal-ten.vercel.app", "http://localhost:5173"],
+//     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+//     credentials: true,
+//     allowedHeaders: ["Content-Type", "Authorization"],
+//   })
+// );
 
-app.options("*", cors()); // ✅ handle preflight
+// app.options("*", cors()); // ✅ handle preflight
+
+// ✅ CORS configuration - MUST be before routes
+const corsOptions = {
+  origin: [
+    "https://blog-frontend-teal-ten.vercel.app",
+    "http://localhost:5173",
+    "http://localhost:3000" // Add if you test locally
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  credentials: true,
+  allowedHeaders: ["Content-Type", "Authorization"],
+  optionsSuccessStatus: 200 // ✅ For legacy browser support
+};
+
+// Apply CORS middleware FIRST
+app.use(cors(corsOptions));
+
+// ✅ Handle preflight requests explicitly
+app.options("*", cors(corsOptions));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
