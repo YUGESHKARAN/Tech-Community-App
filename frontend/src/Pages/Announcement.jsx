@@ -1,7 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 // import axiosInstance from 'axiosInstance';
 import NavBar from "../ui/NavBar";
-import { RiChatDeleteFill, RiDeleteBack2Fill, RiDeleteBin6Line } from "react-icons/ri";
+import {
+  RiChatDeleteFill,
+  RiDeleteBack2Fill,
+  RiDeleteBin6Line,
+} from "react-icons/ri";
 import Footer from "../ui/Footer";
 import axiosInstance from "../instances/Axiosinstances";
 // import { format } from 'date-fns';
@@ -437,28 +441,26 @@ function Announcement() {
     );
   }
 
-const renderTextWithHashtags = (text) => {
-  if (!text) return null;
+  const renderTextWithHashtags = (text) => {
+    if (!text) return null;
 
-  const cleanedText = text
-    .replace(/\\r\\n/g, "\n")
-    .replace(/\\n/g, "\n")
-    .replace(/\\r/g, "\n");
+    const cleanedText = text
+      .replace(/\\r\\n/g, "\n")
+      .replace(/\\n/g, "\n")
+      .replace(/\\r/g, "\n");
 
-  return cleanedText.split("\n").map((line, lineIndex) => {
-    // Handle empty lines for spacing
-    if (!line.trim()) {
-      return <div key={lineIndex} className="h-3" />;
-    }
+    return cleanedText.split("\n").map((line, lineIndex) => {
+      // Handle empty lines for spacing
+      if (!line.trim()) {
+        return <div key={lineIndex} className="h-3" />;
+      }
 
-    const parts = line.split(
-      /(\*\*.*?\*\*|#{1,6}[^\n]+|\s?#\w+)/gm
-    );
+      const parts = line.split(/(\*\*.*?\*\*|#{1,6}[^\n]+|\s?#\w+)/gm);
 
-    return (
-      <div
-        key={lineIndex}
-        className="
+      return (
+        <div
+          key={lineIndex}
+          className="
           text-gray-300
           text-sm
           md:text-[15px]
@@ -466,60 +468,53 @@ const renderTextWithHashtags = (text) => {
           break-words
           mb-2
         "
-      >
-        {parts.map((part, index) => {
-          if (!part) return null;
+        >
+          {parts.map((part, index) => {
+            if (!part) return null;
 
-          const trimmed = part.trim();
+            const trimmed = part.trim();
 
-          // ---------- Markdown Headings ----------
-          if (/^#{1,6}/.test(trimmed)) {
-            const level =
-              trimmed.match(/^#{1,6}/)?.[0].length || 1;
+            // ---------- Markdown Headings ----------
+            if (/^#{1,6}/.test(trimmed)) {
+              const level = trimmed.match(/^#{1,6}/)?.[0].length || 1;
 
-            const headingClasses = {
-              1: "text-xl md:text-2xl font-semibold text-white block my-4",
-              2: "text-lg md:text-xl font-semibold text-white block my-3",
-              3: "text-base md:text-lg font-semibold text-white block my-2",
-              4: "text-sm md:text-base font-semibold text-white block my-2",
-              5: "text-sm font-semibold text-white block my-1",
-              6: "text-xs font-semibold text-white block my-1",
-            };
+              const headingClasses = {
+                1: "text-xl md:text-2xl font-semibold text-white block my-4",
+                2: "text-lg md:text-xl font-semibold text-white block my-3",
+                3: "text-base md:text-lg font-semibold text-white block my-2",
+                4: "text-sm md:text-base font-semibold text-white block my-2",
+                5: "text-sm font-semibold text-white block my-1",
+                6: "text-xs font-semibold text-white block my-1",
+              };
 
-            return (
-              <div
-                key={index}
-                className={headingClasses[level]}
-              >
-                {trimmed.replace(/^#{1,6}\s*/, "")}
-              </div>
-            );
-          }
+              return (
+                <div key={index} className={headingClasses[level]}>
+                  {trimmed.replace(/^#{1,6}\s*/, "")}
+                </div>
+              );
+            }
 
-          // ---------- Bold ----------
-          if (
-            trimmed.startsWith("**") &&
-            trimmed.endsWith("**")
-          ) {
-            return (
-              <strong
-                key={index}
-                className="
+            // ---------- Bold ----------
+            if (trimmed.startsWith("**") && trimmed.endsWith("**")) {
+              return (
+                <strong
+                  key={index}
+                  className="
                   font-semibold
                   text-white
                 "
-              >
-                {trimmed.replace(/\*\*/g, "")}
-              </strong>
-            );
-          }
+                >
+                  {trimmed.replace(/\*\*/g, "")}
+                </strong>
+              );
+            }
 
-          // ---------- Unordered List ----------
-          if (/^- /.test(trimmed)) {
-            return (
-              <div
-                key={index}
-                className="
+            // ---------- Unordered List ----------
+            if (/^- /.test(trimmed)) {
+              return (
+                <div
+                  key={index}
+                  className="
                   flex
                   items-start
                   gap-2
@@ -527,27 +522,22 @@ const renderTextWithHashtags = (text) => {
                   text-gray-300
                   leading-relaxed
                 "
-              >
-                <span className="text-white mt-[2px]">
-                  •
-                </span>
+                >
+                  <span className="text-white mt-[2px]">•</span>
 
-                <span>
-                  {trimmed.replace(/^- /, "")}
-                </span>
-              </div>
-            );
-          }
+                  <span>{trimmed.replace(/^- /, "")}</span>
+                </div>
+              );
+            }
 
-          // ---------- Ordered List ----------
-          if (/^\d+\.\s/.test(trimmed)) {
-            const number =
-              trimmed.match(/^\d+/)?.[0];
+            // ---------- Ordered List ----------
+            if (/^\d+\.\s/.test(trimmed)) {
+              const number = trimmed.match(/^\d+/)?.[0];
 
-            return (
-              <div
-                key={index}
-                className="
+              return (
+                <div
+                  key={index}
+                  className="
                   flex
                   items-start
                   gap-2
@@ -555,47 +545,41 @@ const renderTextWithHashtags = (text) => {
                   text-gray-300
                   leading-relaxed
                 "
-              >
-                <span className="text-white">
-                  {number}.
-                </span>
+                >
+                  <span className="text-white">{number}.</span>
 
-                <span>
-                  {trimmed.replace(/^\d+\.\s/, "")}
-                </span>
-              </div>
-            );
-          }
+                  <span>{trimmed.replace(/^\d+\.\s/, "")}</span>
+                </div>
+              );
+            }
 
-          // ---------- Hashtags ----------
-          if (/^(\s)?#\w+/.test(part)) {
-            return (
-              <span
-                key={index}
-                className="
+            // ---------- Hashtags ----------
+            if (/^(\s)?#\w+/.test(part)) {
+              return (
+                <span
+                  key={index}
+                  className="
                   text-white
                   font-medium
                 "
-              >
-                {part}
-              </span>
-            );
-          }
+                >
+                  {part}
+                </span>
+              );
+            }
 
-          // ---------- Normal Text ----------
-          return (
-            <React.Fragment key={index}>
-              {part
-                .replace(/\\\*/g, "*")
-                .replace(/\\\\/g, "\\")}
-            </React.Fragment>
-          );
-        })}
-      </div>
-    );
-  });
-};
-    const renderTextWithHashtags2 = (text) => {
+            // ---------- Normal Text ----------
+            return (
+              <React.Fragment key={index}>
+                {part.replace(/\\\*/g, "*").replace(/\\\\/g, "\\")}
+              </React.Fragment>
+            );
+          })}
+        </div>
+      );
+    });
+  };
+  const renderTextWithHashtags2 = (text) => {
     if (!text) return null;
 
     const cleanedText = text
@@ -631,7 +615,10 @@ const renderTextWithHashtags = (text) => {
             // ---------- Bold ----------
             if (trimmed.startsWith("**") && trimmed.endsWith("**")) {
               return (
-                <span key={index} className="font-semibold md:text-sm text-xs text-white">
+                <span
+                  key={index}
+                  className="font-semibold md:text-sm text-xs text-white"
+                >
                   {trimmed.replace(/\*\*/g, "")}
                 </span>
               );
@@ -640,7 +627,10 @@ const renderTextWithHashtags = (text) => {
             // ---------- Hashtags ----------
             if (/^(\s)?#\w+/.test(part)) {
               return (
-                <span key={index} className="text-white md:text-sm text-xs font-medium">
+                <span
+                  key={index}
+                  className="text-white md:text-sm text-xs font-medium"
+                >
                   {part}
                 </span>
               );
@@ -688,6 +678,18 @@ const renderTextWithHashtags = (text) => {
       }
     } catch (err) {
       console.log("error", err.message);
+    }
+  };
+
+  const sanitizeUrl = (rawUrl) => {
+    try {
+      const parsed = new URL(rawUrl);
+      if (parsed.protocol === "http:" || parsed.protocol === "https:") {
+        return parsed.toString();
+      }
+      return null;
+    } catch {
+      return null;
     }
   };
 
@@ -755,7 +757,7 @@ const renderTextWithHashtags = (text) => {
                 {/* CREATE PANEL */}
                 {showAnnouncement && (
                   <div className={`lg:pb-12 `}>
-                    <div className="bg-[#111827] border border-slate-800  rounded-lg  mb-6 md:mb-0 p-6 space-y-6">
+                    <div className="bg-[#111827] border border-emerald-500/20  rounded-lg  mb-6 md:mb-0 p-6 space-y-6">
                       <div className="flex items-center justify-between">
                         {" "}
                         <h3 className="text-xs uppercase tracking-wide text-slate-400">
@@ -763,7 +765,7 @@ const renderTextWithHashtags = (text) => {
                         </h3>
                         <button
                           onClick={() => setShowAnnouncement(!showAnnouncement)}
-                          className="text-emerald-500 text-xs md:text-sm"
+                          className="text-emerald-500 text-xs "
                         >
                           ← Back
                         </button>
@@ -786,44 +788,44 @@ const renderTextWithHashtags = (text) => {
                           />
                           {fieldErrors.title && (
                             <p className="text-xs md:text-sm flex items-center gap-1 text-red-500 mt-1">
-                             <TbAlertTriangleFilled /> {fieldErrors.title}
+                              <TbAlertTriangleFilled /> {fieldErrors.title}
                             </p>
                           )}
                         </div>
 
                         {/* MESSAGE */}
                         <div>
-                        <div className="flex items-center justify-between mb-2">
-                          <label className="block text-sm font-medium text-slate-300">
-                            Message <span className="text-red-500">*</span>
-                          </label>
+                          <div className="flex items-center justify-between mb-2">
+                            <label className="block text-sm font-medium text-slate-300">
+                              Message <span className="text-red-500">*</span>
+                            </label>
                             {/* Tabs */}
-                    <div className="flex items-center bg-gray-900 border border-gray-700 rounded-lg p-1">
-                      <button
-                        type="button"
-                        onClick={() => setPreview(false)}
-                        className={`px-2 py-0.5 text-[10px] outline-none   rounded-md transition-all duration-200 ${
-                          !preview
-                            ? "bg-emerald-500/20 text-emerald-400 "
-                            : "text-gray-400 hover:text-white"
-                        }`}
-                      >
-                        Editor
-                      </button>
+                            <div className="flex items-center bg-gray-900 border border-gray-700 rounded-lg p-1">
+                              <button
+                                type="button"
+                                onClick={() => setPreview(false)}
+                                className={`px-2 py-0.5 text-[10px] outline-none   rounded-md transition-all duration-200 ${
+                                  !preview
+                                    ? "bg-emerald-500/20 text-emerald-400 "
+                                    : "text-gray-400 hover:text-white"
+                                }`}
+                              >
+                                Editor
+                              </button>
 
-                      <button
-                        type="button"
-                        onClick={() => setPreview(true)}
-                        className={`px-2 py-0.5 text-[10px] outline-none  rounded-md transition-all duration-200 ${
-                          preview
-                            ? "bg-emerald-500/20 text-emerald-400 "
-                            : "text-gray-400 hover:text-white"
-                        }`}
-                      >
-                        Preview
-                      </button>
-                    </div>
-                    </div>
+                              <button
+                                type="button"
+                                onClick={() => setPreview(true)}
+                                className={`px-2 py-0.5 text-[10px] outline-none  rounded-md transition-all duration-200 ${
+                                  preview
+                                    ? "bg-emerald-500/20 text-emerald-400 "
+                                    : "text-gray-400 hover:text-white"
+                                }`}
+                              >
+                                Preview
+                              </button>
+                            </div>
+                          </div>
                           {/* <textarea
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
@@ -832,14 +834,14 @@ const renderTextWithHashtags = (text) => {
                      rounded-md focus:outline-none emerald-scrollbar focus:border-emerald-500/20 text-slate-300 leading-relaxed text-xs"
                           /> */}
 
-                           {/* Editor / Preview Wrapper */}
-                  <div className="relative">
-                    {/* Top subtle glow */}
-                    <div className="absolute inset-0 rounded-xl bg-emerald-500/[0.02] pointer-events-none" />
+                          {/* Editor / Preview Wrapper */}
+                          <div className="relative">
+                            {/* Top subtle glow */}
+                            <div className="absolute inset-0 rounded-xl bg-emerald-500/[0.02] pointer-events-none" />
 
-                    {preview ? (
-                      <div
-                        className="
+                            {preview ? (
+                              <div
+                                className="
                           w-full min-h-20 h-auto
                           px-4 py-3
                           rounded-md
@@ -851,37 +853,53 @@ const renderTextWithHashtags = (text) => {
                           overflow-auto
                           whitespace-pre-wrap
                         "
-                      >
-                        {message?.trim()?.length > 0 ? (
-                          renderTextWithHashtags2(message)
-                        ) : (
-                          <span className="text-gray-500">
-                            Preview content will appear here...
-                          </span>
-                        )}
-                      </div>
-                    ) : (
-                      <textarea
-                        value={message}
-                            onChange={(e) => setMessage(e.target.value)}
-                            placeholder="Announcement message..."
-                       
-                        className="w-full mt-2  focus:border focus:border-emerald-500/40 emerald-scrollbar px-4 py-3 rounded-md bg-gray-900 border border-gray-700 outline-none  text-white text-xs leading-relaxed"
-                      />
-                    )}
-                  </div>
+                              >
+                                {message?.trim()?.length > 0 ? (
+                                  renderTextWithHashtags2(message)
+                                ) : (
+                                  <span className="text-gray-500">
+                                    Preview content will appear here...
+                                  </span>
+                                )}
+                              </div>
+                            ) : (
+                              <textarea
+                                value={message}
+                                onChange={(e) => setMessage(e.target.value)}
+                                placeholder="Announcement message..."
+                                className="w-full mt-2  focus:border focus:border-emerald-500/40 emerald-scrollbar px-4 py-3 rounded-md bg-gray-900 border border-gray-700 outline-none  text-white text-xs leading-relaxed"
+                              />
+                            )}
+                          </div>
                           {fieldErrors.message && (
                             <p className="text-xs md:text-sm flex items-center gap-1 text-red-500 mt-1">
-                             <TbAlertTriangleFilled />  {fieldErrors.message}
+                              <TbAlertTriangleFilled /> {fieldErrors.message}
                             </p>
                           )}
                         </div>
 
                         {/* LINKS */}
                         <div>
+                          <div className="flex w-full items-center justify-between">
+
+                         
                           <label className="block text-sm font-medium text-slate-300">
                             Links
                           </label>
+                          {currentLinkTitle.length > 0 && (
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setCurrentLinkTitle("");
+                          setCurrentLinkUrl("");
+                        }}
+                        className="text-[11px] px-2.5 py-1 rounded-md bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-colors"
+                      >
+                        Clear
+                      </button>
+                    )}
+
+                     </div>
 
                           <div className="flex gap-2 mt-2">
                             <input
@@ -907,13 +925,14 @@ const renderTextWithHashtags = (text) => {
                             <button
                               type="button"
                               onClick={() => {
-                                if (
-                                  currentLinkTitle.trim() &&
-                                  currentLinkUrl.trim()
-                                ) {
+                                const titleToUse = currentLinkTitle.trim();
+                                const sanitizedUrl = sanitizeUrl(
+                                  currentLinkUrl.trim(),
+                                );
+                                if (titleToUse && sanitizedUrl) {
                                   const newLink = {
-                                    title: currentLinkTitle.trim(),
-                                    url: currentLinkUrl.trim(),
+                                    title: titleToUse,
+                                    url: sanitizedUrl,
                                   };
                                   setLinks([
                                     ...(Array.isArray(links) ? links : []),
@@ -921,6 +940,11 @@ const renderTextWithHashtags = (text) => {
                                   ]);
                                   setCurrentLinkTitle("");
                                   setCurrentLinkUrl("");
+                                } else if (titleToUse) {
+                                  toast.error(
+                                    "Invalid URL",
+                                    "Please enter a valid http(s) URL.",
+                                  );
                                 }
                               }}
                               className="px-4 bg-emerald-500/20 w-fit py-1 md:py-2   text-black text-emerald-400  text-xs rounded-md hover:bg-emerald-600/20"
@@ -1024,7 +1048,8 @@ const renderTextWithHashtags = (text) => {
 
                           {fieldErrors.deliveredTo && (
                             <p className="text-xs md:text-sm flex items-center gap-1 text-red-500 mt-1">
-                             <TbAlertTriangleFilled /> {fieldErrors.deliveredTo}
+                              <TbAlertTriangleFilled />{" "}
+                              {fieldErrors.deliveredTo}
                             </p>
                           )}
                         </div>
@@ -1115,24 +1140,28 @@ const renderTextWithHashtags = (text) => {
           </aside>
 
           {/* ================= MAIN FEED ================= */}
-          <main className={`space-y-6 md:space-y-8 md:block ${showGuidelines && 'hidden md:block'}`}>
+          <main
+            className={`space-y-6 md:space-y-8 md:block ${showGuidelines && "hidden md:block"}`}
+          >
             <div
               className={`${role !== "student" ? "bg-[#111827] border border-slate-800 rounded-lg p-5" : "bg-[#111827] border border-slate-800 rounded-lg p-5"}`}
             >
               <div className="flex items-center justify-between ">
-                 <h3 className="text-xs uppercase tracking-wide text-emerald-400 font-semibold mb-4">
-                Overview
-              </h3>
+                <h3 className="text-xs uppercase tracking-wide text-emerald-400 font-semibold mb-4">
+                  Overview
+                </h3>
 
-              {
-                announcement.length>0 &&
-              <button 
-              onClick={()=>{clearAllAnnouncements()}}
-              className="text-xs md:text-sm text-red-500 md:hover:text-red-600 transition-all duration-300 cursor-poiter"><RiDeleteBin6Line /></button>}
-
+                {announcement.length > 0 && (
+                  <button
+                    onClick={() => {
+                      clearAllAnnouncements();
+                    }}
+                    className="text-xs md:text-sm text-red-500 md:hover:text-red-600 transition-all duration-300 cursor-poiter"
+                  >
+                    <RiDeleteBin6Line />
+                  </button>
+                )}
               </div>
-             
-            
 
               <div className="space-y-3 text-sm">
                 <div className="flex  justify-between">
@@ -1151,7 +1180,6 @@ const renderTextWithHashtags = (text) => {
               </div>
             </div>
 
-  
             {announcement.length === 0 && !announceLoading && (
               <div className="flex h-[45vh] md:h-[50vh] md:h-auto flex-col justify-center items-center gap-2 md:gap-3 ">
                 <img
