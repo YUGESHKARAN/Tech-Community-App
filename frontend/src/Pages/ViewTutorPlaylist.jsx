@@ -224,12 +224,12 @@ function ViewTutorPlaylist() {
         <h1 className="text-3xl w-full mb-7 mx-auto hidden md:block font-semibold">
           {loading ? "Loading Playlist..." : playlistData?.title}
         </h1>
-        {!loading && Object.keys(playlistData).length> 0 && (
+        {!loading && Object.keys(playlistData).length > 0 && (
           <div className="grid w-full mx-auto md:h-screen grid-cols-1 lg:grid-cols-2 lg:gap-8 gap-2">
             {/* LEFT PANEL (Banner + Info) */}
             <div className="lg:col-span-1 md:hidden  p-1 md:sticky top-4 self-start  md:p-0 space-y-2 md:space-y-4">
               {/* Banner */}
-              <div className="relative rounded-xl   overflow-hidden bg-black border border-gray-700">
+              {/* <div className="relative rounded-xl   overflow-hidden bg-black border border-gray-700">
                 <img
                   src={
                     playlistData.thumbnail
@@ -250,6 +250,43 @@ function ViewTutorPlaylist() {
                           <SlTag className="text-[11px] " />  {playlistData?.domain}
                           </span>
                 
+              </div> */}
+
+              <div className="relative">
+                <div
+                  className="absolute bottom-2 left-3 w-[95%] h-full 
+        bg-zinc-600 rounded-xl border border-zinc-700 
+         z-0"
+                />
+
+                {/* STACK LAYER 2 (MIDDLE) */}
+                <div
+                  className="absolute bottom-1 left-1.5 w-[97%] h-full 
+        bg-zinc-700 rounded-xl border border-zinc-800 
+         z-10"
+                />
+
+                <div className="relative rounded-xl z-20 md:hover:-translate-y-1  overflow-hidden bg-black border border-gray-700 transition-transform duration-300 hover:-translate-y-1 group">
+                  <img
+                    src={
+                      playlistData.thumbnail
+                        ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.thumbnail}`
+                        : blog1
+                    }
+                    onClick={() =>
+                      handleImageClick(
+                        playlistData.thumbnail
+                          ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.thumbnail}`
+                          : blog1,
+                      )
+                    }
+                    alt="Playlist Banner"
+                    className="w-full h-48 md:h-[60vh]  object-cover md:object-contain"
+                  />
+                  <span className="absolute bottom-2 right-2 bg-black/80 text-white flex items-center gap-1 text-[10px] px-2 py-1 rounded-full">
+                    <SlTag className="text-[11px] " /> {playlistData?.domain}
+                  </span>
+                </div>
               </div>
 
               {/* Playlist Info */}
@@ -360,13 +397,11 @@ function ViewTutorPlaylist() {
 
                   {/* right content */}
                   <div className=" absolute top-0 right-0 flex flex-col items-start gap-2">
-                  
                     <p className="text-xs text-gray-400">
-                     Playlist • {playlistData?.post_ids?.length}
+                      Playlist • {playlistData?.post_ids?.length}
                     </p>
 
                     <div className="flex items-center gap-2">
-                      
                       <div
                         onClick={() => {
                           addBookMarkPostIdPlaylist(playlistData._id);
@@ -390,7 +425,6 @@ function ViewTutorPlaylist() {
                         <IoShareSocial className="md:text-xl text-teal-400" />
                       </div>
                     </div>
-                    
                   </div>
                 </div>
               </div>
@@ -399,7 +433,7 @@ function ViewTutorPlaylist() {
             {/* LEFT PANEL (Banner + Info) */}
             <div className="lg:col-span-1 hidden md:block md:sticky top-6 self-start space-y-4">
               {/* HERO BANNER */}
-              <div className="relative rounded-2xl overflow-hidden border border-gray-800 shadow-xl group">
+              {/* <div className="relative rounded-2xl overflow-hidden border border-gray-800 shadow-xl group">
                 <img
                   src={
                     playlistData.thumbnail
@@ -417,7 +451,7 @@ function ViewTutorPlaylist() {
                   className="w-full h-[260px] md:h-[50vh] cursor-pointer object-cover transition-transform duration-500 group-hover:scale-105"
                 />
 
-                {/* Gradient Overlay */}
+               
                 <div
                   onClick={() =>
                     handleImageClick(
@@ -429,7 +463,7 @@ function ViewTutorPlaylist() {
                   className="absolute inset-0 bg-gradient-to-t cursor-pointer from-black via-black/10 to-transparent"
                 />
 
-                {/* Title + Meta */}
+          
                 <div className="absolute bottom-4 left-4 right-4 space-y-2">
                   <h1 className="text-xl md:text-2xl font-semibold text-white leading-snug">
                     {playlistData?.domain}
@@ -440,7 +474,67 @@ function ViewTutorPlaylist() {
                       Playlist • {playlistData?.post_ids?.length} posts
                     </p>
 
-                    {/* <div className="flex items-center gap-3">
+                  
+                  </div>
+                </div>
+              </div> */}
+
+              <div className="relative">
+                <div
+                  className="absolute bottom-2 left-3 w-[95%] h-full 
+        bg-zinc-600 rounded-xl border border-zinc-700 
+         z-0"
+                />
+
+                {/* STACK LAYER 2 (MIDDLE) */}
+                <div
+                  className="absolute bottom-1 left-1.5 w-[97%] h-full 
+        bg-zinc-700 rounded-xl border border-zinc-800 
+         z-10"
+                />
+
+                <div className="relative z-20 w-[99%] rounded-2xl overflow-hidden border border-gray-800 shadow-xl transition-transform duration-300 hover:-translate-y-1 group">
+                  <img
+                    src={
+                      playlistData.thumbnail
+                        ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.thumbnail}`
+                        : blog1
+                    }
+                    onClick={() =>
+                      handleImageClick(
+                        playlistData.thumbnail
+                          ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.thumbnail}`
+                          : blog1,
+                      )
+                    }
+                    alt="Playlist Banner"
+                    className="w-full h-[260px] md:h-[50vh] cursor-pointer object-cover transition-transform duration-500 "
+                  />
+
+                  {/* Gradient Overlay */}
+                  <div
+                    onClick={() =>
+                      handleImageClick(
+                        playlistData.thumbnail
+                          ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.thumbnail}`
+                          : blog1,
+                      )
+                    }
+                    className="absolute inset-0 bg-gradient-to-t cursor-pointer from-black via-black/10 to-transparent"
+                  />
+
+                  {/* Title + Meta */}
+                  <div className="absolute bottom-4 left-4 right-4 space-y-2">
+                    <h1 className="text-xl md:text-2xl font-semibold text-white leading-snug">
+                      {playlistData?.domain}
+                    </h1>
+
+                    <div className="flex items-center justify-between">
+                      <p className="text-xs md:text-sm text-gray-300">
+                        Playlist • {playlistData?.post_ids?.length} posts
+                      </p>
+
+                      {/* <div className="flex items-center gap-3">
                     
                       <button
                         onClick={() => addBookMarkPostIdPlaylist(playlistData._id)}
@@ -464,6 +558,7 @@ function ViewTutorPlaylist() {
                         <IoShareSocial className="text-xl" />
                       </button>
                     </div> */}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -606,9 +701,9 @@ function ViewTutorPlaylist() {
             {/* RIGHT PANEL (Playlist Posts) */}
             <div className="lg:col-span-1 md:overflow-y-scroll mt-0 scrollbar-hide space-y-2 md:space-y-2">
               {playlistPosts.map((post, index) => (
-              <div
-                key={post._id}
-                className="
+                <div
+                  key={post._id}
+                  className="
                   flex gap-3
                   p-2
                   bg-gray-900
@@ -618,13 +713,12 @@ function ViewTutorPlaylist() {
                   overflow-hidden
                   w-full
                 "
-              >
-                
-        {/* Thumbnail */}
-        <Link
-          to={`/viewpage/${playlistData.email}/${post._id}`}
-          onClick={() => postViews(playlistData.email, post._id)}
-          className="
+                >
+                  {/* Thumbnail */}
+                  <Link
+                    to={`/viewpage/${playlistData.email}/${post._id}`}
+                    onClick={() => postViews(playlistData.email, post._id)}
+                    className="
             relative
             w-28
             md:w-40
@@ -634,112 +728,110 @@ function ViewTutorPlaylist() {
             rounded-md
             overflow-hidden
           "
-        >
-          <img
-            src={
-              post.image
-                ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${post.image}`
-                : blog1
-            }
-            alt={post.title}
-            className="w-full h-full object-cover"
-          />
+                  >
+                    <img
+                      src={
+                        post.image
+                          ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${post.image}`
+                          : blog1
+                      }
+                      alt={post.title}
+                      className="w-full h-full object-cover"
+                    />
 
-          <span className="absolute bottom-1 right-1 bg-black/80 text-xs px-1.5 py-0.5 rounded">
-            {index + 1}
-          </span>
-        </Link>
+                    <span className="absolute bottom-1 right-1 bg-black/80 text-xs px-1.5 py-0.5 rounded">
+                      {index + 1}
+                    </span>
+                  </Link>
 
-  {/* Content */}
-  <div className="flex flex-col flex-1 min-w-0 justify-between">
-    
-    {/* Title */}
-    <Link
-      to={`/viewpage/${playlistData.email}/${post._id}`}
-      onClick={() => postViews(playlistData.email, post._id)}
-      className="
+                  {/* Content */}
+                  <div className="flex flex-col flex-1 min-w-0 justify-between">
+                    {/* Title */}
+                    <Link
+                      to={`/viewpage/${playlistData.email}/${post._id}`}
+                      onClick={() => postViews(playlistData.email, post._id)}
+                      className="
         text-sm
         font-medium
         line-clamp-2
         break-words
         text-white
       "
-    >
-      {post.title}
-    </Link>
+                    >
+                      {post.title}
+                    </Link>
 
-    {/* Description */}
-    <Link
-      to={`/viewpage/${playlistData.email}/${post._id}`}
-      onClick={() => postViews(playlistData.email, post._id)}
-      className="
+                    {/* Description */}
+                    <Link
+                      to={`/viewpage/${playlistData.email}/${post._id}`}
+                      onClick={() => postViews(playlistData.email, post._id)}
+                      className="
         text-xs
         text-gray-300
         line-clamp-2
         overflow-hidden
         break-words
       "
-    >
-      <RenderTextNoMarkdown text={post.description} />
-    </Link>
+                    >
+                      <RenderTextNoMarkdown text={post.description} />
+                    </Link>
 
-    {/* Footer */}
-    <div className="flex justify-between items-center pt-1">
-      <p className="text-[10px] text-gray-300 whitespace-nowrap">
-        Views {post.views?.length}
-      </p>
+                    {/* Footer */}
+                    <div className="flex justify-between items-center pt-1">
+                      <p className="text-[10px] text-gray-300 whitespace-nowrap">
+                        Views {post.views?.length}
+                      </p>
 
-      <div className="flex items-center gap-2 flex-shrink-0">
-        
-        {/* Like */}
-        <button
-          type="button"
-          onClick={(e) =>
-            postLikes(playlistData.email, post._id, e)
-          }
-          className="cursor-pointer flex items-center gap-1 hover:text-teal-300 bg-transparent border-0 disabled:opacity-50"
-        >
-          {(post.likes || []).includes(email) ? (
-            <BiSolidLike className="text-sm text-teal-400" />
-          ) : (
-            <BiLike className="text-sm text-teal-400" />
-          )}
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        {/* Like */}
+                        <button
+                          type="button"
+                          onClick={(e) =>
+                            postLikes(playlistData.email, post._id, e)
+                          }
+                          className="cursor-pointer flex items-center gap-1 hover:text-teal-300 bg-transparent border-0 disabled:opacity-50"
+                        >
+                          {(post.likes || []).includes(email) ? (
+                            <BiSolidLike className="text-sm text-teal-400" />
+                          ) : (
+                            <BiLike className="text-sm text-teal-400" />
+                          )}
 
-          <span className="text-[9px] text-white">
-            {post.likes && post.likes.length > 0
-              ? post.likes.length
-              : ""}
-          </span>
-        </button>
+                          <span className="text-[9px] text-white">
+                            {post.likes && post.likes.length > 0
+                              ? post.likes.length
+                              : ""}
+                          </span>
+                        </button>
 
-        {/* Share */}
-        <div
-          onClick={() =>
-            sharePost(post.title, playlistData.email, post._id)
-          }
-          className="cursor-pointer flex items-center gap-1 hover:text-teal-300"
-        >
-          <IoShareSocial className="text-sm text-teal-400" />
-        </div>
+                        {/* Share */}
+                        <div
+                          onClick={() =>
+                            sharePost(post.title, playlistData.email, post._id)
+                          }
+                          className="cursor-pointer flex items-center gap-1 hover:text-teal-300"
+                        >
+                          <IoShareSocial className="text-sm text-teal-400" />
+                        </div>
 
-        {/* Bookmark */}
-        <div
-          onClick={() => {
-            addBookMarkPostId(post._id);
-          }}
-          className="cursor-pointer flex items-center gap-1 text-teal-300 hover:text-teal-300"
-        >
-          {Array.isArray(bookMarkId) &&
-          bookMarkId.includes(post._id) ? (
-            <PiBookmarksSimpleFill className="text-teal-500" />
-          ) : (
-            <PiBookmarksSimpleLight />
-          )}
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+                        {/* Bookmark */}
+                        <div
+                          onClick={() => {
+                            addBookMarkPostId(post._id);
+                          }}
+                          className="cursor-pointer flex items-center gap-1 text-teal-300 hover:text-teal-300"
+                        >
+                          {Array.isArray(bookMarkId) &&
+                          bookMarkId.includes(post._id) ? (
+                            <PiBookmarksSimpleFill className="text-teal-500" />
+                          ) : (
+                            <PiBookmarksSimpleLight />
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               ))}
             </div>
           </div>
@@ -747,16 +839,15 @@ function ViewTutorPlaylist() {
         {loading && <PlaylistDetailSkeleton />}
 
         {!loading &&
-        (!playlistData || Object.keys(playlistData).length === 0) && (
-          <div className="w-full h-[70vh] md:h-[55vh] flex flex-col items-center justify-center">
-            {/* <p className="text-gray-500">Playlist not found.</p> */}
-            <img className="w-48 md:w-60 " src={empty_state_post} alt="" />
-            <p className="text-gray-400 max-w-xs md:max-w-md text-sm md:text-base flex justify-center items-center text-center">
-              Playlist not found !
-            </p>
-          </div>
-        )}
-
+          (!playlistData || Object.keys(playlistData).length === 0) && (
+            <div className="w-full h-[70vh] md:h-[55vh] flex flex-col items-center justify-center">
+              {/* <p className="text-gray-500">Playlist not found.</p> */}
+              <img className="w-48 md:w-60 " src={empty_state_post} alt="" />
+              <p className="text-gray-400 max-w-xs md:max-w-md text-sm md:text-base flex justify-center items-center text-center">
+                Playlist not found !
+              </p>
+            </div>
+          )}
       </div>
       <ToastContainer />
 
@@ -812,12 +903,9 @@ function ViewTutorPlaylist() {
         </div>
       )}
 
-      
       <Footer />
     </div>
   );
 }
 
 export default ViewTutorPlaylist;
-
-
