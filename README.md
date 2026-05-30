@@ -1,5 +1,5 @@
 <div align="center">
-  <h3>Tech. Community App</h3>
+  <h3> Byte Base - Tech. Community App</h3>
 </div>
 
 
