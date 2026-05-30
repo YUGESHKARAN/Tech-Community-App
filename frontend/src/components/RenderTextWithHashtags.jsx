@@ -105,11 +105,11 @@ const RenderTextWithHashtags = ({ text }) => {
     text-[13px]
     leading-relaxed
 
-    prose-p:my-1.5
+    prose-p:my-2
     prose-p:leading-relaxed
     prose-p:text-gray-300
 
-    prose-headings:my-2
+    prose-headings:my-2.5
     prose-headings:leading-tight
     prose-headings:text-white
     prose-headings:font-semibold
@@ -129,7 +129,7 @@ const RenderTextWithHashtags = ({ text }) => {
     prose-ul:my-1.5
     prose-ol:my-1.5
 
-    prose-li:my-0.5
+    prose-li:my-1
     prose-li:leading-relaxed
     prose-li:text-gray-300
 
@@ -148,7 +148,7 @@ const RenderTextWithHashtags = ({ text }) => {
     prose-code:text-emerald-300
     prose-code:bg-[#161b22]
     prose-code:px-1
-    prose-code:py-0.5
+    prose-code:py-1
     prose-code:rounded
 
     prose-code:before:content-none
