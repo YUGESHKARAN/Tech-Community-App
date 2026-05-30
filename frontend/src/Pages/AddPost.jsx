@@ -850,7 +850,7 @@ function AddPost() {
                     {preview ? (
                       <div
                         className="
-                            w-full min-h-40 h-[300px]
+                          w-full min-h-40 h-[300px]
                           
                           overflow-y-auto
                           scrollbar-hide
@@ -861,7 +861,7 @@ function AddPost() {
                           text-white text-xs md:text-sm
                           leading-relaxed
                           emerald-scrollbar
-                          overflow-auto
+                         
                           scrollbar-hide
                           break-words
                         "

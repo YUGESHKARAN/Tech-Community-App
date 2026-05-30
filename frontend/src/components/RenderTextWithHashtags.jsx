@@ -97,10 +97,11 @@ const RenderTextWithHashtags = ({ text }) => {
   className="
     prose
     prose-invert
-
+    min-w-0
+     max-w-4xl
     prose-sm
 
-    max-w-none
+  
 
     text-[13px]
     leading-relaxed
