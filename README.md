@@ -93,7 +93,7 @@ Developer's-Collaborative & learning  platform designed for universities and col
 
 ## Monorepo Structure
 
-Frontend and Backend are deployed and scaled independently in service level _(Application is loosly coupled with other micro-services outlined in the_ **Key Features** _section)_:
+Frontend and Backend are deployed and scaled independently in service level _(Application is coupled with other micro-services outlined in the_ **Key Features** _section)_:
 
 ```
 Node-Blog-App/
