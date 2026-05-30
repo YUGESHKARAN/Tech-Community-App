@@ -107,7 +107,7 @@ Node-Blog-App/
 
 ## Tech Stack
 
-- **Backend:** Node.js, Express, MongoDB, Mongoose
+- **Backend:** Node.js, Express, JWT, MongoDB, Mongoose
 - **Frontend:** React.js, Tailwind CSS
 - **Storage:** AWS S3
 - **Caching:** Redis
