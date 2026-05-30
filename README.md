@@ -91,7 +91,7 @@ Developer's-Collaborative & learning  platform designed for universities and col
 ---
 
 
-## Repo Structure
+## Monorepo Structure
 
 Frontend and Backend are deployed and scaled independently in service level _(Application is loosly coupled with other micro-services outlined in the_ **Key Features** _section)_:
 
