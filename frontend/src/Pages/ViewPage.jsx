@@ -105,60 +105,6 @@ useEffect(() => {
     getSinglePost();
   }, [email, id]);
 
-  // useEffect(() => {
-  //   const getComments = async () => {
-  //     try {
-  //       const response = await axiosInstance.get(`/blog/posts/${email}/${id}`);
-  //       const comments = response.data.data;
-  //       setMessages(comments.messages);
-  //     } catch (err) {
-  //       console.error("Error fetching comments", err);
-  //     }
-  //   };
-  //   getComments();
-  // }, [messages]);
-
-  // useEffect(() => {
-  //   const socketUrl = import.meta.env.VITE_WEBSOCKET_URL;
-  //   const newSocket = io(`${socketUrl}`, {
-  //     transports: ["polling"],
-  //   });
-  //   setSocket(newSocket);
-
-  //   // Register the user with their email
-  //   newSocket.emit("registerUser", userEmail);
-  //   newSocket.emit("joinPostRoom", postId);
-
-  //   // Listen for incoming notifications
-  //   newSocket.on("notification", (notification) => {
-  //     console.log("Received notification:", notification);
-  //     setNotification((prevNotifications) => [
-  //       notification,
-  //       ...prevNotifications,
-  //     ]);
-  //   });
-
-  //   return () => {
-  //     newSocket.disconnect();
-  //   };
-  // }, [postId, userEmail]);
-
-  // const postComment = () => {
-  //   setViewComments(true);
-  //   if (newMessage.trim() === "") return;
-
-  //   const messageData = {
-  //     postId,
-  //     user,
-  //     email: userEmail,
-  //     message: newMessage,
-  //     url: `${window.location.origin}/viewpage/${singlePostData.authoremail}/${postId}`,
-  //     profile: profile,
-  //   };
-
-  //   socket.emit("newMessage", messageData);
-  //   setNewMessage("");
-  // };
 
   useEffect(() => {
     const getComments = async () => {

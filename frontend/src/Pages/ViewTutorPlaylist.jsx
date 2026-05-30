@@ -221,7 +221,7 @@ function ViewTutorPlaylist() {
       <NavBar />
 
       <div className="w-full mx-auto px-2 min-h-screen h-auto md:px-8 py-6">
-        <h1 className="text-3xl w-full mb-7 mx-auto hidden md:block font-semibold">
+        <h1 className="text-3xl w-full mb-7 pl-1 mx-auto hidden md:block font-semibold">
           {loading ? "Loading Playlist..." : playlistData?.title}
         </h1>
         {!loading && Object.keys(playlistData).length > 0 && (
