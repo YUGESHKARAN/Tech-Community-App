@@ -1,7 +1,7 @@
 
 <div
   align="center">
-  <img src="assets/byte_base_logo.png" width="150" height="150" alt="Cute Llama"> 
+  <img src="assets/byte_base_logo_icon.png" width="100" height="100" alt="Cute Llama"> 
 </div>
 
 <div align="center">
