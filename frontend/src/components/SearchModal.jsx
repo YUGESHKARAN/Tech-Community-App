@@ -336,7 +336,7 @@ import { GlobalStateContext } from "../GlobalStateContext";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../instances/Axiosinstances";
 import highlightText from "../hooks/highlightText";
-
+import logoicon from "../assets/embed_logo_2.png"
 function SearchModal({ open, setOpen, inputValue, setInputValue }) {
   const inputRef = useRef(null);
   const abortRef = useRef(null); // cancel in-flight requests on new keystroke
@@ -614,7 +614,7 @@ function SearchModal({ open, setOpen, inputValue, setInputValue }) {
 
         {/* Footer — unchanged */}
         <div className="px-4 py-3 text-xs text-gray-500 md:text-gray-400 flex items-center justify-between border-t border-[#21262d] shrink-0">
-          <span>You are searching for :</span>
+          <span className="flex items-center gap-2.5"> <img src={logoicon} className="w-6 h-6 md:w-7 md:h-7 object-contain rounded-md md:rounded-lg " alt="" /> You are searching for :</span>
           {searchTerm && (
             <div className="max-w-[180px] overflow-hidden">
               <span className="text-emerald-400 block truncate whitespace-nowrap">
