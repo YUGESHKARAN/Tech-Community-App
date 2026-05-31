@@ -116,7 +116,7 @@ function PostsComponent({ posts, filteredPosts, loading, hasMore, debouncedSearc
                           md:mb-4
                         "
         >
-          <div className="flex items-center gap-3 px-4 py-3">
+          <div className="flex items-center gap-3 px-4 py-2 md:py-3">
             <Link to={`/viewProfile/${data.authorEmail}`}>
               <img
                 src={
