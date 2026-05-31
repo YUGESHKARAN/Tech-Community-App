@@ -5,7 +5,7 @@
 </div>
 
 <div align="center">
-  <h3> Byte Base - Tech. Community App</h3>
+  <h3> Byte Base - Tech. Community Platform</h3>
 </div>
 
 
@@ -20,7 +20,7 @@
 [![Closed PRs](https://img.shields.io/github/issues-pr-closed/YUGESHKARAN/Tech-Community-App)](https://github.com/YUGESHKARAN/Tech-Community-App/pulls?q=is%3Apr+is%3Aclosed)
 
 
-**Welcome to "Byte Base" - The Tech. Community App!**
+**Welcome to "Byte Base" - The Tech. Community Platform !**
 
 Developer's-Collaborative & learning  platform designed for universities and colleges, focusing on knowledge sharing and community building. The platform enables student developers to connect, collaborate, and engage through sharing their tech works, knowledge and findings, all within their institution. Developers can interact, clarify doubts via discussion section. The platform includes role-based interfaces for Students, Coordinators, and Admins to manage content, moderation, and community participation.
 
