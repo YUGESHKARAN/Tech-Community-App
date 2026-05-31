@@ -5,6 +5,7 @@ import {CirclesWithBar} from 'react-loader-spinner'
 import axiosInstance from "../instances/Axiosinstances";
 import Cookies from 'js-cookie'
 import { storeItem } from "../utils/encode";
+import logoicon from "../assets/embed_logo_2.png"
 function LoginPage() {
   const [formData, setFormData] = useState({
     email: "",
@@ -111,132 +112,18 @@ function LoginPage() {
   };
 
   return (
-    // <div className="text-md font-semibold w-full h-screen  bg-black flex justify-center items-center">
-    //   <div className={`${loader?'hidden':'bg-gray-800 w-11/12 max-w-md p-8 rounded-md'}`}>
-    //     <h2 className="text-center mb-6  text-white text-xl">{title}</h2>
 
-    //     <form className={`md:w-96 w-full ${forgotPassword?'space-y-3':'space-y-8'} mx-auto md:p-4`}>
-    //       {success && <p className="text-green-500">{success}</p>}
-    //       {errors.apiError && <p className="text-red-500">{errors.apiError}</p>}
-
-    //       <div className="mb-4">
-    //         {/* <label htmlFor="email" className="block text-gray-700">
-    //           Email
-    //         </label> */}
-    //         <input
-    //           type="email"
-    //           id="email"
-    //           name="email"
-    //           value={formData.email}
-    //           onChange={handleChange}
-    //           className="w-full px-3 py-2 md:text-base text-sm border bg-gray-700 text-white rounded"
-    //           placeholder="Enter Email"
-    //           required
-    //         />
-    //       </div>
-
-    //       <div className={`${forgotPassword ? "hidden" : "mb-4"}`}>
-    //         {/* <label htmlFor="password" className="block text-gray-700">
-    //           {passwordLabel}
-    //         </label> */}
-    //         <input
-    //           type="password"
-    //           id="password"
-    //           name="password"
-    //           value={formData.password}
-    //           onChange={handleChange}
-    //           className="w-full px-3 py-2 md:text-base text-sm border bg-gray-700 text-white rounded"
-    //           placeholder="Enter Password"
-    //           required
-    //         />
-    //       </div>
-
-    //       <button
-    //         onClick={handleSubmit}
-    //         type="submit"
-    //         disabled={loader2}
-    //         className={`${
-    //           forgotPassword
-    //             ? "hidden"
-    //             : "w-full bg-red-600 hover:bg-red-700 md:text-base text-sm transition-all duration-200 text-white font-bold py-2 px-4 rounded"
-    //         }`}
-    //       >
-    //         {loader2?'Logging in...':'Login'}
-    //       </button>
-
-    //       <button
-    //         onClick={(e) => sendOtp(e, formData.email)}
-    //         type="submit"
-    //         disabled={loader2}
-    //         className={`${
-    //           forgotPassword
-    //             ? "w-full bg-red-600 hover:bg-red-700 md:text-base text-sm transition-all duration-200 text-white font-bold py-2 px-4 rounded"
-    //             : "hidden"
-    //         }`}
-    //       >
-    //         {loader2?'Sending OTP...':'Send OTP'}
-    //       </button>
-    //     </form>
-
-    //     <p
-    //     className={`${forgotPassword?'mt-4 flex px-4 justify-start md:text-base text-xs gap-2 text-gray-400 cursor-pointer':'hidden'}`}
-    //     >
-    //     Go to Login?{" "}
-    //      <span
-    //       onClick={() => {
-    //         setForgotPassword(false);
-    //         setPasswordLabel("Password");
-    //         setTitle("Login ");
-    //       }}
-    //      className="text-green-500 md:text-base text-xs hover:underline"
-    //      >
-    //       Login here
-    //      </span>
-    //     </p>
-
-    //     <p
-    //       onClick={() => {
-    //         setForgotPassword(true);
-    //         setPasswordLabel("New Password");
-    //         setTitle("Forgot Password");
-    //       }}
-    //       className={`${forgotPassword?'hidden':'mt-4 flex px-4 justify-start md:text-base text-xs gap-2 text-gray-400 cursor-pointer'}`}
-    //     >
-    //       Forgot Password? <span className="text-green-500 md:text-base text-xs hover:underline">Click here</span>
-    //     </p>
-
-    //     <p className={`${forgotPassword?'hidden':'mt-4 px-4 md:text-base text-xs text-gray-400'}`}>
-    //       Don't have an account?{" "}
-    //       <Link to="/register" className="text-green-500 hover:underline">
-    //         Register here
-    //       </Link>
-    //     </p>
-    //   </div>
-    // {
-    //   loader &&   <CirclesWithBar
-    //   height="100"
-    //   width="100"
-    //   color="#4fa94d"
-    //   outerCircleColor="#4fa94d"
-    //   innerCircleColor="#4fa94d"
-    //   barColor="#4fa94d"
-    //   ariaLabel="circles-with-bar-loading"
-    //   wrapperStyle={{}}
-    //   wrapperClass=""
-    //   visible={true}
-    //   />
-    // }
-    // </div>
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center px-4">
   {!loader && (
     <div className="w-full max-w-md bg-gray-900 border border-gray-700 rounded-2xl shadow-2xl p-8">
       
       {/* Header */}
-      <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold text-white tracking-wide">
+      <div className="text-center relative mb-6">
+        <img src={logoicon} className="md:w-12 md:h-12 w-9 h-9 object-cover bg-white rounded-full absolute top-1 left-0" alt="" />
+        <h2 className="md:text-2xl text-xl font-bold text-white tracking-wide">
           {title}
         </h2>
-        <p className="text-sm text-gray-400 mt-1">
+        <p className="md:text-sm text-xs text-gray-400 mt-0">
           Secure access to your account
         </p>
       </div>
@@ -244,7 +131,7 @@ function LoginPage() {
       {/* Form */}
       <form
         className={`w-full ${
-          forgotPassword ? "space-y-4" : "space-y-6"
+          forgotPassword ? "space-y-4 " : "space-y-6 "
         }`}
       >
         {success && !isError && (
@@ -261,6 +148,7 @@ function LoginPage() {
 
         {/* Email */}
         <div>
+        <div className="md:mb-4 mb-2">
           <label className="block text-sm font-medium text-gray-300 mb-1">
             Email address
           </label>
@@ -276,6 +164,7 @@ function LoginPage() {
             className="w-full px-4 py-2.5 text-sm bg-gray-800 text-white border border-gray-700 rounded-lg focus:outline-none focus:ring-1 focus:ring-green-500"
           />
         </div>
+ 
 
         {/* Password */}
         {!forgotPassword && (
@@ -297,13 +186,15 @@ function LoginPage() {
           </div>
         )}
 
+               </div>
+
         {/* Buttons */}
         {!forgotPassword && (
           <button
             onClick={handleSubmit}
             type="submit"
             disabled={loader2}
-            className="w-full p-1.5 md:py-2.5 bg-red-600 hover:bg-red-700 transition text-white font-semibold rounded-lg"
+            className="w-full p-1.5 md:py-2.5 bg-red-600 hover:bg-red-700 transition text-white font-semibold mt-2 rounded-lg"
           >
             {loader2 ? "Logging in..." : "Login"}
           </button>
