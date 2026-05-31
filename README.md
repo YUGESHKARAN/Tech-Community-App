@@ -1,7 +1,7 @@
 
 <div
   align="center">
-  <img src="assets/byte_base_logo.png" width="150" height="150" alt="Cute Llama"> 
+  <img src="assets/byte_base_logo_icon.png" width="100" height="100" alt="Cute Llama"> 
 </div>
 
 <div align="center">
@@ -91,9 +91,9 @@ Developer's-Collaborative & learning  platform designed for universities and col
 ---
 
 
-## Repo Structure
+## Monorepo Structure
 
-Frontend and Backend are deployed and scaled independently in service level _(Application is loosly coupled with other micro-services outlined in the_ **Key Features** _section)_:
+Frontend and Backend are deployed and scaled independently in service level _(Application is coupled with other micro-services outlined in the_ **Key Features** _section)_:
 
 ```
 Node-Blog-App/
@@ -107,7 +107,7 @@ Node-Blog-App/
 
 ## Tech Stack
 
-- **Backend:** Node.js, Express, MongoDB, Mongoose
+- **Backend:** Node.js, Express, JWT, MongoDB, Mongoose
 - **Frontend:** React.js, Tailwind CSS
 - **Storage:** AWS S3
 - **Caching:** Redis
