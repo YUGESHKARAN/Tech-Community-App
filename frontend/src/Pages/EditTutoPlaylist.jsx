@@ -564,7 +564,7 @@ const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
           )}
 
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5  md:max-h-[800px] emerald-scrollbar h-[780px] overflow-y-auto px-2 py-4 md:p-4 gap-3 md:gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 3xl:grid-cols-4  md:max-h-[800px] emerald-scrollbar h-[780px] overflow-y-auto px-2 py-4 md:p-4 gap-3 md:gap-5">
             {posts?.map((data) => {
                const selIndex = postIds.indexOf(data._id);
               const isSelected = selIndex !== -1;
