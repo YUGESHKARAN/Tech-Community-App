@@ -574,7 +574,7 @@ function TutorPlaylist() {
             </div>
           )}
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 max-h-[780px] emerald-scrollbar overflow-y-auto gap-3 px-2 py-4 md:p-4 gap-3 md:gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  3xl:grid-cols-4 max-h-[780px] emerald-scrollbar overflow-y-auto gap-3 px-2 py-4 md:p-4 gap-3 md:gap-5">
             {posts?.map((data) => {
               const selIndex = postIds.indexOf(data._id);
               const isSelected = selIndex !== -1;
