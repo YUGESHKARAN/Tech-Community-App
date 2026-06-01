@@ -339,7 +339,7 @@ const recommendedAuthors = useMemo(() => {
       </div>
 
        {/* Search and Filter */}
-      <div className="w-full  px-4 mx-auto flex mt-2 md:mt-4   md:flex-row  items-center gap-2 md:gap-3 mb-3 md:mb-6">
+      <div className="w-full  px-4 mx-auto flex mt-0 md:mt-4   md:flex-row  items-center gap-2 md:gap-3 mb-1 md:mb-6">
         <div
           // className="md:w-1/3 w-3/5 px-4 py-2 flex items-center gap-2 justify-center rounded-md bg-gray-600 border border-white text-xs md:text-base text-white placeholder-gray-400"
           className="w-full max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition"
@@ -380,7 +380,7 @@ const recommendedAuthors = useMemo(() => {
         </select> */}
 
 
-        <div className="relative transition-all duration-300 rounded-full md:rounded-lg md:border border-neutral-700 cursor-pointer">
+        <div className="relative transition-all duration-300 cursor-pointer">
           <span
            onClick={()=>{setShowAuthorFilter(true)}}
            className="reltive">
@@ -479,7 +479,7 @@ const recommendedAuthors = useMemo(() => {
   
       {/* Recommended authors */}
       {recommendedAuthors?.length > 0 && !roleFilter && (
-        <h2 className="w-full px-4 mx-auto tracking-wide  text-left text-lg text-green-400 md:text-2xl font-semibold">
+        <h2 className="w-full px-4 mx-auto md:tracking-wide  text-left text-lg text-green-400 md:text-2xl md:font-semibold">
           Recommended
         </h2>
       )}
@@ -572,7 +572,7 @@ const recommendedAuthors = useMemo(() => {
         recommendedAuthors?.length == 0 &&
         filteredAuthors?.length == 0 && (
           <>
-            <h2 className="w-full px-4 mx-auto  tracking-wide text-left text-lg text-green-400 md:text-2xl font-semibold">
+            <h2 className="w-full px-4 mx-auto  md:tracking-wide text-left text-lg text-green-400 md:text-2xl md:font-semibold">
               Recommended
             </h2>
             <RecommendedAuthorsSkeleton />
