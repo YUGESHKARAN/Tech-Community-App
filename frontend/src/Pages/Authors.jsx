@@ -11,8 +11,8 @@ import { Link } from "react-router-dom";
 import { FaLinkedin } from "react-icons/fa";
 import { FaSquareGithub } from "react-icons/fa6";
 import { PiLinkSimpleFill } from "react-icons/pi";
-import { BsPersonSquare } from "react-icons/bs";
-import { IoSearch } from "react-icons/io5";
+import { BsFilterLeft, BsPersonSquare } from "react-icons/bs";
+import { IoCheckmark, IoSearch } from "react-icons/io5";
 import { IoIosGitNetwork } from "react-icons/io";
 import RecommendedAuthorsSkeleton from "../components/loaders/RecommendedAuthorsSkeleton ";
 import CoordinatorGridSkeleton from "../components/loaders/CoordinatorGridSkeleton ";
@@ -39,7 +39,7 @@ function Authors() {
   const isFetching = useRef(false);
   // const [followAuthorLoaderId, setFollowAuthorLoaderId] = useState(null);
   const [followLoadingIds, setFollowLoadingIds] = useState(new Set());
-
+ const [showAuthorFilter, setShowAuthorFilter] = useState(false)
   // const authorsDetails = async () => {
   //   try {
   //     const response = await axiosInstance.get("/blog/author/profiles/");
@@ -302,6 +302,26 @@ const recommendedAuthors = useMemo(() => {
 }, [authors, searchQuery, debouncedSearch, recommendationSet]);
 
 
+ const authorFilterRef = useRef();
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        authorFilterRef.current &&
+        !authorFilterRef.current.contains(event.target)
+      ) {
+       
+        setShowAuthorFilter(false)
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+
   return (
     <div className="w-full min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 ">
       <NavBar />
@@ -319,23 +339,23 @@ const recommendedAuthors = useMemo(() => {
       </div>
 
        {/* Search and Filter */}
-      <div className="w-full px-4 mx-auto flex mt-2 md:mt-4   md:flex-row justify-between items-center gap-4 mb-3 md:mb-6">
+      <div className="w-full  px-4 mx-auto flex mt-2 md:mt-4   md:flex-row  items-center gap-2 md:gap-3 mb-3 md:mb-6">
         <div
           // className="md:w-1/3 w-3/5 px-4 py-2 flex items-center gap-2 justify-center rounded-md bg-gray-600 border border-white text-xs md:text-base text-white placeholder-gray-400"
           className="w-full max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition"
         >
-          <IoSearch className="text-white" />
+          <IoSearch className="text-gray-400" />
           <input
             type="text"
             placeholder="Search by name or email..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             // className="w-full bg-gray-600   focus:outline-none focus:ring-0"
-            className="bg-transparent w-full focus:outline-none text-sm text-white placeholder-gray-400"
+            className="bg-transparent w-full focus:outline-none text-xs md:text-sm text-white placeholder-gray-400"
           />
         </div>
 
-        <select
+        {/* <select
           value={roleFilter}
           onChange={(e) => setRoleFilter(e.target.value)}
           className="
@@ -357,7 +377,103 @@ const recommendedAuthors = useMemo(() => {
           <option value="">All Roles</option>
           <option value="coordinator">Contributors</option>
           <option value="student">Users</option>
-        </select>
+        </select> */}
+
+
+        <div className="relative ">
+          <span
+           onClick={()=>{setShowAuthorFilter(true)}}
+           className="reltive">
+             <BsFilterLeft 
+         
+          className="text-gray-300 md:text-gray-300 cursor-pointer rounded-full p-0.5 text-3xl md:text-4xl" />
+
+         {roleFilter!=="" && <IoCheckmark className="text-emerald-400 absolute bottom-1 right-0"/>}
+           
+
+          </span>
+         
+           
+           <div
+          ref={authorFilterRef}
+          className={`${
+            showAuthorFilter
+              ? "absolute top-10 right-0 md:left-0 z-50 px-2 py-1 w-32 overflow-hidden rounded-lg border border-[#30363d] bg-gray-900 shadow-2xl"
+              : "hidden"
+          }`}
+          onClick={()=>{setShowAuthorFilter(false)}}
+        >
+          {/* Top Section */}
+          <div className="py-1.5">
+            <div
+            onClick={()=>{setRoleFilter("")}}
+
+            >
+            <button
+              className="
+                w-full flex items-center gap-2
+                pl-3  md:py-1.5 py-1
+                text-xs text-gray-100
+                hover:bg-gray-800/70
+                transition-all duration-200
+                rounded-lg
+
+
+        
+              "
+            >
+              {/* <FiPlusCircle className="text-[17px] text-gray-400" /> */}
+             <span className="flex items-center gap-2">All  {roleFilter==="" && <IoCheckmark  className="text-sm text-emerald-400"/>}</span>
+            </button>
+            </div>
+           
+           <div
+           onClick={()=>{setRoleFilter("coordinator")}}
+           >
+            <button
+              className="
+                w-full flex items-center gap-2
+                pl-3  md:py-1.5 py-1
+                text-xs text-gray-100
+                hover:bg-gray-800/70
+                transition-all duration-200
+                rounded-lg
+
+              "
+            >
+              {/* <FiLayers className="text-[17px] text-gray-400" /> */}
+              <span className="flex items-center gap-2"> Contributors {roleFilter==="coordinator" && <IoCheckmark  className="text-sm text-emerald-400"/>}</span>
+            </button>
+           
+           </div>
+        
+           <div
+           onClick={()=>{setRoleFilter("student")}}
+        
+           >
+            <button
+              className="
+                w-full flex items-center gap-2
+                pl-3  md:py-1.5 py-1
+                text-xs text-gray-100
+                hover:bg-gray-800/70
+                transition-all duration-200
+                rounded-lg
+
+              "
+            >
+              {/* <VscGitStashApply className="text-[17px] text-gray-400" /> */}
+              <span className="flex items-center gap-2"> Users {roleFilter==="student" && <IoCheckmark  className="text-sm text-emerald-400"/>}</span>
+            </button>
+            </div>
+        
+          </div>
+        
+   
+        </div>
+
+        </div>
+       
       </div>
 
   
