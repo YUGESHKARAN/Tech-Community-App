@@ -398,7 +398,7 @@ const recommendedAuthors = useMemo(() => {
           ref={authorFilterRef}
           className={`${
             showAuthorFilter
-              ? "absolute top-10 right-0 md:left-0 z-50 px-2 py-1 w-28 md:w-32 overflow-hidden rounded-lg border border-[#30363d] bg-gray-900 shadow-2xl"
+              ? "absolute top-10 right-0 md:left-0 z-50 px-2 py-1 w-32 overflow-hidden rounded-lg border border-[#30363d] bg-gray-900 shadow-2xl"
               : "hidden"
           }`}
           onClick={()=>{setShowAuthorFilter(false)}}
