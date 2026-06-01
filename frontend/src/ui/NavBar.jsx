@@ -832,7 +832,7 @@ function NavBar() {
   ref={addContentRef}
   className={`${
     showAddContent && !showNotification
-      ? "fixed top-16 right-12 z-50 px-2 py-1 w-52 overflow-hidden rounded-2xl border border-[#30363d] bg-gray-900 shadow-2xl"
+      ? "fixed top-16 right-12 z-50 px-2 py-1 w-48 overflow-hidden rounded-2xl border border-[#30363d] bg-gray-900 shadow-2xl"
       : "hidden"
   }`}
 >
@@ -854,7 +854,7 @@ function NavBar() {
       "
     >
       <FiPlusCircle className="text-[17px] text-gray-400" />
-      <span>Add New Post</span>
+      <span className="text-[13px]">Add New Post</span>
     </button>
     </Link>
    
@@ -873,7 +873,7 @@ function NavBar() {
       "
     >
       <FiLayers className="text-[17px] text-gray-400" />
-      <span>Create New Playlist</span>
+      <span className="text-[13px]">Create New Playlist</span>
     </button>
    
    </Link>
@@ -893,7 +893,7 @@ function NavBar() {
       "
     >
       <VscGitStashApply className="text-[17px] text-gray-400" />
-      <span>Create New Campaign</span>
+      <span className="text-[13px]">Create New Campaign</span>
     </button>
     </Link>
 
