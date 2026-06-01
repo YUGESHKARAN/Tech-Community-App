@@ -245,7 +245,7 @@ function LoginPage() {
             </span>
           </p>
 
-          <p className="mt-3 text-sm text-gray-400">
+          <p className="mt-0.5 text-sm text-gray-400">
             Don&apos;t have an account?{" "}
             <Link to="/register" className="text-green-500 hover:underline">
               Register here
