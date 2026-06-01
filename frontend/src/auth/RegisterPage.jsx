@@ -227,7 +227,7 @@ function RegisterPage() {
           </button>
         </form>
 
-        <p className="mt-6 text-sm text-gray-400 text-center">
+        <p className="mt-6 text-[13px] md:text-sm text-gray-400 text-center">
           Already have an account?{" "}
           <Link to="/" className="text-green-500 hover:underline">Login here</Link>
         </p>

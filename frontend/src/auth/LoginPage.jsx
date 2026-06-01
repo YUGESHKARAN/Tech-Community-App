@@ -214,7 +214,7 @@ function LoginPage() {
 
       {/* Footer Links */}
       {forgotPassword && (
-        <p className="mt-5 text-sm text-gray-400">
+        <p className="mt-5 text-[13px] md:text-sm text-gray-400">
           Go to Login?{" "}
           <span
             onClick={() => {
@@ -237,7 +237,7 @@ function LoginPage() {
               setPasswordLabel("New Password");
               setTitle("Forgot Password");
             }}
-            className="mt-5 text-sm text-gray-400 cursor-pointer"
+            className="mt-5 text-[13px] md:text-sm text-gray-400 cursor-pointer"
           >
             Forgot Password?{" "}
             <span className="text-green-500 hover:underline">
@@ -245,7 +245,7 @@ function LoginPage() {
             </span>
           </p>
 
-          <p className="mt-0.5 text-sm text-gray-400">
+          <p className="mt-0.5 text-[13px] md:text-sm text-gray-400">
             Don&apos;t have an account?{" "}
             <Link to="/register" className="text-green-500 hover:underline">
               Register here
