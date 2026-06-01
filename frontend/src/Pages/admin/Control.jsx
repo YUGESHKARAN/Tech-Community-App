@@ -310,7 +310,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
        <MdManageAccounts/> Control Panel
       </h1> */}
 
-       <div className="w-full px-4 mx-auto flex items-center gap-2 py-3 md:pt-6">
+       <div className="w-full px-4 mx-auto flex items-center gap-2 pt-3 pb-1 md:pb-3 md:pt-6">
               <MdManageAccounts className="text-green-400 text-xl md:text-3xl" />
               <h1 className="text-xl md:text-3xl font-semibold tracking-tight text-white">
                 Control Panel
@@ -390,7 +390,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
                   ref={authorFilterRef}
                   className={`${
                     showAuthorFilter
-                      ? "absolute top-10 right-0 md:left-0 z-50 px-2 py-1 w-32 overflow-hidden rounded-lg border border-[#30363d] bg-gray-900 shadow-2xl"
+                      ? "absolute top-12 md:mt-0 right-1 md:left-0 z-50 px-2 py-1 w-28 md:w-32 overflow-hidden rounded-lg border border-[#30363d] bg-gray-900 shadow-2xl"
                       : "hidden"
                   }`}
                   onClick={()=>{setShowAuthorFilter(false)}}
