@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { MdDeleteForever, MdManageAccounts } from "react-icons/md";
 import Footer from "../../ui/Footer";
-import { IoSearch } from "react-icons/io5";
+import { IoCheckmark, IoSearch } from "react-icons/io5";
 import axiosInstance from "../../instances/Axiosinstances";
 import toast from "../../components/toaster/Toast";
 import useGetCommunityAnalytics from "../../hooks/useGetCommunityAnalytics";
@@ -16,6 +16,7 @@ import StudentLoader from "../../components/loaders/controls/StudentLoader";
 import { getItem } from "../../utils/encode";
 import highlightText from "../../hooks/highlightText";
 import Fuse from "fuse.js";
+import { BsFilterLeft } from "react-icons/bs";
 // import Footer from "../../ui/Footer";
 function Control() {
   const [authors, setAuthors] = useState([]);
@@ -265,6 +266,27 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
 
   // console.log("authorCommusnity",authorCommunity)
   //  console.log("students", students)
+
+   const [showAuthorFilter, setShowAuthorFilter] = useState(false)
+   const authorFilterRef = useRef();
+  
+    useEffect(() => {
+      const handleClickOutside = (event) => {
+        if (
+          authorFilterRef.current &&
+          !authorFilterRef.current.contains(event.target)
+        ) {
+         
+          setShowAuthorFilter(false)
+        }
+      };
+  
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }, []);
+
   const avatarColor = (name) => {
     const colors = [
       "#10b981",
@@ -296,7 +318,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
             </div>
 
       {/* Search and Filter */}
-      <div className="w-full px-4 py-2 mx-auto flex  md:flex-row justify-between items-center gap-4 mb-3 md:mb-6">
+      <div className="w-full px-4 py-2 mx-auto flex  md:flex-row  items-center gap-2 md:gap-3 mb-3 md:mb-6">
         <div
           // className="md:w-1/3 w-3/5 px-4 py-2 flex items-center gap-2 justify-center rounded-md bg-gray-600 border border-white text-xs md:text-sm text-white placeholder-gray-400"
           className="w-full max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition"
@@ -312,7 +334,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
           />
         </div>
 
-        <select
+        {/* <select
           value={roleFilter}
           onChange={(e) => setRoleFilter(e.target.value)}
           // className=" md:w-1/4 w-1/5 md:px-4 md:py-2 px-2 py-1 rounded bg-gray-600 text-xs md:text-sm text-white"
@@ -348,7 +370,121 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
             Users
           </option>
          
-        </select>
+        </select> */}
+
+          <div className="relative transition-all duration-300 cursor-pointer">
+                  <span
+                   onClick={()=>{setShowAuthorFilter(true)}}
+                   className="reltive">
+                     <BsFilterLeft 
+                 
+                  className="text-gray-300  rounded-full p-0.5 text-4xl " />
+        
+                 <IoCheckmark className={`${roleFilter!==""?'text-emerald-400':'text-gray-300'} absolute bottom-1 right-0 transition-all duration-300`} />
+                   
+        
+                  </span>
+                 
+                   
+                   <div
+                  ref={authorFilterRef}
+                  className={`${
+                    showAuthorFilter
+                      ? "absolute top-10 right-0 md:left-0 z-50 px-2 py-1 w-32 overflow-hidden rounded-lg border border-[#30363d] bg-gray-900 shadow-2xl"
+                      : "hidden"
+                  }`}
+                  onClick={()=>{setShowAuthorFilter(false)}}
+                >
+                  {/* Top Section */}
+                  <div className="py-1.5">
+                    <div
+                    onClick={()=>{setRoleFilter("")}}
+        
+                    >
+                    <button
+                      className="
+                        w-full flex items-center gap-2
+                        pl-3  md:py-1.5 py-1
+                        text-xs text-gray-100
+                        hover:bg-gray-800/70
+                        transition-all duration-200
+                        rounded-lg
+        
+        
+                
+                      "
+                    >
+                      {/* <FiPlusCircle className="text-[17px] text-gray-400" /> */}
+                     <span className="flex items-center gap-2">All  {roleFilter==="" && <IoCheckmark  className="text-sm text-emerald-400"/>}</span>
+                    </button>
+                    </div>
+
+                     <div
+                   onClick={()=>{setRoleFilter("admin")}}
+                   >
+                    <button
+                      className="
+                        w-full flex items-center gap-2
+                        pl-3  md:py-1.5 py-1
+                        text-xs text-gray-100
+                        hover:bg-gray-800/70
+                        transition-all duration-200
+                        rounded-lg
+        
+                      "
+                    >
+                      {/* <FiLayers className="text-[17px] text-gray-400" /> */}
+                      <span className="flex items-center gap-2"> Admins {roleFilter==="admin" && <IoCheckmark  className="text-sm text-emerald-400"/>}</span>
+                    </button>
+                   
+                   </div>
+                   
+                   <div
+                   onClick={()=>{setRoleFilter("coordinator")}}
+                   >
+                    <button
+                      className="
+                        w-full flex items-center gap-2
+                        pl-3  md:py-1.5 py-1
+                        text-xs text-gray-100
+                        hover:bg-gray-800/70
+                        transition-all duration-200
+                        rounded-lg
+        
+                      "
+                    >
+                      {/* <FiLayers className="text-[17px] text-gray-400" /> */}
+                      <span className="flex items-center gap-2"> Contributors {roleFilter==="coordinator" && <IoCheckmark  className="text-sm text-emerald-400"/>}</span>
+                    </button>
+                   
+                   </div>
+                
+                   <div
+                   onClick={()=>{setRoleFilter("student")}}
+                
+                   >
+                    <button
+                      className="
+                        w-full flex items-center gap-2
+                        pl-3  md:py-1.5 py-1
+                        text-xs text-gray-100
+                        hover:bg-gray-800/70
+                        transition-all duration-200
+                        rounded-lg
+        
+                      "
+                    >
+                      {/* <VscGitStashApply className="text-[17px] text-gray-400" /> */}
+                      <span className="flex items-center gap-2"> Users {roleFilter==="student" && <IoCheckmark  className="text-sm text-emerald-400"/>}</span>
+                    </button>
+                    </div>
+                
+                  </div>
+                
+           
+                </div>
+        
+                </div>
       </div>
 
       {/* -------------------------------------------------Admins--------------------------------------- */}
