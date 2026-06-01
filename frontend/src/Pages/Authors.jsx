@@ -479,7 +479,7 @@ const recommendedAuthors = useMemo(() => {
   
       {/* Recommended authors */}
       {recommendedAuthors?.length > 0 && !roleFilter && (
-        <h2 className="w-full px-4 mx-auto md:tracking-wide  text-left text-lg text-green-400 md:text-2xl md:font-semibold">
+        <h2 className="w-full px-4 mx-auto tracking-wide  text-left text-lg text-green-400 md:text-2xl font-semibold">
           Recommended
         </h2>
       )}
@@ -572,7 +572,7 @@ const recommendedAuthors = useMemo(() => {
         recommendedAuthors?.length == 0 &&
         filteredAuthors?.length == 0 && (
           <>
-            <h2 className="w-full px-4 mx-auto  md:tracking-wide text-left text-lg text-green-400 md:text-2xl md:font-semibold">
+            <h2 className="w-full px-4 mx-auto  tracking-wide text-left text-lg text-green-400 md:text-2xl font-semibold">
               Recommended
             </h2>
             <RecommendedAuthorsSkeleton />
