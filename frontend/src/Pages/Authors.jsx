@@ -380,15 +380,15 @@ const recommendedAuthors = useMemo(() => {
         </select> */}
 
 
-        <div className="relative ">
+        <div className="relative transition-all duration-300 cursor-pointer">
           <span
            onClick={()=>{setShowAuthorFilter(true)}}
            className="reltive">
              <BsFilterLeft 
          
-          className="text-gray-300 md:text-gray-300 cursor-pointer rounded-full p-0.5 text-3xl md:text-4xl" />
+          className="text-gray-300 md:text-gray-300  rounded-full p-0.5 text-4xl" />
 
-         {roleFilter!=="" && <IoCheckmark className="text-emerald-400 absolute bottom-1 right-0"/>}
+         <IoCheckmark className={`${roleFilter!==""?'text-emerald-400':'text-gray-300'} absolute bottom-1 right-0 transition-all duration-300`} />
            
 
           </span>
