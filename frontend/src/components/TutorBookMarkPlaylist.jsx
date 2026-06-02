@@ -114,9 +114,19 @@ const TutorBookMarkPlaylist = () => {
   // }, [email]);
   // ----------------------------------------------
 
-  const getUniqueCategories = (tutorPlayList) => {
-    return [...new Set(tutorPlayList.map((playlist) => playlist.domain))];
-  };
+  // const getUniqueCategories = (tutorPlayList) => {
+  //   return [...new Set(tutorPlayList.map((playlist) => playlist.domain))];
+  // };
+
+  const getUniqueCategories = (tutorPlayList = []) => {
+  return [
+    ...new Set(
+      tutorPlayList
+        .map((playlist) => playlist.domain)
+        .filter((domain) => domain && domain.toLowerCase() !== "all")
+    ),
+  ];
+};
 
   const filteredBookmarkPlaylist = useMemo(() => {
     let filtered = [...bookMarPlaylist];
@@ -144,7 +154,7 @@ const TutorBookMarkPlaylist = () => {
             >
               <div
                 // className="flex md:max-w-5xl md:w-fit mt-10 scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto"
-                className="flex w-full  md:w-fit md:max-w-7xl py-5 z-50 scrollbar-hide mx-auto items-center justify-start gap-3 overflow-x-auto"
+                className="flex w-full  px-3   md:w-fit md:max-w-7xl py-3 md:py-5 z-50 scrollbar-hide mx-auto items-center justify-start gap-3 overflow-x-auto"
               >
                 {/* All Button */}
                 <div
@@ -181,18 +191,31 @@ const TutorBookMarkPlaylist = () => {
 
          {bookMarPlaylist.length>0 && <div
           
+            // className="
+            //   pb-4 gap-5 md:gap-6
+            //   grid grid-cols-1
+            //   md:grid-cols-2
+            //   lg:grid-cols-3
+            //   xl:grid-cols-4
+            //   3xl:grid-cols-5
+            //   overflow-visible
+            //   space-y-5
+            //   md:space-y-0
+             
+            // "
             className="
-              pb-4 gap-5 md:gap-6
+              pb-4 gap-6 md:gap-6
               grid grid-cols-1
               md:grid-cols-2
               lg:grid-cols-3
               xl:grid-cols-4
               3xl:grid-cols-5
               overflow-visible
-              space-y-5
+              space-y-5 
               md:space-y-0
-             
-            "
+              md:mt-7
+              px-3 md:px-0
+              px-auto"
           >
      
             {filteredBookmarkPlaylist?.map((playlist) => (

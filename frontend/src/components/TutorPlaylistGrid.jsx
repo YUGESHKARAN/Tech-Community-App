@@ -74,9 +74,19 @@ const TutorPlaylistGrid = () => {
     return filtered;
   }, [tutorPlayList, searchTerm, playlistCategory, debouncedSearch]);
 
-  const getUniqueCategories = (tutorPlayList) => {
-    return [...new Set(tutorPlayList.map((playlist) => playlist.domain))];
-  };
+  // const getUniqueCategories = (tutorPlayList) => {
+  //   return [...new Set(tutorPlayList.map((playlist) => playlist.domain))];
+  // };
+
+const getUniqueCategories = (tutorPlayList = []) => {
+  return [
+    ...new Set(
+      tutorPlayList
+        .map((playlist) => playlist.domain)
+        .filter((domain) => domain && domain.toLowerCase() !== "all")
+    ),
+  ];
+};
 
   // console.log("playlist", tutorPlayList)
   // console.log("filteredPlaylist", filteredPlaylist);

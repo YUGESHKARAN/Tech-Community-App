@@ -50,18 +50,32 @@ const TutorPlaylistGridSkeleton = () => {
       //   xl:grid-cols-5
       //   sm:overflow-visible
       // "
-        className="
-        pb-4 gap-3 md:gap-6
-        grid grid-cols-1
-        md:grid-cols-2
-        lg:grid-cols-3
-        xl:grid-cols-4
-        3xl:grid-cols-5
-        overflow-visible
+      //   className="
+      //   pb-4 gap-3 md:gap-6
+      //   grid grid-cols-1
+      //   md:grid-cols-2
+      //   lg:grid-cols-3
+      //   xl:grid-cols-4
+      //   3xl:grid-cols-5
+      //   overflow-visible
 
-        md:space-y-0
-        mt-0 
-      "
+      //   md:space-y-0
+      //   mt-0 
+      // "
+
+        className="
+              pb-4 gap-6 md:gap-6
+              grid grid-cols-1
+              md:grid-cols-2
+              lg:grid-cols-3
+              xl:grid-cols-4
+              3xl:grid-cols-5
+              overflow-visible
+              space-y-5 
+              md:space-y-0
+              md:mt-7
+              px-3 md:px-0
+              px-auto"
     >
       {[...Array(4)].map((_, index) => (
         <div key={index} className="min-w-[150px] sm:min-w-0">
