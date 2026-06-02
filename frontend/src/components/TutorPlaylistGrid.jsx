@@ -164,19 +164,20 @@ const getUniqueCategories = (tutorPlayList = []) => {
             //   sm:overflow-visible
             // "
             className="
-     pb-4 gap-6 md:gap-6
-    grid grid-cols-1
-    md:grid-cols-2
-    lg:grid-cols-3
-    xl:grid-cols-4
-    3xl:grid-cols-5
-    overflow-visible
-    space-y-5
-    md:space-y-0
-    mt-7
-     px-3 md:px-0
-    px-auto
-  "
+                pb-4 gap-6 md:gap-6
+                grid grid-cols-1
+                md:grid-cols-2
+                lg:grid-cols-3
+                xl:grid-cols-4
+                3xl:grid-cols-5
+                overflow-visible
+                space-y-5
+                md:space-y-0
+                md:mt-7
+                pt-3
+                px-3 md:px-0
+                px-auto
+              "
           >
             {filteredPlaylist?.map((playlist) => (
               <div
