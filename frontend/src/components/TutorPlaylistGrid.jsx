@@ -17,7 +17,7 @@ const TutorPlaylistGrid = () => {
     useContext(GlobalStateContext);
   const [isStickyActive, setIsStickyActive] = useState(false);
   useEffect(() => {
-    const handleScroll = () => {
+    const handleScroll = () => { 
       if (window.scrollY > 40) {
         setIsStickyActive(true);
       } else {
@@ -227,7 +227,7 @@ const getUniqueCategories = (tutorPlayList = []) => {
         </p>
       )}
       {tutorPlayList.length === 0 && loading && (
-        <div className="px-auto px-3 md:px-0">
+        <div className="px-auto ">
           <TutorPlaylistGridSkeleton />
         </div>
       )}

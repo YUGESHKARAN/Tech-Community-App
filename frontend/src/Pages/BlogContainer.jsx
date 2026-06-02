@@ -291,7 +291,7 @@ function BlogContainer({ activeTab, setActiveTab }) {
             <div className=" md:px-4 shadow-inner">
               <TutorPlaylistGrid />
             </div>
-          </section>
+          </section> 
         )}
 
         {activeTab === "posts" && (
