@@ -165,6 +165,7 @@ const app = express();
 // ✅ CORS configuration - MUST be before routes
 const corsOptions = {
   origin: [
+    "https://www.bytesbase.tech",
     "https://blog-frontend-teal-ten.vercel.app",
     "http://localhost:5173",
     "http://localhost:3000" // Add if you test locally
