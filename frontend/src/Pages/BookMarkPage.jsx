@@ -299,7 +299,7 @@ function BookMarkPage() {
         </div>
       </div>
       
-      <div className="flex-col w-full md:gap-16 relative px-3 md:px-0 flex-wrap min-h-screen justify-center h-auto mx-auto">
+      <div className="flex-col w-full md:gap-16 relative  md:px-0 flex-wrap min-h-screen justify-center h-auto mx-auto">
         {activeTab === "playlists" && (
           <div className="md:px-4 w-full  mx-auto shadow-inner ">
             {/* <TutorBookMarkPlaylist/> */}
@@ -339,7 +339,7 @@ function BookMarkPage() {
       
               <div 
               // className="flex md:max-w-5xl md:w-fit mt-10 scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto"
-              className="flex w-full  md:w-fit md:max-w-7xl py-5 z-50 scrollbar-hide mx-auto items-center justify-start gap-3 overflow-x-auto"
+              className="flex w-full px-3  md:w-fit md:max-w-7xl py-3 md:py-5 z-50 scrollbar-hide mx-auto items-center justify-start gap-3 overflow-x-auto"
               >
                 {/* All Button */}
                 <div
