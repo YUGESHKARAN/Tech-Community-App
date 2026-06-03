@@ -301,11 +301,11 @@ function ViewSingleAuthor() {
                       px-5 py-2 rounded-lg
                         bg-emerald-400 text-black
                         text-sm font-semibold
-                        md:hover:bg-emerald-600
+                        
                         border border-neutral-700
                         transition-all duration-300
                         
-                        cursor-pointer transition-all duration-400 disabled:border-none disabled:bg-transparent
+                        cursor-pointer transition-all duration-400 disabled:border-none  disabled:bg-transparent
                       "
                     disabled={followAuthorLoaderId === email}
                   >
