@@ -378,7 +378,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
                    className="reltive">
                      <BsFilterLeft 
                  
-                  className="text-gray-300  rounded-full p-0.5 text-4xl " />
+                  className="text-gray-300  rounded-full p-0.5 text-3xl " />
         
                  <IoCheckmark className={`${roleFilter!==""?'text-emerald-400':'text-gray-300'} absolute bottom-1 right-0 transition-all duration-300`} />
                    
