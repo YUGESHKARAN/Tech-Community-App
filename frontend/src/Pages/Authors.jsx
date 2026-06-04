@@ -478,14 +478,14 @@ const recommendedAuthors = useMemo(() => {
 
   
       {/* Recommended authors */}
-      {recommendedAuthors?.length > 0 && !roleFilter && (
+      {recommendedAuthors?.length > 0 && !debouncedSearch && !roleFilter && (
         <h2 className="w-full px-4 mx-auto tracking-wide  text-left text-lg text-green-400 md:text-2xl font-semibold">
           Recommended
         </h2>
       )}
 
       <div
-        className={`${recommendedAuthors?.length > 0 && !roleFilter  ? "flex w-full px-4 mx-auto gap-2 overflow-x-auto scrollbar-hide mt-2 md:mt-4 pb-2" : "hidden"}`}
+        className={`${recommendedAuthors?.length > 0 && !debouncedSearch && !roleFilter  ? "flex w-full px-4 mx-auto gap-2 overflow-x-auto scrollbar-hide mt-2 md:mt-4 pb-2" : "hidden"}`}
       >
         {recommendedAuthors.map((author, index) => (
           <div
