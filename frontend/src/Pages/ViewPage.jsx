@@ -1221,7 +1221,7 @@ import CommentsBox from "../components/CommentsBox ";
 import { FaSquareGithub } from "react-icons/fa6";
 import { FaGithub } from "react-icons/fa";
 import userImg from "../images/user.png";
-import { SiGooglegemini } from "react-icons/si";
+import { SiGoogleassistant, SiGooglegemini } from "react-icons/si";
 import AITechAssistant from "../components/AITechAssistant.jsx";
 import PostDetailSkeleton from "../components/loaders/PostDetailSkeleton.jsx";
 import { VscSend } from "react-icons/vsc";
@@ -1232,6 +1232,7 @@ import { FaYoutube } from "react-icons/fa6";
 import { getItem } from "../utils/encode.js";
 import RenderTextWithHashtags from "../components/RenderTextWithHashtags.jsx";
 import RenderTextNoMarkdown from "../components/RenderTextNoMarkdown.jsx";
+import logoicon from "../assets/assistant_1.png"
 
 function ViewPage() {
   const user = localStorage.getItem("username");
@@ -1802,9 +1803,12 @@ useEffect(() => {
 
                   <button
                     onClick={() => setShowAssistant(!showAssistant)}
-                    className=" md:flex hidden  items-center gap-2  bg-gray-800/50 transition-all duration-300 active:scale-95 md:border  border-neutral-800 md:border-neutral-700 text-emerald-400 text-xs px-5 py-1.5 rounded-full shadow-xl"
+                    className=" md:flex hidden  items-center gap-2  bg-gray-800/50 transition-all duration-300 active:scale-95 md:border  border-neutral-800 md:border-neutral-700 text-gray-300 text-xs px-5 py-[6px] rounded-full shadow-xl"
                   >
-                    Ask AI <SiGooglegemini />
+                    Ask AI 
+                    <img src={logoicon} className="w-4 h-4  object-contain rounded-full " alt="" />
+                    {/* <SiGoogleassistant /> */}
+                    {/* <SiGooglegemini /> */}
                   </button>
 
                   <button

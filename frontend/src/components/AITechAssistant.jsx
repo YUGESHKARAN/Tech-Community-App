@@ -4,13 +4,15 @@ import ReactMarkdown from "react-markdown";
 import { Link } from "react-router-dom";
 import remarkGfm from "remark-gfm";
 import remarkBreaks from "remark-breaks";
-import { SiGooglegemini } from "react-icons/si";
+import { SiGoogleassistant, SiGooglegemini } from "react-icons/si";
 import user from "../images/user.png";
 import blog1 from "../images/img_not_found.png";
 import { VscSend } from "react-icons/vsc";
 import { IoSendSharp } from "react-icons/io5";
 import Cookies from "js-cookie";
 import { GoArrowUpRight } from "react-icons/go";
+import logoicon from "../assets/assistant_1.png"
+
 export default function AITechAssistant({
   currentPostId,
   category,
@@ -237,9 +239,12 @@ export default function AITechAssistant({
 
       <button
         onClick={() => setOpen(!open)}
-        className=" bottom-4 flex md:hidden items-center gap-2 right-4 bg-gray-800/50 transition-all duration-300 active:scale-95 md:border border-neutral-800 md:border-neutral-700 text-emerald-400 text-xs md:px-5 px-3 py-1.5 rounded-full md:hidden z-50 shadow-xl"
+        className=" bottom-4 flex md:hidden items-center gap-2 right-4 bg-gray-800/50 transition-all duration-300 active:scale-95 md:border border-neutral-800 md:border-neutral-700 text-gray-300 text-xs md:px-5 px-3 py-[6px] rounded-full md:hidden z-50 shadow-xl"
       >
-        Ask AI <SiGooglegemini />
+        Ask AI
+        <img src={logoicon} className="w-3 h-3 object-contain rounded-full " alt="" />
+        {/* <SiGoogleassistant /> */}
+         {/* <SiGooglegemini /> */}
       </button>
 
       {/* Assistant Panel */}
@@ -276,8 +281,11 @@ export default function AITechAssistant({
         </div>
         {/* Header */}
         <div className="relative p-4 border-b text-xl border-neutral-800 flex justify-between items-center">
-          <h2 className="font-bold  ">
-            Ask about this post <SiGooglegemini />
+          <h2 className="md:font-bold font-semibold flex md:text-base items-center gap-3 ">
+           <img src={logoicon} className="w-6 h-6 md:w-6 md:h-6 object-contain rounded-md " alt="" />
+           {/* <SiGoogleassistant />  */}
+           Ask about this post  
+            
           </h2>
           <button
             onClick={() => setOpen(false)}
