@@ -1909,7 +1909,7 @@ useEffect(() => {
               {/* <div className=" md:border border-neutral-700/40 md:rounded-xl rounded-lg p-1 pt-4 md:p-5"> */}
               <div
                 className="
-                  mt-4
+                  md:mt-4
                   md:rounded-2xl
                   md:border border-neutral-800
                   md:bg-neutral-900/40
@@ -1925,7 +1925,7 @@ useEffect(() => {
                         md:max-w-none
                    
                         md:prose-p:text-gray-300
-                      
+                        
                         md:prose-p:md:leading-6
                         md:prose-p:text-sm
                         prose-headings:text-white
@@ -1958,6 +1958,8 @@ useEffect(() => {
                           tracking-[0.01em]
                           break-words
                           line-clamp-3
+                          md:mt-0
+                          mt-4
                         "
                       />
                     </p>
