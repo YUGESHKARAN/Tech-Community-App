@@ -282,7 +282,11 @@ export default function AITechAssistant({
         {/* Header */}
         <div className="relative p-4 border-b text-xl border-neutral-800 flex justify-between items-center">
           <h2 className="md:font-bold font-semibold flex md:text-base items-center gap-3 ">
-           <img src={logoicon} className="w-6 h-6 md:w-6 md:h-6 object-contain rounded-md " alt="" />
+            <a  href="/tech_community_assistant_user_guide.pdf"
+              target="_blank"
+              rel="noopener noreferrer">
+           <img src={logoicon} className="w-6 h-6 md:w-6 md:h-6 hover:scale-105 transition-all duration-500 cursor-pointer md:hover:scale-110 object-contain rounded-md " alt="" />
+           </a>
            {/* <SiGoogleassistant />  */}
            Ask about this post  
             
