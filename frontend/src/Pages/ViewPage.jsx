@@ -1703,11 +1703,12 @@ useEffect(() => {
                 className="
               relative
               overflow-hidden
-              rounded-lg
-              md:rounded-xl
-              border border-neutral-800
+              rounded-xl
+              
+              border border-emerald-900
               bg-[#0d1117]
               shadow-lg
+
               mt-2
               md:mt-0
               md:mb-6
@@ -1732,7 +1733,7 @@ useEffect(() => {
                   }
                   className="
                     w-full
-                    h-[180px]
+                    h-[190px]
                     sm:h-[220px]
                     md:h-[400px]
                     object-cover
