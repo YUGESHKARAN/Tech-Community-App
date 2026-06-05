@@ -1960,7 +1960,8 @@ useEffect(() => {
                           md:leading-6
                           tracking-[0.01em]
                           break-words
-                          line-clamp-3
+                          md:line-clamp-3
+                          line-clamp-4
                           md:mt-0
                           mt-4
                         "
