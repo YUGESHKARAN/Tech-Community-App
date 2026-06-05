@@ -22,7 +22,7 @@
 
 **Welcome to "Bytes Base" - The Tech. Community Platform!**
 
-Developer's-Collaborative & learning  platform designed for universities and colleges, focusing on knowledge sharing and community building. The platform enables student developers to connect, collaborate, and engage through sharing their tech works, knowledge and findings, all within their institution. Developers can interact, clarify doubts via discussion section. The platform includes role-based interfaces for Students, Coordinators, and Admins to manage content, moderation, and community participation.
+Developer's collaborative & learning  platform designed for universities and colleges, focusing on knowledge sharing and community building. The platform enables student developers to connect, collaborate, and engage through sharing their tech works, knowledge and findings, all within their institution. Developers can interact, clarify doubts via discussion section. The platform includes role-based interfaces for Students, Coordinators, and Admins to manage content, moderation, and community participation.
 
 ---
 <div align="center">
