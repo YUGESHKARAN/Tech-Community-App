@@ -2241,7 +2241,7 @@ useEffect(() => {
                 {/* Backdrop */}
                 <div
                   onClick={() => setViewComments(false)}
-                  className={`absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300`}
+                  className={`fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300`}
                   // className={`absolute inset-0 duration-300`}
                 />
 
@@ -2299,7 +2299,7 @@ useEffect(() => {
                     <CommentsBox
                       messages={messages}
                       setMessages={setMessages}
-                       msgLoading={msgLoading}
+                      msgLoading={msgLoading}
                       viewComments={viewComments}
                       userEmail={userEmail}
                       email={email}
