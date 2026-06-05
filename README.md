@@ -29,7 +29,7 @@ Developer's collaborative & learning  platform designed for universities and col
   <h4>Home Screen (Coordinator Interface)</h4>
 </div>
 
-![Tech-Comm-App](/assets/tech-comm-app.png)
+![Tech-Comm-App](/assets/bytesbase_app.png)
 
 ---
 
@@ -37,7 +37,7 @@ Developer's collaborative & learning  platform designed for universities and col
   <h4>Playlist Screen (Student Interface)</h4>
 </div>
 
-![Tech-Comm-App](/assets/tech-com-playlist.png)
+![Tech-Comm-App](/assets/bytesbase_playlist.png)
 
 ---
 
@@ -45,7 +45,7 @@ Developer's collaborative & learning  platform designed for universities and col
   <h4>Home Search Engine (Student Interface)</h4>
 </div>
 
-![Tech-Comm-App](/assets/tech-comm-home-feed-search.png)
+![Tech-Comm-App](/assets/bytesbase_home_feed_search.png)
 
 ---
 
@@ -53,7 +53,7 @@ Developer's collaborative & learning  platform designed for universities and col
   <h4>Tech Community Screen (Student Interface)</h4>
 </div>
 
-![Tech-Comm-App](/assets/tech-community.png)
+![Tech-Comm-App](/assets/bytesbase_tech_community.png)
 
 ---
 ## Key Features
