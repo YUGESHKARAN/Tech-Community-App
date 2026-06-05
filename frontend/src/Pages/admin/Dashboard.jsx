@@ -645,23 +645,167 @@ const MiniBar = ({ data, valueKey, labelKey, color = "#0004ff" }) => {
 };
 // ── Mini line chart ────────────────────────────────────────────────────────────
 
+// const PostsGaugeCard = ({ data, year, setYear, target, setTarget }) => {
+//   const current = data[data.length - 1]?.count ?? 0;
+//   const previous = data[data.length - 2]?.count ?? 0;
+
+//   const change =
+//     previous > 0 ? (((current - previous) / previous) * 100).toFixed(1) : 0;
+
+//   const isPositive = change >= 0;
+
+//   const pct = Math.min((current / target) * 100, 100);
+
+//   const max = Math.max(...data.map((d) => d.count));
+//   const currentYear = new Date().getFullYear();
+//   const yearOptions = [currentYear - 1, currentYear - 2];
+
+//   return (
+//     <div className="bg-[#0f172a]  border border-[#1e293b] rounded-xl p-4 flex flex-col">
+//       {/* Header */}
+//       <div className="flex justify-between items-center mb-4">
+//         <div>
+//           <p className="text-sm md:text-base font-semibold text-gray-200">
+//             Posts Published
+//           </p>
+//           <p className="text-[9px] md:text-[10px] text-gray-400">
+//             Monthly performance vs target
+//           </p>
+//         </div>
+
+//         <select
+//           value={year}
+//           onChange={(e) => setYear(e.target.value)}
+//           className="bg-[#1e293b] text-gray-200 cursor-pointer text-xs rounded px-2 py-1 border border-[#334155]"
+//         >
+//           <option value="default">{currentYear}</option>
+//           {yearOptions.map((y) => (
+//             <option key={y} value={y}>
+//               {y}
+//             </option>
+//           ))}
+//         </select>
+//       </div>
+
+//       {/* ✅ Gauge (Conic Gradient) */}
+//       <div className="flex justify-center">
+//         <div className="relative w-[180px] h-[100px] overflow-hidden">
+//           {/* Circle */}
+//           <div
+//             className="absolute w-[180px] h-[180px] rounded-full"
+//             style={{
+//               background: `conic-gradient(
+//                 #6366f1 ${pct * 1.8}deg,
+//                 #1e293b ${pct * 1.8}deg 180deg,
+//                 transparent 180deg
+//               )`,
+//               transform: "rotate(-90deg)",
+//             }}
+//           />
+
+//           {/* Inner cut (to make it a ring) */}
+//           <div className="absolute top-[20px] left-[20px] w-[140px] h-[140px] bg-[#0f172a] rounded-full" />
+
+//           {/* Center Text */}
+//           <div className="absolute inset-0 flex flex-col items-center justify-center mt-6 md:mt-4">
+//             <span className="md:text-2xl text-lg font-bold text-white">
+//               {pct.toFixed(1)}%
+//             </span>
+
+//             <span
+//               className="mt-1 text-[10px] font-semibold px-2 py-0.5 rounded-full"
+//               style={{
+//                 backgroundColor: isPositive ? "#10b98122" : "#ef444422",
+//                 color: isPositive ? "#10b981" : "#ef4444",
+//               }}
+//             >
+//               {isPositive ? "+" : ""}
+//               {change}%
+//             </span>
+//           </div>
+//         </div>
+//       </div>
+
+//       {/* Footer */}
+//       <p className="text-[10px] text-gray-500 text-center mt-2 leading-relaxed">
+//         <span className="text-gray-300 font-semibold">{current} posts</span>{" "}
+//         this month
+//         {current > 0
+//           ? isPositive
+//             ? ", higher than last month. Keep it up!"
+//             : ", lower than last month. Time to engage!"
+//           : ", no performance yet!"}
+//       </p>
+
+//       {/* Sparkline */}
+//       <div
+//         className={`flex items-end justify-between gap-2 mt-4 pt-3 border-t border-[#1e293b] ${year !== "" && year != "default" ? "h-16" : "h-20"}`}
+//       >
+//         {data.map((d, i) => (
+//           <div
+//             key={i}
+//             className="flex flex-col items-center justify-end gap-1 flex-1"
+//           >
+//             <span className="text-[9px] text-emerald-400 font-medium">
+//               {d.count}
+//             </span>
+
+//             <div
+//               className="w-2 rounded-full"
+//               style={{
+//                 height: `${Math.max((d.count / max) * 40, 10)}px`,
+//                 backgroundColor: i === data.length - 1 ? "#6366f1" : "#1e293b",
+//                 border: "1px solid",
+//                 borderColor: i === data.length - 1 ? "#6366f1" : "#334155",
+//               }}
+//             />
+
+//             <span className="text-[9px] text-center text-gray-400">
+//               {d.month}
+//             </span>
+//           </div>
+//         ))}
+//       </div>
+//     </div>
+//   );
+// };
+// import { useEffect, useState } from "react";
+
 const PostsGaugeCard = ({ data, year, setYear, target, setTarget }) => {
-  const current = data[data.length - 1]?.count ?? 0;
-  const previous = data[data.length - 2]?.count ?? 0;
+  const [current, setCurrent] = useState(0);
+  const [currentMonth, setCurrentMonth] = useState("");
+
+  useEffect(() => {
+    if (data?.length) {
+      const latest = data[data.length - 1];
+      setCurrent(latest.count);
+      setCurrentMonth(latest.month);
+    }
+  }, [data]);
+
+  const currentIndex = data.findIndex(
+    (item) => item.month === currentMonth,
+  );
+
+  const previous =
+    currentIndex > 0 ? data[currentIndex - 1]?.count ?? 0 : 0;
 
   const change =
-    previous > 0 ? (((current - previous) / previous) * 100).toFixed(1) : 0;
+    previous > 0
+      ? (((current - previous) / previous) * 100).toFixed(1)
+      : 0;
 
-  const isPositive = change >= 0;
+  const isPositive = Number(change) >= 0;
 
   const pct = Math.min((current / target) * 100, 100);
 
-  const max = Math.max(...data.map((d) => d.count));
+  const max = Math.max(...data.map((d) => d.count), 1);
+
   const currentYear = new Date().getFullYear();
   const yearOptions = [currentYear - 1, currentYear - 2];
 
   return (
-    <div className="bg-[#0f172a]  border border-[#1e293b] rounded-xl p-4 flex flex-col">
+    <div className="bg-[#0f172a] border border-[#1e293b] rounded-xl p-4 flex flex-col">
       {/* Header */}
       <div className="flex justify-between items-center mb-4">
         <div>
@@ -679,6 +823,7 @@ const PostsGaugeCard = ({ data, year, setYear, target, setTarget }) => {
           className="bg-[#1e293b] text-gray-200 cursor-pointer text-xs rounded px-2 py-1 border border-[#334155]"
         >
           <option value="default">{currentYear}</option>
+
           {yearOptions.map((y) => (
             <option key={y} value={y}>
               {y}
@@ -687,10 +832,9 @@ const PostsGaugeCard = ({ data, year, setYear, target, setTarget }) => {
         </select>
       </div>
 
-      {/* ✅ Gauge (Conic Gradient) */}
+      {/* Gauge */}
       <div className="flex justify-center">
         <div className="relative w-[180px] h-[100px] overflow-hidden">
-          {/* Circle */}
           <div
             className="absolute w-[180px] h-[180px] rounded-full"
             style={{
@@ -703,10 +847,8 @@ const PostsGaugeCard = ({ data, year, setYear, target, setTarget }) => {
             }}
           />
 
-          {/* Inner cut (to make it a ring) */}
           <div className="absolute top-[20px] left-[20px] w-[140px] h-[140px] bg-[#0f172a] rounded-full" />
 
-          {/* Center Text */}
           <div className="absolute inset-0 flex flex-col items-center justify-center mt-6 md:mt-4">
             <span className="md:text-2xl text-lg font-bold text-white">
               {pct.toFixed(1)}%
@@ -715,7 +857,9 @@ const PostsGaugeCard = ({ data, year, setYear, target, setTarget }) => {
             <span
               className="mt-1 text-[10px] font-semibold px-2 py-0.5 rounded-full"
               style={{
-                backgroundColor: isPositive ? "#10b98122" : "#ef444422",
+                backgroundColor: isPositive
+                  ? "#10b98122"
+                  : "#ef444422",
                 color: isPositive ? "#10b981" : "#ef4444",
               }}
             >
@@ -728,18 +872,22 @@ const PostsGaugeCard = ({ data, year, setYear, target, setTarget }) => {
 
       {/* Footer */}
       <p className="text-[10px] text-gray-500 text-center mt-2 leading-relaxed">
-        <span className="text-gray-300 font-semibold">{current} posts</span>{" "}
-        this month
+        <span className="text-gray-300 font-semibold">
+          {current} posts
+        </span>{" "}
+        in {currentMonth}
         {current > 0
           ? isPositive
-            ? ", higher than last month. Keep it up!"
-            : ", lower than last month. Time to engage!"
+            ? ", higher than the previous month."
+            : ", lower than the previous month."
           : ", no performance yet!"}
       </p>
 
       {/* Sparkline */}
       <div
-        className={`flex items-end justify-between gap-2 mt-4 pt-3 border-t border-[#1e293b] ${year !== "" && year != "default" ? "h-16" : "h-20"}`}
+        className={`flex items-end justify-between gap-2 mt-4 pt-3 border-t border-[#1e293b] ${
+          year !== "" && year !== "default" ? "h-16" : "h-20"
+        }`}
       >
         {data.map((d, i) => (
           <div
@@ -751,12 +899,22 @@ const PostsGaugeCard = ({ data, year, setYear, target, setTarget }) => {
             </span>
 
             <div
-              className="w-2 rounded-full"
+              className="w-2 rounded-full cursor-pointer transition-all duration-200"
+              onClick={() => {
+                setCurrent(d.count);
+                setCurrentMonth(d.month);
+              }}
               style={{
                 height: `${Math.max((d.count / max) * 40, 10)}px`,
-                backgroundColor: i === data.length - 1 ? "#6366f1" : "#1e293b",
+                backgroundColor:
+                  currentMonth === d.month
+                    ? "#6366f1"
+                    : "#1e293b",
                 border: "1px solid",
-                borderColor: i === data.length - 1 ? "#6366f1" : "#334155",
+                borderColor:
+                  currentMonth === d.month
+                    ? "#6366f1"
+                    : "#334155",
               }}
             />
 
