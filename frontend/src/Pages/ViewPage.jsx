@@ -1680,42 +1680,38 @@ useEffect(() => {
             {/* <div className="lg:col-span-4  "> */}
             <div className="lg:col-span-8">
               {/* Banner */}
-              <div className="md:rounded-xl my-2 md:mb-6 hidden rounded-md overflow-hidden border border-white/10 bg-black">
-                <img
-                  src={
-                    singlePostData.image
-                      ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${singlePostData.image}`
-                      : blog1
-                  }
-                  alt="Post"
-                  className="w-full  h-64 objct-cover md:object-contain cursor-pointer"
-                  onClick={() =>
-                    handleImageClick(
-                      singlePostData.image
-                        ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${singlePostData.image}`
-                        : blog1,
-                    )
-                  }
-                />
-              </div>
+           
               {/* Banner */}
               <div
-                className="
-                  relative
-                  group
-                  md:rounded-xl
+                // className="
+                //   relative
+                //   group
+                //   md:rounded-xl
                 
-                  rounded-2xl
-                  overflow-hidden
+                //   rounded-2xl
+                //   overflow-hidden
 
-                  border border-emerald-900
-                  bg-black
-                  shadow-xl
-                 block
+                //   border border-emerald-900
+                //   bg-black
+                //   shadow-xl
+                //  block
 
-                  cursor-pointer
-                  mt-2 md:mt-0 md:mb-6
-                "
+                //   cursor-pointer
+                //   mt-2 md:mt-0 md:mb-6
+                // "
+
+                className="
+              relative
+              overflow-hidden
+              rounded-lg
+              md:rounded-xl
+              border border-neutral-800
+              bg-[#0d1117]
+              shadow-lg
+              mt-2
+              md:mt-0
+              md:mb-6
+            "
               >
                    
                 
@@ -1736,6 +1732,8 @@ useEffect(() => {
                   }
                   className="
                     w-full
+                    h-[180px]
+                    sm:h-[220px]
                     md:h-[400px]
                     object-cover
                     cursor-pointer
