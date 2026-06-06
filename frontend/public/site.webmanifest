@@ -3,10 +3,10 @@
   "short_name": "Bytes Base",
   "icons": [
     {
-      "src": "/favicon.png",
+      "src": "/embed_logo_1.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
+      "type": "image/png"
+    
     }
   ],
   "theme_color": "#0f172a",
