@@ -323,9 +323,11 @@ function NavBar() {
   className={`
   group
     flex items-center gap-2
-    px-3  md:py-2 py-1.5
-    w-[120px] md:w-[190px]
+    justify-center
+    px-3   py-1.5
+    w-[120px] md:w-[160px]
     rounded-lg
+    md:rounded-lg
     bg-[#0f172a]/80
     border  
     hover:border-emerald-500/30
@@ -339,6 +341,7 @@ function NavBar() {
     
     `}
 >
+
   {/* Search Icon */}
   <IoIosSearch
     className={`
@@ -365,7 +368,7 @@ function NavBar() {
       className="
         text-xs
         md:text-[13px]
-        md:text-gray-300
+        md:text-gray-400
         text-gray-400
         truncate
         max-w-[100px]
