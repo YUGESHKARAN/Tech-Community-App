@@ -493,7 +493,7 @@ function AddPost() {
               <div
                 className={`bg-[#0f172a]/80 lg:w-11/12 border border-emerald-500/20 bg-gradient-to-br from-emerald-500/5 to-transparent rounded-lg md:rounded-xl px-4 py-6 md:p-6 text-gray-300 ${chatbot ? "hidden lg:block" : "block"}`}
               >
-                <h2 className="text-lg font-semibold text-white mb-3">
+                <h2 className="md:text-lg text-base font-semibold text-white mb-3">
                   Post Guidelines
                 </h2>
 
