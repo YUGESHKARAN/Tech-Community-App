@@ -45,6 +45,7 @@ const s3 = new S3Client({
 const { sendOTPEmail } = require("../utils/emailService");
 const { saveOTP, verifyOTP } = require("../utils/otpStore");
 const { DeletionLog } = require("../models/deletionLogSchema");
+const { checkAndAwardBadges } = require("../services/badgeService");
 
 // ─── Step 1: Validate form data & send OTP ───────────────────────────────────
 // reviewed----------------------------------------------
@@ -953,11 +954,17 @@ const updateFollowers = async (req, res) => {
     await author.save({ validateBeforeSave: false });
     await followerAuthor.save({ validateBeforeSave: false });
 
-    return res.status(200).json({
+    res.status(200).json({
       message: "Author followed successfully",
       followers: author.followers,
       following: followerAuthor.following,
     });
+
+    // in updateFollowers controller — after both saves
+checkAndAwardBadges(email, ['community_builder'], {
+  eventTitle: 'Followers milestone',
+}).catch(err => console.error("Badge check error:", err.message));
+
   } catch (err) {
     console.error("SERVER ERROR:", err); // Add this line
     return res

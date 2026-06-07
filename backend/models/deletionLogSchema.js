@@ -14,6 +14,23 @@ const snapshotMessageSchema = new mongoose.Schema({
   timestamp: { type: Date },
 }, { _id: false });
 
+const snapshotBadgeHistorySchema = new mongoose.Schema({
+  tier:       { type: String },
+  awardedAt:  { type: Date   },
+  eventType:  { type: String },
+  eventId:    { type: mongoose.Schema.Types.ObjectId },
+  eventTitle: { type: String },
+  milestone:  { type: Number },
+}, { _id: false });
+
+// ── Badge snapshot — mirrors badgeSchema ──────────────────────
+const snapshotBadgeSchema = new mongoose.Schema({
+  badgeId:     { type: String },
+  currentTier: { type: String },
+  count:       { type: Number },
+  history:     [snapshotBadgeHistorySchema],
+}, { _id: false });
+
 const snapshotPostSchema = new mongoose.Schema({
   _id:         { type: mongoose.Schema.Types.ObjectId },  // preserve original ID
   authorId:    { type: mongoose.Schema.Types.ObjectId },
@@ -55,6 +72,10 @@ const snapshotAuthorSchema = new mongoose.Schema({
   announcement:  [mongoose.Schema.Types.Mixed],
   otp:          { type: String },
   otpExpiresAt: { type: Date   },
+
+  // fix: added badges — preserved in snapshot so rollback restores all earned badges
+  badges: [snapshotBadgeSchema],
+  
 });  // fix: removed { _id: false } — was stripping the author's original _id
 
 // ── Main deletion log schema ──────────────────────────────────

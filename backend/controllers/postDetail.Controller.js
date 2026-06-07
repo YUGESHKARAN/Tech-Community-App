@@ -13,7 +13,9 @@ dotenv.config();
 const redisClient = require("../middleware/redis");
 // import nodemailer from "nodemailer";
 
-const nodemailer = require('nodemailer')
+const nodemailer = require('nodemailer');
+
+const {checkAndAwardBadges} = require("../services/badgeService")
 
 const escapeHtml = (value) => String(value)
   .replace(/&/g, '&amp;')
@@ -938,6 +940,16 @@ const addPosts = async (req, res) => {
     // Respond immediately
     res.status(201).json({ message: "Post added successfully", data: safeAuthor });
 
+
+    // ------------------------Achievements Badge Configuration-------------------------------------------------------
+
+    checkAndAwardBadges(author.email, ['strong_publisher'], {
+        eventId:    savedPost._id,
+        eventTitle: savedPost.title,
+    }).catch(err => console.error("Badge check error:", err.message));
+
+    // ---------------------------------------------------------------------------------------------------------------
+
     // --- AI ingestion (fire-and-forget after response) ---
     const postDataForAI = {
       ...savedPost.toObject(),
@@ -1691,10 +1703,19 @@ const postView = async (req, res) => {
       { $addToSet: { views: emailAuthor } }
     );
 
-    return res.status(200).json({
+    res.status(200).json({
       message: 'View added successfully',
       views: [...post.views, emailAuthor],
     });
+
+    // fix: check pro_contributor after view is recorded — views drive this badge
+    // fire-and-forget after response — never blocks the view update
+    checkAndAwardBadges(author.email, ['pro_contributor'], {
+      eventId:    post._id,
+      eventTitle: post.title,
+    }).catch(err => console.error("Badge check error:", err.message));
+
+
   } catch (err) {
     return res.status(500).json({ message: 'Server error', error: err.message });
   }
@@ -1788,10 +1809,17 @@ const postLikes = async (req, res) => {
     );
 
     // fix: was returning views instead of likes on like-added response
-    return res.status(200).json({
+    res.status(200).json({
       message: 'like added successfully',
       likes: [...post.likes, emailAuthor],
     });
+
+    // in postLikes controller — after Post.updateOne()
+checkAndAwardBadges(author.email, ['impact_creator'], {
+  eventId:    id,
+  eventTitle: post.title,
+}).catch(err => console.error("Badge check error:", err.message));
+
   } catch (err) {
     console.log(err);
     return res.status(500).json({ message: 'Server error', error: err.message });
