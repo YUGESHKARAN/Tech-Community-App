@@ -2013,8 +2013,8 @@ useEffect(() => {
                     {/* <div className="w-9 h-9 flex items-center justify-center rounded-lg bg-blue-600/15 border border-blue-500/20">
                     
                   </div> */}
-                    <MdOutlineLibraryBooks className="text-white/90 text-xl" />
-                    <h3 className="text-base font-semibold tracking-wide text-slate-300">
+                    <MdOutlineLibraryBooks className="text-white/90 text-lg md:text-xl" />
+                    <h3 className="md:text-base text-sm font-semibold tracking-wide text-slate-300">
                       Resources
                     </h3>
                   </div>
