@@ -122,7 +122,6 @@ function ViewSingleAuthor() {
 
     <div className=" bg-gray-900 min-h-screen flex flex-col justify-between text-white">
       <NavBar />
-
      {!loading? 
      authorName &&
      <div className="w-full min-h-screen mx-auto px-4 md:px-6 pt-2 md:pt-6 pb-8 pb-24">
@@ -165,8 +164,6 @@ function ViewSingleAuthor() {
 
             {/* Role pill */}
              <span 
-                // className="inline-block px-2.5 absolute right-4 top-4 py-0.5 text-[10px] font-medium tracking-wide uppercase rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 mb-5"
-                // className="px-2.5 py-0.5 absolute right-4 top-4  text-xs font-medium text-amber-400 bg-amber-400/10 border border-amber-400/20 rounded-lg"
                 className="absolute right-4 top-4 "
                 >
                   {/* {author.role.charAt(0).toUpperCase()}{author.role.slice(1)} */}
@@ -230,45 +227,6 @@ function ViewSingleAuthor() {
                   )}
                 </div>
               )}
-
-            {/* Follow / Following button */}
-            {/* {author.role === "coordinator" && coordEamil !== authorEmail && (
-              <div className="mt-2">
-                {author.followers.includes(authorEmail) ? (
-                  <button
-                    onClick={() => addFollower(email)}
-                    disabled={followAuthorLoaderId === email}
-                    className="w-full py-2 text-sm font-medium rounded-lg bg-white/[0.04] text-emerald-400 border border-white/[0.07] hover:bg-white/[0.07] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {followAuthorLoaderId === email ? (
-                      <div className="flex items-center justify-center gap-1 py-0.5">
-                        <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
-                        <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
-                        <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce" />
-                      </div>
-                    ) : (
-                      "Following"
-                    )}
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => addFollower(email)}
-                    disabled={followAuthorLoaderId === email}
-                    className="w-full py-2 text-sm font-medium rounded-lg bg-emerald-500 text-emerald-950 hover:bg-emerald-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {followAuthorLoaderId === email ? (
-                      <div className="flex items-center justify-center gap-1 py-0.5">
-                        <span className="w-1.5 h-1.5 bg-emerald-900 rounded-full animate-bounce [animation-delay:-0.3s]" />
-                        <span className="w-1.5 h-1.5 bg-emerald-900 rounded-full animate-bounce [animation-delay:-0.15s]" />
-                        <span className="w-1.5 h-1.5 bg-emerald-900 rounded-full animate-bounce" />
-                      </div>
-                    ) : (
-                      "Follow +"
-                    )}
-                  </button>
-                )}
-              </div>
-            )} */}
 
                    {author.role === "coordinator" && coordEamil !== authorEmail && (
               <div className="mt-4 md:mt-0">

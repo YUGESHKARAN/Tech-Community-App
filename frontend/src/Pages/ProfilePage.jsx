@@ -285,12 +285,10 @@ function ProfilePage() {
 
                 {/* Role pill */}
                 <span
-                  // className="inline-block px-2.5 absolute right-4 top-4 py-0.5 text-[10px] font-medium tracking-wide uppercase rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 mb-5"
-                  // className="px-2.5 py-0.5 absolute right-4 top-4  text-xs font-medium text-amber-400 bg-amber-400/10 border border-amber-400/20 rounded-lg"
                   className=" absolute right-4 top-4 "
                 >
                   <RoleBadge role={role} />
-                  {/* {role.charAt(0).toUpperCase()}{role.slice(1)} */}
+                
                 </span>
 
                 {/* Bio Section */}
@@ -313,7 +311,6 @@ function ProfilePage() {
                       <button
                         onClick={() => {
                           setBioEdit(false);
-                          // setBioDescription(author?.bioDescription || "");
                         }}
                         className="text-[11px] text-gray-400 hover:text-white transition"
                       >
@@ -374,35 +371,11 @@ function ProfilePage() {
                       />
 
                       <div className="flex items-center justify-between">
-                        {/* <span className="text-[10px] text-gray-500">
-                          Keep it concise and professional
-                        </span> */}
-
                         <span className="text-[10px] text-gray-500">
                           {bioDescription?.length}/220
                         </span>
                       </div>
 
-                      {/* <button
-        // onClick={handleBioSave}
-        disabled={loading}
-        className="
-          w-full
-          py-2.5
-          rounded-xl
-          text-xs
-          font-medium
-          bg-emerald-500/15
-          text-emerald-400
-          border border-emerald-500/20
-          hover:bg-emerald-500/20
-          transition-all duration-200
-          disabled:opacity-50
-          disabled:cursor-not-allowed
-        "
-      >
-        {loading ? "Saving..." : "Save Bio"}
-      </button> */}
                     </div>
                   )}
                 </div>
@@ -460,24 +433,6 @@ function ProfilePage() {
                     </div>
                   )}
 
-                {/* Communities */}
-                {/* {author.community?.length > 0 && (
-                  <div>
-                    <p className="text-[11px] font-medium tracking-widest uppercase text-gray-300 mb-3">
-                      Communities
-                    </p>
-                    <div className="flex flex-wrap justify-center gap-1.5">
-                      {author.community.map((com, i) => (
-                        <span
-                          key={i}
-                          className="px-2.5 py-1 text-[10px] font-medium bg-white/[0.03] text-gray-400 border border-white/[0.06] rounded-full"
-                        >
-                          {com}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )} */}
               </div>
 
               {/* ══ RIGHT — Form ═════════════════════════════════════ */}
@@ -548,23 +503,6 @@ function ProfilePage() {
                         </div>
                       </div>
                     )}
-
-                    {/* Role */}
-                    {/* <div className="flex flex-col gap-1.5">
-                  <label
-                    htmlFor="role"
-                    className="text-[11px] font-medium tracking-widest uppercase text-gray-300"
-                  >
-                    Role
-                  </label>
-                  <input
-                    type="text"
-                    id="role"
-                    value={role}
-                    readOnly
-                    className="w-full px-3.5 py-2.5 text-sm bg-gray-800/30 border border-white/[0.04] rounded-lg text-gray-400 outline-none cursor-not-allowed"
-                  />
-                </div> */}
 
                     {/* Add Link form — desktop only */}
                     <div
@@ -1000,8 +938,6 @@ function ProfilePage() {
                     type="submit"
                     disabled={loading || !updateButton}
                     className="px-5 py-2.5 text-xs md:text-sm rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition-colors disabled:bg-gray-700/50 disabled:border-none disabled:text-gray-400 disabled:cursor-not-allowed"
-                    // className="md:px-5 px-3 py-2 md:py-2 bg-emerald-600/20 hover:bg-emerald-500/20
-                    //      rounded-md text-xs md:text-sm   text-emerald-400 transition-all duration-300 disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed"
                   >
                     {loading ? "Updating…" : "Update My Profile"}
                   </button>

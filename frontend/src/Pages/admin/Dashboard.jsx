@@ -448,7 +448,7 @@ function Dashboard() {
                         className="flex cursor-pointer md:p-2 md:hover:bg-gray-800/50 rounded-lg items-center gap-3"
                       >
                         <span
-                          className="md:text-[11px] text-[9px] bg-gray-800 rounded-full text-gray-300 px-2 py-1 md:px-3  md:py-1.5 md:font-bold font-semibold "
+                          className={`md:text-[11px] text-[9px] bg-gray-800 rounded-full text-gray-300 px-2 py-1 md:px-3  md:py-1.5 md:font-bold font-semibold ${i+1<10 && 'mr-1'}`}
                           style={{
                             color:
                               i < 3 && ["#3ecc28", "#d4a52f", "#e0853f"][i],
@@ -456,7 +456,7 @@ function Dashboard() {
                             // : "#8799b3",
                           }}
                         >
-                          {i + 1}
+                          {i + 1} {i+1<10 && '  '}
                         </span>
                         {!u.profile ? (
                           <div
