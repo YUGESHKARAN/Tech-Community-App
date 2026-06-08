@@ -285,7 +285,7 @@ export default function AITechAssistant({
             <a  href="/tech_community_assistant_user_guide.pdf"
               target="_blank"
               rel="noopener noreferrer">
-           <img src={logoicon} className="w-6 h-6 md:w-6 md:h-6 hover:scale-105 transition-all duration-500 cursor-pointer md:hover:scale-110 object-contain rounded-md " alt="" />
+           <img src={logoicon} className="w-6 h-6 md:w-6 md:h-6 transition-all duration-500 cursor-pointer hover:scale-110 object-contain rounded-md " alt="" />
            </a>
            {/* <SiGoogleassistant />  */}
            Ask about this post  
