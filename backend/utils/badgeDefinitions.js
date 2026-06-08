@@ -25,7 +25,7 @@ const BADGE_DEFINITIONS = {
     label:       "Collaborator",
     description: "Active collaborator on community playlists.",
     thresholds: {
-      bronze: { value: 2,  eventType: 'collab_milestone' },
+      bronze: { value: 1,  eventType: 'collab_milestone' },
       silver: { value: 10, eventType: 'collab_milestone' },
       gold:   { value: 25, eventType: 'collab_milestone' },
     },

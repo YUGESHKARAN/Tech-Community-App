@@ -19,101 +19,7 @@ const { BADGE_DEFINITIONS, TIER_ORDER } = require('../utils/badgeDefinitions');
  */
 
 
-// const checkAndAwardBadges = async (authorEmail, badgeIds, eventContext = {}) => {
-//   try {
-//     const author = await Author.findOne({ email: { $eq: authorEmail } })
-//       .select('badges posts followers');
 
-//     if (!author) return;
-
-//     // compute current stats
-//   const [aggregateResult, postCount, collaboratorCount] = await Promise.all([
-//   // single aggregate for both likes and views — already correct, just destructured wrong before
-//   Post.aggregate([
-//     { $match: { authorId: author._id } },
-//     { $group: {
-//         _id:        null,
-//         totalLikes: { $sum: { $size: { $ifNull: ["$likes", []] } } },
-//         totalViews: { $sum: { $size: { $ifNull: ["$views", []] } } },
-//     }},
-//   ]),
-
-//   Post.countDocuments({ authorId: author._id }),
-
-//   // fix: compute collaborator count from TutorPlayList
-//   TutorPlayList.countDocuments({
-//     "collaborators.email": author.email,
-//   }),
-// ]);
-
-// const stats = {
-//   impact_creator:    aggregateResult[0]?.totalLikes || 0,
-//   pro_contributor:   aggregateResult[0]?.totalViews || 0, // fix: was reading from wrong variable
-//   strong_publisher:  postCount,
-//   community_builder: author.followers?.length        || 0,
-//   collaborator:      collaboratorCount,              // fix: was hardcoded 0
-// };
-
-//     let updated = false;
-
-//     for (const badgeId of badgeIds) {
-//       const def        = BADGE_DEFINITIONS[badgeId];
-//       if (!def) continue;
-
-//       const currentVal = stats[badgeId];
-//       const existing   = author.badges.find(b => b.badgeId === badgeId);
-//       const earnedTiers = existing?.history.map(h => h.tier) || [];
-
-//       for (const tier of TIER_ORDER) {
-//         if (earnedTiers.includes(tier)) continue; // already earned
-
-//         const threshold = def.thresholds[tier];
-//         if (!threshold || currentVal < threshold.value) continue;
-
-//         // award this tier
-//         const newHistoryEntry = {
-//           tier,
-//           awardedAt:  new Date(),
-//           eventType:  threshold.eventType,
-//           eventId:    eventContext.eventId    || null,
-//           eventTitle: eventContext.eventTitle || null,
-//           milestone:  threshold.value,
-//         };
-
-//         if (existing) {
-//           // update existing badge — add tier to history, update currentTier
-//           existing.history.push(newHistoryEntry);
-//           existing.currentTier = tier;
-//           existing.count       = (existing.count || 1) + 1;
-//         } else {
-//           // first badge of this type
-//           author.badges.push({
-//             badgeId,
-//             currentTier: tier,
-//             history:     [newHistoryEntry],
-//             count:       1,
-//           });
-//         }
-
-//         updated = true;
-//         console.log(`Badge awarded: ${badgeId} ${tier} → ${authorEmail}`);
-//       }
-//     }
-
-//     if (updated) {
-//       await Author.updateOne(
-//         { email: { $eq: authorEmail } },
-//         { $set: { badges: author.badges } }
-//       );
-//     }
-//   } catch (err) {
-//     // badge award failure must never crash the calling controller
-//     console.error("checkAndAwardBadges error:", err.message);
-//   }
-// };
-
-
-// ── milestone title generator — describes the achievement ────
 const getMilestoneTitle = (badgeId, tier, milestone) => {
   const titles = {
     impact_creator: {
@@ -146,33 +52,155 @@ const getMilestoneTitle = (badgeId, tier, milestone) => {
   return titles[badgeId]?.[tier] || `Reached ${milestone}+ milestone`;
 };
 
-const checkAndAwardBadges = async (authorEmail, badgeIds, eventContext = {}) => {
+// const checkAndAwardBadges = async (authorEmail, badgeIds, eventContext = {}) => {
+
+//   console.log(badgeIds,"called")
  
+//   try {
+//     const author = await Author.findOne({ email: { $eq: authorEmail } })
+//       .select('badges posts followers email');
+
+//     if (!author) return;
+
+//     const [aggregateResult, postCount, collaboratorCount] = await Promise.all([
+//       Post.aggregate([
+//         { $match: { authorId: author._id } },
+//         { $group: {
+//             _id:        null,
+//             totalLikes: { $sum: { $size: { $ifNull: ["$likes", []] } } },
+//             totalViews: { $sum: { $size: { $ifNull: ["$views", []] } } },
+//         }},
+//       ]),
+//       Post.countDocuments({ authorId: author._id }),
+//       TutorPlayList.countDocuments({ "collaborators.email": author.email }),
+//     ]);
+    
+//     console.log()
+//     const stats = {
+//       impact_creator:    aggregateResult[0]?.totalLikes || 0,
+//       pro_contributor:   aggregateResult[0]?.totalViews || 0,
+//       strong_publisher:  postCount,
+//       community_builder: author.followers?.length        || 0,
+//       collaborator:      collaboratorCount,
+//     };
+
+//     let updated = false;
+
+//     for (const badgeId of badgeIds) {
+//       const def = BADGE_DEFINITIONS[badgeId];
+//       if (!def) continue;
+      
+
+//       const currentVal  = stats[badgeId];
+//       const existing    = author.badges.find(b => b.badgeId === badgeId);
+//       const earnedTiers = existing?.history.map(h => h.tier) || [];
+
+//       // fix: find only the NEXT unearned tier — not all eligible tiers
+//       // prevents skipping bronze→silver→gold in a single call
+//       // a user must hit each milestone event separately to earn each tier
+//       const nextTier = TIER_ORDER.find(tier => {
+//         if (earnedTiers.includes(tier)) return false; // already earned
+//         const threshold = def.thresholds[tier];
+//         return threshold && currentVal >= threshold.value;
+//       });
+
+//       if (!nextTier) continue; // no new tier earned this time
+
+//       const threshold = def.thresholds[nextTier];
+
+//       // const newHistoryEntry = {
+//       //   tier:       nextTier,
+//       //   awardedAt:  new Date(),
+//       //   eventType:  threshold.eventType,
+//       //   eventId:    eventContext.eventId    || null,
+//       //   eventTitle: getMilestoneTitle(badgeId, nextTier, threshold.value),
+//       //   milestone:  threshold.value,
+//       // };
+
+//       const newHistoryEntry = {
+//         tier:       nextTier,
+//         awardedAt:  new Date(),
+//         eventType:  threshold.eventType,
+//         eventId:    eventContext.eventId || null,
+//         // fix: descriptive milestone title instead of raw eventContext.eventTitle
+//         eventTitle: getMilestoneTitle(badgeId, nextTier, threshold.value),
+//         milestone:  threshold.value,
+//       };
+
+//       if (existing) {
+//         existing.history.push(newHistoryEntry);
+//         existing.currentTier = nextTier;
+//         // fix: count = number of tiers earned, not incremented per check
+//         existing.count = existing.history.length;
+//       } else {
+//         author.badges.push({
+//           badgeId,
+//           currentTier: nextTier,
+//           history:     [newHistoryEntry],
+//           count:       1,
+//         });
+//       }
+
+//       updated = true;
+//       console.log(`🏅 Badge awarded: ${badgeId} ${nextTier} → ${authorEmail} (${currentVal} ${threshold.eventType})`);
+//     }
+
+//     if (updated) {
+//       await Author.updateOne(
+//         { email: { $eq: authorEmail } },
+//         { $set: { badges: author.badges } }
+//       );
+//     }
+//   } catch (err) {
+//     console.error("checkAndAwardBadges error:", err.message);
+//   }
+// };
+
+const checkAndAwardBadges = async (authorEmail, badgeIds, eventContext = {}) => {
+  console.log(badgeIds, "called");
+
   try {
     const author = await Author.findOne({ email: { $eq: authorEmail } })
       .select('badges posts followers email');
 
     if (!author) return;
 
-    const [aggregateResult, postCount, collaboratorCount] = await Promise.all([
+    const [
+      [topLikedPost],
+      [topViewedPost],
+      postCount,
+      collaboratorCount,
+    ] = await Promise.all([
+      // fix: single post with highest likes — badge per-post not cumulative
       Post.aggregate([
         { $match: { authorId: author._id } },
-        { $group: {
-            _id:        null,
-            totalLikes: { $sum: { $size: { $ifNull: ["$likes", []] } } },
-            totalViews: { $sum: { $size: { $ifNull: ["$views", []] } } },
-        }},
+        { $project: { _id: 1, title: 1, likeCount: { $size: { $ifNull: ["$likes", []] } } } },
+        { $sort:  { likeCount: -1 } },
+        { $limit: 1 },
+      ]),
+      // fix: single post with highest views — badge per-post not cumulative
+      Post.aggregate([
+        { $match: { authorId: author._id } },
+        { $project: { _id: 1, title: 1, viewCount: { $size: { $ifNull: ["$views", []] } } } },
+        { $sort:  { viewCount: -1 } },
+        { $limit: 1 },
       ]),
       Post.countDocuments({ authorId: author._id }),
       TutorPlayList.countDocuments({ "collaborators.email": author.email }),
     ]);
 
     const stats = {
-      impact_creator:    aggregateResult[0]?.totalLikes || 0,
-      pro_contributor:   aggregateResult[0]?.totalViews || 0,
+      impact_creator:    topLikedPost?.likeCount || 0,
+      pro_contributor:   topViewedPost?.viewCount || 0,
       strong_publisher:  postCount,
-      community_builder: author.followers?.length        || 0,
+      community_builder: author.followers?.length  || 0,
       collaborator:      collaboratorCount,
+    };
+
+    // auto-resolve eventContext for like/view badges from the top post
+    const badgeEventContext = {
+      impact_creator:  { eventId: topLikedPost?._id,  eventTitle: topLikedPost?.title  },
+      pro_contributor: { eventId: topViewedPost?._id, eventTitle: topViewedPost?.title },
     };
 
     let updated = false;
@@ -180,40 +208,27 @@ const checkAndAwardBadges = async (authorEmail, badgeIds, eventContext = {}) => 
     for (const badgeId of badgeIds) {
       const def = BADGE_DEFINITIONS[badgeId];
       if (!def) continue;
-      
 
       const currentVal  = stats[badgeId];
       const existing    = author.badges.find(b => b.badgeId === badgeId);
       const earnedTiers = existing?.history.map(h => h.tier) || [];
 
-      // fix: find only the NEXT unearned tier — not all eligible tiers
-      // prevents skipping bronze→silver→gold in a single call
-      // a user must hit each milestone event separately to earn each tier
       const nextTier = TIER_ORDER.find(tier => {
-        if (earnedTiers.includes(tier)) return false; // already earned
+        if (earnedTiers.includes(tier)) return false;
         const threshold = def.thresholds[tier];
         return threshold && currentVal >= threshold.value;
       });
 
-      if (!nextTier) continue; // no new tier earned this time
+      if (!nextTier) continue;
 
-      const threshold = def.thresholds[nextTier];
-
-      // const newHistoryEntry = {
-      //   tier:       nextTier,
-      //   awardedAt:  new Date(),
-      //   eventType:  threshold.eventType,
-      //   eventId:    eventContext.eventId    || null,
-      //   eventTitle: getMilestoneTitle(badgeId, nextTier, threshold.value),
-      //   milestone:  threshold.value,
-      // };
+      const threshold       = def.thresholds[nextTier];
+      const resolvedContext = badgeEventContext[badgeId] || eventContext;
 
       const newHistoryEntry = {
         tier:       nextTier,
         awardedAt:  new Date(),
         eventType:  threshold.eventType,
-        eventId:    eventContext.eventId || null,
-        // fix: descriptive milestone title instead of raw eventContext.eventTitle
+        eventId:    resolvedContext.eventId || eventContext.eventId || null,
         eventTitle: getMilestoneTitle(badgeId, nextTier, threshold.value),
         milestone:  threshold.value,
       };
@@ -221,7 +236,6 @@ const checkAndAwardBadges = async (authorEmail, badgeIds, eventContext = {}) => 
       if (existing) {
         existing.history.push(newHistoryEntry);
         existing.currentTier = nextTier;
-        // fix: count = number of tiers earned, not incremented per check
         existing.count = existing.history.length;
       } else {
         author.badges.push({

@@ -1677,44 +1677,45 @@ const getSinglePost = async (req, res) => {
 // reviewed----------------------------------------------------
 const postView = async (req, res) => {
   try {
+    
     const { email, id } = req.params;
     const { emailAuthor } = req.body;
 
-    // verify author exists — ownership check
-    const author = await Author.findOne({ email: { $eq: email } }).select('_id');
+    // fix: select email too — author.email was undefined, causing badge check to silently fail
+    const author = await Author.findOne({ email: { $eq: email } }).select('_id email');
     if (!author) {
       return res.status(404).json({ message: 'Author not found' });
     }
 
-    // fix: find post in Post collection — author.posts.find() on ObjectIds always returned undefined
-    const post = await Post.findOne({ _id: id, authorId: author._id }).select('views');
+    // fix: select title too — needed for eventContext in badge check
+    const post = await Post.findOne({ _id: id, authorId: author._id }).select('_id views title');
     if (!post) {
       return res.status(404).json({ message: 'Post not found' });
     }
 
-    // fix: bare return left request hanging — must always send a response
     if (post.views.includes(emailAuthor)) {
       return res.status(200).json({ message: 'Already viewed', views: post.views });
     }
 
-    // fix: $addToSet is atomic — no fetch-mutate-save, skips pre('save') hook
     await Post.updateOne(
       { _id: id },
       { $addToSet: { views: emailAuthor } }
     );
 
+     
+
     res.status(200).json({
       message: 'View added successfully',
-      views: [...post.views, emailAuthor],
+      views:   [...post.views, emailAuthor],
     });
 
-    // fix: check pro_contributor after view is recorded — views drive this badge
-    // fire-and-forget after response — never blocks the view update
+    // author.email now exists — badge check will work correctly
+    console.log("post id", post._id);
+    console.log("author email", author.email);
     checkAndAwardBadges(author.email, ['pro_contributor'], {
-      eventId:    post._id,
+      eventId:  post._id,
       eventTitle: post.title,
     }).catch(err => console.error("Badge check error:", err.message));
-
 
   } catch (err) {
     return res.status(500).json({ message: 'Server error', error: err.message });
@@ -1779,7 +1780,7 @@ const postLikes = async (req, res) => {
     const { emailAuthor } = req.body;
 
     // verify author exists — ownership check
-    const author = await Author.findOne({ email: { $eq: email } }).select('_id');
+    const author = await Author.findOne({ email: { $eq: email } }).select('_id email');
     if (!author) {
       return res.status(404).json({ message: 'Author not found' });
     }
