@@ -1928,7 +1928,7 @@ useEffect(() => {
                         md:max-w-none
                    
                         md:prose-p:text-gray-300
-                        
+                         break-words
                         md:prose-p:md:leading-6
                         md:prose-p:text-sm
                         prose-headings:text-white
