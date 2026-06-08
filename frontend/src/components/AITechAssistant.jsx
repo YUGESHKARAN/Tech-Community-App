@@ -203,6 +203,36 @@ export default function AITechAssistant({
     }
   }, [viewComments]);
 
+   const textareaRef = useRef(null);
+  
+    useEffect(()=>{
+      const el = textareaRef.current;
+  
+      if(!el) return;
+  
+      el.style.height = "auto";
+      el.style.height = Math.min(el.scrollHeight, 200) + "px";
+    },[query]);
+
+    const [placeholderIndex, setPlaceholderIndex] = useState(0);
+      const [isFocused, setIsFocused] = useState(false);
+    
+      const PLACEHOLDERS = [
+       "summarise the post...",
+        "recommend related content...",
+        "suggest videos...",
+      ];
+    
+      useEffect(() => {
+        if (isFocused || query) return;
+    
+        const t = setInterval(() => {
+          setPlaceholderIndex((i) => (i + 1) % PLACEHOLDERS.length);
+        }, 4000);
+        return ()=> clearInterval(t);
+      }, [isFocused, query]);
+    
+
   //  console.log("token", token)
   // console.log("messages", messages )
   return (
@@ -557,7 +587,7 @@ export default function AITechAssistant({
 
         {/* Input */}
         <div className="p-3 pb-0  rounded-b-xl flex gap-2 bg-[#0a0f1d] md:bg-gray-900">
-          <input
+          {/* <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && askAI()}
@@ -566,15 +596,39 @@ export default function AITechAssistant({
             onFocus={() => setIsInputFocused(true)}
             // onBlur={() => setIsInputFocused(false)}
             onMouseOut={() => setIsInputFocused(false)}
-          />
+          /> */}
 
-          <input
+           <textarea   
             value={query}
+             ref={textareaRef}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && askAI()}
+            // placeholder="Ask your queries..."
+            placeholder={PLACEHOLDERS[placeholderIndex]}
+            className="flex-1 md:hidden bg-gray-800 border border-neutral-800 rounded-xl px-4 py-2 text-sm text-white placeholder-neutral-500 outline-none"
+            onFocus={() => setIsInputFocused(true)}
+            // onBlur={() => setIsInputFocused(false)}
+            onMouseOut={() => setIsInputFocused(false)}
+            />
+
+          {/* <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => {e.key === "Enter" && !e.shiftKey && askAI()}}
             placeholder="Ask your queries..."
             className="flex-1 bg-gray-800 hidden md:block border border-neutral-800 rounded-xl px-4 py-2 text-sm text-white placeholder-neutral-500 outline-none"
-          />
+          /> */}
+
+          <textarea   
+          value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => {e.key === "Enter" && !e.shiftKey && askAI()}}
+            ref={textareaRef}
+            // placeholder="Ask your queries..."
+            placeholder={PLACEHOLDERS[placeholderIndex]}
+            className="flex-1 bg-gray-800 scrollbar-hide hidden md:block border border-neutral-800 rounded-xl px-4 py-2 text-sm text-white placeholder-neutral-500 outline-none"
+            rows={1}
+            />
 
           <button
             onClick={() => askAI(query)}

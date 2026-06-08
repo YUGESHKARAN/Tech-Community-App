@@ -20,6 +20,7 @@ function AddPost() {
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
   const [image, setImage] = useState("");
+  const [prompt, setPrompt] = useState("");
   // const email = localStorage.getItem("email"); // Get email from local storage
   const email = getItem("email"); // Get email from local storage
   const user = localStorage.getItem("username");
@@ -300,137 +301,34 @@ function AddPost() {
     }
   };
 
-  // const renderTextWithHashtags = (text) => {
-  //   if (!text) return null;
+  const textareaRef = useRef(null);
 
-  //   const cleanedText = text
-  //     .replace(/\\r\\n/g, "\n")
-  //     .replace(/\\n/g, "\n")
-  //     .replace(/\\r/g, "\n");
+  useEffect(() => {
+    const el = textareaRef.current;
 
-  //   return cleanedText.split("\n").map((line, lineIndex) => {
-  //     const parts = line.split(/(\*\*.*?\*\*|#{1,6}[^\n]+|\s?#\w+)/gm);
+    if (!el) return;
 
-  //     return (
-  //       <React.Fragment key={lineIndex}>
-  //         {parts.map((part, index) => {
-  //           if (!part) return null;
+    el.style.height = "auto";
+    el.style.height = Math.min(el.scrollHeight, 200) + "px";
+  }, [prompt]);
 
-  //           const trimmed = part.trim();
+  const [placeholderIndex, setPlaceholderIndex] = useState(0);
+  const [isFocused, setIsFocused] = useState(false);
 
-  //           // ---------- Markdown Headings ----------
-  //           // Supports:
-  //           // ###Heading
-  //           // ### Heading
-  //           if (/^#{1,6}/.test(trimmed)) {
-  //             return (
-  //               <span
-  //                 key={index}
-  //                 className="font-semibold md:text-xl text-sm text-white"
-  //               >
-  //                 {trimmed.replace(/^#{1,6}\s*/, "")}
-  //               </span>
-  //             );
-  //           }
+  const PLACEHOLDERS = [
+    "Ask DraftMate to transform your content...",
+    "Lets DraftMate refine your post content...",
+    "Transform raw content to publish ready content... ",
+  ];
 
-  //           // ---------- Bold ----------
-  //           if (trimmed.startsWith("**") && trimmed.endsWith("**")) {
-  //             return (
-  //               <span key={index} className="font-semibold text-white">
-  //                 {trimmed.replace(/\*\*/g, "")}
-  //               </span>
-  //             );
-  //           }
+  useEffect(() => {
+    if (isFocused || prompt) return;
 
-  //           // ---------- Hashtags ----------
-  //           if (/^(\s)?#\w+/.test(part)) {
-  //             return (
-  //               <span key={index} className="text-emerald-400 font-medium">
-  //                 {part}
-  //               </span>
-  //             );
-  //           }
-
-  //           // ---------- Normal ----------
-  //           return (
-  //             <React.Fragment key={index}>
-  //               {part.replace(/\\\*/g, "*").replace(/\\\\/g, "\\")}
-  //             </React.Fragment>
-  //           );
-  //         })}
-
-  //         <br />
-  //       </React.Fragment>
-  //     );
-  //   });
-  // };
-
-  //   const renderTextWithHashtags = (text) => {
-  //   if (!text) return null;
-
-  //   const cleanedText = text
-  //     .replace(/\\r\\n/g, "\n")
-  //     .replace(/\\n/g, "\n")
-  //     .replace(/\\r/g, "\n");
-
-  //   return cleanedText.split("\n").map((line, lineIndex) => {
-  //     const parts = line.split(/(\*\*.*?\*\*|#{1,6}[^\n]+|\s?#\w+)/gm);
-
-  //     return (
-  //       <React.Fragment key={lineIndex}>
-  //         {parts.map((part, index) => {
-  //           if (!part) return null;
-
-  //           const trimmed = part.trim();
-
-  //           // ---------- Markdown Headings ----------
-  //           // Supports:
-  //           // ###Heading
-  //           // ### Heading
-  //           if (/^#{1,6}/.test(trimmed)) {
-  //             return (
-  //               <span
-  //                 key={index}
-  //                 className="font-semibold md:text-sm text-xs text-white"
-  //               >
-  //                 {trimmed.replace(/^#{1,6}\s*/, "")}
-  //               </span>
-  //             );
-  //           }
-
-  //           // ---------- Bold ----------
-  //           if (trimmed.startsWith("**") && trimmed.endsWith("**")) {
-  //             return (
-  //               <span key={index} className="font-semibold md:text-sm text-xs text-white">
-  //                 {trimmed.replace(/\*\*/g, "")}
-  //               </span>
-  //             );
-  //           }
-
-  //           // ---------- Hashtags ----------
-  //           if (/^(\s)?#\w+/.test(part)) {
-  //             return (
-  //               <span key={index} className="text-white md:text-sm text-xs font-medium">
-  //                 {part}
-  //               </span>
-  //             );
-  //           }
-
-  //           // ---------- Normal ----------
-  //           return (
-  //             <React.Fragment key={index}>
-  //               {part.replace(/\\\*/g, "*").replace(/\\\\/g, "\\")}
-  //             </React.Fragment>
-  //           );
-  //         })}
-
-  //         <br />
-  //       </React.Fragment>
-  //     );
-  //   });
-  // };
-
-  // console.log("links",links)
+    const t = setInterval(() => {
+      setPlaceholderIndex((i) => (i + 1) % PLACEHOLDERS.length);
+    }, 4000);
+    return ()=> clearInterval(t);
+  }, [isFocused, prompt]);
 
   // console.log("documents",documents)
 
@@ -461,7 +359,7 @@ function AddPost() {
                   AI
                 </button>
               ) : (
-                  <button
+                <button
                   onClick={() => setChatbot(false)}
                   className="
                     flex items-center gap-1.5
@@ -478,10 +376,10 @@ function AddPost() {
                     
                     
                   "
-                  >
-                    <span className="text-xs">←</span>
-                    <span>Back</span>
-                  </button>
+                >
+                  <span className="text-xs">←</span>
+                  <span>Back</span>
+                </button>
               )}
             </div>
           </div>
@@ -512,102 +410,7 @@ function AddPost() {
 
               {/* AI Assistant (Always visible on desktop) */}
 
-               {/* <div
-                className={`bg-[#0f172a]/80  lg:w-11/12 h-[450px] border border-emerald-500/20
-      bg-gradient-to-br from-emerald-500/5 to-transparent rounded-lg md:rounded-xl px-4 pt-6 pb-3 md:p-6 md:pb-4 flex flex-col
-          ${!chatbot ? "hidden lg:flex" : "flex"}`}
-              >
-                <h2 className="text-lg font-semibold text-white flex items-center gap-2 mb-4">
-                  <img src={glow} className="w-5 h-5" />
-                  DraftMate AI
-                </h2>
-
-                <div
-                  ref={containerRef}
-                  className="flex-1 overflow-y-auto emerald-scrollbar space-y-4 h-[600px] pr-2"
-                >
-                  {messages.map((msg, idx) => (
-                    <div
-                      key={msg._id || `msg-${idx}`}
-                      className={`flex  ${
-                        msg.direction === "outgoing"
-                          ? "justify-end"
-                          : "justify-start"
-                      }`}
-                    >
-                      <div
-                        className={`
-                          w-full
-                          px-4
-                          py-2.5
-                          rounded-2xl
-                          text-xs
-                          leading-relaxed
-                          break-words
-
-                          
-                          whitespace-pre-wrap
-                          ${
-                            msg.direction === "outgoing"
-                              ? "bg-gray-800 md:ml-5  text-white rounded-br-md"
-                              : "bg-emerald-700/20 text-gray-200 md:mr-5 rounded-bl-md"
-                          }
-                        `}
-                      >
-                        {msg.message}
-                      </div>
-                    </div>
-                  ))}
-
-                  {draftMateLoading && (
-                    <div className="text-xs animate-pulse text-gray-400 italic">
-                      DraftMate refining your content...
-                    </div>
-                  )}
-                </div>
-
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    const input = e.target.message;
-                    handleSend(input.value);
-                    input.value = "";
-                  }}
-                  className="flex mt-4  gap-3 outline-none overflow-hidden"
-                >
-                  <input
-                    name="message"
-                    placeholder="Ask DraftMate to transform your content..."
-                    className="flex-1 px-4  rounded-xl border border-gray-700 py-2 bg-gray-900 text-xs outline-none text-white"
-                  />
-
-                  <button
-                    disabled={isTyping}
-                    className="text-2xl md:text-2xl transition-all duration-300 hover:text-gray-400 text-gray-500 block transition-all duration-300  disabled:text-gray-700 disabled:cursor-not-allowed"
-                  >
-             
-                    <VscSend />
-                  </button>
-                </form>
-                <ul className="text-center text-gray-400 mt-2 ">
-                  <li className="text-[8px] md:text-[11px] tracking-wide md:h-4 h-3">
-                    {" "}
-                    Make sure to very the content before publishing it !!
-                  </li>
-                  <li className="text-[6px] text-gray-400  md:text-[9px] h-3">
-                    To know more about DraftMate-AI visit {" "}
-                    <Link
-                      to={`${window.location.origin}/viewpage/yugeshkaran01@gmail.com/69fc146c5ea31bc1ac08c77d`}
-                      className="text-emerald-400 underline hover:text-emerald-300 transition-all duration-300 text-[5px] inline-block text-wrap md:text-[8px]"
-                    >
-                      {" "}
-                      DraftMate DOC ↗
-                    </Link>{" "}
-                  </li>
-                </ul>
-              </div> */}
-
-             {/* backdrop-blur-xl */}
+              {/* backdrop-blur-xl */}
               <div
                 className={`relative overflow-hidden
                     bg-[#0f172a]/80
@@ -703,21 +506,42 @@ function AddPost() {
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
-                    const input = e.target.message;
-                    handleSend(input.value);
-                    input.value = "";
+                    // const input = e.target.message;
+                    // handleSend(input.value);
+                    //  input.value = "";
+                    handleSend(prompt);
+                    setPrompt("");
                   }}
-                  className="flex pb-1 pt-4 px-4  gap-3 outline-none overflow-hidden"
+                  className="flex pb-1 pt-4 px-4 relative  gap-3 outline-none overflow-hidden"
                 >
-                  <input
+                  {/* <input
                     name="message"
                     placeholder="Ask DraftMate to transform your content..."
+                    onKeyDown={()=>{ e.key === "Enter" && !e.shiftKey}}
                     className="flex-1 px-4  rounded-xl border border-gray-700 py-2 bg-gray-900 text-xs outline-none text-white"
-                  />
+                  /> */}
+
+                  <textarea
+                    name="message"
+                    ref={textareaRef}
+                    value={prompt}
+                    onFocus={()=>{setIsFocused(true)}}
+                    onBlur={()=>{setIsFocused(false)}}
+                    placeholder= {PLACEHOLDERS[placeholderIndex]}
+                    className="flex-1 px-4 scrollbar-hide  rounded-xl border border-gray-700 py-2 transition-all duration-200 bg-gray-900 text-xs outline-none text-white"
+                    id=""
+                    onChange={(e) => {
+                      setPrompt(e.target.value);
+                    }}
+                    onKeyDown={() => {
+                      e.key === "Enter" && !e.shiftKey;
+                    }}
+                    rows={1}
+                  ></textarea>
 
                   <button
                     disabled={isTyping}
-                    className="text-2xl md:text-2xl transition-all duration-300 hover:text-gray-400 text-gray-500 block transition-all duration-300  disabled:text-gray-700 disabled:cursor-not-allowed"
+                    className="text-2xl  md:text-2xl transition-all duration-300 hover:text-gray-400 text-gray-500 block transition-all duration-300  disabled:text-gray-700 disabled:cursor-not-allowed"
                   >
                     <VscSend />
                   </button>
