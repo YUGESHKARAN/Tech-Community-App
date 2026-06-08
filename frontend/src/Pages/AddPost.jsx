@@ -512,7 +512,8 @@ function AddPost() {
                     handleSend(prompt);
                     setPrompt("");
                   }}
-                  className="flex pb-1 pt-4 px-4 relative  gap-3 outline-none overflow-hidden"
+                  // className="flex pb-1 h-20  pt-4 px-4 relative  gap-3  min-h-[80px]  outline-none "
+                  className="flex items-end pb-1 pt-4 px-4 relative gap-3 outline-none"
                 >
                   {/* <input
                     name="message"
@@ -528,16 +529,22 @@ function AddPost() {
                     onFocus={()=>{setIsFocused(true)}}
                     onBlur={()=>{setIsFocused(false)}}
                     placeholder= {PLACEHOLDERS[placeholderIndex]}
-                    className="flex-1 px-4 scrollbar-hide  rounded-xl border border-gray-700 py-2 transition-all duration-200 bg-gray-900 text-xs outline-none text-white"
+                    className="flex-1  min-h-[40px]
+    max-h-[200px] shrink-0 px-4 flex scrollbar-hide  rounded-xl border border-gray-700 py-2 transition-all duration-200 bg-gray-900 text-xs outline-none text-white"
+
                     id=""
                     onChange={(e) => {
                       setPrompt(e.target.value);
                     }}
-                    onKeyDown={() => {
-                      e.key === "Enter" && !e.shiftKey;
-                    }}
+                    onKeyDown={(e) => {
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault();
+    handleSend(prompt);
+    setPrompt("");
+  }
+}}
                     rows={1}
-                  ></textarea>
+                  />
 
                   <button
                     disabled={isTyping}

@@ -609,6 +609,7 @@ export default function AITechAssistant({
             onFocus={() => setIsInputFocused(true)}
             // onBlur={() => setIsInputFocused(false)}
             onMouseOut={() => setIsInputFocused(false)}
+            rows={1}
             />
 
           {/* <input
