@@ -14,6 +14,7 @@ const {
 require("dotenv").config();
 
 const redisClient = require("../middleware/redis");
+const { checkAndAwardBadges } = require("../services/badgeService");
 
 const bucketName = process.env.BUCKET_NAME;
 const bucketRegion = process.env.BUCKET_REGION;
@@ -737,6 +738,14 @@ const addTutorPlayList = async (req, res) => {
 
     // respond immediately before sending notifications
     res.status(201).json({ message: "Playlist created successfully", data: tutorPlaylist });
+
+    // in addTutorPlayList — for each collaborator
+    for (const collabUser of collabUsers) {
+      checkAndAwardBadges(collabUser.email, ['collaborator'], {
+        eventId:    tutorPlaylist._id,
+        eventTitle: tutorPlaylist.title,
+      }).catch(err => console.error("Badge check error:", err.message));
+    }
 
     // ── send notifications to collaborators (fire-and-forget) ─
     if (collabUsers.length > 0) {

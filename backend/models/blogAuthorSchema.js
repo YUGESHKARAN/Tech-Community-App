@@ -529,6 +529,11 @@ const mongoose = require('mongoose');
 const bcrypt   = require('bcrypt');
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+
+// badge schema
+
+const {badgeSchema} = require("./badgeSchema")
+
 // ── Sub-schemas ──────────────────────────────────────────────
 const messageSchema = new mongoose.Schema({
   user:      { type: String, required: false },
@@ -658,6 +663,21 @@ const authorSchema = new mongoose.Schema({
       },
     },
   },
+
+  // achievements — embedded array, one entry per badge TYPE earned
+  badges: {
+    type:    [badgeSchema],
+    default: [],
+    validate: {
+      validator: (v) => {
+        // each badgeId can only appear once — tiers tracked in history[]
+        const ids = v.map(b => b.badgeId);
+        return new Set(ids).size === ids.length;
+      },
+      message: "Duplicate badge type — use history[] for multiple tiers",
+    },
+  },
+  
   otp:          { type: String },
   otpExpiresAt: { type: Date   },
 });
