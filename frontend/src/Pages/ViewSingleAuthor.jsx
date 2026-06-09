@@ -13,6 +13,7 @@ import { PiLinkSimpleFill } from "react-icons/pi";
 import { getItem } from "../utils/encode";
 import ProfileViewSkeleton from "../components/loaders/ProfileViewSkeleton";
 import empty_state_author from "../assets/author_not_found_3.png"
+import AchievementSection from "../components/Achievements";
 function ViewSingleAuthor() {
   const { email } = useParams();
   // const role = localStorage.getItem("role");
@@ -419,6 +420,7 @@ function ViewSingleAuthor() {
           </div>
 
         </div>
+        { author?.role !=='student' && <AchievementSection badges={author?.badges}/>}
       </div>:
       <ProfileViewSkeleton role={author.role} />
 }

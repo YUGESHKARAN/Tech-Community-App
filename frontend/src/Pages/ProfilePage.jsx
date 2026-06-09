@@ -18,6 +18,7 @@ import { MdEdit } from "react-icons/md";
 import toast from "../components/toaster/Toast";
 import { getItem, removeItem } from "../utils/encode";
 import ProfilePageSkeleton from "../components/loaders/ProfilePageSkeleton";
+import AchievementSection from "../components/Achievements";
 function ProfilePage() {
   const { logout } = useAuth();
   // const email = localStorage.getItem("email");
@@ -239,10 +240,12 @@ function ProfilePage() {
               </button>
             </div>
 
+            
+
             {/* ── Two-column layout ─────────────────────────────────── */}
-            <div className="grid md:grid-cols-[300px_1fr] gap-4 items-start">
+            <div className="grid md:grid-cols-[300px_1fr] gap-4 mb-3 items-start">
               {/* ══ LEFT — Profile card ══════════════════════════════ */}
-              <div className="md:sticky top-6 relative self-start bg-gray-800/40 border border-white/[0.06] rounded-2xl p-6 pb-3 text-center">
+            <div className="md:sticky top-6 relative self-start bg-gray-800/40 border border-white/[0.06] rounded-2xl p-6 pb-3 text-center">
                 {/* Avatar */}
                 <div className="relative w-fit mx-auto mt-3 md:mb-3 mb-4">
                   {previewImage ? (
@@ -433,7 +436,9 @@ function ProfilePage() {
                     </div>
                   )}
 
-              </div>
+              </div>          
+             
+             
 
               {/* ══ RIGHT — Form ═════════════════════════════════════ */}
               <form
@@ -943,7 +948,18 @@ function ProfilePage() {
                   </button>
                 </div>
               </form>
+
+             
             </div>
+
+             <div className="mt-6 static shrink-0 col-span-full ">
+            {author?.role !=='student' && <AchievementSection badges={author?.badges}/>}
+           </div>
+
+            
+           
+           
+         
           </div>
         ) : (
           <ProfilePageSkeleton />
