@@ -337,11 +337,18 @@ function BadgeCard({ badge, onSelect, isSelected }) {
   return (
     <button
       onClick={() => onSelect(isSelected ? null : badge)}
+      // className={`
+      //   relative group flex flex-col items-center gap-2 p-1 md:p-4 w-20 mx-auto md:w-40 rounded-2xl
+      //   border transition-all duration-300 cursor-pointer select-none
+      //   ${tier.bg} ${tier.border}
+      //   ${isSelected ? `${tier.glow} ring-2  ${tier.ring} scale-[1.03]` : "hover:scale-[1.02] hover:ring-1 " + tier.ring}
+      // `}
+
       className={`
-        relative group flex flex-col items-center gap-2 p-2 pb-0.5 md:p-4 w-20 mx-auto md:w-40 rounded-2xl
-        md:border transition-all duration-300 cursor-pointer select-none
-        md:${tier.bg} ${tier.border}
-        ${isSelected ? `${tier.glow} ring-2 ${tier.ring} scale-[1.03]` : "hover:scale-[1.02] hover:ring-1 " + tier.ring}
+        relative group flex flex-col items-center gap-2 p-1 md:p-4 w-20 mx-auto md:w-40 rounded-2xl
+        md:border ${tier.border} transition-all duration-300 cursor-pointer select-none
+        md:${tier.bg} 
+        ${isSelected ? `md:${tier.glow} md:ring-2  ${tier.ring} scale-[1.03]` : "hover:scale-[1.02] hover:ring-1 " + tier.ring}
       `}
     >
       {/* shimmer sweep on hover */}
@@ -353,7 +360,7 @@ function BadgeCard({ badge, onSelect, isSelected }) {
       >
         <div
           className={`
-          absolute inset-y-0 -left-full w-1/2
+          md:absolute hidden inset-y-0 -left-full w-1/2
           bg-gradient-to-r ${tier.shimmer}
           group-hover:translate-x-[350%] transition-transform duration-700 ease-out
         `}
@@ -411,7 +418,7 @@ function BadgeDrawer({ badge, onClose, showClose }) {
   return (
     <div className="mt-4 w-full md:max-w-sm rounded-2xl  overflow-hidden animate-in slide-in-from-top-2 duration-300">
       {/* header */}
-      <div className="flex items-start gap-3  md:p-4 border-b border-white/[0.06]">
+      <div className="flex items-start gap-3 md:p-4 p-1 border-b border-white/[0.06]">
         <div className="w-10 h-10 shrink-0">{meta.icon(badge.currentTier)}</div>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold text-white">{meta.label}</p>
@@ -577,7 +584,7 @@ export default function AchievementSection({ badges = [] }) {
               return (
                 <div
                   key={i}
-                  className={`w-6 h-6 rounded-full ring-2 ring-gray-900 ${t.bg} flex items-center justify-center`}
+                  className={`w-6 h-6 rounded-full border border-white/20 md:ring-2 ring-gray-900 ${t.bg} flex items-center justify-center`}
                   style={{ zIndex: 10 - i }}
                 >
                   <div className="w-4 h-4">
@@ -603,7 +610,7 @@ export default function AchievementSection({ badges = [] }) {
           <>
             {/* badge grid */}
             {/* <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-2"> */}
-            <div className="grid grid-cols-4 md:flex items-start md:w-fit flex-wrap gap-3  gap-4">
+            <div className="grid grid-cols-5 md:flex items-start md:w-fit flex-wrap gap-3  gap-4">
               {badges.map((badge) => (
                 <BadgeCard
                   key={badge.badgeId}
