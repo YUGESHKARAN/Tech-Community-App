@@ -952,9 +952,7 @@ function ProfilePage() {
              
             </div>
 
-             <div className="mt-6 static shrink-0 col-span-full ">
-            {author?.role !=='student' && <AchievementSection badges={author?.badges}/>}
-           </div>
+             {author?.role !=='student' && <AchievementSection badges={author?.badges}/>}
 
             
            
