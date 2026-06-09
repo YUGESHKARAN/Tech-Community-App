@@ -348,7 +348,7 @@ function BadgeCard({ badge, onSelect, isSelected }) {
         relative group flex flex-col items-center gap-2 p-1 md:p-4 w-20 mx-auto md:w-40 rounded-2xl
         md:border ${tier.border} transition-all duration-300 cursor-pointer select-none
         md:${tier.bg} 
-        ${isSelected ? `md:${tier.glow} md:ring-2  ${tier.ring} scale-[1.03]` : "hover:scale-[1.02] hover:ring-1 " + tier.ring}
+        ${isSelected ? `md:${tier.glow} md:ring-2  ${tier.ring} scale-[1.03]` : "hover:scale-[1.02] md:hover:ring-1 " + tier.ring}
       `}
     >
       {/* shimmer sweep on hover */}
@@ -603,14 +603,14 @@ export default function AchievementSection({ badges = [] }) {
       </div>
 
       {/* content */}
-      <div className="p-2 transition-all duration-300 md:p-4">
+      <div className=" transition-all duration-300 md:p-4">
         {!hasBadges ? (
           <EmptyAchievements />
         ) : (
           <>
             {/* badge grid */}
             {/* <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-2"> */}
-            <div className="grid grid-cols-5 md:flex items-start md:w-fit flex-wrap gap-3  gap-4">
+            <div className="grid grid-cols-5 md:flex items-start md:w-fit flex-wrap gap-3 ">
               {badges.map((badge) => (
                 <BadgeCard
                   key={badge.badgeId}
