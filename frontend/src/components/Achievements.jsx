@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { MdHistory } from "react-icons/md";
+import { IoLockClosedOutline } from "react-icons/io5";
 
 // ── Badge metadata ────────────────────────────────────────────
 const BADGE_META = {
@@ -463,7 +464,7 @@ function BadgeDrawer({ badge, onClose, showClose }) {
                   {/* dot */}
                   <div
                     className={`
-                    absolute -left-[11px] top-1 w-3 h-3 rounded-full
+                    absolute -left-[15px] top-1 w-3 h-3 rounded-full
                     ring-2 ring-gray-900 ${t.dot}
                     ${i === badge.history.length - 1 ? "animate-pulse" : ""}
                   `}
@@ -504,15 +505,15 @@ function BadgeDrawer({ badge, onClose, showClose }) {
                 return (
                   <div
                     key={t}
-                    className="relative flex gap-3 items-start opacity-30"
+                    className="relative flex gap-3 items-start opacity-40"
                   >
-                    <div className="absolute -left-[11px] top-1 w-3 h-3 rounded-full ring-2 ring-gray-900 bg-gray-700" />
+                    <div className="absolute -left-[15px] top-1 w-3 h-3 rounded-full ring-2 ring-gray-900 bg-gray-700" />
                     <div className="flex-1 pl-1">
                       <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-gray-800 text-gray-400 border border-gray-700">
-                          {tc.label}
+                        <span className="text-[10px] flex items-center gap-1 md:text-xs font-semibold px-2 py-0.5 rounded-full bg-gray-800 md:text-gray-100 text-gray-300 border border-gray-700">
+                          <IoLockClosedOutline className= "text-[10px] md:text-xs" /> {tc.label}
                         </span>
-                        <span className="text-[10px] text-gray-600">
+                        <span className="text-[10px] md:text-[11px] md:text-gray-100 text-gray-200">
                           locked
                         </span>
                       </div>
@@ -558,9 +559,9 @@ export default function AchievementSection({ badges = [] }) {
 
   return (
     // <div className="bg-gray-800/40 border border-white/[0.06] rounded-2xl  overflow-hidden">
-    <div className="w-full block shink-0 overflow-hidden">
+    <div className="w-full block  shink-0 overflow-hidden">
       {/* section header */}
-      <div className="flex items-center justify-between px-2 md:px-5 py-4 md:border-b border-white/[0.06]">
+      <div className="flex items-center   justify-between px-2 md:px-5 py-4 md:border-b border-white/[0.06]">
         <div>
           <p className="text-[11px] font-medium tracking-widest uppercase text-gray-400">
             Achievements
@@ -630,7 +631,7 @@ export default function AchievementSection({ badges = [] }) {
 
             {/* history drawer — slides open below grid */}
             {selected && (
-              <div className="flex flex-col md:mt-4 mt-2 ">
+              <div className="flex transition-all duration-200 flex-col md:mt-4 mt-2 ">
                 <p className="text-sm   md:text-sm text-gray-300 flex items-center gap-1 border-b border-neutral-700 pb-3 md:gap-2 font-semibold my-2">
                   Milestone Logs{" "}
                   <MdHistory className="text-lg text-gray-500 md:text-gray-400 font-medium" />
@@ -648,7 +649,7 @@ export default function AchievementSection({ badges = [] }) {
             )}
 
             {showAll && !selected && (
-              <div className="flex flex-col md:mt-4 mt-2 ">
+              <div className="flex flex-col transition-transform duration-800  md:mt-4 mt-2 ">
                 <p className="text-sm   md:text-sm text-gray-300 flex items-center gap-1 border-b border-neutral-700 pb-3 md:gap-2 font-semibold my-2">
                  All Milestone Logs{" "}
                   <MdHistory className="text-lg text-gray-500 md:text-gray-400 font-medium" />
