@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { MdHistory } from "react-icons/md";
 
 // ── Badge metadata ────────────────────────────────────────────
 const BADGE_META = {
@@ -377,7 +378,6 @@ function BadgeCard({ badge, onSelect, isSelected }) {
       >
         {meta.icon(badge.currentTier)}
 
-       
         <div
           className={`
           absolute inset-0 rounded-full ring-1 ${tier.ring}
@@ -399,10 +399,14 @@ function BadgeCard({ badge, onSelect, isSelected }) {
 
       {/* label */}
       <div className="text-center">
-        <p className={`text-xs hidden md:block font-semibold ${tier.text} leading-tight`}>
+        <p
+          className={`text-xs hidden md:block font-semibold ${tier.text} leading-tight`}
+        >
           {meta.label}
         </p>
-        <p className={`text-[10px] hidden md:block ${tier.text} opacity-60 mt-0.5`}>
+        <p
+          className={`text-[10px] hidden md:block ${tier.text} opacity-60 mt-0.5`}
+        >
           {tier.label}
         </p>
       </div>
@@ -416,7 +420,7 @@ function BadgeDrawer({ badge, onClose, showClose }) {
   const meta = BADGE_META[badge.badgeId];
 
   return (
-    <div className="mt-4 w-full md:max-w-sm rounded-2xl  overflow-hidden animate-in slide-in-from-top-2 duration-300">
+    <div className=" mt-2 md:mt-0 w-full md:max-w-sm rounded-2xl  overflow-hidden animate-in slide-in-from-top-2 duration-300">
       {/* header */}
       <div className="flex items-start gap-3 md:p-4 p-1 border-b border-white/[0.06]">
         <div className="w-10 h-10 shrink-0">{meta.icon(badge.currentTier)}</div>
@@ -556,7 +560,7 @@ export default function AchievementSection({ badges = [] }) {
     // <div className="bg-gray-800/40 border border-white/[0.06] rounded-2xl  overflow-hidden">
     <div className="w-full block shink-0 overflow-hidden">
       {/* section header */}
-      <div className="flex items-center justify-between px-2 md:px-5 py-4 border-b border-white/[0.06]">
+      <div className="flex items-center justify-between px-2 md:px-5 py-4 md:border-b border-white/[0.06]">
         <div>
           <p className="text-[11px] font-medium tracking-widest uppercase text-gray-400">
             Achievements
@@ -571,7 +575,7 @@ export default function AchievementSection({ badges = [] }) {
         {hasBadges && (
           <div
             onClick={() => {
-             setSelected(null);
+              setSelected(null);
               if (badges.length > 1) {
                 setSelected(null);
                 setShowAll(!showAll);
@@ -622,34 +626,42 @@ export default function AchievementSection({ badges = [] }) {
                   isSelected={selected?.badgeId === badge.badgeId}
                 />
               ))}
-
-             
-
-       
-              
             </div>
 
             {/* history drawer — slides open below grid */}
             {selected && (
-              <BadgeDrawer
-                badge={selected}
-                onClose={() => {
-                  setSelected(null);
-                  setShowAll(false);
-                }}
-                showClose={true}
-              />
+              <div className="flex flex-col md:mt-4 mt-2 ">
+                <p className="text-sm   md:text-sm text-gray-300 flex items-center gap-1 border-b border-neutral-700 pb-3 md:gap-2 font-semibold my-2">
+                  Milestone Logs{" "}
+                  <MdHistory className="text-lg text-gray-500 md:text-gray-400 font-medium" />
+                </p>
+
+                <BadgeDrawer
+                  badge={selected}
+                  onClose={() => {
+                    setSelected(null);
+                    setShowAll(false);
+                  }}
+                  showClose={true}
+                />
+              </div>
             )}
 
             {showAll && !selected && (
-              <div className="xl:flex grid items-center gap-4">
-                {badges.map((badge) => (
-                  <BadgeDrawer
-                    key={badge.badgeId}
-                    badge={badge}
-                    showClose={false}
-                  />
-                ))}
+              <div className="flex flex-col md:mt-4 mt-2 ">
+                <p className="text-sm   md:text-sm text-gray-300 flex items-center gap-1 border-b border-neutral-700 pb-3 md:gap-2 font-semibold my-2">
+                 All Milestone Logs{" "}
+                  <MdHistory className="text-lg text-gray-500 md:text-gray-400 font-medium" />
+                </p>
+                <div className="xl:flex grid   items-center md:gap-4">
+                  {badges.map((badge) => (
+                    <BadgeDrawer
+                      key={badge.badgeId}
+                      badge={badge}
+                      showClose={false}
+                    />
+                  ))}
+                </div>
               </div>
             )}
           </>
@@ -657,7 +669,7 @@ export default function AchievementSection({ badges = [] }) {
       </div>
 
       {/* footer hint */}
-      {hasBadges && !showAll &&!selected && (
+      {hasBadges && !showAll && !selected && (
         <div className="px-5 py-3 border-t border-white/[0.04]">
           <p className="text-[10px] text-gray-600">
             Tap a badge to view history and milestone details
