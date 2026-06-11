@@ -1177,7 +1177,10 @@ function Announcement() {
               </div>
             </div> */}
             
-            <div className="rounded-3xl relative group overflow-hidden border border-white/10 bg-white/[0.02] p-5">
+            <div className="rounded-3xl relative group overflow-hidden rounded-lg
+        border border-emerald-500/20
+        bg-gradient-to-br from-emerald-500/5 to-transparent  p-4 md:p-5
+        ">
             {/* <div className="absolute top-0 left-0 mx-auto rounded-full right-0 h-[2px] bg-white/70" /> */}
   {/* Header */}
   <div className="flex items-center justify-between mb-5">
