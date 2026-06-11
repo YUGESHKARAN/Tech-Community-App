@@ -1337,6 +1337,8 @@ function Announcement() {
                 //   </div>
                 // </div>
 
+                
+
                 <div
                   key={item._id}
                   className="
@@ -1363,7 +1365,10 @@ function Announcement() {
                   {/* Header */}
                   <div className="p-5 md:p-7 pb-4">
                     <div className="flex justify-between gap-4">
-                      <div className="flex-1">
+                      <div className="flex-1 w-full">
+                        <div className="flex items-center justify-between">
+
+                   
                         <div className="flex flex-wrap items-center gap-2 mb-3">
                           <span
                             className="
@@ -1386,21 +1391,7 @@ function Announcement() {
                           </span>
                         </div>
 
-                        <h2
-                          className="
-            text-lg
-            md:text-3xl
-            md:font-bold
-            text-white
-            leading-tight
-            font-semibold
-          "
-                        >
-                          {item.title}
-                        </h2>
-                      </div>
-
-                      <button
+                           <button
                         onClick={() => deleteAnnouncement(item._id)}
                         className="
           h-9
@@ -1419,6 +1410,24 @@ function Announcement() {
                       >
                         <AiFillCloseSquare className="text-slate-500 hover:text-red-400 text-lg" />
                       </button>
+     </div>
+                        <h2
+                          className="
+             text-lg
+        md:text-3xl
+        font-semibold
+        md:font-bold
+        text-white
+        leading-tight
+     
+           
+          "
+                        >
+                          {item.title}
+                        </h2>
+                      </div>
+
+                   
                     </div>
                   </div>
 
