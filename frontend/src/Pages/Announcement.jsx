@@ -881,25 +881,22 @@ function Announcement() {
                         {/* LINKS */}
                         <div>
                           <div className="flex w-full items-center justify-between">
-
-                         
-                          <label className="block text-sm font-medium text-slate-300">
-                            Links
-                          </label>
-                          {currentLinkTitle.length > 0 && (
-                      <button
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setCurrentLinkTitle("");
-                          setCurrentLinkUrl("");
-                        }}
-                        className="text-[11px] px-2.5 py-1 rounded-md bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-colors"
-                      >
-                        Clear
-                      </button>
-                    )}
-
-                     </div>
+                            <label className="block text-sm font-medium text-slate-300">
+                              Links
+                            </label>
+                            {currentLinkTitle.length > 0 && (
+                              <button
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  setCurrentLinkTitle("");
+                                  setCurrentLinkUrl("");
+                                }}
+                                className="text-[11px] px-2.5 py-1 rounded-md bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-colors"
+                              >
+                                Clear
+                              </button>
+                            )}
+                          </div>
 
                           <div className="flex gap-2 mt-2">
                             <input
@@ -1143,7 +1140,7 @@ function Announcement() {
           <main
             className={`space-y-6 md:space-y-8 md:block ${showGuidelines && "hidden md:block"}`}
           >
-            <div
+            {/* <div
               className={`${role !== "student" ? "bg-[#111827] border border-slate-800 rounded-lg p-5" : "bg-[#111827] border border-slate-800 rounded-lg p-5"}`}
             >
               <div className="flex items-center justify-between ">
@@ -1178,7 +1175,57 @@ function Announcement() {
                   </span>
                 </div>
               </div>
-            </div>
+            </div> */}
+            
+            <div className="rounded-3xl relative group overflow-hidden border border-white/10 bg-white/[0.02] p-5">
+            {/* <div className="absolute top-0 left-0 mx-auto rounded-full right-0 h-[2px] bg-white/70" /> */}
+  {/* Header */}
+  <div className="flex items-center justify-between mb-5">
+    <div>
+      <p className="text-[11px] uppercase tracking-[0.2em] text-emerald-400 font-semibold">
+        Overview
+      </p>
+      <h3 className="text-sm text-white mt-1">
+        Community Summary
+      </h3>
+    </div>
+
+    {announcement.length > 0 && (
+      <button
+        onClick={clearAllAnnouncements}
+        className="text-red-400 hover:text-red-300 transition-colors duration-200"
+        title="Clear all announcements"
+      >
+        <RiDeleteBin6Line className="text-base" />
+      </button>
+    )}
+  </div>
+
+  {/* Content */}
+  <div className="space-y-4">
+    <div className="flex items-center justify-between">
+      <span className="text-sm text-gray-400">
+        User Role
+      </span>
+
+      <span className="px-2.5 py-1 rounded-full bg-white/[0.04] border border-white/[0.06] text-xs capitalize text-gray-200">
+        {role}
+      </span>
+    </div>
+
+    <div className="flex items-center justify-between">
+      <span className="text-sm text-gray-400">
+        Inbox
+      </span>
+
+      <span className="text-sm font-medium text-white">
+        {announcement?.length > 0
+          ? announcement.length
+          : "Empty"}
+      </span>
+    </div>
+  </div>
+</div>
 
             {announcement.length === 0 && !announceLoading && (
               <div className="flex h-[45vh] md:h-[50vh] md:h-auto flex-col justify-center items-center gap-2 md:gap-3 ">
@@ -1196,92 +1243,328 @@ function Announcement() {
 
             {!announceLoading &&
               reversedAnnouncements.map((item) => (
+                // <div
+                //   key={item._id}
+                //   className="bg-[#111827] border border-slate-800 rounded-lg p-4 md:p-7 space-y-6"
+                // >
+                //   <div className="flex justify-between items-start">
+                //     <div>
+                //       <h2 className="md:text-xl text-lg max-w-[360px] md:max-w-full font-semibold text-white">
+                //         {item.title}
+                //       </h2>
+                //       <div className="text-xs text-slate-400 mt-1">
+                //         {/* {item.timestamp?.slice(0, 10)} */}
+                //         {getTimeAgo(item.timestamp)}
+                //       </div>
+                //     </div>
+
+                //     <button
+                //       onClick={() => deleteAnnouncement(item._id)}
+                //       // className="text-slate-500 border border-neutral-700 md:border-neutral-700 md:rounded  md:p-0.5  text-xs md:text-sm hover:text-red-400 transition"
+                //     >
+                //       {/* ✕ */}
+                //       {/* <IoMdClose /> */}
+                //       <AiFillCloseSquare className="text-lg md:text-xl text-gray-700 font-normal  md:hover:text-gray-600 transition-all duration-300" />
+                //     </button>
+                //   </div>
+
+                //   <div className="md:text-sm text-xs leading-relaxed text-slate-300 ">
+                //     {/* {item.message} */}
+                //     {renderTextWithHashtags(item.message)}
+                //   </div>
+
+                //   {item.poster && item.poster !== "undefined" && (
+                //     <div className="rounded-md overflow-hidden border cursor-pointer border-slate-700">
+                //       <img
+                //         src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${item.poster}`}
+                //         alt=""
+                //         className="w-full h-48 md:h-[400px] object-contain bg-black"
+                //         onClick={() =>
+                //           handleImageClick(
+                //             `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${item.poster}`,
+                //           )
+                //         }
+                //       />
+                //     </div>
+                //   )}
+
+                //   {/* LINKS */}
+                //   {item.links?.length > 0 && (
+                //     <div className="flex flex-wrap gap-2">
+                //       {item.links.map((link, i) => (
+                //         <a
+                //           key={i}
+                //           href={link.url}
+                //           target="_blank"
+                //           rel="noopener noreferrer"
+                //           className="px-2 md:px-3 md:py-1 py-1 rounded-2xl
+                //                  border border-slate-700
+                //                  text-xs text-emerald-400
+                //                  hover:bg-emerald-600/10 transition"
+                //         >
+                //           {link.title}
+                //         </a>
+                //       ))}
+                //     </div>
+                //   )}
+
+                //   {/* VIEW POST SECTION RESTORED */}
+                //   <div className="flex justify-between items-center text-xs text-slate-500 pt-2 md:pt-2 md:border-t border-slate-800">
+                //     <div className="flex items-center gap-2 md:gap-3">
+                //       <Link to={`/viewProfile/${item.authorEmail}`}>
+                //         {item?.profile && item.profile !== "undefined" ? (
+                //           <img
+                //             src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${item.profile}`}
+                //             alt="Author"
+                //             className="md:w-9 md:h-9 w-8 h-8 rounded-full object-cover border border-gray-200"
+                //           />
+                //         ) : (
+                //           <div className="md:w-9 md:h-9 w-8 h-8 rounded-full object-cover border border-gray-300">
+                //             <HiOutlineUserCircle className="text-[#786fa6] bg-gray-300 rounded-full w-full h-full " />
+                //           </div>
+                //         )}
+                //       </Link>
+                //       <div className="text-[10px] text-gray-500 md:text-gray-400">
+                //         Posted by{" "}
+                //         <p className="text-gray-200 text-xs font-semibold">
+                //           {item.user}
+                //         </p>
+                //       </div>
+                //     </div>
+                //   </div>
+                // </div>
+
                 <div
                   key={item._id}
-                  className="bg-[#111827] border border-slate-800 rounded-lg p-4 md:p-7 space-y-6"
+                  className="
+                      group
+                      relative
+                      overflow-hidden
+                      rounded-3xl
+                      border border-slate-800/80
+                      bg-gradient-to-b
+                      from-[#0f172a]
+                      via-[#0b1220]
+                      to-[#0a101d]
+                      shadow-xl
+                      shadow-black/20
+                      hover:border-slate-700
+                      transition-all
+                      duration-300
+                    "
                 >
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h2 className="md:text-xl text-lg max-w-[360px] md:max-w-full font-semibold text-white">
-                        {item.title}
-                      </h2>
-                      <div className="text-xs text-slate-400 mt-1">
-                        {/* {item.timestamp?.slice(0, 10)} */}
-                        {getTimeAgo(item.timestamp)}
+                  {/* Top Accent */}
+                  <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-emerald-500 via-cyan-500 to-violet-500" />
+                  {/* <div className="absolute top-0 left-0 right-0 h-[1.5px] bg-emerald-400/70" /> */}
+
+                  {/* Header */}
+                  <div className="p-5 md:p-7 pb-4">
+                    <div className="flex justify-between gap-4">
+                      <div className="flex-1">
+                        <div className="flex flex-wrap items-center gap-2 mb-3">
+                          <span
+                            className="
+              px-2.5 py-1
+              rounded-full
+              text-[10px]
+              font-medium
+              uppercase
+              tracking-wide
+              bg-emerald-500/10
+              text-emerald-400
+              border border-emerald-500/20
+            "
+                          >
+                            Announcement
+                          </span>
+
+                          <span className="text-xs text-slate-500">
+                            {getTimeAgo(item.timestamp)}
+                          </span>
+                        </div>
+
+                        <h2
+                          className="
+            text-lg
+            md:text-3xl
+            md:font-bold
+            text-white
+            leading-tight
+            font-semibold
+          "
+                        >
+                          {item.title}
+                        </h2>
                       </div>
+
+                      <button
+                        onClick={() => deleteAnnouncement(item._id)}
+                        className="
+          h-9
+          w-9
+          rounded-xl
+          md:border
+          border-slate-800
+          bg-slate-900/70
+          flex
+          items-center
+          justify-center
+          md:hover:border-red-500/30
+          md:hover:bg-red-500/10
+          transition-all
+        "
+                      >
+                        <AiFillCloseSquare className="text-slate-500 hover:text-red-400 text-lg" />
+                      </button>
                     </div>
+                  </div>
 
-                    <button
-                      onClick={() => deleteAnnouncement(item._id)}
-                      // className="text-slate-500 border border-neutral-700 md:border-neutral-700 md:rounded  md:p-0.5  text-xs md:text-sm hover:text-red-400 transition"
+                  {/* Content */}
+                  <div className="px-5 md:px-7">
+                    <div
+                      className="
+        text-sm
+        md:text-[15px]
+        leading-8
+        text-slate-300
+      "
                     >
-                      {/* ✕ */}
-                      {/* <IoMdClose /> */}
-                      <AiFillCloseSquare className="text-lg md:text-xl text-gray-700 font-normal  md:hover:text-gray-600 transition-all duration-300" />
-                    </button>
+                      {renderTextWithHashtags(item.message)}
+                    </div>
                   </div>
 
-                  <div className="md:text-sm text-xs leading-relaxed text-slate-300 ">
-                    {/* {item.message} */}
-                    {renderTextWithHashtags(item.message)}
-                  </div>
-
+                  {/* Hero Image */}
                   {item.poster && item.poster !== "undefined" && (
-                    <div className="rounded-md overflow-hidden border cursor-pointer border-slate-700">
-                      <img
-                        src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${item.poster}`}
-                        alt=""
-                        className="w-full h-48 md:h-[400px] object-contain bg-black"
+                    <div className="px-5 md:px-7 mt-6">
+                      <div
+                        className="
+          overflow-hidden
+          rounded-2xl
+          border
+          border-slate-800
+          bg-black
+          cursor-pointer
+        "
                         onClick={() =>
                           handleImageClick(
                             `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${item.poster}`,
                           )
                         }
-                      />
+                      >
+                        <img
+                          src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${item.poster}`}
+                          alt=""
+                          className="
+            w-full
+            max-h-[600px]
+            object-cover
+            transition-transform
+            duration-500
+            group-hover:scale-[1.02]
+          "
+                        />
+                      </div>
                     </div>
                   )}
 
-                  {/* LINKS */}
+                  {/* Resource Links */}
                   {item.links?.length > 0 && (
-                    <div className="flex flex-wrap gap-2">
-                      {item.links.map((link, i) => (
-                        <a
-                          key={i}
-                          href={link.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="px-2 md:px-3 md:py-1 py-1 rounded-2xl
-                                 border border-slate-700
-                                 text-xs text-emerald-400
-                                 hover:bg-emerald-600/10 transition"
-                        >
-                          {link.title}
-                        </a>
-                      ))}
+                    <div className="px-5 md:px-7 mt-6">
+                      <div className="grid md:grid-cols-2 gap-3">
+                        {item.links.map((link, i) => (
+                          <a
+                            key={i}
+                            href={link.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="
+              flex
+              items-center
+              justify-between
+              rounded-2xl
+              border
+              border-slate-800
+              bg-slate-900/40
+              px-4
+              py-3
+              hover:border-emerald-500/30
+              hover:bg-emerald-500/5
+              transition-all
+            "
+                          >
+                            <div>
+                              <p className="text-sm font-medium text-white">
+                                {link.title}
+                              </p>
+                              <p className="text-xs text-slate-500 truncate max-w-[200px]">
+                                {link.url}
+                              </p>
+                            </div>
+
+                            <span className="text-emerald-400 text-lg">↗</span>
+                          </a>
+                        ))}
+                      </div>
                     </div>
                   )}
 
-                  {/* VIEW POST SECTION RESTORED */}
-                  <div className="flex justify-between items-center text-xs text-slate-500 pt-2 md:pt-2 md:border-t border-slate-800">
-                    <div className="flex items-center gap-2 md:gap-3">
-                      <Link to={`/viewProfile/${item.authorEmail}`}>
-                        {item?.profile && item.profile !== "undefined" ? (
-                          <img
-                            src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${item.profile}`}
-                            alt="Author"
-                            className="md:w-9 md:h-9 w-8 h-8 rounded-full object-cover border border-gray-200"
-                          />
-                        ) : (
-                          <div className="md:w-9 md:h-9 w-8 h-8 rounded-full object-cover border border-gray-300">
-                            <HiOutlineUserCircle className="text-[#786fa6] bg-gray-300 rounded-full w-full h-full " />
-                          </div>
-                        )}
-                      </Link>
-                      <div className="text-[10px] text-gray-500 md:text-gray-400">
-                        Posted by{" "}
-                        <p className="text-gray-200 text-xs font-semibold">
-                          {item.user}
-                        </p>
+                  {/* Footer */}
+                  <div
+                    className="
+      mt-6
+      border-t
+      border-slate-800
+      bg-slate-950/30
+      px-5
+      md:px-7
+      py-4
+    "
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <Link to={`/viewProfile/${item.authorEmail}`}>
+                          {item?.profile && item.profile !== "undefined" ? (
+                            <img
+                              src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${item.profile}`}
+                              alt=""
+                              className="
+                w-11
+                h-11
+                rounded-full
+                object-cover
+                border
+                border-slate-700
+              "
+                            />
+                          ) : (
+                            <div className="w-11 h-11 rounded-full overflow-hidden border border-slate-700">
+                              <HiOutlineUserCircle className="w-full h-full text-[#786fa6] bg-slate-300" />
+                            </div>
+                          )}
+                        </Link>
+
+                        <div>
+                          <p className="text-[11px] uppercase tracking-wide text-slate-500">
+                            Published by
+                          </p>
+
+                          <p className="text-sm font-semibold text-white">
+                            {item.user}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div
+                        className="
+          hidden
+          md:flex
+          items-center
+          gap-2
+          text-xs
+          text-slate-500
+        "
+                      >
+                        Community Update
                       </div>
                     </div>
                   </div>
