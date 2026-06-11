@@ -30,6 +30,7 @@ import { VscGitStashApply } from "react-icons/vsc";
 import { GoAlertFill, GoInfo } from "react-icons/go";
 import { BsInfo, BsInfoCircle } from "react-icons/bs";
 import { TbAlertTriangleFilled } from "react-icons/tb";
+import { Plus, X } from "lucide-react";
 
 function Announcement() {
   const username = localStorage.getItem("username");
@@ -721,15 +722,66 @@ function Announcement() {
             </div>
 
             {role !== "student" && (
+              // <button
+              //   onClick={() => {
+              //     setShowGuidelines(!showGuidelines);
+              //     setShowAnnouncement(false);
+              //   }}
+              //   className="md:px-3 px-3 py-2 md:py-2 bg-emerald-600/20 hover:bg-emerald-500/20
+              //   rounded-md text-xs md:text-sm  md:hidden text-emerald-400 transition"
+              // >
+              //   {showGuidelines ? "Close Panel" : "Create New"}
+              // </button>
               <button
                 onClick={() => {
                   setShowGuidelines(!showGuidelines);
                   setShowAnnouncement(false);
                 }}
-                className="md:px-3 px-3 py-2 md:py-2 bg-emerald-600/20 hover:bg-emerald-500/20
-                rounded-md text-xs md:text-sm  md:hidden text-emerald-400 transition"
+                className="
+                  md:hidden
+                  group
+                  inline-flex
+                  items-center
+                  md:gap-2
+                  gap-1.5
+                  md:px-4
+                  md:py-2.5
+                  px-2
+                  py-1
+                  md:rounded-xl
+                  rounded-lg
+                  bg-[#111827]
+                  border
+                  border-slate-700
+                  text-slate-200
+                  md:text-xs
+                  text-[11px]
+                  font-medium
+                  md:hover:border-emerald-500/40
+                  md:hover:bg-emerald-500/5
+                  transition-all
+                  duration-500
+                "
               >
-                {showGuidelines ? "Close Panel" : "Create New"}
+                <div
+                  className="
+                    md:w-6
+                    md:h-6
+                    w-5
+                    h-5
+                    rounded-full
+                    flex
+                    items-center
+                    justify-center
+                    bg-emerald-500/10
+                    text-emerald-400
+                    group-hover:bg-emerald-500/15
+                  "
+                >
+                  {showGuidelines ? <X size={11} /> : <Plus size={11} />}
+                </div>
+
+                <span>{showGuidelines ? "Close Panel" : "Create New"}</span>
               </button>
             )}
           </div>
@@ -1176,59 +1228,53 @@ function Announcement() {
                 </div>
               </div>
             </div> */}
-            
-            <div className="rounded-3xl relative group overflow-hidden rounded-lg
+
+            <div
+              className="rounded-3xl relative group overflow-hidden rounded-lg
         border border-emerald-500/20
         bg-gradient-to-br from-emerald-500/5 to-transparent  p-4 md:p-5
-        ">
-            {/* <div className="absolute top-0 left-0 mx-auto rounded-full right-0 h-[2px] bg-white/70" /> */}
-  {/* Header */}
-  <div className="flex items-center justify-between mb-5">
-    <div>
-      <p className="text-[11px] uppercase tracking-[0.2em] text-emerald-400 font-semibold">
-        Overview
-      </p>
-      <h3 className="text-sm text-white mt-1">
-        Community Summary
-      </h3>
-    </div>
+        "
+            >
+              {/* <div className="absolute top-0 left-0 mx-auto rounded-full right-0 h-[2px] bg-white/70" /> */}
+              {/* Header */}
+              <div className="flex items-center justify-between mb-5">
+                <div>
+                  <p className="text-[11px] uppercase tracking-[0.2em] text-emerald-400 font-semibold">
+                    Overview
+                  </p>
+                  <h3 className="text-sm text-white mt-1">Community Summary</h3>
+                </div>
 
-    {announcement.length > 0 && (
-      <button
-        onClick={clearAllAnnouncements}
-        className="text-red-400 hover:text-red-300 transition-colors duration-200"
-        title="Clear all announcements"
-      >
-        <RiDeleteBin6Line className="text-base" />
-      </button>
-    )}
-  </div>
+                {announcement.length > 0 && (
+                  <button
+                    onClick={clearAllAnnouncements}
+                    className="text-red-400 hover:text-red-300 transition-colors duration-200"
+                    title="Clear all announcements"
+                  >
+                    <RiDeleteBin6Line className="text-base" />
+                  </button>
+                )}
+              </div>
 
-  {/* Content */}
-  <div className="space-y-4">
-    <div className="flex items-center justify-between">
-      <span className="text-sm text-gray-400">
-        User Role
-      </span>
+              {/* Content */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-400">User Role</span>
 
-      <span className="px-2.5 py-1 rounded-full bg-white/[0.04] border border-white/[0.06] text-xs capitalize text-gray-200">
-        {role}
-      </span>
-    </div>
+                  <span className="px-2.5 py-1 rounded-full bg-white/[0.04] border border-white/[0.06] text-xs capitalize text-gray-200">
+                    {role}
+                  </span>
+                </div>
 
-    <div className="flex items-center justify-between">
-      <span className="text-sm text-gray-400">
-        Inbox
-      </span>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-400">Inbox</span>
 
-      <span className="text-sm font-medium text-white">
-        {announcement?.length > 0
-          ? announcement.length
-          : "Empty"}
-      </span>
-    </div>
-  </div>
-</div>
+                  <span className="text-sm font-medium text-white">
+                    {announcement?.length > 0 ? announcement.length : "Empty"}
+                  </span>
+                </div>
+              </div>
+            </div>
 
             {announcement.length === 0 && !announceLoading && (
               <div className="flex h-[45vh] md:h-[50vh] md:h-auto flex-col justify-center items-center gap-2 md:gap-3 ">
@@ -1337,8 +1383,6 @@ function Announcement() {
                 //   </div>
                 // </div>
 
-                
-
                 <div
                   key={item._id}
                   className="
@@ -1367,11 +1411,9 @@ function Announcement() {
                     <div className="flex justify-between gap-4">
                       <div className="flex-1 w-full">
                         <div className="flex items-center justify-between">
-
-                   
-                        <div className="flex flex-wrap items-center gap-2 mb-3">
-                          <span
-                            className="
+                          <div className="flex flex-wrap items-center gap-2 mb-3">
+                            <span
+                              className="
               px-2.5 py-1
               rounded-full
               text-[10px]
@@ -1382,18 +1424,18 @@ function Announcement() {
               text-emerald-400
               border border-emerald-500/20
             "
-                          >
-                            Announcement
-                          </span>
+                            >
+                              Announcement
+                            </span>
 
-                          <span className="text-xs text-slate-500">
-                            {getTimeAgo(item.timestamp)}
-                          </span>
-                        </div>
+                            <span className="text-xs text-slate-500">
+                              {getTimeAgo(item.timestamp)}
+                            </span>
+                          </div>
 
-                           <button
-                        onClick={() => deleteAnnouncement(item._id)}
-                        className="
+                          <button
+                            onClick={() => deleteAnnouncement(item._id)}
+                            className="
           h-9
           w-9
           rounded-xl
@@ -1407,10 +1449,10 @@ function Announcement() {
           md:hover:bg-red-500/10
           transition-all
         "
-                      >
-                        <AiFillCloseSquare className="text-slate-500 md:hover:text-red-400 text-lg" />
-                      </button>
-     </div>
+                          >
+                            <AiFillCloseSquare className="text-slate-500 md:hover:text-red-400 text-lg" />
+                          </button>
+                        </div>
                         <h2
                           className="
              text-lg
@@ -1426,8 +1468,6 @@ function Announcement() {
                           {item.title}
                         </h2>
                       </div>
-
-                   
                     </div>
                   </div>
 
