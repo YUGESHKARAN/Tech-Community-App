@@ -1408,7 +1408,7 @@ function Announcement() {
           transition-all
         "
                       >
-                        <AiFillCloseSquare className="text-slate-500 hover:text-red-400 text-lg" />
+                        <AiFillCloseSquare className="text-slate-500 md:hover:text-red-400 text-lg" />
                       </button>
      </div>
                         <h2
