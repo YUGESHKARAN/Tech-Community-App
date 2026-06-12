@@ -682,9 +682,7 @@ function AddPost() {
                       <div
                         className="
                           w-full min-h-40 h-[300px]
-                          
                           overflow-y-auto
-                          scrollbar-hide
                           px-4 py-3
                           rounded-md
                           bg-gray-900
@@ -692,8 +690,6 @@ function AddPost() {
                           text-white text-xs md:text-sm
                           leading-relaxed
                           emerald-scrollbar
-                         
-                          scrollbar-hide
                           break-words
                         "
                       >

@@ -702,7 +702,7 @@ function Announcement() {
       <div className="min-h-screen">
         {/* ================= HEADER ================= */}
         <div className="w-full">
-          <div className="w-full mx-auto px-4 md:px-12 pt-4 pb-5 md:pt-6 flex justify-between items-center">
+          <div className="w-full mx-auto px-4 md:px-20 pt-4 pb-5 md:pt-6 flex justify-between items-center">
             <div className="flex items-center justify-center gap-2">
               <h1 className="md:text-3xl text-xl font-semibold  tracking-tight  flex items-center gap-1 justify-center">
                 <MdAnnouncement className="tetxt-xl pt-0.5 md:pt-0 md:text-3xl " />{" "}
@@ -788,7 +788,7 @@ function Announcement() {
         </div>
 
         {/* ================= MAIN GRID ================= */}
-        <div className="w-full mx-auto px-3 md:py-2 md:px-12 md:pb-10 grid grid-cols-1 lg:grid-cols-[320px_1fr] md:gap-5">
+        <div className="w-full mx-auto px-3 md:py-2 md:px-20 md:pb-10 grid grid-cols-1 lg:grid-cols-[320px_1fr] md:gap-5">
           {/* ================= LEFT RAIL ================= */}
 
           <aside
@@ -894,15 +894,17 @@ function Announcement() {
                             {preview ? (
                               <div
                                 className="
-                          w-full min-h-20 h-auto
+                          w-full   min-h-24 h-[150px]
+                          overflow-y-auto
+                          emerald-scrollbar
                           px-4 py-3
                           rounded-md
                           bg-gray-900
                           border border-gray-700
                           text-white text-xs 
                           leading-relaxed
-                          emerald-scrollbar
-                          overflow-auto
+                         break-words
+                         
                           whitespace-pre-wrap
                         "
                               >
@@ -916,6 +918,7 @@ function Announcement() {
                               </div>
                             ) : (
                               <textarea
+                               rows="6"
                                 value={message}
                                 onChange={(e) => setMessage(e.target.value)}
                                 placeholder="Announcement message..."
@@ -1403,8 +1406,8 @@ function Announcement() {
                     "
                 >
                   {/* Top Accent */}
-                  <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-emerald-500 via-cyan-500 to-violet-500" />
-                  {/* <div className="absolute top-0 left-0 right-0 h-[1.5px] bg-emerald-400/70" /> */}
+                  {/* <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-emerald-500 via-cyan-500 to-violet-500" /> */}
+                  <div className="absolute top-0 left-0 right-0 h-[1.5px] bg-emerald-400/70" />
 
                   {/* Header */}
                   <div className="p-5 md:p-7 pb-4">
@@ -1436,34 +1439,32 @@ function Announcement() {
                           <button
                             onClick={() => deleteAnnouncement(item._id)}
                             className="
-          h-9
-          w-9
-          rounded-xl
-          md:border
-          border-slate-800
-          bg-slate-900/70
-          flex
-          items-center
-          justify-center
-          md:hover:border-red-500/30
-          md:hover:bg-red-500/10
-          transition-all
-        "
+                              h-9
+                              w-9
+                              rounded-xl
+                              md:border
+                              border-slate-800
+                              bg-slate-900/70
+                              flex
+                              items-center
+                              justify-center
+                              md:hover:border-red-500/30
+                              md:hover:bg-red-500/10
+                              transition-all
+                            "
                           >
                             <AiFillCloseSquare className="text-slate-500 md:hover:text-red-400 text-lg" />
                           </button>
                         </div>
                         <h2
                           className="
-             text-lg
-        md:text-3xl
-        font-semibold
-        md:font-bold
-        text-white
-        leading-tight
-     
-           
-          "
+                            text-lg
+                            md:text-3xl
+                            font-semibold
+                            md:font-bold
+                            text-white
+                            leading-tight
+                         "
                         >
                           {item.title}
                         </h2>
@@ -1475,11 +1476,11 @@ function Announcement() {
                   <div className="px-5 md:px-7">
                     <div
                       className="
-        text-sm
-        md:text-[15px]
-        leading-8
-        text-slate-300
-      "
+                        text-sm
+                        md:text-[15px]
+                        leading-8
+                        text-slate-300
+                      "
                     >
                       {renderTextWithHashtags(item.message)}
                     </div>
@@ -1490,13 +1491,13 @@ function Announcement() {
                     <div className="px-5 md:px-7 mt-6">
                       <div
                         className="
-          overflow-hidden
-          rounded-2xl
-          border
-          border-slate-800
-          bg-black
-          cursor-pointer
-        "
+                          overflow-hidden
+                          rounded-2xl
+                          border
+                          border-slate-800
+                          bg-black
+                          cursor-pointer
+                        "
                         onClick={() =>
                           handleImageClick(
                             `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${item.poster}`,
@@ -1507,13 +1508,13 @@ function Announcement() {
                           src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${item.poster}`}
                           alt=""
                           className="
-            w-full
-            max-h-[600px]
-            object-cover
-            transition-transform
-            duration-500
-            group-hover:scale-[1.02]
-          "
+                            w-full
+                            max-h-[450px]
+                            object-cover
+                            transition-transform
+                            duration-500
+                            group-hover:scale-[1.02]
+                          "
                         />
                       </div>
                     </div>
@@ -1522,7 +1523,7 @@ function Announcement() {
                   {/* Resource Links */}
                   {item.links?.length > 0 && (
                     <div className="px-5 md:px-7 mt-6">
-                      <div className="grid md:grid-cols-2 gap-3">
+                      <div className="grid  md:grid-cols-4 gap-3">
                         {item.links.map((link, i) => (
                           <a
                             key={i}
@@ -1530,19 +1531,19 @@ function Announcement() {
                             target="_blank"
                             rel="noopener noreferrer"
                             className="
-              flex
-              items-center
-              justify-between
-              rounded-2xl
-              border
-              border-slate-800
-              bg-slate-900/40
-              px-4
-              py-3
-              hover:border-emerald-500/30
-              hover:bg-emerald-500/5
-              transition-all
-            "
+                              flex
+                              items-center
+                              justify-between
+                              rounded-2xl
+                              border
+                              border-slate-800
+                              bg-slate-900/40
+                              px-4
+                              py-3
+                              hover:border-emerald-500/30
+                              hover:bg-emerald-500/5
+                              transition-all
+                            "
                           >
                             <div>
                               <p className="text-sm font-medium text-white">
@@ -1563,14 +1564,14 @@ function Announcement() {
                   {/* Footer */}
                   <div
                     className="
-      mt-6
-      border-t
-      border-slate-800
-      bg-slate-950/30
-      px-5
-      md:px-7
-      py-4
-    "
+                      mt-6
+                      border-t
+                      border-slate-800
+                      bg-slate-950/30
+                      px-5
+                      md:px-7
+                      py-4
+                    "
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
@@ -1580,13 +1581,13 @@ function Announcement() {
                               src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${item.profile}`}
                               alt=""
                               className="
-                w-11
-                h-11
-                rounded-full
-                object-cover
-                border
-                border-slate-700
-              "
+                                w-11
+                                h-11
+                                rounded-full
+                                object-cover
+                                border
+                                border-slate-700
+                              "
                             />
                           ) : (
                             <div className="w-11 h-11 rounded-full overflow-hidden border border-slate-700">
@@ -1608,13 +1609,13 @@ function Announcement() {
 
                       <div
                         className="
-          hidden
-          md:flex
-          items-center
-          gap-2
-          text-xs
-          text-slate-500
-        "
+                          hidden
+                          md:flex
+                          items-center
+                          gap-2
+                          text-xs
+                          text-slate-500
+                        "
                       >
                         Community Update
                       </div>
@@ -1636,7 +1637,7 @@ function Announcement() {
                 src={selectedImage}
                 alt="Preview"
                 className="
-                        max-h-[80vh]
+                        max-h-[50vh]
                         w-auto
                         rounded-2xl
                         shadow-2xl
