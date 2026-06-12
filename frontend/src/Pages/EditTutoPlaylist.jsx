@@ -564,7 +564,7 @@ const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
           )}
 
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 3xl:grid-cols-4  md:max-h-[800px] emerald-scrollbar h-[780px] overflow-y-auto px-2 py-4 md:p-4 gap-3 md:gap-5">
+          <div className="flex overflow-x-auto scrollbar-hide items-center sm:grid  sm:grid-cols-2 xl:grid-cols-3  3xl:grid-cols-4 max-h-[700px] emerald-scrollbar md:overflow-y-auto gap-3 px-2 py-4 pb-0 md:p-4 gap-3 md:gap-5">
             {posts?.map((data) => {
                const selIndex = postIds.indexOf(data._id);
               const isSelected = selIndex !== -1;
@@ -572,7 +572,7 @@ const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
                 <div
                   key={data._id}
                   onClick={() => handlePostIds(data._id)}
-                  className={`rounded-2xl border p-4 cursor-pointer transition-all relative duration-300
+                  className={`rounded-2xl min-w-[270px] sm:min-w-[150px] sm:col-span-1 border p-4 cursor-pointer transition-all relative duration-300
                 ${
                   postIds.includes(data._id)
                     ? "border-emerald-500 bg-emerald-500/10"
@@ -607,7 +607,7 @@ const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
                         ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.image}`
                         : blog1
                     }
-                    className="w-full h-48 md:h-36 rounded-xl object-cover mb-3"
+                    className="w-full h-28 md:h-36 rounded-xl object-cover mb-3"
                     alt=""
                   />
 
@@ -626,13 +626,19 @@ const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
 
             {!posts.length > 0 && loading && <BlogMiniSkeleton />}
             {posts.length > 0 && loading && (
-              <p className="col-span-full py-4 text-gray-500 text-center">
-                loading...
-              </p>
+               <div className="col-span-full flex w-100 justify-center">
+                    <div className="relative flex items-center justify-center">
+                      {/* Outer Oval Ring */}
+                      <div className="md:w-7 md:h-7 w-6 h-6 border-2 border-neutral-700 border-t-white/70 md:border-t-emerald-400 rounded-full animate-spin" />
+
+                      {/* Inner Glow Pulse */}
+                      {/* <div className="absolute w-10 h-10 md:w-12 md:h-12 bg-emerald-500/20 rounded-full blur-md animate-pulse" /> */}
+                    </div>
+                  </div>
             )}
 
             {!hasMore && posts?.length > 0 && (
-              <p className="text-center text-[10px] md:text-xs col-span-full py-4 text-gray-500">
+              <p className="text-center min-w-[100px]  text-[10px] md:text-xs md:col-span-full py-4 text-gray-500">
                 No more posts
               </p>
             )}

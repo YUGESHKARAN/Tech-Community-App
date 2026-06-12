@@ -274,7 +274,7 @@ function TutorPlaylist() {
         className="w-full mx-auto px-4 md:px-12 pb-6 grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-6"
       >
         {/* LEFT — PLAYLIST DETAILS */}
-        <div className="lg:col-span-1 md:bg-gray-900/70 md:border  border-emerald-500/20 rounded-lg space-y-8">
+        <div className="lg:col-span-1 md:bg-gray-900/70 md:border  border-emerald-500/20 rounded-lg space-y-4">
           <div className=" md:p-6 p-2 space-y-7 shadow-lg">
             <h2 className="text-lg hidden  tracking-wide lg:block font-semibold text-emerald-400">
               Playlist Details
@@ -537,7 +537,7 @@ function TutorPlaylist() {
 
         <div
           // className="lg:col-span-2 mt-7 md:mt-0 space-y-6 h-fit"
-          className=" mt-7 md:mt-0  space-y-0 h-fit"
+          className=" mt-0  space-y-0 h-fit"
         >
           {posts?.length > 0 && (
             <div className="flex flex-col p-2 md:px-4 gap-3">
@@ -574,7 +574,7 @@ function TutorPlaylist() {
             </div>
           )}
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  3xl:grid-cols-4 max-h-[780px] emerald-scrollbar overflow-y-auto gap-3 px-2 py-4 md:p-4 gap-3 md:gap-5">
+          <div className="flex overflow-x-auto scrollbar-hide items-center sm:grid  sm:grid-cols-2 xl:grid-cols-3  3xl:grid-cols-4 max-h-[700px] emerald-scrollbar md:overflow-y-auto gap-3 px-2 py-4 pb-0 md:p-4 gap-3 md:gap-5">
             {posts?.map((data) => {
               const selIndex = postIds.indexOf(data._id);
               const isSelected = selIndex !== -1;
@@ -582,7 +582,7 @@ function TutorPlaylist() {
                 <div
                   key={data._id}
                   onClick={() => handlePostIds(data._id)}
-                  className={`rounded-2xl border p-4 cursor-pointer transition-all relative duration-300
+                  className={`rounded-2xl min-w-[270px] sm:min-w-[150px] sm:col-span-1 border p-4 cursor-pointer transition-all relative duration-300
                 ${
                   postIds.includes(data._id)
                     ? "border-emerald-500 bg-emerald-500/10"
@@ -619,7 +619,7 @@ function TutorPlaylist() {
                         ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.image}`
                         : blog1
                     }
-                    className="w-full h-48 md:h-36 rounded-xl object-cover mb-3"
+                    className="w-full h-28 md:h-36 rounded-xl object-cover mb-3"
                     alt=""
                   />
 
@@ -637,15 +637,21 @@ function TutorPlaylist() {
             })}
 
             {!posts.length > 0 && loading && <BlogMiniSkeleton />}
-            {posts.length > 0 && loading && (
-              <p className="col-span-full py-4 text-gray-500 text-center">
-                loading...
-              </p>
+            {posts.length > 1 && loading && (
+                <div className="col-span-full flex justify-center">
+                    <div className="relative flex items-center justify-center">
+                      {/* Outer Oval Ring */}
+                      <div className="md:w-7 md:h-7 w-6 h-6 border-2 border-neutral-700 border-t-white/70 md:border-t-emerald-400 rounded-full animate-spin" />
+
+                      {/* Inner Glow Pulse */}
+                      {/* <div className="absolute w-10 h-10 md:w-12 md:h-12 bg-emerald-500/20 rounded-full blur-md animate-pulse" /> */}
+                    </div>
+                  </div>
             )}
 
             {!hasMore && posts?.length > 0 && (
-              <p className="text-center text-[10px] md:text-xs col-span-full py-4 text-gray-500">
-                No more posts
+              <p className="text-center min-w-[100px]  text-[10px] md:text-xs md:col-span-full py-4 text-gray-500">
+                No more posts!
               </p>
             )}
             {posts?.length == 0 && !loading && (

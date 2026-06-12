@@ -5,6 +5,7 @@ const BlogMiniSkeleton = ({ count = 9 }) => {
         <div
           key={index}
           className="
+           min-w-[270px] sm:min-w-[150px] sm:col-span-1 
             rounded-2xl border border-neutral-800
             bg-gray-900 p-4
             animate-pulse
@@ -19,7 +20,7 @@ const BlogMiniSkeleton = ({ count = 9 }) => {
           </div>
 
           {/* Image */}
-          <div className="w-full h-48 md:h-36 bg-gray-800 rounded-xl mb-3"></div>
+          <div className="w-full h-28 md:h-36 bg-gray-800 rounded-xl mb-3"></div>
 
           {/* Meta */}
           <div className="flex justify-between items-center">
