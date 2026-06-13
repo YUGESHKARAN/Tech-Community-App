@@ -1362,7 +1362,7 @@ export default function AchievementSection({ badges = [], achievementRef }) {
           </p>
         </div>
 
-        {hasBadges && badges?.legth >1 && (
+        {hasBadges && badges?.length >1 && (
           <button
             onClick={() => {
               setSelected(null);

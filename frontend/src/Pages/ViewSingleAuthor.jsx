@@ -192,13 +192,13 @@ const scrollToAchievements = () => {
                 </span>
 
                 {author?.role !== "student" && (
-                                  <div
-                                    onClick={scrollToAchievements}
-                                    className="cursor-pointer"
-                                  >
-                                    <BadgeIcons badges={author?.badges} />
-                                  </div>
-                                )}
+                  <div
+                    onClick={scrollToAchievements}
+                    className="cursor-pointer"
+                  >
+                    <BadgeIcons badges={author?.badges} />
+                  </div>
+                )}
 
                 
 
