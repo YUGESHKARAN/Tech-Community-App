@@ -1079,7 +1079,7 @@ function BadgeCard({ badge, onSelect, isSelected }) {
     <div
     onClick={() => onSelect(isSelected ? null : badge)}
         className={`
-        relative block md:w-20 cursor-pointer w-16 h-full rounded-full
+        relative block md:w-20  cursor-pointer w-16 h-full rounded-full
         flex items-center justify-center 
         ${isSelected ? "animate-pulse-slow" : ""}
       `}
@@ -1253,7 +1253,7 @@ export default function AchievementSection({ badges = [] }) {
     // <div className="bg-gray-800/40 border border-white/[0.06] rounded-2xl  overflow-hidden">
     <div className="w-full block  shink-0 overflow-hidden">
       {/* section header */}
-      <div className="flex items-center   justify-between px-2 md:px-5 py-4 md:border-b border-white/[0.06]">
+      <div className="flex items-center relative  justify-between px-2 md:px-5 py-4 md:border-b border-white/[0.06]">
         <div>
           <p className="text-[11px] font-medium tracking-widest uppercase text-gray-400">
             Achievements
@@ -1274,7 +1274,7 @@ export default function AchievementSection({ badges = [] }) {
                 setShowAll(!showAll);
               }
             }}
-            className="flex cursor-pointer -space-x-1.5"
+            className="flex absolute right-2 top-4 cursor-pointer max-w-40 md:max-w-xl flex-wrap -space-x-1.5"
           >
             {badges.slice(0, 4).map((b, i) => {
               const t = TIER_CONFIG[b.currentTier];
@@ -1290,6 +1290,9 @@ export default function AchievementSection({ badges = [] }) {
                 </div>
               );
             })}
+
+            
+            
             {badges.length > 4 && (
               <div className="w-6 h-6 rounded-full ring-2 ring-gray-900 bg-gray-700 flex items-center justify-center text-[9px] text-gray-300 font-bold">
                 +{badges.length - 4}
@@ -1307,7 +1310,7 @@ export default function AchievementSection({ badges = [] }) {
           <>
             {/* badge grid */}
             {/* <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-2"> */}
-            <div className="grid grid-cols-5 md:flex items-start md:w-fit flex-wrap gap-2 ">
+            <div className="grid grid-cols-6 md:flex items-start md:w-fit flex-wrap md:gap-2 ">
               {badges.map((badge) => (
                 <BadgeCard
                   key={badge.badgeId}
@@ -1319,6 +1322,7 @@ export default function AchievementSection({ badges = [] }) {
                   isSelected={selected?.badgeId === badge.badgeId}
                 />
               ))}
+              
               
             </div>
 
@@ -1344,7 +1348,7 @@ export default function AchievementSection({ badges = [] }) {
             {showAll && !selected && (
               <div className="flex flex-col transition-transform duration-800  md:mt-4 mt-2 ">
                 <p className="text-sm   md:text-sm text-gray-300 flex items-center gap-1 border-b border-neutral-700 pb-3 md:gap-2 font-semibold my-2">
-                 All Milestone Logs{" "}
+                 All Milestones Log{" "}
                   <MdHistory className="text-lg text-gray-500 md:text-gray-400 font-medium" />
                 </p>
                 <div className="xl:flex grid   items-center md:gap-4">
