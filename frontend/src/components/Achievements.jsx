@@ -705,10 +705,29 @@ import impactCreatorBronze from "../assets/achievements/impact_creator_bronze.pn
 import impactCreatorSilver from "../assets/achievements/impact_creator_silver.png"
 import impactCreatorGold from "../assets/achievements/impact_creator_gold.png"
 
+import strongPublisherBronze from "../assets/achievements/strong_publisher_bronze.png"
+import strongPublisherSilver from "../assets/achievements/strong_publisher_silver.png"
+import strongPublisherGold from "../assets/achievements/strong_publisher_gold.png"
+
+import communityBuilderBronze from "../assets/achievements/community_builder_bronze.png"
+
 const impactCreatorImages = {
   bronze: impactCreatorBronze,
   silver: impactCreatorSilver,
   gold: impactCreatorGold,
+};
+
+const strongPublisherImages = {
+  bronze: strongPublisherBronze,
+  silver: strongPublisherSilver,
+  gold: strongPublisherGold,
+};
+
+
+const communityBuilderBronzeImages = {
+  bronze: communityBuilderBronze,
+  silver: communityBuilderBronze,
+  gold: communityBuilderBronze,
 };
 
 // ── Badge metadata ────────────────────────────────────────────
@@ -843,7 +862,7 @@ const BADGE_META = {
       //   </text>
       // </svg>
          <img
-        src={impactCreatorImages[tier]}
+        src={strongPublisherImages[tier]}
         alt="Impact Creator Badge"
         className="w-full h-full object-cover rounded-full"
         draggable={false}
@@ -1025,7 +1044,7 @@ const BADGE_META = {
       //   />
       // </svg>
          <img
-        src={impactCreatorImages[tier]}
+        src={communityBuilderBronzeImages[tier]}
         alt="Impact Creator Badge"
         className="w-full h-full object-cover rounded-full"
         draggable={false}
