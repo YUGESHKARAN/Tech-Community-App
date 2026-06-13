@@ -411,7 +411,7 @@ function NavBar() {
           <IoMdNotifications
           // <RiNotification3Line
             onClick={() => setShowNotification(!showNotification)}
-            className="text-xl  text-gray-300 hover:text-white transition-all duration-300 cursor-pointer transition"
+            className="text-xl  text-white/70 hover:text-white transition-all duration-300 cursor-pointer transition"
           />
           {notiCount > 0 && (
             <span className="absolute -top-1.5 -right-2 text-[10px] bg-red-500 w-4 h-4 flex items-center justify-center rounded-full text-white">
@@ -423,7 +423,7 @@ function NavBar() {
           to="/announcement"
           className="relative  hidden lg:block rounded-full hover:bg-white/10 transition"
         >
-          <MdAnnouncement className="text-xl text-gray-300 hover:text-white transition-all duration-300 cursor-pointer transition" />
+          <MdAnnouncement className="text-xl text-white/70 hover:text-white transition-all duration-300 cursor-pointer transition" />
           {announceCount > 0 && (
             <span className="absolute -top-2 -right-2 text-[10px] bg-emerald-500 text-white w-4 h-4 flex items-center justify-center rounded-full">
               {announceCount}
@@ -973,18 +973,18 @@ function NavIconDesktop({ to, icon, label }) {
       to={to}
       className={`
         relative flex items-center gap-1 px-3 py-1.5 rounded-xl
-        text-xs font-medium transition-all duration-300 group
+        text-xs  transition-all duration-300 group
         ${
           isActive
             ? "text-emerald-400"
-            : "text-white/70 group hover:text-white "
+            : "text-white/95 group hover:text-white "
         }
       `}
     >
       {/* Icon */}
       <span
         className={`
-          text-base transition-all
+          text-base transition-all duration-300
           ${isActive ? "text-emerald-400" : "text-white/70 group-hover:text-white"}
         `}
       >

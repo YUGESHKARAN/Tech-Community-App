@@ -89,9 +89,19 @@ useEffect(() => {
 
   }, [tutorPlayListByEmail,searchTerm, playlistCategory, debouncedSearch ])
 
-   const getUniqueCategories = (tutorPlayList) => {
-    return [...new Set(tutorPlayList.map((playlist) => playlist.domain))];
-  };
+  //  const getUniqueCategories = (tutorPlayList) => {
+  //   return [...new Set(tutorPlayList.map((playlist) => playlist.domain))];
+  // };
+  
+  const getUniqueCategories = (tutorPlayList = []) => {
+  return [
+    ...new Set(
+      tutorPlayList
+        .map((playlist) => playlist.domain)
+        .filter((domain) => domain && domain.toLowerCase() !== "all")
+    ),
+  ];
+};
 
   //   console.log("tutorPlayListByEmail", tutorPlayListByEmail);
     // console.log("filteredPlaylist", filteredPlaylist);
