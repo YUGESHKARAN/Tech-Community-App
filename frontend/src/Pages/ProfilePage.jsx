@@ -264,7 +264,7 @@ const scrollToAchievements = () => {
             {/* ── Two-column layout ─────────────────────────────────── */}
             <div className="grid md:grid-cols-[300px_1fr] gap-4 mb-3 items-start">
               {/* ══ LEFT — Profile card ══════════════════════════════ */}
-            <div className="md:sticky top-6 relative self-start bg-gray-800/40 border border-white/[0.06] rounded-2xl p-6 pb-3 text-center">
+            <div className="md:sticky top-6 relative self-start bg-gray-900/50 border md:border-white/[0.1] border-white/[0.09] rounded-2xl p-6 pb-3 text-center">
                 {/* Avatar */}
                 <div className="relative w-fit mx-auto mt-3 md:mb-3 mb-4">
                   {previewImage ? (
@@ -472,7 +472,7 @@ const scrollToAchievements = () => {
               {/* ══ RIGHT — Form ═════════════════════════════════════ */}
               <form
                 onSubmit={handleSubmit}
-                className="bg-gray-800/40 border border-white/[0.06] rounded-2xl mt-6 md:mt-0  p-6 md:p-8 md:pb-6 "
+                className="bg-gray-900/50 border border-white/[0.09] md:border-white/[0.1] rounded-2xl mt-6 md:mt-0  p-6 md:p-8 md:pb-6 "
               >
                 <div className="grid md:grid-cols-2 gap-6">
                   {/* ── Left form column ────────────────────────────── */}
@@ -967,7 +967,7 @@ const scrollToAchievements = () => {
                 </div>
 
                 {/* ── Submit row ──────────────────────────────────────── */}
-                <div className="mt-7 md:mt-4 ">
+              {updateButton &&  <div className="mt-7 md:mt-4 ">
                   <button
                     type="submit"
                     disabled={loading || !updateButton}
@@ -975,7 +975,7 @@ const scrollToAchievements = () => {
                   >
                     {loading ? "Updating…" : "Update My Profile"}
                   </button>
-                </div>
+                </div>}
               </form>
 
              

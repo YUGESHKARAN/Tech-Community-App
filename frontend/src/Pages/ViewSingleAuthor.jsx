@@ -161,7 +161,7 @@ const scrollToAchievements = () => {
         <div className="grid md:grid-cols-[300px_1fr] gap-4 items-start">
 
           {/* ══ LEFT — Profile card ══════════════════════════════ */}
-          <div className="bg-gray-800/40 relative border border-white/[0.06] rounded-2xl p-4  text-center">
+          <div className="bg-gray-900/50 relative border border-white/[0.09] md:border-white/[0.1] rounded-2xl p-4  text-center">
 
             {/* Avatar */}
             <div className="relative w-fit mx-auto mt-3 md:mb-3 mb-4">
@@ -313,7 +313,7 @@ const scrollToAchievements = () => {
           </div>
 
           {/* ══ RIGHT — Info panel ═══════════════════════════════ */}
-          <div className="bg-gray-800/40 border border-white/[0.06] rounded-2xl p-6 md:p-8">
+          <div className="bg-gray-900/50 border border-white/[0.09] md:border-white/[0.1] rounded-2xl p-6 md:p-8">
             <div className="grid md:grid-cols-2 gap-6">
 
               {/* ── Left column — fields ─────────────────────── */}
