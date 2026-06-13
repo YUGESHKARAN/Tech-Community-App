@@ -1,6 +1,6 @@
 const ProfilePageSkeleton = () => {
   return (
-    <div className="bg-gray-900 text-white animate-pulse">
+    <div className="bg-gray-900 text-white min-h-screen animate-pulse">
       {/* Header */}
       <div className="w-full px-4 md:px-6 pt-2 md:pt-6 pb-8">
         <div className="flex justify-between items-center mb-8">

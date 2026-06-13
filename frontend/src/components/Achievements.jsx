@@ -349,7 +349,7 @@
 //       className={`
 //         relative group flex flex-col items-center gap-2 p-1 md:p-4 w-20 mx-auto md:w-40 rounded-2xl
 //         md:border ${tier.border} transition-all duration-300 cursor-pointer select-none
-//         md:${tier.bg} 
+//         md:${tier.bg}
 //         ${isSelected ? `md:${tier.glow} md:ring-2  ${tier.ring} scale-[1.03]` : "hover:scale-[1.02] md:hover:ring-1 " + tier.ring}
 //       `}
 //     >
@@ -695,21 +695,20 @@
 //   );
 // }
 
-
-
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MdHistory } from "react-icons/md";
 import { IoLockClosedOutline } from "react-icons/io5";
 
-import impactCreatorBronze from "../assets/achievements/impact_creator_bronze.png"
-import impactCreatorSilver from "../assets/achievements/impact_creator_silver.png"
-import impactCreatorGold from "../assets/achievements/impact_creator_gold.png"
+import impactCreatorBronze from "../assets/achievements/impact_creator_bronze.png";
+import impactCreatorSilver from "../assets/achievements/impact_creator_silver.png";
+import impactCreatorGold from "../assets/achievements/impact_creator_gold.png";
 
-import strongPublisherBronze from "../assets/achievements/strong_publisher_bronze.png"
-import strongPublisherSilver from "../assets/achievements/strong_publisher_silver.png"
-import strongPublisherGold from "../assets/achievements/strong_publisher_gold.png"
+import strongPublisherBronze from "../assets/achievements/strong_publisher_bronze.png";
+import strongPublisherSilver from "../assets/achievements/strong_publisher_silver.png";
+import strongPublisherGold from "../assets/achievements/strong_publisher_gold.png";
 
-import communityBuilderBronze from "../assets/achievements/community_builder_bronze.png"
+import communityBuilderBronze from "../assets/achievements/community_builder_bronze.png";
+import { ChevronRight } from "lucide-react";
 
 const impactCreatorImages = {
   bronze: impactCreatorBronze,
@@ -722,7 +721,6 @@ const strongPublisherImages = {
   silver: strongPublisherSilver,
   gold: strongPublisherGold,
 };
-
 
 const communityBuilderBronzeImages = {
   bronze: communityBuilderBronze,
@@ -781,12 +779,12 @@ const BADGE_META = {
       //     ❤
       //   </text>
       // </svg>
-        <img
+      <img
         src={impactCreatorImages[tier]}
         alt="Impact Creator Badge"
         className="w-full h-full object-cover rounded-full"
         draggable={false}
-    />
+      />
     ),
   },
   strong_publisher: {
@@ -861,12 +859,12 @@ const BADGE_META = {
       //     ✓
       //   </text>
       // </svg>
-         <img
+      <img
         src={strongPublisherImages[tier]}
         alt="Impact Creator Badge"
         className="w-full h-full object-cover rounded-full"
         draggable={false}
-    />
+      />
     ),
   },
   collaborator: {
@@ -928,12 +926,12 @@ const BADGE_META = {
       //     opacity="0.6"
       //   />
       // </svg>
-         <img
+      <img
         src={impactCreatorImages[tier]}
         alt="Impact Creator Badge"
         className="w-full h-full object-cover rounded-full"
         draggable={false}
-    />
+      />
     ),
   },
   pro_contributor: {
@@ -986,13 +984,13 @@ const BADGE_META = {
       //     strokeLinecap="round"
       //   />
       // </svg>
-         <img
+      <img
         src={impactCreatorImages[tier]}
         alt="Impact Creator Badge"
         className="w-full h-full object-cover rounded-full"
         draggable={false}
-    />
-    ), 
+      />
+    ),
   },
   community_builder: {
     label: "Community Builder",
@@ -1043,12 +1041,12 @@ const BADGE_META = {
       //     fill="none"
       //   />
       // </svg>
-         <img
+      <img
         src={communityBuilderBronzeImages[tier]}
         alt="Impact Creator Badge"
         className="w-full h-full object-cover rounded-full"
         draggable={false}
-    />
+      />
     ),
   },
 };
@@ -1096,22 +1094,24 @@ function BadgeCard({ badge, onSelect, isSelected }) {
 
   return (
     <div
-    onClick={() => onSelect(isSelected ? null : badge)}
-        className={`
+      onClick={() => onSelect(isSelected ? null : badge)}
+      className={`
         relative block md:w-20  cursor-pointer w-16 h-full rounded-full
         flex items-center justify-center 
         ${isSelected ? "animate-pulse-slow" : ""}
       `}
-      >
-        {meta.icon(badge.currentTier)}
+    >
+      {meta.icon(badge.currentTier)}
 
-        {isSelected && <div
+      {isSelected && (
+        <div
           className={`
           absolute inset-0 rounded-full ring-1 md:ring-4 ${tier.ring}
           opacity-50 scale-110 animate-ping-slow pointer-events-none
         `}
-        />}
-          {count > 0 && (
+        />
+      )}
+      {count > 0 && (
         <span
           className={`
           absolute bottom-2 right-2 text-[10px] font-bold px-1.5 py-0.5
@@ -1121,8 +1121,7 @@ function BadgeCard({ badge, onSelect, isSelected }) {
           ×{count}
         </span>
       )}
-      </div>
-
+    </div>
   );
 }
 
@@ -1135,7 +1134,9 @@ function BadgeDrawer({ badge, onClose, showClose }) {
     <div className=" mt-2 md:mt-0 w-full md:max-w-sm rounded-2xl  overflow-hidden animate-in slide-in-from-top-2 duration-300">
       {/* header */}
       <div className="flex items-start gap-3 md:p-4 p-1 border-b border-white/[0.06]">
-        <div className="md:w-20 w-10 h-full shrink-0">{meta.icon(badge.currentTier)}</div>
+        <div className="md:w-20 w-10 h-full shrink-0">
+          {meta.icon(badge.currentTier)}
+        </div>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold text-white">{meta.label}</p>
           <p className="text-xs text-gray-400 mt-0.5">{meta.desc}</p>
@@ -1222,7 +1223,8 @@ function BadgeDrawer({ badge, onClose, showClose }) {
                     <div className="flex-1 pl-1">
                       <div className="flex items-center gap-2">
                         <span className="text-[10px] flex items-center gap-1 md:text-xs font-semibold px-2 py-0.5 rounded-full bg-gray-800 md:text-gray-100 text-gray-300 border border-gray-700">
-                          <IoLockClosedOutline className= "text-[10px] md:text-xs" /> {tc.label}
+                          <IoLockClosedOutline className="text-[10px] md:text-xs" />{" "}
+                          {tc.label}
                         </span>
                         <span className="text-[10px] md:text-[11px] md:text-gray-100 text-gray-200">
                           locked
@@ -1261,10 +1263,37 @@ function EmptyAchievements() {
   );
 }
 
+import { AnimatePresence, motion } from "framer-motion";
+import { useRef } from "react";
 // ── Main export ───────────────────────────────────────────────
-export default function AchievementSection({ badges = [] }) {
+export default function AchievementSection({ badges = [], achievementRef }) {
   const [selected, setSelected] = useState(null);
   const [showAll, setShowAll] = useState(false);
+  const selectedBadgeRef = useRef(null);
+
+  const scrollToSelectedBadge = () => {
+    if (!selectedBadgeRef.current) return;
+
+    const y =
+      selectedBadgeRef.current.getBoundingClientRect().top +
+      window.pageYOffset -
+      90;
+
+    window.scrollTo({
+      top: y,
+      behavior: "smooth",
+    });
+  };
+
+  useEffect(() => {
+    if (!selected) return;
+
+    const timer = setTimeout(() => {
+      scrollToSelectedBadge();
+    }, 150);
+
+    return () => clearTimeout(timer);
+  }, [selected]);
 
   const hasBadges = badges.length > 0;
 
@@ -1272,7 +1301,7 @@ export default function AchievementSection({ badges = [] }) {
     // <div className="bg-gray-800/40 border border-white/[0.06] rounded-2xl  overflow-hidden">
     <div className="w-full block  shink-0 overflow-hidden">
       {/* section header */}
-      <div className="flex items-center relative  justify-between px-2 md:px-5 py-4 md:border-b border-white/[0.06]">
+      {/* <div className="flex items-center relative  justify-between px-2 md:px-5 py-4 md:border-b border-white/[0.06]">
         <div>
           <p className="text-[11px] font-medium tracking-widest uppercase text-gray-400">
             Achievements
@@ -1319,6 +1348,72 @@ export default function AchievementSection({ badges = [] }) {
             )}
           </div>
         )}
+      </div> */}
+
+      <div className="flex items-center justify-between px-2 md:px-5 py-4 md:border-b border-white/[0.06]">
+        <div>
+          <p className="text-[11px] font-medium tracking-widest uppercase text-gray-400">
+            Achievements
+          </p>
+          <p className="text-sm font-semibold text-white mt-0.5">
+            {hasBadges
+              ? `${badges.length} badge${badges.length > 1 ? "s" : ""} earned`
+              : "No badges yet"}
+          </p>
+        </div>
+
+        {hasBadges && badges?.legth >1 && (
+          <button
+            onClick={() => {
+              setSelected(null);
+              const nextState = !showAll;
+
+              setShowAll(nextState);
+
+              if (nextState) {
+                setTimeout(() => {
+                  achievementRef.current?.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start",
+                  });
+                }, 200);
+              }
+            }}
+            className="
+              group
+              flex items-center gap-2
+              md:px-3 md:py-2
+              px-2 py-1.5
+              rounded-xl
+              bg-white/[0.03]
+              border border-white/[0.08]
+              hover:bg-white/[0.06]
+              hover:border-emerald-500/20
+              transition-all duration-300
+              md:text-xs
+              text-[10px]
+            "
+          >
+            <motion.button
+              whileTap={{ scale: 0.96 }}
+              whileHover={{ scale: 1.03 }}
+              // onClick={() => setShowAll(!showAll)}
+            >
+              {showAll ? "Hide All" : "View All"}
+            </motion.button>
+            <motion.div
+              animate={{
+                rotate: showAll ? 90 : 0,
+              }}
+              transition={{
+                duration: 0.3,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+            >
+              <ChevronRight size={14} />
+            </motion.div>
+          </button>
+        )}
       </div>
 
       {/* content */}
@@ -1331,22 +1426,36 @@ export default function AchievementSection({ badges = [] }) {
             {/* <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-2"> */}
             <div className="grid grid-cols-6 md:flex items-start md:w-fit flex-wrap md:gap-2 ">
               {badges.map((badge) => (
+                // <BadgeCard
+                //   key={badge.badgeId}
+                //   badge={badge}
+                //   onClick={() => {
+                //     setShowAll(false);
+                //   }}
+                //   onSelect={setSelected}
+                //   isSelected={selected?.badgeId === badge.badgeId}
+                // />
                 <BadgeCard
                   key={badge.badgeId}
                   badge={badge}
                   onClick={() => {
                     setShowAll(false);
                   }}
-                  onSelect={setSelected}
+                  onSelect={(selectedBadge) => {
+                    setShowAll(false);
+                    setSelected(selectedBadge);
+
+                    setTimeout(() => {
+                      scrollToSelectedBadge();
+                    }, 250);
+                  }}
                   isSelected={selected?.badgeId === badge.badgeId}
                 />
               ))}
-              
-              
             </div>
 
             {/* history drawer — slides open below grid */}
-            {selected && (
+            {/* {selected && (
               <div className="flex transition-all duration-200 flex-col md:mt-4 mt-2 ">
                 <p className="text-sm   md:text-sm text-gray-300 flex items-center gap-1 border-b border-neutral-700 pb-3 md:gap-2 font-semibold my-2">
                   Milestone Logs{" "}
@@ -1362,9 +1471,71 @@ export default function AchievementSection({ badges = [] }) {
                   showClose={true}
                 />
               </div>
-            )}
+            )} */}
 
-            {showAll && !selected && (
+            <AnimatePresence mode="wait">
+              {selected && (
+                <motion.div
+                  ref={selectedBadgeRef}
+                  initial={{
+                    opacity: 0,
+                    height: 0,
+                    y: -10,
+                    filter: "blur(6px)",
+                  }}
+                  animate={{
+                    opacity: 1,
+                    height: "auto",
+                    y: 0,
+                    filter: "blur(0px)",
+                  }}
+                  exit={{
+                    opacity: 0,
+                    height: 0,
+                    y: -8,
+                    filter: "blur(4px)",
+                  }}
+                  transition={{
+                    duration: 0.35,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
+                  className="overflow-hidden"
+                >
+                  <div className="flex flex-col md:mt-4 mt-2">
+                    <motion.p
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.1 }}
+                      className="text-sm text-gray-300 flex items-center gap-2 border-b border-neutral-700 pb-3 font-semibold my-2"
+                    >
+                      Milestone Logs
+                      <MdHistory className="text-lg text-gray-500" />
+                    </motion.p>
+
+                    <motion.div
+                      initial={{ opacity: 0, y: 15, scale: 0.98 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      transition={{
+                        delay: 0.1,
+                        duration: 0.3,
+                        ease: [0.22, 1, 0.36, 1],
+                      }}
+                    >
+                      <BadgeDrawer
+                        badge={selected}
+                        onClose={() => {
+                          setSelected(null);
+                          setShowAll(false);
+                        }}
+                        showClose={true}
+                      />
+                    </motion.div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* {showAll && !selected && (
               <div className="flex flex-col transition-transform duration-800  md:mt-4 mt-2 ">
                 <p className="text-sm   md:text-sm text-gray-300 flex items-center gap-1 border-b border-neutral-700 pb-3 md:gap-2 font-semibold my-2">
                  All Milestones Log{" "}
@@ -1380,7 +1551,86 @@ export default function AchievementSection({ badges = [] }) {
                   ))}
                 </div>
               </div>
-            )}
+            )} */}
+            <AnimatePresence initial={false}>
+              {showAll && !selected && (
+                <motion.div
+                  initial={{
+                    opacity: 0,
+                    height: 0,
+                    y: -10,
+                    filter: "blur(6px)",
+                  }}
+                  animate={{
+                    opacity: 1,
+                    height: "auto",
+                    y: 0,
+                    filter: "blur(0px)",
+                  }}
+                  exit={{
+                    opacity: 0,
+                    height: 0,
+                    y: -8,
+                    filter: "blur(4px)",
+                  }}
+                  transition={{
+                    duration: 0.35,
+                    ease: [0.22, 1, 0.36, 1], // premium easing
+                  }}
+                  className="overflow-hidden"
+                >
+                  <div className="flex flex-col md:mt-4 mt-2">
+                    <motion.p
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.1 }}
+                      className="text-sm text-gray-300 flex items-center gap-2 border-b border-neutral-700 pb-3 font-semibold my-2"
+                    >
+                      All Milestones Log
+                      <MdHistory className="text-lg text-gray-500" />
+                    </motion.p>
+
+                    <motion.div
+                      initial="hidden"
+                      animate="show"
+                      variants={{
+                        hidden: {},
+                        show: {
+                          transition: {
+                            staggerChildren: 0.05,
+                          },
+                        },
+                      }}
+                      className="xl:flex grid items-center md:gap-4"
+                    >
+                      {badges.map((badge) => (
+                        <motion.div
+                          key={badge.badgeId}
+                          variants={{
+                            hidden: {
+                              opacity: 0,
+                              y: 12,
+                              scale: 0.96,
+                            },
+                            show: {
+                              opacity: 1,
+                              y: 0,
+                              scale: 1,
+                            },
+                          }}
+                          transition={{
+                            duration: 0.3,
+                            ease: [0.22, 1, 0.36, 1],
+                          }}
+                        >
+                          <BadgeDrawer badge={badge} showClose={false} />
+                        </motion.div>
+                      ))}
+                    </motion.div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </>
         )}
       </div>

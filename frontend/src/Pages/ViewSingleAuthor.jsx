@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import NavBar from "../ui/NavBar";
 import { Link, useParams } from "react-router-dom";
 
@@ -14,6 +14,9 @@ import { getItem } from "../utils/encode";
 import ProfileViewSkeleton from "../components/loaders/ProfileViewSkeleton";
 import empty_state_author from "../assets/author_not_found_3.png"
 import AchievementSection from "../components/Achievements";
+import BadgeIcons from "../components/achievements/BadgeIcons";
+import { motion } from "framer-motion";
+
 function ViewSingleAuthor() {
   const { email } = useParams();
   // const role = localStorage.getItem("role");
@@ -114,6 +117,23 @@ function ViewSingleAuthor() {
   );
 };
 
+ const achievementRef = useRef(null);
+
+const [highlightAchievement, setHighlightAchievement] = useState(false);
+
+const scrollToAchievements = () => {
+  achievementRef.current?.scrollIntoView({
+    behavior: "smooth",
+    block: "start",
+  });
+
+  setHighlightAchievement(true);
+
+  setTimeout(() => {
+    setHighlightAchievement(false);
+  }, 1000);
+};
+
   // console.log("followers", followers)
   // console.log("userEmail", authorEmail)
   // console.log("email", email)
@@ -165,11 +185,20 @@ function ViewSingleAuthor() {
 
             {/* Role pill */}
              <span 
-                className="absolute right-4 top-4 "
+                className="absolute left-4 top-4 "
                 >
                   {/* {author.role.charAt(0).toUpperCase()}{author.role.slice(1)} */}
                    <RoleBadge role={author.role} />
                 </span>
+
+                {author?.role !== "student" && (
+                                  <div
+                                    onClick={scrollToAchievements}
+                                    className="cursor-pointer"
+                                  >
+                                    <BadgeIcons badges={author?.badges} />
+                                  </div>
+                                )}
 
                 
 
@@ -420,7 +449,21 @@ function ViewSingleAuthor() {
           </div>
 
         </div>
-        { author?.role !=='student' && <AchievementSection badges={author?.badges}/>}
+  {author?.role !== "student" && (
+             <motion.div
+            ref={achievementRef}
+            animate={
+              highlightAchievement
+                ? {
+                    scale: [1, 1.01, 1],
+                  }
+                : {}
+            }
+            transition={{ duration: 0.6 }}
+          >
+            <AchievementSection badges={author?.badges} achievementRef={achievementRef}  />
+          </motion.div>
+            )}
       </div>:
       <ProfileViewSkeleton role={author.role} />
 }

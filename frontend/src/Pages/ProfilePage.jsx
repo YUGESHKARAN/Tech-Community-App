@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import NavBar from "../ui/NavBar";
 
 import { useAuth } from "../AuthContext";
@@ -19,6 +19,8 @@ import toast from "../components/toaster/Toast";
 import { getItem, removeItem } from "../utils/encode";
 import ProfilePageSkeleton from "../components/loaders/ProfilePageSkeleton";
 import AchievementSection from "../components/Achievements";
+import BadgeIcons from "../components/achievements/BadgeIcons";
+import { motion } from "framer-motion";
 function ProfilePage() {
   const { logout } = useAuth();
   // const email = localStorage.getItem("email");
@@ -211,6 +213,23 @@ function ProfilePage() {
       </span>
     );
   };
+
+  const achievementRef = useRef(null);
+
+const [highlightAchievement, setHighlightAchievement] = useState(false);
+
+const scrollToAchievements = () => {
+  achievementRef.current?.scrollIntoView({
+    behavior: "smooth",
+    block: "start",
+  });
+
+  setHighlightAchievement(true);
+
+  setTimeout(() => {
+    setHighlightAchievement(false);
+  }, 1000);
+};
   // console.log("author", author)
   // console.log("profile links", profileLinks)
   return (
@@ -288,11 +307,21 @@ function ProfilePage() {
 
                 {/* Role pill */}
                 <span
-                  className=" absolute right-4 top-4 "
+                  className=" absolute left-4 top-4 "
                 >
                   <RoleBadge role={role} />
                 
                 </span>
+                
+                {author?.role !== "student" && (
+                  <div
+                    onClick={scrollToAchievements}
+                    className="cursor-pointer"
+                  >
+                    <BadgeIcons badges={author?.badges} />
+                  </div>
+                )}
+        
 
                 {/* Bio Section */}
                 <div className="mb-5 mt-3 px-1 text-left">
@@ -952,7 +981,21 @@ function ProfilePage() {
              
             </div>
 
-             {author?.role !=='student' && <AchievementSection badges={author?.badges}/>}
+             {author?.role !== "student" && (
+             <motion.div
+            ref={achievementRef}
+            animate={
+              highlightAchievement
+                ? {
+                    scale: [1, 1.01, 1],
+                  }
+                : {}
+            }
+            transition={{ duration: 0.6 }}
+          >
+            <AchievementSection badges={author?.badges} achievementRef={achievementRef}  />
+          </motion.div>
+            )}
 
             
            
