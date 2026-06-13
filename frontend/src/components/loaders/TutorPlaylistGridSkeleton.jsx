@@ -71,7 +71,7 @@ const TutorPlaylistGridSkeleton = () => {
               xl:grid-cols-4
               3xl:grid-cols-5
               overflow-visible
-              space-y-5 
+              space-y-3 
               md:space-y-0
               md:mt-0
               px-3 md:px-0
