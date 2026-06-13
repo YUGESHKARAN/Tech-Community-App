@@ -5,7 +5,7 @@ import {CirclesWithBar} from 'react-loader-spinner'
 import axiosInstance from "../instances/Axiosinstances";
 import Cookies from 'js-cookie'
 import { storeItem } from "../utils/encode";
-import logoicon from "../assets/embed_logo_2.png"
+import logoicon from "../assets/embed_logo_1.png"
 function LoginPage() {
   const [formData, setFormData] = useState({
     email: "",

@@ -5,7 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import NavBar from "../ui/NavBar";
 import Footer from "../ui/Footer";
 import axiosInstance from "../instances/Axiosinstances";
-import logoicon from "../assets/embed_logo_2.png"
+import logoicon from "../assets/embed_logo_1.png"
 
 
 
