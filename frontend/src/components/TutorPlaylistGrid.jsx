@@ -117,7 +117,7 @@ const getUniqueCategories = (tutorPlayList = []) => {
         >
           <div
             // className="flex md:max-w-5xl md:w-fit mt-10 scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto"
-            className="flex w-full px-3  md:w-fit md:max-w-7xl   py-3 md:py-5 z-50 scrollbar-hide mx-auto items-center justify-start gap-3 overflow-x-auto"
+            className="flex w-full px-3  md:w-fit md:max-w-7xl   py-3  z-50 scrollbar-hide mx-auto items-center justify-start gap-3 overflow-x-auto"
           >
             {/* All Button */}
             <div
@@ -171,10 +171,10 @@ const getUniqueCategories = (tutorPlayList = []) => {
                 xl:grid-cols-4
                 3xl:grid-cols-5
                 overflow-visible
-                space-y-5
+                space-y-3
                 md:space-y-0
-                md:mt-7
-                pt-3
+                mt-4
+                
                 px-3 md:px-0
                 px-auto
               "

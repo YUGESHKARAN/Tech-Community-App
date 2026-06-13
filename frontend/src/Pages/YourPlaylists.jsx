@@ -132,7 +132,7 @@ useEffect(() => {
         >
           <div
             // className="flex md:max-w-5xl md:w-fit mt-10 scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto"
-            className="flex w-full px-3 mt-2 md:mt-0   md:w-fit md:max-w-7xl   py-3 md:py-5 z-50 scrollbar-hide mx-auto items-center justify-start gap-3 overflow-x-auto"
+            className="flex w-full px-3 mt-2  md:w-fit md:max-w-7xl   py-3  md:my-2 z-50 scrollbar-hide mx-auto items-center justify-start gap-3 overflow-x-auto"
           >
             {/* All Button */}
             <div
@@ -165,7 +165,7 @@ useEffect(() => {
       )}
 
 
-      <div className="min-h-screen w-full px-3 md:px-4 md:mt-4 mx-auto bg-gray-900 pb-8">
+      <div className="min-h-screen md:px-4 w-full md:mt-4 mx-auto bg-gray-900 pb-8">
         {filteredPlaylist.length > 0 && (
           <div
             className="
@@ -176,9 +176,10 @@ useEffect(() => {
               xl:grid-cols-4
               3xl:grid-cols-5
               overflow-visible
-              space-y-5
+              space-y-3
               md:space-y-0
-              mt-7
+              mt-4
+              px-3 md:px-0
         "
           >
             {filteredPlaylist?.map((playlist) => (
@@ -222,13 +223,13 @@ useEffect(() => {
           </div>
         )}
 
-        
-
-        {!tutorPlayListByEmail?.length > 0 && loading && (
+         {!tutorPlayListByEmail?.length > 0 && loading && (
          <TutorPlaylistGridSkeleton />
         )}
+
+       
         {tutorPlayListByEmail?.length == 0 && !loading && (
-          <div className="flex h-[70vh] flex-col justify-center items-center md:gap-3 ">
+          <div className="flex px-3 md:px-0  h-[70vh] flex-col justify-center items-center md:gap-3 ">
              <img
                             className="w-48 md:w-60 "
                             src={empty_state_post}
@@ -248,6 +249,7 @@ useEffect(() => {
           </div>
         )}
       </div>
+      
       <Footer />
     </div>
   );

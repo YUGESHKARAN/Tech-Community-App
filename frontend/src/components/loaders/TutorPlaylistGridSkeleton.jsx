@@ -73,7 +73,7 @@ const TutorPlaylistGridSkeleton = () => {
               overflow-visible
               space-y-5 
               md:space-y-0
-              md:mt-7
+              md:mt-0
               px-3 md:px-0
               px-auto"
     >

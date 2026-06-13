@@ -289,7 +289,7 @@ function YourPost() {
               >
                 <div
                   // className="flex md:max-w-5xl md:w-fit mt-10 scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto"
-                  className="flex w-full px-3  md:w-fit md:max-w-7xl   py-3 md:py-5 z-50 scrollbar-hide mx-auto items-center justify-start gap-3 overflow-x-auto"
+                  className="flex w-full px-3  md:w-fit md:max-w-7xl   py-3 md:my-2 z-50 scrollbar-hide mx-auto items-center justify-start gap-3 overflow-x-auto"
                 >
                   {/* All Button */}
                   <div
