@@ -504,7 +504,7 @@ const recommendedAuthors = useMemo(() => {
                       ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`
                       : user
                   }
-                  className="w-12 h-12 bg-gray-700 rounded-full object-cover border border-gray-900"
+                  className="w-12 h-12 bg-gray-700 rounded-full object-cover border border-gray-700"
                 />
               </Link>
                {author?.badges?.length>0 && (
@@ -616,7 +616,7 @@ const recommendedAuthors = useMemo(() => {
                         ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`
                         : user
                     }
-                    className="w-24 h-24 mx-auto bg-gray-700 rounded-full object-cover border border-gray-900"
+                    className="w-24 h-24 mx-auto bg-gray-700 rounded-full object-cover border border-gray-700"
                   />
                 </Link>
 
@@ -780,7 +780,7 @@ const recommendedAuthors = useMemo(() => {
                         w-20 h-20
                         rounded-full
                         object-cover
-                        border border-gray-900
+                        border border-gray-700
                         shadow-sm
                         hover:shadow-md
                         transition
