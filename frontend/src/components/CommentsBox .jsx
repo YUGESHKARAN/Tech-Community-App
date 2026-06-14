@@ -116,38 +116,29 @@ useEffect(() => {
     >
       {messages.length > 0 && !msgLoading && 
 
-        (viewComments ? messages : messages.slice(0, 1)).map((msg, index) => (
+        (viewComments ? messages : messages.slice(0, 1)).map((msg, index) => 
+         
+         {
+            const prevMsg =
+    index > 0
+      ? (viewComments ? messages : messages.slice(0, 1))[index - 1]
+      : null;
+
+  const isChainedComment =
+    prevMsg &&
+    prevMsg.email === msg.email;
+
+          return (
           <div
             key={msg._id || `temp-${index}`}
             className="group flex items-start gap-1.5 md:gap-3 py-3 last:border-none"
           >
             {/* Avatar */}
-            {/* <img
-              src={
-                msg.profile
-                  ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${msg.profile}`
-                  : userProfile
-              }
-              className="w-7 h-7 bg-white rounded-full object-cover flex-shrink-0 ring-1 ring-white/10"
-              alt="User Avatar"
-            /> */}
-            <Link
+          
+          {!isChainedComment?  ( <Link
             to={`/viewProfile/${msg.email}`}
             >
-            {/* {
-              msg.profile ? <img
-              src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${msg.profile}`}
-              className="w-7 h-7 bg-white rounded-full object-cover flex-shrink-0 ring-1 ring-white/10"
-              alt="User Avatar"
-            />:
-              <div
-                      className="md:w-7 md:h-7 w-6 h-6 rounded-full flex items-center justify-center text-[9px] md:text-[10px] font-semibold  text-white shrink-0"
-                      style={{ backgroundColor: avatarColor(msg.user) }}
-                    >
-                      {initials(msg.user)}
-                    </div>
-
-            } */}
+       
 
             {
               msg.profile &&
@@ -167,7 +158,9 @@ useEffect(() => {
                 </div>
               )
             }
-            </Link>
+            </Link>):
+             <div className="w-7 h-7" />
+            }
 
             {/* Bubble */}
             <div className="flex-1 min-w-0">
@@ -175,7 +168,7 @@ useEffect(() => {
 
                 {/* Meta row */}
                 <div className="flex items-center gap-1.5">
-                  <span className="text-[11px] font-semibold text-gray-200">
+                  <span className={`text-[11px] font-semibold ${isChainedComment?'text-gray-500':'text-gray-200'}`}>
                     @{msg.user}
                   </span>
                   <span className="text-[10px] text-gray-500">·</span>
@@ -271,7 +264,9 @@ useEffect(() => {
               </div>
             </div>
           </div>
-        ))
+        )}
+
+      )
       
       }
 
