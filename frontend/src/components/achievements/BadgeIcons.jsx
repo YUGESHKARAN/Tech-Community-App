@@ -1,13 +1,18 @@
 import React from "react";
-import impactCreatorBronze from "../../assets/achievements/impact_creator_bronze.png"
-import impactCreatorSilver from "../../assets/achievements/impact_creator_silver.png"
-import impactCreatorGold from "../../assets/achievements/impact_creator_gold.png"
+import impactCreatorBronze from "../../assets/achievements/impact_creator_bronze.png";
+import impactCreatorSilver from "../../assets/achievements/impact_creator_silver.png";
+import impactCreatorGold from "../../assets/achievements/impact_creator_gold.png";
 
-import strongPublisherBronze from "../../assets/achievements/strong_publisher_bronze.png"
-import strongPublisherSilver from "../../assets/achievements/strong_publisher_silver.png"
-import strongPublisherGold from "../../assets/achievements/strong_publisher_gold.png"
+import strongPublisherBronze from "../../assets/achievements/strong_publisher_bronze.png";
+import strongPublisherSilver from "../../assets/achievements/strong_publisher_silver.png";
+import strongPublisherGold from "../../assets/achievements/strong_publisher_gold.png";
 
-import communityBuilderBronze from "../../assets/achievements/community_builder_bronze.png"
+import communityBuilderBronze from "../../assets/achievements/community_builder_bronze.png";
+import communityBuilderSilver from "../../assets/achievements/community_builder_silver.png";
+import communityBuilderGold from "../../assets/achievements/community_builder_gold.png";
+
+import proContributorBronze from "../../assets/achievements/pro_contributor_bronze.png";
+
 import { twMerge } from "tailwind-merge";
 import clsx from "clsx";
 
@@ -23,12 +28,26 @@ const strongPublisherImages = {
   gold: strongPublisherGold,
 };
 
-
-const communityBuilderBronzeImages = {
+const communityBuilderImages = {
   bronze: communityBuilderBronze,
-  silver: communityBuilderBronze,
-  gold: communityBuilderBronze,
+  silver: communityBuilderSilver,
+  gold: communityBuilderGold,
 };
+
+const proContributorImages = {
+  bronze: proContributorBronze,
+  silver: proContributorBronze,
+  gold: proContributorBronze,
+};
+
+const collaboratorImages = {
+  bronze: proContributorBronze,
+  silver: proContributorBronze,
+  gold: proContributorBronze,
+};
+
+// ── Badge metadata ────────────────────────────────────────────
+
 
 function BadgeIcons({ badges = [], parentClass="", shieldClassName="" }) {
 
@@ -65,19 +84,18 @@ function BadgeIcons({ badges = [], parentClass="", shieldClassName="" }) {
   },
 };
 
-
 const BADGE_META = {
   impact_creator: {
     label: "Impact Creator",
     desc: "Your posts resonated with the community.",
     icon: (tier) => (
-    
-        <img
+     
+      <img
         src={impactCreatorImages[tier]}
         alt="Impact Creator Badge"
         className="w-full h-full object-cover rounded-full"
         draggable={false}
-    />
+      />
     ),
   },
   strong_publisher: {
@@ -85,54 +103,55 @@ const BADGE_META = {
     desc: "Consistent contributor to the platform.",
     icon: (tier) => (
      
-         <img
+      <img
         src={strongPublisherImages[tier]}
         alt="Impact Creator Badge"
         className="w-full h-full object-cover rounded-full"
         draggable={false}
-    />
+      />
     ),
   },
   collaborator: {
     label: "Collaborator",
     desc: "Active collaborator on community playlists.",
     icon: (tier) => (
-     
-         <img
-        src={impactCreatorImages[tier]}
+  
+      <img
+        src={collaboratorImages[tier]}
         alt="Impact Creator Badge"
         className="w-full h-full object-cover rounded-full"
         draggable={false}
-    />
+      />
     ),
   },
   pro_contributor: {
     label: "Pro Contributor",
     desc: "Your content reaches a wide audience.",
     icon: (tier) => (
-     
-         <img
-        src={impactCreatorImages[tier]}
+      
+      <img
+        src={proContributorImages[tier]}
         alt="Impact Creator Badge"
         className="w-full h-full object-cover rounded-full"
         draggable={false}
-    />
-    ), 
+      />
+    ),
   },
   community_builder: {
     label: "Community Builder",
     desc: "Building a strong following on the platform.",
     icon: (tier) => (
       
-         <img
-        src={communityBuilderBronzeImages[tier]}
+      <img
+        src={communityBuilderImages[tier]}
         alt="Impact Creator Badge"
         className="w-full h-full object-cover rounded-full"
         draggable={false}
-    />
+      />
     ),
   },
 };
+
 
 
   return (

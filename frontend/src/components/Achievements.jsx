@@ -708,6 +708,11 @@ import strongPublisherSilver from "../assets/achievements/strong_publisher_silve
 import strongPublisherGold from "../assets/achievements/strong_publisher_gold.png";
 
 import communityBuilderBronze from "../assets/achievements/community_builder_bronze.png";
+import communityBuilderSilver from "../assets/achievements/community_builder_silver.png";
+import communityBuilderGold from "../assets/achievements/community_builder_gold.png";
+
+import proContributorBronze from "../assets/achievements/pro_contributor_bronze.png";
+
 import { ChevronRight } from "lucide-react";
 
 const impactCreatorImages = {
@@ -722,10 +727,22 @@ const strongPublisherImages = {
   gold: strongPublisherGold,
 };
 
-const communityBuilderBronzeImages = {
+const communityBuilderImages = {
   bronze: communityBuilderBronze,
-  silver: communityBuilderBronze,
-  gold: communityBuilderBronze,
+  silver: communityBuilderSilver,
+  gold: communityBuilderGold,
+};
+
+const proContributorImages = {
+  bronze: proContributorBronze,
+  silver: proContributorBronze,
+  gold: proContributorBronze,
+};
+
+const collaboratorImages = {
+  bronze: proContributorBronze,
+  silver: proContributorBronze,
+  gold: proContributorBronze,
 };
 
 // ── Badge metadata ────────────────────────────────────────────
@@ -734,51 +751,7 @@ const BADGE_META = {
     label: "Impact Creator",
     desc: "Your posts resonated with the community.",
     icon: (tier) => (
-      // <svg
-      //   viewBox="0 0 40 40"
-      //   fill="none"
-      //   xmlns="http://www.w3.org/2000/svg"
-      //   className="w-full h-full"
-      // >
-      //   <defs>
-      //     <radialGradient id={`ig-${tier}`} cx="50%" cy="40%" r="60%">
-      //       <stop
-      //         offset="0%"
-      //         stopColor={
-      //           tier === "gold"
-      //             ? "#fde68a"
-      //             : tier === "silver"
-      //               ? "#e2e8f0"
-      //               : "#fca5a5"
-      //         }
-      //       />
-      //       <stop
-      //         offset="100%"
-      //         stopColor={
-      //           tier === "gold"
-      //             ? "#d97706"
-      //             : tier === "silver"
-      //               ? "#94a3b8"
-      //               : "#dc2626"
-      //         }
-      //       />
-      //     </radialGradient>
-      //   </defs>
-      //   <polygon
-      //     points="20,4 24,15 36,15 26,22 30,33 20,26 10,33 14,22 4,15 16,15"
-      //     fill={`url(#ig-${tier})`}
-      //   />
-      //   <text
-      //     x="20"
-      //     y="23"
-      //     textAnchor="middle"
-      //     fontSize="10"
-      //     fill="white"
-      //     fontWeight="bold"
-      //   >
-      //     ❤
-      //   </text>
-      // </svg>
+     
       <img
         src={impactCreatorImages[tier]}
         alt="Impact Creator Badge"
@@ -791,74 +764,7 @@ const BADGE_META = {
     label: "Strong Publisher",
     desc: "Consistent contributor to the platform.",
     icon: (tier) => (
-      // <svg
-      //   viewBox="0 0 40 40"
-      //   fill="none"
-      //   xmlns="http://www.w3.org/2000/svg"
-      //   className="w-full h-full"
-      // >
-      //   <defs>
-      //     <radialGradient id={`sp-${tier}`} cx="50%" cy="40%" r="60%">
-      //       <stop
-      //         offset="0%"
-      //         stopColor={
-      //           tier === "gold"
-      //             ? "#fde68a"
-      //             : tier === "silver"
-      //               ? "#e2e8f0"
-      //               : "#86efac"
-      //         }
-      //       />
-      //       <stop
-      //         offset="100%"
-      //         stopColor={
-      //           tier === "gold"
-      //             ? "#d97706"
-      //             : tier === "silver"
-      //               ? "#94a3b8"
-      //               : "#16a34a"
-      //         }
-      //       />
-      //     </radialGradient>
-      //   </defs>
-      //   <rect
-      //     x="6"
-      //     y="8"
-      //     width="28"
-      //     height="4"
-      //     rx="2"
-      //     fill={`url(#sp-${tier})`}
-      //   />
-      //   <rect
-      //     x="6"
-      //     y="16"
-      //     width="22"
-      //     height="4"
-      //     rx="2"
-      //     fill={`url(#sp-${tier})`}
-      //     opacity="0.85"
-      //   />
-      //   <rect
-      //     x="6"
-      //     y="24"
-      //     width="18"
-      //     height="4"
-      //     rx="2"
-      //     fill={`url(#sp-${tier})`}
-      //     opacity="0.7"
-      //   />
-      //   <circle cx="32" cy="28" r="5" fill={`url(#sp-${tier})`} />
-      //   <text
-      //     x="32"
-      //     y="31"
-      //     textAnchor="middle"
-      //     fontSize="7"
-      //     fill="white"
-      //     fontWeight="bold"
-      //   >
-      //     ✓
-      //   </text>
-      // </svg>
+     
       <img
         src={strongPublisherImages[tier]}
         alt="Impact Creator Badge"
@@ -871,63 +777,9 @@ const BADGE_META = {
     label: "Collaborator",
     desc: "Active collaborator on community playlists.",
     icon: (tier) => (
-      // <svg
-      //   viewBox="0 0 40 40"
-      //   fill="none"
-      //   xmlns="http://www.w3.org/2000/svg"
-      //   className="w-full h-full"
-      // >
-      //   <defs>
-      //     <radialGradient id={`co-${tier}`} cx="50%" cy="40%" r="60%">
-      //       <stop
-      //         offset="0%"
-      //         stopColor={
-      //           tier === "gold"
-      //             ? "#fde68a"
-      //             : tier === "silver"
-      //               ? "#e2e8f0"
-      //               : "#a5b4fc"
-      //         }
-      //       />
-      //       <stop
-      //         offset="100%"
-      //         stopColor={
-      //           tier === "gold"
-      //             ? "#d97706"
-      //             : tier === "silver"
-      //               ? "#94a3b8"
-      //               : "#4f46e5"
-      //         }
-      //       />
-      //     </radialGradient>
-      //   </defs>
-      //   <circle cx="14" cy="14" r="6" fill={`url(#co-${tier})`} />
-      //   <circle
-      //     cx="26"
-      //     cy="14"
-      //     r="6"
-      //     fill={`url(#co-${tier})`}
-      //     opacity="0.85"
-      //   />
-      //   <ellipse
-      //     cx="14"
-      //     cy="30"
-      //     rx="8"
-      //     ry="5"
-      //     fill={`url(#co-${tier})`}
-      //     opacity="0.7"
-      //   />
-      //   <ellipse
-      //     cx="26"
-      //     cy="30"
-      //     rx="8"
-      //     ry="5"
-      //     fill={`url(#co-${tier})`}
-      //     opacity="0.6"
-      //   />
-      // </svg>
+  
       <img
-        src={impactCreatorImages[tier]}
+        src={collaboratorImages[tier]}
         alt="Impact Creator Badge"
         className="w-full h-full object-cover rounded-full"
         draggable={false}
@@ -938,54 +790,9 @@ const BADGE_META = {
     label: "Pro Contributor",
     desc: "Your content reaches a wide audience.",
     icon: (tier) => (
-      // <svg
-      //   viewBox="0 0 40 40"
-      //   fill="none"
-      //   xmlns="http://www.w3.org/2000/svg"
-      //   className="w-full h-full"
-      // >
-      //   <defs>
-      //     <radialGradient id={`pc-${tier}`} cx="50%" cy="40%" r="60%">
-      //       <stop
-      //         offset="0%"
-      //         stopColor={
-      //           tier === "gold"
-      //             ? "#fde68a"
-      //             : tier === "silver"
-      //               ? "#e2e8f0"
-      //               : "#67e8f9"
-      //         }
-      //       />
-      //       <stop
-      //         offset="100%"
-      //         stopColor={
-      //           tier === "gold"
-      //             ? "#d97706"
-      //             : tier === "silver"
-      //               ? "#94a3b8"
-      //               : "#0284c7"
-      //         }
-      //       />
-      //     </radialGradient>
-      //   </defs>
-      //   <circle
-      //     cx="20"
-      //     cy="20"
-      //     r="14"
-      //     fill={`url(#pc-${tier})`}
-      //     opacity="0.2"
-      //   />
-      //   <circle cx="20" cy="20" r="9" fill={`url(#pc-${tier})`} opacity="0.5" />
-      //   <circle cx="20" cy="20" r="5" fill={`url(#pc-${tier})`} />
-      //   <path
-      //     d="M20 6 L20 2 M20 38 L20 34 M6 20 L2 20 M38 20 L34 20"
-      //     stroke={`url(#pc-${tier})`}
-      //     strokeWidth="2"
-      //     strokeLinecap="round"
-      //   />
-      // </svg>
+      
       <img
-        src={impactCreatorImages[tier]}
+        src={proContributorImages[tier]}
         alt="Impact Creator Badge"
         className="w-full h-full object-cover rounded-full"
         draggable={false}
@@ -996,53 +803,9 @@ const BADGE_META = {
     label: "Community Builder",
     desc: "Building a strong following on the platform.",
     icon: (tier) => (
-      // <svg
-      //   viewBox="0 0 40 40"
-      //   fill="none"
-      //   xmlns="http://www.w3.org/2000/svg"
-      //   className="w-full h-full"
-      // >
-      //   <defs>
-      //     <radialGradient id={`cb-${tier}`} cx="50%" cy="40%" r="60%">
-      //       <stop
-      //         offset="0%"
-      //         stopColor={
-      //           tier === "gold"
-      //             ? "#fde68a"
-      //             : tier === "silver"
-      //               ? "#e2e8f0"
-      //               : "#f9a8d4"
-      //         }
-      //       />
-      //       <stop
-      //         offset="100%"
-      //         stopColor={
-      //           tier === "gold"
-      //             ? "#d97706"
-      //             : tier === "silver"
-      //               ? "#94a3b8"
-      //               : "#db2777"
-      //         }
-      //       />
-      //     </radialGradient>
-      //   </defs>
-      //   <circle cx="20" cy="13" r="6" fill={`url(#cb-${tier})`} />
-      //   <circle cx="8" cy="26" r="5" fill={`url(#cb-${tier})`} opacity="0.8" />
-      //   <circle cx="32" cy="26" r="5" fill={`url(#cb-${tier})`} opacity="0.8" />
-      //   <path
-      //     d="M14 19 L8 21 M26 19 L32 21"
-      //     stroke={`url(#cb-${tier})`}
-      //     strokeWidth="1.5"
-      //   />
-      //   <path
-      //     d="M8 31 Q20 36 32 31"
-      //     stroke={`url(#cb-${tier})`}
-      //     strokeWidth="1.5"
-      //     fill="none"
-      //   />
-      // </svg>
+      
       <img
-        src={communityBuilderBronzeImages[tier]}
+        src={communityBuilderImages[tier]}
         alt="Impact Creator Badge"
         className="w-full h-full object-cover rounded-full"
         draggable={false}
