@@ -223,7 +223,7 @@ function SingleTechDomainDetails() {
       <NavBar />
 
       {/* ── HEADER ─────────────────────────────────────────────── */}
-      <header className="px-4 md:px-10  pt-7 md:pt-10 pb-7 border-white/5">
+      <header className="px-4 md:px-10 max-w-[1800px] mx-auto  pt-7 md:pt-10 pb-7 border-white/5">
         <div className="w-full mx-auto md:flex flex-wrap items-start justify-between gap-5">
           {/* Title */}
           <div>
@@ -270,7 +270,7 @@ function SingleTechDomainDetails() {
       </header>
 
       {/* ── STATS ROW ──────────────────────────────────────────── */}
-      <div className="w-full mx-auto md:mx-0 px-4 md:px-10 ">
+      <div className="w-full max-w-[1800px] mx-auto w-full xl:mx-auto md:mx-0 px-4 md:px-10 ">
         {statsLoader ? (
           <div className="flex w-fit mx-auto md:mx-0 flex-wrap rounded-xl overflow-hidden border border-white/5 divide-x divide-white/5 animate-pulse">
             {[
@@ -321,7 +321,7 @@ function SingleTechDomainDetails() {
 
       {/* ── MAIN CONTENT ───────────────────────────────────────── */}
       {filter !== "Posts" ? (
-        <main className="w-full min-h-screen mx-auto px-4 md:px-10 pb-16">
+        <main className="w-full max-w-[1800px] mx-auto min-h-screen mx-auto px-4 md:px-10 pb-16">
           {/* ── COORDINATORS ─────────────────────────────────────── */}
           {(filter === "Coordinators" || filter === "") &&
             authors.filter((a) => a.role === "coordinator").length > 0 && (

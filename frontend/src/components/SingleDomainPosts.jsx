@@ -159,7 +159,7 @@ const filteredPosts = useMemo(() => {
   // console.log("domain posts---", posts)
   // console.log("domain postCount---", postCount)
   return (
-     <div className="relative min-h-screen">
+     <div className="relative max-w-[1800px] mx-auto min-h-screen">
 
     
       {/* Search */}

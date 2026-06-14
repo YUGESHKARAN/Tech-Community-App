@@ -29,16 +29,16 @@ function HomePage() {
 
   return (
     // <div className="min-h-screen h-auto  relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white flex flex-col">
-    <div className="min-h-screen h-auto  relative bg-gray-900 text-white flex flex-col">
+    <div className="min-h-screen  h-auto  relative bg-gray-900 text-white flex flex-col">
       <NavBar />
           
 
 
-      <div className=" flex items-center justify-between top-0  p-2 pl-3 pb-0 md:p-0  md:pt-2 w-fit   md:ml-4 md:mx-auto">
+      <div className=" flex  w-full items-center max-w-[1800px] justify-between p-2 pl-3 pb-0 md:p-0 md:pl-3  md:pt-2 md:ml-4 xl:mx-auto">
         <div className="flex items-center gap-3 md:gap-5">
           <button
             onClick={() => setActiveTab("posts")}
-            className={`relative pb-1 md:pb-2 text-[10px] md:text-sm font-medium transition-all duration-300
+            className={`relative pb-1 md:pb-2 text-[10px] md:text-xs font-medium transition-all duration-300
         ${
           activeTab === "posts"
             ? "text-white"
@@ -53,7 +53,7 @@ function HomePage() {
 
           <button
             onClick={() => setActiveTab("playlists")}
-            className={`relative pb-1 md:pb-2 text-[10px] md:text-sm font-medium transition-all duration-300
+            className={`relative pb-1 md:pb-2 text-[10px] md:text-xs font-medium transition-all duration-300
         ${
           activeTab === "playlists"
             ? "text-white"

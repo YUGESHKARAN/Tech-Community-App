@@ -1,6 +1,6 @@
 const PostDetailSkeleton = () => {
   return (
-    <div className="w-full xl:w-11/12 mx-auto px-3 md:px-4 md:px-8 pt-3 pb-20 md:pt-4 md:pb-10 animate-pulse">
+    <div className="w-full max-w-[1800px] mx-auto xl:w-11/12 mx-auto px-3 md:px-4 md:px-8 pt-3 pb-20 md:pt-4 md:pb-10 animate-pulse">
       {/* Header */}
       <div className="flex items-center justify-between md:mb-6">
         <div className="flex items-center gap-3">

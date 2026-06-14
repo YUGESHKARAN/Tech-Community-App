@@ -220,7 +220,7 @@ function ViewTutorPlaylist() {
     <div className="min-h-screen bg-gray-900 text-white">
       <NavBar />
 
-      <div className="w-full mx-auto px-2 min-h-screen h-auto md:px-8 py-6">
+      <div className="w-full mx-auto px-2 max-w-[1800px] mx-auto min-h-screen h-auto md:px-8 py-6">
         <h1 className="text-3xl w-full mb-7 pl-1 mx-auto hidden md:block font-semibold">
           {loading ? "Loading Playlist..." : playlistData?.title}
         </h1>

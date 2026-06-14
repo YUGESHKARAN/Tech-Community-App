@@ -145,7 +145,7 @@ const scrollToAchievements = () => {
       <NavBar />
      {!loading? 
      authorName &&
-     <div className="w-full min-h-screen mx-auto px-4 md:px-6 pt-2 md:pt-6 pb-8 pb-24">
+     <div className="w-full max-w-[1800px] mx-auto min-h-screen mx-auto px-4 md:px-6 pt-2 md:pt-6 pb-8 pb-24">
 
         {/* ── Page header ──────────────────────────────────────── */}
         <div className="mb-8 px-1">
@@ -468,7 +468,7 @@ const scrollToAchievements = () => {
       <ProfileViewSkeleton role={author.role} />
 }
 {!loading && !authorName && (
-  <div className="w-full h-[44vh] mb-24 md:h-[55vh] flex flex-col items-center justify-center">
+  <div className="w-full h-[44vh] max-w-[1800px] mx-auto mb-24 md:h-[55vh] flex flex-col items-center justify-center">
               {/* <p className="text-gray-500">Post not found.</p> */}
               <img className="w-60 md:w-72 " src={empty_state_author} alt="" />
              <p className="text-gray-400 max-w-xs md:max-w-md text-sm md:text-base flex justify-center items-center text-center">

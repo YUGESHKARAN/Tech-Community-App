@@ -253,22 +253,22 @@ function BookMarkPage() {
   // #f8f0e8
 
   return (
-    <div className="w-full  bg-gray-900 h-auto reltive  ">
+    <div className="w-full  bg-gray-900  h-auto reltive  ">
       <NavBar />
-      <h1 className=" text-xl mt-3 md:mt-4 px-2  md:w-full flex items-center gap-2 md:gap-3 mx-auto md:text-3xl font-semibold text-white tracking-wide">
+      <h1 className=" text-xl max-w-[1800px] mx-auto mt-3 md:mt-4 px-2  md:w-full flex items-center gap-2 md:gap-3 mx-auto md:text-3xl font-semibold text-white tracking-wide">
         <BiBookmarkAlt className="text-green-400"/>
         <span className="group tracking-tight text-white"> My Bookmarks </span>{" "}
       </h1>
 
       <div
         // className="w-11/12  mx-auto mb-10 border-b border-gray-800"
-        className=" flex items-center justify-between top-0 z-40 p-2 pl-3 pb-0 md:p-0  md:pt-2 w-screen  md:w-fit md:ml-4 mx-auto "
+        className=" flex max-w-[1800px]  px-auto items-center justify-between  z-40 p-2 pl-3 pb-0 md:p-0 md:pl-3  md:pt-2   md:ml-4 xl:mx-auto "
       >
         <div className="flex items-center gap-3 md:gap-5">
           {/* Posts */}
           <button
             onClick={() => setActiveTab("posts")}
-            className={`relative pb-1 md:pb-2 text-[10px] md:text-sm  font-semibold transition-all duration-300
+            className={`relative pb-1 md:pb-2 text-[10px] md:text-xs  font-semibold transition-all duration-300
         ${
           activeTab === "posts"
             ? "text-white"
@@ -284,7 +284,7 @@ function BookMarkPage() {
           {/* Playlists */}
           <button
             onClick={() => setActiveTab("playlists")}
-            className={`relative pb-1 md:pb-2 text-[10px] md:text-sm  font-semibold transition-all duration-300
+            className={`relative pb-1 md:pb-2 text-[10px] md:text-xs  font-semibold transition-all duration-300
         ${
           activeTab === "playlists"
             ? "text-white"
@@ -339,7 +339,7 @@ function BookMarkPage() {
       
               <div 
               // className="flex md:max-w-5xl md:w-fit mt-10 scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto"
-              className="flex w-full px-3  md:w-fit md:max-w-7xl py-3 z-50 scrollbar-hide mx-auto items-center justify-start gap-3 overflow-x-auto"
+              className="flex  max-w-[1800px] mx-auto w-full px-3  md:w-fit md:max-w-7xl py-3 z-50 scrollbar-hide mx-auto items-center justify-start gap-3 overflow-x-auto"
               >
                 {/* All Button */}
                 <div
@@ -373,12 +373,12 @@ function BookMarkPage() {
                     </div>
             )}
 
-             {loading && !posts.length > 0 && <PillLoader/>}
+            
 
-            <div className="flex relative  w-full flex-wrap justify-center h-auto mx-auto">
+            <div className="flex relative  max-w-[1800px] mx-auto  w-full flex-wrap justify-center h-auto mx-auto">
               
-
-              <div className="mx-auto grid grid-cols-1 w-full  md:px-2 mx-auto md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3  md:gap-10 h-auto">
+             {loading && !posts.length > 0 && <PillLoader/>}
+              <div className="mx-auto grid grid-cols-1 w-full  md:px-2 mx-auto md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 3xl:grid-cols-5 gap-3  md:gap-10 h-auto">
 
                 {
              

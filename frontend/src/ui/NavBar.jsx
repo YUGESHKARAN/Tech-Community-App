@@ -226,7 +226,7 @@ function NavBar() {
   return (
     <div
       className="
-      flex items-center justify-between
+      flex items-center width-max mx-auto justify-between
       w-full h-16 px-3 pl-4 md:px-6
       border-b border-slate-700/50
       shadow-sm
@@ -719,7 +719,7 @@ function NavBar() {
         ref={notificationRef}
         className={`${
           showNotification && !showAddContent
-            ? "fixed top-16 right-2 z-50 md:w-[320px] w-72 pb-4 bg-gray-900 border border-gray-700 shadow-2xl rounded-xl md:rounded-lg transition-all duration-300"
+            ? "fixed  top-16 right-2 z-50 md:w-[320px] w-72 pb-4 bg-gray-900 border border-gray-700 shadow-2xl rounded-xl md:rounded-lg transition-all duration-300"
             : "hidden"
         }`}
       >

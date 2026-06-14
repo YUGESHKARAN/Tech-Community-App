@@ -699,7 +699,7 @@ function Announcement() {
   return (
     <div className="min-h-screen  bg-[#0f172a] text-slate-200">
       <NavBar />
-      <div className="min-h-screen">
+      <div className="min-h-screen max-w-[1800px] mx-auto w-full">
         {/* ================= HEADER ================= */}
         <div className="w-full">
           <div className="w-full mx-auto px-4 md:px-20 pt-4 pb-5 md:pt-6 flex justify-between items-center">

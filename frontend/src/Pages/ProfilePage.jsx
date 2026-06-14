@@ -238,7 +238,7 @@ const scrollToAchievements = () => {
         <NavBar />
 
         {!loader ? (
-          <div className="w-full min-h-screen mx-auto px-4 md:px-6 pt-2  md:pt-6 pb-8 pb-24">
+          <div className="w-full min-h-screen max-w-[1800px] mx-auto px-4 md:px-6 pt-2  md:pt- pb-8 pb-24">
             {/* ── Page header ──────────────────────────────────────── */}
             <div className="flex items-center justify-between mb-0 md:mb-8 px-1">
               <div>

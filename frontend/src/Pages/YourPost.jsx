@@ -261,13 +261,13 @@ function YourPost() {
     <div className="w-full min-h-screen bg-gray-900 h-auto reltive  ">
       <NavBar />
 
-          <h1 className=" text-xl mt-3 md:mt-4 px-2 md:px-6  md:w-full flex items-center gap-2 mx-auto md:text-3xl font-semibold text-white tracking-wide">
+          <h1 className=" text-xl max-w-[1800px] mx-auto mt-3 md:mt-4 px-2 md:px-6  md:w-full flex items-center gap-2 mx-auto md:text-3xl font-semibold text-white tracking-wide">
           <BsPersonWorkspace />
           <span className="group text-white tracking-tight"> My Posts</span>{" "}
         </h1>
         
     {/* ================= SEARCH ================= */}
-           {posts.length > 0 &&  <div className="flex mx-3 md:mx-0 justify-center mt-4 mb-2 md:mt-0 md:mb-0 ">
+           {posts.length > 0 &&  <div className="flex max-w-[1800px] xl:mx-auto mx-3 md:mx-0 justify-center mt-4 mb-2 md:mt-0 md:mb-0 ">
               <div className="w-full mx-auto max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
                 <IoSearchOutline className="text-xl text-gray-400" />
                 <input
@@ -284,7 +284,7 @@ function YourPost() {
             </div>}
         {posts.length > 0 && (
               <div
-                className={`w-full sticky top-0 z-40
+                className={`w-full max-w-[1800px] w-full xl:mx-auto sticky top-0 z-40
                 ${isStickyActive ? "bg-gray-900 " : "bg-transparent"}`}
               >
                 <div
@@ -324,10 +324,10 @@ function YourPost() {
             {loader && !posts.length > 0 && <PillLoader />}
 
            
-      <div className="min-h-screen  pt-2 pb-8">
+      <div className="min-h-screen max-w-[1800px] mx-auto  pt-2 pb-8">
         <div className=" w-full   h-auto mx-auto">
 
-          <div className="md:w-full md:px-2 grid grid-cols-1 w-full mx-auto md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-10 h-auto">
+          <div className="md:w-full md:px-2 grid grid-cols-1 w-full mx-auto md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 3xl:grid-cols-5 gap-3 md:gap-10 h-auto">
             {/* Posts Grid */}
             {filteredPosts?.map((data, index) => (
               <article

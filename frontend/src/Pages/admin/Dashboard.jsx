@@ -102,7 +102,7 @@ function Dashboard() {
     <div className="min-h-screen h-auto  relative bg-gray-900 text-white flex flex-col">
       <NavBar />
 
-      <div className="md:flex h-full  bg-gray-900 text-white overflow-hidden">
+      <div className="md:flex h-full width-max mx-auto  bg-gray-900 text-white overflow-hidden">
         {/* ── SIDEBAR ──────────────────────────────────────────────────────────── */}
         <aside
           className={`${!showSideBar ? "w-20 py-5" : "md:w-80 shrink-0 bg-gray-900  flex flex-col py-5 px-3 gap-1"} transition-all duration-300  hidden`}

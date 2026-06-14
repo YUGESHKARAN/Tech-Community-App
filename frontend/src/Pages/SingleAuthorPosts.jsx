@@ -260,7 +260,7 @@ const filteredPosts = useMemo(() => {
   return (
     <div className="w-full reltive min-h-screen  bg-gray-900  h-auto reltive  ">
       <NavBar />
-      <div className="relative min-h-screen   md:pb-8"> 
+      <div className="relative min-h-screen max-w-[1800px] mx-auto  md:pb-8"> 
         <div className="w-full md:px-4 mx-auto mt-3 md:mt-4 ">
           <h1 className="text-2xl px-2 md:text-3xl mb-3 font-semibold tracking-tight  text-white w-full mx-auto">
             Posts Page
@@ -378,7 +378,7 @@ const filteredPosts = useMemo(() => {
             {loader && !posts.length > 0 && <PillLoader />}
 
 
-        <div className="flex relative  w-full md:mx-2 flex-wrap justify-center h-auto mx-auto">
+        <div className="flex relative max-w-[1800px] mx-auto  w-full md:mx-2 flex-wrap justify-center h-auto mx-auto">
 
           {/* <div className="md:w-full grid grid-cols-1 w-full mx-auto md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-10 mt-7 md:mt-10 h-auto">
             {filteredPosts?.map((data, index) => (

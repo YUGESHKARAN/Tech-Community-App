@@ -144,7 +144,7 @@ function TechCommunity() {
     <div className="min-h-screen bg-gray-900 text-white flex flex-col">
       <NavBar />
 
-      <div className="flex-grow px-4 pb-20">
+      <div className="flex-grow px-4 max-w-[1800px] mx-auto w-full pb-20">
         {/* ── Hero header ───────────────────────────────────────────── */}
         <div className="pt-7 pb-7 md:pb-12 text-center">
           {/* <p className="text-[10px] font-semibold tracking-[0.3em] text-emerald-400 uppercase mb-3">

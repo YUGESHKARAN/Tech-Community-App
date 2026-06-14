@@ -109,14 +109,14 @@ useEffect(() => {
     <div className="w-full min-h-screen bg-gray-900 h-auto reltive  ">
       <NavBar />
 
-      <h1 className=" text-xl w-full px-4 md:px-6 flex items-center gap-2 mt-3 md:mt-4 mx-auto md:text-3xl font-semibold text-white tracking-wide">
+      <h1 className=" text-xl w-full max-w-[1800px] mx-auto px-4 md:px-6 flex items-center gap-2 mt-3 md:mt-4 mx-auto md:text-3xl font-semibold text-white tracking-wide">
         <BsPersonWorkspace />
         <span className="group text-white tracking-tight"> My Tutor Playlist</span>{" "}
       </h1>
 
              {/* ================= SEARCH ================= */}
            { tutorPlayListByEmail.length > 0 &&  
-                 <div className="flex mx-3 md:mx-0 justify-center mb-2 mt-4 md:my-4 md:mb-0 ">
+                 <div className="flex mx-3 max-w-[1800px] xl:mx-auto w-full md:mx-0 justify-center mb-2 mt-4 md:my-4 md:mb-0 ">
                    <div className="w-full mx-auto md:max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
                      <IoSearchOutline className="text-xl text-gray-400" />
                      <input
@@ -137,7 +137,7 @@ useEffect(() => {
            {loading && !tutorPlayListByEmail.length > 0 && <PillLoader />}
         {tutorPlayListByEmail.length > 0 && (
         <div
-          className={`w-full sticky top-0 z-40
+          className={`w-full sticky max-w-[1800px] mx-auto top-0 z-40
                 ${isStickyActive ? "bg-gray-900 " : "bg-transparent"}`}
         >
           <div
@@ -175,7 +175,7 @@ useEffect(() => {
       )}
 
 
-      <div className="min-h-screen md:px-4 w-full md:mt-4 mx-auto bg-gray-900 pb-8">
+      <div className="min-h-screen max-w-[1800px] mx-auto md:px-4 w-full md:mt-4 mx-auto bg-gray-900 pb-8">
         {filteredPlaylist.length > 0 && (
           <div
             className="
@@ -184,7 +184,7 @@ useEffect(() => {
               md:grid-cols-2
               lg:grid-cols-3
               xl:grid-cols-4
-              3xl:grid-cols-5
+              2xl:grid-cols-5
               overflow-visible
               space-y-3
               md:space-y-0

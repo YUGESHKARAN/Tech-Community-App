@@ -169,7 +169,7 @@ const getUniqueCategories = (tutorPlayList = []) => {
                 md:grid-cols-2
                 lg:grid-cols-3
                 xl:grid-cols-4
-                3xl:grid-cols-5
+                2xl:grid-cols-5
                 overflow-visible
                 space-y-3
                 md:space-y-0
@@ -183,7 +183,7 @@ const getUniqueCategories = (tutorPlayList = []) => {
               <div
                 key={playlist._id}
                 // className="min-w-[200px]  sm:min-w-0 "
-                className="min-w-[150px]  sm:min-w-0 "
+                className="min-w-[150px] sm:min-w-0 "
               >
                 <TutorPlaylistCard
                   playlist={playlist}

@@ -17,7 +17,7 @@ function Workspace() {
     <div className="w-full relative min-h-screen bg-gray-900">
       <NavBar />
 
-      <div className="w-ful mx-auto px-4 h-screen md:px-8 pt-4 text-white">
+      <div className="w-full max-w-[1800px] mx-auto mx-auto px-4 h-screen md:px-8 pt-4 text-white">
         {/* Header */}
         <div className="md:mb-10 mb-7">
           <h1 className="text-xl flex items-center tracking-tight gap-2 md:gap-3 md:text-4xl font-semibold ">

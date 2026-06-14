@@ -336,7 +336,7 @@ function AddPost() {
     <div className="min-h-screen relative bg-gray-900 text-white">
       <NavBar />
 
-      <div className="min-h-screen   w-full pt-4 pb-8">
+      <div className="min-h-screen  max-w-[1800px] mx-auto  w-full pt-4 pb-8">
         <div className="w-full  mx-auto  md:px-12">
           <div className="md:mb-8 mb-6 flex px-4 items-center justify-between">
             <div>

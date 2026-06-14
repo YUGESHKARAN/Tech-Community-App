@@ -331,7 +331,7 @@ const recommendedAuthors = useMemo(() => {
         <span className="group text-white">My Network </span>{" "}
       </h1> */}
 
-      <div className="w-full px-4 mx-auto flex items-center gap-2 md:gap-3 py-3 md:pt-6">
+      <div className="w-full max-w-[1800px] mx-auto px-4 mx-auto flex items-center gap-2 md:gap-3 py-3 md:pt-6">
         <IoIosGitNetwork className="text-green-400 text-xl md:text-3xl" />
         <h1 className="text-xl md:text-3xl font-semibold tracking-tight text-white">
           My Network
@@ -339,7 +339,7 @@ const recommendedAuthors = useMemo(() => {
       </div>
 
        {/* Search and Filter */}
-      <div className="w-full  px-4 mx-auto flex mt-0 md:mt-4   md:flex-row  items-center gap-2 md:gap-3 mb-3 md:mb-6">
+      <div className="w-full max-w-[1800px] px-4 mx-auto flex mt-0 md:mt-4   md:flex-row  items-center gap-2 md:gap-3 mb-3 md:mb-6">
         <div
           // className="md:w-1/3 w-3/5 px-4 py-2 flex items-center gap-2 justify-center rounded-md bg-gray-600 border border-white text-xs md:text-base text-white placeholder-gray-400"
           className="w-full max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition"
@@ -479,13 +479,13 @@ const recommendedAuthors = useMemo(() => {
   
       {/* Recommended authors */}
       {recommendedAuthors?.length > 0 && !debouncedSearch && !roleFilter && (
-        <h2 className="w-full px-4 mx-auto tracking-wide  text-left text-lg text-green-400 md:text-2xl font-semibold">
+        <h2 className="w-full max-w-[1800px] mx-auto px-4 mx-auto tracking-wide  text-left text-lg text-green-400 md:text-2xl font-semibold">
           Recommended
         </h2>
       )}
 
       <div
-        className={`${recommendedAuthors?.length > 0 && !debouncedSearch && !roleFilter  ? "flex w-full px-4 mx-auto gap-2 overflow-x-auto scrollbar-hide mt-2 md:mt-4 pb-2" : "hidden"}`}
+        className={`${recommendedAuthors?.length > 0 && !debouncedSearch && !roleFilter  ? "flex w-full px-4 max-w-[1800px] mx-auto gap-2 overflow-x-auto scrollbar-hide mt-2 md:mt-4 pb-2" : "hidden"}`}
       >
         {recommendedAuthors.map((author, index) => (
           <div
@@ -572,7 +572,7 @@ const recommendedAuthors = useMemo(() => {
         recommendedAuthors?.length == 0 &&
         filteredAuthors?.length == 0 && (
           <>
-            <h2 className="w-full px-4 mx-auto  tracking-wide text-left text-lg text-green-400 md:text-2xl font-semibold">
+            <h2 className="w-full max-w-[1800px] mx-auto px-4 mx-auto  tracking-wide text-left text-lg text-green-400 md:text-2xl font-semibold">
               Recommended
             </h2>
             <RecommendedAuthorsSkeleton />
@@ -581,7 +581,7 @@ const recommendedAuthors = useMemo(() => {
 
      
 
-      <div className="w-full px-4 mx-auto min-h-screen flex flex-col items-center text-white">
+      <div className="w-full px-4 max-w-[1800px] mx-auto min-h-screen flex flex-col items-center text-white">
         {/* Coordinators Section */}
         {filteredAuthors.filter((author) => author.role === "coordinator")
           .length > 0 && (

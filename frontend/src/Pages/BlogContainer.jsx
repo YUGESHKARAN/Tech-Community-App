@@ -282,8 +282,8 @@ function BlogContainer({ activeTab, setActiveTab }) {
     return filtered;
   }, [posts, searchTerm, postCategory, debouncedSearch]);
 
-  return (
-    <div className="min-h-screen relative  ">
+  return ( 
+    <div className="min-h-screen relative max-w-[1800px] mx-auto  ">
       <div className="flex-col w-full md:gap-5 relative flex-wrap justify-center h-auto mx-auto">
         {/* Tutor Playlist section starts here */}
         {activeTab === "playlists" && (
@@ -364,7 +364,7 @@ function BlogContainer({ activeTab, setActiveTab }) {
                 </h2> */}
 
               {/* <PostsComponent filteredPosts={filteredPosts} posts={posts} setPosts={setPosts} loading={loading} hasMore={hasMore} debouncedSearch={debouncedSearch}  postCategory={postCategory} setPostCategory={setPostCategory}/> */}
-              <div className="mx-auto grid grid-cols-1 md:px-2 w-full  mx-auto  md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-10  h-auto">
+              <div className="mx-auto grid grid-cols-1 md:px-2 w-full  mx-auto  md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 3xl:grid-cols-5 gap-3 md:gap-10  h-auto">
                 {filteredPosts?.map((data, index) => (
                   <article
                     key={data._id}

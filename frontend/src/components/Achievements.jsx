@@ -1133,7 +1133,7 @@ function BadgeDrawer({ badge, onClose, showClose }) {
   return (
     <div className=" mt-2 md:mt-0 w-full md:max-w-sm rounded-2xl  overflow-hidden animate-in slide-in-from-top-2 duration-300">
       {/* header */}
-      <div className="flex items-start gap-3 md:p-4 p-1 border-b border-white/[0.06]">
+      <div className="flex items-start gap-3 md:p-4 md:pb-2 p-1 border-b border-white/[0.06]">
         <div className="md:w-20 w-10 h-full shrink-0">
           {meta.icon(badge.currentTier)}
         </div>

@@ -46,6 +46,10 @@ body {
     scrollbar-width: none; /* Firefox */
   }
 
+  .width-max{
+    max-width: 1800px;
+  }
+
 
   /* Modern Emerald Scrollbar (Dark Theme Compatible) */
 

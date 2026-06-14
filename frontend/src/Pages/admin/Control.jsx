@@ -310,7 +310,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
        <MdManageAccounts/> Control Panel
       </h1> */}
 
-       <div className="w-full px-4 mx-auto flex items-center gap-2 pt-3 pb-1 md:pb-3 md:pt-6">
+       <div className="w-full px-4 mx-auto flex width-max items-center gap-2 pt-3 pb-1 md:pb-3 md:pt-6">
               <MdManageAccounts className="text-green-400 text-xl md:text-3xl" />
               <h1 className="text-xl md:text-3xl font-semibold tracking-tight text-white">
                 Control Panel
@@ -318,7 +318,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
             </div>
 
       {/* Search and Filter */}
-      <div className="w-full px-4 py-2 mx-auto flex  md:flex-row  items-center gap-2 md:gap-3 mb-3 md:mb-6">
+      <div className="w-full width-max px-4 py-2 mx-auto flex  md:flex-row  items-center gap-2 md:gap-3 mb-3 md:mb-6">
         <div
           // className="md:w-1/3 w-3/5 px-4 py-2 flex items-center gap-2 justify-center rounded-md bg-gray-600 border border-white text-xs md:text-sm text-white placeholder-gray-400"
           className="w-full max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition"
@@ -492,7 +492,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
         <h1
         className={`${
           roleFilter === "admin" || roleFilter === ""
-            ? " mx-4 text-center text-sm md:text-base  tracking-widest uppercase text-gray-400  font-semibold mb-6"
+            ? " mx-4 text-center width-max w-full mx-auto text-sm md:text-base   tracking-widest uppercase text-gray-400  font-semibold mb-6"
             : "hidden"
         }`}
       >
@@ -508,7 +508,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
               : roleFilter === "admin"
                 ? "min-h-screen md:mb-16 mb-10 flex flex-col   md:grid  md:grid-cols-2 lg:grid-cols-3 gap-4 w-full px-4 mx-auto mt-2"
                 : "hidden"
-          }`}
+          } width-max mx-auto`}
         >
           {filteredAdmins.length > 0 ? (
             filteredAdmins.map((author) => (
@@ -671,7 +671,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
       ) : (
         adminLoading? <AdminCardLoader roleFilter={roleFilter} />
         :
-         <p className=" text-center text-[10px] md:text-xs col-span-full py-4 text-gray-500">
+         <p className=" text-center width-max mx-auto text-[10px] md:text-xs col-span-full py-4 text-gray-500">
               No Admins found
             </p>
         
@@ -684,7 +684,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
           roleFilter === "coordinator" || roleFilter === ""
             ? " mx-4 text-center text-sm md:text-base  tracking-widest uppercase text-gray-400  font-semibold mb-6"
             : "hidden"
-        }`}
+        } width-max mx-auto`}
       >
         Contributors
       </h1>
@@ -697,7 +697,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
               : roleFilter === "coordinator"
                 ? "min-h-screen h-auto  mb-10 flex flex-col  md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 w-full px-4 mx-auto mt-2"
                 : "hidden"
-          }`}
+          } width-max mx-auto`}
         >
           {filteredCoordinators.length > 0 ? (
             filteredCoordinators.map((author) => (
@@ -860,7 +860,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
       ) : (
        coordinatorsLoading? <CoordinatorLoader roleFilter={roleFilter} />
        :
-        <p className=" text-center text-[10px] md:text-xs col-span-full py-4 text-gray-500">
+        <p className=" text-center text-[10px] width-max mx-auto md:text-xs col-span-full py-4 text-gray-500">
               No Contributors found
             </p>
       )}
@@ -873,7 +873,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
           roleFilter === "student" || roleFilter === ""
             ? " mx-4 text-center text-sm md:text-base  tracking-widest uppercase text-gray-400  font-semibold mb-6"
             : "hidden"
-        }`}
+        } width-max mx-auto`}
       >
         Users
       </h1>
@@ -886,7 +886,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
               : roleFilter === "student"
                 ? " min-h-screen h-auto md:mb-16 mb-10  flex flex-col   md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 w-full px-4 mx-auto mt-2"
                 : "hidden"
-          } bg-gray-900`}
+          } bg-gray-900 width-max mx-auto`}
         >
           {filteredStudents.length > 0 ? (
             filteredStudents.map((author) => (
@@ -990,7 +990,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
           )}
         </div>
       ) : (
-        studentLoading ? <StudentLoader roleFilter={roleFilter} />:  <p className=" text-center text-[10px] md:text-xs col-span-full py-4 text-gray-500">
+        studentLoading ? <StudentLoader roleFilter={roleFilter} />:  <p className=" text-center width-max mx-auto text-[10px] md:text-xs col-span-full py-4 text-gray-500">
               No Users found
             </p>
       )}

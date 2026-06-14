@@ -149,7 +149,7 @@ const TutorBookMarkPlaylist = () => {
       {bookMarPlaylist.length > 0 && (
         
             <div
-              className={`w-full sticky top-0 z-40
+              className={`w-full max-w-[1800px] mx-auto sticky top-0 z-40
                 ${isStickyActive ? "bg-gray-900 " : "bg-transparent"}`}
             >
               <div
@@ -209,13 +209,14 @@ const TutorBookMarkPlaylist = () => {
               md:grid-cols-2
               lg:grid-cols-3
               xl:grid-cols-4
-              3xl:grid-cols-5
+             2xl:grid-cols-5
               overflow-visible
               space-y-0
               md:space-y-0
               md:mt-4 
               md:px-0
               px-3
+              max-w-[1800px] mx-auto
               px-auto"
           >
      

@@ -10,7 +10,7 @@ const StudentLoader = ({roleFilter}) => {
       : roleFilter === "admin"
       ? "min-h-screen md:mb-16 mb-10 flex flex-col md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 w-full px-4 mx-auto mt-2"
       : "hidden"
-  } animate-pulse`}
+  } animate-pulse width-max mx-auto`}
 >
   {Array.from({ length: 6 }).map((_, index) => (
     <div
