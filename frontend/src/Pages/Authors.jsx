@@ -21,6 +21,7 @@ import Cookies from "js-cookie";
 import Fuse from "fuse.js";
 import { getItem } from "../utils/encode";
 import highlightText from "../hooks/highlightText";
+import BadgeIcons from "../components/achievements/BadgeIcons";
 function Authors() {
   const [authors, setAuthors] = useState([]);
   // const email = localStorage.getItem("email");
@@ -598,7 +599,7 @@ const recommendedAuthors = useMemo(() => {
             .map((author, index) => (
               <div
                 key={index}
-                className="bg-gray-900/70 border border-gray-700 rounded-xl p-5 text-center hover:shadow-xl transition"
+                className="bg-gray-900/70 relative w-full border border-gray-700 rounded-xl p-5 text-center hover:shadow-xl transition"
               >
                 <Link to={`/viewProfile/${author.email}`}>
                   <img
@@ -610,6 +611,15 @@ const recommendedAuthors = useMemo(() => {
                     className="w-24 h-24 mx-auto bg-gray-700 rounded-full object-cover border border-gray-900"
                   />
                 </Link>
+
+                 {/* {author?.badges?.length>0 && (
+                                  <div
+                                
+                                    className="cursor-pointer z-40 w-full"
+                                  >
+                                    <BadgeIcons badges={author?.badges} />
+                                  </div>
+                                )} */}
 
                 <h3 className="mt-3 font-semibold text-white truncate">
                   {/* {author.authorName} */}
