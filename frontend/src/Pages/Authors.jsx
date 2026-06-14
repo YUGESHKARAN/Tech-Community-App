@@ -512,7 +512,7 @@ const recommendedAuthors = useMemo(() => {
                                 
                                     className="cursor-pointer text-xs w-fit"
                                   >
-                                    <BadgeIcons badges={author?.badges} parentClass="top-0 right-0  -space-x-1.5" shieldClassName="w-4 h-4" />
+                                    <BadgeIcons badges={author?.badges} parentClass="-top-1.5 -right-1.5  -space-x-1.5" shieldClassName="w-4 h-4" />
                                   </div>
                                 )}
 
