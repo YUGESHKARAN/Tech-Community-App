@@ -8,6 +8,8 @@ import strongPublisherSilver from "../../assets/achievements/strong_publisher_si
 import strongPublisherGold from "../../assets/achievements/strong_publisher_gold.png"
 
 import communityBuilderBronze from "../../assets/achievements/community_builder_bronze.png"
+import { twMerge } from "tailwind-merge";
+import clsx from "clsx";
 
 const impactCreatorImages = {
   bronze: impactCreatorBronze,
@@ -28,7 +30,7 @@ const communityBuilderBronzeImages = {
   gold: communityBuilderBronze,
 };
 
-function BadgeIcons({ badges = [] }) {
+function BadgeIcons({ badges = [], parentClass="", shieldClassName="" }) {
 
     const TIER_CONFIG = {
   bronze: {
@@ -143,14 +145,30 @@ const BADGE_META = {
         //     setShowAll(!showAll);
         //   }
         }}
-        className="flex absolute right-2 top-4 cursor-pointer max-w-40 md:max-w-xl flex-wrap -space-x-2.5"
+        // className="flex absolute right-2 top-4 cursor-pointer max-w-40 md:max-w-xl flex-wrap -space-x-2.5"
+                 className={twMerge(
+        clsx(
+          `
+       flex absolute right-2 top-4 cursor-pointer max-w-40 md:max-w-xl flex-wrap -space-x-2.5
+          `,
+          parentClass
+        )
+      )}
       >
         {badges.slice(0, 4).map((b, i) => {
           const t = TIER_CONFIG[b.currentTier];
           return (
             <div
               key={i}
-              className={`w-6 h-6 rounded-full flex items-center justify-center`}
+              // className={`w-6 h-6 rounded-full flex items-center justify-center`}
+                className={twMerge(
+        clsx(
+          `
+       w-6 h-6 rounded-full flex items-center justify-center
+          `,
+          shieldClassName
+        )
+      )}
               style={{ zIndex: 10 - i }}
             >
               <div className="w-full h-full">

@@ -493,7 +493,7 @@ const recommendedAuthors = useMemo(() => {
             key={index}
             className="min-w-[260px] bg-gray-900/70 border border-gray-700 rounded-xl p-4 shadow hover:shadow-xl transition"
           >
-            <div className="flex items-center gap-3">
+            <div className="flex items-center relative gap-3">
               <Link
                 to={`/viewProfile/${author.email}`}
                 className="flex-shrink-0"
@@ -507,6 +507,14 @@ const recommendedAuthors = useMemo(() => {
                   className="w-12 h-12 bg-gray-700 rounded-full object-cover border border-gray-900"
                 />
               </Link>
+               {author?.badges?.length>0 && (
+                                  <div
+                                
+                                    className="cursor-pointer text-xs w-fit"
+                                  >
+                                    <BadgeIcons badges={author?.badges} parentClass="top-0 right-0  -space-x-1.5" shieldClassName="w-4 h-4" />
+                                  </div>
+                                )}
 
               <div className="flex-1 min-w-0 md:w-48 w-44">
                 <h3 className="text-sm font-semibold min-w-0 text-white truncate">
@@ -612,14 +620,14 @@ const recommendedAuthors = useMemo(() => {
                   />
                 </Link>
 
-                 {/* {author?.badges?.length>0 && (
+                 {author?.badges?.length>0 && (
                                   <div
                                 
-                                    className="cursor-pointer z-40 w-full"
+                                    className="cursor-pointer text-xs w-full"
                                   >
-                                    <BadgeIcons badges={author?.badges} />
+                                    <BadgeIcons badges={author?.badges} parentClass=" left-2 top-2 -space-x-1.5 md:-space-x-2" shieldClassName="w-4 h-4 md:w-5 md:h-5 " />
                                   </div>
-                                )} */}
+                                )}
 
                 <h3 className="mt-3 font-semibold text-white truncate">
                   {/* {author.authorName} */}
