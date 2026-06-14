@@ -56,7 +56,7 @@ function Workspace() {
 
         {/* Quick Actions */}
         <section className="md:mb-12 mb-7">
-          <h2 className="text-lg md:text-xl text-gray-400 tracking-tight font-semibold mb-4">
+          <h2 className="text-sm md:text-xl text-gray-400 tracking-tight font-semibold mb-4">
             Create Content
           </h2>
 
@@ -79,7 +79,7 @@ function Workspace() {
 
         {/* Management Section */}
         <section>
-          <h2 className="text-lg text-gray-400 tracking-tight md:text-xl font-semibold mb-4">
+          <h2 className="text-sm text-gray-400 tracking-tight md:text-xl font-semibold mb-4">
             Manage Content
           </h2>
 
