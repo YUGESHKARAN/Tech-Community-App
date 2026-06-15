@@ -371,6 +371,7 @@ const getAuthorsByDomain = async (req, res) => {
       role: author.role,
       profileLinks: author.personalLinks,
       community: author.community,
+      badges: author.badges || [],
     }));
 
     const total = await Author.countDocuments({

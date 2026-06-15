@@ -961,8 +961,48 @@ function NavIcon({ to, icon, label, close }) {
   );
 }
 
-import { useLocation } from "react-router-dom";
+// import { useLocation } from "react-router-dom";
 import { HiOutlineUserCircle } from "react-icons/hi";
+
+// function NavIconDesktop({ to, icon, label }) {
+//   const location = useLocation();
+//   const isActive = location.pathname === to;
+
+//   return (
+//     <Link
+//       to={to}
+//       className={`
+//         relative flex items-center gap-1 px-3 py-1.5 rounded-xl
+//         text-xs  transition-all duration-300 group
+//         ${
+//           isActive
+//             ? "text-emerald-400"
+//             : "text-white/95 group hover:text-white "
+//         }
+//       `}
+//     >
+//       {/* Icon */}
+//       <span
+//         className={`
+//           text-base transition-all duration-300
+//           ${isActive ? "text-emerald-400" : "text-white/70 group-hover:text-white"}
+//         `}
+//       >
+//         {icon}
+//       </span>
+
+//       {/* Label */}
+//       <span className="tracking-wide">{label}</span>
+
+//       {/* Active Indicator (bottom glow line) */}
+//       {isActive && (
+//         <span className="absolute -bottom-[6px] left-1/2 -translate-x-1/2 w-4 h-[2px] bg-emerald-400 rounded-full" />
+//       )}
+//     </Link>
+//   );
+// }
+import { motion } from "framer-motion";
+import {  useLocation } from "react-router-dom";
 
 function NavIconDesktop({ to, icon, label }) {
   const location = useLocation();
@@ -972,31 +1012,75 @@ function NavIconDesktop({ to, icon, label }) {
     <Link
       to={to}
       className={`
-        relative flex items-center gap-1 px-3 py-1.5 rounded-xl
-        text-xs  transition-all duration-300 group
+        relative
+        flex items-center gap-1
+        px-3 py-1.5
+        rounded-xl
+        text-xs
+        transition-all
+        duration-300
+        group
         ${
           isActive
             ? "text-emerald-400"
-            : "text-white/95 group hover:text-white "
+            : "text-white/95 hover:text-white"
         }
       `}
     >
       {/* Icon */}
-      <span
+      <motion.span
+        animate={{
+          scale: isActive ? 1.08 : 1,
+        }}
+        transition={{
+          duration: 0.5,
+        }}
         className={`
           text-base transition-all duration-300
-          ${isActive ? "text-emerald-400" : "text-white/70 group-hover:text-white"}
+          ${
+            isActive
+              ? "text-emerald-400"
+              : "text-white/70 group-hover:text-white"
+          }
         `}
       >
         {icon}
-      </span>
+      </motion.span>
 
       {/* Label */}
-      <span className="tracking-wide">{label}</span>
+      <motion.span
+        animate={{
+          scale: isActive ? 1.03 : 1,
+        }}
+        transition={{
+          duration: 0.2,
+        }}
+        className="tracking-wide"
+      >
+        {label}
+      </motion.span>
 
-      {/* Active Indicator (bottom glow line) */}
+      {/* Shared Sliding Indicator */}
       {isActive && (
-        <span className="absolute -bottom-[6px] left-1/2 -translate-x-1/2 w-4 h-[2px] bg-emerald-400 rounded-full" />
+        <motion.span
+          layoutId="desktop-nav-indicator"
+          className="
+            absolute
+            -bottom-[6px]
+            left-0
+            right-0
+            mx-auto
+            w-5
+            h-[2px]
+            rounded-full
+            bg-emerald-400
+          "
+          transition={{
+            type: "spring",
+            stiffness: 500,
+            damping: 35,
+          }}
+        />
       )}
     </Link>
   );

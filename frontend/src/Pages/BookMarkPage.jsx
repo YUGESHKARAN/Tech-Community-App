@@ -27,7 +27,7 @@ import useGetBookmarkPlaylist from "../hooks/useGetBookmarkPlaylist.js";
 import { getItem } from "../utils/encode.js";
 import empty_state_post from "../assets/empty_state_post.png";
 import RenderTextNoMarkdown from "../components/RenderTextNoMarkdown.jsx";
-
+import { motion } from "framer-motion";
 function BookMarkPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [posts, setPosts] = useState([]);
@@ -265,7 +265,7 @@ function BookMarkPage() {
         className=" flex max-w-[1800px]  px-auto items-center justify-between  z-40 p-2 pl-3 pb-0 md:p-0 md:pl-3  md:pt-2   md:ml-4 xl:mx-auto "
       >
         <div className="flex items-center gap-3 md:gap-5">
-          {/* Posts */}
+         
           <button
             onClick={() => setActiveTab("posts")}
             className={`relative pb-1 md:pb-2 text-[10px] md:text-xs  font-semibold transition-all duration-300
@@ -275,13 +275,30 @@ function BookMarkPage() {
             : "text-gray-400 hover:text-gray-200"
         }`}
           >
-            Posts
-            {activeTab === "posts" && (
-              <span className="absolute left-0 -bottom-[1px] w-full h-[2px] bg-teal-500 rounded-full"></span>
-            )}
+            <motion.span
+                 animate={{
+                   scale: activeTab === "posts" ? 1.05 : 1,
+                 }}
+                 transition={{
+                   duration: 0.2,
+                 }}
+               >
+                 Posts
+               </motion.span>
+           
+               {activeTab === "posts" && (
+                 <motion.span
+                   layoutId="footer-tab-indicator"
+                   className="absolute left-0 -bottom-[1px] h-[2px] w-full rounded-full bg-teal-500"
+                   transition={{
+                     type: "spring",
+                     stiffness: 500,
+                     damping: 35,
+                   }}
+                 />
+               )}
           </button>
 
-          {/* Playlists */}
           <button
             onClick={() => setActiveTab("playlists")}
             className={`relative pb-1 md:pb-2 text-[10px] md:text-xs  font-semibold transition-all duration-300
@@ -291,12 +308,31 @@ function BookMarkPage() {
             : "text-gray-400 hover:text-gray-200"
         }`}
           >
-            Playlists
-            {activeTab === "playlists" && (
-              <span className="absolute left-0 -bottom-[1px] w-full h-[2px] bg-teal-500 rounded-full"></span>
-            )}
+            <motion.span
+                 animate={{
+                   scale: activeTab === "playlists" ? 1.05 : 1,
+                 }}
+                 transition={{
+                   duration: 0.2,
+                 }}
+               >
+                 Playlists
+               </motion.span>
+           
+               {activeTab === "playlists" && (
+                 <motion.span
+                   layoutId="footer-tab-indicator"
+                   className="absolute left-0 -bottom-[1px] h-[2px] w-full rounded-full bg-teal-500"
+                   transition={{
+                     type: "spring",
+                     stiffness: 500,
+                     damping: 35,
+                   }}
+                 />
+               )}
           </button>
         </div>
+
       </div>
       
       <div className="flex-col w-full md:gap-16 relative  md:px-0 flex-wrap min-h-screen justify-center h-auto mx-auto">

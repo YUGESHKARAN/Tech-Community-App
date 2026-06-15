@@ -40,7 +40,7 @@ function Authors() {
   const isFetching = useRef(false);
   // const [followAuthorLoaderId, setFollowAuthorLoaderId] = useState(null);
   const [followLoadingIds, setFollowLoadingIds] = useState(new Set());
- const [showAuthorFilter, setShowAuthorFilter] = useState(false)
+  const [showAuthorFilter, setShowAuthorFilter] = useState(false);
   // const authorsDetails = async () => {
   //   try {
   //     const response = await axiosInstance.get("/blog/author/profiles/");
@@ -92,7 +92,6 @@ function Authors() {
       ) {
         authorsDetails();
       }
-    
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -142,19 +141,18 @@ function Authors() {
     });
   }, [authors]);
 
-  const filteredAuthors = useMemo(()=>
-  {
+  const filteredAuthors = useMemo(() => {
     let filtered = [...authors];
 
-     if (debouncedSearch.trim() !== "") {
+    if (debouncedSearch.trim() !== "") {
       filtered = fuse.search(debouncedSearch).map((r) => r.item);
     }
-     if (roleFilter !== "") {
+    if (roleFilter !== "") {
       filtered = filtered.filter((author) => author.role === roleFilter);
     }
 
-    return filtered
-  }, [searchQuery, roleFilter, authors, debouncedSearch])
+    return filtered;
+  }, [searchQuery, roleFilter, authors, debouncedSearch]);
 
   const recommendationURL = import.meta.env.VITE_RECOMMENDATION_URL;
 
@@ -181,14 +179,12 @@ function Authors() {
     recommendtion_system();
   }, []);
 
-
-
   // const addFollower = async (userEmail) => {
 
   //   setFollowAuthorLoaderId(userEmail);
 
   //   try {
-      
+
   //     const response = await axiosInstance.put(
   //       `/blog/author/follow/${userEmail}`,
   //       { emailAuthor: email },
@@ -211,7 +207,7 @@ function Authors() {
   //         }),
   //       );
   //     }
-      
+
   //   } catch (err) {
   //     console.log("error", err);
   //   }
@@ -225,51 +221,49 @@ function Authors() {
   //   .filter((author) => author.role === "coordinator");
 
   const addFollower = async (userEmail) => {
-  setFollowLoadingIds(prev => new Set(prev).add(userEmail));
+    setFollowLoadingIds((prev) => new Set(prev).add(userEmail));
 
-  try {
-    const response = await axiosInstance.put(
-      `/blog/author/follow/${userEmail}`,
-      { emailAuthor: email }
-    );
-
-    if (response.status === 200) {
-      setAuthors((prev) =>
-        prev.map((author) => {
-          if (author.email === userEmail) {
-            const isFollowing = author.followers?.includes(email);
-
-            return {
-              ...author,
-              followers: isFollowing
-                ? author.followers.filter((f) => f !== email)
-                : [...(author.followers || []), email],
-            };
-          }
-          return author;
-        })
+    try {
+      const response = await axiosInstance.put(
+        `/blog/author/follow/${userEmail}`,
+        { emailAuthor: email },
       );
+
+      if (response.status === 200) {
+        setAuthors((prev) =>
+          prev.map((author) => {
+            if (author.email === userEmail) {
+              const isFollowing = author.followers?.includes(email);
+
+              return {
+                ...author,
+                followers: isFollowing
+                  ? author.followers.filter((f) => f !== email)
+                  : [...(author.followers || []), email],
+              };
+            }
+            return author;
+          }),
+        );
+      }
+    } catch (err) {
+      console.log("error", err);
+    } finally {
+      setFollowLoadingIds((prev) => {
+        const updated = new Set(prev);
+        updated.delete(userEmail);
+        return updated;
+      });
     }
-  } catch (err) {
-    console.log("error", err);
-  } finally {
-    setFollowLoadingIds(prev => {
-      const updated = new Set(prev);
-      updated.delete(userEmail);
-      return updated;
-    });
-  }
-};
+  };
   const recommendationSet = useMemo(
-  () => new Set(recommendation),
-  [recommendation]
-);
+    () => new Set(recommendation),
+    [recommendation],
+  );
 
-
-let rcmdAuthors =  authors.filter(
+  let rcmdAuthors = authors.filter(
     (author) =>
-      recommendationSet.has(author.email) &&
-      author.role === "coordinator"
+      recommendationSet.has(author.email) && author.role === "coordinator",
   );
 
   const fuse2 = useMemo(() => {
@@ -278,32 +272,28 @@ let rcmdAuthors =  authors.filter(
       threshold: 0.1, // lower = stricter search
     });
   }, [rcmdAuthors]);
-// const recommendedAuthors = useMemo(() => {
-  
-//   return authors.filter(
-//     (author) =>
-//       recommendationSet.has(author.email) &&
-//       author.role === "coordinator"
-//   );
-// }, [authors, searchQuery, recommendationSet]);
+  // const recommendedAuthors = useMemo(() => {
 
-const recommendedAuthors = useMemo(() => {
+  //   return authors.filter(
+  //     (author) =>
+  //       recommendationSet.has(author.email) &&
+  //       author.role === "coordinator"
+  //   );
+  // }, [authors, searchQuery, recommendationSet]);
 
-  let filtered =  authors.filter(
-    (author) =>
-      recommendationSet.has(author.email) &&
-      author.role === "coordinator"
-  );
-   if (debouncedSearch.trim() !== "") {
+  const recommendedAuthors = useMemo(() => {
+    let filtered = authors.filter(
+      (author) =>
+        recommendationSet.has(author.email) && author.role === "coordinator",
+    );
+    if (debouncedSearch.trim() !== "") {
       filtered = fuse2.search(debouncedSearch).map((r) => r.item);
       // filtered = []
     }
-    return  filtered
- 
-}, [authors, searchQuery, debouncedSearch, recommendationSet]);
+    return filtered;
+  }, [authors, searchQuery, debouncedSearch, recommendationSet]);
 
-
- const authorFilterRef = useRef();
+  const authorFilterRef = useRef();
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -311,8 +301,7 @@ const recommendedAuthors = useMemo(() => {
         authorFilterRef.current &&
         !authorFilterRef.current.contains(event.target)
       ) {
-       
-        setShowAuthorFilter(false)
+        setShowAuthorFilter(false);
       }
     };
 
@@ -321,7 +310,6 @@ const recommendedAuthors = useMemo(() => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-
 
   return (
     <div className="w-full min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 ">
@@ -339,7 +327,7 @@ const recommendedAuthors = useMemo(() => {
         </h1>
       </div>
 
-       {/* Search and Filter */}
+      {/* Search and Filter */}
       <div className="w-full max-w-[1800px] px-4 mx-auto flex mt-0 md:mt-4   md:flex-row  items-center gap-2 md:gap-3 mb-3 md:mb-6">
         <div
           // className="md:w-1/3 w-3/5 px-4 py-2 flex items-center gap-2 justify-center rounded-md bg-gray-600 border border-white text-xs md:text-base text-white placeholder-gray-400"
@@ -380,38 +368,40 @@ const recommendedAuthors = useMemo(() => {
           <option value="student">Users</option>
         </select> */}
 
-
         <div className="relative transition-all duration-300 cursor-pointer">
           <span
-           onClick={()=>{setShowAuthorFilter(true)}}
-           className="reltive">
-             <BsFilterLeft 
-         
-          className="text-gray-300  rounded-full p-0.5 text-3xl " />
+            onClick={() => {
+              setShowAuthorFilter(true);
+            }}
+            className="reltive"
+          >
+            <BsFilterLeft className="text-gray-300  rounded-full p-0.5 text-3xl " />
 
-         <IoCheckmark className={`${roleFilter!==""?'text-emerald-400':'text-gray-300'} absolute bottom-1 right-0 transition-all duration-300`} />
-           
-
+            <IoCheckmark
+              className={`${roleFilter !== "" ? "text-emerald-400" : "text-gray-300"} absolute bottom-1 right-0 transition-all duration-300`}
+            />
           </span>
-         
-           
-           <div
-          ref={authorFilterRef}
-          className={`${
-            showAuthorFilter
-              ? "absolute top-12 md:top-10 right-0 md:left-0 z-50 px-2 py-1 w-32 overflow-hidden rounded-lg border border-[#30363d] bg-gray-900 shadow-2xl"
-              : "hidden"
-          }`}
-          onClick={()=>{setShowAuthorFilter(false)}}
-        >
-          {/* Top Section */}
-          <div className="py-1.5">
-            <div
-            onClick={()=>{setRoleFilter("")}}
 
-            >
-            <button
-              className="
+          <div
+            ref={authorFilterRef}
+            className={`${
+              showAuthorFilter
+                ? "absolute top-12 md:top-10 right-0 md:left-0 z-50 px-2 py-1 w-32 overflow-hidden rounded-lg border border-[#30363d] bg-gray-900 shadow-2xl"
+                : "hidden"
+            }`}
+            onClick={() => {
+              setShowAuthorFilter(false);
+            }}
+          >
+            {/* Top Section */}
+            <div className="py-1.5">
+              <div
+                onClick={() => {
+                  setRoleFilter("");
+                }}
+              >
+                <button
+                  className="
                 w-full flex items-center gap-2
                 pl-3  md:py-1.5 py-1
                 text-xs text-gray-100
@@ -422,62 +412,75 @@ const recommendedAuthors = useMemo(() => {
 
         
               "
-            >
-              {/* <FiPlusCircle className="text-[17px] text-gray-400" /> */}
-             <span className="flex items-center gap-2">All  {roleFilter==="" && <IoCheckmark  className="text-sm text-emerald-400"/>}</span>
-            </button>
+                >
+                  {/* <FiPlusCircle className="text-[17px] text-gray-400" /> */}
+                  <span className="flex items-center gap-2">
+                    All{" "}
+                    {roleFilter === "" && (
+                      <IoCheckmark className="text-sm text-emerald-400" />
+                    )}
+                  </span>
+                </button>
+              </div>
+
+              <div
+                onClick={() => {
+                  setRoleFilter("coordinator");
+                }}
+              >
+                <button
+                  className="
+                w-full flex items-center gap-2
+                pl-3  md:py-1.5 py-1
+                text-xs text-gray-100
+                hover:bg-gray-800/70
+                transition-all duration-200
+                rounded-lg
+
+              "
+                >
+                  {/* <FiLayers className="text-[17px] text-gray-400" /> */}
+                  <span className="flex items-center gap-2">
+                    {" "}
+                    Contributors{" "}
+                    {roleFilter === "coordinator" && (
+                      <IoCheckmark className="text-sm text-emerald-400" />
+                    )}
+                  </span>
+                </button>
+              </div>
+
+              <div
+                onClick={() => {
+                  setRoleFilter("student");
+                }}
+              >
+                <button
+                  className="
+                w-full flex items-center gap-2
+                pl-3  md:py-1.5 py-1
+                text-xs text-gray-100
+                hover:bg-gray-800/70
+                transition-all duration-200
+                rounded-lg
+
+              "
+                >
+                  {/* <VscGitStashApply className="text-[17px] text-gray-400" /> */}
+                  <span className="flex items-center gap-2">
+                    {" "}
+                    Users{" "}
+                    {roleFilter === "student" && (
+                      <IoCheckmark className="text-sm text-emerald-400" />
+                    )}
+                  </span>
+                </button>
+              </div>
             </div>
-           
-           <div
-           onClick={()=>{setRoleFilter("coordinator")}}
-           >
-            <button
-              className="
-                w-full flex items-center gap-2
-                pl-3  md:py-1.5 py-1
-                text-xs text-gray-100
-                hover:bg-gray-800/70
-                transition-all duration-200
-                rounded-lg
-
-              "
-            >
-              {/* <FiLayers className="text-[17px] text-gray-400" /> */}
-              <span className="flex items-center gap-2"> Contributors {roleFilter==="coordinator" && <IoCheckmark  className="text-sm text-emerald-400"/>}</span>
-            </button>
-           
-           </div>
-        
-           <div
-           onClick={()=>{setRoleFilter("student")}}
-        
-           >
-            <button
-              className="
-                w-full flex items-center gap-2
-                pl-3  md:py-1.5 py-1
-                text-xs text-gray-100
-                hover:bg-gray-800/70
-                transition-all duration-200
-                rounded-lg
-
-              "
-            >
-              {/* <VscGitStashApply className="text-[17px] text-gray-400" /> */}
-              <span className="flex items-center gap-2"> Users {roleFilter==="student" && <IoCheckmark  className="text-sm text-emerald-400"/>}</span>
-            </button>
-            </div>
-        
           </div>
-        
-   
         </div>
-
-        </div>
-       
       </div>
 
-  
       {/* Recommended authors */}
       {recommendedAuthors?.length > 0 && !debouncedSearch && !roleFilter && (
         <h2 className="w-full max-w-[1800px] mx-auto px-4 mx-auto tracking-wide  text-left text-lg text-green-400 md:text-2xl font-semibold">
@@ -486,7 +489,7 @@ const recommendedAuthors = useMemo(() => {
       )}
 
       <div
-        className={`${recommendedAuthors?.length > 0 && !debouncedSearch && !roleFilter  ? "flex w-full px-4 max-w-[1800px] mx-auto gap-2 overflow-x-auto scrollbar-hide mt-2 md:mt-4 pb-2" : "hidden"}`}
+        className={`${recommendedAuthors?.length > 0 && !debouncedSearch && !roleFilter ? "flex w-full px-4 max-w-[1800px] mx-auto gap-2 overflow-x-auto scrollbar-hide mt-2 md:mt-4 pb-2" : "hidden"}`}
       >
         {recommendedAuthors.map((author, index) => (
           <div
@@ -507,14 +510,16 @@ const recommendedAuthors = useMemo(() => {
                   className="w-12 h-12 bg-gray-700 rounded-full object-cover border border-gray-700"
                 />
               </Link>
-               {author?.badges?.length>0 && (
-                                  <div
-                                
-                                    className="cursor-pointer text-xs w-fit"
-                                  >
-                                    <BadgeIcons badges={author?.badges} parentClass="-top-1.5 -right-1.5  -space-x-1.5" shieldClassName="w-4 h-4" />
-                                  </div>
-                                )}
+              {author?.badges?.length > 0 && (
+                  <Link to={`/viewProfile/${author.email}`}
+                 className="cursor-pointer text-xs w-fit">
+                  <BadgeIcons
+                    badges={author?.badges}
+                    parentClass="-top-1.5 -right-1.5  -space-x-1.5"
+                    shieldClassName="w-4 h-4"
+                  />
+                </Link>
+              )}
 
               <div className="flex-1 min-w-0 md:w-48 w-44">
                 <h3 className="text-sm font-semibold min-w-0 text-white truncate">
@@ -528,52 +533,56 @@ const recommendedAuthors = useMemo(() => {
               </div>
             </div>
 
-            <div className={`flex md:mt-4 mt-1 text-[11px] md:text-xs text-gray-300 ${author?.postCount>0?'justify-between':'justify-center'}`}>
+            <div
+              className={`flex md:mt-4 mt-1 text-[11px] md:text-xs text-gray-300 ${author?.postCount > 0 ? "justify-between" : "justify-center"}`}
+            >
               <span className="text-gray-400">
                 <b className="text-white">{author.followers.length}</b>{" "}
                 Followers
               </span>
-             {author?.postCount>0 && <span className="text-gray-400">
-                <b className="text-white">{author?.postCount}</b> Posts
-              </span>}
+              {author?.postCount > 0 && (
+                <span className="text-gray-400">
+                  <b className="text-white">{author?.postCount}</b> Posts
+                </span>
+              )}
             </div>
 
-          <div className="md:mt-4 mt-3">
-  {author.followers.includes(email) ? (
-    <button
-      onClick={() => addFollower(author.email)}
-      className="w-full py-2 rounded-lg bg-gray-800 outline-none border-0 text-gray-300 text-sm transition-all duration-300 disabled:bg-transparent"
-      disabled={followLoadingIds.has(author.email)}
-    >
-      {followLoadingIds.has(author.email) ? (
-        <div className="flex items-center py-1.5 mt-0.5 justify-center gap-1">
-          <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
-          <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
-          <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce" />
-        </div>
-      ) : (
-        "Following"
-      )}
-    </button>
-  ) : (
-    <button
-      onClick={() => addFollower(author.email)}
-      // className="w-full py-2 rounded-lg bg-green-500 text-gray-900 text-sm font-medium hover:bg-green-400 transition-all duration-400 disabled:bg-transparent"
-      className={`w-full py-2 rounded-lg text-green-400 outline-0 ${!followLoadingIds.has(author.email)? 'border border-green-700':'border-gray-900'}  text-sm font-medium outline-none hover:text-green-400 hover:border-green-700  md:hover:text-green-300 md:hover:border-green-600 transition-all duration-300 disabled:bg-transparent`}
-      disabled={followLoadingIds.has(author.email)}
-    >
-      {followLoadingIds.has(author.email) ? (
-        <div className="flex items-center py-1.5 mt-0.5 justify-center gap-1">
-          <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
-          <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
-          <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce" />
-        </div>
-      ) : (
-         "+ Follow"
-      )}
-    </button>
-  )}
-</div>
+            <div className="md:mt-4 mt-3">
+              {author.followers.includes(email) ? (
+                <button
+                  onClick={() => addFollower(author.email)}
+                  className="w-full py-2 rounded-lg bg-gray-800 outline-none border-0 text-gray-300 text-sm transition-all duration-300 disabled:bg-transparent"
+                  disabled={followLoadingIds.has(author.email)}
+                >
+                  {followLoadingIds.has(author.email) ? (
+                    <div className="flex items-center py-1.5 mt-0.5 justify-center gap-1">
+                      <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
+                      <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
+                      <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce" />
+                    </div>
+                  ) : (
+                    "Following"
+                  )}
+                </button>
+              ) : (
+                <button
+                  onClick={() => addFollower(author.email)}
+                  // className="w-full py-2 rounded-lg bg-green-500 text-gray-900 text-sm font-medium hover:bg-green-400 transition-all duration-400 disabled:bg-transparent"
+                  className={`w-full py-2 rounded-lg text-green-400 outline-0 ${!followLoadingIds.has(author.email) ? "border border-green-700" : "border-gray-900"}  text-sm font-medium outline-none hover:text-green-400 hover:border-green-700  md:hover:text-green-300 md:hover:border-green-600 transition-all duration-300 disabled:bg-transparent`}
+                  disabled={followLoadingIds.has(author.email)}
+                >
+                  {followLoadingIds.has(author.email) ? (
+                    <div className="flex items-center py-1.5 mt-0.5 justify-center gap-1">
+                      <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
+                      <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
+                      <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce" />
+                    </div>
+                  ) : (
+                    "+ Follow"
+                  )}
+                </button>
+              )}
+            </div>
           </div>
         ))}
       </div>
@@ -588,8 +597,6 @@ const recommendedAuthors = useMemo(() => {
           </>
         )}
 
-     
-
       <div className="w-full px-4 max-w-[1800px] mx-auto min-h-screen flex flex-col items-center text-white">
         {/* Coordinators Section */}
         {filteredAuthors.filter((author) => author.role === "coordinator")
@@ -600,7 +607,6 @@ const recommendedAuthors = useMemo(() => {
           </h2>
         )}
 
-   
         <div className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-2 md:gap-4">
           {filteredAuthors
             .filter((author) => author.role === "coordinator")
@@ -620,14 +626,18 @@ const recommendedAuthors = useMemo(() => {
                   />
                 </Link>
 
-                 {author?.badges?.length>0 && (
-                                  <div
-                                
-                                    className="cursor-pointer text-xs w-full"
-                                  >
-                                    <BadgeIcons badges={author?.badges} parentClass=" right-2 top-2 -space-x-1.5 md:-space-x-2" shieldClassName="w-4 h-4 md:w-5 md:h-5 " />
-                                  </div>
-                                )}
+                {author?.badges?.length > 0 && (
+                  <Link
+                    to={`/viewProfile/${author.email}`}
+                    className="cursor-pointer text-xs w-full"
+                  >
+                    <BadgeIcons
+                      badges={author?.badges}
+                      parentClass=" right-2 top-2 -space-x-1.5 md:-space-x-2"
+                      shieldClassName="w-4 h-4 md:w-5 md:h-5 "
+                    />
+                  </Link>
+                )}
 
                 <h3 className="mt-3 font-semibold text-white truncate">
                   {/* {author.authorName} */}
@@ -636,16 +646,18 @@ const recommendedAuthors = useMemo(() => {
                 <p className="text-xs text-gray-400 mx-auto truncate">
                   {/* {author.email} */}
                   {highlightText(author.email, debouncedSearch)}
-                  </p>
+                </p>
 
                 <div className="flex justify-center gap-6 mt-2 md:mt-4 text-[11px] md:text-xs text-gray-300">
                   <span className="text-gray-400">
                     <b className="text-white">{author.followers.length}</b>{" "}
                     Followers
                   </span>
-                  {author?.postCount>0 && <span className="text-gray-400">
-                    <b className="text-white">{author.postCount}</b> Posts
-                  </span>}
+                  {author?.postCount > 0 && (
+                    <span className="text-gray-400">
+                      <b className="text-white">{author.postCount}</b> Posts
+                    </span>
+                  )}
                 </div>
 
                 {/* Social media components */}
@@ -666,61 +678,62 @@ const recommendedAuthors = useMemo(() => {
                   </div>
                 )} */}
 
-      <div className="md:mt-5 mt-3">
-  {author.followers.includes(email) ? (
-    <button
-      onClick={() => addFollower(author.email)}
-      className="w-full py-2 rounded-lg bg-gray-800 text-gray-400 outline-0 text-sm transition-all duration-400 disabled:bg-transparent"
-      disabled={followLoadingIds.has(author.email)}
-    >
-      {followLoadingIds.has(author.email) ? (
-        <div className="flex items-center py-1.5 justify-center gap-1">
-          <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
-          <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
-          <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce" />
-        </div>
-      ) : (
-        "Following..."
-      )}
-    </button>
-  ) : (
-    <button
-      onClick={() => addFollower(author.email)}
-      // className="w-full py-2 rounded-lg bg-green-500 text-gray-900 text-sm font-medium hover:bg-green-400 transition-all duration-400 disabled:bg-transparent"
-      className={`w-full py-2 rounded-lg text-green-400 outline-0  ${!followLoadingIds.has(author.email)? ' border border-green-700':'border-0 '} text-sm font-medium  hover:text-green-400 hover:border-green-700  md:hover:text-green-300 md:hover:border-green-600 transition-all duration-400 disabled:bg-transparent`}
-      disabled={followLoadingIds.has(author.email)}
-    >
-      {followLoadingIds.has(author.email) ? (
-        <div className="flex items-center py-1.5 justify-center gap-1">
-          <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
-          <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
-          <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce" />
-        </div>
-      ) : (
-        "+ Follow"
-      )}
-    </button>
-  )}
-</div>
+                <div className="md:mt-5 mt-3">
+                  {author.followers.includes(email) ? (
+                    <button
+                      onClick={() => addFollower(author.email)}
+                      className="w-full py-2 rounded-lg bg-gray-800 text-gray-400 outline-0 text-sm transition-all duration-400 disabled:bg-transparent"
+                      disabled={followLoadingIds.has(author.email)}
+                    >
+                      {followLoadingIds.has(author.email) ? (
+                        <div className="flex items-center py-1.5 justify-center gap-1">
+                          <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
+                          <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
+                          <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce" />
+                        </div>
+                      ) : (
+                        "Following..."
+                      )}
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => addFollower(author.email)}
+                      // className="w-full py-2 rounded-lg bg-green-500 text-gray-900 text-sm font-medium hover:bg-green-400 transition-all duration-400 disabled:bg-transparent"
+                      className={`w-full py-2 rounded-lg text-green-400 outline-0  ${!followLoadingIds.has(author.email) ? " border border-green-700" : "border-0 "} text-sm font-medium  hover:text-green-400 hover:border-green-700  md:hover:text-green-300 md:hover:border-green-600 transition-all duration-400 disabled:bg-transparent`}
+                      disabled={followLoadingIds.has(author.email)}
+                    >
+                      {followLoadingIds.has(author.email) ? (
+                        <div className="flex items-center py-1.5 justify-center gap-1">
+                          <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
+                          <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
+                          <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce" />
+                        </div>
+                      ) : (
+                        "+ Follow"
+                      )}
+                    </button>
+                  )}
+                </div>
               </div>
             ))}
 
           {filteredAuthors.filter((author) => author.role === "coordinator")
             .length > 0 &&
             loading && (
-             <div className="col-span-full flex justify-center py-4">
-                      <div className="relative flex items-center justify-center">
-                        {/* Outer Oval Ring */}
-                        <div className="w-7 h-7  border-2 border-neutral-700 border-t-emerald-400 rounded-full animate-spin" />
+              <div className="col-span-full flex justify-center py-4">
+                <div className="relative flex items-center justify-center">
+                  {/* Outer Oval Ring */}
+                  <div className="w-7 h-7  border-2 border-neutral-700 border-t-emerald-400 rounded-full animate-spin" />
 
-                        {/* Inner Glow Pulse */}
-                        {/* <div className="absolute w-10 h-10 md:w-12 md:h-12 bg-emerald-500/20 rounded-full blur-md animate-pulse" /> */}
-                      </div>
-                    </div>
+                  {/* Inner Glow Pulse */}
+                  {/* <div className="absolute w-10 h-10 md:w-12 md:h-12 bg-emerald-500/20 rounded-full blur-md animate-pulse" /> */}
+                </div>
+              </div>
             )}
 
           {filteredAuthors.filter((author) => author.role === "coordinator")
-            .length == 0 && roleFilter !== "student" &&
+            .length == 0 &&
+            roleFilter !== "student" &&
             loading && (
               <div className="col-span-full">
                 <h2 className="w-full   text-center text-sm md:text-gray-500 tracking-widest uppercase text-gray-500  font-semibold my-4 md:my-6">
@@ -742,12 +755,13 @@ const recommendedAuthors = useMemo(() => {
         {/* Students Section */}
         {filteredAuthors.filter((author) => author.role === "student").length >
           0 && (
-          <h2 className={`w-full text-center text-sm md:text-gray-500 tracking-widest uppercase text-gray-500  font-semibold mt-4 ${roleFilter=='student' && 'md:mt-6'}`}>
+          <h2
+            className={`w-full text-center text-sm md:text-gray-500 tracking-widest uppercase text-gray-500  font-semibold mt-4 ${roleFilter == "student" && "md:mt-6"}`}
+          >
             Users
           </h2>
         )}
 
-       
         <div className="w-full grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-7 gap-2 md:gap-4 mt-4 md:mt-6">
           {filteredAuthors
             .filter((author) => author.role === "student")
@@ -799,7 +813,7 @@ const recommendedAuthors = useMemo(() => {
                 <p className="text-xs text-gray-400 truncate w-full">
                   {/* {author.email} */}
                   {highlightText(author.email, debouncedSearch)}
-                </p> 
+                </p>
 
                 {/* Social Links */}
 
@@ -830,22 +844,22 @@ const recommendedAuthors = useMemo(() => {
             ))}
 
           {filteredAuthors.filter((author) => author.role === "student")
-            .length > 0  &&
+            .length > 0 &&
             loading && (
               <div className="col-span-full flex justify-center py-4">
-                      <div className="relative flex items-center justify-center">
-                        {/* Outer Oval Ring */}
-                        <div className="w-7 h-7  border-2 border-neutral-700 border-t-emerald-400 rounded-full animate-spin" />
+                <div className="relative flex items-center justify-center">
+                  {/* Outer Oval Ring */}
+                  <div className="w-7 h-7  border-2 border-neutral-700 border-t-emerald-400 rounded-full animate-spin" />
 
-                        {/* Inner Glow Pulse */}
-                        {/* <div className="absolute w-10 h-10 md:w-12 md:h-12 bg-emerald-500/20 rounded-full blur-md animate-pulse" /> */}
-                      </div>
-                    </div>
+                  {/* Inner Glow Pulse */}
+                  {/* <div className="absolute w-10 h-10 md:w-12 md:h-12 bg-emerald-500/20 rounded-full blur-md animate-pulse" /> */}
+                </div>
+              </div>
             )}
 
           {filteredAuthors.filter((author) => author.role === "student")
             .length == 0 &&
-             roleFilter !== "coordinator" && 
+            roleFilter !== "coordinator" &&
             loading && (
               <div className="col-span-full">
                 <h2 className="w-full   text-center text-sm md:text-gray-500 tracking-widest uppercase text-gray-500  font-semibold my-6">
@@ -867,8 +881,6 @@ const recommendedAuthors = useMemo(() => {
 
       <Footer />
     </div>
-
-   
   );
 }
 

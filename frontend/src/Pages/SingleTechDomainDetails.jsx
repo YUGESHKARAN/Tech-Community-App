@@ -20,6 +20,7 @@ import { getItem } from "../utils/encode";
 import { MdCardMembership } from "react-icons/md";
 import useGetCommunityAnalytics from "../hooks/useGetCommunityAnalytics";
 import SingleDomainPosts from "../components/SingleDomainPosts";
+import BadgeIcons from "../components/achievements/BadgeIcons";
 function SingleTechDomainDetails() {
   const { category } = useParams();
   const decodedCategory = decodeURIComponent(category);
@@ -336,7 +337,7 @@ function SingleTechDomainDetails() {
                     .map((author, index) => (
                       <div
                         key={index}
-                        className="bg-gray-900/70 border border-gray-700 rounded-xl p-5 text-center hover:shadow-xl transition"
+                        className="bg-gray-900/70 relative border border-gray-700 rounded-xl p-5 text-center hover:shadow-xl transition"
                       >
                         <Link to={`/viewProfile/${author.email}`}>
                           <img
@@ -348,6 +349,15 @@ function SingleTechDomainDetails() {
                             className="w-24 h-24 mx-auto bg-gray-700 rounded-full object-cover border border-gray-900"
                           />
                         </Link>
+
+                        {author?.badges?.length>0 && (
+                                 <Link to={`/viewProfile/${author.email}`}
+                                
+                                    className="cursor-pointer text-xs w-full"
+                                  >
+                                    <BadgeIcons badges={author?.badges} parentClass=" right-2 top-2 -space-x-1.5 md:-space-x-2" shieldClassName="w-4 h-4 md:w-5 md:h-5 " />
+                                  </Link>
+                                )}
 
                         <h3 className="mt-3 font-semibold text-white truncate">
                           {author.authorName}
