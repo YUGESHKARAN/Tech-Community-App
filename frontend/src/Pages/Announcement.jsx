@@ -965,9 +965,49 @@ function Announcement() {
             {role !== "student" && (
               <>
                 {/* CREATE PANEL */}
-                {showAnnouncement && (
-                  <div className={`lg:pb-12 `}>
-                    <div className="bg-[#111827] border border-emerald-500/20  rounded-lg  mb-6 md:mb-0 p-6 space-y-6">
+           
+
+                <AnimatePresence mode="wait">
+  {showAnnouncement && (
+    <motion.div
+      key="announcement-form"
+      layout
+      initial={{
+        opacity: 0,
+        y: 20,
+        scale: 0.98,
+        filter: "blur(8px)",
+      }}
+      animate={{
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        filter: "blur(0px)",
+      }}
+      exit={{
+        opacity: 0,
+        y: -12,
+        scale: 0.98,
+        filter: "blur(6px)",
+      }}
+      transition={{
+        duration: 0.4,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+      className="lg:pb-12 overflow-hidden"
+    >
+      <motion.div
+        layout
+        transition={{
+          layout: {
+            duration: 0.4,
+            ease: [0.22, 1, 0.36, 1],
+          },
+        }}
+       
+      >
+        {/* Entire existing form content */}
+         <div className="bg-[#111827] border border-emerald-500/20  rounded-lg  mb-6 md:mb-0 p-6 space-y-6">
                       <div className="flex items-center justify-between">
                         {" "}
                         <h3 className="text-xs uppercase tracking-wide text-slate-400">
@@ -1325,8 +1365,10 @@ function Announcement() {
                         </button>
                       </form>
                     </div>
-                  </div>
-                )}
+      </motion.div>
+    </motion.div>
+  )}
+</AnimatePresence>
 
                 {/* DANGER ZONE */}
                 {/* {role === "admin" && (
