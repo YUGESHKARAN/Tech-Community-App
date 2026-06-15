@@ -11,7 +11,10 @@ import communityBuilderBronze from "../../assets/achievements/community_builder_
 import communityBuilderSilver from "../../assets/achievements/community_builder_silver.png";
 import communityBuilderGold from "../../assets/achievements/community_builder_gold.png";
 
-import proContributorBronze from "../../assets/achievements/pro_contributor_bronze.png";
+import proContributorBronze from "../assets/achievements/pro_contributor_bronze.png";
+import proContributorSilver from "../assets/achievements/pro_contributor_silver.png";
+import proContributorGold from "../assets/achievements/pro_contributor_gold.png";
+
 
 import { twMerge } from "tailwind-merge";
 import clsx from "clsx";
@@ -36,8 +39,8 @@ const communityBuilderImages = {
 
 const proContributorImages = {
   bronze: proContributorBronze,
-  silver: proContributorBronze,
-  gold: proContributorBronze,
+  silver: proContributorSilver,
+  gold: proContributorGold,
 };
 
 const collaboratorImages = {
