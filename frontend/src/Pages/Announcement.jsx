@@ -31,6 +31,9 @@ import { GoAlertFill, GoInfo } from "react-icons/go";
 import { BsInfo, BsInfoCircle } from "react-icons/bs";
 import { TbAlertTriangleFilled } from "react-icons/tb";
 import { Plus, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { twMerge } from "tailwind-merge";
+import clsx from "clsx";
 
 function Announcement() {
   const username = localStorage.getItem("username");
@@ -252,18 +255,34 @@ function Announcement() {
   function AnnouncementInfo({ className = "", showInfo }) {
     return (
       <div
-        className={`
-        w-full
+        className={twMerge(
+          clsx(
+            `
+               w-full
         rounded-lg
         border border-emerald-500/20
         bg-gradient-to-br from-emerald-500/5 to-transparent
         p-4 md:p-5
         space-y-5
-        ${className}
+
          ${showInfo ? "block" : "hidden md:block"}
       
-        mb-4
-      `}
+        mb-4`,
+            className,
+          ),
+        )}
+        //   className={`
+        //   w-full
+        //   rounded-lg
+        //   border border-emerald-500/20
+        //   bg-gradient-to-br from-emerald-500/5 to-transparent
+        //   p-4 md:p-5
+        //   space-y-5
+        //   ${className}
+        //    ${showInfo ? "block" : "hidden md:block"}
+
+        //   mb-4
+        // `}
       >
         {/* Header */}
         {/* <div className="flex items-center gap-2">
@@ -333,11 +352,17 @@ function Announcement() {
       </div>
     );
   }
-  function AnnouncementGuidelines({ showAnnouncement, showGuidelines }) {
+  function AnnouncementGuidelines({
+    showAnnouncement,
+    showGuidelines,
+    className = "",
+  }) {
     return (
       <div
-        className={`
-        w-full
+        className={twMerge(
+          clsx(
+            `
+              w-full
         rounded-lg
         border border-emerald-500/20
         bg-gradient-to-br from-emerald-500/5 to-transparent
@@ -349,8 +374,24 @@ function Announcement() {
 
         ${showAnnouncement && "hidden md:hidden"}
        
+                `,
+            className,
+          ),
+        )}
+        //   className={`
+        //   w-full
+        //   rounded-lg
+        //   border border-emerald-500/20
+        //   bg-gradient-to-br from-emerald-500/5 to-transparent
+        //   p-4 md:p-5
+        //   space-y-5
+        //   mb-6
 
-      `}
+        //   ${showGuidelines ? "block" : "hidden md:block"}
+
+        //   ${showAnnouncement && "hidden md:hidden"}
+
+        // `}
       >
         {/* Header */}
         <div className="flex items-center gap-2">
@@ -727,62 +768,105 @@ function Announcement() {
               //     setShowGuidelines(!showGuidelines);
               //     setShowAnnouncement(false);
               //   }}
-              //   className="md:px-3 px-3 py-2 md:py-2 bg-emerald-600/20 hover:bg-emerald-500/20
-              //   rounded-md text-xs md:text-sm  md:hidden text-emerald-400 transition"
+              //   className="
+              //     md:hidden
+              //     group
+              //     inline-flex
+              //     items-center
+              //     md:gap-2
+              //     gap-1.5
+              //     md:px-4
+              //     md:py-2.5
+              //     px-2
+              //     py-1
+              //     md:rounded-xl
+              //     rounded-lg
+              //     bg-[#111827]
+              //     border
+              //     border-slate-700
+              //     text-slate-200
+              //     md:text-xs
+              //     text-[11px]
+              //     font-medium
+              //     md:hover:border-emerald-500/40
+              //     md:hover:bg-emerald-500/5
+              //     transition-all
+              //     duration-500
+              //   "
               // >
-              //   {showGuidelines ? "Close Panel" : "Create New"}
+              //   <div
+              //     className="
+              //       md:w-6
+              //       md:h-6
+              //       w-5
+              //       h-5
+              //       rounded-full
+              //       flex
+              //       items-center
+              //       justify-center
+              //       bg-emerald-500/10
+              //       text-emerald-400
+              //       group-hover:bg-emerald-500/15
+              //     "
+              //   >
+              //     {showGuidelines ? <X size={11} /> : <Plus size={11} />}
+              //   </div>
+
+              //   <span>{showGuidelines ? "Close Panel" : "Create New"}</span>
               // </button>
-              <button
+              <motion.button
+                whileTap={{ scale: 0.97 }}
+                whileHover={{ scale: 1.02 }}
                 onClick={() => {
                   setShowGuidelines(!showGuidelines);
                   setShowAnnouncement(false);
                 }}
                 className="
-                  md:hidden
-                  group
-                  inline-flex
-                  items-center
-                  md:gap-2
-                  gap-1.5
-                  md:px-4
-                  md:py-2.5
-                  px-2
-                  py-1
-                  md:rounded-xl
-                  rounded-lg
-                  bg-[#111827]
-                  border
-                  border-slate-700
-                  text-slate-200
-                  md:text-xs
-                  text-[11px]
-                  font-medium
-                  md:hover:border-emerald-500/40
-                  md:hover:bg-emerald-500/5
-                  transition-all
-                  duration-500
-                "
+    md:hidden
+    group
+    inline-flex
+    items-center
+    gap-1.5
+    px-2
+    py-1
+    rounded-lg
+    bg-[#111827]
+    border
+    border-slate-700
+    text-slate-200
+    text-[11px]
+    font-medium
+  "
               >
-                <div
+                <motion.div
+                  animate={{
+                    rotate: showGuidelines ? 90 : 0,
+                    scale: showGuidelines ? 1.05 : 1,
+                  }}
+                  transition={{
+                    duration: 0.3,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
                   className="
-                    md:w-6
-                    md:h-6
-                    w-5
-                    h-5
-                    rounded-full
-                    flex
-                    items-center
-                    justify-center
-                    bg-emerald-500/10
-                    text-emerald-400
-                    group-hover:bg-emerald-500/15
-                  "
+      w-5 h-5
+      rounded-full
+      flex items-center justify-center
+      bg-emerald-500/10
+      text-emerald-400
+    "
                 >
                   {showGuidelines ? <X size={11} /> : <Plus size={11} />}
-                </div>
+                </motion.div>
 
-                <span>{showGuidelines ? "Close Panel" : "Create New"}</span>
-              </button>
+                <motion.span
+                  key={showGuidelines ? "close" : "create"}
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4 }}
+                >
+                  {showGuidelines ? "Close Panel" : "Create New"}
+                </motion.span>
+              </motion.button>
             )}
           </div>
         </div>
@@ -795,14 +879,88 @@ function Announcement() {
             // className={`${!showAnnouncement?'md:sticky top-7 self-start':' md:sticky top-7 self-start'}`}
             className="lg:sticky lg:overflow-y-scroll lg:h-screen scrollbar-hide top-7 self-start"
           >
-            {role === "student" && <AnnouncementInfo showInfo={showInfo} />}
+            {role === "student" && (
+              <AnnouncementInfo
+                className="hidden md:block"
+                showInfo={showInfo}
+              />
+            )}
+            <AnimatePresence mode="wait">
+              {role === "student" && showInfo && (
+                <motion.div
+                  key="info"
+                  initial={{
+                    opacity: 0,
+                    height: 0,
+                    y: -20,
+                    filter: "blur(8px)",
+                  }}
+                  animate={{
+                    opacity: 1,
+                    height: "auto",
+                    y: 0,
+                    filter: "blur(0px)",
+                  }}
+                  exit={{
+                    opacity: 0,
+                    height: 0,
+                    y: -10,
+                    filter: "blur(4px)",
+                  }}
+                  transition={{
+                    duration: 0.4,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
+                  className="overflow-hidden  md:hidden"
+                >
+                  <AnnouncementInfo showInfo={showInfo} />
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {role !== "student" && (
               <AnnouncementGuidelines
                 showAnnouncement={showAnnouncement}
                 showGuidelines={showGuidelines}
+                className={`hidden ${!showAnnouncement && "md:block"}`}
               />
             )}
+
+            <AnimatePresence mode="wait">
+              {role !== "student" && showGuidelines && (
+                <motion.div
+                  key="guidelines"
+                  initial={{
+                    opacity: 0,
+                    height: 0,
+                    y: -20,
+                    filter: "blur(8px)",
+                  }}
+                  animate={{
+                    opacity: 1,
+                    height: "auto",
+                    y: 0,
+                    filter: "blur(0px)",
+                  }}
+                  exit={{
+                    opacity: 0,
+                    height: 0,
+                    y: -10,
+                    filter: "blur(4px)",
+                  }}
+                  transition={{
+                    duration: 0.4,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
+                  className="overflow-hidden md:hidden"
+                >
+                  <AnnouncementGuidelines
+                    showAnnouncement={showAnnouncement}
+                    showGuidelines={showGuidelines}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {role !== "student" && (
               <>
@@ -918,7 +1076,7 @@ function Announcement() {
                               </div>
                             ) : (
                               <textarea
-                               rows="6"
+                                rows="6"
                                 value={message}
                                 onChange={(e) => setMessage(e.target.value)}
                                 placeholder="Announcement message..."
