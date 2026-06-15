@@ -717,6 +717,7 @@ import proContributorGold from "../assets/achievements/pro_contributor_gold.png"
 
 import collaboratorBronze from "../assets/achievements/collaborator_bronze.png";
 import collaboratorSilver from "../assets/achievements/collaborator_silver.png";
+import collaboratorGold from "../assets/achievements/collaborator_gold.png";
 
 import { ChevronRight } from "lucide-react";
 
@@ -745,9 +746,9 @@ const proContributorImages = {
 };
 
 const collaboratorImages = {
-  bronze: collaboratorSilver,
+  bronze: collaboratorBronze,
   silver: collaboratorSilver,
-  gold: proContributorBronze,
+  gold: collaboratorGold,
 };
 
 // ── Badge metadata ────────────────────────────────────────────

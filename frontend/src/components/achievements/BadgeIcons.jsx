@@ -17,6 +17,7 @@ import proContributorGold from "../../assets/achievements/pro_contributor_gold.p
 
 import collaboratorBronze from "../../assets/achievements/collaborator_bronze.png";
 import collaboratorSilver from "../../assets/achievements/collaborator_silver.png";
+import collaboratorGold from "../../assets/achievements/collaborator_gold.png";
 
 import { twMerge } from "tailwind-merge";
 import clsx from "clsx";
@@ -46,9 +47,9 @@ const proContributorImages = {
 };
 
 const collaboratorImages = {
-  bronze: collaboratorSilver,
+  bronze: collaboratorBronze,
   silver: collaboratorSilver,
-  gold: proContributorBronze,
+  gold: collaboratorGold,
 };
 
 // ── Badge metadata ────────────────────────────────────────────
