@@ -715,6 +715,8 @@ import proContributorBronze from "../assets/achievements/pro_contributor_bronze.
 import proContributorSilver from "../assets/achievements/pro_contributor_silver.png";
 import proContributorGold from "../assets/achievements/pro_contributor_gold.png";
 
+import collaboratorBronze from "../assets/achievements/collaborator_bronze.png";
+
 import { ChevronRight } from "lucide-react";
 
 const impactCreatorImages = {
@@ -737,12 +739,12 @@ const communityBuilderImages = {
 
 const proContributorImages = {
   bronze: proContributorBronze,
-  silver: proContributorsilver,
+  silver: proContributorSilver,
   gold: proContributorGold,
 };
 
 const collaboratorImages = {
-  bronze: proContributorBronze,
+  bronze: collaboratorBronze,
   silver: proContributorBronze,
   gold: proContributorBronze,
 };
