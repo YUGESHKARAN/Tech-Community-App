@@ -23,6 +23,7 @@ import Fuse from "fuse.js";
 import highlightText from "../hooks/highlightText";
 import { getItem } from "../utils/encode";
 import PostsComponent from "../components/PostsComponent";
+import BadgeIcons from "../components/achievements/BadgeIcons";
 function SingleAuthorPosts() {
   const [searchTerm, setSearchTerm] = useState("");
   const [posts, setPosts] = useState([]);
@@ -32,10 +33,13 @@ function SingleAuthorPosts() {
   const [authorProfile, setAuthorProfile] = useState("");
   const { email } = useParams();
   const userEmail =getItem("email");
+  const [badges, setBadges] = useState([]);
+  const [authorRole, setAuthorRole] = useState("");
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const limit = 50;
   const isFetching = useRef(false);
+
 
 
   // -------------------------------------------------------
@@ -63,9 +67,11 @@ function SingleAuthorPosts() {
         const filtered = newPosts.filter((p) => !existingIds.has(p._id));
         return [...prev, ...filtered];
       });
-      // console.log("response data", response.data);
+
 
       setAuthorName(response.data.authorName);
+      setBadges(response.data.badges);
+      setAuthorRole(response.data.role);
       setAuthorProfile(response.data.profile);
     } catch (err) {
       console.error("Error fetching posts:", err);
@@ -256,6 +262,7 @@ const filteredPosts = useMemo(() => {
   }, []);
 
   // console.log("posts", posts)
+  // console.log("badges", badges)
 
   return (
     <div className="w-full reltive min-h-screen  bg-gray-900  h-auto reltive  ">
@@ -266,7 +273,7 @@ const filteredPosts = useMemo(() => {
             Posts Page
           </h1>
           {/* Profile Header Card */}
-          <div className="flex items-center mx-2 gap-6 bg-gradient-to-r from-slate-900 to-slate-800 border border-slate-700/50 rounded-2xl p-5 md:p-7 shadow-lg">
+          <div className={`flex items-center relative mx-2  py-7  bg-gradient-to-r from-slate-900 to-slate-800 border border-slate-700/50 rounded-2xl p-5 md:p-7 shadow-lg ${badges.length>1?'gap-3':'gap-5'} md:gap-6`}>
             {/* Avatar */}
             <div
               // to={`/viewProfile/${email}`}
@@ -291,7 +298,7 @@ const filteredPosts = useMemo(() => {
             {/* Author Info */}
             <div className="flex flex-col">
               {/* Name */}
-              <h2 className="text-xl md:text-2xl font-semibold text-white">
+              <h2 className="text-[17px]  md:text-2xl font-semibold text-white">
                 {authorName || "Unknown Author"}
               </h2>
 
@@ -314,6 +321,18 @@ const filteredPosts = useMemo(() => {
                 </Link>
               </div>
             </div>
+
+              
+             {authorRole !== "student" && badges?.length>0 && (
+                  <Link
+                  to={`/viewProfile/${email}`}
+                    // onClick={scrollToAchievements}
+                    className="cursor-pointer"
+                  >
+                    <BadgeIcons badges={badges} parentClass=" md:top-5 top-3 right-4 -space-x-0.5 md:-space-x-1.5 " shieldClassName="md:w-10 md:h-10 w-5 h-5"  />
+                  </Link>
+                )}
+
           </div>
         </div>
 

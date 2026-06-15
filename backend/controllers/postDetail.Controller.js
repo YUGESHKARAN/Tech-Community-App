@@ -490,7 +490,7 @@ const getSingleAuthorPosts = async (req, res) => {
     limit = parseInt(limit);
 
     const author = await Author.findOne({ email: { $eq: email } })
-      .select("authorname email profile role community");
+      .select("authorname email profile role community badges");
 
     if (!author) {
       return res.status(404).json({ message: `author ${email} not found` });
@@ -507,6 +507,7 @@ const getSingleAuthorPosts = async (req, res) => {
         profile:     author.profile || "",
         role:        author.role,
         community:   author.community,
+        
       }))
       .reverse();
 
@@ -518,6 +519,8 @@ const getSingleAuthorPosts = async (req, res) => {
       data:       paginatedPosts,
       authorName: author.authorname,
       profile:    author.profile || "",
+      badges:      author.badges || [],
+      role:        author.role,
       total:      authorPosts.length,
     });
   } catch (err) {

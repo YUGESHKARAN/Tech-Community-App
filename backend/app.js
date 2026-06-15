@@ -148,6 +148,11 @@ const connectToDatabase = require("./db");
 const bodyParser = require("body-parser");
 require("dotenv").config();
 
+const dns = require("dns");
+
+if (process.env.NODE_ENV === "development") {
+  dns.setServers(["8.8.8.8", "8.8.4.4"]);
+}
 const app = express();
 
 // Middleware setup
