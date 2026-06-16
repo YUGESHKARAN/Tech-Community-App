@@ -602,6 +602,7 @@ export default function AITechAssistant({
            <textarea   
             value={query}
              ref={textareaRef}
+             disabled={loading}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && askAI()}
             // placeholder="Ask your queries..."
@@ -623,6 +624,7 @@ export default function AITechAssistant({
 
           <textarea   
           value={query}
+          disabled={loading}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => {e.key === "Enter" && !e.shiftKey && askAI()}}
             ref={textareaRef}

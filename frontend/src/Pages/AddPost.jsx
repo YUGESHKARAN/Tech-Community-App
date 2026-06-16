@@ -832,6 +832,7 @@ function AddPost() {
 
                   <textarea
                     name="message"
+                    disabled={isTyping}
                     ref={textareaRef}
                     value={prompt}
                     onFocus={() => {
@@ -915,41 +916,7 @@ function AddPost() {
                 </div>
 
                 {/* DESCRIPTION */}
-                {/* <div>
-                  <label className="text-sm text-gray-400 md:text-gray-300 font-medium">
-                    Description <span className="text-red-500">*</span>
-                  </label>
-
-                  <div className="relative">
-                    <div>
-                      <span onClick={()=>{setPreview(false)}}>Editor</span>
-                      <span onClick={()=>{setPreview(true)}}>Preview</span>
-                    </div>
-
-                  
-
-                    {
-                      preview?
-                    <div className="w-full min-h-40 h-auto mt-2  focus:border focus:border-emerald-500/40 emerald-scrollbar px-4 py-3 rounded-md bg-gray-900 border border-gray-700 outline-none  text-white text-xs leading-relaxed">
-                      {renderTextWithHashtags(description)}
-                    </div>
-                    :
-                    <textarea
-                      rows="6"
-                      value={description}
-                      onChange={(e) => setDescription(e.target.value)}
-                      placeholder="Write your post description..."
-                      className="w-full mt-2  focus:border focus:border-emerald-500/40 emerald-scrollbar px-4 py-3 rounded-md bg-gray-900 border border-gray-700 outline-none  text-white text-xs leading-relaxed"
-                    />}
-                  </div>
-                  {fieldErrors.description && (
-                    <p className="text-xs text-red-500 mt-1">
-                      {fieldErrors.description}
-                    </p>
-                  )}
-                </div> */}
-
-                <div>
+                         <div>
                   {/* Label */}
                   <div className="flex items-center justify-between mb-2">
                     <label className="text-sm text-gray-300 font-medium tracking-wide">
@@ -1409,28 +1376,23 @@ function AddPost() {
                 {/* SUBMIT */}
                 <div className="pt-4">
                   <motion.button
-                                  whileTap={{ scale: 0.97 }}
-                                  whileHover={{ scale: 1.02 }}
-                                  onClick={() => {
-                         
-                                  }}
+                    whileTap={{ scale: 0.97 }}
+                    whileHover={{ scale: 1.02 }}
+                    onClick={() => {}}
                     type="submit"
-
-                                     className="md:px-5 px-3 py-2 md:py-2.5 bg-[#111827]
+                    className="md:px-5 px-3 py-2 md:py-2.5 bg-[#111827]
                          rounded-lg text-xs  flex items-center justify-center gap-2 border
                   border-slate-700 text-slate-200 transition-all duration-300 disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed"
                   >
-                      <VscGitStashApply className="md:text-base text-emerald-400 text-sm" />{" "}
+                    <VscGitStashApply className="md:text-base text-emerald-400 text-sm" />{" "}
                     <motion.span
-                                      key= {loading ? "Publishing..." : "Publish Post"}
-                                      initial={{ opacity: 0, y: 4 }}
-                                      animate={{ opacity: 1, y: 0 }}
-                                      transition={{ duration: 0.4 }}
-                                    >
-                                  
-                    {loading ? "Publishing..." : "Publish Post"}
-                                    </motion.span>
-                 
+                      key={loading ? "Publishing..." : "Publish Post"}
+                      initial={{ opacity: 0, y: 4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.4 }}
+                    >
+                      {loading ? "Publishing..." : "Publish Post"}
+                    </motion.span>
                   </motion.button>
                 </div>
               </form>
