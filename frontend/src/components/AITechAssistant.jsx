@@ -602,10 +602,10 @@ export default function AITechAssistant({
             value={query}
              ref={textareaRef}
             onChange={(e) => setQuery(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && askAI()}
+            onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && askAI()}
             // placeholder="Ask your queries..."
             placeholder={PLACEHOLDERS[placeholderIndex]}
-            className="flex-1 md:hidden bg-gray-800 border border-neutral-800 rounded-xl px-4 py-2 text-sm text-white placeholder-neutral-500 outline-none"
+            className="flex-1 md:hidden max-h-[150px] bg-gray-800 border border-neutral-800 rounded-xl px-4 py-2 text-sm text-white placeholder-neutral-500 outline-none"
             onFocus={() => setIsInputFocused(true)}
             // onBlur={() => setIsInputFocused(false)}
             onMouseOut={() => setIsInputFocused(false)}
@@ -627,7 +627,7 @@ export default function AITechAssistant({
             ref={textareaRef}
             // placeholder="Ask your queries..."
             placeholder={PLACEHOLDERS[placeholderIndex]}
-            className="flex-1 bg-gray-800 scrollbar-hide hidden md:block border border-neutral-800 rounded-xl px-4 py-2 text-sm text-white placeholder-neutral-500 outline-none"
+            className="flex-1 bg-gray-800 scrollbar-hide hidden max-h-[150px] md:block border border-neutral-800 rounded-xl px-4 py-2 text-sm text-white placeholder-neutral-500 outline-none"
             rows={1}
             />
 

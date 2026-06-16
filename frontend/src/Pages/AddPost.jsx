@@ -329,7 +329,7 @@ function AddPost() {
     const t = setInterval(() => {
       setPlaceholderIndex((i) => (i + 1) % PLACEHOLDERS.length);
     }, 4000);
-    return ()=> clearInterval(t);
+    return () => clearInterval(t);
   }, [isFocused, prompt]);
 
   // console.log("documents",documents)
@@ -385,33 +385,33 @@ function AddPost() {
               )}
             </div> */}
             <div className="lg:hidden">
-  <AnimatePresence mode="wait">
-    {!chatbot ? (
-      <motion.button
-        key="open-ai"
-        onClick={() => setChatbot(true)}
-        initial={{
-          opacity: 0,
-          scale: 0.9,
-          y: 10,
-        }}
-        animate={{
-          opacity: 1,
-          scale: 1,
-          y: 0,
-        }}
-        exit={{
-          opacity: 0,
-          scale: 0.9,
-          y: -10,
-        }}
-        transition={{
-          duration: 0.25,
-          ease: [0.22, 1, 0.36, 1],
-        }}
-        whileHover={{ scale: 1.03 }}
-        whileTap={{ scale: 0.96 }}
-        className="
+              <AnimatePresence mode="wait">
+                {!chatbot ? (
+                  <motion.button
+                    key="open-ai"
+                    onClick={() => setChatbot(true)}
+                    initial={{
+                      opacity: 0,
+                      scale: 0.9,
+                      y: 10,
+                    }}
+                    animate={{
+                      opacity: 1,
+                      scale: 1,
+                      y: 0,
+                    }}
+                    exit={{
+                      opacity: 0,
+                      scale: 0.9,
+                      y: -10,
+                    }}
+                    transition={{
+                      duration: 0.25,
+                      ease: [0.22, 1, 0.36, 1],
+                    }}
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.96 }}
+                    className="
           flex items-center gap-2
           px-3 py-1.5
           rounded-lg
@@ -423,49 +423,49 @@ function AddPost() {
           shadow-lg
           shadow-purple-500/20
         "
-      >
-        <motion.img
-          src={glow}
-          alt=""
-          className="w-4 h-4"
-          animate={{
-            rotate: [0, 8, -8, 0],
-          }}
-          transition={{
-            duration: 3,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
+                  >
+                    <motion.img
+                      src={glow}
+                      alt=""
+                      className="w-4 h-4"
+                      animate={{
+                        rotate: [0, 8, -8, 0],
+                      }}
+                      transition={{
+                        duration: 3,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                      }}
+                    />
 
-        <span>AI</span>
-      </motion.button>
-    ) : (
-      <motion.button
-        key="close-ai"
-        onClick={() => setChatbot(false)}
-        initial={{
-          opacity: 0,
-          scale: 0.9,
-          x: 20,
-        }}
-        animate={{
-          opacity: 1,
-          scale: 1,
-          x: 0,
-        }}
-        exit={{
-          opacity: 0,
-          scale: 0.9,
-          x: -20,
-        }}
-        transition={{
-          duration: 0.25,
-          ease: [0.22, 1, 0.36, 1],
-        }}
-        whileHover={{ scale: 1.03 }}
-        whileTap={{ scale: 0.96 }}
-        className="
+                    <span>AI</span>
+                  </motion.button>
+                ) : (
+                  <motion.button
+                    key="close-ai"
+                    onClick={() => setChatbot(false)}
+                    initial={{
+                      opacity: 0,
+                      scale: 0.9,
+                      x: 20,
+                    }}
+                    animate={{
+                      opacity: 1,
+                      scale: 1,
+                      x: 0,
+                    }}
+                    exit={{
+                      opacity: 0,
+                      scale: 0.9,
+                      x: -20,
+                    }}
+                    transition={{
+                      duration: 0.25,
+                      ease: [0.22, 1, 0.36, 1],
+                    }}
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.96 }}
+                    className="
           flex items-center gap-1.5
           px-2.5 py-2
           rounded-lg
@@ -475,25 +475,25 @@ function AddPost() {
           text-[11px]
           font-medium
         "
-      >
-        <motion.span
-          animate={{
-            x: [0, -2, 0],
-          }}
-          transition={{
-            duration: 1.5,
-            repeat: Infinity,
-          }}
-          className="text-xs"
-        >
-          ←
-        </motion.span>
+                  >
+                    <motion.span
+                      animate={{
+                        x: [0, -2, 0],
+                      }}
+                      transition={{
+                        duration: 1.5,
+                        repeat: Infinity,
+                      }}
+                      className="text-xs"
+                    >
+                      ←
+                    </motion.span>
 
-        <span>Back</span>
-      </motion.button>
-    )}
-  </AnimatePresence>
-</div>
+                    <span>Back</span>
+                  </motion.button>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 px-2 md:px-0  lg:grid-cols-[400px_1fr] gap-4 lg:gap-0">
@@ -525,34 +525,33 @@ function AddPost() {
               {/* backdrop-blur-xl */}
 
               <AnimatePresence mode="popLayout">
-  {chatbot && (
-    <motion.div
-      key="draftmate-mobile"
-      layout
-      initial={{
-        opacity: 0,
-        x: 60,
-        scale: 0.96,
-        filter: "blur(8px)",
-      }}
-      animate={{
-        opacity: 1,
-        x: 0,
-        scale: 1,
-        filter: "blur(0px)",
-      }}
-      exit={{
-        opacity: 0,
-        x: 60,
-        scale: 0.96,
-        filter: "blur(8px)",
-      }}
-      transition={{
-        duration: 0.45,
-          ease: [0.22, 1, 0.36, 1],
-      
-      }}
-      className="
+                {chatbot && (
+                  <motion.div
+                    key="draftmate-mobile"
+                    layout
+                    initial={{
+                      opacity: 0,
+                      x: 60,
+                      scale: 0.96,
+                      filter: "blur(8px)",
+                    }}
+                    animate={{
+                      opacity: 1,
+                      x: 0,
+                      scale: 1,
+                      filter: "blur(0px)",
+                    }}
+                    exit={{
+                      opacity: 0,
+                      x: 60,
+                      scale: 0.96,
+                      filter: "blur(8px)",
+                    }}
+                    transition={{
+                      duration: 0.45,
+                      ease: [0.22, 1, 0.36, 1],
+                    }}
+                    className="
         lg:hidden
         relative overflow-hidden
         bg-[#0f172a]/80
@@ -563,49 +562,49 @@ function AddPost() {
         pb-2
         flex flex-col
       "
-    >
-      {/* DraftMate Content */}
-       {/* Header */}
-                <div className="relative z-10 px-5 py-4 border-b border-white/[0.06] flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="relative">
-                      <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
-                        <img src={glow} className="w-5 h-5" />
+                  >
+                    {/* DraftMate Content */}
+                    {/* Header */}
+                    <div className="relative z-10 px-5 py-4 border-b border-white/[0.06] flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="relative">
+                          <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
+                            <img src={glow} className="w-5 h-5" />
+                          </div>
+                        </div>
+
+                        <div>
+                          <h2 className="text-sm font-semibold tracking-wide text-white">
+                            DraftMate AI
+                          </h2>
+
+                          <p className="text-[11px] text-gray-400 md:text-gray-400 mt-0.5">
+                            Content Refinement Assistant
+                          </p>
+                        </div>
                       </div>
-                    </div>
 
-                    <div>
-                      <h2 className="text-sm font-semibold tracking-wide text-white">
-                        DraftMate AI
-                      </h2>
-
-                      <p className="text-[11px] text-gray-400 md:text-gray-400 mt-0.5">
-                        Content Refinement Assistant
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* <div className="hidden md:flex items-center gap-2 text-[10px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-full">
+                      {/* <div className="hidden md:flex items-center gap-2 text-[10px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-full">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                     Active
                   </div> */}
-                </div>
+                    </div>
 
-                <div
-                  ref={containerRef}
-                  className="flex-1 overflow-y-auto px-4 pt-6 pb-3 md:p-6 md:pb-4 emerald-scrollbar space-y-4 h-[600px] pr-2"
-                >
-                  {messages.map((msg, idx) => (
                     <div
-                      key={msg._id || `msg-${idx}`}
-                      className={`flex  ${
-                        msg.direction === "outgoing"
-                          ? "justify-end"
-                          : "justify-start"
-                      }`}
+                      ref={containerRef}
+                      className="flex-1 overflow-y-auto px-4 pt-6 pb-3 md:p-6 md:pb-4 emerald-scrollbar space-y-4 h-[600px] pr-2"
                     >
-                      <div
-                        className={`
+                      {messages.map((msg, idx) => (
+                        <div
+                          key={msg._id || `msg-${idx}`}
+                          className={`flex  ${
+                            msg.direction === "outgoing"
+                              ? "justify-end"
+                              : "justify-start"
+                          }`}
+                        >
+                          <div
+                            className={`
                           w-full
                           px-4
                           py-2.5
@@ -622,86 +621,88 @@ function AddPost() {
                               : "bg-emerald-700/20 text-gray-200 md:mr-5 rounded-bl-md"
                           }
                         `}
-                      >
-                        {msg.message}
-                      </div>
+                          >
+                            {msg.message}
+                          </div>
+                        </div>
+                      ))}
+
+                      {draftMateLoading && (
+                        <div className="flex items-center gap-3 px-1">
+                          <div className="flex items-center gap-1">
+                            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-bounce [animation-delay:-0.3s]" />
+                            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-bounce [animation-delay:-0.15s]" />
+                            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-bounce" />
+                          </div>
+
+                          <span className="text-xs text-gray-400">
+                            DraftMate is refining your content...
+                          </span>
+                        </div>
+                      )}
                     </div>
-                  ))}
 
-                  {draftMateLoading && (
-                    <div className="flex items-center gap-3 px-1">
-                      <div className="flex items-center gap-1">
-                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-bounce [animation-delay:-0.3s]" />
-                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-bounce [animation-delay:-0.15s]" />
-                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-bounce" />
-                      </div>
-
-                      <span className="text-xs text-gray-400">
-                        DraftMate is refining your content...
-                      </span>
-                    </div>
-                  )}
-                </div>
-
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    // const input = e.target.message;
-                    // handleSend(input.value);
-                    //  input.value = "";
-                    handleSend(prompt);
-                    setPrompt("");
-                  }}
-                  // className="flex pb-1 h-20  pt-4 px-4 relative  gap-3  min-h-[80px]  outline-none "
-                  className="flex items-end pb-1 pt-4 px-4 relative gap-3 outline-none"
-                >
-                  {/* <input
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        // const input = e.target.message;
+                        // handleSend(input.value);
+                        //  input.value = "";
+                        handleSend(prompt);
+                        setPrompt("");
+                      }}
+                      // className="flex pb-1 h-20  pt-4 px-4 relative  gap-3  min-h-[80px]  outline-none "
+                      className="flex items-end pb-1 pt-4 px-4 relative gap-3 outline-none"
+                    >
+                      {/* <input
                     name="message"
                     placeholder="Ask DraftMate to transform your content..."
                     onKeyDown={()=>{ e.key === "Enter" && !e.shiftKey}}
                     className="flex-1 px-4  rounded-xl border border-gray-700 py-2 bg-gray-900 text-xs outline-none text-white"
                   /> */}
 
-                  <textarea
-                    name="message"
-                    ref={textareaRef}
-                    value={prompt}
-                    onFocus={()=>{setIsFocused(true)}}
-                    onBlur={()=>{setIsFocused(false)}}
-                    placeholder= {PLACEHOLDERS[placeholderIndex]}
-                    className="flex-1  min-h-[40px]
-    max-h-[200px] shrink-0 px-4 flex scrollbar-hide  rounded-xl border border-gray-700 py-2 transition-all duration-200 bg-gray-900 text-xs outline-none text-white"
+                      <textarea
+                        name="message"
+                        ref={textareaRef}
+                        value={prompt}
+                        onFocus={() => {
+                          setIsFocused(true);
+                        }}
+                        onBlur={() => {
+                          setIsFocused(false);
+                        }}
+                        placeholder={PLACEHOLDERS[placeholderIndex]}
+                        className="flex-1  min-h-[40px] max-h-[200px] shrink-0 px-4 flex scrollbar-hide  rounded-xl border border-gray-700 py-2 transition-all duration-200 bg-gray-900 text-xs outline-none text-white"
+                        id=""
+                        onChange={(e) => {
+                          setPrompt(e.target.value);
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" && !e.shiftKey) {
+                            e.preventDefault();
+                            handleSend(prompt);
+                            setPrompt("");
+                          }
+                        }}
+                        rows={1}
+                      />
 
-                    id=""
-                    onChange={(e) => {
-                      setPrompt(e.target.value);
-                    }}
-                    onKeyDown={(e) => {
-  if (e.key === "Enter" && !e.shiftKey) {
-    e.preventDefault();
-    handleSend(prompt);
-    setPrompt("");
-  }
-}}
-                    rows={1}
-                  />
+                      <button
+                        disabled={isTyping}
+                        className="text-2xl  md:text-2xl transition-all duration-300 hover:text-gray-400 text-gray-500 block transition-all duration-300  disabled:text-gray-700 disabled:cursor-not-allowed"
+                      >
+                        <VscSend />
+                      </button>
+                    </form>
+                    <div className="flex items-center justify-center  gap-1 pt-1 pb-3 px-6">
+                      <p className="text-[9px] md:text-[10px] text-gray-400 tracking-wide">
+                        Verify generated content before publishing.
+                      </p>
 
-                  <button
-                    disabled={isTyping}
-                    className="text-2xl  md:text-2xl transition-all duration-300 hover:text-gray-400 text-gray-500 block transition-all duration-300  disabled:text-gray-700 disabled:cursor-not-allowed"
-                  >
-                    <VscSend />
-                  </button>
-                </form>
-                <div className="flex items-center justify-center  gap-1 pt-1 pb-3 px-6">
-                  <p className="text-[9px] md:text-[10px] text-gray-400 tracking-wide">
-                    Verify generated content before publishing.
-                  </p>
-
-                  <Link
-                    to={`${window.location.origin}/viewpage/yugeshkaran01@gmail.com/69fc146c5ea31bc1ac08c77d`}
-                    onClick={() => postViews(email)}
-                    className="
+                      <Link
+                        to={`${window.location.origin}/viewpage/yugeshkaran01@gmail.com/69fc146c5ea31bc1ac08c77d`}
+                        onClick={() => postViews(email)}
+                        className="
                       text-[9px]
                       md:text-[10px]
                       text-emerald-400
@@ -709,16 +710,15 @@ function AddPost() {
                       transition-all duration-300
                       whitespace-nowrap
                     "
-                  >
-                    DraftMate Docs ↗
-                  </Link>
-                </div>
-    </motion.div>
-  )}
-</AnimatePresence>
-  
-              <div
+                      >
+                        DraftMate Docs ↗
+                      </Link>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
+              <div
                 className={`relative overflow-hidden
                     bg-[#0f172a]/80
                     border border-emerald-500/20
@@ -834,23 +834,26 @@ function AddPost() {
                     name="message"
                     ref={textareaRef}
                     value={prompt}
-                    onFocus={()=>{setIsFocused(true)}}
-                    onBlur={()=>{setIsFocused(false)}}
-                    placeholder= {PLACEHOLDERS[placeholderIndex]}
+                    onFocus={() => {
+                      setIsFocused(true);
+                    }}
+                    onBlur={() => {
+                      setIsFocused(false);
+                    }}
+                    placeholder={PLACEHOLDERS[placeholderIndex]}
                     className="flex-1  min-h-[40px]
     max-h-[200px] shrink-0 px-4 flex scrollbar-hide  rounded-xl border border-gray-700 py-2 transition-all duration-200 bg-gray-900 text-xs outline-none text-white"
-
                     id=""
                     onChange={(e) => {
                       setPrompt(e.target.value);
                     }}
                     onKeyDown={(e) => {
-  if (e.key === "Enter" && !e.shiftKey) {
-    e.preventDefault();
-    handleSend(prompt);
-    setPrompt("");
-  }
-}}
+                      if (e.key === "Enter" && !e.shiftKey) {
+                        e.preventDefault();
+                        handleSend(prompt);
+                        setPrompt("");
+                      }
+                    }}
                     rows={1}
                   />
 
@@ -882,7 +885,6 @@ function AddPost() {
                   </Link>
                 </div>
               </div>
-         
             </div>
 
             {/* RIGHT COLUMN FORM */}
