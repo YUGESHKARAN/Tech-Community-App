@@ -409,11 +409,11 @@ function BookMarkPage() {
                     </div>
             )}
 
-            
+             {loading && !posts.length > 0 && <PillLoader/>}
 
             <div className="flex relative  max-w-[1800px] mx-auto  w-full flex-wrap justify-center h-auto mx-auto">
               
-             {loading && !posts.length > 0 && <PillLoader/>}
+            
               <div className="mx-auto grid grid-cols-1 w-full  md:px-2 mx-auto md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 3xl:grid-cols-5 gap-3  md:gap-10 h-auto">
 
                 {
