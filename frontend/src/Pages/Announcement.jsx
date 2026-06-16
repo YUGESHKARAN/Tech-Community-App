@@ -1828,11 +1828,11 @@ function Announcement() {
           </main>
         </div>
 
-        {selectedImage && (
+        {/* {selectedImage && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
-            {/* Modal Container */}
+  
             <div className="relative max-w-6xl w-full flex items-center justify-center">
-              {/* Image */}
+           
               <img
                 src={selectedImage}
                 alt="Preview"
@@ -1847,8 +1847,6 @@ function Announcement() {
                    
                       "
               />
-
-              {/* Close Button */}
               <button
                 onClick={handleCloseModal}
                 className="
@@ -1877,7 +1875,150 @@ function Announcement() {
               </button>
             </div>
           </div>
-        )}
+        )} */}
+             <AnimatePresence>
+          {selectedImage && (
+            <motion.div
+              initial={{
+                opacity: 0,
+                backdropFilter: "blur(0px)",
+              }}
+              animate={{
+                opacity: 1,
+                backdropFilter: "blur(12px)",
+              }}
+              exit={{
+                opacity: 0,
+                backdropFilter: "blur(0px)",
+              }}
+              transition={{
+                duration: 0.25,
+              }}
+              onClick={handleCloseModal}
+              className="
+                fixed inset-0 z-50
+                flex items-center justify-center
+                bg-black/70
+                p-4
+              "
+            >
+              {/* Modal Container */}
+              <motion.div
+                layout
+                onClick={(e) => e.stopPropagation()}
+                initial={{
+                  opacity: 0,
+                  scale: 0.92,
+                  y: 20,
+                }}
+                animate={{
+                  opacity: 1,
+                  scale: 1,
+                  y: 0,
+                }}
+                exit={{
+                  opacity: 0,
+                  scale: 0.96,
+                  y: 10,
+                }}
+                transition={{
+                  duration: 0.35,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+                className="
+                  relative
+                  max-w-6xl
+                  w-full
+                  flex
+                  items-center
+                  justify-center
+                "
+              >
+                {/* Image */}
+                <motion.img
+                  src={selectedImage}
+                  alt="Preview"
+                  initial={{
+                    scale: 0.95,
+                    opacity: 0,
+                  }}
+                  animate={{
+                    scale: 1,
+                    opacity: 1,
+                  }}
+                  exit={{
+                    scale: 0.95,
+                    opacity: 0,
+                  }}
+                  transition={{
+                    duration: 0.4,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
+                  className="
+                    max-h-[50vh]
+                    w-auto
+                    rounded-2xl
+                    shadow-2xl
+                    border border-gray-700
+                    object-contain
+                  "
+                />
+        
+                {/* Close Button */}
+                <motion.button
+                  onClick={handleCloseModal}
+                  initial={{
+                    opacity: 0,
+                    scale: 0.8,
+                  }}
+                  animate={{
+                    opacity: 1,
+                    scale: 1,
+                  }}
+                  exit={{
+                    opacity: 0,
+                    scale: 0.8,
+                  }}
+                  transition={{
+                    delay: 0.15,
+                    duration: 0.2,
+                  }}
+                  whileHover={{
+                    scale: 1.08,
+                    rotate: 90,
+                  }}
+                  whileTap={{
+                    scale: 0.92,
+                  }}
+                  className="
+                    absolute
+                    md:-top-4
+                    md:-right-4
+                    -top-3
+                    -right-3
+                    md:w-10
+                    md:h-10
+                    h-8
+                    w-8
+                    flex
+                    items-center
+                    justify-center
+                    rounded-full
+                    bg-gray-900
+                    border border-gray-700
+                    text-white
+                    shadow-lg
+                    md:hover:bg-red-500
+                    transition-colors
+                  "
+                >
+                  <IoClose className="text-sm" />
+                </motion.button>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+        
       </div>
       <Footer />
     </div>
