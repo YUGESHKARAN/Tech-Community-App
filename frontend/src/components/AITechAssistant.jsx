@@ -215,6 +215,17 @@ export default function AITechAssistant({
       el.style.height = Math.min(el.scrollHeight, 200) + "px";
     },[query]);
 
+     const textareaRef2 = useRef(null);
+  
+    useEffect(()=>{
+      const el = textareaRef2.current;
+  
+      if(!el) return;
+  
+      el.style.height = "auto";
+      el.style.height = Math.min(el.scrollHeight, 200) + "px";
+    },[query]);
+
     const [placeholderIndex, setPlaceholderIndex] = useState(0);
       const [isFocused, setIsFocused] = useState(false);
     
@@ -627,7 +638,7 @@ export default function AITechAssistant({
           disabled={loading}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => {e.key === "Enter" && !e.shiftKey && askAI()}}
-            ref={textareaRef}
+            ref={textareaRef2}
             // placeholder="Ask your queries..."
             placeholder={PLACEHOLDERS[placeholderIndex]}
             className="flex-1 bg-gray-800 scrollbar-hide hidden max-h-[150px] md:block border border-neutral-800 rounded-xl px-4 py-2 text-sm text-white placeholder-neutral-500 outline-none"

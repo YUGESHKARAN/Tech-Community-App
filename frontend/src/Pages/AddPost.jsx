@@ -101,7 +101,9 @@ function AddPost() {
         sender: "bot",
         direction: "incoming",
       };
+      setIsTyping(false)
       setMessages((prev) => [...prev, errorMessage]);
+      
     } finally {
       setDraftMateLoading(false);
     }
@@ -307,6 +309,17 @@ function AddPost() {
 
   useEffect(() => {
     const el = textareaRef.current;
+
+    if (!el) return;
+
+    el.style.height = "auto";
+    el.style.height = Math.min(el.scrollHeight, 200) + "px";
+  }, [prompt]);
+
+    const textareaRef2 = useRef(null);
+
+  useEffect(() => {
+    const el = textareaRef2.current;
 
     if (!el) return;
 
@@ -663,6 +676,7 @@ function AddPost() {
 
                       <textarea
                         name="message"
+                         disabled={isTyping}
                         ref={textareaRef}
                         value={prompt}
                         onFocus={() => {
@@ -833,7 +847,7 @@ function AddPost() {
                   <textarea
                     name="message"
                     disabled={isTyping}
-                    ref={textareaRef}
+                    ref={textareaRef2}
                     value={prompt}
                     onFocus={() => {
                       setIsFocused(true);
