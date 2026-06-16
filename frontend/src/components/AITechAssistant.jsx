@@ -43,6 +43,7 @@ export default function AITechAssistant({
 
   const askAI = async (customQuery) => {
     const finalQuery = customQuery || query;
+    setIsInputFocused(false);
     if (!finalQuery.trim()) return;
 
     // console.log("finalQuery", finalQuery)
@@ -607,7 +608,7 @@ export default function AITechAssistant({
             placeholder={PLACEHOLDERS[placeholderIndex]}
             className="flex-1 md:hidden max-h-[150px] bg-gray-800 border border-neutral-800 rounded-xl px-4 py-2 text-sm text-white placeholder-neutral-500 outline-none"
             onFocus={() => setIsInputFocused(true)}
-            // onBlur={() => setIsInputFocused(false)}
+            onBlur={() => setIsInputFocused(false)}
             onMouseOut={() => setIsInputFocused(false)}
             rows={1}
             />
