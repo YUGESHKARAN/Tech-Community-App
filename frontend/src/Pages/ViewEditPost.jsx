@@ -13,7 +13,8 @@ import user from "../images/user.png";
 import toast from "../components/toaster/Toast"
 import { getItem } from "../utils/encode";
 import RenderTextWithHashtags from "../components/RenderTextWithHashtags";
-
+import {motion} from "framer-motion"
+import { VscGitStashApply } from "react-icons/vsc";
 function ViewEditPost() {
   // const username = localStorage.getItem("username");
   // const email = localStorage.getItem("email");
@@ -982,14 +983,35 @@ function ViewEditPost() {
               
 
               {/* Submit */}
-              <button
+              {/* <button
                 type="submit"
                 disabled={loading}
                 className="md:px-5 px-3 py-2 md:py-2.5 bg-emerald-600/20 hover:bg-emerald-500/20
                          rounded-md text-xs md:text-sm  text-emerald-400 transition-all duration-300 disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed"
               >
                 {loading ? "Updating..." : "Update Post"}
-              </button>
+              </button> */}
+
+               <motion.button
+                whileTap={{ scale: 0.97 }}
+                whileHover={{ scale: 1.02 }}
+                onClick={() => {}}
+                type="submit"
+                disabled={loading}
+                                 className="md:px-5 px-3 py-2 md:py-2.5 bg-[#111827]
+                                       rounded-lg text-xs  flex items-center justify-center gap-2 border
+                                border-slate-700 text-slate-200 transition-all duration-300 disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed"
+                                >
+                                    <VscGitStashApply className="md:text-base text-emerald-400 text-sm" />{" "}
+            <motion.span
+                  key={loading ? "Updating..." : "Update Post"}
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4 }}
+                >
+                 {loading ? "Updating..." : "Update Post"}
+                </motion.span>
+              </motion.button>
             </div>
           </div>
         </form>

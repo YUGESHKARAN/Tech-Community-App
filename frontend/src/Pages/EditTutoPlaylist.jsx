@@ -15,6 +15,8 @@ import BlogMiniSkeleton from "../components/loaders/BlogMiniSkeleton";
 import Fuse from "fuse.js";
 import useGetAllAuthorsByDomain from "../hooks/useGetAllAuthorsByDomain";
 import { getItem } from "../utils/encode";
+import { VscGitStashApply } from "react-icons/vsc";
+import {motion} from "framer-motion"
 function EditTutorPlaylist() {
   // const email = localStorage.getItem("email");
   const email = getItem("email");
@@ -494,14 +496,36 @@ const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
             </div>
 
             <div className="lg:col-span-3 hidden md:block flex justify-start pt-0">
-              <button
+              {/* <button
                 type="submit"
                 disabled={loader}
                 className="md:px-5 px-3 py-2 md:py-2.5 bg-emerald-600/20 hover:bg-emerald-500/20
                          rounded-md text-xs md:text-sm  text-emerald-400 transition-all duration-300 disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed"
               >
                 {loader ? "Updating Playlist..." : "Update Playlist"}
-              </button>
+              </button> */}
+
+              <motion.button
+                whileTap={{ scale: 0.97 }}
+                whileHover={{ scale: 1.02 }}
+                onClick={() => {}}
+                type="submit"
+                disabled={loader}
+                // className="md:px-5 px-3 py-2 md:py-2 bg-emerald-600/20 hover:bg-emerald-500/20
+                //          rounded-md text-xs md:text-sm  flex items-center justify-center gap-2   text-emerald-400 transition-all duration-300 disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed"
+                className="md:px-5 px-3 py-2 md:py-2  border border-slate-700
+                         rounded-lg text-xs flex items-center justify-center gap-2   text-slate-200 transition-all duration-300 disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed"
+              >
+                <VscGitStashApply className="md:text-base text-emerald-400 text-sm" />{" "}
+                <motion.span
+                  key={loader ? "Updating Playlist..." : "Update Playlist"}
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4 }}
+                >
+                  {loader ? "Updating Playlist..." : "Update Playlist"}
+                </motion.span>
+              </motion.button>
             </div>
           </div>
         </div>
@@ -656,14 +680,36 @@ const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
         {/* SUBMIT */}
         {posts?.length > 0 && (
           <div className="lg:col-span-3 p-4 md:mt-7 md:hidden flex justify-start ">
-            <button
+            {/* <button
               type="submit"
               disabled={loader}
               className="md:px-5 px-3 py-2 md:py-2.5 bg-emerald-600/20 hover:bg-emerald-500/20
                          rounded-md text-xs md:text-sm  text-emerald-400 transition-all duration-300 disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed"
             >
               {loader ? "Updating Playlist..." : "Update Playlist"}
-            </button>
+            </button> */}
+
+              <motion.button
+                whileTap={{ scale: 0.97 }}
+                whileHover={{ scale: 1.02 }}
+                onClick={() => {}}
+                type="submit"
+                disabled={loader}
+              // className="md:px-5 p-5 py-2 md:py-2 bg-emerald-600/20 hover:bg-emerald-500/20
+              //            rounded-md text-xs md:text-sm gap-2 flex items-center justify-center  text-emerald-400 transition-all duration-300 disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed"
+                            className="md:px-5 p-5 py-2 md:py-2 
+                         rounded-lg text-xs gap-2 border border-slate-700 flex items-center justify-center  text-slate-200 transition-all duration-300 disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed"
+            >
+              <VscGitStashApply className="md:text-base text-emerald-400 text-sm" />{" "}
+            <motion.span
+                  key={loader ? "Updating Playlist..." : "Update Playlist"}
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4 }}
+                >
+                  {loader ? "Updating Playlist..." : "Update Playlist"}
+                </motion.span>
+              </motion.button>
           </div>
         )}
       </form>

@@ -13,6 +13,7 @@ import Fuse from "fuse.js";
 import useGetAllAuthorsByDomain from "../hooks/useGetAllAuthorsByDomain";
 import { getItem } from "../utils/encode";
 import { VscGitStashApply } from "react-icons/vsc";
+import { motion, AnimatePresence } from "framer-motion";
 function TutorPlaylist() {
   // const email = localStorage.getItem("email");
   const email = getItem("email");
@@ -102,7 +103,6 @@ function TutorPlaylist() {
     if (!domain) return [];
 
     return coordinators.filter((coord) => coord.email !== email);
-
   }, [coordinators, domain]);
 
   const [debouncedSearch, setDebouncedSearch] = useState(searchCollaborator);
@@ -126,7 +126,6 @@ function TutorPlaylist() {
     let filtered = [...filteredCoordinators].filter(
       (author) => author.email !== email,
     );
-
 
     if (debouncedSearch.trim() !== "") {
       filtered = fuse.search(debouncedSearch).map((r) => r.item);
@@ -169,7 +168,6 @@ function TutorPlaylist() {
       }
     });
   };
-
 
   const avatarColor = (name) => {
     const colors = [
@@ -299,11 +297,12 @@ function TutorPlaylist() {
                     ? "Choose Domain"
                     : "Publish posts to enable domain selection"}
                 </option>
-                {categories.length > 1 && categories.map((category, index) => (
-                  <option key={index} value={category}>
-                    {category}
-                  </option>
-                ))}
+                {categories.length > 1 &&
+                  categories.map((category, index) => (
+                    <option key={index} value={category}>
+                      {category}
+                    </option>
+                  ))}
               </select>
             </div>
 
@@ -520,15 +519,27 @@ function TutorPlaylist() {
             </div>
 
             <div className="lg:col-span-3 hidden md:block flex justify-start md:pt-0 pt-6">
-              <button
+              <motion.button
+                whileTap={{ scale: 0.97 }}
+                whileHover={{ scale: 1.02 }}
+                onClick={() => {}}
                 type="submit"
                 disabled={loader}
-                className="md:px-5 px-3 py-2 md:py-2 bg-emerald-600/20 hover:bg-emerald-500/20
-                         rounded-md text-xs md:text-sm flex items-center justify-center gap-2   text-emerald-400 transition-all duration-300 disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed"
+                // className="md:px-5 px-3 py-2 md:py-2 bg-emerald-600/20 hover:bg-emerald-500/20
+                //          rounded-md text-xs md:text-sm  flex items-center justify-center gap-2   text-emerald-400 transition-all duration-300 disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed"
+                className="md:px-5 px-3 py-2 md:py-2  border border-slate-700
+                         rounded-lg text-xs flex items-center justify-center gap-2   text-slate-200 transition-all duration-300 disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed"
               >
-                <VscGitStashApply className="md:text-base text-sm" />{" "}
-                {loader ? "Creating Playlist..." : "Create Playlist"}
-              </button>
+                <VscGitStashApply className="md:text-base text-emerald-400 text-sm" />{" "}
+                <motion.span
+                  key={loader ? "Creating Playlist..." : "Create Playlist"}
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4 }}
+                >
+                  {loader ? "Creating Playlist..." : "Create Playlist"}
+                </motion.span>
+              </motion.button>
             </div>
           </div>
         </div>
@@ -638,15 +649,15 @@ function TutorPlaylist() {
 
             {!posts.length > 0 && loading && <BlogMiniSkeleton />}
             {posts.length > 1 && loading && (
-                <div className="col-span-full flex justify-center">
-                    <div className="relative flex items-center justify-center">
-                      {/* Outer Oval Ring */}
-                      <div className="md:w-7 md:h-7 w-6 h-6 border-2 border-neutral-700 border-t-white/70 md:border-t-emerald-400 rounded-full animate-spin" />
+              <div className="col-span-full flex justify-center">
+                <div className="relative flex items-center justify-center">
+                  {/* Outer Oval Ring */}
+                  <div className="md:w-7 md:h-7 w-6 h-6 border-2 border-neutral-700 border-t-white/70 md:border-t-emerald-400 rounded-full animate-spin" />
 
-                      {/* Inner Glow Pulse */}
-                      {/* <div className="absolute w-10 h-10 md:w-12 md:h-12 bg-emerald-500/20 rounded-full blur-md animate-pulse" /> */}
-                    </div>
-                  </div>
+                  {/* Inner Glow Pulse */}
+                  {/* <div className="absolute w-10 h-10 md:w-12 md:h-12 bg-emerald-500/20 rounded-full blur-md animate-pulse" /> */}
+                </div>
+              </div>
             )}
 
             {!hasMore && posts?.length > 0 && (
@@ -732,15 +743,27 @@ function TutorPlaylist() {
         {/* SUBMIT */}
         {posts?.length > 0 && (
           <div className="lg:col-span-3 p-4 md:hidden md:mt-7 flex justify-start ">
-            <button
-              type="submit"
-              disabled={loader}
-              className="md:px-5 p-5 py-2 md:py-2 bg-emerald-600/20 hover:bg-emerald-500/20
-                         rounded-md text-xs md:text-sm gap-2 flex items-center justify-center  text-emerald-400 transition-all duration-300 disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed"
+             <motion.button
+                whileTap={{ scale: 0.97 }}
+                whileHover={{ scale: 1.02 }}
+                onClick={() => {}}
+                type="submit"
+                disabled={loader}
+              // className="md:px-5 p-5 py-2 md:py-2 bg-emerald-600/20 hover:bg-emerald-500/20
+              //            rounded-md text-xs md:text-sm gap-2 flex items-center justify-center  text-emerald-400 transition-all duration-300 disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed"
+                            className="md:px-5 p-5 py-2 md:py-2 
+                         rounded-lg text-xs gap-2 border border-slate-700 flex items-center justify-center  text-slate-200 transition-all duration-300 disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed"
             >
-              <VscGitStashApply className="md:text-base text-sm" />{" "}
-              {loader ? "Creating Playlist..." : "Create Playlist"}
-            </button>
+              <VscGitStashApply className="md:text-base text-emerald-400 text-sm" />{" "}
+            <motion.span
+                  key={loader ? "Creating Playlist..." : "Create Playlist"}
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4 }}
+                >
+                  {loader ? "Creating Playlist..." : "Create Playlist"}
+                </motion.span>
+              </motion.button>
           </div>
         )}
       </form>

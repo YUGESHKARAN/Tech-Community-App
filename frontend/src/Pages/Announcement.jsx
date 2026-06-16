@@ -822,21 +822,21 @@ function Announcement() {
                   setShowAnnouncement(false);
                 }}
                 className="
-    md:hidden
-    group
-    inline-flex
-    items-center
-    gap-1.5
-    px-2
-    py-1
-    rounded-lg
-    bg-[#111827]
-    border
-    border-slate-700
-    text-slate-200
-    text-[11px]
-    font-medium
-  "
+                  md:hidden
+                  group
+                  inline-flex
+                  items-center
+                  gap-1.5
+                  px-2
+                  py-1
+                  rounded-lg
+                  bg-[#111827]
+                  border
+                  border-slate-700
+                  text-slate-200
+                  text-[11px]
+                  font-medium
+                "
               >
                 <motion.div
                   animate={{
@@ -848,12 +848,12 @@ function Announcement() {
                     ease: [0.22, 1, 0.36, 1],
                   }}
                   className="
-      w-5 h-5
-      rounded-full
-      flex items-center justify-center
-      bg-emerald-500/10
-      text-emerald-400
-    "
+                    w-5 h-5
+                    rounded-full
+                    flex items-center justify-center
+                    bg-emerald-500/10
+                    text-emerald-400
+                  "
                 >
                   {showGuidelines ? <X size={11} /> : <Plus size={11} />}
                 </motion.div>

@@ -552,16 +552,16 @@ function AddPost() {
                       ease: [0.22, 1, 0.36, 1],
                     }}
                     className="
-        lg:hidden
-        relative overflow-hidden
-        bg-[#0f172a]/80
-        border border-emerald-500/20
-        shadow-[0_0_40px_rgba(16,185,129,0.06)]
-        rounded-2xl
-        h-[600px]
-        pb-2
-        flex flex-col
-      "
+                      lg:hidden
+                      relative overflow-hidden
+                      bg-[#0f172a]/80
+                      border border-emerald-500/20
+                      shadow-[0_0_40px_rgba(16,185,129,0.06)]
+                      rounded-2xl
+                      h-[600px]
+                      pb-2
+                      flex flex-col
+                    "
                   >
                     {/* DraftMate Content */}
                     {/* Header */}
@@ -1408,15 +1408,30 @@ function AddPost() {
 
                 {/* SUBMIT */}
                 <div className="pt-4">
-                  <button
+                  <motion.button
+                                  whileTap={{ scale: 0.97 }}
+                                  whileHover={{ scale: 1.02 }}
+                                  onClick={() => {
+                         
+                                  }}
                     type="submit"
-                    disabled={loading}
-                    className="md:px-5 px-3 py-2 md:py-2.5 bg-emerald-600/20 hover:bg-emerald-500/20
-                         rounded-md text-xs md:text-sm flex items-center justify-center gap-2 text-emerald-400 transition-all duration-300 disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed"
+
+                                     className="md:px-5 px-3 py-2 md:py-2.5 bg-[#111827]
+                         rounded-lg text-xs  flex items-center justify-center gap-2 border
+                  border-slate-700 text-slate-200 transition-all duration-300 disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed"
                   >
-                    <VscGitStashApply className="md:text-base text-sm" />{" "}
+                      <VscGitStashApply className="md:text-base text-emerald-400 text-sm" />{" "}
+                    <motion.span
+                                      key= {loading ? "Publishing..." : "Publish Post"}
+                                      initial={{ opacity: 0, y: 4 }}
+                                      animate={{ opacity: 1, y: 0 }}
+                                      transition={{ duration: 0.4 }}
+                                    >
+                                  
                     {loading ? "Publishing..." : "Publish Post"}
-                  </button>
+                                    </motion.span>
+                 
+                  </motion.button>
                 </div>
               </form>
             </div>
