@@ -641,7 +641,7 @@ export default function AITechAssistant({
             <VscSend />
           </button>
         </div>
-        <ul className="text-center text-gray-300 h-10 ">
+        <ul className="text-center text-gray-300 mt-0 md:mt-2 h-10 ">
           <li className="text-[8px] md:text-[10px] md:h-4 h-3">
             {" "}
             It's specially made for this platform ❤️

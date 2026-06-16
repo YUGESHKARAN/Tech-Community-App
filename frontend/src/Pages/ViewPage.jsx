@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useContext, useRef } from "react";
 // import user from "../images/blog48.jpg";
 import NavBar from "../ui/NavBar";
@@ -38,7 +37,7 @@ import { getItem } from "../utils/encode.js";
 import RenderTextWithHashtags from "../components/RenderTextWithHashtags.jsx";
 import RenderTextNoMarkdown from "../components/RenderTextNoMarkdown.jsx";
 import logoicon from "../assets/assistant_1.png";
-import { motion, AnimatePresence  } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 function ViewPage() {
   const user = localStorage.getItem("username");
@@ -406,7 +405,7 @@ function ViewPage() {
     el.style.height = Math.min(el.scrollHeight, 200) + "px";
   }, [newMessage]);
 
-    const textareaRef2 = useRef(null);
+  const textareaRef2 = useRef(null);
 
   useEffect(() => {
     const el = textareaRef2.current;
@@ -417,8 +416,7 @@ function ViewPage() {
     el.style.height = Math.min(el.scrollHeight, 200) + "px";
   }, [newMessage]);
 
-  
-    const textareaRef3 = useRef(null);
+  const textareaRef3 = useRef(null);
 
   useEffect(() => {
     const el = textareaRef3.current;
@@ -428,7 +426,6 @@ function ViewPage() {
     el.style.height = "auto";
     el.style.height = Math.min(el.scrollHeight, 200) + "px";
   }, [newMessage]);
-
 
   // console.log("email", email);
   // console.log("userEmail", userEmail);
@@ -492,26 +489,10 @@ function ViewPage() {
             {/* LEFT COLUMN */}
             {/* <div className="lg:col-span-4  "> */}
             <div className="lg:col-span-8">
-              {/* Banner */}
-
+        
               {/* Banner */}
               <div
-                // className="
-                //   relative
-                //   group
-                //   md:rounded-xl
-
-                //   rounded-2xl
-                //   overflow-hidden
-
-                //   border border-emerald-900
-                //   bg-black
-                //   shadow-xl
-                //  block
-
-                //   cursor-pointer
-                //   mt-2 md:mt-0 md:mb-6
-                // "
+             
 
                 className="
               relative
@@ -810,14 +791,48 @@ function ViewPage() {
               "
             >
               {/* Personal Assistant */}
-              {showAssistant && (
+              {/* {showAssistant && (
                 <div className="text-4xl text-white hidden md:block ">
                   <AITechAssistant
                     currentPostId={singlePostData._id}
                     category={singlePostData.category}
                   />
                 </div>
-              )}
+              )} */}
+              
+              <AnimatePresence mode="wait">
+  {showAssistant && (
+    <motion.div
+      initial={{
+        opacity: 0,
+        height: 0,
+        y: -10,
+      }}
+      animate={{
+        opacity: 1,
+        height: "auto",
+        y: 0,
+      }}
+      exit={{
+        opacity: 0,
+        height: 0,
+        y: -10,
+      }}
+      transition={{
+        duration: 0.45,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+      className="overflow-hidden h-auto"
+    >
+      <div className="hidden md:block">
+      <AITechAssistant
+        currentPostId={singlePostData._id}
+        category={singlePostData.category}
+      />
+      </div>
+    </motion.div>
+  )}
+</AnimatePresence>
 
               {/* Documents */}
               {/* bg-gradient-to-b from-slate-900/80 to-slate-800/80 */}
@@ -1030,7 +1045,6 @@ function ViewPage() {
                 {/* Desktop input */}
                 <div className="hidden md:block px-4 pb-4 pt-2 border-t border-[#21262d] shrink-0">
                   <div className="flex items-center gap-2 bg-gray-900 border border-[#30363d] rounded-lg px-3 py-2 focus-within:border-emerald-500/50 transition-colors">
-                  
                     <textarea
                       value={newMessage}
                       ref={textareaRef}
@@ -1042,7 +1056,7 @@ function ViewPage() {
                       className="flex-1 scrollbar-hide bg-transparent max-h-[150px] outline-none text-xs text-gray-300 placeholder-neutral-500 outline-none"
                       rows={1}
                     />
-                   
+
                     <motion.button
                       onClick={postComment}
                       whileHover={{
@@ -1296,150 +1310,149 @@ function ViewPage() {
         </div>
       )} */}
 
-           <AnimatePresence>
-  {selectedImage && (
-    <motion.div
-      initial={{
-        opacity: 0,
-        backdropFilter: "blur(0px)",
-      }}
-      animate={{
-        opacity: 1,
-        backdropFilter: "blur(12px)",
-      }}
-      exit={{
-        opacity: 0,
-        backdropFilter: "blur(0px)",
-      }}
-      transition={{
-        duration: 0.25,
-      }}
-      onClick={handleCloseModal}
-      className="
+      <AnimatePresence>
+        {selectedImage && (
+          <motion.div
+            initial={{
+              opacity: 0,
+              backdropFilter: "blur(0px)",
+            }}
+            animate={{
+              opacity: 1,
+              backdropFilter: "blur(12px)",
+            }}
+            exit={{
+              opacity: 0,
+              backdropFilter: "blur(0px)",
+            }}
+            transition={{
+              duration: 0.25,
+            }}
+            onClick={handleCloseModal}
+            className="
         fixed inset-0 z-50
         flex items-center justify-center
         bg-black/70
         p-4
       "
-    >
-      {/* Modal Container */}
-      <motion.div
-        layout
-        onClick={(e) => e.stopPropagation()}
-        initial={{
-          opacity: 0,
-          scale: 0.92,
-          y: 20,
-        }}
-        animate={{
-          opacity: 1,
-          scale: 1,
-          y: 0,
-        }}
-        exit={{
-          opacity: 0,
-          scale: 0.96,
-          y: 10,
-        }}
-        transition={{
-          duration: 0.35,
-          ease: [0.22, 1, 0.36, 1],
-        }}
-        className="
-          relative
-          max-w-6xl
-          w-full
-          flex
-          items-center
-          justify-center
-        "
-      >
-        {/* Image */}
-        <motion.img
-          src={selectedImage}
-          alt="Preview"
-          initial={{
-            scale: 0.95,
-            opacity: 0,
-          }}
-          animate={{
-            scale: 1,
-            opacity: 1,
-          }}
-          exit={{
-            scale: 0.95,
-            opacity: 0,
-          }}
-          transition={{
-            duration: 0.4,
-            ease: [0.22, 1, 0.36, 1],
-          }}
-          className="
-            max-h-[50vh]
-            w-auto
-            rounded-2xl
-            shadow-2xl
-            border border-gray-700
-            object-contain
-          "
-        />
+          >
+            {/* Modal Container */}
+            <motion.div
+              layout
+              onClick={(e) => e.stopPropagation()}
+              initial={{
+                opacity: 0,
+                scale: 0.92,
+                y: 20,
+              }}
+              animate={{
+                opacity: 1,
+                scale: 1,
+                y: 0,
+              }}
+              exit={{
+                opacity: 0,
+                scale: 0.96,
+                y: 10,
+              }}
+              transition={{
+                duration: 0.35,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              className="
+                relative
+                max-w-6xl
+                w-full
+                flex
+                items-center
+                justify-center
+              "
+            >
+              {/* Image */}
+              <motion.img
+                src={selectedImage}
+                alt="Preview"
+                initial={{
+                  scale: 0.95,
+                  opacity: 0,
+                }}
+                animate={{
+                  scale: 1,
+                  opacity: 1,
+                }}
+                exit={{
+                  scale: 0.95,
+                  opacity: 0,
+                }}
+                transition={{
+                  duration: 0.4,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+                className="
+                  max-h-[50vh]
+                  w-auto
+                  rounded-2xl
+                  shadow-2xl
+                  border border-gray-700
+                  object-contain
+                "
+              />
 
-        {/* Close Button */}
-        <motion.button
-          onClick={handleCloseModal}
-          initial={{
-            opacity: 0,
-            scale: 0.8,
-          }}
-          animate={{
-            opacity: 1,
-            scale: 1,
-          }}
-          exit={{
-            opacity: 0,
-            scale: 0.8,
-          }}
-          transition={{
-            delay: 0.15,
-            duration: 0.2,
-          }}
-          whileHover={{
-            scale: 1.08,
-            rotate: 90,
-          }}
-          whileTap={{
-            scale: 0.92,
-          }}
-          className="
-            absolute
-            md:-top-4
-            md:-right-4
-            -top-3
-            -right-3
-            md:w-10
-            md:h-10
-            h-8
-            w-8
-            flex
-            items-center
-            justify-center
-            rounded-full
-            bg-gray-900
-            border border-gray-700
-            text-white
-            shadow-lg
-            md:hover:bg-red-500
-            transition-colors
-          "
-        >
-          <IoClose className="text-sm" />
-        </motion.button>
-      </motion.div>
-    </motion.div>
-  )}
-</AnimatePresence>
+              {/* Close Button */}
+              <motion.button
+                onClick={handleCloseModal}
+                initial={{
+                  opacity: 0,
+                  scale: 0.8,
+                }}
+                animate={{
+                  opacity: 1,
+                  scale: 1,
+                }}
+                exit={{
+                  opacity: 0,
+                  scale: 0.8,
+                }}
+                transition={{
+                  delay: 0.15,
+                  duration: 0.2,
+                }}
+                whileHover={{
+                  scale: 1.08,
+                  rotate: 90,
+                }}
+                whileTap={{
+                  scale: 0.92,
+                }}
+                className="
+                  absolute
+                  md:-top-4
+                  md:-right-4
+                  -top-3
+                  -right-3
+                  md:w-10
+                  md:h-10
+                  h-8
+                  w-8
+                  flex
+                  items-center
+                  justify-center
+                  rounded-full
+                  bg-gray-900
+                  border border-gray-700
+                  text-white
+                  shadow-lg
+                  md:hover:bg-red-500
+                  transition-colors
+                "
+              >
+                <IoClose className="text-sm" />
+              </motion.button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
- 
       {!loading &&
         (!singlePostData || Object.keys(singlePostData).length === 0) && (
           <div className="w-full h-[70vh] md:h-[55vh] flex flex-col items-center justify-center">
