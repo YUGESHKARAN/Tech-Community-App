@@ -188,7 +188,7 @@ function ViewPage() {
   }, [postId, userEmail]);
   const postComment = () => {
     if (newMessage.trim() === "") return;
-
+    setIsInputFocused(false)
     setViewComments(true);
 
     const messageData = {
@@ -801,38 +801,38 @@ function ViewPage() {
               )} */}
               
               <AnimatePresence mode="wait">
-  {showAssistant && (
-    <motion.div
-      initial={{
-        opacity: 0,
-        height: 0,
-        y: -10,
-      }}
-      animate={{
-        opacity: 1,
-        height: "auto",
-        y: 0,
-      }}
-      exit={{
-        opacity: 0,
-        height: 0,
-        y: -10,
-      }}
-      transition={{
-        duration: 0.45,
-        ease: [0.22, 1, 0.36, 1],
-      }}
-      className="overflow-hidden h-auto"
-    >
-      <div className="hidden md:block">
-      <AITechAssistant
-        currentPostId={singlePostData._id}
-        category={singlePostData.category}
-      />
-      </div>
-    </motion.div>
-  )}
-</AnimatePresence>
+              {showAssistant && (
+                <motion.div
+                  initial={{
+                    opacity: 0,
+                    height: 0,
+                    y: -10,
+                  }}
+                  animate={{
+                    opacity: 1,
+                    height: "auto",
+                    y: 0,
+                  }}
+                  exit={{
+                    opacity: 0,
+                    height: 0,
+                    y: -10,
+                  }}
+                  transition={{
+                    duration: 0.45,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
+                  className="overflow-hidden h-auto"
+                >
+                  <div className="hidden md:block">
+                  <AITechAssistant
+                    currentPostId={singlePostData._id}
+                    category={singlePostData.category}
+                  />
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
               {/* Documents */}
               {/* bg-gradient-to-b from-slate-900/80 to-slate-800/80 */}
@@ -1198,7 +1198,7 @@ function ViewPage() {
                         }
                         placeholder="Leave a comment..."
                         onFocus={() => setIsInputFocused(true)}
-                        // onBlur={() => setIsInputFocused(false)}
+                        onBlur={() => setIsInputFocused(false)}
                         onMouseOut={() => setIsInputFocused(false)}
                         className="flex-1 scrollbar-hide bg-transparent max-h-[150px]  outline-none text-xs text-gray-300 placeholder-neutral-500 outline-none"
                         rows={1}
