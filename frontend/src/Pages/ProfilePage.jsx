@@ -38,6 +38,7 @@ function ProfilePage() {
   const [showConfirm, setShowConfirm] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
   const [bioDescription, setBioDescription] = useState("");
+  const [editProfile, setEditProfile] = useState(false);
 
   const sanitizeUrl = (rawUrl) => {
     try {
@@ -240,7 +241,7 @@ const scrollToAchievements = () => {
         {!loader ? (
           <div className="w-full min-h-screen max-w-[1800px] mx-auto px-4 md:px-6 pt-2  md:pt- pb-8 pb-24">
             {/* ── Page header ──────────────────────────────────────── */}
-            <div className="flex items-center justify-between mb-0 md:mb-8 px-1">
+            {/* <div className="flex items-center justify-between mb-0 md:mb-8 px-1">
               <div>
                 <p className="text-[11px] font-medium tracking-widest uppercase text-gray-300 mb-0.5">
                   Account
@@ -257,729 +258,523 @@ const scrollToAchievements = () => {
                 <RiDeleteBin6Line size={14} />
                 <span className="hidden md:inline">Delete Account</span>
               </button>
-            </div>
+            </div> */}
+
+            <div className="flex items-center justify-between mb-0 md:mb-8 px-1">
+  <div>
+    <p className="text-[11px] font-medium tracking-widest uppercase text-gray-300 mb-0.5">
+      Account
+    </p>
+
+    <h1 className="text-xl md:text-3xl font-medium tracking-tight text-emerald-400">
+      My Profile
+    </h1>
+  </div>
+
+  <div className="flex items-center gap-2">
+    {/* Edit Profile */}
+    <motion.button
+      type="button"
+      whileHover={{ scale: 1.03 }}
+      whileTap={{ scale: 0.96 }}
+      initial={{ opacity: 0, y: -10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.25 }}
+      onClick={() => setEditProfile((prev) => !prev)}
+      className="
+        group
+        inline-flex
+        items-center
+        gap-1.5
+        px-2
+        md:px-3.5
+        md:py-2
+        py-1.5
+        rounded-lg
+        bg-[#111827]
+        border
+        border-slate-700
+        text-slate-200
+        text-[11px]
+        font-medium
+      "
+    >
+      <MdEdit className="text-sm  text-emerald-400" />
+
+      <motion.span
+                        key={editProfile ? "Close Editing" : "Edit Profile"}
+                        initial={{ opacity: 0, y: 4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4 }}
+                      >
+        {editProfile ? "Close Editing" : "Edit Profile"}
+           </motion.span>
+    </motion.button>
+
+    {/* Delete Account */}
+    <motion.button
+      type="button"
+      whileHover={{ scale: 1.03 }}
+      whileTap={{ scale: 0.96 }}
+      onClick={() => setShowConfirm(true)}
+      className="
+        flex items-center gap-2
+        md:px-3.5 md:py-2
+        px-2 py-1.5
+        rounded-lg
+        border border-red-500/20
+        bg-red-500/10
+        text-red-400
+        hover:bg-red-500/15
+        transition-all duration-300
+      "
+    >
+      <RiDeleteBin6Line size={14} />
+
+      <span className="hidden md:inline text-xs font-medium">
+        Delete Account
+      </span>
+    </motion.button>
+  </div>
+</div>
 
             
 
             {/* ── Two-column layout ─────────────────────────────────── */}
-            <div className="grid md:grid-cols-[300px_1fr] gap-4 mb-3 items-start">
-              {/* ══ LEFT — Profile card ══════════════════════════════ */}
-            <div className="md:sticky top-6 relative self-start bg-gray-900/50 border md:border-white/[0.1] border-white/[0.09] rounded-2xl p-6 pb-3 text-center">
-                {/* Avatar */}
-                <div className="relative w-fit mx-auto mt-3 md:mb-3 mb-4">
-                  {previewImage ? (
-                    <img
-                      src={previewImage}
-                      alt="Preview"
-                      className="w-28 h-28 md:w-32 md:h-32 rounded-full object-cover border-2 border-emerald-500/60"
-                    />
-                  ) : author.profile ? (
-                    <img
-                      src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`}
-                      alt="Profile"
-                      className="w-28 h-28 md:w-32 md:h-32 rounded-full object-cover border-2 border-emerald-500/60"
-                    />
-                  ) : (
-                    <div className="w-28 h-28 md:w-32 md:h-32 flex items-center justify-center rounded-full bg-gray-800 border-2 border-white/10">
-                      <HiOutlineUserCircle className="text-gray-600 text-7xl md:text-8xl" />
-                    </div>
-                  )}
-                  <label
-                    htmlFor="image"
-                    className="absolute bottom-1 right-1 w-8 h-8 flex items-center justify-center bg-gray-700 hover:bg-gray-600 border border-white/10 text-emerald-400 rounded-full cursor-pointer transition-colors"
-                    title="Change photo"
-                  >
-                    <MdEdit className="text-sm" />
-                  </label>
-                  <input
-                    type="file"
-                    id="image"
-                    accept="image/*"
-                    onChange={onImageChange}
-                    className="hidden"
-                  />
-                </div>
+           /* ─────────────────────────────────────────────────────────────────────────────
+   BytesBase · Profile Page — Two-column grid (left card + right panel)
+   RIGHT PANEL completely restructured:
+     • Non-edit: fields render as clean read-only display rows (not fake inputs)
+     • Edit mode: form fields appear with clear section grouping
+     • Bio Links always full-width, not crammed into a half-column
+     • Add Link form lives BELOW bio links (not beside them) — logical flow
+   All state / handlers preserved verbatim.
+─────────────────────────────────────────────────────────────────────────────*/
 
-                {/* Name */}
-                <h2 className=" md:text-xl text-lg font-medium leading-snug text-white my-1">
-                  {userName || "—"}
-                </h2>
+<div
+  style={{
+    display: "grid",
+    gridTemplateColumns: "300px 1fr",
+    gap: "16px",
+    marginBottom: "12px",
+    alignItems: "start",
+  }}
+  className="md:grid-cols-[300px_1fr] grid-cols-1"
+>
 
-                {/* Role pill */}
-                <span
-                  className=" absolute left-4 top-4 "
-                >
-                  <RoleBadge role={role} />
-                
-                </span>
-                
-                {author?.role !== "student" && (
-                  <div
-                    onClick={scrollToAchievements}
-                    className="cursor-pointer"
-                  >
-                    <BadgeIcons badges={author?.badges} />
-                  </div>
-                )}
-        
+  {/* ══════════════════════════════════════════════════════════════════════
+      LEFT — Identity card  (unchanged from original redesign)
+  ══════════════════════════════════════════════════════════════════════ */}
+  <div
+    className="md:sticky top-6 self-start"
+    style={{
+      background: "#111118",
+      border: "1px solid #1E1E2E",
+      borderRadius: "16px",
+      overflow: "hidden",
+    }}
+  >
+    {/* Avatar zone */}
+    <div
+      style={{
+        background: "linear-gradient(160deg, #14141F 0%, #0E0E1A 100%)",
+        padding: "32px 24px 24px",
+        textAlign: "center",
+        borderBottom: "1px solid #1E1E2E",
+        position: "relative",
+      }}
+    >
+      {/* Role badge */}
+      <span style={{ position: "absolute", top: "14px", left: "14px" }}>
+        <RoleBadge role={role} />
+      </span>
 
-                {/* Bio Section */}
-                <div className="mb-5 mt-3 px-1 text-left">
-                  <div
-                    className={`flex items-center gap-1 mb-2 ${bioEdit && "justify-between"}`}
-                  >
-                    <p className="text-[11px] tracking-widest uppercase text-gray-400 font-medium">
-                      About
-                    </p>
-
-                    {!bioEdit ? (
-                      <button
-                        onClick={() => setBioEdit(true)}
-                        className="flex items-center gap-1 text-[11px] text-emerald-400 hover:text-emerald-300 transition"
-                      >
-                        <MdEdit className="text-xs" />
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => {
-                          setBioEdit(false);
-                        }}
-                        className="text-[11px] text-gray-400 hover:text-white transition"
-                      >
-                        Preview
-                      </button>
-                    )}
-                  </div>
-
-                  {!bioEdit ? (
-                    <div
-                      className="
-                  w-full
-                  text-xs 
-                  leading-relaxed
-                  whitespace-pre-wrap
-                  text-gray-300
-                  break-words
-                 
-                "
-                    >
-                      {bioDescription?.trim()?.length > 0 ? (
-                        bioDescription
-                      ) : (
-                        <span className="text-gray-500  text-xs md:text-xs">
-                          Add a short bio, let others know about you...
-                        </span>
-                      )}
-                    </div>
-                  ) : (
-                    <div className="space-y-3">
-                      <textarea
-                        rows={4}
-                        maxLength={220}
-                        value={bioDescription}
-                        onChange={(e) => {
-                          setBioDescription(e.target.value);
-                          setUpdateButton(true);
-                        }}
-                        placeholder="Write a short bio..."
-                        className="
-                        w-full
-                        rounded-lg
-                        bg-gray-900
-                        border border-gray-700
-                        p-3
-                        text-xs
-                        text-white
-                        placeholder:text-gray-500
-                        outline-none
-                        resize-none
-                        leading-relaxed
-                        focus:border-emerald-500/40
-                        focus:ring-2
-                        focus:ring-emerald-500/10
-                        transition-all duration-200
-                        emerald-scrollbar
-                      "
-                      />
-
-                      <div className="flex items-center justify-between">
-                        <span className="text-[10px] text-gray-500">
-                          {bioDescription?.length}/220
-                        </span>
-                      </div>
-
-                    </div>
-                  )}
-                </div>
-
-                {/* Stats row */}
-                {author.role !== "student" &&
-                  (followers?.length > 0 ||
-                    following?.length > 0 ||
-                    posts.length > 0) && (
-                    <div className="flex justify-center gap-px mb-6 rounded-xl overflow-hidden border border-white/[0.06]">
-                      {author.role === "coordinator" &&
-                        followers?.length > 0 && (
-                          <div className="flex-1 py-3 bg-white/[0.02]">
-                            <p className="text-base font-medium text-white">
-                              {followers?.length ?? 0}
-                            </p>
-                            <p className="text-[10px] text-gray-400 mt-0.5">
-                              Followers
-                            </p>
-                          </div>
-                        )}
-
-                      {author.role !== "student" && posts.length > 0 ? (
-                        <Link to="/yourposts" className="flex-1">
-                          <div className="py-3 bg-white/[0.02] hover:bg-emerald-500/5 transition-colors h-full">
-                            <p className="text-base font-medium text-emerald-400">
-                              {posts.length}
-                            </p>
-                            <p className="text-[10px] text-gray-400 mt-0.5">
-                              Posts
-                            </p>
-                          </div>
-                        </Link>
-                      ) : author.role !== "student" ? (
-                        <div className="flex-1 py-3 bg-white/[0.02]">
-                          <p className="text-base font-medium text-gray-600">
-                            0
-                          </p>
-                          <p className="text-[10px] text-gray-400 mt-0.5">
-                            Posts
-                          </p>
-                        </div>
-                      ) : null}
-
-                      {following?.length > 0 && (
-                        <div className="flex-1 py-3 bg-white/[0.02]">
-                          <p className="text-base font-medium text-white">
-                            {following?.length ?? 0}
-                          </p>
-                          <p className="text-[10px] text-gray-400 mt-0.5">
-                            Following
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-              </div>          
-             
-             
-
-              {/* ══ RIGHT — Form ═════════════════════════════════════ */}
-              <form
-                onSubmit={handleSubmit}
-                className="bg-gray-900/50 border border-white/[0.09] md:border-white/[0.1] rounded-2xl mt-6 md:mt-0  p-6 md:p-8 md:pb-6 "
-              >
-                <div className="grid md:grid-cols-2 gap-6">
-                  {/* ── Left form column ────────────────────────────── */}
-                  <div className="space-y-5">
-                    {/* Display Name */}
-                    <div className="flex flex-col gap-1.5">
-                      <label
-                        htmlFor="authorName"
-                        className="text-[11px] font-medium tracking-widest uppercase text-gray-300"
-                      >
-                        Display Name
-                      </label>
-                      <input
-                        type="text"
-                        id="authorName"
-                        value={authorName}
-                        onChange={(e) => {
-                          setAuthorName(e.target.value);
-                          setUpdateButton(true);
-                        }}
-                        className="w-full px-3.5 py-2.5 text-sm bg-gray-800/60 border border-white/[0.07] rounded-lg text-gray-300 outline-none focus:border-emerald-500/50 focus:bg-gray-800 transition-colors duration-200 placeholder:text-gray-600"
-                        placeholder="Your name"
-                        required
-                      />
-                    </div>
-
-                    {/* Email */}
-                    <div className="flex flex-col gap-1.5">
-                      <label
-                        htmlFor="authorEmail"
-                        className="text-[11px] font-medium tracking-widest uppercase text-gray-300"
-                      >
-                        Email
-                      </label>
-                      <input
-                        type="email"
-                        id="authorEmail"
-                        value={authorEmail}
-                        readOnly
-                        className="w-full px-3.5 py-2.5 text-sm bg-gray-800/30 border border-white/[0.04] rounded-lg text-gray-400 outline-none cursor-not-allowed"
-                      />
-                    </div>
-
-                    {/* Communities — below role */}
-                    {author.community?.length > 0 && (
-                      <div className="flex flex-col gap-2">
-                        <p className="text-[11px] font-medium tracking-widest uppercase text-gray-300">
-                          Communities{" "}
-                          {author.role === "coordinator"
-                            ? "coordinating"
-                            : "joined"}
-                        </p>
-                        <div className="flex flex-wrap gap-1.5">
-                          {author.community.map((com, i) => (
-                            <span
-                              key={i}
-                              className="px-2.5 py-1 text-[10px] font-medium bg-white/[0.03] text-gray-400 border border-white/[0.06] rounded-full"
-                            >
-                              {com}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Add Link form — desktop only */}
-                    <div
-                      className={`${
-                        profileLinks.length >= 5 && !showLinkBox ? "hidden" : ""
-                      } hidden md:block`}
-                    >
-                      <div className="flex items-center justify-between mb-3">
-                        <p className="text-[11px] font-medium tracking-widest uppercase text-gray-300">
-                          {showLinkBox
-                            ? "Edit Link"
-                            : 5 - profileLinks.length > 0
-                              ? `${5 - profileLinks.length} slot${
-                                  5 - profileLinks.length > 1 ? "s" : ""
-                                } remaining`
-                              : "Add Link"}
-                        </p>
-                        {currentLinkTitle.length > 0 && (
-                          <button
-                            onClick={(e) => {
-                              e.preventDefault();
-                              setCurrentLinkTitle("");
-                              setCurrentLinkUrl("");
-                              setShowLinkBox(false);
-                            }}
-                            className="text-[11px] px-2.5 py-1 rounded-md bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-colors"
-                          >
-                            Clear
-                          </button>
-                        )}
-                      </div>
-
-                      {(profileLinks?.length + links?.length < 5 ||
-                        showLinkBox) && (
-                        <div className="flex flex-col gap-2.5">
-                          {currentLinkTitle !== "Others" ? (
-                            <select
-                              value={currentLinkTitle}
-                              onChange={(e) =>
-                                setCurrentLinkTitle(e.target.value)
-                              }
-                              className="w-full px-3.5 py-2.5 text-sm bg-gray-800/60 border border-white/[0.07] rounded-lg text-gray-300 outline-none focus:border-emerald-500/50 focus:bg-gray-800 transition-colors duration-200 cursor-pointer"
-                            >
-                              <option value="" disabled>
-                                Add Bio Link
-                              </option>
-                              {!profileLinks.some(
-                                (l) =>
-                                  l.title === "GitHub" &&
-                                  currentLinkTitle !== "GitHub",
-                              ) && <option value="GitHub">GitHub</option>}
-                              {!profileLinks.some(
-                                (l) =>
-                                  l.title === "LinkedIn" &&
-                                  currentLinkTitle !== "LinkedIn",
-                              ) && <option value="LinkedIn">LinkedIn</option>}
-                              {!profileLinks.some(
-                                (l) =>
-                                  l.title === "Portfolio" &&
-                                  currentLinkTitle !== "Portfolio",
-                              ) && <option value="Portfolio">Portfolio</option>}
-                              {showLinkBox &&
-                                profileLinks.map((row) => (
-                                  <option key={row.title} value={row.title}>
-                                    {row.title}
-                                  </option>
-                                ))}
-                              <option value="Others">Others</option>
-                            </select>
-                          ) : (
-                            <input
-                              type="text"
-                              placeholder="Platform name"
-                              onChange={(e) => setCustomTitle(e.target.value)}
-                              className="w-full px-3.5 py-2.5 text-sm bg-gray-800/60 border border-white/[0.07] rounded-lg text-gray-300 outline-none focus:border-emerald-500/50 focus:bg-gray-800 transition-colors duration-200 placeholder:text-gray-600"
-                            />
-                          )}
-
-                          <input
-                            type="url"
-                            value={currentLinkUrl}
-                            onChange={(e) => setCurrentLinkUrl(e.target.value)}
-                            placeholder="https://..."
-                            className="w-full px-3.5 py-2.5 text-sm bg-gray-800/60 border border-white/[0.07] rounded-lg text-gray-300 outline-none focus:border-emerald-500/50 focus:bg-gray-800 transition-colors duration-200 placeholder:text-gray-600"
-                          />
-
-                          <button
-                            type="button"
-                            onClick={() => {
-                              const titleToUse =
-                                currentLinkTitle === "Others"
-                                  ? customTitle?.trim()
-                                  : currentLinkTitle.trim();
-                              const sanitizedUrl = sanitizeUrl(
-                                currentLinkUrl.trim(),
-                              );
-                              if (titleToUse && sanitizedUrl) {
-                                const newLink = {
-                                  title: titleToUse,
-                                  url: sanitizedUrl,
-                                  id: linkId,
-                                };
-                                setLinks([...links, newLink]);
-                                setUpdateButton(true);
-                                setCurrentLinkTitle("");
-                                setCurrentLinkUrl("");
-                                setCustomTitle("");
-                                setLinkId(null);
-                              } else if (titleToUse) {
-                                toast.error(
-                                  "Invalid URL",
-                                  "Please enter a valid http(s) URL.",
-                                );
-                              }
-                            }}
-                            className="self-start px-4 py-2 text-xs font-medium rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition-colors"
-                          >
-                            {showLinkBox ? "Update Link" : "Add Link"}
-                          </button>
-                        </div>
-                      )}
-
-                      {/* Pending (unsaved) links */}
-                      {links.length > 0 && (
-                        <div className="mt-4 space-y-2">
-                          {links.map((link, index) => (
-                            <div
-                              key={`${link.title}-${index}`}
-                              className="flex items-center justify-between gap-3 px-3 py-2.5 bg-emerald-500/5 border border-emerald-500/15 rounded-lg"
-                            >
-                              <div className="flex items-center gap-2 min-w-0">
-                                {link.title === "LinkedIn" ? (
-                                  <FaLinkedin className="text-base  flex-shrink-0" />
-                                ) : link.title === "GitHub" ? (
-                                  <FaSquareGithub className="text-base  flex-shrink-0" />
-                                ) : link.title === "Portfolio" ? (
-                                  <BsPersonSquare className="text-base  flex-shrink-0" />
-                                ) : (
-                                  <PiLinkSimpleFill className="text-base  flex-shrink-0" />
-                                )}
-                                <div className="min-w-0">
-                                  <p className="text-xs font-medium text-gray-300">
-                                    {link.title}
-                                  </p>
-                                  <a
-                                    href={link.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-[10px] text-blue-400 hover:underline truncate block max-w-[180px]"
-                                  >
-                                    {link.url}
-                                  </a>
-                                </div>
-                              </div>
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  setLinks((prevLinks) =>
-                                    prevLinks.filter((_, i) => i !== index),
-                                  )
-                                }
-                                className="text-red-400/60 hover:text-red-400 transition-colors flex-shrink-0"
-                              >
-                                <IoIosRemoveCircleOutline className="text-base" />
-                              </button>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* ── Right form column ─────────────────────────────── */}
-                  <div className="space-y-5">
-                    {/* Bio Links */}
-                    <div>
-                      <p className="text-[11px] font-medium tracking-widest uppercase text-gray-300 mb-3">
-                        Bio Links
-                      </p>
-
-                      {profileLinks?.length > 0 ? (
-                        <div className="space-y-2">
-                          {profileLinks.map((link, index) => (
-                            <div
-                              key={index}
-                              className="flex items-center justify-between gap-3 px-3.5 py-3 bg-white/[0.02] border border-white/[0.06] rounded-xl hover:border-white/[0.1] transition-colors"
-                            >
-                              <div className="flex items-center gap-3 min-w-0">
-                                <div className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/[0.04] border border-white/[0.06] flex-shrink-0">
-                                  {link.title === "LinkedIn" ? (
-                                    <FaLinkedin className="text-base " />
-                                  ) : link.title === "GitHub" ? (
-                                    <FaSquareGithub className="text-base " />
-                                  ) : link.title === "Portfolio" ? (
-                                    <BsPersonSquare className="text-base " />
-                                  ) : (
-                                    <PiLinkSimpleFill className="text-base " />
-                                  )}
-                                </div>
-                                <div className="min-w-0">
-                                  <p className="text-xs font-medium text-gray-300">
-                                    {link.title}
-                                  </p>
-                                  <a
-                                    href={link.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-[10px] text-blue-400 hover:text-blue-500 transition-colors truncate block max-w-[180px]"
-                                  >
-                                    {userName}/{link.title}
-                                  </a>
-                                </div>
-                              </div>
-
-                              <div className="flex items-center gap-1.5 flex-shrink-0">
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    setCurrentLinkTitle(link.title);
-                                    setCurrentLinkUrl(link.url);
-                                    setLinkId(link._id);
-                                    setLinks((prev) =>
-                                      prev.filter((_, i) => i !== index),
-                                    );
-                                    setShowLinkBox(true);
-                                    setUpdateButton(true);
-                                  }}
-                                  className="w-7 h-7 flex items-center justify-center rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/20 hover:bg-blue-500/20 transition-colors"
-                                  title="Edit"
-                                >
-                                  <MdEdit className="text-xs" />
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() =>
-                                    removeLinks(authorEmail, link._id)
-                                  }
-                                  className="w-7 h-7 flex items-center justify-center rounded-lg bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-colors"
-                                  title="Remove"
-                                >
-                                  <IoIosRemoveCircleOutline className="text-xs" />
-                                </button>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <div className="px-4 py-8 bg-white/[0.015] border border-dashed border-white/[0.08] rounded-xl text-center">
-                          <PiLinkSimpleFill className="text-2xl text-gray-600 mx-auto mb-2" />
-                          <p className="text-xs text-gray-500 leading-relaxed">
-                            Add your LinkedIn, GitHub, portfolio or other
-                            profile links.
-                          </p>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Add Link form — mobile only */}
-                    <div
-                      className={`${
-                        profileLinks.length >= 5 && !showLinkBox ? "hidden" : ""
-                      } md:hidden block`}
-                    >
-                      <div className="flex items-center justify-between mb-3">
-                        <p className="text-[11px] font-medium tracking-widest uppercase text-gray-300">
-                          {showLinkBox
-                            ? "Edit Link"
-                            : 5 - profileLinks.length > 0
-                              ? `${5 - profileLinks.length} slot${
-                                  5 - profileLinks.length > 1 ? "s" : ""
-                                } remaining`
-                              : "Add Link"}
-                        </p>
-                        {currentLinkTitle.length > 0 && (
-                          <button
-                            onClick={(e) => {
-                              e.preventDefault();
-                              setCurrentLinkTitle("");
-                              setCurrentLinkUrl("");
-                              setShowLinkBox(false);
-                            }}
-                            className="text-[11px] px-2.5 py-1 rounded-md bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-colors"
-                          >
-                            Clear
-                          </button>
-                        )}
-                      </div>
-
-                      {(profileLinks?.length + links?.length < 5 ||
-                        showLinkBox) && (
-                        <div className="flex flex-col gap-2.5">
-                          {currentLinkTitle !== "Others" ? (
-                            <select
-                              value={currentLinkTitle}
-                              onChange={(e) =>
-                                setCurrentLinkTitle(e.target.value)
-                              }
-                              className="w-full px-3.5 py-2.5 text-sm bg-gray-800/60 border border-white/[0.07] rounded-lg text-gray-300 outline-none focus:border-emerald-500/50 focus:bg-gray-800 transition-colors duration-200 cursor-pointer"
-                            >
-                              <option value="" disabled>
-                                Add Bio Link
-                              </option>
-                              {!profileLinks.some(
-                                (l) =>
-                                  l.title === "GitHub" &&
-                                  currentLinkTitle !== "GitHub",
-                              ) && <option value="GitHub">GitHub</option>}
-                              {!profileLinks.some(
-                                (l) =>
-                                  l.title === "LinkedIn" &&
-                                  currentLinkTitle !== "LinkedIn",
-                              ) && <option value="LinkedIn">LinkedIn</option>}
-                              {!profileLinks.some(
-                                (l) =>
-                                  l.title === "Portfolio" &&
-                                  currentLinkTitle !== "Portfolio",
-                              ) && <option value="Portfolio">Portfolio</option>}
-                              {showLinkBox &&
-                                profileLinks.map((row) => (
-                                  <option key={row.title} value={row.title}>
-                                    {row.title}
-                                  </option>
-                                ))}
-                              <option value="Others">Others</option>
-                            </select>
-                          ) : (
-                            <input
-                              type="text"
-                              placeholder="Platform name"
-                              onChange={(e) => setCustomTitle(e.target.value)}
-                              className="w-full px-3.5 py-2.5 text-sm bg-gray-800/60 border border-white/[0.07] rounded-lg text-gray-300 outline-none focus:border-emerald-500/50 focus:bg-gray-800 transition-colors duration-200 placeholder:text-gray-600"
-                            />
-                          )}
-
-                          <input
-                            type="url"
-                            value={currentLinkUrl}
-                            onChange={(e) => setCurrentLinkUrl(e.target.value)}
-                            placeholder="https://..."
-                            className="w-full px-3.5 py-2.5 text-sm bg-gray-800/60 border border-white/[0.07] rounded-lg text-gray-300 outline-none focus:border-emerald-500/50 focus:bg-gray-800 transition-colors duration-200 placeholder:text-gray-600"
-                          />
-
-                          <button
-                            type="button"
-                            onClick={() => {
-                              const titleToUse =
-                                currentLinkTitle === "Others"
-                                  ? customTitle?.trim()
-                                  : currentLinkTitle.trim();
-                              const sanitizedUrl = sanitizeUrl(
-                                currentLinkUrl.trim(),
-                              );
-                              if (titleToUse && sanitizedUrl) {
-                                const newLink = {
-                                  title: titleToUse,
-                                  url: sanitizedUrl,
-                                  id: linkId,
-                                };
-                                setLinks([...links, newLink]);
-                                setUpdateButton(true);
-                                setCurrentLinkTitle("");
-                                setCurrentLinkUrl("");
-                                setCustomTitle("");
-                                setLinkId(null);
-                              } else if (titleToUse) {
-                                toast.error(
-                                  "Invalid URL",
-                                  "Please enter a valid http(s) URL.",
-                                );
-                              }
-                            }}
-                            className="self-start px-4 py-2 text-xs font-medium rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition-colors"
-                          >
-                            {showLinkBox ? "Update Link" : "Add Link"}
-                          </button>
-                        </div>
-                      )}
-
-                      {/* Pending (unsaved) links — mobile */}
-                      {links.length > 0 && (
-                        <div className="mt-4 space-y-2">
-                          {links.map((link, index) => (
-                            <div
-                              key={`${link.title}-${index}`}
-                              className="flex items-center justify-between gap-3 px-3 py-2.5 bg-emerald-500/5 border border-emerald-500/15 rounded-lg"
-                            >
-                              <div className="flex items-center gap-2 min-w-0">
-                                {link.title === "LinkedIn" ? (
-                                  <FaLinkedin className="text-base  flex-shrink-0" />
-                                ) : link.title === "GitHub" ? (
-                                  <FaSquareGithub className="text-base  flex-shrink-0" />
-                                ) : link.title === "Portfolio" ? (
-                                  <BsPersonSquare className="text-base  flex-shrink-0" />
-                                ) : (
-                                  <PiLinkSimpleFill className="text-base  flex-shrink-0" />
-                                )}
-                                <div className="min-w-0">
-                                  <p className="text-xs font-medium text-gray-300">
-                                    {link.title}
-                                  </p>
-                                  <a
-                                    href={link.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-[10px] text-blue-400 hover:underline truncate block max-w-[180px]"
-                                  >
-                                    {link.url}
-                                  </a>
-                                </div>
-                              </div>
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  setLinks((prevLinks) =>
-                                    prevLinks.filter((_, i) => i !== index),
-                                  )
-                                }
-                                className="text-red-400/60 hover:text-red-400 transition-colors flex-shrink-0"
-                              >
-                                <IoIosRemoveCircleOutline className="text-base" />
-                              </button>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                {/* ── Submit row ──────────────────────────────────────── */}
-              {updateButton &&  <div className="mt-7 md:mt-4 ">
-                  <button
-                    type="submit"
-                    disabled={loading || !updateButton}
-                    className="px-5 py-2.5 text-xs md:text-sm rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition-colors disabled:bg-gray-700/50 disabled:border-none disabled:text-gray-400 disabled:cursor-not-allowed"
-                  >
-                    {loading ? "Updating…" : "Update My Profile"}
-                  </button>
-                </div>}
-              </form>
-
-             
+      {/* Segmented arc ring */}
+      <div style={{ position: "relative", width: "fit-content", margin: "0 auto 16px" }}>
+        <svg width="136" height="136" viewBox="0 0 136 136"
+          style={{ position: "absolute", top: "-4px", left: "-4px", transform: "rotate(-90deg)" }}>
+          {[0,45,90,135,180,225,270,315].map((angle, i) => (
+            <circle key={i} cx="68" cy="68" r="62" fill="none"
+              stroke={i%3===0?"#00E5A0":i%3===1?"#7C6FCD":"#1E1E2E"}
+              strokeWidth="2.5" strokeDasharray="30 46.8"
+              strokeDashoffset={-i*11.7} opacity={i<5?1:0.25} />
+          ))}
+        </svg>
+        <div style={{ width:"128px", height:"128px", borderRadius:"50%", overflow:"hidden", border:"3px solid #1A1A24", position:"relative" }}>
+          {previewImage ? (
+            <img src={previewImage} alt="Preview" style={{ width:"100%", height:"100%", objectFit:"cover" }} />
+          ) : author.profile ? (
+            <img src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`} alt="Profile" style={{ width:"100%", height:"100%", objectFit:"cover" }} />
+          ) : (
+            <div style={{ width:"100%", height:"100%", display:"flex", alignItems:"center", justifyContent:"center", background:"#1A1A24" }}>
+              <HiOutlineUserCircle style={{ fontSize:"72px", color:"#2E2E42" }} />
             </div>
+          )}
+        </div>
+        {editProfile && (
+          <>
+            <label htmlFor="image" title="Change photo"
+              style={{ position:"absolute", bottom:"4px", right:"4px", width:"28px", height:"28px", borderRadius:"50%", background:"#1A1A28", border:"1px solid #2E2E42", display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", color:"#00E5A0" }}>
+              <MdEdit style={{ fontSize:"13px" }} />
+            </label>
+            <input type="file" id="image" accept="image/*" onChange={onImageChange} className="hidden" />
+          </>
+        )}
+      </div>
+
+      {/* Name */}
+      <h2 style={{ fontFamily:"'Inter',sans-serif", fontWeight:600, fontSize:"17px", color:"#E8E8F0", letterSpacing:"-0.02em", margin:"0 0 4px" }}>
+        {userName || "—"}
+      </h2>
+
+      {/* Badges */}
+      {author?.role !== "student" && (
+        <div onClick={scrollToAchievements} style={{ cursor:"pointer", marginTop:"10px" }}>
+          <BadgeIcons badges={author?.badges} />
+        </div>
+      )}
+    </div>
+
+    {/* Stats */}
+    {author.role !== "student" && (followers?.length>0 || following?.length>0 || posts.length>0) && (
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(70px,1fr))", borderBottom:"1px solid #1E1E2E" }}>
+        {author.role==="coordinator" && followers?.length>0 && (
+          <div style={{ padding:"14px 8px", textAlign:"center", borderRight:"1px solid #1E1E2E" }}>
+            <p style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:"18px", fontWeight:700, color:"#00E5A0", margin:"0 0 2px" }}>{followers?.length??0}</p>
+            <p style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:"9px", color:"#5A5A78", letterSpacing:"0.12em", margin:0, textTransform:"uppercase" }}>followers</p>
+          </div>
+        )}
+        {author.role!=="student" && posts.length>0 ? (
+          <Link to="/yourposts" style={{ textDecoration:"none" }}>
+            <div style={{ padding:"14px 8px", textAlign:"center", borderRight:"1px solid #1E1E2E" }}
+              onMouseEnter={e=>(e.currentTarget.style.background="rgba(0,229,160,0.04)")}
+              onMouseLeave={e=>(e.currentTarget.style.background="transparent")}>
+              <p style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:"18px", fontWeight:700, color:"#00E5A0", margin:"0 0 2px" }}>{posts.length}</p>
+              <p style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:"9px", color:"#5A5A78", letterSpacing:"0.12em", margin:0, textTransform:"uppercase" }}>posts</p>
+            </div>
+          </Link>
+        ) : author.role!=="student" ? (
+          <div style={{ padding:"14px 8px", textAlign:"center", borderRight:"1px solid #1E1E2E" }}>
+            <p style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:"18px", fontWeight:700, color:"#2E2E42", margin:"0 0 2px" }}>0</p>
+            <p style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:"9px", color:"#5A5A78", letterSpacing:"0.12em", margin:0, textTransform:"uppercase" }}>posts</p>
+          </div>
+        ) : null}
+        {following?.length>0 && (
+          <div style={{ padding:"14px 8px", textAlign:"center" }}>
+            <p style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:"18px", fontWeight:700, color:"#7C6FCD", margin:"0 0 2px" }}>{following?.length??0}</p>
+            <p style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:"9px", color:"#5A5A78", letterSpacing:"0.12em", margin:0, textTransform:"uppercase" }}>following</p>
+          </div>
+        )}
+      </div>
+    )}
+
+    {/* Bio */}
+    <div style={{ padding:"20px 20px 20px" }}>
+      <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:"10px" }}>
+        <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:"9px", letterSpacing:"0.18em", textTransform:"uppercase", color:"#5A5A78" }}>// about</span>
+        {editProfile && (!bioEdit ? (
+          <button onClick={()=>setBioEdit(true)}
+            style={{ display:"flex", alignItems:"center", gap:"4px", fontSize:"10px", color:"#00E5A0", background:"none", border:"none", cursor:"pointer", fontFamily:"'JetBrains Mono',monospace" }}>
+            <MdEdit style={{ fontSize:"11px" }} /> edit
+          </button>
+        ) : (
+          <button onClick={()=>setBioEdit(false)}
+            style={{ fontSize:"10px", color:"#5A5A78", background:"none", border:"none", cursor:"pointer", fontFamily:"'JetBrains Mono',monospace" }}>
+            preview
+          </button>
+        ))}
+      </div>
+      {!bioEdit ? (
+        <p style={{ fontSize:"12px", lineHeight:"1.7", color:bioDescription?.trim()?.length>0?"#9898B0":"#3A3A52", whiteSpace:"pre-wrap", wordBreak:"break-word", margin:0, fontStyle:bioDescription?.trim()?.length===0?"italic":"normal" }}>
+          {bioDescription?.trim()?.length>0 ? bioDescription : "Add a short bio, let others know about you..."}
+        </p>
+      ) : (
+        <div>
+          <textarea rows={4} maxLength={220} value={bioDescription}
+            onChange={e=>{setBioDescription(e.target.value);setUpdateButton(true);}}
+            placeholder="Write a short bio..."
+            style={{ width:"100%", background:"#0D0D16", border:"1px solid #2A2A3A", borderRadius:"8px", padding:"10px 12px", fontSize:"12px", color:"#C8C8D8", fontFamily:"'Inter',sans-serif", lineHeight:"1.6", outline:"none", resize:"none", boxSizing:"border-box" }}
+            onFocus={e=>(e.target.style.borderColor="rgba(0,229,160,0.4)")}
+            onBlur={e=>(e.target.style.borderColor="#2A2A3A")} />
+          <div style={{ display:"flex", justifyContent:"flex-end", marginTop:"4px" }}>
+            <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:"10px", color:"#3A3A52" }}>{bioDescription?.length}/220</span>
+          </div>
+        </div>
+      )}
+    </div>
+  </div>
+
+
+  {/* ══════════════════════════════════════════════════════════════════════
+      RIGHT — Profile form  (fully restructured)
+  ══════════════════════════════════════════════════════════════════════ */}
+  <form
+    onSubmit={handleSubmit}
+    style={{ display:"flex", flexDirection:"column", gap:"12px" }}
+  >
+
+    {/* ── Section 1: Identity ──────────────────────────────────────────── */}
+    <div style={{ background:"#111118", border:"1px solid #1E1E2E", borderRadius:"16px", overflow:"hidden" }}>
+      {/* Section header */}
+      <div style={{ padding:"14px 20px", borderBottom:"1px solid #1A1A24", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+        <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:"9px", color:"#5A5A78", letterSpacing:"0.18em", textTransform:"uppercase" }}>
+          01 · identity
+        </span>
+      </div>
+
+      <div style={{ padding:"20px" }}>
+
+        {/* --- VIEW MODE: clean display rows --- */}
+        {!editProfile ? (
+          <div style={{ display:"flex", flexDirection:"column", gap:"0" }}>
+            {/* Display name row */}
+            <div style={{ display:"flex", alignItems:"center", padding:"14px 0", borderBottom:"1px solid #111118" }}>
+              <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:"9px", color:"#3A3A52", letterSpacing:"0.16em", textTransform:"uppercase", width:"140px", flexShrink:0 }}>
+                display_name
+              </span>
+              <span style={{ fontSize:"14px", fontWeight:500, color:"#E8E8F0", fontFamily:"'Inter',sans-serif" }}>
+                {authorName || "—"}
+              </span>
+            </div>
+            {/* Email row */}
+            <div style={{ display:"flex", alignItems:"center", padding:"14px 0", borderBottom:"1px solid #111118" }}>
+              <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:"9px", color:"#3A3A52", letterSpacing:"0.16em", textTransform:"uppercase", width:"140px", flexShrink:0 }}>
+                email
+              </span>
+              <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:"12px", color:"#5A5A78" }}>
+                {authorEmail}
+              </span>
+            </div>
+            {/* Communities row */}
+            {author.community?.length > 0 && (
+              <div style={{ display:"flex", alignItems:"flex-start", padding:"14px 0" }}>
+                <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:"9px", color:"#3A3A52", letterSpacing:"0.16em", textTransform:"uppercase", width:"140px", flexShrink:0, paddingTop:"2px" }}>
+                  {author.role==="coordinator" ? "coordinating" : "member_of"}
+                </span>
+                <div style={{ display:"flex", flexWrap:"wrap", gap:"6px" }}>
+                  {author.community.map((com,i) => (
+                    <span key={i} style={{ padding:"3px 10px", fontSize:"11px", fontFamily:"'JetBrains Mono',monospace", background:"rgba(124,111,205,0.08)", color:"#7C6FCD", border:"1px solid rgba(124,111,205,0.2)", borderRadius:"20px" }}>
+                      {com}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        ) : (
+          /* --- EDIT MODE: actual form fields --- */
+          <div style={{ display:"flex", flexDirection:"column", gap:"16px" }}>
+            {/* Display name input */}
+            <div>
+              <label htmlFor="authorName"
+                style={{ display:"block", fontFamily:"'JetBrains Mono',monospace", fontSize:"9px", letterSpacing:"0.18em", textTransform:"uppercase", color:"#5A5A78", marginBottom:"8px" }}>
+                display_name
+              </label>
+              <input type="text" id="authorName" value={authorName} placeholder="Your name" required
+                disabled={!editProfile}
+                onChange={e=>{setAuthorName(e.target.value);setUpdateButton(true);}}
+                style={{ width:"100%", background:"#0D0D16", border:"1px solid #1E1E2E", borderRadius:"8px", padding:"10px 14px", fontSize:"13px", color:"#E8E8F0", fontFamily:"'Inter',sans-serif", outline:"none", boxSizing:"border-box", transition:"border-color 0.15s, box-shadow 0.15s" }}
+                onFocus={e=>{e.target.style.borderColor="rgba(0,229,160,0.4)";e.target.style.boxShadow="0 0 0 3px rgba(0,229,160,0.06)";}}
+                onBlur={e=>{e.target.style.borderColor="#1E1E2E";e.target.style.boxShadow="none";}} />
+            </div>
+            {/* Email (always read-only) */}
+            <div>
+              <label htmlFor="authorEmail"
+                style={{ display:"block", fontFamily:"'JetBrains Mono',monospace", fontSize:"9px", letterSpacing:"0.18em", textTransform:"uppercase", color:"#5A5A78", marginBottom:"8px" }}>
+                email · read_only
+              </label>
+              <input type="email" id="authorEmail" value={authorEmail} readOnly
+                style={{ width:"100%", background:"rgba(255,255,255,0.02)", border:"1px solid #1A1A24", borderRadius:"8px", padding:"10px 14px", fontSize:"12px", color:"#3E3E58", fontFamily:"'JetBrains Mono',monospace", outline:"none", cursor:"not-allowed", boxSizing:"border-box" }} />
+            </div>
+            {/* Communities */}
+            {author.community?.length > 0 && (
+              <div>
+                <p style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:"9px", letterSpacing:"0.18em", textTransform:"uppercase", color:"#5A5A78", marginBottom:"10px" }}>
+                  {author.role==="coordinator" ? "coordinating" : "member_of"}
+                </p>
+                <div style={{ display:"flex", flexWrap:"wrap", gap:"8px" }}>
+                  {author.community.map((com,i) => (
+                    <span key={i} style={{ padding:"4px 12px", fontSize:"11px", fontFamily:"'JetBrains Mono',monospace", background:"rgba(124,111,205,0.08)", color:"#7C6FCD", border:"1px solid rgba(124,111,205,0.2)", borderRadius:"20px" }}>
+                      {com}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+
+
+    {/* ── Section 2: Bio Links ─────────────────────────────────────────── */}
+    <div style={{ background:"#111118", border:"1px solid #1E1E2E", borderRadius:"16px", overflow:"hidden" }}>
+      <div style={{ padding:"14px 20px", borderBottom:"1px solid #1A1A24" }}>
+        <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:"9px", color:"#5A5A78", letterSpacing:"0.18em", textTransform:"uppercase" }}>
+          02 · bio_links
+        </span>
+      </div>
+
+      <div style={{ padding:"16px 20px", display:"flex", flexDirection:"column", gap:"8px" }}>
+        {/* Existing links — always full width */}
+        {profileLinks?.length > 0 ? (
+          profileLinks.map((link, index) => (
+            <div key={index}
+              style={{ display:"flex", alignItems:"center", justifyContent:"space-between", gap:"12px", padding:"12px 14px", background:"#0D0D16", border:"1px solid #1E1E2E", borderRadius:"10px", transition:"border-color 0.15s" }}
+              onMouseEnter={e=>(e.currentTarget.style.borderColor="#2E2E42")}
+              onMouseLeave={e=>(e.currentTarget.style.borderColor="#1E1E2E")}>
+              <div style={{ display:"flex", alignItems:"center", gap:"12px", minWidth:0 }}>
+                <div style={{ width:"34px", height:"34px", display:"flex", alignItems:"center", justifyContent:"center", borderRadius:"8px", background:"#1A1A24", border:"1px solid #2A2A3A", flexShrink:0 }}>
+                  {link.title==="LinkedIn" ? <FaLinkedin style={{ fontSize:"15px", color:"#7C6FCD" }} />
+                  : link.title==="GitHub" ? <FaSquareGithub style={{ fontSize:"15px", color:"#E8E8F0" }} />
+                  : link.title==="Portfolio" ? <BsPersonSquare style={{ fontSize:"15px", color:"#00E5A0" }} />
+                  : <PiLinkSimpleFill style={{ fontSize:"15px", color:"#5A5A78" }} />}
+                </div>
+                <div style={{ minWidth:0 }}>
+                  <p style={{ fontSize:"13px", fontWeight:500, color:"#C8C8D8", margin:"0 0 2px", fontFamily:"'Inter',sans-serif" }}>
+                    {link.title}
+                  </p>
+                  <a href={link.url} target="_blank" rel="noopener noreferrer"
+                    style={{ fontSize:"10px", color:"#3E5A78", fontFamily:"'JetBrains Mono',monospace", display:"block", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap", maxWidth:"280px", textDecoration:"none" }}>
+                    {userName}/{link.title}
+                  </a>
+                </div>
+              </div>
+
+              {editProfile && (
+                <div style={{ display:"flex", alignItems:"center", gap:"6px", flexShrink:0 }}>
+                  <button type="button" title="Edit"
+                    onClick={()=>{setCurrentLinkTitle(link.title);setCurrentLinkUrl(link.url);setLinkId(link._id);setLinks(prev=>prev.filter((_,i)=>i!==index));setShowLinkBox(true);setUpdateButton(true);}}
+                    style={{ width:"30px", height:"30px", display:"flex", alignItems:"center", justifyContent:"center", borderRadius:"7px", background:"rgba(124,111,205,0.08)", color:"#7C6FCD", border:"1px solid rgba(124,111,205,0.18)", cursor:"pointer" }}
+                    onMouseEnter={e=>(e.currentTarget.style.background="rgba(124,111,205,0.16)")}
+                    onMouseLeave={e=>(e.currentTarget.style.background="rgba(124,111,205,0.08)")}>
+                    <MdEdit style={{ fontSize:"13px" }} />
+                  </button>
+                  <button type="button" title="Remove"
+                    onClick={()=>removeLinks(authorEmail,link._id)}
+                    style={{ width:"30px", height:"30px", display:"flex", alignItems:"center", justifyContent:"center", borderRadius:"7px", background:"rgba(255,107,107,0.07)", color:"#FF6B6B", border:"1px solid rgba(255,107,107,0.18)", cursor:"pointer" }}
+                    onMouseEnter={e=>(e.currentTarget.style.background="rgba(255,107,107,0.14)")}
+                    onMouseLeave={e=>(e.currentTarget.style.background="rgba(255,107,107,0.07)")}>
+                    <IoIosRemoveCircleOutline style={{ fontSize:"13px" }} />
+                  </button>
+                </div>
+              )}
+            </div>
+          ))
+        ) : (
+          <div style={{ padding:"28px 16px", background:"#0D0D16", border:"1px dashed #1E1E2E", borderRadius:"10px", textAlign:"center" }}>
+            <PiLinkSimpleFill style={{ fontSize:"22px", color:"#2A2A3A", margin:"0 auto 8px", display:"block" }} />
+            <p style={{ fontSize:"11px", color:"#3A3A52", fontFamily:"'Inter',sans-serif", lineHeight:"1.6", margin:0 }}>
+              GitHub, LinkedIn, portfolio — add your links.
+            </p>
+          </div>
+        )}
+
+        {/* Pending (unsaved) links */}
+        {links.length > 0 && (
+          <div style={{ display:"flex", flexDirection:"column", gap:"6px", marginTop:"4px" }}>
+            {links.map((link, index) => (
+              <div key={`${link.title}-${index}`}
+                style={{ display:"flex", alignItems:"center", justifyContent:"space-between", gap:"10px", padding:"10px 14px", background:"rgba(0,229,160,0.04)", border:"1px solid rgba(0,229,160,0.15)", borderRadius:"9px" }}>
+                <div style={{ display:"flex", alignItems:"center", gap:"10px", minWidth:0 }}>
+                  {link.title==="LinkedIn" ? <FaLinkedin style={{ fontSize:"13px", flexShrink:0 }} />
+                  : link.title==="GitHub" ? <FaSquareGithub style={{ fontSize:"13px", flexShrink:0 }} />
+                  : link.title==="Portfolio" ? <BsPersonSquare style={{ fontSize:"13px", flexShrink:0 }} />
+                  : <PiLinkSimpleFill style={{ fontSize:"13px", flexShrink:0 }} />}
+                  <div style={{ minWidth:0 }}>
+                    <p style={{ fontSize:"12px", fontWeight:500, color:"#C8C8D8", margin:"0 0 1px" }}>{link.title}</p>
+                    <a href={link.url} target="_blank" rel="noopener noreferrer"
+                      style={{ fontSize:"9px", color:"#3E5A78", fontFamily:"'JetBrains Mono',monospace", display:"block", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap", maxWidth:"240px", textDecoration:"none" }}>
+                      {link.url}
+                    </a>
+                  </div>
+                </div>
+                <button type="button"
+                  onClick={()=>setLinks(prev=>prev.filter((_,i)=>i!==index))}
+                  style={{ color:"rgba(255,107,107,0.5)", background:"none", border:"none", cursor:"pointer", flexShrink:0 }}
+                  onMouseEnter={e=>(e.currentTarget.style.color="#FF6B6B")}
+                  onMouseLeave={e=>(e.currentTarget.style.color="rgba(255,107,107,0.5)")}>
+                  <IoIosRemoveCircleOutline style={{ fontSize:"16px" }} />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* ── Add / Edit link form — only in edit mode, below the links list ── */}
+      {editProfile && (profileLinks.length < 5 || showLinkBox) && (
+        <div style={{ borderTop:"1px solid #1A1A24", padding:"16px 20px" }}>
+          <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:"12px" }}>
+            <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:"9px", color:"#5A5A78", letterSpacing:"0.14em", textTransform:"uppercase" }}>
+              {showLinkBox ? "edit_link" : `${5-profileLinks.length}_slot${5-profileLinks.length>1?"s":""}_remaining`}
+            </span>
+            {currentLinkTitle.length > 0 && (
+              <button
+                onClick={e=>{e.preventDefault();setCurrentLinkTitle("");setCurrentLinkUrl("");setShowLinkBox(false);}}
+                style={{ fontSize:"10px", padding:"3px 10px", borderRadius:"6px", background:"rgba(255,107,107,0.07)", color:"#FF6B6B", border:"1px solid rgba(255,107,107,0.18)", cursor:"pointer", fontFamily:"'JetBrains Mono',monospace" }}>
+                clear
+              </button>
+            )}
+          </div>
+
+          {(profileLinks?.length + links?.length < 5 || showLinkBox) && (
+            <div style={{ display:"flex", flexDirection:"column", gap:"10px" }}>
+              {/* Platform select or custom input */}
+              {currentLinkTitle !== "Others" ? (
+                <select value={currentLinkTitle} onChange={e=>setCurrentLinkTitle(e.target.value)}
+                  style={{ width:"100%", background:"#0D0D16", border:"1px solid #1E1E2E", borderRadius:"8px", padding:"10px 14px", fontSize:"12px", color:"#C8C8D8", fontFamily:"'JetBrains Mono',monospace", outline:"none", cursor:"pointer", boxSizing:"border-box" }}>
+                  <option value="" disabled>select_platform</option>
+                  {!profileLinks.some(l=>l.title==="GitHub" && currentLinkTitle!=="GitHub") && <option value="GitHub">GitHub</option>}
+                  {!profileLinks.some(l=>l.title==="LinkedIn" && currentLinkTitle!=="LinkedIn") && <option value="LinkedIn">LinkedIn</option>}
+                  {!profileLinks.some(l=>l.title==="Portfolio" && currentLinkTitle!=="Portfolio") && <option value="Portfolio">Portfolio</option>}
+                  {showLinkBox && profileLinks.map(row=><option key={row.title} value={row.title}>{row.title}</option>)}
+                  <option value="Others">Others</option>
+                </select>
+              ) : (
+                <input type="text" placeholder="platform_name" onChange={e=>setCustomTitle(e.target.value)}
+                  style={{ width:"100%", background:"#0D0D16", border:"1px solid #1E1E2E", borderRadius:"8px", padding:"10px 14px", fontSize:"12px", color:"#C8C8D8", fontFamily:"'JetBrains Mono',monospace", outline:"none", boxSizing:"border-box" }} />
+              )}
+              <input type="url" value={currentLinkUrl} onChange={e=>setCurrentLinkUrl(e.target.value)} placeholder="https://..."
+                style={{ width:"100%", background:"#0D0D16", border:"1px solid #1E1E2E", borderRadius:"8px", padding:"10px 14px", fontSize:"12px", color:"#C8C8D8", fontFamily:"'JetBrains Mono',monospace", outline:"none", boxSizing:"border-box", transition:"border-color 0.15s" }}
+                onFocus={e=>(e.target.style.borderColor="rgba(0,229,160,0.35)")}
+                onBlur={e=>(e.target.style.borderColor="#1E1E2E")} />
+              <div style={{ display:"flex", justifyContent:"flex-end" }}>
+                <button type="button"
+                  onClick={()=>{
+                    const titleToUse=currentLinkTitle==="Others"?customTitle?.trim():currentLinkTitle.trim();
+                    const sanitizedUrl=sanitizeUrl(currentLinkUrl.trim());
+                    if(titleToUse&&sanitizedUrl){
+                      setLinks([...links,{title:titleToUse,url:sanitizedUrl,id:linkId}]);
+                      setUpdateButton(true);setCurrentLinkTitle("");setCurrentLinkUrl("");setCustomTitle("");setLinkId(null);
+                    } else if(titleToUse){toast.error("Invalid URL","Please enter a valid http(s) URL.");}
+                  }}
+                  style={{ padding:"8px 20px", fontSize:"11px", fontFamily:"'JetBrains Mono',monospace", fontWeight:500, borderRadius:"8px", background:"rgba(0,229,160,0.08)", color:"#00E5A0", border:"1px solid rgba(0,229,160,0.2)", cursor:"pointer", letterSpacing:"0.05em" }}
+                  onMouseEnter={e=>(e.currentTarget.style.background="rgba(0,229,160,0.14)")}
+                  onMouseLeave={e=>(e.currentTarget.style.background="rgba(0,229,160,0.08)")}>
+                  {showLinkBox ? "update_link" : "+ add_link"}
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+
+
+    {/* ── Save button ─────────────────────────────────────────────────── */}
+    {updateButton && editProfile && (
+      <div style={{ display:"flex", justifyContent:"flex-end" }}>
+        <button type="submit" disabled={loading || !updateButton}
+          style={{ padding:"10px 28px", fontSize:"12px", fontFamily:"'JetBrains Mono',monospace", fontWeight:500, letterSpacing:"0.06em", borderRadius:"10px", background:loading||!updateButton?"#1A1A24":"rgba(0,229,160,0.1)", color:loading||!updateButton?"#3A3A52":"#00E5A0", border:`1px solid ${loading||!updateButton?"#1E1E2E":"rgba(0,229,160,0.25)"}`, cursor:loading||!updateButton?"not-allowed":"pointer" }}
+          onMouseEnter={e=>{if(!loading&&updateButton)e.currentTarget.style.background="rgba(0,229,160,0.18)";}}
+          onMouseLeave={e=>{if(!loading&&updateButton)e.currentTarget.style.background="rgba(0,229,160,0.1)";}}>
+          {loading ? "saving..." : "save_changes →"}
+        </button>
+      </div>
+    )}
+  </form>
+</div>
 
              {author?.role !== "student" && (
              <motion.div
