@@ -198,7 +198,7 @@ function ProfilePage() {
       console.log("error", err);
     }
     finally{
-      setEditProfile(false);
+      if (profileLinks===0 ) setEditProfile(false);
     }
   };
 
