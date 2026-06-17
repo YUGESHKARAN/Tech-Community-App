@@ -81,6 +81,19 @@ useEffect(() => {
 }, []);
 
 
+useEffect(() => {
+  socket.on("error", ({ event, message }) => {
+    toast.error("Error",message);
+    
+    // Optional: Rollback optimistic update based on event
+    // if (event === "newMessage") {
+    //   setMessages((prev) => prev.filter((m) => m._id !== "temp-..."));
+    // }
+  });
+
+  return () => socket.off("error");
+}, [socket]);
+
 const editTextareaRef = useRef(null);
 
 useEffect(() => {
