@@ -1079,7 +1079,7 @@ const scrollToAchievements = () => {
              
             </div>
 
-             {author?.role !== "student" && (
+             {author?.role !== "student" && !editProfile && (
              <motion.div
             ref={achievementRef}
             animate={
