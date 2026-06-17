@@ -284,7 +284,7 @@ const scrollToAchievements = () => {
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25 }}
-      onClick={() => setEditProfile((prev) => !prev)}
+      onClick={() => {setEditProfile((prev) => !prev); setBioEdit(false)}}
       className="
         group
         inline-flex
