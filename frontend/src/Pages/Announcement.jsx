@@ -343,10 +343,10 @@ function Announcement() {
         <div className="space-y-1">
           <p className="text-xs text-emerald-400 font-medium">Note</p>
           <p className="text-xs md:text-sm text-gray-300">
-            Announcements are shared by{" "}
+            Announcements are only shared by{" "}
             <span className="text-white font-medium">Admins</span> and{" "}
-            <span className="text-white font-medium">Coordinators</span> to
-            ensure quality and relevance.
+            <span className="text-white font-medium">Coordinators</span> 
+            {/* to ensure quality and relevance. */}
           </p>
         </div>
       </div>
