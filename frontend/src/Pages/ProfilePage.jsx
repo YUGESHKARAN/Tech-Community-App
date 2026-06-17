@@ -197,6 +197,9 @@ function ProfilePage() {
       toast.error("Error", "Error removing bio link");
       console.log("error", err);
     }
+    finally{
+      setEditProfile(false);
+    }
   };
 
   const RoleBadge = ({ role }) => {
