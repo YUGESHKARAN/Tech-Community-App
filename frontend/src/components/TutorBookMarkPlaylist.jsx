@@ -10,7 +10,7 @@ import { getItem } from "../utils/encode";
 import PillLoader from "./loaders/PillSkeleton";
 import empty_state_post from "../assets/empty_state_post.png";
 
-const TutorBookMarkPlaylist = () => {
+const TutorBookMarkPlaylist = ({loading, bookMarPlaylist, hasMore, bookMarkIds, setBookMarPlaylist}) => {
   const { tutorPlayList } = useTutorPlaylist();
   // const [bookMarPlaylist, setBookMarPlaylist] = useState([]);
   // const [bookmakIds, setBookMarkIds] = useState([]);
@@ -23,7 +23,7 @@ const TutorBookMarkPlaylist = () => {
   // const [loading, setLoading] = useState(false);
   const [playlistCategory, setPlaylistCategory] = useState("");
 
-  const {bookMarPlaylist, loading, hasMore, bookmakIds, setBookMarPlaylist} = useGetBookmarkPlaylist(email)
+  // const {bookMarPlaylist, loading, hasMore, bookmakIds, setBookMarPlaylist} = useGetBookmarkPlaylist(email)
 
   const [isStickyActive, setIsStickyActive] = useState(false);
   useEffect(() => {

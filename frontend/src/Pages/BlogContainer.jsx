@@ -31,7 +31,8 @@ import RenderTextNoMarkdown from "../components/RenderTextNoMarkdown.jsx";
 import { GlobalStateContext } from "../GlobalStateContext.jsx";
 
 function BlogContainer({ activeTab, setActiveTab }) {
-  const { tutorPlayList, loading: playlistLoading } = useTutorPlaylist();
+  // const { tutorPlayList, loading: playlistLoading } = useTutorPlaylist();
+   const { tutorPlayList, playlistCount, loading: playlistLoading, hasMore: playlistHasMore } = useTutorPlaylist();
   // const [searchTerm, setSearchTerm] = useState("");
   // const [searchParams] = useSearchParams();
   const { searchTerm, setSearchTerm, inputValue, setInputValue } =
@@ -289,7 +290,8 @@ function BlogContainer({ activeTab, setActiveTab }) {
         {activeTab === "playlists" && (
           <section className="space-y-4 md:px-0 px-auto  mx-auto w-full md:w-full ">
             <div className=" md:px-4 shadow-inner">
-              <TutorPlaylistGrid />
+               {/* { tutorPlayList, playlistCount, loading: playlistLoading, hasMore } */}
+              <TutorPlaylistGrid tutorPlayList={tutorPlayList} playlistCount={playlistCount} loading={playlistLoading} hasMore={playlistHasMore} />
             </div>
           </section> 
         )}
@@ -297,21 +299,7 @@ function BlogContainer({ activeTab, setActiveTab }) {
         {activeTab === "posts" && (
           <>
             {/* ================= SEARCH ================= */}
-            {/* <div className="flex mx-3 md:mx-0 justify-center mb-2 mt-2 md:mt-4 md:mb-0 ">
-              <div className="w-full mx-auto max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
-                <IoSearchOutline className="text-xl text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search posts, topics, or categories"
-                  value={searchTerm}
-                  // onChange={handleSearch}
-                  onChange={(e) => {
-                    setSearchTerm(e.target.value);
-                  }}
-                  className="bg-transparent w-full focus:outline-none text-sm text-white placeholder-gray-400"
-                />
-              </div>
-            </div> */}
+        
 
             {posts.length > 0 && (
               <div
@@ -359,9 +347,7 @@ function BlogContainer({ activeTab, setActiveTab }) {
             {loading && !posts.length > 0 && <PillLoader />}
 
             <section className="w-full  mx-auto">
-              {/* <h2 className="text-2xl mx-4 md:mx-0 md:text-4xl font-bold tracking-wide text-gray-200">
-                  Recommended Posts
-                </h2> */}
+          
 
               {/* <PostsComponent filteredPosts={filteredPosts} posts={posts} setPosts={setPosts} loading={loading} hasMore={hasMore} debouncedSearch={debouncedSearch}  postCategory={postCategory} setPostCategory={setPostCategory}/> */}
               <div className="mx-auto grid grid-cols-1 md:px-2 w-full  mx-auto  md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 3xl:grid-cols-5 gap-3 md:gap-10  h-auto">

@@ -9,8 +9,8 @@ import PillLoader from "./loaders/PillSkeleton";
 import { GlobalStateContext } from "../GlobalStateContext";
 import empty_state_post from "../assets/empty_state_post.png";
 
-const TutorPlaylistGrid = () => {
-  const { tutorPlayList, playlistCount, loading, hasMore } = useTutorPlaylist();
+const TutorPlaylistGrid = ({tutorPlayList, playlistCount, loading, hasMore }) => {
+  // const { tutorPlayList, playlistCount, loading, hasMore } = useTutorPlaylist();
   const [playlistCategory, setPlaylistCategory] = useState("");
   // const [searchTerm, setSearchTerm] = useState("");
   const { searchTerm, setSearchTerm, inputValue, setInputValue } =

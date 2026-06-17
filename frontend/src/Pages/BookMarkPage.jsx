@@ -40,7 +40,7 @@ function BookMarkPage() {
   // const { email } = useParams();
   // const email = localStorage.getItem('email')
   const email = getItem('email')
-  const {loading:playlistLoading, bookMarPlaylist} = useGetBookmarkPlaylist(email)
+  const {loading:playlistLoading, bookMarPlaylist, hasMore:bookmarkPlaylistHasMore, bookmakIds, setBookMarPlaylist} = useGetBookmarkPlaylist(email)
 
   // ----------------------------------------------------------------------------------------
   // const getBookMarkPosts = async () => {
@@ -344,7 +344,8 @@ function BookMarkPage() {
             ) : (
               <TutorBookMarkPlaylist />
             )} */}
-            <TutorBookMarkPlaylist />
+            {/* {loading:playlistLoading, bookMarPlaylist, hasMore:bookmarkPlaylistHasMore, bookmakIds, setBookMarPlaylist} */}
+            <TutorBookMarkPlaylist loading={playlistLoading} bookMarPlaylist={bookMarPlaylist} hasMore={bookmarkPlaylistHasMore} bookMarkIds={bookmakIds} setBookMarPlaylist={setBookMarPlaylist} />
           </div>
         )}
 
