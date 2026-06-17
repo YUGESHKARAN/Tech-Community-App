@@ -171,6 +171,7 @@ function ProfilePage() {
       setLoading(false);
       setUpdateButton(false);
       setBioEdit(false);
+      setEditProfile(false);
     }
   };
 
