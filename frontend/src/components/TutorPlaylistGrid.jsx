@@ -222,11 +222,7 @@ const getUniqueCategories = (tutorPlayList = []) => {
         </div>
       )}
 
-      {tutorPlayList?.length === 0 && !loading && (
-        <p className="text-gray-400 flex justify-center items-center h-56 text-center py-4">
-          No playlists available!
-        </p>
-      )}
+
       {tutorPlayList.length === 0 && loading && (
         <div className="px-auto ">
           <TutorPlaylistGridSkeleton />
