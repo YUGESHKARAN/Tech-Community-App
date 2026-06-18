@@ -774,7 +774,7 @@ function NavBar() {
 
                   <p 
                   
-                  className="text-xs  md:mt-1 line-clamp-2 text-gray-400 "
+                  className="text-xs  md:mt-1 line-clamp-3 text-gray-400 "
                   >
                     {data.message || "You got a notification"}
 
