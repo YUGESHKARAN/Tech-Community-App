@@ -4,6 +4,7 @@
 const mongoose = require("mongoose");
 const { Author, Post } = require("../models/blogAuthorSchema");
 const { DeletionLog } = require("../models/deletionLogSchema");
+const TutorPlayList = require("../models/tutorPlaylistSchema");
 // const { DeleteObjectCommand } = require('@aws-sdk/client-s3');
 // const { s3, bucketName }      = require('../config/s3');
 
@@ -30,10 +31,14 @@ const s3 = new S3Client({
 const notificationUrl = process.env.NOTIFICATION_URL || "http://localhost:5173";
 
 // ─────────────────────────────────────────────────────────────
-//  HELPER — build a full snapshot of an author + their posts
+//  HELPER — build a full snapshot of an author + their posts + playlists
 // ─────────────────────────────────────────────────────────────
 const buildSnapshot = async (author) => {
   const posts = await Post.find({ authorId: author._id }).lean();
+  
+  // NEW: fetch playlists created by this author (email match)
+  const playlists = await TutorPlayList.find({ email: author.email }).lean();
+  
   const authorObj = author.toObject ? author.toObject() : { ...author };
 
   // fix: explicitly preserve _id — toObject() includes it but
@@ -44,6 +49,7 @@ const buildSnapshot = async (author) => {
       _id: author._id, // explicit — never rely on spread for _id
     },
     posts,
+    playlists,  // NEW: include playlists in snapshot
   };
 };
 
@@ -102,6 +108,9 @@ const deleteAuthor = async (req, res) => {
 
     // 2. delete posts from Post collection
     await Post.deleteMany({ authorId: author._id });
+
+    // NEW: 2.5 delete playlists created by this author
+    await TutorPlayList.deleteMany({ email: author.email });
 
     // 3. delete author
     await Author.deleteOne({ email: author.email });
@@ -167,6 +176,9 @@ const deleteAuthorByAdmin = async (req, res) => {
 
     // 2. delete posts
     await Post.deleteMany({ authorId: author._id });
+
+    // NEW: 2.5 delete playlists created by this author
+    await TutorPlayList.deleteMany({ email: author.email });
 
     // 3. delete author
     await Author.deleteOne({ email: author.email });
@@ -237,6 +249,7 @@ const getDeletionLogs = async (req, res) => {
       authorName: log.snapshot.author.authorname,
       authorRole: log.snapshot.author.role,
       postCount: log.snapshot.posts.length,
+      playlistCount: log.snapshot.playlists ? log.snapshot.playlists.length : 0,  // NEW: show playlist count
     }));
 
     return res.status(200).json({
@@ -415,7 +428,7 @@ const rollbackDeletion = async (req, res) => {
       });
     }
 
-    const { author: authorSnap, posts: postsSnap } = log.snapshot;
+    const { author: authorSnap, posts: postsSnap, playlists: playlistsSnap } = log.snapshot;
 
     // If you need assistance at any point, refer to the user guide available within the platform. \n
 
@@ -430,7 +443,7 @@ const rollbackDeletion = async (req, res) => {
     const recoveryMessage = `
       Hi ${restoredName},
 
-      Your account has been successfully recovered. Your account was deleted on **${deletedAt}** and has now been fully restored. All your previous data such as posts, followers, communities, and personal links are restored.
+      Your account has been successfully recovered. Your account was deleted on **${deletedAt}** and has now been fully restored. All your previous data such as posts, playlists, followers, communities, and personal links are restored.
       
       Welcome back to the Tech Community Platform.
 `;
@@ -491,15 +504,31 @@ const rollbackDeletion = async (req, res) => {
       );
     }
 
+    // NEW: restore playlists — insert all at once preserving original _ids
+    if (playlistsSnap && playlistsSnap.length > 0) {
+      const playlistDocs = playlistsSnap.map((pl) => {
+        const raw = pl.toObject ? pl.toObject() : { ...pl };
+        return {
+          ...raw,
+          _id: pl._id, // preserve original playlist ObjectId
+          email: authorSnap.email, // re-link to restored author email
+          name: authorSnap.authorname, // update name to current author name
+        };
+      });
+
+      await TutorPlayList.insertMany(playlistDocs, { ordered: false });
+    }
+
     log.status = "restored";
     log.restoredAt = new Date();
     log.restoredBy = restoredBy;
     await log.save();
 
     return res.status(200).json({
-      message: "Account and posts restored successfully",
+      message: "Account, posts, and playlists restored successfully",
       restoredEmail: authorSnap.email,
       postCount: postsSnap.length,
+      playlistCount: playlistsSnap ? playlistsSnap.length : 0,
       logId: log._id,
     });
   } catch (err) {
