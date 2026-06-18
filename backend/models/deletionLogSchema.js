@@ -50,6 +50,27 @@ const snapshotPostSchema = new mongoose.Schema({
   timestamp:   { type: Date },
 }, { _id: false });
 
+// ── Playlist snapshot — mirrors tutorPlaylistSchema ──────────
+const snapshotPlaylistCollaboratorSchema = new mongoose.Schema({
+  name:    { type: String },
+  email:   { type: String },
+  profile: { type: String },
+}, { _id: false });
+
+const snapshotPlaylistSchema = new mongoose.Schema({
+  _id:          { type: mongoose.Schema.Types.ObjectId },  // preserve original ID
+  post_ids:     [mongoose.Schema.Types.ObjectId],
+  title:        { type: String },
+  domain:       { type: String },
+  name:         { type: String },  // author/creator name
+  thumbnail:    { type: String },
+  email:        { type: String },  // creator email
+  profile:      { type: String },
+  collaborators: [snapshotPlaylistCollaboratorSchema],
+  createdAt:    { type: Date },
+  updatedAt:    { type: Date },
+}, { _id: false });
+
 const snapshotAuthorSchema = new mongoose.Schema({
   _id:          { type: mongoose.Schema.Types.ObjectId }, // fix: was missing — caused id mismatch on restore
   authorname:   { type: String },
@@ -133,8 +154,9 @@ const deletionLogSchema = new mongoose.Schema({
   // ── complete snapshot ────────────────────────────────────────
   // self-contained at deletion time — never references live collections
   snapshot: {
-    author: { type: snapshotAuthorSchema, required: true },
-    posts:  { type: [snapshotPostSchema], default: [] },
+    author:    { type: snapshotAuthorSchema, required: true },
+    posts:     { type: [snapshotPostSchema], default: [] },
+    playlists: { type: [snapshotPlaylistSchema], default: [] },  // NEW: capture user's playlists
   },
 
 }, { timestamps: false });  // we manage deletedAt manually
