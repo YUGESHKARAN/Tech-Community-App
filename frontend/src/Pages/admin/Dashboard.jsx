@@ -9,6 +9,9 @@ import {
   BarChart2,
   TrendingUp,
   Search,
+  FileText,
+  Layers,
+  
 } from "lucide-react";
 
 import NavBar from "../../ui/NavBar";
@@ -70,7 +73,7 @@ function Dashboard() {
     hasMore: studentsHasMore,
   } = useGetStudents(email);
 
-  //  console.log("statsSummary",statsSummary)
+   console.log("statsSummary",statsSummary)
   //  console.log("communities",communities)
   //  console.log("postsByMonth",postsByMonth);
   // console.log("topContributors", topContributors);
@@ -209,6 +212,26 @@ function Dashboard() {
                   value={`+${statsSummary?.newThisMonth || 0}`}
                   sub="This Month"
                   icon={TrendingUp}
+                  change="11%"
+                  changePositive={true}
+                />
+
+                 <KPICard
+                  label="Posts"
+                  value={`+${statsSummary?.totalPosts || 0}`}
+                  sub="Total Records"
+                  icon={FileText}
+                  accent="#993bf6"
+                  change="11%"
+                  changePositive={true}
+                />
+
+                <KPICard
+                  label="Playlists"
+                  value={`+${statsSummary?.totalPlaylists || 0}`}
+                  sub="Total Records"
+                  icon={Layers}
+                  accent="#5226ef"
                   change="11%"
                   changePositive={true}
                 />
@@ -958,7 +981,7 @@ const KPICard = ({
     </div>
     {/* Bottom — value + badge */}
     <div className="flex items-end justify-end">
-      <span className="md:text-lg text-xs bg-gray-700/60 font-medium text-white rounded-full md:px-4 md:py-1.5 px-2 py-1">
+      <span className="md:text-sm text-xs bg-gray-700/50 font-medium text-white rounded-full md:px-4 md:py-2 px-2 py-1">
         {value && value}
       </span>
     </div>
