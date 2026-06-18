@@ -65,7 +65,7 @@ function ViewPage() {
   const sheetRef = useRef(null);
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [msgLoading, setMsgLoading] = useState(false);
-
+ const [liveParticipants, setLiveParticipants] = useState(0)
   // ✅ useParams at component top level — not inside useEffect or async function
   useEffect(() => {
     const myEmail = getItem("email");
@@ -215,6 +215,27 @@ function ViewPage() {
 
     setNewMessage("");
   };
+
+
+  useEffect(() => {
+  // Add a guard check
+  if (!socket) {
+    console.warn("Socket not connected yet");
+    return;
+  }
+
+  socket.on("liveParticipants", (data) => {
+    console.log("Live participants:", data.emails);
+    console.log("Count:", data.count);
+    setLiveParticipants(data.count)
+    // Update your UI
+  });
+
+  // Cleanup
+  return () => {
+    socket.off("liveParticipants");
+  };
+}, [socket]);
 
   const handleImageClick = (image) => {
     setSelectedImage(image);
@@ -1012,7 +1033,10 @@ function ViewPage() {
                         {messages.length}
                       </span>
                     )}
+
+                    
                   </div>
+
                   <button
                     onClick={() => setViewComments(!viewComments)}
                     className={`p-1.5 rounded-md transition-colors ${

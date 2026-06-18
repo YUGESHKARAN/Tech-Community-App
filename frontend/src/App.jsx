@@ -31,6 +31,7 @@ import EditTutorPlaylist from "./Pages/EditTutoPlaylist.jsx";
 import ScrollToTop from "./components/ScrollTop.jsx";
 import Dashboard from "./Pages/admin/Dashboard.jsx";
 import SingleDomainPosts from "./components/SingleDomainPosts.jsx";
+import ScrollToHash from "./utils/ScrollToHash.jsx";
 function App() {
   return (
     // <AuthProvider>
@@ -166,6 +167,7 @@ function App() {
             <ScrollToTop/>
             <Analytics/>
 
+             <ScrollToHash />
             <Routes>
               {/* Public Routes for Login & Register */}
               <Route path="/" element={<Login />} />

@@ -490,11 +490,12 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
       {/* -------------------------------------------------Admins--------------------------------------- */}
 
         <h1
+        id="admins"
         className={`${
           roleFilter === "admin" || roleFilter === ""
             ? " mx-4 text-center width-max w-full mx-auto text-sm md:text-base   tracking-widest uppercase text-gray-400  font-semibold mb-6"
             : "hidden"
-        }`}
+        } scroll-mt-24`}
       >
         Admins
       </h1>
@@ -680,11 +681,12 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
       {/* -------------------------------------------------Coordinators----------------------------------------------------- */}
 
       <h1
+      id="coordinators"
         className={`${
           roleFilter === "coordinator" || roleFilter === ""
             ? " mx-4 text-center text-sm md:text-base  tracking-widest uppercase text-gray-400  font-semibold mb-6"
             : "hidden"
-        } width-max mx-auto`}
+        } width-max mx-auto scroll-mt-24`}
       >
         Contributors
       </h1>
@@ -869,11 +871,12 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
 
 
       <h1
+      id="users"
         className={`${
           roleFilter === "student" || roleFilter === ""
             ? " mx-4 text-center text-sm md:text-base  tracking-widest uppercase text-gray-400  font-semibold mb-6"
             : "hidden"
-        } width-max mx-auto`}
+        } width-max mx-auto scroll-mt-24`}
       >
         Users
       </h1>

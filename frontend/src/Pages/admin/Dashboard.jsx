@@ -178,6 +178,7 @@ function Dashboard() {
                   icon={Users}
                   change="8.2%"
                   changePositive={true}
+                  to={'/control'}
                 />
                 <KPICard
                   label="Admins"
@@ -185,6 +186,7 @@ function Dashboard() {
                   sub="Chief Control"
                   icon={ShieldCheck}
                   accent="#ec4899"
+                  to={'/control#admins'}
                 />
 
                 <KPICard
@@ -195,6 +197,7 @@ function Dashboard() {
                   accent="#f59e0b"
                   change="2.3%"
                   changePositive={true}
+                  to={'/control#coordinators'}
                 />
 
                 <KPICard
@@ -205,6 +208,7 @@ function Dashboard() {
                   accent="#3b82f6"
                   change="5.1%"
                   changePositive={true}
+                  to={'/control#users'}
                 />
 
                 <KPICard
@@ -214,6 +218,7 @@ function Dashboard() {
                   icon={TrendingUp}
                   change="11%"
                   changePositive={true}
+                  to={'#'}
                 />
 
                  <KPICard
@@ -224,6 +229,7 @@ function Dashboard() {
                   accent="#993bf6"
                   change="11%"
                   changePositive={true}
+                  to={'/home'}
                 />
 
                 <KPICard
@@ -234,6 +240,7 @@ function Dashboard() {
                   accent="#5226ef"
                   change="11%"
                   changePositive={true}
+                  to={'/home'}
                 />
               </div>
             ) : (
@@ -960,33 +967,48 @@ const KPICard = ({
   accent = "#10b981",
   change,
   changePositive = true,
-}) => (
-  <div className="bg-gray-800/70 border border-[#1e293b] rounded-xl p-3 md:p-5  flex items-center justify-between gap-3 hover:border-white/10 transition-colors">
-    {/* Top — icon + name */}
-    <div className="flex items-center gap-2.5">
-      <div
-        className="md:w-10 md:h-10 w-10 h-10 rounded-lg md:rounded-xl flex items-center justify-center shrink-0"
-        style={{ backgroundColor: accent }}
-      >
-        <Icon className="text-white text-xs" />
+  to = "#"
+}) => {
+  const handleClick = () => {
+    if (label === "Posts") {
+      localStorage.setItem("dashboardTab", "posts");
+    } else if (label === "Playlists") {
+      localStorage.setItem("dashboardTab", "playlists");
+    }
+  };
+
+  return (
+    <Link
+      to={to}
+      onClick={handleClick}
+      className="bg-gray-800/70 border border-[#1e293b] rounded-xl p-3 md:p-5  flex items-center justify-between gap-3 hover:border-white/10 transition-colors"
+    >
+      {/* Top — icon + name */}
+      <div className="flex items-center gap-2.5">
+        <div
+          className="md:w-10 md:h-10 w-10 h-10 rounded-lg md:rounded-xl flex items-center justify-center shrink-0"
+          style={{ backgroundColor: accent }}
+        >
+          <Icon className="text-white text-xs" />
+        </div>
+        <div>
+          <p className="md:text-sm text-xs font-semibold md:font-bold text-gray-100">
+            {label}
+          </p>
+          <p className="text-[10px] text-gray-500 md:text-gray-400">
+            {sub || label}
+          </p>
+        </div>
       </div>
-      <div>
-        <p className="md:text-sm text-xs font-semibold md:font-bold text-gray-100">
-          {label}
-        </p>
-        <p className="text-[10px] text-gray-500 md:text-gray-400">
-          {sub || label}
-        </p>
+      {/* Bottom — value + badge */}
+      <div className="flex items-end justify-end">
+        <span className="md:text-sm text-xs bg-gray-700/50 font-medium text-white rounded-full md:px-4 md:py-2 px-2 py-1">
+          {value && value}
+        </span>
       </div>
-    </div>
-    {/* Bottom — value + badge */}
-    <div className="flex items-end justify-end">
-      <span className="md:text-sm text-xs bg-gray-700/50 font-medium text-white rounded-full md:px-4 md:py-2 px-2 py-1">
-        {value && value}
-      </span>
-    </div>
-  </div>
-);
+    </Link>
+  );
+};
 
 // ── Sidebar nav item ───────────────────────────────────────────────────────────
 const NavItem = ({ icon: Icon, label, active, showSideBar, onClick }) => (
