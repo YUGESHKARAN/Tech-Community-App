@@ -510,7 +510,7 @@ function NavBar() {
         ref={sidebarRef}
         className={`fixed top-0 left-0 w-[300px]
             bg-[#0b1220]
-            text-white shadow-2xl z-50 h-dvh
+            text-white shadow-2xl z-50 h-screen
             flex flex-col
             transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]
             rounded-br-2xl rounded-tr-2xl border border-white/10
@@ -610,7 +610,7 @@ function NavBar() {
         </div>
 
         {/* ================= SECONDARY TILES ================= */}
-        <div className="flex flex-col flex-1 border-t border-neutral-700 px-6 mt-5 pt-5 pb-5 min-h-0">
+        <div className="flex flex-col  flex-1 border-t border-neutral-700 px-6 mt-5 pt-5 pb-5 min-h-0">
           {role !== "student" && (
             <p className="text-gray-400 font-medium text-xs mb-5">Controls</p>
           )}
@@ -704,10 +704,10 @@ function NavBar() {
             )}
           </div>
 
-          <div className="mt-auto pt-6 flex justify-center">
+          <div className="mt-auto relative pt-6 flex justify-center">
             <button
               onClick={exit}
-              className="flex items-center gap-2 text-white/70 hover:text-white transition"
+              className="flex items-center  absolute bottom-3  translate-1/2 gap-2 text-white/70 hover:text-white transition"
             >
               <IoLogOutOutline className="text-xl text-red-400" />
               <span className="text-[11px]">Sign Out</span>
