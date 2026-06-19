@@ -704,7 +704,7 @@ function NavBar() {
             )}
           </div>
 
-          <div className="mt-auto absolute bottom-3 left-1/2 -translate-1/2 pt-6 flex justify-center">
+          <div className="mt-auto  pt-6 flex justify-center">
             <button
               onClick={exit}
               className="flex items-center gap-2 text-white/70 hover:text-white transition"
