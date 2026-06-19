@@ -10,6 +10,7 @@ import {
   MdPostAdd,
 } from "react-icons/md";
 import { IoHome, IoLogOut, IoLogOutOutline, IoPeople } from "react-icons/io5";
+
 import { FaPlus, FaUserAlt } from "react-icons/fa";
 // import bloglogo from "../assets/bloglogo.png";
 // import bloglogo from "../assets/byte_base_1.png";
@@ -27,19 +28,24 @@ import {
   RiUser3Line,
 } from "react-icons/ri";
 
-      import {
+import {
   FiFileText,
   FiFolderPlus,
   FiUpload,
   FiGrid,
   FiLayers,
   FiPlusCircle,
+  FiEdit,
+  FiFolder,
 } from "react-icons/fi";
 
-
-
-import { GoPlus } from "react-icons/go";
-import { IoIosClose, IoIosGitNetwork, IoIosSearch, IoMdNotifications } from "react-icons/io";
+import { GoHome, GoPlus } from "react-icons/go";
+import {
+  IoIosClose,
+  IoIosGitNetwork,
+  IoIosSearch,
+  IoMdNotifications,
+} from "react-icons/io";
 import { GlobalStateContext } from "../GlobalStateContext";
 import { TfiAnnouncement, TfiMenuAlt } from "react-icons/tfi";
 import { VscGitStashApply, VscMenu } from "react-icons/vsc";
@@ -72,8 +78,8 @@ function NavBar() {
   const [loading, setLoading] = useState(false);
   const [showAddContent, setShowAddContent] = useState(false);
   const [showSearchModal, setShowSearchModal] = useState(false);
-   const { searchTerm, setSearchTerm, inputValue, setInputValue } =
-      useContext(GlobalStateContext);
+  const { searchTerm, setSearchTerm, inputValue, setInputValue } =
+    useContext(GlobalStateContext);
 
   // const [inputValue, setInputValue] = useState(searchTerm || "");
 
@@ -195,7 +201,6 @@ function NavBar() {
         !notificationRef.current.contains(event.target)
       ) {
         setShowNotification(false); // Close notification on outside click
-
       }
     };
 
@@ -205,7 +210,7 @@ function NavBar() {
     };
   }, []);
 
- const addContentRef = useRef();
+  const addContentRef = useRef();
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -213,8 +218,7 @@ function NavBar() {
         addContentRef.current &&
         !addContentRef.current.contains(event.target)
       ) {
-       
-        setShowAddContent(false)
+        setShowAddContent(false);
       }
     };
 
@@ -313,104 +317,94 @@ function NavBar() {
 
       {/* ================= RIGHT SECTION (DESKTOP + MOBILE SYNCED) ================= */}
       <div className="flex items-center gap-2 md:gap-4">
-        {/* <div className="rounded-lg border border-neutral-600 flex items-center gap-2 px-3 py-1.5 focus-within:ring-1 focus-within:ring-teal-500/40 transition">
-             <IoIosSearch className="text-gray-400" />
-             <input type="text" className="text-xs bg-gray-900 max-w-24 focus:outline-none border-0 text-gray-500" placeholder="Search" />
- 
-        </div> */}
+        <div
+          onClick={() => setShowSearchModal(true)}
+          className={`
+            group
+            flex items-center gap-2
+            justify-center
+            px-3   py-1.5
+            w-[120px] md:w-[160px]
+            rounded-lg
+            md:rounded-lg
+            bg-[#0f172a]/80
+            border  
+            hover:border-emerald-500/30
+            hover:bg-[#111827]
 
- <div
-  onClick={() => setShowSearchModal(true)}
-  className={`
-  group
-    flex items-center gap-2
-    justify-center
-    px-3   py-1.5
-    w-[120px] md:w-[160px]
-    rounded-lg
-    md:rounded-lg
-    bg-[#0f172a]/80
-    border  
-    hover:border-emerald-500/30
-    hover:bg-[#111827]
+            transition-all duration-200
+            cursor-pointer
+            backdrop-blur-sm
 
-    transition-all duration-200
-    cursor-pointer
-    backdrop-blur-sm
+            ${searchTerm ? "border-emerald-700" : "border-neutral-600"}
+            
+            `}
+        >
+          {/* Search Icon */}
+          <IoIosSearch
+            className={`
+            text-[17px]
+            
+            group-hover:text-emerald-400
+            transition-colors duration-200
+            shrink-0
+            ${searchTerm ? "text-emerald-400" : "text-gray-500"}
 
-    ${searchTerm?'border-emerald-700':'border-neutral-600'}
-    
-    `}
->
+            `}
+          />
 
-  {/* Search Icon */}
-  <IoIosSearch
-    className={`
-      text-[17px]
-      
-      group-hover:text-emerald-400
-      transition-colors duration-200
-      shrink-0
-      ${searchTerm?'text-emerald-400':'text-gray-500'}
+          {/* Search Text */}
+          <div
+            className="
+              flex items-center justify-between
+              flex-1 md:gap-2
+              gap-1
+              overflow-hidden
+            "
+          >
+            <span
+              className="
+                text-xs
+                md:text-[13px]
+                md:text-gray-400
+                text-gray-400
+                truncate
+                max-w-[100px]
+              "
+            >
+              {searchTerm || "Search posts..."}
+            </span>
 
-      `}
-  />
-
-  {/* Search Text */}
-  <div
-    className="
-      flex items-center justify-between
-      flex-1 md:gap-2
-      gap-1
-      overflow-hidden
-    "
-  >
-    <span
-      className="
-        text-xs
-        md:text-[13px]
-        md:text-gray-400
-        text-gray-400
-        truncate
-        max-w-[100px]
-      "
-    >
-      {searchTerm || "Search posts..."}
-    </span>
-
-    {/* Clear */}
-    {searchTerm && !showSearchModal && (
-      <button
-        onClick={(e) => {
-          e.stopPropagation();
-          setSearchTerm("");
-          setShowSearchModal(false);
-          setInputValue("")
-        }}
-        className={`
-            flex items-center justify-center
-          w-4 h-4
-          rounded-full
-          border 
-          p-1
-          text-[10px]
-          
-        
-
-        ${searchTerm?'text-emerald-400 border-emerald-600 hover:text-emerald-300 hover:border-emerald-600':'text-gray-500 hover:text-gray-400 hover:border-gray-400 border-neutral-600'}
-
-          transition-all duration-300
-          shrink-0`}
-      >
-        ✕
-      </button>
-    )}
-  </div>
-</div>
+            {/* Clear */}
+            {searchTerm && !showSearchModal && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSearchTerm("");
+                  setShowSearchModal(false);
+                  setInputValue("");
+                }}
+                className={`
+                  flex items-center justify-center
+                  w-4 h-4
+                  rounded-full
+                  border 
+                  p-1
+                  text-[10px]
+                  ${searchTerm ? "text-emerald-400 border-emerald-600 hover:text-emerald-300 hover:border-emerald-600" : "text-gray-500 hover:text-gray-400 hover:border-gray-400 border-neutral-600"}
+                  transition-all duration-300
+                  shrink-0
+                  `}
+              >
+                ✕
+              </button>
+            )}
+          </div>
+        </div>
         {/* 🔔 Notifications */}
         <div className="relative hidden lg:block">
           <IoMdNotifications
-          // <RiNotification3Line
+            // <RiNotification3Line
             onClick={() => setShowNotification(!showNotification)}
             className="text-xl  text-white/70 hover:text-white transition-all duration-300 cursor-pointer transition"
           />
@@ -456,16 +450,15 @@ function NavBar() {
 
         {/* 👤 MOBILE USER */}
 
-
-        {
-          role!=='student' &&
+        {role !== "student" && (
           <div className="relative lg:hidden ">
-          {/* <IoMdNotifications */}
-          <GoPlus  
-            onClick={() => setShowAddContent(!showAddContent)}
-            className="text-[27px] text-gray-300 rounded-md p-[5px] border border-neutral-600 hover:text-white transition-all duration-300 cursor-pointer transition"
-          />
-        </div>}
+            {/* <IoMdNotifications */}
+            <GoPlus
+              onClick={() => setShowAddContent(!showAddContent)}
+              className="text-[27px] text-gray-300 rounded-md p-[5px] border border-neutral-600 hover:text-white transition-all duration-300 cursor-pointer transition"
+            />
+          </div>
+        )}
 
         <div className="relative lg:hidden">
           {/* <IoMdNotifications */}
@@ -478,32 +471,8 @@ function NavBar() {
               {notiCount}
             </span>
           )}
-        
         </div>
-
-         {/* <div
-          className="flex lg:hidden items-center px-2 py-1
-                 bg-white/5 
-                 border border-white/10
-                 rounded-full transition
-                 mr-1"
-        >
-          <Link to="/profile" className="flex  items-center gap-1">
-            {profile !== "undefined" ? (
-              <img
-                src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`}
-                className="w-5 h-5 rounded-full border border-emerald-400 object-cover"
-              />
-            ) : (
-              <RiUser3Line className="text-lg text-emerald-400" />
-            )}
-            <span className="text-xs text-white  truncate max-w-[120px]">
-              Hi, {username}
-            </span>
-          </Link>
-        </div> */}
-
-         <div
+        <div
           className="
             flex lg:hidden items-center
             w-[28px] h-[28px]
@@ -521,12 +490,8 @@ function NavBar() {
             ) : (
               <RiUser3Line className="text-2xl px-1 py-1 px-auto text-center text-emerald-400" />
             )}
-            {/* <span className="text-xs text-white  truncate max-w-[120px]">
-              Hi, {username}
-            </span> */}
           </Link>
         </div>
-        
 
         {/* 🚪 LOGOUT (DESKTOP ONLY) */}
         <button
@@ -538,28 +503,22 @@ function NavBar() {
         >
           <MdLogout />
         </button>
-
-        {/* ☰ MOBILE MENU */}
-        {/* <button onClick={toggleSidebar} className="xl:hidden text-white">
-          <RiMenuFoldFill className="text-xl" />
-        </button> */}
       </div>
-
       {/* Sidebar */}
 
       <div
         ref={sidebarRef}
-        className={`fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-md
-      bg-[#0b1220]
-      text-white shadow-2xl z-50
-      transition-transate duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]
-      rounded-b-3xl border border-white/10
-      
-      ${
-        isSidebarOpen
-          ? "opacity-100 translate-y-0"
-          : "opacity-0 -translate-y-6 pointer-events-none"
-      }`}
+        className={`fixed top-0 left-0 w-[300px]
+            bg-[#0b1220]
+            text-white shadow-2xl z-50 h-full
+            flex flex-col
+            transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]
+            rounded-b-3xl border border-white/10
+            ${
+              isSidebarOpen
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 -translate-y-6 pointer-events-none"
+            }`}
       >
         {/* ================= HEADER ================= */}
         <div className="flex items-center justify-between px-5 py-4 pb-3">
@@ -570,7 +529,6 @@ function NavBar() {
               className="flex items-center gap-2"
             >
               <img src={bloglogo} alt="Logo" className="w-7 h-7 rounded-full" />
-              {/* <span className="text-sm font-semibold tracking-wide">Home</span> */}
             </Link>
           ) : (
             <Link
@@ -579,7 +537,6 @@ function NavBar() {
               className="flex items-center gap-2"
             >
               <img src={bloglogo} alt="Logo" className="w-7 h-7 rounded-full" />
-              {/* <span className="text-sm font-semibold tracking-wide">Home</span> */}
             </Link>
           )}
 
@@ -592,11 +549,11 @@ function NavBar() {
         </div>
 
         {/* ================= PRIMARY ICON NAV ================= */}
-        <div className="flex justify-between px-6 pt-2 pb-3">
+        <div className="flex flex-col space-y-4 px-6 pt-10 pb-3">
           {role != "admin" && (
             <NavIcon
               to="/home"
-              icon={<IoHome />}
+              icon={<GoHome />}
               label="Home"
               close={setIsSidebarOpen}
             />
@@ -605,7 +562,7 @@ function NavBar() {
           {role == "admin" && (
             <NavIcon
               to="/home"
-              icon={<IoHome />}
+              icon={<GoHome />}
               label="Browse"
               close={setIsSidebarOpen}
             />
@@ -618,14 +575,13 @@ function NavBar() {
             close={setIsSidebarOpen}
           />
 
-          {role !== "student" && (
-            <NavIcon
-              to="/authors"
-              icon={<IoIosGitNetwork />}
-              label="My Network"
-              close={setIsSidebarOpen}
-            />
-          )}
+          <NavIcon
+            to="/authors"
+            icon={<IoIosGitNetwork />}
+            label="My Network"
+            close={setIsSidebarOpen}
+          />
+
           <NavIcon
             // to={`/bookMarkPage/${email}`}
             to={`/bookMarkPage`}
@@ -643,68 +599,6 @@ function NavBar() {
             />
           )}
 
-          <div
-            onClick={exit}
-            className="flex flex-col items-center gap-0
-                 text-white/70 hover:text-white transition"
-          >
-            <span className="text-xl text-red-400">
-              <IoLogOutOutline />
-            </span>
-            <span className="text-[11px]">Logout</span>
-          </div>
-        </div>
-
-        {/* ================= SECONDARY TILES ================= */}
-        <div className="grid grid-cols-2 gap-3 px-5 pt-2 pb-5">
-          {role == "admin" && (
-            <NavTile
-              to="/dashboard"
-              icon={<MdDashboard />}
-              title="Analytics"
-              subtitle="Dashboard"
-              close={setIsSidebarOpen}
-            />
-          )}
-          {role === "admin" && (
-            <NavTile
-              to="/control"
-              icon={<MdManageAccounts />}
-              title="Control Panel"
-              subtitle="Manage Users"
-              close={setIsSidebarOpen}
-            />
-          )}
-
-          {role !== "student" && (
-            <NavTile
-              to="/workspace"
-              icon={<BsPersonWorkspace />}
-              title="Workspace"
-              subtitle="Manage Content"
-              close={setIsSidebarOpen}
-            />
-          )}
-          {role === "student" && (
-            <NavTile
-              to="/authors"
-              icon={<IoIosGitNetwork />}
-              title="Network"
-              subtitle="Connections"
-              close={setIsSidebarOpen}
-            />
-          )}
-
-          {/* {role == "coordinator" && (
-            <NavTile
-              to="/profile"
-              icon={<FaUserAlt />}
-              title="Profile"
-              subtitle="Account"
-              close={setIsSidebarOpen}
-            />
-          )} */}
-
           <NavTile
             to="/announcement"
             icon={<MdAnnouncement />}
@@ -713,6 +607,112 @@ function NavBar() {
             badge={announceCount}
             close={setIsSidebarOpen}
           />
+        </div>
+
+        {/* ================= SECONDARY TILES ================= */}
+        <div className="flex flex-col flex-1 border-t border-neutral-700 px-6 mt-5 pt-5 pb-5 min-h-0">
+          {role !== "student" && (
+            <p className="text-gray-400 font-medium text-xs mb-5">Controls</p>
+          )}
+
+          <div className="flex flex-col space-y-4  pb-3 overflow-y-auto pr-1">
+            {/* <NavTile
+            to="/announcement"
+            icon={<MdAnnouncement />}
+            title="Updates"
+            subtitle="Announcements"
+            badge={announceCount}
+            close={setIsSidebarOpen}
+          /> */}
+
+            {/* {role == "admin" && (
+            <NavTile
+              to="/dashboard"
+              icon={<MdDashboard />}
+              title="Analytics"
+              subtitle="Dashboard"
+              close={setIsSidebarOpen}
+            />
+          )} */}
+
+            {/* {role === "admin" && (
+            <NavTile
+              to="/control"
+              icon={<MdManageAccounts />}
+              title="Control Panel"
+              subtitle="Manage Users"
+              close={setIsSidebarOpen}
+            />
+          )} */}
+
+            {/* {role !== "student" && (
+            <NavTile
+              to="/workspace"
+              icon={<BsPersonWorkspace />}
+              title="Workspace"
+              subtitle="Manage Content"
+              close={setIsSidebarOpen}
+            />
+          )} */}
+            {/* ------------------------------------------- */}
+
+            {role == "admin" && (
+              <NavIcon
+                // to={`/bookMarkPage/${email}`}
+                to={`/dashboard`}
+                icon={<MdDashboard />}
+                label="Analytics"
+                close={setIsSidebarOpen}
+              />
+            )}
+
+            {role === "admin" && (
+              <NavIcon
+                // to={`/bookMarkPage/${email}`}
+                to={`/control`}
+                icon={<MdManageAccounts />}
+                label="Control Panel"
+                close={setIsSidebarOpen}
+              />
+            )}
+
+            {/* {role !== "student" && (
+            <NavIcon
+              to="/workspace"
+              icon={<BsPersonWorkspace />}
+              label="Workspace"
+              close={setIsSidebarOpen}
+            />
+          )} */}
+
+            {role !== "student" && (
+              <>
+                <NavIcon
+                  to="/yourposts"
+                  icon={<FiEdit />}
+                  label="Manage Posts"
+                  close={setIsSidebarOpen}
+                />
+
+                <NavIcon
+                  to="/yourTutorPlaylists"
+                  icon={<FiFolder />}
+                  label="Manage Playlists"
+                  close={setIsSidebarOpen}
+                />
+              </>
+            )}
+          </div>
+
+          <div className="mt-auto pt-6 flex justify-center">
+            <button
+              onClick={exit}
+              className="flex items-center gap-2 text-white/70 hover:text-white transition"
+            >
+              <IoLogOutOutline className="text-xl text-red-400" />
+              <span className="text-[11px]">Sign Out</span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -743,12 +743,15 @@ function NavBar() {
           {[...note].reverse().map((data, index) => (
             <div
               key={index}
-             
               className="group relative px-4 py-3 md:hover:bg-gray-800   transition duration-200"
             >
-              <Link 
-              onClick={()=>{setShowNotification(false)}}
-              to={data.url} className="flex gap-3  items-start">
+              <Link
+                onClick={() => {
+                  setShowNotification(false);
+                }}
+                to={data.url}
+                className="flex gap-3  items-start"
+              >
                 {/* Avatar */}
                 <div className="relative flex-shrink-0">
                   {data.profile ? (
@@ -773,14 +776,9 @@ function NavBar() {
                     {data.user}
                   </p>
 
-                  <p 
-                  
-                  className="text-xs  md:mt-1 line-clamp-3 text-gray-400 "
-                  >
+                  <p className="text-xs  md:mt-1 line-clamp-3 text-gray-400 ">
                     {data.message || "You got a notification"}
-
                   </p>
-               
 
                   <span className="text-[10px] text-gray-500 mt-1">
                     {getTimeAgo(data.timestamp)}
@@ -815,135 +813,87 @@ function NavBar() {
         )}
       </div>
 
-      {/* <div
-        ref={notificationRef}
+      <div
+        ref={addContentRef}
         className={`${
-          showAddContent
-            ? "fixed top-16 right-2 z-50 md:w-[250px] w-52 pb-4 bg-gray-900 border border-gray-700 shadow-2xl rounded-xl md:rounded-lg transition-all duration-300"
+          showAddContent && !showNotification
+            ? "fixed top-16 right-12 z-50 px-2 py-1 w-48 overflow-hidden rounded-2xl border border-[#30363d] bg-gray-900 shadow-2xl"
             : "hidden"
         }`}
       >
+        {/* Top Section */}
+        <div className="py-1.5">
+          <Link
+            onClick={() => {
+              setShowAddContent(false);
+            }}
+            to="/addPost"
+          >
+            <button
+              className="
+                w-full flex items-center gap-2
+                pl-2 py-1.5
+                text-sm text-gray-100
+                hover:bg-gray-800/70
+                transition-all duration-200
+                rounded-lg
+              "
+            >
+              <FiPlusCircle className="text-[17px] text-gray-400" />
+              <span className="text-[13px]">Add New Post</span>
+            </button>
+          </Link>
 
-      Add New Post
-      Create New Playlist
-      Create New Campaign
-      Manage Posts
-      Manage Playlists
-      </div> */}
+          <Link
+            onClick={() => {
+              setShowAddContent(false);
+            }}
+            to="/addTutorPlaylist"
+          >
+            <button
+              className="
+                w-full flex items-center gap-2
+                pl-2 py-1.5
+                text-sm text-gray-100
+                hover:bg-gray-800/70
+                transition-all duration-200
+                rounded-lg
+              "
+            >
+              <FiLayers className="text-[17px] text-gray-400" />
+              <span className="text-[13px]">Create New Playlist</span>
+            </button>
+          </Link>
 
+          <Link
+            onClick={() => {
+              setShowAddContent(false);
+            }}
+            to="/announcement"
+          >
+            <button
+              className="
+                w-full flex items-center gap-2
+                pl-2 py-1.5
+                text-sm text-gray-100
+                hover:bg-gray-800/70
+                transition-all duration-200
+                rounded-lg
+              "
+            >
+              <VscGitStashApply className="text-[17px] text-gray-400" />
+              <span className="text-[13px]">Create New Campaign</span>
+            </button>
+          </Link>
+        </div>
+      </div>
 
-<div
-  ref={addContentRef}
-  className={`${
-    showAddContent && !showNotification
-      ? "fixed top-16 right-12 z-50 px-2 py-1 w-48 overflow-hidden rounded-2xl border border-[#30363d] bg-gray-900 shadow-2xl"
-      : "hidden"
-  }`}
->
-  {/* Top Section */}
-  <div className="py-1.5">
-    <Link
-    onClick={()=>{setShowAddContent(false)}}
-    to="/addPost"
-    >
-    <button
-      className="
-        w-full flex items-center gap-2
-        pl-2 py-1.5
-        text-sm text-gray-100
-        hover:bg-gray-800/70
-        transition-all duration-200
-        rounded-lg
-
-      "
-    >
-      <FiPlusCircle className="text-[17px] text-gray-400" />
-      <span className="text-[13px]">Add New Post</span>
-    </button>
-    </Link>
-   
-   <Link
-   onClick={()=>{setShowAddContent(false)}}
-   to="/addTutorPlaylist"
-   >
-    <button
-      className="
-        w-full flex items-center gap-2
-        pl-2 py-1.5
-        text-sm text-gray-100
-        hover:bg-gray-800/70
-        transition-all duration-200
-        rounded-lg
-      "
-    >
-      <FiLayers className="text-[17px] text-gray-400" />
-      <span className="text-[13px]">Create New Playlist</span>
-    </button>
-   
-   </Link>
-
-   <Link
-   onClick={()=>{setShowAddContent(false)}}
-   to="/announcement"
-   >
-    <button
-      className="
-        w-full flex items-center gap-2
-        pl-2 py-1.5
-        text-sm text-gray-100
-        hover:bg-gray-800/70
-        transition-all duration-200
-        rounded-lg
-      "
-    >
-      <VscGitStashApply className="text-[17px] text-gray-400" />
-      <span className="text-[13px]">Create New Campaign</span>
-    </button>
-    </Link>
-
-  </div>
-
-  {/* Divider */}
-  {/* <div className="border-t border-[#21262d]" />
-
-  
-  <div className="py-1.5">
-    <button
-      className="
-        w-full flex items-center gap-3
-        px-4 py-2.5
-        text-sm text-gray-100
-        hover:bg-[#161b22]
-        transition-all duration-150
-      "
-    >
-      <FiGrid className="text-[16px] text-gray-400" />
-      <span>Manage Posts</span>
-    </button>
-
-    <button
-      className="
-        w-full flex items-center gap-3
-        px-4 py-2.5
-        text-sm text-gray-100
-        hover:bg-[#161b22]
-        transition-all duration-150
-      "
-    >
-      <FiLayers className="text-[16px] text-gray-400" />
-      <span>Manage Playlists</span>
-    </button>
-  </div> */}
-</div>
-
-<SearchModal
-  open={showSearchModal}
-  setOpen={setShowSearchModal}
-  inputValue = {inputValue}
-  setInputValue = {setInputValue}
-/>
-
-      
+      <SearchModal
+        open={showSearchModal}
+        setOpen={setShowSearchModal}
+        inputValue={inputValue}
+        setInputValue={setInputValue}
+      />
     </div>
   );
 }
@@ -953,11 +903,11 @@ function NavIcon({ to, icon, label, close }) {
     <Link
       to={to}
       onClick={() => close && close(false)}
-      className="flex flex-col items-center gap-0
-                 text-white/70 hover:text-white transition"
+      className="flex items-center gap-1.5
+                   transition-all duration-300"
     >
-      <span className=" text-xl md:text-lg text-emerald-400">{icon}</span>
-      <span className="text-[11px]">{label}</span>
+      <span className=" text-sm text-gray-300/80">{icon}</span>
+      <span className="text-sm text-gray-200">{label}</span>
     </Link>
   );
 }
@@ -965,45 +915,9 @@ function NavIcon({ to, icon, label, close }) {
 // import { useLocation } from "react-router-dom";
 import { HiOutlineUserCircle } from "react-icons/hi";
 
-// function NavIconDesktop({ to, icon, label }) {
-//   const location = useLocation();
-//   const isActive = location.pathname === to;
-
-//   return (
-//     <Link
-//       to={to}
-//       className={`
-//         relative flex items-center gap-1 px-3 py-1.5 rounded-xl
-//         text-xs  transition-all duration-300 group
-//         ${
-//           isActive
-//             ? "text-emerald-400"
-//             : "text-white/95 group hover:text-white "
-//         }
-//       `}
-//     >
-//       {/* Icon */}
-//       <span
-//         className={`
-//           text-base transition-all duration-300
-//           ${isActive ? "text-emerald-400" : "text-white/70 group-hover:text-white"}
-//         `}
-//       >
-//         {icon}
-//       </span>
-
-//       {/* Label */}
-//       <span className="tracking-wide">{label}</span>
-
-//       {/* Active Indicator (bottom glow line) */}
-//       {isActive && (
-//         <span className="absolute -bottom-[6px] left-1/2 -translate-x-1/2 w-4 h-[2px] bg-emerald-400 rounded-full" />
-//       )}
-//     </Link>
-//   );
-// }
 import { motion } from "framer-motion";
-import {  useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import { House } from "lucide-react";
 
 function NavIconDesktop({ to, icon, label }) {
   const location = useLocation();
@@ -1021,11 +935,7 @@ function NavIconDesktop({ to, icon, label }) {
         transition-all
         duration-300
         group
-        ${
-          isActive
-            ? "text-emerald-400"
-            : "text-white/95 hover:text-white"
-        }
+        ${isActive ? "text-emerald-400" : "text-white/95 hover:text-white"}
       `}
     >
       {/* Icon */}
@@ -1091,17 +1001,18 @@ function NavTile({ to, icon, title, subtitle, badge, close }) {
     <Link
       to={to}
       onClick={() => close && close(false)}
-      className="relative rounded-2xl p-4
-                 bg-white/5 hover:bg-white/10 transition"
+      className="relative rounded-xl 
+      flex items-start justify-start gap-2
+                transition "
     >
-      <span className="text-emerald-400 text-lg">{icon}</span>
-
-      <p className="mt-2 text-sm font-medium">{title}</p>
-      <p className="text-xs text-white/40">{subtitle}</p>
-
+      <span className="text-sm text-gray-300/80 text-sm mt-1">{icon}</span>
+      <div className="flex mt-0 flex-col">
+        <p className=" text-sm text-gray-200  ">{title}</p>
+        <p className="text-xs text-white/40">{subtitle}</p>
+      </div>
       {badge > 0 && (
         <span
-          className="absolute top-3 right-3
+          className="absolute top-2 right-3
                          text-[10px] px-2 py-0.5 rounded-full
                          bg-emerald-500/20 text-emerald-300"
         >
@@ -1113,3 +1024,212 @@ function NavTile({ to, icon, title, subtitle, badge, close }) {
 }
 
 export default NavBar;
+
+//  <div
+//         ref={sidebarRef}
+//         className={`fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-md
+//       bg-[#0b1220]
+//       text-white shadow-2xl z-50
+//       transition-transate duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]
+//       rounded-b-3xl border border-white/10
+
+//       ${
+//         isSidebarOpen
+//           ? "opacity-100 translate-y-0"
+//           : "opacity-0 -translate-y-6 pointer-events-none"
+//       }`}
+//       >
+//         {/* ================= HEADER ================= */}
+//         <div className="flex items-center justify-between px-5 py-4 pb-3">
+//           {role !== "admin" ? (
+//             <Link
+//               to="/home"
+//               onClick={() => setIsSidebarOpen(false)}
+//               className="flex items-center gap-2"
+//             >
+//               <img src={bloglogo} alt="Logo" className="w-7 h-7 rounded-full" />
+//               {/* <span className="text-sm font-semibold tracking-wide">Home</span> */}
+//             </Link>
+//           ) : (
+//             <Link
+//               to="/dashboard"
+//               onClick={() => setIsSidebarOpen(false)}
+//               className="flex items-center gap-2"
+//             >
+//               <img src={bloglogo} alt="Logo" className="w-7 h-7 rounded-full" />
+//               {/* <span className="text-sm font-semibold tracking-wide">Home</span> */}
+//             </Link>
+//           )}
+
+//           <button
+//             onClick={() => setIsSidebarOpen(false)}
+//             className="text-white/50 hover:text-white transition text-sm md:text-lg"
+//           >
+//             ✕
+//           </button>
+//         </div>
+
+//         {/* ================= PRIMARY ICON NAV ================= */}
+//         <div className="flex justify-between px-6 pt-2 pb-3">
+//           {role != "admin" && (
+//             <NavIcon
+//               to="/home"
+//               icon={<IoHome />}
+//               label="Home"
+//               close={setIsSidebarOpen}
+//             />
+//           )}
+
+//           {role == "admin" && (
+//             <NavIcon
+//               to="/home"
+//               icon={<IoHome />}
+//               label="Browse"
+//               close={setIsSidebarOpen}
+//             />
+//           )}
+
+//           <NavIcon
+//             to="/community"
+//             icon={<MdGroups />}
+//             label="Community"
+//             close={setIsSidebarOpen}
+//           />
+
+//           {role !== "student" && (
+//             <NavIcon
+//               to="/authors"
+//               icon={<IoIosGitNetwork />}
+//               label="My Network"
+//               close={setIsSidebarOpen}
+//             />
+//           )}
+//           <NavIcon
+//             // to={`/bookMarkPage/${email}`}
+//             to={`/bookMarkPage`}
+//             icon={<RiBookMarkedFill />}
+//             label="Bookmark"
+//             close={setIsSidebarOpen}
+//           />
+
+//           {role == "student" && (
+//             <NavIcon
+//               to="/profile"
+//               icon={<FaUserAlt />}
+//               label="Profile"
+//               close={setIsSidebarOpen}
+//             />
+//           )}
+
+//           <div
+//             onClick={exit}
+//             className="flex flex-col items-center gap-0
+//                  text-white/70 hover:text-white transition"
+//           >
+//             <span className="text-xl text-red-400">
+//               <IoLogOutOutline />
+//             </span>
+//             <span className="text-[11px]">Logout</span>
+//           </div>
+//         </div>
+
+//         {/* ================= SECONDARY TILES ================= */}
+//         <div className="grid grid-cols-2 gap-3 px-5 pt-2 pb-5">
+//           {role == "admin" && (
+//             <NavTile
+//               to="/dashboard"
+//               icon={<MdDashboard />}
+//               title="Analytics"
+//               subtitle="Dashboard"
+//               close={setIsSidebarOpen}
+//             />
+//           )}
+//           {role === "admin" && (
+//             <NavTile
+//               to="/control"
+//               icon={<MdManageAccounts />}
+//               title="Control Panel"
+//               subtitle="Manage Users"
+//               close={setIsSidebarOpen}
+//             />
+//           )}
+
+//           {role !== "student" && (
+//             <NavTile
+//               to="/workspace"
+//               icon={<BsPersonWorkspace />}
+//               title="Workspace"
+//               subtitle="Manage Content"
+//               close={setIsSidebarOpen}
+//             />
+//           )}
+//           {role === "student" && (
+//             <NavTile
+//               to="/authors"
+//               icon={<IoIosGitNetwork />}
+//               title="Network"
+//               subtitle="Connections"
+//               close={setIsSidebarOpen}
+//             />
+//           )}
+
+//           {/* {role == "coordinator" && (
+//             <NavTile
+//               to="/profile"
+//               icon={<FaUserAlt />}
+//               title="Profile"
+//               subtitle="Account"
+//               close={setIsSidebarOpen}
+//             />
+//           )} */}
+
+//           <NavTile
+//             to="/announcement"
+//             icon={<MdAnnouncement />}
+//             title="Updates"
+//             subtitle="Announcements"
+//             badge={announceCount}
+//             close={setIsSidebarOpen}
+//           />
+//         </div>
+//       </div>
+
+// function NavIcon({ to, icon, label, close }) {
+//   return (
+//     <Link
+//       to={to}
+//       onClick={() => close && close(false)}
+//       className="flex flex-col items-center gap-0
+//                  text-white/70 hover:text-white transition"
+//     >
+//       <span className=" text-xl md:text-lg text-emerald-400">{icon}</span>
+//       <span className="text-[11px]">{label}</span>
+//     </Link>
+//   );
+// }
+
+// function NavTile({ to, icon, title, subtitle, badge, close }) {
+//   return (
+//     <Link
+//       to={to}
+//       onClick={() => close && close(false)}
+//       className="relative rounded-2xl p-4
+//                  bg-white/5 hover:bg-white/10 transition"
+//     >
+//       <span className="text-emerald-400 text-lg">{icon}</span>
+
+//       <p className="mt-2 text-sm font-medium">{title}</p>
+//       <p className="text-xs text-white/40">{subtitle}</p>
+
+//       {badge > 0 && (
+//         <span
+//           className="absolute top-3 right-3
+//                          text-[10px] px-2 py-0.5 rounded-full
+//                          bg-emerald-500/20 text-emerald-300"
+//         >
+//           {badge}
+//         </span>
+//       )}
+//     </Link>
+//   );
+// }
