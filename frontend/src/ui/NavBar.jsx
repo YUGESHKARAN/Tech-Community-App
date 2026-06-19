@@ -59,7 +59,8 @@ function NavBar() {
   const sidebarRef = useRef(null);
   const menuRef = useRef(null);
   const { notification, setNotification } = useContext(GlobalStateContext);
-  const username = localStorage.getItem("username");
+  // const username = localStorage.getItem("username");
+  const username = getItem("username");
   // const userEmail = localStorage.getItem("email");
   const userEmail = getItem("email");
   // const role = localStorage.getItem("role");

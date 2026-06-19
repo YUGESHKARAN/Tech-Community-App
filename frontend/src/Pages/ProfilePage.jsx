@@ -16,7 +16,7 @@ import { ImProfile } from "react-icons/im";
 import { PiLinkSimpleFill } from "react-icons/pi";
 import { MdEdit } from "react-icons/md";
 import toast from "../components/toaster/Toast";
-import { getItem, removeItem } from "../utils/encode";
+import { getItem, removeItem, storeItem } from "../utils/encode";
 import ProfilePageSkeleton from "../components/loaders/ProfilePageSkeleton";
 import AchievementSection from "../components/Achievements";
 import BadgeIcons from "../components/achievements/BadgeIcons";
@@ -62,7 +62,7 @@ function ProfilePage() {
   const [updateButton, setUpdateButton] = useState(false);
   const [posts, setPosts] = useState([]);
   const [password, setPassword] = useState("");
-  const userName = localStorage.getItem("username");
+  const userName = getItem("username");
   const [loader, setLoader] = useState(false);
   const [bioEdit, setBioEdit] = useState(false);
   const deleteAuthor = async () => {
@@ -138,7 +138,8 @@ function ProfilePage() {
     setLoading(true);
     const formData = new FormData();
     formData.append("authorname", authorName);
-    localStorage.setItem("username", authorName);
+    // localStorage.setItem("username", authorName);
+    storeItem("username", authorName);
     formData.append("email", authorEmail);
     formData.append("links", JSON.stringify(links));
     formData.append("bio", bioDescription);
@@ -236,6 +237,7 @@ const scrollToAchievements = () => {
   }, 1000);
 };
   // console.log("author", author)
+  // console.log("userName", userName)
   // console.log("profile links", profileLinks)
   return (
     <>
