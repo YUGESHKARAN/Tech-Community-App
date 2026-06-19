@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import Cookies from 'js-cookie';
-import { clearStore, removeItem } from "./utils/encode";
+import { clearStore, removeItem, storeItem, getItem } from "./utils/encode";
 // import { useNavigate } from "react-router-dom";
 // Create context
 const AuthContext = createContext();
@@ -15,14 +15,15 @@ export const AuthProvider = ({ children }) => {
   // const navigate = useNavigate()
 
     const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    return Boolean(Cookies.get("token")) && localStorage.getItem("isAuthenticated") === "true";
+    return Boolean(Cookies.get("token")) && getItem("isAuthenticated") === "true";
   });
   const login = async(token = null) => {
       if (token) {
       Cookies.set("token", token, { expires: 1, sameSite: "lax" });
       // Cookies.set("token", token,  { expires: 10 / 86400, sameSite: "lax" });
        setIsAuthenticated(true);
-       localStorage.setItem("isAuthenticated", "true"); // Store login status
+      //  localStorage.setItem("isAuthenticated", "true"); // Store login status
+       storeItem("isAuthenticated", "true"); // Store login status
     }
        else {
     // If no token provided, treat as failed login
@@ -60,7 +61,8 @@ export const AuthProvider = ({ children }) => {
     const token = Cookies.get("token");
     if (token && !isAuthenticated) {
       setIsAuthenticated(true);
-      localStorage.setItem("isAuthenticated", "true");
+      // localStorage.setItem("isAuthenticated", "true");
+      storeItem("isAuthenticated", "true");
     } else if (!token && isAuthenticated) {
       // Optional: Auto logout if token missing (prevents stale state)
       setIsAuthenticated(false);
