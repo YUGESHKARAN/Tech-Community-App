@@ -30,7 +30,7 @@ import useGetContributors from "../../hooks/admins/useGetContributors";
 import ContributorsTableSkeleton from "../../components/loaders/dashboard/ContributorsTableSkeleton";
 import useGetStudents from "../../hooks/admins/useGetStudents";
 import StudentsTableSkeleton from "../../components/loaders/dashboard/StudentsTableSkeleton";
-import { getItem } from "../../utils/encode";
+import { getItem, storeItem } from "../../utils/encode";
 import highlightText from "../../hooks/highlightText";
 import Fuse from "fuse.js";
 import LogMonitoringPage from "./LogMonitoringPage";
@@ -971,9 +971,9 @@ const KPICard = ({
 }) => {
   const handleClick = () => {
     if (label === "Posts") {
-      localStorage.setItem("dashboardTab", "posts");
+      storeItem("dashboardTab", "posts");
     } else if (label === "Playlists") {
-      localStorage.setItem("dashboardTab", "playlists");
+      storeItem("dashboardTab", "playlists");
     }
   };
 

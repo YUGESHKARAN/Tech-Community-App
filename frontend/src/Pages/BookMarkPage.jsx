@@ -24,7 +24,7 @@ import PillLoader from "../components/loaders/PillSkeleton.jsx";
 import TutorPlaylistGridSkeleton from "../components/loaders/TutorPlaylistGridSkeleton.jsx";
 import useTutorPlaylist from "../hooks/useTutorPlaylist.js";
 import useGetBookmarkPlaylist from "../hooks/useGetBookmarkPlaylist.js";
-import { getItem } from "../utils/encode.js";
+import { getItem, storeItem } from "../utils/encode.js";
 import empty_state_post from "../assets/empty_state_post.png";
 import RenderTextNoMarkdown from "../components/RenderTextNoMarkdown.jsx";
 import { motion } from "framer-motion";
@@ -68,11 +68,13 @@ function BookMarkPage() {
   const isFetching = useRef(false);
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState(
-    localStorage.getItem("dashboardTabBookMark") || "posts",
+    // localStorage.getItem("dashboardTabBookMark") || "posts",
+    getItem("dashboardTabBookMark") || "posts",
   );
 
   useEffect(() => {
-    localStorage.setItem("dashboardTabBookMark", activeTab);
+    // localStorage.setItem("dashboardTabBookMark", activeTab);
+    storeItem("dashboardTabBookMark", activeTab);
   }, [activeTab]);
 
   const getBookMarkPosts = async () => {

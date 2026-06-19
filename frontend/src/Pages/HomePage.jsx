@@ -15,16 +15,18 @@ import { IoIosGitNetwork } from "react-icons/io";
 import { BsPersonWorkspace } from "react-icons/bs";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { getItem } from "../utils/encode";
+import { getItem, storeItem } from "../utils/encode";
 function HomePage() {
 
 
   const [activeTab, setActiveTab] = useState(
-    localStorage.getItem("dashboardTab") || "posts",
+    // localStorage.getItem("dashboardTab") || "posts",
+    getItem("dashboardTab") || "posts",
   );
 
   useEffect(() => {
-    localStorage.setItem("dashboardTab", activeTab);
+    // localStorage.setItem("dashboardTab", activeTab);
+    storeItem("dashboardTab", activeTab);
   }, [activeTab]);
 
   return (
