@@ -42,7 +42,7 @@ function AddPost() {
 
   const [messages, setMessages] = useState([
     {
-      message: `Hi ${user}! I'm DraftMate, your personal assistant for refining post description. Share your draft and I’ll help transform it into standard publish ready Markdown content.`,
+      message: `Hi ${user}! I'm DraftMate, your personal AI assistant for refining post description. Share your draft and I’ll help transform it into standard publish ready Markdown content.`,
       sender: "bot",
       direction: "incoming",
     },
