@@ -12,6 +12,7 @@ import { IoSendSharp } from "react-icons/io5";
 import Cookies from "js-cookie";
 import { GoArrowUpRight } from "react-icons/go";
 import logoicon from "../assets/assistant_1.png"
+import { getItem } from "../utils/encode";
 
 export default function AITechAssistant({
   currentPostId,
@@ -19,7 +20,8 @@ export default function AITechAssistant({
   viewComments=null,
   setViewComments=null,
 }) {
-  const username = localStorage.getItem("username");
+  // const username = localStorage.tItem("username");
+  const username = getItem("username");
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [data, setData] = useState(null);

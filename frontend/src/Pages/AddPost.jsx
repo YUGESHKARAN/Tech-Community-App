@@ -25,7 +25,8 @@ function AddPost() {
   const [prompt, setPrompt] = useState("");
   // const email = localStorage.getItem("email"); // Get email from local storage
   const email = getItem("email"); // Get email from local storage
-  const user = localStorage.getItem("username");
+  // const user = localStorage.getItem("username");
+  const user = getItem("username");
   const [loading, setLoading] = useState(false);
   const [customTitle, setCustomTitle] = useState("");
   const token = Cookies.get("token");
