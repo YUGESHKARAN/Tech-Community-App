@@ -196,7 +196,7 @@ useEffect(() => {
 
                 {/* Meta row */}
                 <div className="flex items-center gap-1.5">
-                  <span className={`text-[11px] truncate text-wrap font-semibold ${isChainedComment?'text-gray-500':'text-gray-200'}`}>
+                  <span className={`text-[11px] max-w-[200px] truncate text-wrap line-clamp-1 break-words font-semibold ${isChainedComment?'text-gray-500':'text-gray-200'}`}>
                     @{msg.user}
                   </span>
                   <span className="text-[10px] text-gray-500">·</span>

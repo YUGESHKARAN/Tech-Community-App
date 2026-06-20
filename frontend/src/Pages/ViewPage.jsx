@@ -40,7 +40,7 @@ import logoicon from "../assets/assistant_1.png";
 import { motion, AnimatePresence } from "framer-motion";
 
 function ViewPage() {
-  const user = localStorage.getItem("username");
+  const user = getItem("username");
   // const userEmail = localStorage.getItem("email");
   const userEmail = getItem("email");
   const [newMessage, setNewMessage] = useState("");
