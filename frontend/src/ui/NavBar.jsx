@@ -284,7 +284,7 @@ function NavBar() {
       </div>
 
       {/* ================= CENTER NAV ================= */}
-      <ul className="hidden xl:flex items-center justify-center gap-3 text-xs text-gray-400 font-medium w-3/5">
+      <ul className="hidden xl:flex items-center justify-center gap-1.5 text-xs text-gray-400 font-medium w-3/5">
         {role === "admin" && (
           <NavIconDesktop
             to="/dashboard"
@@ -294,7 +294,7 @@ function NavBar() {
         )}
 
         {role !== "admin" && (
-          <NavIconDesktop to="/home" icon={<IoHome />} label="Home" />
+          <NavIconDesktop to="/home" icon={<GoHome />} label="Home" />
         )}
 
         {role === "admin" && (
@@ -306,7 +306,7 @@ function NavBar() {
         )}
 
         {role === "admin" && (
-          <NavIconDesktop to="/home" icon={<IoHome />} label="Browse" />
+          <NavIconDesktop to="/home" icon={<GoHome />} label="Browse" />
         )}
 
         {role !== "student" && (
@@ -1110,7 +1110,7 @@ export default NavBar;
 //           {role != "admin" && (
 //             <NavIcon
 //               to="/home"
-//               icon={<IoHome />}
+//               icon={<GoHome />}
 //               label="Home"
 //               close={setIsSidebarOpen}
 //             />
@@ -1119,7 +1119,7 @@ export default NavBar;
 //           {role == "admin" && (
 //             <NavIcon
 //               to="/home"
-//               icon={<IoHome />}
+//               icon={<GoHome />}
 //               label="Browse"
 //               close={setIsSidebarOpen}
 //             />
