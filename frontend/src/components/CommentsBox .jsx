@@ -118,6 +118,16 @@ useEffect(() => {
   };
 
   const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
+
+  const isWithinSixHours = (timestamp) => {
+    if (!timestamp) return false;
+    const created = new Date(timestamp);
+    if (Number.isNaN(created.getTime())) return false;
+    const now = new Date();
+    const diffMs = now - created;
+    return diffMs >= 0 && diffMs <= 6 * 60 * 60 * 1000;
+  };
+
   // console.log("messages", messages)
   return (
 
@@ -140,6 +150,11 @@ useEffect(() => {
   const isChainedComment =
     prevMsg &&
     prevMsg.email === msg.email;
+
+  const canEditDelete =
+    msg.email === userEmail &&
+    viewComments &&
+    isWithinSixHours(msg.timestamp);
 
           return (
           <div
@@ -181,7 +196,7 @@ useEffect(() => {
 
                 {/* Meta row */}
                 <div className="flex items-center gap-1.5">
-                  <span className={`text-[11px] font-semibold ${isChainedComment?'text-gray-500':'text-gray-200'}`}>
+                  <span className={`text-[11px] truncate text-wrap font-semibold ${isChainedComment?'text-gray-500':'text-gray-200'}`}>
                     @{msg.user}
                   </span>
                   <span className="text-[10px] text-gray-500">·</span>
@@ -189,8 +204,8 @@ useEffect(() => {
                     {getTimeAgo(msg.timestamp)}
                   </span>
 
-                  {/* Three dots — only for current user's messages */}
-                  {msg.email === userEmail && viewComments && (
+                  {/* Three dots — only for current user's messages within the edit/delete window */}
+                  {canEditDelete && (
                     <div  className="relative ml-auto">
                       <button
                         onClick={(e) => {
