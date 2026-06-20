@@ -78,6 +78,7 @@ function NavBar() {
   const [loading, setLoading] = useState(false);
   const [showAddContent, setShowAddContent] = useState(false);
   const [showSearchModal, setShowSearchModal] = useState(false);
+  const [showProfile, setShowProfile] = useState(false)
   const { searchTerm, setSearchTerm, inputValue, setInputValue } =
     useContext(GlobalStateContext);
 
@@ -228,6 +229,24 @@ function NavBar() {
     };
   }, []);
 
+  const showProfileSettings = useRef();
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        showProfileSettings.current &&
+        !showProfileSettings.current.contains(event.target)
+      ) {
+        setShowProfile(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+  
   return (
     <div
       className="
@@ -481,7 +500,9 @@ function NavBar() {
             rounded-full transition
           "
         >
-          <Link to="/profile" className="  items-center gap-1">
+          <div 
+          onClick={()=>{ setShowProfile((prev)=> !prev)}}
+          className="  items-center gap-1">
             {profile !== "undefined" ? (
               <img
                 src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`}
@@ -490,7 +511,7 @@ function NavBar() {
             ) : (
               <RiUser3Line className="text-2xl px-1 py-1 px-auto text-center text-emerald-400" />
             )}
-          </Link>
+          </div>
         </div>
 
         {/* 🚪 LOGOUT (DESKTOP ONLY) */}
@@ -506,20 +527,20 @@ function NavBar() {
       </div>
       {/* Sidebar */}
 
-      <div
-        ref={sidebarRef}
-        className={`fixed top-0 left-0 w-[300px]
-            bg-[#0b1220]
-            text-white shadow-2xl z-50 h-dvh
-            flex flex-col
-            transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]
-            rounded-br-2xl rounded-tr-2xl border border-white/10
-            ${
-              isSidebarOpen
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 -translate-y-6 pointer-events-none"
-            }`}
-      >
+    <div
+  ref={sidebarRef}
+  className={`fixed top-0 left-0 w-[300px]
+    bg-[#0b1220]
+    text-white shadow-2xl z-50 h-full
+    flex flex-col
+    transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]
+    rounded-br-2xl rounded-tr-2xl border border-white/10
+    ${
+      isSidebarOpen
+        ? "opacity-100 translate-x-0"
+        : "opacity-0 -translate-x-full pointer-events-none"
+    }`}
+>
         {/* ================= HEADER ================= */}
         <div className="flex items-center justify-between px-5 py-4 pb-3">
           {role !== "admin" ? (
@@ -590,14 +611,14 @@ function NavBar() {
             close={setIsSidebarOpen}
           />
 
-          {role == "student" && (
+          {/* {role == "student" && (
             <NavIcon
               to="/profile"
               icon={<FaUserAlt />}
               label="Profile"
               close={setIsSidebarOpen}
             />
-          )}
+          )} */}
 
           <NavTile
             to="/announcement"
@@ -616,44 +637,7 @@ function NavBar() {
           )}
 
           <div className="flex flex-col space-y-4  pb-3 overflow-y-auto pr-1">
-            {/* <NavTile
-            to="/announcement"
-            icon={<MdAnnouncement />}
-            title="Updates"
-            subtitle="Announcements"
-            badge={announceCount}
-            close={setIsSidebarOpen}
-          /> */}
-
-            {/* {role == "admin" && (
-            <NavTile
-              to="/dashboard"
-              icon={<MdDashboard />}
-              title="Analytics"
-              subtitle="Dashboard"
-              close={setIsSidebarOpen}
-            />
-          )} */}
-
-            {/* {role === "admin" && (
-            <NavTile
-              to="/control"
-              icon={<MdManageAccounts />}
-              title="Control Panel"
-              subtitle="Manage Users"
-              close={setIsSidebarOpen}
-            />
-          )} */}
-
-            {/* {role !== "student" && (
-            <NavTile
-              to="/workspace"
-              icon={<BsPersonWorkspace />}
-              title="Workspace"
-              subtitle="Manage Content"
-              close={setIsSidebarOpen}
-            />
-          )} */}
+   
             {/* ------------------------------------------- */}
 
             {role == "admin" && (
@@ -704,7 +688,7 @@ function NavBar() {
             )}
           </div>
 
-          <div className="mt-auto  pt-6 flex justify-center">
+          {/* <div className="mt-auto  pt-6 flex justify-center">
             <button
               onClick={exit}
               className="flex items-center gap-2 text-white/70 hover:text-white transition"
@@ -712,7 +696,7 @@ function NavBar() {
               <IoLogOutOutline className="text-xl text-red-400" />
               <span className="text-[11px]">Sign Out</span>
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
 
@@ -885,6 +869,58 @@ function NavBar() {
               <span className="text-[13px]">Create New Campaign</span>
             </button>
           </Link>
+        </div>
+      </div>
+
+
+       <div
+        ref={showProfileSettings}
+        className={`${
+          !showAddContent && !showNotification && showProfile
+            ? "fixed top-16 right-2 z-50 px-2  w-32 overflow-hidden rounded-lg border border-[#30363d] bg-gray-900 shadow-2xl"
+            : "hidden"
+        }`}
+      >
+        {/* Top Section */}
+        <div className="py-1.5">
+          <Link
+            onClick={() => {
+              setShowAddContent(false);
+              setShowAddContent(false);
+            }}
+            to="/profile"
+          >
+            <button
+              className="
+                w-full flex items-center gap-1.5
+                pl-2 py-1.5 pb-1
+                text-sm text-gray-100
+                hover:bg-gray-800/70
+                transition-all duration-200
+                rounded-lg 
+              "
+            >
+              <MdManageAccounts className="text-[17px] text-emerald-500" />
+              <span className="text-[11px]">Profile Settings</span>
+            </button>
+          </Link>
+
+            <div className=" w-full flex items-center gap-1.5
+                pl-2 py-1.5 pt-1
+                text-sm text-gray-100
+                hover:bg-gray-800/70
+                transition-all duration-200
+                rounded-lg">
+            <button
+              onClick={exit}
+              className="flex items-center gap-2 text-white/70 hover:text-white transition"
+            >
+              <IoLogOutOutline className="text-[17px] text-red-400" />
+              <span className="text-[11px]">Sign Out</span>
+            </button>
+          </div>
+
+          
         </div>
       </div>
 
