@@ -531,7 +531,7 @@ function NavBar() {
   ref={sidebarRef}
   className={`fixed top-0 left-0 w-[300px]
     bg-[#0b1220]
-    text-white shadow-2xl z-50 h-full
+    text-white shadow-2xl z-50 h-screen
     flex flex-col
     transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]
     rounded-br-2xl rounded-tr-2xl border border-white/10
