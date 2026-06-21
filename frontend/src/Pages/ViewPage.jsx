@@ -489,7 +489,7 @@ function ViewPage() {
 
   useEffect(() => {
     getParticipants();
-  }, []);
+  }, [postId,messages]);
 
   const RoleBadge = ({ role }) => {
     const styles = {
@@ -1173,7 +1173,7 @@ function ViewPage() {
               </div>
 
               {/* participants profiles */}
-              {totalParticipants > 0 &&
+              {participants.length > 0 &&
                 <div className="flex flex-col p-2 py-2.5 border-t border-neutral-800">
                 <p className="text-gray-400 text-xs font-semibold">
                   Participants
@@ -1225,7 +1225,8 @@ function ViewPage() {
                     </motion.button>
                   )}
                 </div>
-              </div>}
+              </div>
+              }
 
               {/* Mobile: YouTube-style bottom sheet */}
               <div
