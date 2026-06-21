@@ -473,12 +473,12 @@ function ViewPage() {
   const [showParticipants, setShowParticipants] = useState(false);
   const [totalParticipants, setTotalParticipants] = useState(0);
 
-  const getParticipante = async () => {
+  const getParticipants = async () => {
     try {
       const res = await axiosInstance.get(`/blog/posts/participants/${postId}`);
 
       if (res.status === 200) {
-        console.log("participants", res.data);
+        // console.log("participants", res.data);
         setParticipants(res.data.participants);
         setTotalParticipants(res.data.count);
       }
@@ -488,8 +488,8 @@ function ViewPage() {
   };
 
   useEffect(() => {
-    getParticipante();
-  }, [messages]);
+    getParticipants();
+  }, []);
 
   const RoleBadge = ({ role }) => {
     const styles = {
@@ -507,6 +507,8 @@ function ViewPage() {
       </span>
     );
   };
+
+  console.log("total participants", totalParticipants)
 
   return (
     <div className="w-full min-h-screen flex flex-col justify-between bg-gray-900 relative">
@@ -1171,7 +1173,7 @@ function ViewPage() {
               </div>
 
               {/* participants profiles */}
-              {totalParticipants >0 &&
+              {totalParticipants > 0 &&
                 <div className="flex flex-col p-2 py-2.5 border-t border-neutral-800">
                 <p className="text-gray-400 text-xs font-semibold">
                   Participants
