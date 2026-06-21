@@ -38,6 +38,7 @@ import RenderTextWithHashtags from "../components/RenderTextWithHashtags.jsx";
 import RenderTextNoMarkdown from "../components/RenderTextNoMarkdown.jsx";
 import logoicon from "../assets/assistant_1.png";
 import { motion, AnimatePresence } from "framer-motion";
+import BadgeIcons from "../components/achievements/BadgeIcons.jsx";
 
 function ViewPage() {
   const user = getItem("username");
@@ -468,23 +469,44 @@ function ViewPage() {
 
   const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
 
-  const getParticipante = async()=>{
-    try{
-      const respone = await axiosInstance.get(`/blog/posts/participants/${postId}`);
-      console.log("participants respone", respone.data);
+  const [participants, setParticipants] = useState([]);
+  const [showParticipants, setShowParticipants] = useState(false);
+  const [totalParticipants, setTotalParticipants] = useState(0);
 
+  const getParticipante = async () => {
+    try {
+      const res = await axiosInstance.get(`/blog/posts/participants/${postId}`);
+
+      if (res.status === 200) {
+        console.log("participants", res.data);
+        setParticipants(res.data.participants);
+        setTotalParticipants(res.data.count);
+      }
+    } catch (err) {
+      console.log("error", err.message);
     }
-    catch(err)
-    {
-      console.log("error", err.message)
-    }
-  }
+  };
 
-
-  useEffect(()=>{
+  useEffect(() => {
     getParticipante();
-  },[])
-  
+  }, [messages]);
+
+  const RoleBadge = ({ role }) => {
+    const styles = {
+      admin: { bg: "#ec489918", color: "#ec4899", label: "Admin" },
+      coordinator: { bg: "#f59e0b18", color: "#f59e0b", label: "Coordinator" },
+      student: { bg: "#3b82f618", color: "#3b82f6", label: "Student" },
+    };
+    const s = styles[role] ?? styles.student;
+    return (
+      <span
+        className="text-[10px] px-2 py-0  border border-amber-400/20 rounded-lg"
+        style={{ backgroundColor: s.bg, color: s.color }}
+      >
+        {s.label}
+      </span>
+    );
+  };
 
   return (
     <div className="w-full min-h-screen flex flex-col justify-between bg-gray-900 relative">
@@ -1149,37 +1171,59 @@ function ViewPage() {
               </div>
 
               {/* participants profiles */}
-              <div className="flex flex-col p-2 border-t border-neutral-800">
-                <p className="text-gray-400 text-xs font-semibo9ld">
+              {totalParticipants >0 &&
+                <div className="flex flex-col p-2 py-2.5 border-t border-neutral-800">
+                <p className="text-gray-400 text-xs font-semibold">
                   Participants
                 </p>
-                <div className="mt-4 gap-1 flex flex-wrap  items-center ">
-                  {["Ani","Sharon", "Dravid", "Surya","Ani","Sharon", "Dravid", "Surya","Ani","Sharon", "Dravid", "Surya","Ani","Sharon", "Dravid", "Surya"].map((n) => (
-                    <div
-                      // to={`/viewProfile/${u.email}`}
-                      // className=""
-                    >
-                       {/* {!u.profile ? ( */}
-                        {true ? (
-                          <div
-                            className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold text-gray-200 shrink-0"
-                            // style={{ backgroundColor: avatarColor(u.name) }}
-                            style={{ backgroundColor: avatarColor(n) }}
-                          >
-                            {/* {initials(u.name)} */}
-                            {initials(n)}
-                          </div>
-                        ) : (
-                          <img
-                            // src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${u.profile}`}
-                            alt=""
-                            className="w-6 h-6  rounded-full object-cover"
-                          />
-                        )}
-                    </div>
+                <div className="mt-4 gap-1 flex flex-wrap   items-center ">
+                  {participants?.slice(0, 12).map((p) => (
+                    <Link to={`/viewProfile/${p?.email}`} className="">
+                      {!p.profile ? (
+                        <div
+                          className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold text-gray-200 shrink-0"
+                          style={{ backgroundColor: avatarColor(p?.name) }}
+                        >
+                          {initials(p?.name)}
+                        </div>
+                      ) : (
+                        <img
+                          src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${p?.profile}`}
+                          alt=""
+                          className="w-6 h-6  rounded-full object-cover"
+                        />
+                      )}
+                    </Link>
                   ))}
+
+                  {participants.length > 12 && (
+                    // <p className="text-[17px] cursor-pointer hover:text-gray-400/90  font-semibold ml-3 text-gray-500 transition-all duration-500">
+                    //   +{totalParticipants - 12}
+                    // </p>
+                    <motion.button
+                      whileHover={{ scale: 1.08 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => setShowParticipants(true)}
+                      className="
+                      ml-2
+                      h-7
+                      px-2.5
+                      rounded-full
+                      border border-white/10
+                      bg-white/[0.03]
+                      text-[11px]
+                      font-semibold
+                      text-gray-400
+                      hover:text-white
+                      hover:border-emerald-500/30
+                      transition-all
+                    "
+                    >
+                      +{totalParticipants - 12}
+                    </motion.button>
+                  )}
                 </div>
-              </div>
+              </div>}
 
               {/* Mobile: YouTube-style bottom sheet */}
               <div
@@ -1343,56 +1387,6 @@ function ViewPage() {
 
       {loading && <PostDetailSkeleton />}
 
-      {/* {selectedImage && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
-
-          <div className="relative max-w-6xl w-full flex items-center justify-center">
-     
-            <img
-              src={selectedImage}
-              alt="Preview"
-              className="
-                max-h-[80vh]
-                w-auto
-                rounded-2xl
-                shadow-2xl
-                border border-gray-700
-                object-contain
-                transition-transform duration-300
-           
-              "
-            />
-
-     
-            <button
-              onClick={handleCloseModal}
-              className="
-                absolute
-                md:-top-4
-                md:-right-4
-                -top-3
-                -right-3
-                md:w-10
-                md:h-10
-                h-8
-                w-8
-                flex
-                items-center
-                justify-center
-                rounded-full
-                bg-gray-900
-                border border-gray-700
-                text-white
-                shadow-lg
-                md:hover:bg-red-500
-                transition-all
-              "
-            >
-              <IoClose className="text-sm" />
-            </button>
-          </div>
-        </div>
-      )} */}
 
       <AnimatePresence>
         {selectedImage && (
@@ -1414,11 +1408,11 @@ function ViewPage() {
             }}
             onClick={handleCloseModal}
             className="
-        fixed inset-0 z-50
-        flex items-center justify-center
-        bg-black/70
-        p-4
-      "
+              fixed inset-0 z-50
+              flex items-center justify-center
+              bg-black/70
+              p-4
+            "
           >
             {/* Modal Container */}
             <motion.div
@@ -1534,6 +1528,188 @@ function ViewPage() {
               </motion.button>
             </motion.div>
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showParticipants && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowParticipants(false)}
+              className="
+                fixed inset-0 z-50
+                flex items-center justify-center
+                bg-black/70       
+              "
+            />
+
+            {/* Panel */}
+            <motion.div
+              initial={{
+                opacity: 0,
+                scale: 0.96,
+                y: 20,
+              }}
+              animate={{
+                opacity: 1,
+                scale: 1,
+                y: 0,
+              }}
+              exit={{
+                opacity: 0,
+                scale: 0.96,
+                y: 10,
+              }}
+              transition={{
+                duration: 0.3,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              onClick={() => {
+                setShowParticipants(false);
+              }}
+              className="
+                fixed
+                inset-0
+                z-[1000]
+                flex
+                items-center
+                justify-center
+                p-4
+                  "
+            >
+              <motion.div
+                className="
+                  md:w-[500px]
+                  w-[370px]
+                  max-h-[500px]
+                  rounded-xl
+                  pb-4
+                  bg-[#050b16]
+                  border border-white/10
+                  overflow-hidden
+                "
+              >
+                <div className="flex items-center justify-between px-4 py-2.5 border-b border-white/10">
+                  <div>
+                    <h3 className="text-sm font-semibold text-white">
+                      Participants
+                    </h3>
+
+                    <p className="text-[10px] font-semibold text-gray-500 mt-1">
+                      {participants.length} involved in discussion
+                    </p>
+                  </div>
+
+                  <button
+                    onClick={() => setShowParticipants(false)}
+                    className="
+                      w-6 h-6 rounded-lg
+                      hover:bg-white/5
+                      text-gray-400
+                      flex items-center justify-center
+                      transition-all
+                    "
+                  >
+                    <IoClose size={18} />
+                  </button>
+                </div>
+
+                <div className="overflow-y-auto max-h-[400px] px-4 p-2 md:p-4">
+                  {participants.map((p, index) => (
+                    <motion.div
+                      key={p.email}
+                      // initial={{
+                      //   opacity: 0,
+                      //   x: -15,
+                      // }}
+                      // animate={{
+                      //   opacity: 1,
+                      //   x: 0,
+                      // }}
+                      // transition={{
+                      //   delay: index * 0.03,
+                      // }}
+                    >
+                      <Link
+                        to={`/viewProfile/${p.email}`}
+                        onClick={() => setShowParticipants(false)}
+                        className="
+                          flex items-center gap-2
+                          md:px-3 px-1 py-1.5
+                          rounded-2xl
+                          hover:bg-white/[0.03]
+                          transition-all
+                          group
+                        "
+                      >
+                        {!p.profile ? (
+                          <div
+                            className="
+                              w-6 h-6
+                              rounded-full
+                              flex items-center justify-center
+                              md:text-sm text-[10px] font-semibold md:font-bold
+                              text-white
+                              shrink-0
+                            "
+                            style={{
+                              backgroundColor: avatarColor(p.name),
+                            }}
+                          >
+                            {initials(p.name)}
+                          </div>
+                        ) : (
+                          <img
+                            src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${p.profile}`}
+                            className="
+                              w-6 h-6
+                              rounded-full
+                              object-cover
+                              shrink-0
+                            "
+                          />
+                        )}
+
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-1.5">
+                            <p className="font-semibold text-xs text-wrap line-clamp-1 max-w-[150px] md:max-w-[200px] text-white truncate">
+                              {p.name}
+                            </p>
+
+                            {/* <RoleBadge role={p.role} /> */}
+                            <p className="text-[10px] font-semibold text-gray-500">
+                              {p.role}
+                            </p>
+                          </div>
+
+                          {/* <p className="text-xs text-gray-500 truncate mt-0.5">
+                              {p.email}
+                            </p> */}
+                        </div>
+                        <div
+                          className="
+                            text-gray-500
+                            group-hover:text-emerald-400
+                            transition-all
+                          "
+                        >
+                          <BadgeIcons
+                            badges={p?.badges}
+                            parentClass="static -space-x-1.5"
+                            shieldClassName="w-4 h-4"
+                          />
+                        </div>
+                      </Link>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
 

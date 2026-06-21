@@ -2073,7 +2073,7 @@ const getParticipants = async (req, res) => {
     }
 
     const authors = await Author.find({ email: { $in: participantEmails } })
-      .select("email profile authorname badges")
+      .select("email profile authorname role badges")
       .lean();
 
     const authorByEmail = new Map(authors.map((author) => [author.email.toLowerCase(), author]));
@@ -2086,6 +2086,7 @@ const getParticipants = async (req, res) => {
         profile: author?.profile || base.profile || "",
         name: author?.authorname || base.name || email,
         badges: Array.isArray(author?.badges) ? author.badges : [],
+        role: author?.role,
       };
     });
 
