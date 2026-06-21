@@ -21,6 +21,7 @@ const {
   removePostsLinks,
   getAllBookmarkIds,
   removePostDocument,
+  getParticipants,
   // getPostsByAuthorsCategory,
   // getUniqueCategoriesByAuthor
   // updateMessage,
@@ -32,6 +33,7 @@ const {limiter, readLimiter} = require("../middleware/rateLimitter")
 // router.get("/", readLimiter, authenticateToken, getAllPosts);  // used in TechCommunity.jsx
 router.get("/:email", readLimiter, authenticateToken,  getSingleAuthorPosts);
 router.get("/recommended/:email", readLimiter, authenticateToken,  getRecommendedPosts)
+router.get("/participants/:postId", readLimiter, authenticateToken, getParticipants);
 
 router.get("/:category", readLimiter, authenticateToken, getCategoryPosts);
 
@@ -53,8 +55,9 @@ router.put("/:email/:postId", limiter, authenticateToken,uploadData,updatePost);
 router.get("/getBookmarkPosts/bookmark/:email", readLimiter, authenticateToken,getBookmarkedPosts)
 router.post("/bookmarkPosts/:email", limiter, authenticateToken,addPostBookmark)
 
-router.put("/views/:email/:id", limiter, authenticateToken, postView)
-router.put("/likes/:email/:id", limiter, authenticateToken, postLikes)
+router.put("/views/:email/:id", limiter, authenticateToken, postView);
+router.put("/likes/:email/:id", limiter, authenticateToken, postLikes);
+
 
 router.delete("/:email/:postId", limiter, authenticateToken,  deletePost);
 router.delete("/links/:email/:postId", limiter, authenticateToken,  removePostsLinks);

@@ -2030,6 +2030,74 @@ const getAllBookmarkIds = async (req, res) => {
 
 
 
+const getParticipants = async (req, res) => {
+  try {
+    const { postId } = req.params;
+    // console.log("post called");
+
+    if (!postId) {
+      return res.status(400).json({ message: "postId required" });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(postId)) {
+      return res.status(400).json({ message: "Invalid postId" });
+    }
+
+    const post = await Post.findById(postId).select("messages").lean();
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    const participantMap = new Map();
+    for (const message of post.messages || []) {
+      const email = (message?.email || "").trim().toLowerCase();
+      if (!email) continue;
+
+      if (!participantMap.has(email)) {
+        participantMap.set(email, {
+          email,
+          profile: message?.profile || "",
+          name: message?.user || "",
+          badges: [],
+        });
+      } else {
+        const participant = participantMap.get(email);
+        if (!participant.profile && message?.profile) participant.profile = message.profile;
+        if (!participant.name && message?.user) participant.name = message.user;
+      }
+    }
+
+    const participantEmails = Array.from(participantMap.keys());
+    if (participantEmails.length === 0) {
+      return res.status(200).json({ message: "No participants found", count: 0, participants: [] });
+    }
+
+    const authors = await Author.find({ email: { $in: participantEmails } })
+      .select("email profile authorname badges")
+      .lean();
+
+    const authorByEmail = new Map(authors.map((author) => [author.email.toLowerCase(), author]));
+
+    const participants = participantEmails.map((email) => {
+      const author = authorByEmail.get(email);
+      const base = participantMap.get(email);
+      return {
+        email,
+        profile: author?.profile || base.profile || "",
+        name: author?.authorname || base.name || email,
+        badges: Array.isArray(author?.badges) ? author.badges : [],
+      };
+    });
+
+    return res.status(200).json({ message: "Participants retrieved", count: participants.length, participants });
+  } catch (err) {
+    console.log("error", err.message);
+    res.status(500).json({ message: err.message });
+  }
+};
+
+
+
 
 module.exports = {
   getSingleAuthorPosts,
@@ -2046,6 +2114,7 @@ module.exports = {
   removePostsLinks,
   getAllBookmarkIds,
   removePostDocument,
+  getParticipants,
   // getPostsByAuthorsCategory,
   // getUniqueCategoriesByAuthor
   // updateMessage,

@@ -65,7 +65,7 @@ function ViewPage() {
   const sheetRef = useRef(null);
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [msgLoading, setMsgLoading] = useState(false);
- const [liveParticipants, setLiveParticipants] = useState(0)
+  const [liveParticipants, setLiveParticipants] = useState(0);
   // ✅ useParams at component top level — not inside useEffect or async function
   useEffect(() => {
     const myEmail = getItem("email");
@@ -188,7 +188,7 @@ function ViewPage() {
   }, [postId, userEmail]);
   const postComment = () => {
     if (newMessage.trim() === "") return;
-    setIsInputFocused(false)
+    setIsInputFocused(false);
     setViewComments(true);
 
     const messageData = {
@@ -216,26 +216,25 @@ function ViewPage() {
     setNewMessage("");
   };
 
-
   useEffect(() => {
-  // Add a guard check
-  if (!socket) {
-    console.warn("Socket not connected yet");
-    return;
-  }
+    // Add a guard check
+    if (!socket) {
+      console.warn("Socket not connected yet");
+      return;
+    }
 
-  socket.on("liveParticipants", (data) => {
-    console.log("Live participants:", data.emails);
-    console.log("Count:", data.count);
-    setLiveParticipants(data.count)
-    // Update your UI
-  });
+    socket.on("liveParticipants", (data) => {
+      console.log("Live participants:", data.emails);
+      console.log("Count:", data.count);
+      setLiveParticipants(data.count);
+      // Update your UI
+    });
 
-  // Cleanup
-  return () => {
-    socket.off("liveParticipants");
-  };
-}, [socket]);
+    // Cleanup
+    return () => {
+      socket.off("liveParticipants");
+    };
+  }, [socket]);
 
   const handleImageClick = (image) => {
     setSelectedImage(image);
@@ -454,6 +453,39 @@ function ViewPage() {
   // console.log("post id", postId);
   // console.log("singlepost data", singlePostData);
 
+  const avatarColor = (name) => {
+    const colors = [
+      "#10b981",
+      "#3b82f6",
+      "#f59e0b",
+      "#ec4899",
+      "#8b5cf6",
+      "#06b6d4",
+      "#f97316",
+    ];
+    return colors[(name?.charCodeAt(0) ?? 0) % colors.length];
+  };
+
+  const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
+
+  const getParticipante = async()=>{
+    try{
+      const respone = await axiosInstance.get(`/blog/posts/participants/${postId}`);
+      console.log("participants respone", respone.data);
+
+    }
+    catch(err)
+    {
+      console.log("error", err.message)
+    }
+  }
+
+
+  useEffect(()=>{
+    getParticipante();
+  },[])
+  
+
   return (
     <div className="w-full min-h-screen flex flex-col justify-between bg-gray-900 relative">
       <NavBar />
@@ -510,11 +542,8 @@ function ViewPage() {
             {/* LEFT COLUMN */}
             {/* <div className="lg:col-span-4  "> */}
             <div className="lg:col-span-8">
-        
               {/* Banner */}
               <div
-             
-
                 className="
               relative
               overflow-hidden
@@ -806,7 +835,7 @@ function ViewPage() {
               className="
                 lg:col-span-4
                 lg:sticky
-                lg:top-24
+                lg:top-4
                 h-fit
                 space-y-5
               "
@@ -820,40 +849,40 @@ function ViewPage() {
                   />
                 </div>
               )} */}
-              
+
               <AnimatePresence mode="wait">
-              {showAssistant && (
-                <motion.div
-                  initial={{
-                    opacity: 0,
-                    height: 0,
-                    y: -10,
-                  }}
-                  animate={{
-                    opacity: 1,
-                    height: "auto",
-                    y: 0,
-                  }}
-                  exit={{
-                    opacity: 0,
-                    height: 0,
-                    y: -10,
-                  }}
-                  transition={{
-                    duration: 0.45,
-                    ease: [0.22, 1, 0.36, 1],
-                  }}
-                  className="overflow-hidden h-auto"
-                >
-                  <div className="hidden md:block">
-                  <AITechAssistant
-                    currentPostId={singlePostData._id}
-                    category={singlePostData.category}
-                  />
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                {showAssistant && (
+                  <motion.div
+                    initial={{
+                      opacity: 0,
+                      height: 0,
+                      y: -10,
+                    }}
+                    animate={{
+                      opacity: 1,
+                      height: "auto",
+                      y: 0,
+                    }}
+                    exit={{
+                      opacity: 0,
+                      height: 0,
+                      y: -10,
+                    }}
+                    transition={{
+                      duration: 0.45,
+                      ease: [0.22, 1, 0.36, 1],
+                    }}
+                    className="overflow-hidden h-auto"
+                  >
+                    <div className="hidden md:block">
+                      <AITechAssistant
+                        currentPostId={singlePostData._id}
+                        category={singlePostData.category}
+                      />
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
               {/* Documents */}
               {/* bg-gradient-to-b from-slate-900/80 to-slate-800/80 */}
@@ -1033,8 +1062,6 @@ function ViewPage() {
                         {messages.length}
                       </span>
                     )}
-
-                    
                   </div>
 
                   <button
@@ -1118,6 +1145,39 @@ function ViewPage() {
                       </motion.span>
                     </motion.button>
                   </div>
+                </div>
+              </div>
+
+              {/* participants profiles */}
+              <div className="flex flex-col p-2 border-t border-neutral-800">
+                <p className="text-gray-400 text-xs font-semibo9ld">
+                  Participants
+                </p>
+                <div className="mt-4 gap-1 flex flex-wrap  items-center ">
+                  {["Ani","Sharon", "Dravid", "Surya","Ani","Sharon", "Dravid", "Surya","Ani","Sharon", "Dravid", "Surya","Ani","Sharon", "Dravid", "Surya"].map((n) => (
+                    <div
+                      // to={`/viewProfile/${u.email}`}
+                      // className=""
+                    >
+                       {/* {!u.profile ? ( */}
+                        {true ? (
+                          <div
+                            className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold text-gray-200 shrink-0"
+                            // style={{ backgroundColor: avatarColor(u.name) }}
+                            style={{ backgroundColor: avatarColor(n) }}
+                          >
+                            {/* {initials(u.name)} */}
+                            {initials(n)}
+                          </div>
+                        ) : (
+                          <img
+                            // src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${u.profile}`}
+                            alt=""
+                            className="w-6 h-6  rounded-full object-cover"
+                          />
+                        )}
+                    </div>
+                  ))}
                 </div>
               </div>
 
