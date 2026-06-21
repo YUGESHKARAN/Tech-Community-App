@@ -346,7 +346,7 @@ function SingleTechDomainDetails() {
                                 ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`
                                 : user
                             }
-                            className="w-24 h-24 mx-auto bg-gray-700 rounded-full object-cover border border-gray-900"
+                            className="w-24 h-24 mx-auto bg-gray-700 rounded-full object-cover border border-gray-700"
                           />
                         </Link>
 
@@ -524,7 +524,7 @@ function SingleTechDomainDetails() {
                                           w-20 h-20
                                           rounded-full
                                           object-cover
-                                          border border-gray-900
+                                          border border-gray-700
                                           shadow-sm
                                           hover:shadow-md
                                           transition
