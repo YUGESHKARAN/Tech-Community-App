@@ -16,6 +16,7 @@ import RenderTextWithHashtags from "../components/RenderTextWithHashtags";
 import { TbAlertTriangleFilled } from "react-icons/tb";
 import toast from "../components/toaster/Toast";
 import { motion, AnimatePresence } from "framer-motion";
+import { ChevronRight } from "lucide-react";
 
 function AddPost() {
   const [title, setTitle] = useState("");
@@ -367,6 +368,7 @@ function AddPost() {
     return () => clearInterval(t);
   }, [isFocused, prompt]);
 
+  const [showPostGuide, setShowPostGuide] = useState(true);
   // console.log("documents",documents)
 
   return (
@@ -536,13 +538,57 @@ function AddPost() {
             <div className="md:space-y-4 md:sticky top-7  self-start md:col-span-1">
               {/* Description / Tips */}
               <div
-                className={`bg-[#0f172a]/80 lg:w-11/12 border border-emerald-500/20 bg-gradient-to-br from-emerald-500/5 to-transparent rounded-lg md:rounded-xl px-4 py-6 md:p-6 text-gray-300 ${chatbot ? "hidden lg:block" : "block"}`}
+                className={`bg-[#0f172a]/80 lg:w-11/12 border border-emerald-500/20 bg-gradient-to-br from-emerald-500/5 to-transparent rounded-lg md:rounded-xl px-4 ${showPostGuide?'py-6':'py-2'} md:p-6 text-gray-300 ${chatbot ? "hidden lg:block" : "block"}`}
               >
-                <h2 className="md:text-lg text-sm font-semibold text-white mb-3">
+                <div className={`flex items-center ${showPostGuide?' mb-3':'mb-0'} md:mb-3  justify-between `}>
+                  <h2 className={`md:text-lg ${showPostGuide?'text-sm':'text-xs'} font-semibold text-white`}>
                   Post Guidelines
                 </h2>
 
-                <ul className="space-y-2 text-sm list-disc pl-5">
+                  <button
+            onClick={() => {
+              setShowPostGuide((prev) => !prev);
+            }}
+            className={
+              `
+              group
+              flex items-center gap-2
+              md:hidden
+              px-2 py-1
+              rounded-xl
+              bg-white/[0.03]
+              border border-white/[0.08]
+              hover:bg-white/[0.06]
+              hover:border-emerald-500/20
+              transition-all duration-300
+             
+              text-[10px]`
+            }
+          >
+            <motion.button
+              whileTap={{ scale: 0.96 }}
+              whileHover={{ scale: 1.03 }}
+              // onClick={() => setShowAll(!showAll)}
+            >
+              {showPostGuide ? "Hide" : "Show"}
+            </motion.button>
+            <motion.div
+              animate={{
+                rotate: showPostGuide ? 90 : 0,
+              }}
+              transition={{
+                duration: 0.3,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+            >
+              <ChevronRight size={14} />
+            </motion.div>
+          </button>
+
+                </div>
+                
+
+                <ul className={`space-y-2 text-sm list-disc pl-5 hidden md:block`}>
                   <li>Use a clear and descriptive title.</li>
                   <li>Provide a contextual description <span className="bg-gray-600/30 text-xs px-2">(eg: Overview, Tech-Stack used, Sample Code Snippet, System Design Followed, Key Features, Contributions and Conclusion)</span> </li>
                   <li>Description supports upto 10,000 word limit.</li>
@@ -554,6 +600,51 @@ function AddPost() {
                   </li>
                   <li>YouTube links support video embedding.</li>
                 </ul>
+
+                 <AnimatePresence mode="wait">
+                          {
+                          showPostGuide &&  
+                                <motion.div
+                                  key="info"
+                                  initial={{
+                                    opacity: 0,
+                                    height: 0,
+                                    y: -20,
+                                    filter: "blur(8px)",
+                                  }}
+                                  animate={{
+                                    opacity: 1,
+                                    height: "auto",
+                                    y: 0,
+                                    filter: "blur(0px)",
+                                  }}
+                                  exit={{
+                                    opacity: 0,
+                                    height: 0,
+                                    y: -10,
+                                    filter: "blur(4px)",
+                                  }}
+                                  transition={{
+                                    duration: 0.4,
+                                    ease: [0.22, 1, 0.36, 1],
+                                  }}
+                                  className="overflow-hidden  md:hidden"
+                                >
+                                   <ul className={`space-y-2 text-sm list-disc pl-5 md:block`}>
+                                      <li>Use a clear and descriptive title.</li>
+                                      <li>Provide a contextual description <span className="bg-gray-600/30 text-xs px-2">(eg: Overview, Tech-Stack used, Sample Code Snippet, System Design Followed, Key Features, Contributions and Conclusion)</span> </li>
+                                      <li>Description supports upto 10,000 word limit.</li>
+                                      <li>Add useful resources such as links and documents.</li>
+                                      <li>Include a suitable thumbnail poster (1280 × 720 px).</li>
+                                      <li>
+                                        Post description support Markdown features. Use the preview
+                                        option to verify the content format.
+                                      </li>
+                                      <li>YouTube links support video embedding.</li>
+                                    </ul>
+                                </motion.div>}
+                          
+                            </AnimatePresence>
               </div>
 
               {/* AI Assistant (Always visible on desktop) */}
