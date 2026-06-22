@@ -526,15 +526,16 @@ function AddPost() {
                 </h2>
 
                 <ul className="space-y-2 text-sm list-disc pl-5">
-                  <li>Use a clear and descriptive title</li>
-                  <li>Provide a contextual description with max 10,000 word limit </li>
-                  <li>Add useful resources such as links and documents</li>
-                  <li>Include a suitable thumbnail poster (1280 × 720 px)</li>
+                  <li>Use a clear and descriptive title.</li>
+                  <li>Provide a description with max 10,000 word limit.</li>
+                  <li>Provide a contextual description <span className="bg-gray-600/30 text-xs px-2">(eg: Overview, Tech-Stack used, Sample Code Snippet, System Design Followed, Key Features, Contributions and Conclusion)</span> </li>
+                  <li>Add useful resources such as links and documents.</li>
+                  <li>Include a suitable thumbnail poster (1280 × 720 px).</li>
                   <li>
                     Post description support Markdown features. Use the preview
                     option to verify the content format.
                   </li>
-                  <li>YouTube links support video embedding </li>
+                  <li>YouTube links support video embedding.</li>
                 </ul>
               </div>
 
