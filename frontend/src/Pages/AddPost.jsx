@@ -553,7 +553,7 @@ function AddPost() {
             className={
               `
               group
-              flex items-center gap-2
+              flex items-center gap-1
               md:hidden
               px-2 py-1
               rounded-xl
