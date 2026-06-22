@@ -282,6 +282,21 @@ function AddPost() {
     setDocuments(files);
   };
 
+  //  const containerRef = useRef(null);
+  // useEffect(() => {
+  //   const el = containerRef.current;
+  //   if (!el) return;
+
+  //   const isNearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 100;
+
+  //   if (isNearBottom) {
+  //     el.scrollTo({
+  //       top: el.scrollHeight,
+  //       behavior: "smooth",
+  //     });
+  //   }
+  // }, [messages, isTyping]);
+
   const containerRef = useRef(null);
   useEffect(() => {
     const el = containerRef.current;
@@ -289,13 +304,15 @@ function AddPost() {
 
     const isNearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 100;
 
-    if (isNearBottom) {
+    // Always scroll when a new message is sent or when the bot starts generating content,
+    // so the loader and latest responses stay visible.
+    if (isNearBottom || draftMateLoading) {
       el.scrollTo({
         top: el.scrollHeight,
         behavior: "smooth",
       });
     }
-  }, [messages, isTyping]);
+  }, [messages, draftMateLoading]);
 
   const postViews = async (authorEmail) => {
     try {
