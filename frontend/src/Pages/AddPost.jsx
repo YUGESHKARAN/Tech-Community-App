@@ -17,6 +17,7 @@ import { TbAlertTriangleFilled } from "react-icons/tb";
 import toast from "../components/toaster/Toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight } from "lucide-react";
+import { BsInfoSquare } from "react-icons/bs";
 
 function AddPost() {
   const [title, setTitle] = useState("");
@@ -541,8 +542,8 @@ function AddPost() {
                 className={`bg-[#0f172a]/80 lg:w-11/12 border border-emerald-500/20 bg-gradient-to-br from-emerald-500/5 to-transparent rounded-lg md:rounded-xl px-4 ${showPostGuide?'py-6':'py-2'} md:p-6 text-gray-300 ${chatbot ? "hidden lg:block" : "block"}`}
               >
                 <div className={`flex items-center ${showPostGuide?' mb-3':'mb-0'} md:mb-3  justify-between `}>
-                  <h2 className={`md:text-lg ${showPostGuide?'text-sm':'text-xs'} font-semibold text-white`}>
-                  Post Guidelines
+                  <h2 className={`md:text-lg ${showPostGuide?'text-sm':'text-xs'} flex items-center gap-1.5 md:gap-2 font-semibold text-white`}>
+                  <BsInfoSquare className="text-xs md:text-sm text-emerald-400" /> Post Guidelines
                 </h2>
 
                   <button

@@ -14,6 +14,10 @@ import useGetAllAuthorsByDomain from "../hooks/useGetAllAuthorsByDomain";
 import { getItem } from "../utils/encode";
 import { VscGitStashApply } from "react-icons/vsc";
 import { motion, AnimatePresence } from "framer-motion";
+import { ChevronRight } from "lucide-react";
+import { FaInfo } from "react-icons/fa";
+import { IoInformationOutline } from "react-icons/io5";
+import { BsInfoSquare } from "react-icons/bs";
 function TutorPlaylist() {
   // const email = localStorage.getItem("email");
   const email = getItem("email");
@@ -184,6 +188,8 @@ function TutorPlaylist() {
 
   const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
 
+  const [showPlaylistGuide, setShowPlaylistGuide] = useState(true);
+
   return (
     // bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800
 
@@ -206,29 +212,67 @@ function TutorPlaylist() {
       <div className="max-w-[1800px] mx-auto w-full lg:hidden block px-3 md:px-12 mx-auto">
         <div
           className="
-      w-full
-      
-      mx-auto
-      rounded-xl
-      border border-emerald-500/20
-      bg-gradient-to-br from-emerald-500/5 to-transparent
-      p-4 md:p-5
-      mb-0
-      md:mb-4
-     
-      
-    "
+            w-full
+            mx-auto
+            rounded-xl
+            border border-emerald-500/20
+            bg-gradient-to-br from-emerald-500/5 to-transparent
+            p-4 md:p-5
+            mb-0
+            md:mb-4 
+          "
         >
           {/* Header */}
-          <div className="flex items-center gap-2 mb-3">
+          <div
+            className={`flex items-center justify-between gap-2 ${showPlaylistGuide ? "mb-3" : "mb-0"} md:mb-3`}
+          >
             {/* <span className="text-emerald-400 text-lg">📌</span> */}
-            <h2 className="text-sm text-white md:text-base font-semibold  tracking-wide">
-              Playlist Guidelines
+            <h2
+              className={`md:text-sm ${showPlaylistGuide ? "text-sm" : "text-xs"} text-white md:text-base font-semibold flex items-center gap-1.5 tracking-wide`}
+            >
+             <BsInfoSquare className="text-xs text-emerald-400" /> Playlist Guidelines
             </h2>
+            <button
+              onClick={() => {
+                setShowPlaylistGuide((prev) => !prev);
+              }}
+              className={`
+                          group
+                          flex items-center gap-2
+                          md:hidden
+                          px-2 py-1
+                          rounded-xl
+                          bg-white/[0.03]
+                          border border-white/[0.08]
+                          hover:bg-white/[0.06]
+                          hover:border-emerald-500/20
+                          transition-all duration-300
+                         text-white
+                          text-[10px]`}
+            >
+              <motion.button
+                whileTap={{ scale: 0.96 }}
+                whileHover={{ scale: 1.03 }}
+                // onClick={() => setShowAll(!showAll)}
+              >
+                {showPlaylistGuide ? "Hide" : "Show"}
+              </motion.button>
+              <motion.div
+                animate={{
+                  rotate: showPlaylistGuide ? 90 : 0,
+                }}
+                transition={{
+                  duration: 0.3,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+              >
+                <ChevronRight size={14} />
+              </motion.div>
+            </button>
           </div>
 
           {/* Content */}
-          <ul className="space-y-2 text-xs md:text-sm text-gray-300 leading-relaxed">
+          <ul className="space-y-2 text-xs md:text-sm text-gray-300 hidden md:block leading-relaxed">
             <li className="flex items-start gap-2">
               <span className=" mt-[2px]">•</span>
               <p>
@@ -263,6 +307,74 @@ function TutorPlaylist() {
               </p>
             </li>
           </ul>
+
+          <AnimatePresence mode="wait">
+            {showPlaylistGuide && (
+              <motion.div
+                key="info"
+                initial={{
+                  opacity: 0,
+                  height: 0,
+                  y: -20,
+                  filter: "blur(8px)",
+                }}
+                animate={{
+                  opacity: 1,
+                  height: "auto",
+                  y: 0,
+                  filter: "blur(0px)",
+                }}
+                exit={{
+                  opacity: 0,
+                  height: 0,
+                  y: -10,
+                  filter: "blur(4px)",
+                }}
+                transition={{
+                  duration: 0.4,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+                className="overflow-hidden  md:hidden"
+              >
+                <ul className="space-y-2 text-xs md:text-sm text-gray-300 md:hidden  leading-relaxed">
+                  <li className="flex items-start gap-2">
+                    <span className=" mt-[2px]">•</span>
+                    <p>
+                      Organize your <span className="">published posts</span>{" "}
+                      into domain-specific playlists.
+                    </p>
+                  </li>
+
+                  <li className="flex items-start gap-2">
+                    <span className=" mt-[2px]">•</span>
+                    <p>
+                      A playlist must contain at least{" "}
+                      <span className="">two posts</span> for meaningful
+                      grouping.
+                    </p>
+                  </li>
+
+                  <li className="flex items-start gap-2">
+                    <span className=" mt-[2px]">•</span>
+                    <p>
+                      Add <span className="">collaborators</span> who
+                      contributed to the content, resources, or development.
+                    </p>
+                  </li>
+
+                  <li className="flex items-start gap-2">
+                    <span className=" mt-[2px]">•</span>
+                    <p>
+                      <span className="text-gray-400">(Optional)</span> Upload a
+                      thumbnail
+                      <span className=""> (1280 × 720 px)</span> for better
+                      visibility.
+                    </p>
+                  </li>
+                </ul>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
 
@@ -683,8 +795,8 @@ function TutorPlaylist() {
                   {/* Header */}
                   <div className="flex items-center gap-2 mb-3">
                     {/* <span className="text-emerald-400 text-lg">📌</span> */}
-                    <h2 className="text-sm md:text-base font-semibold  tracking-wide">
-                      Playlist Guidelines
+                    <h2 className="text-sm md:text-base font-semibold flex items-center gap-2 tracking-wide">
+                      <BsInfoSquare className="text-sm text-emerald-400" /> Playlist Guidelines
                     </h2>
                   </div>
 
@@ -743,27 +855,27 @@ function TutorPlaylist() {
         {/* SUBMIT */}
         {posts?.length > 0 && (
           <div className="lg:col-span-3 p-4 md:hidden md:mt-7 flex justify-start ">
-             <motion.button
-                whileTap={{ scale: 0.97 }}
-                whileHover={{ scale: 1.02 }}
-                onClick={() => {}}
-                type="submit"
-                disabled={loader}
+            <motion.button
+              whileTap={{ scale: 0.97 }}
+              whileHover={{ scale: 1.02 }}
+              onClick={() => {}}
+              type="submit"
+              disabled={loader}
               // className="md:px-5 p-5 py-2 md:py-2 bg-emerald-600/20 hover:bg-emerald-500/20
               //            rounded-md text-xs md:text-sm gap-2 flex items-center justify-center  text-emerald-400 transition-all duration-300 disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed"
-                            className="md:px-5 p-5 py-2 md:py-2 
+              className="md:px-5 p-5 py-2 md:py-2 
                          rounded-lg text-xs gap-2 border border-slate-700 flex items-center justify-center  text-slate-200 transition-all duration-300 disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed"
             >
               <VscGitStashApply className="md:text-base text-emerald-400 text-sm" />{" "}
-            <motion.span
-                  key={loader ? "Creating Playlist..." : "Create Playlist"}
-                  initial={{ opacity: 0, y: 4 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4 }}
-                >
-                  {loader ? "Creating Playlist..." : "Create Playlist"}
-                </motion.span>
-              </motion.button>
+              <motion.span
+                key={loader ? "Creating Playlist..." : "Create Playlist"}
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4 }}
+              >
+                {loader ? "Creating Playlist..." : "Create Playlist"}
+              </motion.span>
+            </motion.button>
           </div>
         )}
       </form>
