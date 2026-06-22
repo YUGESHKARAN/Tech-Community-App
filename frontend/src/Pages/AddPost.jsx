@@ -212,6 +212,10 @@ function AddPost() {
     if (!description.trim()) {
       errors.description = "Post description is required.";
     }
+
+    if (description.length >10000 ) {
+      errors.description = "Post description word limit exceeded.";
+    }
     const finalCategory = category === "Others" ? customCategory : category;
     if (category === "Others" && !customCategory.trim()) {
       errors.finalCategory = "Domain name is required.";
@@ -426,17 +430,17 @@ function AddPost() {
                     whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.96 }}
                     className="
-          flex items-center gap-2
-          px-3 py-1.5
-          rounded-lg
-          bg-gradient-to-r
-          from-purple-600
-          to-blue-500
-          text-white
-          text-sm
-          shadow-lg
-          shadow-purple-500/20
-        "
+                      flex items-center gap-2
+                      px-3 py-1.5
+                      rounded-lg
+                      bg-gradient-to-r
+                      from-purple-600
+                      to-blue-500
+                      text-white
+                      text-sm
+                      shadow-lg
+                      shadow-purple-500/20
+                    "
                   >
                     <motion.img
                       src={glow}
@@ -480,15 +484,15 @@ function AddPost() {
                     whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.96 }}
                     className="
-          flex items-center gap-1.5
-          px-2.5 py-2
-          rounded-lg
-          bg-[#111827]
-          border border-white/[0.06]
-          text-emerald-400
-          text-[11px]
-          font-medium
-        "
+                      flex items-center gap-1.5
+                      px-2.5 py-2
+                      rounded-lg
+                      bg-[#111827]
+                      border border-white/[0.06]
+                      text-emerald-400
+                      text-[11px]
+                      font-medium
+                    "
                   >
                     <motion.span
                       animate={{
@@ -523,7 +527,7 @@ function AddPost() {
 
                 <ul className="space-y-2 text-sm list-disc pl-5">
                   <li>Use a clear and descriptive title</li>
-                  <li>Provide a contextual description</li>
+                  <li>Provide a contextual description with max 10,000 word limit </li>
                   <li>Add useful resources such as links and documents</li>
                   <li>Include a suitable thumbnail poster (1280 × 720 px)</li>
                   <li>
