@@ -5,7 +5,7 @@ const BADGE_DEFINITIONS = {
     label:       "Impact Creator",
     description: "Your posts resonated with the community.",
     thresholds: {
-      bronze: { value: 2,  eventType: 'like_milestone' },
+      bronze: { value: 100,  eventType: 'like_milestone' },
       silver: { value: 500,  eventType: 'like_milestone' },
       gold:   { value: 1000, eventType: 'like_milestone' },
     },
