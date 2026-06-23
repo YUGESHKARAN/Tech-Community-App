@@ -4,6 +4,9 @@ const { Author, Post } = require("../models/blogAuthorSchema");
 const TutorPlayList = require("../models/tutorPlaylistSchema");
 const { BADGE_DEFINITIONS, TIER_ORDER } = require('../utils/badgeDefinitions');
 
+const dotenv = require("dotenv");
+dotenv.config();
+
 /**
  * Check and award badges for a given author.
  * Call this after any action that could trigger a badge:
@@ -18,7 +21,9 @@ const { BADGE_DEFINITIONS, TIER_ORDER } = require('../utils/badgeDefinitions');
  * @param {object} eventContext — { eventId, eventTitle } for the history entry
  */
 
-
+const notificationUrl = process.env.NOTIFICATION_URL || 'http://localhost:5173';
+const sentEmail = process.env.EMAIL_PROVIDER || "";
+const url = `${notificationUrl}/profile`;
 
 const getMilestoneTitle = (badgeId, tier, milestone) => {
   const titles = {
@@ -161,7 +166,7 @@ const checkAndAwardBadges = async (authorEmail, badgeIds, eventContext = {}) => 
 
   try {
     const author = await Author.findOne({ email: { $eq: authorEmail } })
-      .select('badges posts followers email');
+      .select('badges posts followers email notification');
 
     if (!author) return;
 
@@ -246,6 +251,20 @@ const checkAndAwardBadges = async (authorEmail, badgeIds, eventContext = {}) => 
         });
       }
 
+      const badgeLabel = def.label || badgeId;
+      const notificationMessage = `Congrats! You unlocked the ${nextTier} ${badgeLabel} badge for ${newHistoryEntry.eventTitle}.`;
+      const newNotification = {
+        user:        'Achievements 🎊',
+        authorEmail: authorEmail,
+        message:     notificationMessage,
+        url,
+        postId:      resolvedContext.eventId || undefined,
+        timestamp:   new Date(),
+      };
+
+      author.notification = Array.isArray(author.notification) ? author.notification : [];
+      author.notification.push(newNotification);
+
       updated = true;
       console.log(`🏅 Badge awarded: ${badgeId} ${nextTier} → ${authorEmail} (${currentVal} ${threshold.eventType})`);
     }
@@ -253,7 +272,7 @@ const checkAndAwardBadges = async (authorEmail, badgeIds, eventContext = {}) => 
     if (updated) {
       await Author.updateOne(
         { email: { $eq: authorEmail } },
-        { $set: { badges: author.badges } }
+        { $set: { badges: author.badges, notification: author.notification } }
       );
     }
   } catch (err) {
