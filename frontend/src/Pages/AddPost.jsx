@@ -547,44 +547,46 @@ function AddPost() {
                 </h2>
 
                   <button
-            onClick={() => {
-              setShowPostGuide((prev) => !prev);
-            }}
-            className={
-              `
-              group
-              flex items-center gap-1
-              md:hidden
-              px-2 py-1
-              rounded-xl
-              bg-white/[0.03]
-              border border-white/[0.08]
-              hover:bg-white/[0.06]
-              hover:border-emerald-500/20
-              transition-all duration-300
-             
-              text-[10px]`
-            }
-          >
-            <motion.button
-              whileTap={{ scale: 0.96 }}
-              whileHover={{ scale: 1.03 }}
-              // onClick={() => setShowAll(!showAll)}
-            >
-              {showPostGuide ? "Hide" : "Show"}
-            </motion.button>
-            <motion.div
-              animate={{
-                rotate: showPostGuide ? 90 : 0,
-              }}
-              transition={{
-                duration: 0.3,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-            >
-              <ChevronRight size={14} />
-            </motion.div>
-          </button>
+
+                    onClick={() => {
+                      setShowPostGuide((prev) => !prev);
+                    }}
+
+                    className={
+                      `
+                      group
+                      flex items-center gap-1
+                      md:hidden
+                      px-2 py-1
+                      rounded-xl
+                      bg-white/[0.03]
+                      border border-white/[0.08]
+                      hover:bg-white/[0.06]
+                      hover:border-emerald-500/20
+                      transition-all duration-300
+                    
+                      text-[10px]`
+                    }
+                  >
+                    <motion.button
+                      whileTap={{ scale: 0.96 }}
+                      whileHover={{ scale: 1.03 }}
+                      // onClick={() => setShowAll(!showAll)}
+                    >
+                      {showPostGuide ? "Hide" : "Show"}
+                    </motion.button>
+                    <motion.div
+                      animate={{
+                        rotate: showPostGuide ? 90 : 0,
+                      }}
+                      transition={{
+                        duration: 0.3,
+                        ease: [0.22, 1, 0.36, 1],
+                      }}
+                    >
+                      <ChevronRight size={14} />
+                    </motion.div>
+                   </button>
 
                 </div>
                 
@@ -972,7 +974,7 @@ function AddPost() {
                     }}
                     placeholder={PLACEHOLDERS[placeholderIndex]}
                     className="flex-1  min-h-[40px]
-    max-h-[200px] shrink-0 px-4 flex scrollbar-hide  rounded-xl border border-gray-700 py-2 transition-all duration-200 bg-gray-900 text-xs outline-none text-white"
+                     max-h-[200px] shrink-0 px-4 flex scrollbar-hide  rounded-xl border border-gray-700 py-2 transition-all duration-200 bg-gray-900 text-xs outline-none text-white"
                     id=""
                     onChange={(e) => {
                       setPrompt(e.target.value);

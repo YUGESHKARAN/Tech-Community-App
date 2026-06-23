@@ -729,6 +729,7 @@ const scrollToAchievements = () => {
 
                           <button
                             type="button"
+                            disabled={!currentLinkUrl}
                             onClick={() => {
                               const titleToUse =
                                 currentLinkTitle === "Others"
@@ -755,8 +756,19 @@ const scrollToAchievements = () => {
                                   "Please enter a valid http(s) URL.",
                                 );
                               }
+
+                               else if(!currentLinkTitle){
+                                  toast.error(
+                                  "Invalid URL Title",
+                                  "Please enter a valid URL Title.",
+                                );
+                              }
                             }}
-                            className="self-start px-4 py-2 text-xs font-medium rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition-colors"
+                            className={`self-start px-4 py-2 text-xs font-medium border disabled:border-neutral-700 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition-colors 
+                            ${currentLinkUrl
+                            ? "scale-105 animate-pulse border border-emerald-400"
+                            : ""
+                            } disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed`}
                           >
                             {showLinkBox ? "Update Link" : "Add Link"}
                           </button>

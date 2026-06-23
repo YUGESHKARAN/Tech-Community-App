@@ -1174,6 +1174,7 @@ function Announcement() {
                             />
                             <button
                               type="button"
+                              disabled={!currentLinkUrl}
                               onClick={() => {
                                 const titleToUse = currentLinkTitle.trim();
                                 const sanitizedUrl = sanitizeUrl(
@@ -1196,8 +1197,21 @@ function Announcement() {
                                     "Please enter a valid http(s) URL.",
                                   );
                                 }
+                                   else if(!currentLinkTitle){
+                           toast.error(
+                            "Invalid URL Title",
+                            "Please enter a valid URL Title.",
+                          );
+                        }
                               }}
-                              className="px-4 bg-emerald-500/20 w-fit py-1 md:py-2   text-black text-emerald-400  text-xs rounded-md hover:bg-emerald-600/20"
+                              className={`
+                                px-4 bg-emerald-500/20 w-fit py-1 md:py-2   text-black text-emerald-400  text-xs rounded-md hover:bg-emerald-600/20
+                                ${
+                          currentLinkUrl
+                            ? "scale-105 animate-pulse border border-emerald-400"
+                            : ""
+                        }
+                               disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed  `}
                             >
                               Add
                             </button>
@@ -1358,17 +1372,17 @@ function Announcement() {
                           type="submit"
                           disabled={loading}
                           className="w-full py-2.5 bg-emerald-600/20 hover:bg-emerald-500/20
-                   text-emerald-400 text-xs md:text-sm flex items-center justify-center gap-2 rounded-md transition"
+                          text-emerald-400 text-xs md:text-sm flex items-center justify-center gap-2 rounded-md transition"
                         >
                           <VscGitStashApply className="md:text-base text-sm " />{" "}
                           {loading ? "Publishing..." : "Publish"}
                         </button>
                       </form>
                     </div>
-      </motion.div>
-    </motion.div>
-  )}
-</AnimatePresence>
+                      </motion.div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
 
                 {/* DANGER ZONE */}
                 {/* {role === "admin" && (
