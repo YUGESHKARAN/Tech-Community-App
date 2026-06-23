@@ -327,7 +327,7 @@ function ViewEditPost() {
           <div className="grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-6">
             {/* LEFT SIDEBAR */}
             {/* Thumbnail */}
-            <div className="shadow-xl border hidden md:block border-gray-800 rounded-lg bg-[#0f172a]/80 rounded-xl  p-4  md:sticky top-7 self-start ">
+            <div className="shadow-xl border hidden md:block border-gray-800 rounded-lg bg-[#0f172a]/80 rounded-xl  p-4  lg:sticky top-7 self-start ">
               <label className="text-sm text-gray-300 font-medium">
                 Thumbnail <span className="text-red-500">*</span>
               </label>

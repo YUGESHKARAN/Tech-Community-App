@@ -536,7 +536,7 @@ function AddPost() {
 
           <div className="grid grid-cols-1 px-2 md:px-0  lg:grid-cols-[400px_1fr] gap-4 lg:gap-0">
             {/* LEFT COLUMN */}
-            <div className="md:space-y-4 md:sticky top-7  self-start md:col-span-1">
+            <div className="md:space-y-4 lg:sticky top-7  self-start md:col-span-1">
               {/* Description / Tips */}
               <div
                 className={`bg-[#0f172a]/80 lg:w-11/12 border border-emerald-500/20 bg-gradient-to-br from-emerald-500/5 to-transparent rounded-lg md:rounded-xl px-4 ${showPostGuide?'py-6':'py-2'} md:p-6 text-gray-300 ${chatbot ? "hidden lg:block" : "block"}`}
@@ -631,7 +631,7 @@ function AddPost() {
                                   }}
                                   className="overflow-hidden  md:hidden"
                                 >
-                                   <ul className={`space-y-2 text-sm list-disc pl-5 md:block`}>
+                                   <ul className={`space-y-2 text-sm list-disc pl-5 `}>
                                       <li>Use a clear and descriptive title.</li>
                                       <li>Provide a contextual description <span className="bg-gray-600/30 text-xs px-2">(eg: Overview, Tech-Stack used, Sample Code Snippet, System Design Followed, Key Features, Contributions and Conclusion)</span> </li>
                                       <li>Description supports upto 10,000 word limit.</li>
@@ -1264,8 +1264,11 @@ function AddPost() {
                     )}
                   </div>
 
-                  <div className="flex w-full flex-col md:flex-row  gap-2">
-                    {/* TITLE SELECT */}
+                  <div className="flex flex-col gap-2 w-full">
+
+
+                    <div className="flex flex-col md:flex-row gap-2">             
+                   {/* TITLE SELECT */}
                     {currentLinkTitle !== "Others" && (
                       <select
                         value={currentLinkTitle}
@@ -1303,29 +1306,13 @@ function AddPost() {
                       className="md:w-2/3 focus:border focus:border-emerald-500/40 w-full px-4 py-2 rounded-md bg-gray-900 border border-gray-700 outline-none  outline-none text-white text-xs md:text-sm"
                     />
 
+                    </div>
+
+
                     {/* ADD BUTTON */}
                     <button
                       type="button"
-                      // onClick={() => {
-                      //   const titleToUse =
-                      //     currentLinkTitle === "Others"
-                      //       ? customTitle?.trim()
-                      //       : currentLinkTitle.trim();
-
-                      //   if (titleToUse && currentLinkUrl.trim()) {
-                      //     const newLink = {
-                      //       title: titleToUse,
-                      //       url: currentLinkUrl.trim(),
-                      //     };
-
-                      //     setLinks([...links, newLink]);
-
-                      //     setCurrentLinkTitle("");
-                      //     setCurrentLinkUrl("");
-                      //     setCustomTitle("");
-                      //   }
-                      // }}
-
+                      disabled={!currentLinkUrl}
                       onClick={() => {
                         const titleToUse =
                           currentLinkTitle === "Others"
@@ -1347,8 +1334,19 @@ function AddPost() {
                             "Please enter a valid http(s) URL.",
                           );
                         }
+                        else if(!currentLinkTitle){
+                           toast.error(
+                            "Invalid URL Title",
+                            "Please enter a valid URL Title.",
+                          );
+                        }
                       }}
-                      className="px-4 bg-emerald-500/20 w-fit py-1 md:py-2   text-black text-emerald-400  text-xs rounded-md hover:bg-emerald-600/20 transition-all duration-300"
+                        className={`md:flex self-start px-5 py-2 items-center justify-center border disabled:border-neutral-700 bg-emerald-500/20 text-emerald-400 text-xs rounded-md hover:bg-emerald-600/20 transition-all duration-300 ${
+                          currentLinkUrl
+                            ? "scale-105 animate-pulse border border-emerald-400"
+                            : ""
+                        } disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed`}
+                      // className={`px-4 bg-emerald-500/20 w-fit py-1 md:py-2   text-black text-emerald-400  text-xs rounded-md hover:bg-emerald-600/20 transition-all duration-600 ${currentLinkUrl && 'scale-105 animate-pulse border border-emerald-400'}`}
                     >
                       Add
                     </button>
