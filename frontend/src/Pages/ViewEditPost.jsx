@@ -594,7 +594,11 @@ function ViewEditPost() {
                   )}
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-2">
+                <div className="flex flex-col gap-2 w-full">
+
+                  <div className="flex flex-col md:flex-row gap-2">
+
+              
                   {currentLinkTitle !== "Others" && (
                     <select
                       value={currentLinkTitle}
@@ -638,57 +642,48 @@ function ViewEditPost() {
                     className="flex-1 focus:border focus:border-emerald-500/40 w-full px-4 py-2 rounded-md bg-gray-900 border border-gray-700 outline-none  outline-none text-white text-sm"
                   />
 
+                  </div>
+
                   <button
                     type="button"
-                    // onClick={() => {
-                    //   const titleToUse =
-                    //     currentLinkTitle === "Others"
-                    //       ? customTitle?.trim()
-                    //       : currentLinkTitle.trim();
-
-                    //   if (titleToUse && currentLinkUrl.trim()) {
-                    //     setLinks([
-                    //       ...links,
-                    //       {
-                    //         title: titleToUse,
-                    //         url: currentLinkUrl.trim(),
-                    //         id: linkId,
-                    //       },
-                    //     ]);
-                    //     setCurrentLinkTitle("");
-                    //     setCurrentLinkUrl("");
-                    //     setCustomTitle("");
-                    //     setLinkId(null);
-                    //   }
-                    // }}
-
-                     onClick={() => {
-                              const titleToUse =
-                                currentLinkTitle === "Others"
-                                  ? customTitle?.trim()
-                                  : currentLinkTitle.trim();
-                              const sanitizedUrl = sanitizeUrl(
-                                currentLinkUrl.trim(),
-                              );
-                              if (titleToUse && sanitizedUrl) {
-                                const newLink = {
-                                  title: titleToUse,
-                                  url: sanitizedUrl,
-                                  id: linkId,
-                                };
-                                setLinks([...links, newLink]);
-                                setCurrentLinkTitle("");
-                                setCurrentLinkUrl("");
-                                setCustomTitle("");
-                                setLinkId(null);
-                              } else if (titleToUse) {
-                                toast.error(
-                                  "Invalid URL",
-                                  "Please enter a valid http(s) URL.",
-                                );
-                              }
-                            }}
-                    className="px-4 bg-emerald-500/20 w-fit py-1 md:py-2   text-black text-emerald-400  text-xs rounded-md hover:bg-emerald-600/20 transition-all duration-300"
+                    disabled={!currentLinkUrl}
+                    onClick={() => {
+                        const titleToUse =
+                          currentLinkTitle === "Others"
+                            ? customTitle?.trim()
+                            : currentLinkTitle.trim();
+                        const sanitizedUrl = sanitizeUrl(
+                          currentLinkUrl.trim(),
+                        );
+                        if (titleToUse && sanitizedUrl) {
+                          const newLink = {
+                            title: titleToUse,
+                            url: sanitizedUrl,
+                            id: linkId,
+                          };
+                          setLinks([...links, newLink]);
+                          setCurrentLinkTitle("");
+                          setCurrentLinkUrl("");
+                          setCustomTitle("");
+                          setLinkId(null);
+                        } else if (titleToUse) {
+                          toast.error(
+                            "Invalid URL",
+                            "Please enter a valid http(s) URL.",
+                          );
+                        }
+                       else if(!titleToUse){
+                           toast.error(
+                            "Invalid URL Title",
+                            "Please enter a valid URL Title.",
+                          );
+                        }
+                  }}
+                    className={`px-4 bg-emerald-500/20 w-fit py-1 md:py-2   text-black text-emerald-400  text-xs rounded-md hover:bg-emerald-600/20 transition-all duration-300
+                      ${currentLinkUrl
+                            ? "scale-105 animate-pulse border border-emerald-500"
+                            : ""
+                        } disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed`}
                   >
                     Add
                   </button>

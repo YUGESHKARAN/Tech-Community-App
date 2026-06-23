@@ -1197,7 +1197,7 @@ function Announcement() {
                                     "Please enter a valid http(s) URL.",
                                   );
                                 }
-                                   else if(!currentLinkTitle){
+                                   else if(!titleToUse){
                            toast.error(
                             "Invalid URL Title",
                             "Please enter a valid URL Title.",
@@ -1208,7 +1208,7 @@ function Announcement() {
                                 px-4 bg-emerald-500/20 w-fit py-1 md:py-2   text-black text-emerald-400  text-xs rounded-md hover:bg-emerald-600/20
                                 ${
                           currentLinkUrl
-                            ? "scale-105 animate-pulse border border-emerald-400"
+                            ? "scale-105 animate-pulse border border-emerald-500"
                             : ""
                         }
                                disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed  `}

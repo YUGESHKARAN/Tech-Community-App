@@ -757,7 +757,7 @@ const scrollToAchievements = () => {
                                 );
                               }
 
-                               else if(!currentLinkTitle){
+                               else if(!titleToUse){
                                   toast.error(
                                   "Invalid URL Title",
                                   "Please enter a valid URL Title.",
@@ -766,7 +766,7 @@ const scrollToAchievements = () => {
                             }}
                             className={`self-start px-4 py-2 text-xs font-medium border disabled:border-neutral-700 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition-colors 
                             ${currentLinkUrl
-                            ? "scale-105 animate-pulse border border-emerald-400"
+                            ? "scale-105 animate-pulse border border-emerald-500"
                             : ""
                             } disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed`}
                           >
