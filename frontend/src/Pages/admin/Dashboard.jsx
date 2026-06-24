@@ -553,7 +553,7 @@ function Dashboard() {
           {/* ── ZONE 4: Users Tables ──────────────────────────────────── */}
           <section 
           id="users"
-          className="space-y-4">
+          className="space-y-4 scroll-mt-24">
             <div>
               <h2 className="md:text-2xl text-xl font-semibold text-emerald-400">
                 Users
