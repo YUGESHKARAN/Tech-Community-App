@@ -756,7 +756,7 @@ function NavBar() {
 
                 {/* Content */}
                 <div className="flex relative  flex-col flex-1 min-w-0">
-                  <p className="text-sm text-white font-medium truncate">
+                  <p className="text-sm text-white font-medium line-clamp-1 w-[170px]  md:w-[200px] truncate">
                     {data.user}
                   </p>
 
