@@ -105,3 +105,11 @@ body {
   100% { transform: translateX(100%); }
 }
 
+@layer base {
+  input[type="password"]::-ms-reveal,
+  input[type="password"]::-ms-clear,
+  input::-ms-reveal,
+  input::-ms-clear {
+    display: none;
+  }
+}
