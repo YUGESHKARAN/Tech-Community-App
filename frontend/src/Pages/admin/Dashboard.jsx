@@ -34,6 +34,7 @@ import { getItem, storeItem } from "../../utils/encode";
 import highlightText from "../../hooks/highlightText";
 import Fuse from "fuse.js";
 import LogMonitoringPage from "./LogMonitoringPage";
+import BadgeIcons from "../../components/achievements/BadgeIcons";
 
 // ── Main Dashboard ─────────────────────────────────────────────────────────────
 function Dashboard() {
@@ -73,10 +74,10 @@ function Dashboard() {
     hasMore: studentsHasMore,
   } = useGetStudents(email);
 
-   console.log("statsSummary",statsSummary)
+  //  console.log("statsSummary",statsSummary)
   //  console.log("communities",communities)
   //  console.log("postsByMonth",postsByMonth);
-  // console.log("topContributors", topContributors);
+  console.log("topContributors", topContributors);
   // console.log("contributors", contributors);
   // console.log("students", students);
 
@@ -503,12 +504,21 @@ function Dashboard() {
                           />
                         )}
 
-                        <span className="text-xs  flex-1 font-semibold text-gray-200 truncate">
-                          {u.name}
-                          <p className="md:text-[10px] hidden md:block text-[9px] text-gray-500 truncate">
+                        <span className="text-xs flex-1 font-semibold text-gray-200 truncate">
+                          <p className="truncate line-clamp-1 w-[150px] md:w-[300px]">
+                            {u.name}
+                          </p>
+                          
+                          <p className="md:text-[10px]  hidden  md:block text-[9px] text-gray-500 truncate">
                             {u.email}
                           </p>
                         </span>
+                        
+                        <BadgeIcons
+                          badges={u?.badges}
+                          parentClass="static  -space-x-1.5"
+                          shieldClassName="w-4 h-4 md:h-7 md:w-7"
+                        />
                         <span className="text-[10px] text-emerald-400 font-medium">
                           {u.postsCount} posts
                         </span>

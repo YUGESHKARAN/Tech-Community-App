@@ -377,6 +377,7 @@ export default function AITechAssistant({
                       <div className="prose prose-invert max-w-none overflow-x-auto scrollbar-hide [&_code]:break-all  max-w-none text-sm leading-loose space-y-2">
                         <ReactMarkdown
                           remarkPlugins={[remarkGfm, remarkBreaks]}
+                        
                           components={{
                             p: ({ children }) => (
                               <p className="mb-3 text-white text-sm leading-relaxed font-normal text-neutral-300">
@@ -398,6 +399,11 @@ export default function AITechAssistant({
                                 {children}
                               </strong>
                             ),
+                            code:({children})=>(
+                              <code className="scrollbar-hide">
+                                {children}
+                              </code>
+                            )
                           }}
                         >
                           {msg.content}

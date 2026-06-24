@@ -909,6 +909,7 @@ const getTopContributors = async (req, res) => {
           playlistCount:  1,
           followerscount: 1,
           followingcount: 1,
+          badges:         1,
         },
       },
       { $sort: { postsCount: -1, followerscount: -1, followingcount: -1 } },
