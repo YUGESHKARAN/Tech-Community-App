@@ -2,8 +2,8 @@ const ProfilePageSkeleton = () => {
   return (
     <div className="bg-gray-900 text-white max-w-[1800px] mx-auto min-h-screen animate-pulse">
       {/* Header */}
-      <div className="w-full px-4 md:px-6 pt-2 md:pt-6 pb-8">
-        <div className="flex justify-between items-center mb-8">
+      <div className="w-full px-4 md:px-6 pt-2 md:pt-6 md:pb-8">
+        <div className="flex justify-between items-center md:mb-8">
           <div>
             <div className="h-3 w-20 bg-gray-700 rounded mb-2" />
             <div className="h-6 w-40 bg-gray-700 rounded" />
@@ -12,7 +12,7 @@ const ProfilePageSkeleton = () => {
         </div>
 
         {/* Layout */}
-        <div className="grid md:grid-cols-[300px_1fr] gap-4">
+        <div className="grid md:grid-cols-[300px_1fr] mt-4 md:mt-0 md:gap-4">
 
           {/* LEFT PROFILE CARD */}
           <div className="bg-gray-800/40 border border-white/[0.06] rounded-2xl p-6 text-center">
@@ -45,7 +45,7 @@ const ProfilePageSkeleton = () => {
           </div>
 
           {/* RIGHT FORM */}
-          <div className="bg-gray-800/40 border grid md:grid-cols-2 gap-4 border-white/[0.06] rounded-2xl p-6 md:p-8 space-y-4 md:space-y-6">
+          <div className="bg-gray-800/40 border grid md:grid-cols-2 gap-4 border-white/[0.06] rounded-2xl p-6 mt-4 md:p-8 space-y-4 md:space-y-6">
             <div>
             {/* Input fields */}
             {[1, 2, 3, 4].map((_, i) => (

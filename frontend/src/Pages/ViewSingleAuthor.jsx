@@ -148,7 +148,7 @@ const scrollToAchievements = () => {
      <div className="w-full max-w-[1800px] mx-auto min-h-screen mx-auto px-4 md:px-6 pt-2 md:pt-6 pb-8 pb-24">
 
         {/* ── Page header ──────────────────────────────────────── */}
-        <div className="mb-8 px-1">
+        <div className="md:mb-8 px-1">
           <p className="text-[11px] font-medium tracking-widest uppercase text-gray-300 mb-0.5">
             Account
           </p>
@@ -158,11 +158,11 @@ const scrollToAchievements = () => {
         </div>
 
         {/* ── Two-column layout ─────────────────────────────────── */}
-        <div className="grid md:grid-cols-[300px_1fr] gap-4 items-start">
+        <div className="grid md:grid-cols-[300px_1fr] mt-4 md:mt-0 gap-4 items-start">
 
           {/* ══ LEFT — Profile card ══════════════════════════════ */}
           <div className="bg-gray-900/50 relative border border-white/[0.09] md:border-white/[0.1] rounded-2xl p-4  text-center">
-
+ 
             {/* Avatar */}
             <div className="relative w-fit mx-auto mt-3 md:mb-3 mb-4">
               {author.profile ? (

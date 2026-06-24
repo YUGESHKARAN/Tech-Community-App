@@ -245,7 +245,7 @@ const scrollToAchievements = () => {
         <NavBar />
 
         {!loader ? (
-          <div className="w-full min-h-screen max-w-[1800px] mx-auto px-4 md:px-6 pt-2  md:pt- pb-8 pb-24">
+          <div className="w-full min-h-screen max-w-[1800px] mx-auto px-4 md:px-6 pt-2   pb-8 pb-24">
             {/* ── Page header ──────────────────────────────────────── */}
             {/* <div className="flex items-center justify-between mb-0 md:mb-8 px-1">
               <div>
@@ -343,13 +343,13 @@ const scrollToAchievements = () => {
     </motion.button>
   </div>
 </div>
-
-            
+ 
+             
 
             {/* ── Two-column layout ─────────────────────────────────── */}
-            <div className="grid md:grid-cols-[300px_1fr] gap-4 mb-3 items-start">
+            <div className="grid md:grid-cols-[300px_1fr]  md:gap-4 mt-4 md:mt-0 mb-3 items-start">
               {/* ══ LEFT — Profile card ══════════════════════════════ */}
-            <div className="md:sticky top-6 relative self-start bg-gray-900/50 border md:border-white/[0.1] border-white/[0.09] rounded-2xl p-6 pb-3 text-center">
+            <div className="md:sticky md:top-6 relative self-start bg-gray-900/50 border md:border-white/[0.1] border-white/[0.09] rounded-2xl mt-0 p-6 pb-3 text-center">
                 {/* Avatar */}
                 <div className="relative w-fit mx-auto mt-3 md:mb-3 mb-4">
                   {previewImage ? (
@@ -555,10 +555,10 @@ const scrollToAchievements = () => {
              
              
 
-              {/* ══ RIGHT — Form ═════════════════════════════════════ */}
+              {/* ══ RIGHT — Form ═ ════════════════════════════════════ */}
               <form
                 onSubmit={handleSubmit}
-                className="bg-gray-900/50 border border-white/[0.09] md:border-white/[0.1] rounded-2xl mt-6 md:mt-0  p-6 md:p-8 md:pb-6 "
+                className="bg-gray-900/50 border border-white/[0.09] md:border-white/[0.1] rounded-2xl mt-4 md:mt-0  p-6 md:p-8 md:pb-6 "
               >
                 <div className="grid md:grid-cols-2 gap-6">
                   {/* ── Left form column ────────────────────────────── */}
