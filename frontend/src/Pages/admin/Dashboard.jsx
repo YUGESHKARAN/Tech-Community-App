@@ -209,7 +209,7 @@ function Dashboard() {
                   accent="#3b82f6"
                   change="5.1%"
                   changePositive={true}
-                  to={'/control#users'}
+                  to={'#users'}
                 />
 
                 <KPICard
@@ -551,7 +551,9 @@ function Dashboard() {
           </section>
 
           {/* ── ZONE 4: Users Tables ──────────────────────────────────── */}
-          <section className="space-y-4">
+          <section 
+          id="users"
+          className="space-y-4">
             <div>
               <h2 className="md:text-2xl text-xl font-semibold text-emerald-400">
                 Users
