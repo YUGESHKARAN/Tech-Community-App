@@ -6,13 +6,13 @@ const ProfileViewSkeleton = ({role}) => {
       <div className="w-full min-h-screen px-4 md:px-6  pt-2 md:pt-6 pb-8 pb-24">
 
         {/* Header */}
-        <div className="mb-8 px-1">
+        <div className="md:mb-8 px-1">
           <div className="h-3 w-20 bg-gray-700 rounded mb-2" />
           <div className="h-7 w-48 bg-gray-700 rounded" />
         </div>
 
         {/* Layout */}
-        <div className="grid md:grid-cols-[300px_1fr] gap-4">
+        <div className="grid mt-4 md:mt-0 md:grid-cols-[300px_1fr] gap-4">
 
           {/* LEFT CARD */}
           <div className="bg-gray-800/40 border border-white/[0.06] rounded-2xl p-4 text-center">
