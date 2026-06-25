@@ -729,15 +729,17 @@ function NavBar() {
               key={index}
               className="group relative px-4 py-3 md:hover:bg-gray-800   transition duration-200"
             >
-              <Link
+              <div
                 onClick={() => {
                   setShowNotification(false);
                 }}
-                to={data.url}
+                // to={data.url}
                 className="flex gap-3  items-start"
               >
                 {/* Avatar */}
-                <div className="relative flex-shrink-0">
+                <Link
+                  to={data.url}
+                  className="relative flex-shrink-0">
                   {data.profile ? (
                     <img
                       src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.profile}`}
@@ -752,23 +754,27 @@ function NavBar() {
 
                   {/* Activity indicator */}
                   <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 rounded-full border border-gray-900"></span>
-                </div>
+                </Link>
 
                 {/* Content */}
                 <div className="flex relative  flex-col flex-1 min-w-0">
-                  <p className="text-sm text-white font-medium line-clamp-1 w-[170px]  md:w-[200px] truncate">
+                  < Link
+                  to={data.url}
+                   className="text-sm text-white font-medium line-clamp-1 w-[170px]  md:w-[200px] truncate">
                     {data.user}
-                  </p>
+                  </Link>
 
-                  <p className="text-xs  md:mt-1 line-clamp-3 text-gray-400 ">
+                  <Link
+                  to={data.url}
+                   className="text-xs  md:mt-1 line-clamp-3 text-gray-400 ">
                     {data.message || "You got a notification"}
-                  </p>
+                  </Link>
 
                   <span className="text-[10px] text-gray-500 mt-1">
                     {getTimeAgo(data.timestamp)}
                   </span>
                 </div>
-              </Link>
+              </div>
 
               {/* Delete Button */}
               <button
