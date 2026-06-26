@@ -135,7 +135,7 @@ useEffect(() => {
       ref={commentBoxRef}
       className={`${
         viewComments ? "h-full  md:h-96 overflow-y-auto" : " overflow-y-hidden"
-      } flex flex-col scrollbar-hide transition-all duration-300`}
+      } flex flex-col scrollbar-hide overflow-x-hidden transition-all duration-300`}
     >
       {messages.length > 0 && !msgLoading && 
 

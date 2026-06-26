@@ -722,7 +722,7 @@ function AddPost() {
 
                     <div
                       ref={containerRef}
-                      className="flex-1 overflow-y-auto px-4 pt-6 pb-3 md:p-6 md:pb-4 emerald-scrollbar space-y-4 h-[600px] pr-2"
+                      className="flex-1 overflow-y-auto overflow-x-hidden px-4 pt-6 pb-3 md:p-6 md:pb-4 emerald-scrollbar space-y-4 h-[600px] pr-2"
                     >
                       {messages.map((msg, idx) => (
                         <div
@@ -892,7 +892,7 @@ function AddPost() {
 
                 <div
                   ref={containerRef}
-                  className="flex-1 overflow-y-auto px-4 pt-6 pb-3 md:p-6 md:pb-4 emerald-scrollbar space-y-4 h-[600px] pr-2"
+                  className="flex-1 overflow-y-auto overflow-x-hidden px-4 pt-6 pb-3 md:p-6 md:pb-4 emerald-scrollbar space-y-4 h-[600px] pr-2"
                 >
                   {messages.map((msg, idx) => (
                     <div
