@@ -588,7 +588,7 @@ const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
           )}
 
 
-          <div className="flex overflow-x-auto scrollbar-hide items-center sm:grid  sm:grid-cols-2 xl:grid-cols-3  3xl:grid-cols-4 max-h-[700px] emerald-scrollbar md:overflow-y-auto gap-3 px-2 py-4 pb-0 md:p-4 gap-3 md:gap-5">
+          <div className="flex overflow-x-auto md:overflow-x-hidden  overflow-y-hidden scrollbar-hide items-center sm:grid  sm:grid-cols-2 xl:grid-cols-3  3xl:grid-cols-4 max-h-[700px] emerald-scrollbar md:overflow-y-auto gap-3 px-2 py-4 pb-0 md:p-4 gap-3 md:gap-5">
             {posts?.map((data) => {
                const selIndex = postIds.indexOf(data._id);
               const isSelected = selIndex !== -1;
