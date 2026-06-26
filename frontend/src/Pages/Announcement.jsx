@@ -34,6 +34,7 @@ import { Plus, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { twMerge } from "tailwind-merge";
 import clsx from "clsx";
+import formatCount from "../utils/NumberConversion";
 
 function Announcement() {
   const username = localStorage.getItem("username");
@@ -1486,8 +1487,8 @@ function Announcement() {
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-400">Inbox</span>
 
-                  <span className="text-sm font-medium text-white">
-                    {announcement?.length > 0 ? announcement.length : "Empty"}
+                  <span className="md:text-sm text-xs font-medium text-white">
+                    {announcement?.length > 0 ? formatCount(announcement.length) : "Empty"}
                   </span>
                 </div>
               </div>
