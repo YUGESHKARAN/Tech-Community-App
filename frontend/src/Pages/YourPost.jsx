@@ -26,6 +26,7 @@ import user from "../images/user.png";
 import { getItem } from "../utils/encode";
 import empty_state_post from "../assets/empty_state_post.png";
 import RenderTextNoMarkdown from "../components/RenderTextNoMarkdown";
+import formatCount from "../utils/NumberConversion";
 
 function YourPost() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -110,15 +111,15 @@ function YourPost() {
   };
 
   // Track post views
-  const postViews = async (authorEmail, postId) => {
-    try {
-      await axiosInstance.put(`/blog/posts/views/${authorEmail}/${postId}`, {
-        emailAuthor: email,
-      });
-    } catch (err) {
-      console.error("Error updating views:", err);
-    }
-  };
+  // const postViews = async (authorEmail, postId) => {
+  //   try {
+  //     await axiosInstance.put(`/blog/posts/views/${authorEmail}/${postId}`, {
+  //       emailAuthor: email,
+  //     });
+  //   } catch (err) {
+  //     console.error("Error updating views:", err);
+  //   }
+  // };
 
   // share post with social media
   const sharePost = async (title, email, postId) => {
@@ -357,7 +358,7 @@ function YourPost() {
                   </Link>
 
                   <div className="leading-tight">
-                    <p className="text-sm font-semibold text-white">
+                    <p className="text-sm font-semibold max-w-[230px] md:max-w-[200px] truncate line-clamp-1 text-white">
                       {data.authorName}
                     </p>
                     <p className="text-xs text-gray-400">
@@ -374,7 +375,7 @@ function YourPost() {
                 >
                   <Link
                     to={`/viewpage/${data.authorEmail}/${data._id}`}
-                    onClick={() => postViews(data.authorEmail, data._id)}
+                    // onClick={() => postViews(data.authorEmail, data._id)}
                   >
                     <img
                       src={
@@ -438,7 +439,7 @@ function YourPost() {
                         <BiLike className="text-xs" />
                       )}
                       <span className="text-xs">
-                        {data.likes?.length || ""}
+                        {formatCount(data.likes?.length) || ""}
                       </span>
                     </button>
 
@@ -454,10 +455,10 @@ function YourPost() {
                     
                     <Link
                       to={`/viewpage/${data.authorEmail}/${data._id}`}
-                      onClick={() => postViews(data.authorEmail, data._id)}
+                      // onClick={() => postViews(data.authorEmail, data._id)}
                       className="flex items-center gap-1 text-xs text-gray-500"
                     >
-                      <span className="text-xs">{data.views.length}</span> views
+                      <span className="text-xs">{formatCount(data.views.length)}</span> views
                     </Link>
                   </div>
 

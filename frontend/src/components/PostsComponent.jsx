@@ -130,7 +130,7 @@ function PostsComponent({ posts, filteredPosts, loading, hasMore, debouncedSearc
             </Link>
 
             <div className="leading-tight">
-              <p className="text-sm font-semibold text-white">
+              <p className="text-sm font-semibold max-w-[270px] md:max-w-[240px] truncate line-clamp-1 text-white">
                 {/* {data.authorName} */}
                 {highlightText(data.authorName, debouncedSearch)}
               </p>

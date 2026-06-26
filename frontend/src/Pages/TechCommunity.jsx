@@ -11,6 +11,7 @@ import { use } from "react";
 import useGetCommunityAnalytics from "../hooks/useGetCommunityAnalytics";
 import { getItem } from "../utils/encode";
 import { MdCardMembership, MdOutlineCardMembership } from "react-icons/md";
+import formatCount from "../utils/NumberConversion";
 function TechCommunity() {
   const [posts, setPosts] = useState([]);
 
@@ -211,10 +212,10 @@ function TechCommunity() {
                           className="flex flex-col items-center justify-center bg-white/[0.03] border border-white/[0.05] rounded-lg py-2.5 px-1"
                         >
                           <span
-                            className="text-lg font-bold leading-none"
+                            className="text-lg font-semibold md:font-bold leading-none"
                             style={{ color: accent.from }}
                           >
-                            {stat.value}
+                            {formatCount(stat.value)}
                           </span>
                           <span className="text-[10px] text-gray-500 mt-1">
                             {stat.label}

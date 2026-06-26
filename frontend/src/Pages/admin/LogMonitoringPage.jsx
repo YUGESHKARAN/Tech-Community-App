@@ -7,6 +7,7 @@ import highlightText from "../../hooks/highlightText";
 import axiosInstance from "../../instances/Axiosinstances";
 import toast from "../../components/toaster/Toast";
 import LogTableSkeleton from "../../components/loaders/controls/LogTableSkeleton";
+import formatCount from "../../utils/NumberConversion";
 
 
 const STATIC_LOGS = [
@@ -335,7 +336,7 @@ function LogMonitoringPage() {
             className="bg-white/[0.03] flex items-center justify-center gap-2 md:gap-3 rounded-md px-2 md:px-3 py-1"
           >
             <p className="text-xs text-gray-400 capitalize">{key}</p>
-            <p className="text-xs font-semibold ">{value}</p>
+            <p className="text-xs font-semibold ">{formatCount(value)}</p>
           </div>
         ))}
       </div>

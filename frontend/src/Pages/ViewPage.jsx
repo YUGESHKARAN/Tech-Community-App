@@ -39,6 +39,7 @@ import RenderTextNoMarkdown from "../components/RenderTextNoMarkdown.jsx";
 import logoicon from "../assets/assistant_1.png";
 import { motion, AnimatePresence } from "framer-motion";
 import BadgeIcons from "../components/achievements/BadgeIcons.jsx";
+import formatCount from "../utils/NumberConversion.jsx";
 
 function ViewPage() {
   const user = getItem("username");
@@ -644,7 +645,7 @@ function ViewPage() {
                     </p>
                     <p className=" text-[10px] md:text-xs text-gray-400">
                       {singlePostData.views?.length &&
-                        `Views ${singlePostData.views.length}`}
+                        `Views ${formatCount(singlePostData.views.length)}`}
                     </p>
                   </div>
                 </div>
@@ -699,7 +700,7 @@ function ViewPage() {
                       Discussions
                       {messages.length > 0 && (
                         <span className="text-[10px] ml-2 font-medium bg-[#21262d] text-gray-400 border border-[#30363d] px-2 py-0.5 rounded-full">
-                          {messages.length}
+                          {formatCount(messages.length)}
                         </span>
                       )}
                     </span>
@@ -724,7 +725,7 @@ function ViewPage() {
                       <BiLike className="text-sm text-emerald-400" />
                     )}
                     <span className="text-[10px] md:text-xs text-gray-300 font-medium">
-                      {singlePostData.likes?.length || " "}
+                      {formatCount(singlePostData.likes?.length) || " "}
                     </span>
                   </button>
 
@@ -1083,7 +1084,7 @@ function ViewPage() {
                     </h3>
                     {messages.length > 0 && (
                       <span className="text-[10px] font-medium bg-[#21262d] text-gray-400 border border-[#30363d] px-2 py-0.5 rounded-full">
-                        {messages.length}
+                        {formatCount(messages.length)}
                       </span>
                     )}
                   </div>
@@ -1179,7 +1180,7 @@ function ViewPage() {
                   Participants
                 </p>
                 <div className="mt-4 gap-1 flex flex-wrap   items-center ">
-                  {participants?.slice(0, 12).map((p) => (
+                  {participants?.slice(0, 3).map((p) => (
                     <Link to={`/viewProfile/${p?.email}`} className="">
                       {!p.profile ? (
                         <div
@@ -1198,9 +1199,9 @@ function ViewPage() {
                     </Link>
                   ))}
 
-                  {participants.length > 12 && (
+                  {participants.length > 3 && (
                     // <p className="text-[17px] cursor-pointer hover:text-gray-400/90  font-semibold ml-3 text-gray-500 transition-all duration-500">
-                    //   +{totalParticipants - 12}
+                    //   +{totalParticipants - 2}
                     // </p>
                     <motion.button
                       whileHover={{ scale: 1.08 }}
@@ -1221,7 +1222,7 @@ function ViewPage() {
                       transition-all
                     "
                     >
-                      +{totalParticipants - 12}
+                      +{formatCount(totalParticipants - 3) }
                     </motion.button>
                   )}
                 </div>
@@ -1603,7 +1604,7 @@ function ViewPage() {
                     </h3>
 
                     <p className="text-[10px] font-semibold text-gray-500 mt-1">
-                      {participants.length} involved in discussion
+                      {formatCount(participants.length)} involved in discussion
                     </p>
                   </div>
 
@@ -1655,7 +1656,7 @@ function ViewPage() {
                               w-6 h-6
                               rounded-full
                               flex items-center justify-center
-                              md:text-sm text-[10px] font-semibold md:font-bold
+                             text-[10px] font-semibold 
                               text-white
                               shrink-0
                             "

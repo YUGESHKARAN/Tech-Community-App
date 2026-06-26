@@ -346,7 +346,7 @@ export default function AITechAssistant({
         {/* Timeline */}
         <div
           ref={containerRef}
-          className="flex-1 overflow-y-auto scrollbar-hide p-4 md:pt-0 space-y-8"
+          className="flex-1 overflow-y-auto  scrollbar-hide p-4 md:pt-0 space-y-8"
         >
           {/* Messages */}
           {messages.map((msg, idx) => (

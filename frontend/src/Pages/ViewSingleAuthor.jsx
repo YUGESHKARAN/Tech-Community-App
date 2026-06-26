@@ -16,6 +16,7 @@ import empty_state_author from "../assets/author_not_found_3.png"
 import AchievementSection from "../components/Achievements";
 import BadgeIcons from "../components/achievements/BadgeIcons";
 import { motion } from "framer-motion";
+import formatCount from "../utils/NumberConversion";
 
 function ViewSingleAuthor() {
   const { email } = useParams();
@@ -230,7 +231,7 @@ const scrollToAchievements = () => {
                 <div className="flex justify-center gap-px mb-3 rounded-xl overflow-hidden border border-white/[0.06]">
                   {author.role === "coordinator" && followers?.length > 0 && (
                     <div className="flex-1 py-3 bg-white/[0.02]">
-                      <p className="text-base font-medium text-white">{followers?.length ?? 0}</p>
+                      <p className="text-base font-medium text-white">{formatCount(followers?.length ?? 0)}</p>
                       <p className="text-[10px] text-gray-400 mt-0.5">Followers</p>
                     </div>
                   )}
@@ -238,7 +239,7 @@ const scrollToAchievements = () => {
                   {author.role !== "student" && posts.length > 0 ? (
                     <Link to={`/singleAuthorPosts/${email}`} className="flex-1">
                       <div className="py-3 bg-white/[0.02] hover:bg-emerald-500/5 transition-colors h-full">
-                        <p className="text-base font-medium text-emerald-400">{posts.length}</p>
+                        <p className="text-base font-medium text-emerald-400">{formatCount(posts.length)}</p>
                         <p className="text-[10px] text-gray-400 mt-0.5">Posts</p>
                       </div>
                     </Link>
@@ -251,7 +252,7 @@ const scrollToAchievements = () => {
 
                   {following?.length > 0 && (
                     <div className="flex-1 py-3 bg-white/[0.02]">
-                      <p className="text-base font-medium text-white">{following?.length ?? 0}</p>
+                      <p className="text-base font-medium text-white">{formatCount(following?.length ?? 0)}</p>
                       <p className="text-[10px] text-gray-400 mt-0.5">Following</p>
                     </div>
                   )}

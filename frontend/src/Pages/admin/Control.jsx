@@ -17,6 +17,7 @@ import { getItem } from "../../utils/encode";
 import highlightText from "../../hooks/highlightText";
 import Fuse from "fuse.js";
 import { BsFilterLeft } from "react-icons/bs";
+import formatCount from "../../utils/NumberConversion";
 // import Footer from "../../ui/Footer";
 function Control() {
   const [authors, setAuthors] = useState([]);
@@ -571,7 +572,8 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
                       : "text-gray-400 text-xs md:text-sm mt-2"
                   }`}
                 >
-                  Followers: {author.followerscount}
+                  {/* Followers: {author.followerscount} */}
+                  Followers: {formatCount(author.followerscount)}
                 </p>
                 <p
                   className={`${
@@ -580,7 +582,8 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
                       : "text-gray-400 text-xs md:text-sm mt-2"
                   }`}
                 >
-                  Posts: {author.postsCount}
+                  {/* Posts: {author.postsCount} */}
+                  Posts: {formatCount(author.postsCount)}
                 </p>
               </div>
 
@@ -759,7 +762,8 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
                       : "text-gray-400 text-xs md:text-sm mt-2"
                   }`}
                 >
-                  Followers: {author.followerscount}
+                  {/* Followers: {author.followerscount} */}
+                  Followers: {formatCount(author.followerscount)}
                 </p>
                 <p
                   className={`${
@@ -768,7 +772,8 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
                       : "text-gray-400 text-xs md:text-sm mt-2"
                   }`}
                 >
-                  Posts: {author.postsCount}
+                  {/* Posts: {author.postsCount} */}
+                  Posts: {formatCount(author.postsCount)}
                 </p>
               </div>
 

@@ -21,6 +21,7 @@ import ProfilePageSkeleton from "../components/loaders/ProfilePageSkeleton";
 import AchievementSection from "../components/Achievements";
 import BadgeIcons from "../components/achievements/BadgeIcons";
 import { motion } from "framer-motion";
+import formatCount from "../utils/NumberConversion";
 function ProfilePage() {
   const { logout } = useAuth();
   // const email = localStorage.getItem("email");
@@ -508,7 +509,7 @@ const scrollToAchievements = () => {
                         followers?.length > 0 && (
                           <div className="flex-1 py-3 bg-white/[0.02]">
                             <p className="text-base font-medium text-white">
-                              {followers?.length ?? 0}
+                              {formatCount(followers?.length ?? 0)}
                             </p>
                             <p className="text-[10px] text-gray-400 mt-0.5">
                               Followers
@@ -520,7 +521,7 @@ const scrollToAchievements = () => {
                         <Link to="/yourposts" className="flex-1">
                           <div className="py-3 bg-white/[0.02] hover:bg-emerald-500/5 transition-colors h-full">
                             <p className="text-base font-medium text-emerald-400">
-                              {posts.length}
+                              {formatCount(posts.length)}
                             </p>
                             <p className="text-[10px] text-gray-400 mt-0.5">
                               Posts
@@ -541,7 +542,7 @@ const scrollToAchievements = () => {
                       {following?.length > 0 && (
                         <div className="flex-1 py-3 bg-white/[0.02]">
                           <p className="text-base font-medium text-white">
-                            {following?.length ?? 0}
+                            {formatCount(following?.length ?? 0)}
                           </p>
                           <p className="text-[10px] text-gray-400 mt-0.5">
                             Following

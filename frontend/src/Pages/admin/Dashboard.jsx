@@ -35,6 +35,7 @@ import highlightText from "../../hooks/highlightText";
 import Fuse from "fuse.js";
 import LogMonitoringPage from "./LogMonitoringPage";
 import BadgeIcons from "../../components/achievements/BadgeIcons";
+import formatCount from "../../utils/NumberConversion";
 
 // ── Main Dashboard ─────────────────────────────────────────────────────────────
 function Dashboard() {
@@ -361,7 +362,8 @@ function Dashboard() {
                                 {((c.authorcount / (total || 1)) * 100).toFixed(
                                   0,
                                 )}
-                                % · {c.authorcount}
+                                {/* % · {c.authorcount} */}
+                                % · {formatCount(c.authorcount)}
                               </span>
                             </div>
 
@@ -377,7 +379,8 @@ function Dashboard() {
                                   (c.followerscount / (total || 1)) *
                                   100
                                 ).toFixed(0)}
-                                % · {c.followerscount}
+                                {/* % · {c.followerscount} */}
+                                % · {formatCount(c.followerscount)}
                               </span>
                             </div>
                           </div>
@@ -388,56 +391,7 @@ function Dashboard() {
                         </div>
                       );
                     })}
-                    {communities.map((c) => {
-                      const total = c.authorcount + c.followerscount;
-                      return (
-                        <div
-                          key={c.categoryname}
-                          className="flex items-center gap-2"
-                        >
-                          <span className="text-xs text-gray-400 font-semibold w-32 truncate">
-                            {c.categoryname}
-                          </span>
-
-                          <div className="flex-1 h-4 bg-[#1e293b] rounded-full overflow-hidden flex">
-                            {/* Coordinators */}
-                            <div
-                              className="h-full cursor-pointer bg-emerald-500/70 rounded-l-full flex items-center justify-center transition-all duration-300 group relative"
-                              style={{
-                                width: `${(c.authorcount / (total || 1)) * 100}%`,
-                              }}
-                            >
-                              <span className="opacity-0 group-hover:opacity-100 transition-all duration-200 text-[9px] text-gray-200 md:font-bold  whitespace-nowrap">
-                                {((c.authorcount / (total || 1)) * 100).toFixed(
-                                  0,
-                                )}
-                                % · {c.authorcount}
-                              </span>
-                            </div>
-
-                            {/* Students */}
-                            <div
-                              className="h-full cursor-pointer bg-blue-500/50 flex items-center justify-center transition-all duration-300 group relative"
-                              style={{
-                                width: `${(c.followerscount / (total || 1)) * 100}%`,
-                              }}
-                            >
-                              <span className="opacity-0 group-hover:opacity-100 transition-all duration-200 text-[9px] text-gray-200 md:font-bold  whitespace-nowrap">
-                                {(
-                                  (c.followerscount / (total || 1)) *
-                                  100
-                                ).toFixed(0)}
-                                % · {c.followerscount}
-                              </span>
-                            </div>
-                          </div>
-
-                          <span className="text-xs text-gray-300 font-semibold w-6 text-right">
-                            {total}
-                          </span>
-                        </div>
-                      );
-                    })}
+                  
                   </div>
                 </div>
               ) : (
@@ -520,7 +474,8 @@ function Dashboard() {
                           shieldClassName="w-4 h-4 md:h-7 md:w-7"
                         />
                         <span className="text-[10px] text-emerald-400 font-medium">
-                          {u.postsCount} posts
+                          {/* {u.postsCount} posts */}
+                          {formatCount(u.postsCount)} posts
                         </span>
                       </Link>
                     ))}
@@ -648,7 +603,8 @@ const MiniBar = ({ data, valueKey, labelKey, color = "#0004ff" }) => {
                 {/* Tooltip */}
                 {hoveredIndex === i && (
                   <div className="absolute  top-0 left-1/2 -translate-x-1/2 bg-gray-800 border border-white/10 text-white text-xs font-semibold px-2 py-1 rounded-md whitespace-nowrap z-10 shadow-lg">
-                    {d.postscount}
+                    {/* {d.postscount} */}
+                    {formatCount(d.postscount)}
                     <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800" />
                   </div>
                 )}
@@ -937,7 +893,8 @@ const PostsGaugeCard = ({ data, year, setYear, target, setTarget }) => {
             className="flex flex-col items-center justify-end gap-1 flex-1"
           >
             <span className="text-[9px] text-emerald-400 font-medium">
-              {d.count}
+              {/* {d.count} */}
+              {formatCount(d.count)}
             </span>
 
             <div
@@ -1015,7 +972,9 @@ const KPICard = ({
       {/* Bottom — value + badge */}
       <div className="flex items-end justify-end">
         <span className="md:text-sm text-xs bg-gray-700/50 font-medium text-white rounded-full md:px-4 md:py-2 px-2 py-1">
-          {value && value}
+          {/* {value && value} */}
+          {formatCount(value && value)}
+    
         </span>
       </div>
     </Link>
@@ -1076,7 +1035,8 @@ const TableHeader = ({ title, count, search, onSearch }) => (
         {title}
       </h3>
       <span className="text-[10px] bg-white/5 border border-white/10 text-gray-400 px-2 py-0.5 rounded-full">
-        {count}
+        {/* {count} */}
+        {formatCount(count)}
       </span>
     </div>
     <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 w-44 focus-within:border-emerald-500/40 transition-colors">
@@ -1230,7 +1190,8 @@ const AuthorsTable = ({
                       className="block w-full"
                     >
                       <span className="text-xs text-gray-300">
-                        {u.postsCount}
+                        {/* {u.postsCount} */}
+                        {formatCount(u.postsCount)}
                       </span>
                     </Link>
                   </td>
@@ -1241,7 +1202,8 @@ const AuthorsTable = ({
                       className="block w-full"
                     >
                       <span className="text-xs text-gray-300">
-                        {u.playlistCount}
+                        {/* {u.playlistCount} */}
+                        {formatCount(u.playlistCount)}
                       </span>
                     </Link>
                   </td>
@@ -1252,7 +1214,8 @@ const AuthorsTable = ({
                       className="block w-full"
                     >
                       <span className="text-xs text-gray-300">
-                        {u.followerscount}
+                        {/* {u.followerscount} */}
+                        {formatCount(u.followerscount)}
                       </span>
                     </Link>
                   </td>
@@ -1263,7 +1226,8 @@ const AuthorsTable = ({
                       className="block w-full"
                     >
                       <span className="text-xs text-gray-300">
-                        {u.followingcount}
+                        {/* {u.followingcount} */}
+                        {formatCount(u.followingcount)}
                       </span>
                     </Link>
                   </td>

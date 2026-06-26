@@ -429,7 +429,7 @@ function NavBar() {
           />
           {notiCount > 0 && (
             <span className="absolute -top-1.5 -right-2 text-[10px] bg-red-500 w-4 h-4 flex items-center justify-center rounded-full text-white">
-              {notiCount}
+              {formatCount(notiCount)}
             </span>
           )}
         </div>
@@ -440,7 +440,7 @@ function NavBar() {
           <MdAnnouncement className="text-xl text-white/70 hover:text-white transition-all duration-300 cursor-pointer transition" />
           {announceCount > 0 && (
             <span className="absolute -top-2 -right-2 text-[10px] bg-emerald-500 text-white w-4 h-4 flex items-center justify-center rounded-full">
-              {announceCount}
+              {formatCount(announceCount)}
             </span>
           )}
         </Link>
@@ -487,7 +487,7 @@ function NavBar() {
           />
           {notiCount > 0 && (
             <span className="absolute -top-1 -right-1.5 text-[10px] bg-red-500 w-4 h-4 flex items-center justify-center rounded-full text-white">
-              {notiCount}
+              {formatCount(notiCount)}
             </span>
           )}
         </div>
@@ -960,6 +960,7 @@ import { HiOutlineUserCircle } from "react-icons/hi";
 import { motion } from "framer-motion";
 import { useLocation } from "react-router-dom";
 import { House } from "lucide-react";
+import formatCount from "../utils/NumberConversion";
 
 function NavIconDesktop({ to, icon, label }) {
   const location = useLocation();
@@ -1058,7 +1059,7 @@ function NavTile({ to, icon, title, subtitle, badge, close }) {
                          text-[10px] px-2 py-0.5 rounded-full
                          bg-emerald-500/20 text-emerald-300"
         >
-          {badge}
+          {formatCount(badge)}
         </span>
       )}
     </Link>

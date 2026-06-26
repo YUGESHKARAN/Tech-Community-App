@@ -22,6 +22,7 @@ import Fuse from "fuse.js";
 import { getItem } from "../utils/encode";
 import highlightText from "../hooks/highlightText";
 import BadgeIcons from "../components/achievements/BadgeIcons";
+import formatCount from "../utils/NumberConversion";
 function Authors() {
   const [authors, setAuthors] = useState([]);
   // const email = localStorage.getItem("email");
@@ -537,12 +538,12 @@ function Authors() {
               className={`flex md:mt-4 mt-1 text-[11px] md:text-xs text-gray-300 ${author?.postCount > 0 ? "justify-between" : "justify-center"}`}
             >
               <span className="text-gray-400">
-                <b className="text-white">{author.followers.length}</b>{" "}
+                <b className="text-white">{formatCount(author.followers.length)}</b>{" "}
                 Followers
               </span>
               {author?.postCount > 0 && (
                 <span className="text-gray-400">
-                  <b className="text-white">{author?.postCount}</b> Posts
+                  <b className="text-white">{formatCount(author?.postCount)}</b> Posts
                 </span>
               )}
             </div>
@@ -650,12 +651,12 @@ function Authors() {
 
                 <div className="flex justify-center gap-6 mt-2 md:mt-4 text-[11px] md:text-xs text-gray-300">
                   <span className="text-gray-400">
-                    <b className="text-white">{author.followers.length}</b>{" "}
+                    <b className="text-white">{formatCount(author.followers.length)}</b>{" "}
                     Followers
                   </span>
                   {author?.postCount > 0 && (
                     <span className="text-gray-400">
-                      <b className="text-white">{author.postCount}</b> Posts
+                      <b className="text-white">{formatCount(author.postCount)}</b> Posts
                     </span>
                   )}
                 </div>

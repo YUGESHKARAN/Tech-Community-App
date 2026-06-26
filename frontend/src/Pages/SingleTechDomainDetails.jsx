@@ -21,6 +21,7 @@ import { MdCardMembership } from "react-icons/md";
 import useGetCommunityAnalytics from "../hooks/useGetCommunityAnalytics";
 import SingleDomainPosts from "../components/SingleDomainPosts";
 import BadgeIcons from "../components/achievements/BadgeIcons";
+import formatCount from "../utils/NumberConversion";
 function SingleTechDomainDetails() {
   const { category } = useParams();
   const decodedCategory = decodeURIComponent(category);
@@ -311,7 +312,7 @@ function SingleTechDomainDetails() {
                   }}
                 >
                   {/* {label === "Posts" ? <Link to={`/community/posts/${encodeURIComponent(decodedCategory)}`}>{value}</Link> : value} */}
-                  {value}
+                  {formatCount(value)}
                 </span>
                 <span className="text-xs text-gray-500 mt-0.5">{label}</span>
               </div>
@@ -369,13 +370,13 @@ function SingleTechDomainDetails() {
                         <div className="flex justify-center gap-6 md:mt-4 mt-2 text-[11px] md:text-xs text-gray-300">
                           <span className="text-gray-400">
                             <b className="text-white">
-                              {author.followers.length}
+                              {formatCount(author.followers.length)}
                             </b>{" "}
                             Followers
                           </span>
                           {author?.postCount > 0 && (
                             <span className="text-gray-400">
-                              <b className="text-white">{author?.postCount}</b>{" "}
+                              <b className="text-white">{formatCount(author?.postCount)}</b>{" "}
                               Posts
                             </span>
                           )}
