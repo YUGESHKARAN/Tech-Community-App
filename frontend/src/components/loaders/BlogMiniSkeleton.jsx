@@ -20,7 +20,7 @@ const BlogMiniSkeleton = ({ count = 9 }) => {
           </div>
 
           {/* Image */}
-          <div className="w-full h-28 md:h-36 bg-gray-800 rounded-xl mb-3"></div>
+          <div className="w-full h-28 md:h-36 bg-gray-800 rounded-lg md:rounded-xl mb-3"></div>
 
           {/* Meta */}
           <div className="flex justify-between items-center">

@@ -631,7 +631,7 @@ const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
                         ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.image}`
                         : blog1
                     }
-                    className="w-full h-28 md:h-36 rounded-xl object-cover mb-3"
+                    className="w-full h-28 md:h-36 rounded-lg border border-neutral-800 md:rounded-xl object-cover mb-3"
                     alt=""
                   />
 
