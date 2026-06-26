@@ -252,7 +252,8 @@ const checkAndAwardBadges = async (authorEmail, badgeIds, eventContext = {}) => 
       }
 
       const badgeLabel = def.label || badgeId;
-      const notificationMessage = `Congrats! You unlocked the ${nextTier} ${badgeLabel} badge for ${newHistoryEntry.eventTitle}.`;
+      // const notificationMessage = `Congrats! You unlocked the ${nextTier} ${badgeLabel} badge for ${newHistoryEntry.eventTitle}.`;
+      const notificationMessage = `Congrats! You unlocked the ${nextTier} ${badgeLabel} badge 🏆.`;
       const newNotification = {
         user:        'Achievements 🎊🎉',
         authorEmail: authorEmail,
