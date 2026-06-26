@@ -219,6 +219,7 @@ const postRouter = require("./routes/postDetail.Route");
 const tutorPlaylist = require("./routes/tutorPlayList.Route");
 const appAnalysisRouter = require("./routes/appAnalysis.Route");
 const adminRouter = require("./routes/admin.Route");
+const directorRouter = require("./routes/director.Route");
 const searchRouter = require("./routes/search.Route")
 
 app.use("/blog/login", loginRouter);
@@ -227,6 +228,7 @@ app.use("/blog/posts", postRouter);
 app.use("/blog/playlist", tutorPlaylist);
 app.use("/blog/analytics", appAnalysisRouter);
 app.use("/blog/admin", adminRouter);
+app.use("/blog/director", directorRouter);
 app.use("/blog/search", searchRouter);
 
 

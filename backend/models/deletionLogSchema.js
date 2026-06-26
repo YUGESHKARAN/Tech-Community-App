@@ -79,6 +79,7 @@ const snapshotAuthorSchema = new mongoose.Schema({
   password:     { type: String },
   role:         { type: String },
   profile:      { type: String },
+  tenantId:     { type: String },
   followers:    [String],
   following:    [String],
   community:    [String],

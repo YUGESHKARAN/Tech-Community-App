@@ -119,6 +119,7 @@ const verifyUser = async (req, res) => {
       email:      user.email,
       role:       user.role,
       profile:    user.profile,
+      // tenantId:   user.tenantId,
     };
 
     const token = jwt.sign(payload, process.env.JWT_TOKEN_ACCESS_KEY, { expiresIn: "1d" });

@@ -626,7 +626,7 @@ postSchema.index({ title: 'text' });
 const authorSchema = new mongoose.Schema({
   authorname: { type: String, required: true },
   bio: { type: String, required: false },
-  role:       { type: String, enum: ['student', 'coordinator', 'admin'], default: 'student' },
+  role:       { type: String, enum: ['student', 'coordinator', 'admin', 'director'], default: 'student' },
   community:  { type: [String], default: [] },
   announcement: [announcementSchema],
   postBookmark: {
@@ -637,6 +637,8 @@ const authorSchema = new mongoose.Schema({
     },
   },
   password: { type: String, required: true },
+  tenantId: { type: String, required: false },
+
   email: {
     type: String, required: true, unique: true,
     match: [emailRegex, 'Please provide a valid email address'],

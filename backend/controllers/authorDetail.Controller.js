@@ -17,7 +17,7 @@ const { json } = require("body-parser");
 const { ReturnDocument } = require("mongodb");
 
 const notificationUrl = process.env.NOTIFICATION_URL || "http://localhost:5173";
-
+const { resolveTenantFromEmail } = require('../utils/resolveTenant');
 
 const transporter = nodemailer.createTransport({
   service: process.env.EMAIL_PROVIDER, // Or your preferred email provider
@@ -65,7 +65,7 @@ const sendRegistrationOTP = async (req, res) => {
       .select("_id deletionType")
       .lean();
 
-    console.log("deletionRecord:", deletionRecord);
+    // console.log("deletionRecord:", deletionRecord);
 
     if (deletionRecord) {
       let message =
@@ -90,6 +90,16 @@ const sendRegistrationOTP = async (req, res) => {
   if (!email.endsWith("@dsuniversity.ac.in")) {
     return res.status(400).json({ message: "Use University Email" });
   }
+
+  //   let tenant;
+  // try {
+  //   tenant = await resolveTenantFromEmail(email);
+  // } catch (err) {
+  //   return res.status(400).json({
+  //     message: "Your institution is not registered on BytesBase.",
+  //   });
+  // }
+
   if (!authorname || !password) {
     return res.status(400).json({ message: "All fields are required" });
   }
@@ -117,9 +127,19 @@ const sendRegistrationOTP = async (req, res) => {
 const addAuthor = async (req, res) => {
   const { authorname, password, email, otp } = req.body;
 
+  
+
   if (!email.endsWith("@dsuniversity.ac.in")) {
     return res.status(400).json({ message: "Use University Email" });
   }
+  //  let tenant;
+  // try {
+  //   tenant = await resolveTenantFromEmail(email);
+  // } catch (err) {
+  //   return res.status(400).json({
+  //     message: "Your institution is not registered on BytesBase.",
+  //   });
+  // }
 
   const { valid, reason } = await verifyOTP(email, otp);
   if (!valid) {
