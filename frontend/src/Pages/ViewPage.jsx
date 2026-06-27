@@ -509,7 +509,7 @@ function ViewPage() {
     );
   };
 
-  console.log("total participants", totalParticipants)
+  // console.log("total participants", totalParticipants)
 
   return (
     <div className="w-full min-h-screen flex flex-col justify-between bg-gray-900 relative">

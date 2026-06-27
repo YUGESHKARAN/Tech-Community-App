@@ -353,6 +353,70 @@ const getSingleAuthor = async (req, res) => {
   }
 };
 
+const getFollowersFollowing = async (req, res) => {
+  try {
+    const { email } = req.params;
+    console.log("getFollowersFollowing triggered!");
+    if (!email) {
+      return res.status(400).json({ message: "Author email required" });
+    }
+
+    const author = await Author.findOne({ email: { $eq: email } })
+      .select("followers following")
+      .lean();
+    if (!author) {
+      return res.status(404).json({ message: "Author not found" });
+    }
+
+    const followerEmails = Array.isArray(author.followers)
+      ? author.followers
+      : [];
+    const followingEmails = Array.isArray(author.following)
+      ? author.following
+      : [];
+
+    const uniqueEmails = Array.from(
+      new Set([...followerEmails, ...followingEmails].map((e) => (e || "").trim().toLowerCase())),
+    ).filter((email) => email);
+
+    const authors =
+      uniqueEmails.length > 0
+        ? await Author.find({ email: { $in: uniqueEmails } })
+            .select("email profile authorname role badges")
+            .lean()
+        : [];
+
+    const authorByEmail = new Map(
+      authors.map((authorDoc) => [authorDoc.email.toLowerCase(), authorDoc]),
+    );
+
+    const formatDetails = (emails) =>
+      emails.map((itemEmail) => {
+        const normalizedEmail = (itemEmail || "").trim().toLowerCase();
+        const authorDoc = authorByEmail.get(normalizedEmail);
+        return {
+          email: normalizedEmail || itemEmail,
+          profile: authorDoc?.profile || "",
+          name: authorDoc?.authorname || itemEmail || normalizedEmail,
+          badges: Array.isArray(authorDoc?.badges) ? authorDoc.badges : [],
+          role: authorDoc?.role || null,
+        };
+      });
+
+    return res.status(200).json({
+      message: "Followers and following retrieved successfully",
+      followers: formatDetails(followerEmails),
+      following: formatDetails(followingEmails),
+    });
+  } catch (err) {
+    console.error("Error fetching followers/following:", err);
+    return res.status(500).json({
+      message: "Error fetching followers and following",
+      error: err.message,
+    });
+  }
+};
+
 // reviewed----------------------------------------------
 const getAuthorsByDomain = async (req, res) => {
   try {
@@ -1852,6 +1916,7 @@ module.exports = {
   // getAllAuthor,
   // getAuthorsByRole,
   getSingleAuthor,
+  getFollowersFollowing,
   updateAuthor,
   // updateAPassword,
   deleteAuthor,

@@ -6,6 +6,7 @@ const {
   // getAllAuthor,
   addAuthor,
   getSingleAuthor,
+  getFollowersFollowing,
   // getAuthorsByRole,
   updateAuthor,
   // updateAPassword,
@@ -49,6 +50,7 @@ router.post('/reset-password', limiter, resetPassword);
 // Protect specific routes
 // router.get("/", readLimiter, authenticateToken,getAllAuthor);   // used in TechCommunity.jsx
 router.get("/profiles", readLimiter, authenticateToken, getProfile);
+router.get("/getFollowDetails/:email", readLimiter, authenticateToken, getFollowersFollowing);
 router.get("/:email", readLimiter, authenticateToken, getSingleAuthor);
 router.get("/getAuthorsByDomain/:category(*)", readLimiter, authenticateToken,getAuthorsByDomain);
 router.get("/getAllAuthorsByDomain/:category(*)", readLimiter, authenticateToken,getAllAuthorsByDomain);
