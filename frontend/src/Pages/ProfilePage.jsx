@@ -526,7 +526,7 @@ function ProfilePage() {
                 </div>
 
                 {/* Stats row */}
-                {author.role !== "student" &&
+                {
                   (followers?.length > 0 ||
                     following?.length > 0 ||
                     posts.length > 0) && (
@@ -1290,7 +1290,7 @@ function ProfilePage() {
                   <div className="flex items-center justify-between px-4 py-2.5 border-b border-white/10">
                     <div>
                       <h3 className="text-sm font-semibold text-white">
-                        {followLabel}
+                       My {followLabel}
                       </h3>
 
                       <p className="text-[10px] font-semibold text-gray-500 mt-1">
