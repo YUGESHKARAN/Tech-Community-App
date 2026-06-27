@@ -691,7 +691,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
             : "hidden"
         } width-max mx-auto scroll-mt-24`}
       >
-        Contributors
+        Coordinators
       </h1>
 
       {coordinators.length > 0 ? (
@@ -868,7 +868,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
        coordinatorsLoading? <CoordinatorLoader roleFilter={roleFilter} />
        :
         <p className=" text-center text-[10px] width-max mx-auto md:text-xs col-span-full py-4 text-gray-500">
-              No Contributors found
+              No Coordinators found
             </p>
       )}
 
