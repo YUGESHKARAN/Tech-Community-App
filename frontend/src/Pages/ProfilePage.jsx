@@ -23,6 +23,7 @@ import BadgeIcons from "../components/achievements/BadgeIcons";
 import { motion, AnimatePresence } from "framer-motion";
 import formatCount from "../utils/NumberConversion";
 import { IoClose } from "react-icons/io5";
+import useGetFollowersDetails from "../hooks/useGetFollowersDetails";
 function ProfilePage() {
   const { logout } = useAuth();
   // const email = localStorage.getItem("email");
@@ -238,30 +239,9 @@ function ProfilePage() {
     }, 1000);
   };
 
-  const [followersDetails, setFollowersDetails] = useState([]);
-  const [followingDetails, setFollowingDetails] = useState([]);
   const [showFollows, setShowFollows] = useState(false);
   const [followLabel, setFollowLabel] = useState("");
-
-  const getFollowersFollowing = async () => {
-    try {
-      const response = await axiosInstance.get(
-        `/blog/author/getFollowDetails/${email}`,
-      );
-      if (response.status === 200) {
-        // console.log("follower details", response.data);
-        setFollowersDetails(response.data.followers);
-        setFollowingDetails(response.data.following);
-      }
-    } catch (err) {
-      console.log("error", err.message);
-      toast.error("Error", "Error getting follower/following details");
-    }
-  };
-
-  useState(() => {
-    getFollowersFollowing();
-  }, []);
+  const {followLoading, followersDetails, followingDetails} = useGetFollowersDetails(email);
 
   const avatarColor = (name) => {
     const colors = [
@@ -318,22 +298,22 @@ function ProfilePage() {
                     setBioEdit(false);
                   }}
                   className="
-        group
-        inline-flex
-        items-center
-        gap-1.5
-        px-2
-        md:px-3.5
-        md:py-2
-        py-1.5
-        rounded-lg
-        bg-[#111827]
-        border
-        border-slate-700
-        text-slate-200
-        text-[11px]
-        font-medium
-      "
+                    group
+                    inline-flex
+                    items-center
+                    gap-1.5
+                    px-2
+                    md:px-3.5
+                    md:py-2
+                    py-1.5
+                    rounded-lg
+                    bg-[#111827]
+                    border
+                    border-slate-700
+                    text-slate-200
+                    text-[11px]
+                    font-medium
+                  "
                 >
                   <MdEdit className="text-sm  text-emerald-400" />
 
@@ -1316,7 +1296,7 @@ function ProfilePage() {
                   </div>
 
                   <div className="overflow-y-auto max-h-[400px] px-4 p-2 md:p-4">
-                    {(followLabel === "Followers"
+                    {!followLoading ? (followLabel === "Followers"
                       ? followersDetails
                       : followingDetails
                     ).map((p, index) => (
@@ -1405,7 +1385,17 @@ function ProfilePage() {
                           </div>
                         </Link>
                       </motion.div>
-                    ))}
+                    ))
+                  :
+                  <div className="h-full w-full flex justify-center">
+                    <div className="relative flex items-center justify-center">
+                      {/* Outer Oval Ring */}
+                      <div className="w-7 h-7  border-2 border-neutral-700 border-t-emerald-400 rounded-full animate-spin" />
+
+                      {/* Inner Glow Pulse */}
+                      {/* <div className="absolute w-10 h-10 md:w-12 md:h-12 bg-emerald-500/20 rounded-full blur-md animate-pulse" /> */}
+                    </div>
+                  </div>}
                   </div>
                 </motion.div>
               </motion.div>
