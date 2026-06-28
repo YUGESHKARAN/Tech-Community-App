@@ -425,7 +425,7 @@ function Dashboard() {
                     </select>
                   </div>
 
-                  <div className="flex overflow-y-auto scrollbar-hide h-52 flex-col gap-2">
+                  <div className="flex overflow-y-auto overflow-x-hidden scrollbar-hide h-52 flex-col gap-2">
                     {topContributors.map((u, i) => (
                       <Link
                         to={`/viewProfile/${u.email}`}
@@ -1130,7 +1130,7 @@ const AuthorsTable = ({
         </table>
         {/* Scrollable body */}
         <div
-          className="overflow-y-auto scrollbar-hide"
+          className="overflow-y-auto overflow-x-hidden scrollbar-hide"
           style={{ height: "260px" }}
         >
           <table className="w-full table-fixed">

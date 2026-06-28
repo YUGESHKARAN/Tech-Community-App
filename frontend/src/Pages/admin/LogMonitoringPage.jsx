@@ -372,7 +372,7 @@ function LogMonitoringPage() {
         </div>
 
         {/* ROWS */}
-        <div className="hidden lg:block divide-y divide-white/5">
+        <div className="hidden overflow-x-hidden lg:block divide-y divide-white/5">
           {filteredData.map((log) => {
             const status = getStatus(log);
 
