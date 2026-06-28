@@ -1271,7 +1271,7 @@ function ProfilePage() {
                           overflow-hidden
                         "
                 >
-                  <div className="flex items-center justify-between px-4 py-2.5 border-b border-white/10">
+                  <div className="flex items-center justify-between p-4 border-b border-white/10">
                     <div>
                       <h3 className="text-sm font-semibold text-white">
                        My {followLabel}
@@ -1299,7 +1299,7 @@ function ProfilePage() {
                     </button>
                   </div>
 
-                  <div className="overflow-y-auto scrollbar-hide overflow-x-hidden max-h-[400px] p-4">
+                  <div className="overflow-y-auto scrollbar-hide overflow-x-hidden max-h-[400px] px-4 py-2 md:p-4">
                     {!followLoading ? (followLabel === "Followers"
                       ? followersDetails
                       : followingDetails

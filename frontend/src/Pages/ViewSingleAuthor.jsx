@@ -583,7 +583,7 @@ function ViewSingleAuthor() {
                           overflow-hidden
                         "
                       >
-                        <div className="flex items-center justify-between px-4 py-2.5 border-b border-white/10">
+                        <div className="flex items-center justify-between p-4 border-b border-white/10">
                           <div>
                             <h3 className="md:text-sm text-sm flex items-center gap-2 font-semibold">
                             Author <p className="line-clapm-1 truncate max-w-[150px]  md:max-w-[200px]">{authorName}'s</p> {followLabel}
@@ -611,7 +611,7 @@ function ViewSingleAuthor() {
                           </button>
                         </div>
       
-                        <div className="overflow-y-auto scrollbar-hide overflow-x-hidden max-h-[400px] p-4">
+                        <div className="overflow-y-auto scrollbar-hide overflow-x-hidden max-h-[400px] px-4 py-2 md:p-4">
                           {!followLoading ? (followLabel === "Followers"
                             ? followersDetails
                             : followingDetails
