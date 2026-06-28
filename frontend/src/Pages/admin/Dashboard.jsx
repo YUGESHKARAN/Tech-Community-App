@@ -1031,7 +1031,7 @@ const RoleBadge = ({ role }) => {
 const TableHeader = ({ title, count, search, onSearch }) => (
   <div className="flex items-center justify-between px-5 py-4 shrink-0">
     <div className="flex items-center gap-2.5">
-      <h3 className="text-xs md:text-base font-semibold text-gray-200">
+      <h3 className="text-xs xl:text-base font-semibold text-gray-200">
         {title}
       </h3>
       <span className="text-[10px] bg-white/5 border border-white/10 text-gray-400 px-2 py-0.5 rounded-full">
@@ -1111,18 +1111,18 @@ const AuthorsTable = ({
         <table className="w-full table-fixed">
           <thead>
             <tr className="bg-white/[0.02]">
-              <ColHead className="w-[70%] md:w-[38%]">Name</ColHead>
-              <ColHead className="md:w-[16%] w-[30%] text-center">Role</ColHead>
-              <ColHead className="hidden md:table-cell w-[12%] text-center">
+              <ColHead className="w-[70%] xl:w-[38%]">Name</ColHead>
+              <ColHead className="xl:w-[16%] w-[30%] text-center">Role</ColHead>
+              <ColHead className="hidden xl:table-cell w-[12%] text-center">
                 Posts
               </ColHead>
-              <ColHead className="hidden md:table-cell w-[12%] text-center">
+              <ColHead className="hidden xl:table-cell w-[12%] text-center">
                 Playlists
               </ColHead>
-              <ColHead className="hidden md:table-cell w-[11%] text-center">
+              <ColHead className="hidden xl:table-cell w-[11%] text-center">
                 Followers
               </ColHead>
-              <ColHead className="hidden md:table-cell w-[11%] text-center">
+              <ColHead className="hidden xl:table-cell w-[11%] text-center">
                 Following
               </ColHead>
             </tr>
@@ -1138,10 +1138,10 @@ const AuthorsTable = ({
               {filtered.map((u, i) => (
                 <tr
                   key={u.email}
-                  className="border-b border-white/[0.04] md:hover:bg-white/[0.03]  transition-colors"
+                  className="border-b border-white/[0.04] xl:hover:bg-white/[0.03]  transition-colors"
                 >
                   {/* Name */}
-                  <td className="py-3 px-5 w-[60%] md:w-[38%]">
+                  <td className="py-3 px-5 w-[60%] xl:w-[38%]">
                     <Link
                       to={`/viewProfile/${u.email}`}
                       className="block w-full"
@@ -1184,7 +1184,7 @@ const AuthorsTable = ({
                     </Link>
                   </td>
                   {/* Posts */}
-                  <td className="py-3 px-5 w-[12%] text-center hidden md:table-cell">
+                  <td className="py-3 px-5 w-[12%] text-center hidden xl:table-cell">
                     <Link
                       to={`/viewProfile/${u.email}`}
                       className="block w-full"
@@ -1196,7 +1196,7 @@ const AuthorsTable = ({
                     </Link>
                   </td>
                   {/* Playlists */}
-                  <td className="py-3 px-5 w-[12%] text-center hidden md:table-cell">
+                  <td className="py-3 px-5 w-[12%] text-center hidden xl:table-cell">
                     <Link
                       to={`/viewProfile/${u.email}`}
                       className="block w-full"
@@ -1208,7 +1208,7 @@ const AuthorsTable = ({
                     </Link>
                   </td>
                   {/* Followers */}
-                  <td className="py-3 px-5 w-[11%] text-center hidden md:table-cell">
+                  <td className="py-3 px-5 w-[11%] text-center hidden xl:table-cell">
                     <Link
                       to={`/viewProfile/${u.email}`}
                       className="block w-full"
@@ -1220,7 +1220,7 @@ const AuthorsTable = ({
                     </Link>
                   </td>
                   {/* Following */}
-                  <td className="py-3 px-5 w-[11%] text-center hidden md:table-cell">
+                  <td className="py-3 px-5 w-[11%] text-center hidden xl:table-cell">
                     <Link
                       to={`/viewProfile/${u.email}`}
                       className="block w-full"

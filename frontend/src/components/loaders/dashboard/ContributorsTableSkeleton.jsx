@@ -22,16 +22,16 @@ const ContributorsTableSkeleton = () => {
             <th className="w-[16%] px-5 py-2 text-center">
               <div className="h-3 w-12 bg-gray-700/40 rounded mx-auto" />
             </th>
-            <th className="hidden md:table-cell w-[12%] px-5 py-2 text-center">
+            <th className="hidden xl:table-cell w-[12%] px-5 py-2 text-center">
               <div className="h-3 w-10 bg-gray-700/40 rounded mx-auto" />
             </th>
-            <th className="hidden md:table-cell w-[12%] px-5 py-2 text-center">
+            <th className="hidden xl:table-cell w-[12%] px-5 py-2 text-center">
               <div className="h-3 w-12 bg-gray-700/40 rounded mx-auto" />
             </th>
-            <th className="hidden md:table-cell w-[11%] px-5 py-2 text-center">
+            <th className="hidden xl:table-cell w-[11%] px-5 py-2 text-center">
               <div className="h-3 w-14 bg-gray-700/40 rounded mx-auto" />
             </th>
-            <th className="hidden md:table-cell w-[11%] px-5 py-2 text-center">
+            <th className="hidden xl:table-cell w-[11%] px-5 py-2 text-center">
               <div className="h-3 w-14 bg-gray-700/40 rounded mx-auto" />
             </th>
           </tr>
@@ -67,22 +67,22 @@ const ContributorsTableSkeleton = () => {
                 </td>
 
                 {/* Posts */}
-                <td className="py-3 px-5 w-[12%] text-center hidden md:table-cell">
+                <td className="py-3 px-5 w-[12%] text-center hidden xl:table-cell">
                   <div className="h-3 w-6 bg-gray-700/50 rounded mx-auto" />
                 </td>
 
                 {/* Playlists */}
-                <td className="py-3 px-5 w-[12%] text-center hidden md:table-cell">
+                <td className="py-3 px-5 w-[12%] text-center hidden xl:table-cell">
                   <div className="h-3 w-6 bg-gray-700/50 rounded mx-auto" />
                 </td>
 
                 {/* Followers */}
-                <td className="py-3 px-5 w-[11%] text-center hidden md:table-cell">
+                <td className="py-3 px-5 w-[11%] text-center hidden xl:table-cell">
                   <div className="h-3 w-6 bg-gray-700/50 rounded mx-auto" />
                 </td>
 
                 {/* Following */}
-                <td className="py-3 px-5 w-[11%] text-center hidden md:table-cell">
+                <td className="py-3 px-5 w-[11%] text-center hidden xl:table-cell">
                   <div className="h-3 w-6 bg-gray-700/50 rounded mx-auto" />
                 </td>
               </tr>
