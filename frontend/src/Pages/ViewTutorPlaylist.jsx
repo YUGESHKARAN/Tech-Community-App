@@ -226,7 +226,7 @@ function ViewTutorPlaylist() {
           {loading ? "Loading Playlist..." : playlistData?.title}
         </h1>
         {!loading && Object.keys(playlistData).length > 0 && (
-          <div className="grid w-full mx-auto md:h-screen grid-cols-1 lg:grid-cols-2 lg:gap-4 gap-2">
+          <div className="grid w-full mx-auto md:min-h-screen grid-cols-1 lg:grid-cols-2 lg:gap-4 gap-2">
             {/* LEFT PANEL (Banner + Info) */}
             <div className="lg:col-span-1 md:hidden  p-1 md:sticky top-4 self-start  md:p-0 space-y-2 md:space-y-4">
               {/* Banner */}
@@ -378,7 +378,7 @@ function ViewTutorPlaylist() {
                           <Link
                             to={`/viewProfile/${data.email}`}
                             key={index}
-                            className="flex hover:bg-gray-400/20 items-center cursor-pointer gap-2  text-gray-400 text-xs p-1 rounded-md"
+                            className="flex  hover:bg-gray-400/20 items-center cursor-pointer gap-2  text-gray-400 text-xs p-1 rounded-md"
                           >
                             <img
                               src={
@@ -389,7 +389,9 @@ function ViewTutorPlaylist() {
                               alt=""
                               className="h-6 md:h-7 w-6 md:w-7 bg-gray-300  rounded-full object-cover border border-green-400"
                             />
-                            {data.name}
+                            {/* {data.name} */}
+                            <p className="line-clamp-1 max-w-[250px]  md:max-w-[300px]">{data.name}</p>
+                           
                           </Link>
                         ))}
                       </div>
@@ -432,7 +434,7 @@ function ViewTutorPlaylist() {
             </div>
 
             {/* LEFT PANEL (Banner + Info) */}
-            <div className="lg:col-span-1 hidden md:block md:sticky top-6 self-start space-y-4">
+            <div className="lg:col-span-1 hidden md:block lg:sticky top-6 self-start space-y-4">
               {/* HERO BANNER */}
               {/* <div className="relative rounded-2xl overflow-hidden border border-gray-800 shadow-xl group">
                 <img
