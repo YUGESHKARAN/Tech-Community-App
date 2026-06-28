@@ -1299,7 +1299,7 @@ function ProfilePage() {
                     </button>
                   </div>
 
-                  <div className="overflow-y-auto scrollbar-hide overflow-x-hidden max-h-[400px] px-4 p-2 md:p-4">
+                  <div className="overflow-y-auto scrollbar-hide overflow-x-hidden max-h-[400px] p-4">
                     {!followLoading ? (followLabel === "Followers"
                       ? followersDetails
                       : followingDetails
