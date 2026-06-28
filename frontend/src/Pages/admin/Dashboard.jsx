@@ -1107,7 +1107,7 @@ const AuthorsTable = ({
         onSearch={setSearch}
         className="overflow-x-scroll"
       />
-      <div className=" flex  flex-col flex-1 pb-4">
+      <div className=" flex  flex-col items-center justify-center flex-1 pb-4">
         <table className="w-full table-fixed">
           <thead>
             <tr className="bg-white/[0.02]">
@@ -1130,10 +1130,10 @@ const AuthorsTable = ({
         </table>
         {/* Scrollable body */}
         <div
-          className="overflow-y-auto overflow-x-hidden scrollbar-hide"
+          className="overflow-y-auto overflow-x-hidden px-auto scrollbar-hide"
           style={{ height: "260px" }}
         >
-          <table className="w-full table-fixed">
+          <table className="w-full  table-fixed">
             <tbody>
               {filtered.map((u, i) => (
                 <tr
@@ -1141,7 +1141,7 @@ const AuthorsTable = ({
                   className="border-b border-white/[0.04] md:hover:bg-white/[0.03]  transition-colors"
                 >
                   {/* Name */}
-                  <td className="py-3 px-5 w-[70%] md:w-[38%]">
+                  <td className="py-3 px-5 w-[60%] md:w-[38%]">
                     <Link
                       to={`/viewProfile/${u.email}`}
                       className="block w-full"
@@ -1175,7 +1175,7 @@ const AuthorsTable = ({
                     </Link>
                   </td>
                   {/* Role */}
-                  <td className="py-3 px-5 w-[16%] text-center">
+                  <td className="py-3 px-5 w-[26%] text-center">
                     <Link
                       to={`/viewProfile/${u.email}`}
                       className="block w-full"
