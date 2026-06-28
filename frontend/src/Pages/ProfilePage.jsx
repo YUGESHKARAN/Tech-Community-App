@@ -1299,7 +1299,7 @@ function ProfilePage() {
                     </button>
                   </div>
 
-                  <div className="overflow-y-auto max-h-[400px] px-4 p-2 md:p-4">
+                  <div className="overflow-y-auto scrollbar-hide overflow-x-hidden max-h-[400px] px-4 p-2 md:p-4">
                     {!followLoading ? (followLabel === "Followers"
                       ? followersDetails
                       : followingDetails
@@ -1400,6 +1400,8 @@ function ProfilePage() {
                       {/* <div className="absolute w-10 h-10 md:w-12 md:h-12 bg-emerald-500/20 rounded-full blur-md animate-pulse" /> */}
                     </div>
                   </div>}
+                     
+                  
                   </div>
                 </motion.div>
               </motion.div>
