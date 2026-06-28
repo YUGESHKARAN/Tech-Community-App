@@ -241,7 +241,11 @@ function ProfilePage() {
 
   const [showFollows, setShowFollows] = useState(false);
   const [followLabel, setFollowLabel] = useState("");
-  const {followLoading, followersDetails, followingDetails} = useGetFollowersDetails(email);
+  const {followLoading, followersDetails, followingDetails, getFollowersDetails} = useGetFollowersDetails(email);
+
+  useEffect(()=>{
+    getFollowersDetails(email);
+  }, [email])
 
   const avatarColor = (name) => {
     const colors = [

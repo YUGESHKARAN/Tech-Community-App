@@ -134,9 +134,12 @@ function ViewSingleAuthor() {
 
   const [showFollows, setShowFollows] = useState(false);
   const [followLabel, setFollowLabel] = useState("");
-  const { followLoading, followersDetails, followingDetails } =
+  const { followLoading, followersDetails, followingDetails, getFollowersDetails } =
     useGetFollowersDetails(email);
 
+    useEffect(()=>{
+      getFollowersDetails(email)
+    }, [email])
 
    const avatarColor = (name) => {
     const colors = [

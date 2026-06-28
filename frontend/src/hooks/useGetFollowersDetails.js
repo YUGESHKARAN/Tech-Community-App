@@ -31,9 +31,9 @@ const useGetFollowersDetails = (email)=> {
 
   useState(() => {
     getFollowersDetails();
-  }, []);
+  }, [email]);
 
-  return {followersDetails, followingDetails, followLoading}
+  return {followersDetails, followingDetails, followLoading, getFollowersDetails}
 }
 
 export default useGetFollowersDetails ;
