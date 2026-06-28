@@ -221,7 +221,7 @@ function ViewTutorPlaylist() {
     <div className="min-h-screen bg-gray-900 text-white">
       <NavBar />
 
-      <div className="w-full mx-auto px-2 max-w-[1800px] mx-auto min-h-screen h-auto md:px-8 py-6">
+      <div className="w-full mx-auto px-2 max-w-[1800px] mx-auto min-h-screen h-auto md:px-16 py-6">
         <h1 className="text-3xl w-full mb-7 pl-1 mx-auto hidden md:block font-semibold">
           {loading ? "Loading Playlist..." : playlistData?.title}
         </h1>
@@ -509,7 +509,7 @@ function ViewTutorPlaylist() {
                       )
                     }
                     alt="Playlist Banner"
-                    className="w-full h-[260px] md:h-[50vh] cursor-pointer object-cover transition-transform duration-500 "
+                    className="w-full h-[260px] md:h-[46vh] cursor-pointer object-cover transition-transform duration-500 "
                   />
 
                   {/* Gradient Overlay */}
@@ -700,7 +700,7 @@ function ViewTutorPlaylist() {
             </div>
 
             {/* RIGHT PANEL (Playlist Posts) */}
-            <div className="lg:col-span-1 md:overflow-y-scroll mt-0 scrollbar-hide space-y-2 md:space-y-2">
+            <div className="lg:col-span-1 md:overflow-y-scroll md:h-[550px] overflow-x-hidden mt-0 scrollbar-hide space-y-2 md:space-y-2">
               {playlistPosts.map((post, index) => (
                 <div
                   key={post._id}
