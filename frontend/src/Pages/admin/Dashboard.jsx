@@ -507,8 +507,8 @@ function Dashboard() {
 
           {/* ── ZONE 4: Users Tables ──────────────────────────────────── */}
           <section 
-          id="users"
-          className="space-y-4 scroll-mt-24">
+          // id ="users"
+          className="space-y-4 ">
             <div>
               <h2 className="md:text-2xl text-xl font-semibold text-emerald-400">
                 Users
@@ -1316,7 +1316,9 @@ const StudentsTable = ({
   }, [students, debouncedSearch, search]);
 
   return (
-    <div className="bg-[#0f172a] border mt-4 md:mt-0 border-[#1e293b] rounded-2xl flex flex-col  overflow-hidden md:w-[600px]">
+    <div
+    id ="users"
+     className="bg-[#0f172a] scroll-mt-4 md:scroll-mt-24  border mt-4 md:mt-0 border-[#1e293b] rounded-2xl flex flex-col  overflow-hidden md:w-[600px]">
       <TableHeader
         title="Total Students"
         count={totalStudents}
