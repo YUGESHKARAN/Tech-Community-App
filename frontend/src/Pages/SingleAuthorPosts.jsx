@@ -303,7 +303,7 @@ const filteredPosts = useMemo(() => {
               </h2>
 
               {/* Email / Username */}
-              <p className="text-sm text-slate-400 mt-1">
+              <p className="text-sm truncate line-clamp-1 text-wrap w-11/12 md:w-full text-slate-400 mt-1">
                 @{email?.split("@")[0]}
               </p>
 
