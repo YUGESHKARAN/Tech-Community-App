@@ -640,7 +640,7 @@ function ViewPage() {
                       {singlePostData.title}
                     </h2> */}
 
-                    <p className="block text-sm md:text-lg text-gray-300">
+                    <p className="block text-xs font-semibold md:text-lg text-gray-300">
                       {singlePostData.category}
                     </p>
                     <p className=" text-[10px] md:text-xs text-gray-400">
