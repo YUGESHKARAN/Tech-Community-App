@@ -363,21 +363,23 @@ function ProfilePage() {
               {/* ══ LEFT — Profile card ══════════════════════════════ */}
               <div className="md:sticky md:top-6 relative self-start bg-gray-900/50 border md:border-white/[0.1] border-white/[0.09] rounded-2xl mt-0 p-6 pb-3 text-center">
                 {/* Avatar */}
-                <div className="relative w-fit mx-auto mt-3 md:mb-3 mb-4">
+
+                <div className="flex items-center md:flex-col mt-9 w-full  justify-start gap-2">
+                <div className="relative md:w-24 w-16 shrink-0 ">
                   {previewImage ? (
                     <img
                       src={previewImage}
                       alt="Preview"
-                      className="w-28 h-28 md:w-32 md:h-32 rounded-full object-cover border-2 border-emerald-500/60"
+                      className="w-14 h-14 md:w-24 md:h-24 rounded-full object-cover border-2 border-emerald-500/60"
                     />
                   ) : author.profile ? (
                     <img
                       src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`}
                       alt="Profile"
-                      className="w-28 h-28 md:w-32 md:h-32 rounded-full object-cover border-2 border-emerald-500/60"
+                      className="w-14 h-14 md:w-24 md:h-24 rounded-full object-cover border-2 border-emerald-500/60"
                     />
                   ) : (
-                    <div className="w-28 h-28 md:w-32 md:h-32 flex items-center justify-center rounded-full bg-gray-800 border-2 border-white/10">
+                    <div className="w-14 h-14 md:w-24 md:h-24 flex items-center justify-center rounded-full bg-gray-800 border-2 border-white/10">
                       <HiOutlineUserCircle className="text-gray-600 text-7xl md:text-8xl" />
                     </div>
                   )}
@@ -386,10 +388,10 @@ function ProfilePage() {
                       {" "}
                       <label
                         htmlFor="image"
-                        className="absolute bottom-1 right-1 w-8 h-8 flex items-center justify-center bg-gray-700 hover:bg-gray-600 border border-white/10 text-emerald-400 rounded-full cursor-pointer transition-colors"
+                        className="absolute bottom-1 right-1 w-4 h-4 flex items-center justify-center bg-gray-700 hover:bg-gray-600 border border-white/10 text-emerald-400 rounded-full cursor-pointer transition-colors"
                         title="Change photo"
                       >
-                        <MdEdit className="text-sm" />
+                        <MdEdit className="text-xs" />
                       </label>
                       <input
                         type="file"
@@ -403,26 +405,33 @@ function ProfilePage() {
                 </div>
 
                 {/* Name */}
-                <h2 className=" md:text-xl text-lg font-medium leading-snug text-white my-1">
+                <div className="flex  flex-col justify-start">
+                <h2 className=" md:text-xl text-xl truncate  line-clamp-1 text-wrap text-left md:text-center font-medium leading-snug text-white my-1">
                   {userName || "—"}
                 </h2>
+                <p className="text-xs truncate text-left md:text-center line-clamp-1 text-wrap text-gray-500">
+                  {authorEmail}
+                </p>
 
                 {/* Role pill */}
                 <span className=" absolute left-4 top-4 ">
+                {/* <span className=" mt-2"> */}
                   <RoleBadge role={role} />
                 </span>
+                </div>
+                </div>
 
                 {author?.role !== "student" && (
                   <div
                     onClick={scrollToAchievements}
                     className="cursor-pointer"
                   >
-                    <BadgeIcons badges={author?.badges} />
+                    <BadgeIcons  parentClass="right-6" badges={author?.badges} />
                   </div>
                 )}
 
                 {/* Bio Section */}
-                <div className="mb-5 mt-3 px-1 text-left">
+                <div className="my-5 px-1 text-left">
                   <div
                     className={`flex items-center gap-1 mb-2 ${bioEdit && "justify-between"}`}
                   >
