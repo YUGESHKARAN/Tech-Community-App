@@ -963,21 +963,21 @@ function ProfilePage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
-                  className="w-full px-3.5 py-2.5 text-sm bg-gray-800/60b border order-gray-700 outline-none rounded-lg text-gray-300 outline-none focus:border-emerald-500/50 focus:bg-gray-800 transition-colors duration-200 placeholder:text-gray-600"
+                  className="w-full px-3.5 py-2.5 text-sm bg-gray-800/60 border border-emerald-800 outline-none rounded-lg text-gray-300 outline-none focus:border-emerald-500/50 focus:bg-gray-800 transition-colors duration-200 placeholder:text-gray-600"
                 />
               </div>
 
               <div className="flex justify-end gap-2">
                 <button
                   onClick={() => setShowConfirm(false)}
-                  className="px-4 py-2 text-sm font-medium rounded-lg bg-white/[0.04] text-gray-300 border border-gray-700 outline-none hover:bg-white/[0.08] transition-colors"
+                  className="px-4 py-2 text-xs font-medium rounded-lg bg-white/[0.04] text-gray-300 border border-gray-700 outline-none hover:bg-white/[0.08] transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={deleteAuthor}
                   disabled={loading}
-                  className="px-4 py-2 text-sm font-medium rounded-lg bg-red-600 text-white hover:bg-red-500 transition-colors disabled:opacity-50"
+                  className="px-4 py-2 text-xs font-medium rounded-lg bg-red-600 text-white hover:bg-red-600/80 transition-colors disabled:opacity-50"
                 >
                   {loading ? "Deleting…" : "Delete"}
                 </button>
