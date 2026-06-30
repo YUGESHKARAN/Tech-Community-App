@@ -67,7 +67,7 @@ function ProfilePage() {
   const [password, setPassword] = useState("");
   const userName = getItem("username");
   const [loader, setLoader] = useState(false);
-  const [bioEdit, setBioEdit] = useState(false);
+  const [bioEdit, setBioEdit] = useState(true);
   const deleteAuthor = async () => {
     setShowConfirm(true);
 
@@ -274,7 +274,7 @@ function ProfilePage() {
         <NavBar />
 
         {!loader ? (
-          <div className="w-full min-h-screen max-w-[1800px] mx-auto px-4 md:px-6 pt-2   pb-8 pb-24">
+          <div className="w-full min-h-screen 3xl:max-w-[1800px]  max-w-7xl mx-auto mx-auto px-4 md:px-6 pt-2   pb-8 pb-24">
             {/* ── Page header ──────────────────────────────────────── */}
 
             <div className="flex items-center justify-between mb-0 md:mb-8 px-1">
@@ -405,14 +405,31 @@ function ProfilePage() {
                 </div>
 
                 {/* Name */}
-                <div className="flex  flex-col justify-start">
+                <div className="flex w-full  flex-col justify-start">
+               {!editProfile?
+               <>
                 <h2 className=" md:text-xl text-xl truncate  line-clamp-1 text-wrap text-left md:text-center font-medium leading-snug text-white my-1">
                   {userName || "—"}
                 </h2>
                 <p className="text-xs truncate text-left md:text-center line-clamp-1 text-wrap text-gray-500">
                   {authorEmail}
                 </p>
+                </>:
+                 <input
+                        type="text"
+                        id="authorName"
+                        disabled={!editProfile}
+                        value={authorName}
+                        onChange={(e) => {
+                          setAuthorName(e.target.value);
+                          setUpdateButton(true);
+                        }}
+                        className={`w-full px-2 py-2 md:mt-2 text-xs ${editProfile?'border border-emerald-700':''} bg-transparent  rounded-lg text-gray-300 outline-none focus:border-emerald-500/50 transition-colors duration-200 placeholder:text-gray-600`}
+                        placeholder="Your name"
+                        required
+                      />}
 
+              
                 {/* Role pill */}
                 <span className=" absolute left-4 top-4 ">
                 {/* <span className=" mt-2"> */}
@@ -439,27 +456,10 @@ function ProfilePage() {
                       About
                     </p>
 
-                    {editProfile &&
-                      (!bioEdit ? (
-                        <button
-                          onClick={() => setBioEdit(true)}
-                          className="flex items-center gap-1 text-[11px] text-emerald-400 hover:text-emerald-300 transition"
-                        >
-                          <MdEdit className="text-xs" />
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => {
-                            setBioEdit(false);
-                          }}
-                          className="text-[11px] text-gray-400 hover:text-white transition"
-                        >
-                          Preview
-                        </button>
-                      ))}
+            
                   </div>
 
-                  {!bioEdit ? (
+                  {!editProfile ? (
                     <div
                       className="
                         w-full
@@ -520,7 +520,7 @@ function ProfilePage() {
 
                 {/* Stats row */}
                 {
-                  (followers?.length > 0 ||
+                  !editProfile && (followers?.length > 0 ||
                     following?.length > 0 ||
                     posts.length > 0) && (
                     <div className="flex justify-center gap-px mb-6 rounded-xl overflow-hidden border border-white/[0.06]">
@@ -587,72 +587,14 @@ function ProfilePage() {
               {/* ══ RIGHT — Form ═ ════════════════════════════════════ */}
               <form
                 onSubmit={handleSubmit}
-                className="bg-gray-900/50 border border-white/[0.09] md:border-white/[0.1] rounded-2xl mt-4 md:mt-0  p-6 md:p-8 md:pb-6 "
+                className="bg-gray-900/50 border border-white/[0.09] md:border-white/[0.1] rounded-2xl mt-4 md:mt-0  p-6 "
               >
-                <div className="grid md:grid-cols-2 gap-6">
-                  {/* ── Left form column ────────────────────────────── */}
+                <div className="grid md:grid-cols-1 gap-6">
+                  
+                  {/* ── form column ─────────────────────────────── */}
                   <div className="space-y-5">
-                    {/* Display Name */}
-                    <div className="flex flex-col gap-1.5">
-                      <label
-                        htmlFor="authorName"
-                        className="text-[11px] font-medium tracking-widest uppercase text-gray-300"
-                      >
-                        Display Name
-                      </label>
-                      <input
-                        type="text"
-                        id="authorName"
-                        disabled={!editProfile}
-                        value={authorName}
-                        onChange={(e) => {
-                          setAuthorName(e.target.value);
-                          setUpdateButton(true);
-                        }}
-                        className={`w-full px-3.5 py-2.5 text-sm ${editProfile ? "bg-gray-800/60" : "bg-gray-800/30"} border border-white/[0.07] rounded-lg text-gray-300 outline-none focus:border-emerald-500/50 focus:bg-gray-800 transition-colors duration-200 placeholder:text-gray-600`}
-                        placeholder="Your name"
-                        required
-                      />
-                    </div>
 
-                    {/* Email */}
-                    <div className="flex flex-col gap-1.5">
-                      <label
-                        htmlFor="authorEmail"
-                        className="text-[11px] font-medium tracking-widest uppercase text-gray-300"
-                      >
-                        Email
-                      </label>
-                      <input
-                        type="email"
-                        id="authorEmail"
-                        value={authorEmail}
-                        readOnly
-                        className="w-full px-3.5 py-2.5 text-sm bg-gray-800/30 border border-white/[0.04] rounded-lg text-gray-400 outline-none cursor-not-allowed"
-                      />
-                    </div>
-
-                    {/* Role */}
-                    {!editProfile && (
-                      <div className="flex flex-col gap-1.5">
-                        <label
-                          htmlFor="role"
-                          className="text-[11px] font-medium tracking-widest uppercase text-gray-300"
-                        >
-                          Author Role
-                        </label>
-                        <input
-                          type="text"
-                          id="role"
-                          value={author.role}
-                          readOnly
-                          className="w-full px-3.5 py-2.5 text-sm bg-gray-800/30 border border-white/[0.04] rounded-lg text-gray-400 outline-none cursor-not-allowed"
-                        />
-                      </div>
-                    )}
-
-                    {/* Communities — below role */}
-                    {author.community?.length > 0 && (
+                     {!editProfile && author.community?.length > 0 && (
                       <div className="flex flex-col gap-2">
                         <p className="text-[11px] font-medium tracking-widest uppercase text-gray-300">
                           Communities{" "}
@@ -673,198 +615,7 @@ function ProfilePage() {
                       </div>
                     )}
 
-                    {/* Add Link form — desktop only */}
-                    {editProfile && (
-                      <div
-                        className={`${
-                          profileLinks.length >= 5 && !showLinkBox
-                            ? "hidden"
-                            : ""
-                        } hidden md:block`}
-                      >
-                        <div className="flex items-center justify-between mb-3">
-                          <p className="text-[11px] font-medium tracking-widest uppercase text-gray-300">
-                            {showLinkBox
-                              ? "Edit Link"
-                              : 5 - profileLinks.length > 0
-                                ? `${5 - profileLinks.length} slot${
-                                    5 - profileLinks.length > 1 ? "s" : ""
-                                  } remaining`
-                                : "Add Link"}
-                          </p>
-                          {currentLinkTitle.length > 0 && (
-                            <button
-                              onClick={(e) => {
-                                e.preventDefault();
-                                setCurrentLinkTitle("");
-                                setCurrentLinkUrl("");
-                                setShowLinkBox(false);
-                              }}
-                              className="text-[11px] px-2.5 py-1 rounded-md bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-colors"
-                            >
-                              Clear
-                            </button>
-                          )}
-                        </div>
-
-                        {(profileLinks?.length + links?.length < 5 ||
-                          showLinkBox) && (
-                          <div className="flex flex-col gap-2.5">
-                            {currentLinkTitle !== "Others" ? (
-                              <select
-                                value={currentLinkTitle}
-                                onChange={(e) =>
-                                  setCurrentLinkTitle(e.target.value)
-                                }
-                                className="w-full px-3.5 py-2.5 text-sm bg-gray-800/60 border border-white/[0.07] rounded-lg text-gray-300 outline-none focus:border-emerald-500/50 focus:bg-gray-800 transition-colors duration-200 cursor-pointer"
-                              >
-                                <option value="" disabled>
-                                  Add Bio Link
-                                </option>
-                                {!profileLinks.some(
-                                  (l) =>
-                                    l.title === "GitHub" &&
-                                    currentLinkTitle !== "GitHub",
-                                ) && <option value="GitHub">GitHub</option>}
-                                {!profileLinks.some(
-                                  (l) =>
-                                    l.title === "LinkedIn" &&
-                                    currentLinkTitle !== "LinkedIn",
-                                ) && <option value="LinkedIn">LinkedIn</option>}
-                                {!profileLinks.some(
-                                  (l) =>
-                                    l.title === "Portfolio" &&
-                                    currentLinkTitle !== "Portfolio",
-                                ) && (
-                                  <option value="Portfolio">Portfolio</option>
-                                )}
-                                {showLinkBox &&
-                                  profileLinks.map((row) => (
-                                    <option key={row.title} value={row.title}>
-                                      {row.title}
-                                    </option>
-                                  ))}
-                                <option value="Others">Others</option>
-                              </select>
-                            ) : (
-                              <input
-                                type="text"
-                                placeholder="Platform name"
-                                onChange={(e) => setCustomTitle(e.target.value)}
-                                className="w-full px-3.5 py-2.5 text-sm bg-gray-800/60 border border-white/[0.07] rounded-lg text-gray-300 outline-none focus:border-emerald-500/50 focus:bg-gray-800 transition-colors duration-200 placeholder:text-gray-600"
-                              />
-                            )}
-
-                            <input
-                              type="url"
-                              value={currentLinkUrl}
-                              onChange={(e) =>
-                                setCurrentLinkUrl(e.target.value)
-                              }
-                              placeholder="https://..."
-                              className="w-full px-3.5 py-2.5 text-sm bg-gray-800/60 border border-white/[0.07] rounded-lg text-gray-300 outline-none focus:border-emerald-500/50 focus:bg-gray-800 transition-colors duration-200 placeholder:text-gray-600"
-                            />
-
-                            <button
-                              type="button"
-                              disabled={!currentLinkUrl}
-                              onClick={() => {
-                                const titleToUse =
-                                  currentLinkTitle === "Others"
-                                    ? customTitle?.trim()
-                                    : currentLinkTitle.trim();
-                                const sanitizedUrl = sanitizeUrl(
-                                  currentLinkUrl.trim(),
-                                );
-                                if (titleToUse && sanitizedUrl) {
-                                  const newLink = {
-                                    title: titleToUse,
-                                    url: sanitizedUrl,
-                                    id: linkId,
-                                  };
-                                  setLinks([...links, newLink]);
-                                  setUpdateButton(true);
-                                  setCurrentLinkTitle("");
-                                  setCurrentLinkUrl("");
-                                  setCustomTitle("");
-                                  setLinkId(null);
-                                } else if (titleToUse) {
-                                  toast.error(
-                                    "Invalid URL",
-                                    "Please enter a valid http(s) URL.",
-                                  );
-                                } else if (!titleToUse) {
-                                  toast.error(
-                                    "Invalid URL Title",
-                                    "Please enter a valid URL Title.",
-                                  );
-                                }
-                              }}
-                              className={`self-start px-4 py-2 text-xs font-medium border disabled:border-neutral-700 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition-colors 
-                            ${
-                              currentLinkUrl
-                                ? "scale-105 animate-pulse border border-emerald-500"
-                                : ""
-                            } disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed`}
-                            >
-                              {showLinkBox ? "Update Link" : "Add Link"}
-                            </button>
-                          </div>
-                        )}
-
-                        {/* Pending (unsaved) links */}
-                        {links.length > 0 && (
-                          <div className="mt-4 space-y-2">
-                            {links.map((link, index) => (
-                              <div
-                                key={`${link.title}-${index}`}
-                                className="flex items-center justify-between gap-3 px-3 py-2.5 bg-emerald-500/5 border border-emerald-500/15 rounded-lg"
-                              >
-                                <div className="flex items-center gap-2 min-w-0">
-                                  {link.title === "LinkedIn" ? (
-                                    <FaLinkedin className="text-base  flex-shrink-0" />
-                                  ) : link.title === "GitHub" ? (
-                                    <FaSquareGithub className="text-base  flex-shrink-0" />
-                                  ) : link.title === "Portfolio" ? (
-                                    <BsPersonSquare className="text-base  flex-shrink-0" />
-                                  ) : (
-                                    <PiLinkSimpleFill className="text-base  flex-shrink-0" />
-                                  )}
-                                  <div className="min-w-0">
-                                    <p className="text-xs font-medium text-gray-300">
-                                      {link.title}
-                                    </p>
-                                    <a
-                                      href={link.url}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="text-[10px] text-blue-400 hover:underline truncate block max-w-[180px]"
-                                    >
-                                      {link.url}
-                                    </a>
-                                  </div>
-                                </div>
-                                <button
-                                  type="button"
-                                  onClick={() =>
-                                    setLinks((prevLinks) =>
-                                      prevLinks.filter((_, i) => i !== index),
-                                    )
-                                  }
-                                  className="text-red-400/60 hover:text-red-400 transition-colors flex-shrink-0"
-                                >
-                                  <IoIosRemoveCircleOutline className="text-base" />
-                                </button>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* ── Right form column ─────────────────────────────── */}
-                  <div className="space-y-5">
+                    
                     {/* Bio Links */}
                     <div>
                       <p className="text-[11px] font-medium tracking-widest uppercase text-gray-300 mb-3">
@@ -940,24 +691,26 @@ function ProfilePage() {
                           ))}
                         </div>
                       ) : (
-                        <div className="px-4 py-8 bg-white/[0.015] border border-dashed border-white/[0.08] rounded-xl text-center">
+                        <div className={`px-4 py-8 bg-white/[0.015] border flex flx-col items-center justify-center  border-dashed ${editProfile? 'md:h-[140px]':'md:h-[260px]'} border-white/[0.08] rounded-xl text-center`}>
+                          <div>
                           <PiLinkSimpleFill className="text-2xl text-gray-600 mx-auto mb-2" />
                           <p className="text-xs text-gray-500 leading-relaxed">
                             Add your LinkedIn, GitHub, portfolio or other
                             profile links.
                           </p>
+                          </div>
                         </div>
                       )}
                     </div>
 
                     {/* Add Link form — mobile only */}
-                    {editProfile && (
+                   {editProfile && (
                       <div
                         className={`${
                           profileLinks.length >= 5 && !showLinkBox
                             ? "hidden"
                             : ""
-                        } md:hidden block`}
+                        } `}
                       >
                         <div className="flex items-center justify-between mb-3">
                           <p className="text-[11px] font-medium tracking-widest uppercase text-gray-300">
@@ -987,13 +740,16 @@ function ProfilePage() {
                         {(profileLinks?.length + links?.length < 5 ||
                           showLinkBox) && (
                           <div className="flex flex-col gap-2.5">
+                            <div className="md:flex grid grid-cols-1 items-center gap-2.5">
+
+                          
                             {currentLinkTitle !== "Others" ? (
                               <select
                                 value={currentLinkTitle}
                                 onChange={(e) =>
                                   setCurrentLinkTitle(e.target.value)
                                 }
-                                className="w-full px-3.5 py-2.5 text-sm bg-gray-800/60 border border-white/[0.07] rounded-lg text-gray-300 outline-none focus:border-emerald-500/50 focus:bg-gray-800 transition-colors duration-200 cursor-pointer"
+                                className="w-full focus:border focus:border-emerald-500/40  px-4 py-2 cursor-pointer rounded-xl bg-gray-900 border border-gray-700 outline-none text-xs md:text-sm text-white"
                               >
                                 <option value="" disabled>
                                   Add Bio Link
@@ -1028,7 +784,7 @@ function ProfilePage() {
                                 type="text"
                                 placeholder="Platform name"
                                 onChange={(e) => setCustomTitle(e.target.value)}
-                                className="w-full px-3.5 py-2.5 text-sm bg-gray-800/60 border border-white/[0.07] rounded-lg text-gray-300 outline-none focus:border-emerald-500/50 focus:bg-gray-800 transition-colors duration-200 placeholder:text-gray-600"
+                                className="w-full focus:border focus:border-emerald-500/40 px-4 py-2 rounded-md bg-gray-900 border border-gray-700 outline-none  outline-none text-white text-xs md:text-sm"
                               />
                             )}
 
@@ -1039,11 +795,13 @@ function ProfilePage() {
                                 setCurrentLinkUrl(e.target.value)
                               }
                               placeholder="https://..."
-                              className="w-full px-3.5 py-2.5 text-sm bg-gray-800/60 border border-white/[0.07] rounded-lg text-gray-300 outline-none focus:border-emerald-500/50 focus:bg-gray-800 transition-colors duration-200 placeholder:text-gray-600"
+                              className="w-full focus:border focus:border-emerald-500/40 w-full px-4 py-2 rounded-md bg-gray-900 border border-gray-700 outline-none  outline-none text-white text-xs md:text-sm"
                             />
+                              </div>
 
                             <button
                               type="button"
+                              disabled={!currentLinkUrl}
                               onClick={() => {
                                 const titleToUse =
                                   currentLinkTitle === "Others"
@@ -1069,16 +827,26 @@ function ProfilePage() {
                                     "Invalid URL",
                                     "Please enter a valid http(s) URL.",
                                   );
+                                } else if (!titleToUse) {
+                                  toast.error(
+                                    "Invalid URL Title",
+                                    "Please enter a valid URL Title.",
+                                  );
                                 }
                               }}
-                              className="self-start px-4 py-2 text-xs font-medium rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition-colors"
+                              className={`self-start px-4 py-2 text-xs font-medium border disabled:border-neutral-700 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition-colors 
+                            ${
+                              currentLinkUrl
+                                ? "scale-105 animate-pulse border border-emerald-500"
+                                : ""
+                            } disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed`}
                             >
                               {showLinkBox ? "Update Link" : "Add Link"}
                             </button>
                           </div>
                         )}
 
-                        {/* Pending (unsaved) links — mobile */}
+                       
                         {links.length > 0 && (
                           <div className="mt-4 space-y-2">
                             {links.map((link, index) => (
@@ -1195,14 +963,14 @@ function ProfilePage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
-                  className="w-full px-3.5 py-2.5 text-sm bg-gray-800/60 border border-white/[0.07] rounded-lg text-gray-300 outline-none focus:border-emerald-500/50 focus:bg-gray-800 transition-colors duration-200 placeholder:text-gray-600"
+                  className="w-full px-3.5 py-2.5 text-sm bg-gray-800/60b border order-gray-700 outline-none rounded-lg text-gray-300 outline-none focus:border-emerald-500/50 focus:bg-gray-800 transition-colors duration-200 placeholder:text-gray-600"
                 />
               </div>
 
               <div className="flex justify-end gap-2">
                 <button
                   onClick={() => setShowConfirm(false)}
-                  className="px-4 py-2 text-sm font-medium rounded-lg bg-white/[0.04] text-gray-300 border border-white/[0.07] hover:bg-white/[0.08] transition-colors"
+                  className="px-4 py-2 text-sm font-medium rounded-lg bg-white/[0.04] text-gray-300 border border-gray-700 outline-none hover:bg-white/[0.08] transition-colors"
                 >
                   Cancel
                 </button>
