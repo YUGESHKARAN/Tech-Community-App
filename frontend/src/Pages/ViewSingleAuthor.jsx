@@ -19,6 +19,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import formatCount from "../utils/NumberConversion";
 import useGetFollowersDetails from "../hooks/useGetFollowersDetails";
 import { IoClose } from "react-icons/io5";
+import ProfilePageSkeleton from "../components/loaders/ProfilePageSkeleton";
 
 function ViewSingleAuthor() {
   const { email } = useParams();
@@ -182,7 +183,7 @@ function ViewSingleAuthor() {
               {/* ══ LEFT — Profile card ══════════════════════════════ */}
               <div className="bg-gray-900/50 relative border border-white/[0.09] md:border-white/[0.1] rounded-2xl p-6  text-center">
 
-             <div className="flex items-center md:flex-col mt-9 w-full  justify-start gap-2">
+             <div className="flex items-center md:flex-col mt-9 w-full  justify-start gap1.5 md:gap-2">
 
               
                 {/* Avatar */}
@@ -191,10 +192,10 @@ function ViewSingleAuthor() {
                     <img
                       src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`}
                       alt="Profile"
-                      className="w-14 h-14 md:w-24 md:h-24 rounded-full object-cover border-2 border-emerald-500/60"
+                      className="w-14 h-14 md:w-24 md:h-24 rounded-full object-cover  border md:border-2 border-emerald-500/60"
                     />
                   ) : (
-                    <div className="w-14 h-14 md:w-24 md:h-24 flex items-center justify-center rounded-full bg-gray-800 border-2 border-white/10">
+                    <div className="w-14 h-14 md:w-24 md:h-24 flex items-center justify-center rounded-full bg-gray-800 border-1 md:border-2 border-white/10">
                       <HiOutlineUserCircle className="text-gray-600 text-7xl md:text-8xl" />
                     </div>
                   )}
@@ -471,6 +472,7 @@ function ViewSingleAuthor() {
         )
       ) : (
         <ProfileViewSkeleton role={author.role} />
+        // <ProfilePageSkeleton />
       )}
       {!loading && !authorName && (
         <div className="w-full h-[44vh] max-w-[1800px] mx-auto mb-24 md:h-[55vh] flex flex-col items-center justify-center">

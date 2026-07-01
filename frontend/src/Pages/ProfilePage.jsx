@@ -364,19 +364,19 @@ function ProfilePage() {
               <div className="md:sticky md:top-6 relative self-start bg-gray-900/50 border md:border-white/[0.1] border-white/[0.09] rounded-2xl mt-0 p-6 pb-3 text-center">
                 {/* Avatar */}
 
-                <div className="flex items-center md:flex-col mt-9 w-full  justify-start gap-2">
+                <div className="flex items-center md:flex-col mt-9 w-full  justify-start gap-1.5 md:gap-2">
                 <div className="relative md:w-24 w-16 shrink-0 ">
                   {previewImage ? (
                     <img
                       src={previewImage}
                       alt="Preview"
-                      className="w-14 h-14 md:w-24 md:h-24 rounded-full object-cover border-2 border-emerald-500/60"
+                      className="w-14 h-14 md:w-24 md:h-24 rounded-full object-cover border md:border-2 border-emerald-500/60"
                     />
                   ) : author.profile ? (
                     <img
                       src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`}
                       alt="Profile"
-                      className="w-14 h-14 md:w-24 md:h-24 rounded-full object-cover border-2 border-emerald-500/60"
+                      className="w-14 h-14 md:w-24 md:h-24 rounded-full object-cover border md:border-2 border-emerald-500/60"
                     />
                   ) : (
                     <div className="w-14 h-14 md:w-24 md:h-24 flex items-center justify-center rounded-full bg-gray-800 border-2 border-white/10">
