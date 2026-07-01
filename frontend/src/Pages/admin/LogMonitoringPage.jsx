@@ -8,7 +8,7 @@ import axiosInstance from "../../instances/Axiosinstances";
 import toast from "../../components/toaster/Toast";
 import LogTableSkeleton from "../../components/loaders/controls/LogTableSkeleton";
 import formatCount from "../../utils/NumberConversion";
-
+import logNotFound from "../../assets/log_not_found.png"
 
 const STATIC_LOGS = [
   {
@@ -630,13 +630,22 @@ function LogMonitoringPage() {
           })}
         </div>
 
-        {!hasMore && logDetails.length > 0 && (
+         {!loading && filteredData.length === 0 && (
+          <div className="flex  items-center h-64 justify-center">
+            <div className="flex flex-col ">
+              <img src={logNotFound} alt="" className=" object-cover mx-auto w-24 h-24 md:w-32 md:h-32" />
+              <p className="text-center text-gray-400  text-sm mt-0"> No log records !</p>
+            </div>
+          </div>
+        )}
+
+        {!hasMore && filteredData.length > 0 && (
           <div className="text-center text-[10px] text-gray-400 py-4 col-span-full">
             No more logs.
           </div>
         )}
 
-        {loading && logDetails.length > 0  &&  (
+        {loading && filteredData.length > 0  &&  (
           <div className="col-span-full flex my-3 justify-center">
             <div className="relative flex items-center justify-center">
               {/* Outer Oval Ring */}
