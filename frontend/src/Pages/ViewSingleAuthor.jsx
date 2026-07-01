@@ -166,7 +166,7 @@ function ViewSingleAuthor() {
       <NavBar />
       {!loading ? (
         authorName && (
-          <div className="w-full max-w-[1800px] mx-auto min-h-screen mx-auto px-4 md:px-6 pt-2 md:pt-6 pb-8 pb-24">
+          <div className="w-full 3xl:max-w-[1800px] max-w-7xl mx-auto min-h-screen mx-auto px-4 md:px-6 pt-2 md:pt-6 pb-8 pb-24">
             {/* ── Page header ──────────────────────────────────────── */}
             <div className="md:mb-8 px-1">
               <p className="text-[11px] font-medium tracking-widest uppercase text-gray-300 mb-0.5">
@@ -180,26 +180,38 @@ function ViewSingleAuthor() {
             {/* ── Two-column layout ─────────────────────────────────── */}
             <div className="grid md:grid-cols-[300px_1fr] mt-4 md:mt-0 gap-4 items-start">
               {/* ══ LEFT — Profile card ══════════════════════════════ */}
-              <div className="bg-gray-900/50 relative border border-white/[0.09] md:border-white/[0.1] rounded-2xl p-4  text-center">
+              <div className="bg-gray-900/50 relative border border-white/[0.09] md:border-white/[0.1] rounded-2xl p-6  text-center">
+
+             <div className="flex items-center md:flex-col mt-9 w-full  justify-start gap-2">
+
+              
                 {/* Avatar */}
-                <div className="relative w-fit mx-auto mt-3 md:mb-3 mb-4">
+                <div className="relative md:w-24 w-16 shrink-0">
                   {author.profile ? (
                     <img
                       src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`}
                       alt="Profile"
-                      className="w-28 h-28 rounded-full object-cover border-2 border-emerald-500/60"
+                      className="w-14 h-14 md:w-24 md:h-24 rounded-full object-cover border-2 border-emerald-500/60"
                     />
                   ) : (
-                    <div className="w-28 h-28 flex items-center justify-center rounded-full bg-gray-800 border-2 border-white/10">
+                    <div className="w-14 h-14 md:w-24 md:h-24 flex items-center justify-center rounded-full bg-gray-800 border-2 border-white/10">
                       <HiOutlineUserCircle className="text-gray-600 text-7xl md:text-8xl" />
                     </div>
                   )}
                 </div>
+                <div className="flex w-full  flex-col justify-start">
+                  {/* Name */}
+                  <h2 className="md:text-lg text-left md:text-center text-lg leading-snug font-medium  text-white my-1">
+                    {authorName}
+                  </h2>
+                  <p className="text-xs truncate text-left md:text-center line-clamp-1 text-wrap text-gray-500">
+                    {email}
+                  </p>
 
-                {/* Name */}
-                <h2 className="md:text-lg text-lg leading-snug font-medium  text-white my-1">
-                  {authorName}
-                </h2>
+                </div>
+                </div>
+
+                
 
                 {/* Role pill */}
                 <span className="absolute left-4 top-4 ">
@@ -212,12 +224,12 @@ function ViewSingleAuthor() {
                     onClick={scrollToAchievements}
                     className="cursor-pointer"
                   >
-                    <BadgeIcons badges={author?.badges} />
+                    <BadgeIcons parentClass="right-6" badges={author?.badges} />
                   </div>
                 )}
 
                 {bioDescription && (
-                  <div className="mb-5 pl-1 mt-3  text-left">
+                  <div className="my-5 pl-1 md:mt-3  text-left">
                     {/* <p className="text-[11px] tracking-widest uppercase text-gray-400 pb-1 font-medium">
                       About
                     </p> */}
@@ -355,65 +367,10 @@ function ViewSingleAuthor() {
 
               {/* ══ RIGHT — Info panel ═══════════════════════════════ */}
               <div className="bg-gray-900/50 border border-white/[0.09] md:border-white/[0.1] rounded-2xl p-6 md:p-8">
-                <div className="grid md:grid-cols-2 gap-6">
-                  {/* ── Left column — fields ─────────────────────── */}
+                <div className="grid md:grid-cols-1 gap-6">
+
                   <div className="space-y-5">
-                    {/* Author Name */}
-                    <div className="flex flex-col gap-1.5">
-                      <label
-                        htmlFor="authorName"
-                        className="text-[11px] font-medium tracking-widest uppercase text-gray-300"
-                      >
-                        Author Name
-                      </label>
-                      <input
-                        type="text"
-                        id="authorName"
-                        value={authorName}
-                        readOnly
-                        onChange={(e) => {
-                          setAuthorName(e.target.value);
-                          setUpdateButton(true);
-                        }}
-                        className="w-full px-3.5 py-2.5 text-sm bg-gray-800/30 border border-white/[0.04] rounded-lg text-gray-400 outline-none cursor-not-allowed"
-                      />
-                    </div>
-
-                    {/* Email */}
-                    <div className="flex flex-col gap-1.5">
-                      <label
-                        htmlFor="email"
-                        className="text-[11px] font-medium tracking-widest uppercase text-gray-300"
-                      >
-                        Author Email
-                      </label>
-                      <input
-                        type="email"
-                        id="email"
-                        value={email}
-                        readOnly
-                        className="w-full px-3.5 py-2.5 text-sm bg-gray-800/30 border border-white/[0.04] rounded-lg text-gray-400 outline-none cursor-not-allowed"
-                      />
-                    </div>
-
-                    {/* Role */}
-                    <div className="flex flex-col gap-1.5">
-                      <label
-                        htmlFor="role"
-                        className="text-[11px] font-medium tracking-widest uppercase text-gray-300"
-                      >
-                        Author Role
-                      </label>
-                      <input
-                        type="text"
-                        id="role"
-                        value={author.role}
-                        readOnly
-                        className="w-full px-3.5 py-2.5 text-sm bg-gray-800/30 border border-white/[0.04] rounded-lg text-gray-400 outline-none cursor-not-allowed"
-                      />
-                    </div>
-
-                    {/* Communities — below role */}
+                      {/* Communities — below role */}
                     {author.community?.length > 0 && (
                       <div className="flex flex-col gap-2">
                         <p className="text-[11px] font-medium tracking-widest uppercase text-gray-300">
@@ -434,10 +391,11 @@ function ViewSingleAuthor() {
                         </div>
                       </div>
                     )}
-                  </div>
+          
 
                   {/* ── Right column — Bio Links ─────────────────── */}
                   <div>
+                   
                     <p className="text-[11px] font-medium tracking-widest uppercase text-gray-300 mb-3">
                       Bio Links
                     </p>
@@ -447,7 +405,7 @@ function ViewSingleAuthor() {
                         {profileLinks.map((link, index) => (
                           <div
                             key={index}
-                            className="flex items-center gap-3 px-3.5 py-3 bg-white/[0.02] border border-white/[0.06] rounded-xl hover:border-white/[0.1] transition-colors"
+                            className="flex items-center gap-3 px-3.5 py-3 bg-white/[0.02] border border-white/[0.06]  rounded-xl hover:border-white/[0.1] transition-colors"
                           >
                             <div className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/[0.04] border border-white/[0.06] flex-shrink-0">
                               {link.title === "LinkedIn" ? (
@@ -477,14 +435,17 @@ function ViewSingleAuthor() {
                         ))}
                       </div>
                     ) : (
-                      <div className="px-4 py-8 bg-white/[0.015] border border-dashed border-white/[0.08] rounded-xl text-center">
+                      <div className="px-4 py-8 bg-white/[0.015] flex items-center justify-center border border-dashed border-white/[0.08] md:h-[260px] rounded-xl text-center">
+                        <div>
                         <PiLinkSimpleFill className="text-2xl text-gray-600 mx-auto mb-2" />
                         <p className="text-xs text-gray-500 leading-relaxed">
                           No bio links available.
                         </p>
+                        </div>
                       </div>
                     )}
                   </div>
+                </div>
                 </div>
               </div>
             </div>
