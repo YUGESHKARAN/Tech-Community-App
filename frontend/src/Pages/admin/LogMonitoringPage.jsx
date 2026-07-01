@@ -502,7 +502,7 @@ function LogMonitoringPage() {
         </div>
 
         {/* LIST */}
-        <div className="lg:hidden flex flex-col  gap-4">
+        <div className="lg:hidden flex mt-1 flex-col  gap-4">
           {filteredData.map((log) => {
             const status = getStatus(log);
 
