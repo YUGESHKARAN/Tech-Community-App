@@ -188,7 +188,7 @@ function Dashboard() {
                   sub="Chief Control"
                   icon={ShieldCheck}
                   accent="#ec4899"
-                  to={'/control#admins'}
+                  to={'/control'}
                 />
 
                 <KPICard
