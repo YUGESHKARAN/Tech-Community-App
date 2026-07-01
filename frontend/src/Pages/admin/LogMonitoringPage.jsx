@@ -634,7 +634,7 @@ function LogMonitoringPage() {
           <div className="flex  items-center h-64 justify-center">
             <div className="flex flex-col ">
               <img src={logNotFound} alt="" className=" object-cover mx-auto  w-32 h-32" />
-              <p className="text-center text-gray-400  text-sm mt-0"> No log records !</p>
+              <p className="text-center text-gray-500 md:text-gray-400  text-sm mt-0"> No log records !</p>
             </div>
           </div>
         )}
