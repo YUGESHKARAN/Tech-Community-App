@@ -183,7 +183,7 @@ function ViewSingleAuthor() {
               {/* ══ LEFT — Profile card ══════════════════════════════ */}
               <div className="bg-gray-900/50 relative border border-white/[0.09] md:border-white/[0.1] rounded-2xl p-6  text-center">
 
-             <div className="flex items-center md:flex-col mt-9 w-full  justify-start gap1.5 md:gap-2">
+             <div className="flex items-start md:flex-col mt-9 w-full  justify-start gap1.5 md:gap-2">
                 {/* Avatar */}
                 <div className="relative md:w-24 w-16 shrink-0">
                   {author.profile ? (
@@ -200,10 +200,10 @@ function ViewSingleAuthor() {
                 </div>
                 <div className="flex w-full  flex-col justify-start">
                   {/* Name */}
-                  <h2 className="md:text-xl text-xl truncate  line-clamp-1 text-wrap text-left md:text-center font-medium leading-snug text-white my-1">
+                  <h2 className="md:text-xl text-xl truncate  line-clamp-4 text-wrap text-left md:text-center font-medium leading-snug text-white my-1">
                     {authorName}
                   </h2>
-                  <p className="text-xs truncate text-left text-wrap md:text-center line-clamp-2 text-wrap break-all text-gray-500">
+                  <p className="text-xs truncate text-left text-wrap md:text-center line-clamp-4 text-wrap break-all text-gray-500">
                     {email}
                   </p>
 
