@@ -183,7 +183,7 @@ function ViewSingleAuthor() {
               {/* ══ LEFT — Profile card ══════════════════════════════ */}
               <div className="bg-gray-900/50 relative border border-white/[0.09] md:border-white/[0.1] rounded-2xl p-6  text-center">
 
-             <div className="flex items-start md:flex-col mt-9 w-full  justify-start gap1.5 md:gap-2">
+             <div className="flex items-start md:items-center md:flex-col mt-9 w-full  justify-start gap1.5 md:gap-2">
                 {/* Avatar */}
                 <div className="relative md:w-24 w-16 shrink-0">
                   {author.profile ? (
