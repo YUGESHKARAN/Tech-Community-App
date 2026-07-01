@@ -251,7 +251,7 @@ function ViewSingleAuthor() {
                 {(followers?.length > 0 ||
                   following?.length > 0 ||
                   posts.length > 0) && (
-                  <div className="flex justify-center gap-px mb-3 rounded-xl overflow-hidden border border-white/[0.06]">
+                  <div className="flex justify-center gap-px my-5 mb-3 rounded-xl overflow-hidden border border-white/[0.06]">
                     {author.role === "coordinator" && followers?.length > 0 && (
                       <div
                         onClick={() => {
