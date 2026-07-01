@@ -633,7 +633,7 @@ function LogMonitoringPage() {
          {!loading && filteredData.length === 0 && (
           <div className="flex  items-center h-64 justify-center">
             <div className="flex flex-col ">
-              <img src={logNotFound} alt="" className=" object-cover mx-auto w-24 h-24 md:w-32 md:h-32" />
+              <img src={logNotFound} alt="" className=" object-cover mx-auto  w-32 h-32" />
               <p className="text-center text-gray-400  text-sm mt-0"> No log records !</p>
             </div>
           </div>
