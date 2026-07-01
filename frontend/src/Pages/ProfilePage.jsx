@@ -359,12 +359,12 @@ function ProfilePage() {
             </div>
 
             {/* ── Two-column layout ─────────────────────────────────── */}
-            <div className="grid md:grid-cols-[300px_1fr]  md:gap-4 mt-4 md:mt-0 mb-3 items-start">
+            <div className="grid grid-cols-1 md:grid-cols-[300px_1fr]  md:gap-4 mt-4 md:mt-0 mb-3 items-start">
               {/* ══ LEFT — Profile card ══════════════════════════════ */}
               <div className="md:sticky md:top-6 relative self-start bg-gray-900/50 border md:border-white/[0.1] border-white/[0.09] rounded-2xl mt-0 p-6 pb-3 text-center">
                 {/* Avatar */}
 
-                <div className="flex items-center md:flex-col mt-9 w-full  justify-start gap-1.5 md:gap-2">
+                <div className="flex items-start md:items-center md:flex-col mt-9 w-full  justify-start gap-1.5 md:gap-2">
                 <div className="relative md:w-24 w-16 shrink-0 ">
                   {previewImage ? (
                     <img
@@ -408,10 +408,10 @@ function ProfilePage() {
                 <div className="flex w-full  flex-col justify-start">
                {!editProfile?
                <>
-                <h2 className=" md:text-xl text-xl truncate  line-clamp-1 text-wrap text-left md:text-center font-medium leading-snug text-white my-1">
+                <h2 className=" md:text-xl text-xl truncate  line-clamp-4 text-wrap text-left md:text-center break-all font-medium leading-snug text-white my-1">
                   {userName || "—"}
                 </h2>
-                <p className="text-xs truncate text-left md:text-center line-clamp-1 text-wrap text-gray-500">
+                <p className="text-xs truncate text-left text-wrap md:text-center line-clamp-4 text-wrap break-all text-gray-500">
                   {authorEmail}
                 </p>
                 </>:
@@ -589,7 +589,7 @@ function ProfilePage() {
                 onSubmit={handleSubmit}
                 className="bg-gray-900/50 border border-white/[0.09] md:border-white/[0.1] rounded-2xl mt-4 md:mt-0  p-6 "
               >
-                <div className="grid md:grid-cols-1 gap-6">
+                <div className="md:grid flex flex-col md:grid-cols-1 gap-6">
                   
                   {/* ── form column ─────────────────────────────── */}
                   <div className="space-y-5">

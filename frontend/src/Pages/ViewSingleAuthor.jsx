@@ -200,7 +200,7 @@ function ViewSingleAuthor() {
                 </div>
                 <div className="flex w-full  flex-col justify-start">
                   {/* Name */}
-                  <h2 className="md:text-xl text-xl truncate  line-clamp-4 text-wrap text-left md:text-center font-medium leading-snug text-white my-1">
+                  <h2 className="md:text-xl text-xl truncate  line-clamp-4 break-all text-wrap text-left md:text-center font-medium leading-snug text-white my-1">
                     {authorName}
                   </h2>
                   <p className="text-xs truncate text-left text-wrap md:text-center line-clamp-4 text-wrap break-all text-gray-500">
