@@ -72,7 +72,7 @@ const ProfilePageSkeleton = () => {
             </div>
           ))}
 
-          <div className="mt-8 h-12 rounded-xl bg-gray-800 animate-pulse" />
+          <div className="mt-8 h-9 w-40 rounded-xl bg-gray-800 animate-pulse" />
         </div>
       </div>
     </div>

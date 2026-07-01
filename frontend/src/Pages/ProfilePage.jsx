@@ -904,7 +904,7 @@ function ProfilePage() {
                     <button
                       type="submit"
                       disabled={loading || !updateButton}
-                      className="px-5 py-2.5 text-xs md:text-sm rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition-colors disabled:bg-gray-700/50 disabled:border-none disabled:text-gray-400 disabled:cursor-not-allowed"
+                      className="px-5 py-2.5 text-xs md:text-sm rounded-lg scale-105 animate-pulse bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition-colors disabled:bg-gray-700/50 disabled:border-none disabled:text-gray-400 disabled:cursor-not-allowed"
                     >
                       {loading ? "Updating…" : "Update My Profile"}
                     </button>
