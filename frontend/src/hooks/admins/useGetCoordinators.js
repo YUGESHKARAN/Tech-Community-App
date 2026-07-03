@@ -15,7 +15,7 @@ const useGetCoordinators = (email) => {
   const isFetchingRef = useRef(false);
   const hasMoreRef = useRef(true);
 
-  const limit = 50;
+  const limit = 100;
 
   const fetchCoordinators = useCallback(async () => {
     const currentPage = pageRef.current;

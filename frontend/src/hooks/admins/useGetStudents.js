@@ -14,7 +14,7 @@ const useGetStudents = (email) => {
   const isFetchingRef = useRef(false);
   const hasMoreRef = useRef(true);
 
-  const limit = 50;
+  const limit = 200;
 
   const fetchStudents = useCallback(async () => {
     const currentPage = pageRef.current;

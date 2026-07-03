@@ -13,7 +13,7 @@ const useGetDeletionLog = (email) => {
   const isFetchingRef = useRef(false);
   const hasMoreRef = useRef(true);
 
-  const limit = 10;
+  const limit = 200;
 
   const fetchDeletionLogs = useCallback(async () => {
     const currentPage = pageRef.current;
