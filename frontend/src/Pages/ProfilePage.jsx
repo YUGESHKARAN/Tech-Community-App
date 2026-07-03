@@ -468,6 +468,7 @@ function ProfilePage() {
                         whitespace-pre-wrap
                         text-gray-300
                         break-words
+                        
                       "
                     >
                       {bioDescription?.trim()?.length > 0 ? (
@@ -493,7 +494,7 @@ function ProfilePage() {
                         w-full
                         rounded-lg
                         bg-gray-900
-                        border border-gray-700
+                        border border-emerald-700
                         p-3
                         text-xs
                         text-white
