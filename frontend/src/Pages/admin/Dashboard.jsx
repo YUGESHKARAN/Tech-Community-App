@@ -1141,7 +1141,7 @@ const AuthorsTable = ({
                   className="border-b border-white/[0.04] xl:hover:bg-white/[0.03]  transition-colors"
                 >
                   {/* Name */}
-                  <td className="py-3 px-5 w-[60%] xl:w-[38%]">
+                  <td className="py-3 px-5 w-[70%] xl:w-[38%]">
                     <Link
                       to={`/viewProfile/${u.email}`}
                       className="block w-full"
@@ -1175,7 +1175,7 @@ const AuthorsTable = ({
                     </Link>
                   </td>
                   {/* Role */}
-                  <td className="py-3 px-5 w-[26%] text-center">
+                  <td className="py-3 px-5 w-[30%] text-center">
                     <Link
                       to={`/viewProfile/${u.email}`}
                       className="block w-full"
