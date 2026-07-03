@@ -754,10 +754,10 @@ function ProfilePage() {
                                   setCurrentLinkTitle(e.target.value)
                                 }
                                 className="w-full focus:border focus:border-emerald-500/40  focus:border-emerald-500/40
-                        focus:ring-2
-                        focus:ring-emerald-500/10
-                        transition-all duration-200  px-4 py-2 cursor-pointer rounded-xl bg-gray-900 border border-gray-700 outline-none text-xs md:text-sm text-white"
-                              >
+                                    focus:ring-2
+                                    focus:ring-emerald-500/10
+                                    transition-all duration-200  px-4 py-2 cursor-pointer rounded-xl bg-gray-900  border border-emerald-700 outline-none text-xs md:text-sm text-white"         
+                                 >
                                 <option value="" disabled>
                                   Add Bio Link
                                 </option>
@@ -791,7 +791,7 @@ function ProfilePage() {
                                 type="text"
                                 placeholder="Platform name"
                                 onChange={(e) => setCustomTitle(e.target.value)}
-                                className="w-full focus:border focus:border-emerald-500/40 px-4 py-2 rounded-md bg-gray-900 border border-gray-700 outline-none  focus:border-emerald-500/40
+                                className="w-full focus:border focus:border-emerald-500/40 px-4 py-2 rounded-md bg-gray-900  border border-emerald-700 outline-none  focus:border-emerald-500/40
                         focus:ring-2
                         focus:ring-emerald-500/10
                         transition-all duration-200 text-white text-xs md:text-sm"
@@ -808,7 +808,7 @@ function ProfilePage() {
                               className="w-full focus:border  focus:border-emerald-500/40
                         focus:ring-2
                         focus:ring-emerald-500/10
-                        transition-all duration-200 focus:border-emerald-500/40 w-full px-4 py-2 rounded-md bg-gray-900 border border-gray-700 outline-none  outline-none text-white text-xs md:text-sm"
+                        transition-all duration-200 focus:border-emerald-500/40 w-full px-4 py-2 rounded-md bg-gray-900  border border-emerald-700 outline-none  outline-none text-white text-xs md:text-sm"
                             />
                               </div>
 
@@ -983,7 +983,7 @@ function ProfilePage() {
               <div className="flex justify-end gap-2">
                 <button
                   onClick={() => setShowConfirm(false)}
-                  className="px-4 py-2 text-xs font-medium rounded-lg bg-white/[0.04] text-gray-300 border border-gray-700 outline-none hover:bg-white/[0.08] transition-colors"
+                  className="px-4 py-2 text-xs font-medium rounded-lg bg-white/[0.04] text-gray-300  border border-emerald-700 outline-none hover:bg-white/[0.08] transition-colors"
                 >
                   Cancel
                 </button>
