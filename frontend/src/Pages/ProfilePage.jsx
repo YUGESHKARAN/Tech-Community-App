@@ -424,7 +424,10 @@ function ProfilePage() {
                           setAuthorName(e.target.value);
                           setUpdateButton(true);
                         }}
-                        className={`w-full px-2 py-2 md:mt-2 text-xs ${editProfile?'border border-emerald-700':''} bg-transparent  rounded-lg text-gray-300 outline-none focus:border-emerald-500/50 transition-colors duration-200 placeholder:text-gray-600`}
+                        className={`w-full px-2 py-2 md:mt-2 text-xs border border-emerald-700 bg-transparent  rounded-lg text-gray-300 outline-none  focus:border-emerald-500/40
+                        focus:ring-2
+                        focus:ring-emerald-500/10
+                        transition-all duration-200 placeholder:text-gray-600`}
                         placeholder="Your name"
                         required
                       />}
@@ -750,7 +753,10 @@ function ProfilePage() {
                                 onChange={(e) =>
                                   setCurrentLinkTitle(e.target.value)
                                 }
-                                className="w-full focus:border focus:border-emerald-500/40  px-4 py-2 cursor-pointer rounded-xl bg-gray-900 border border-gray-700 outline-none text-xs md:text-sm text-white"
+                                className="w-full focus:border focus:border-emerald-500/40  focus:border-emerald-500/40
+                        focus:ring-2
+                        focus:ring-emerald-500/10
+                        transition-all duration-200  px-4 py-2 cursor-pointer rounded-xl bg-gray-900 border border-gray-700 outline-none text-xs md:text-sm text-white"
                               >
                                 <option value="" disabled>
                                   Add Bio Link
@@ -785,7 +791,10 @@ function ProfilePage() {
                                 type="text"
                                 placeholder="Platform name"
                                 onChange={(e) => setCustomTitle(e.target.value)}
-                                className="w-full focus:border focus:border-emerald-500/40 px-4 py-2 rounded-md bg-gray-900 border border-gray-700 outline-none  outline-none text-white text-xs md:text-sm"
+                                className="w-full focus:border focus:border-emerald-500/40 px-4 py-2 rounded-md bg-gray-900 border border-gray-700 outline-none  focus:border-emerald-500/40
+                        focus:ring-2
+                        focus:ring-emerald-500/10
+                        transition-all duration-200 text-white text-xs md:text-sm"
                               />
                             )}
 
@@ -796,7 +805,10 @@ function ProfilePage() {
                                 setCurrentLinkUrl(e.target.value)
                               }
                               placeholder="https://..."
-                              className="w-full focus:border focus:border-emerald-500/40 w-full px-4 py-2 rounded-md bg-gray-900 border border-gray-700 outline-none  outline-none text-white text-xs md:text-sm"
+                              className="w-full focus:border  focus:border-emerald-500/40
+                        focus:ring-2
+                        focus:ring-emerald-500/10
+                        transition-all duration-200 focus:border-emerald-500/40 w-full px-4 py-2 rounded-md bg-gray-900 border border-gray-700 outline-none  outline-none text-white text-xs md:text-sm"
                             />
                               </div>
 
