@@ -633,7 +633,7 @@ function ProfilePage() {
                               key={index}
                               className="flex items-center justify-between gap-3 px-3.5 py-3 bg-white/[0.02] border border-white/[0.06] rounded-xl hover:border-white/[0.1] transition-colors"
                             >
-                              <div className="flex items-center gap-3 min-w-0">
+                              <div className="flex items-start gap-3 min-w-0">
                                 <div className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/[0.04] border border-white/[0.06] flex-shrink-0">
                                   {link.title === "LinkedIn" ? (
                                     <FaLinkedin className="text-base " />
