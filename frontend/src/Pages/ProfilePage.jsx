@@ -867,7 +867,7 @@ function ProfilePage() {
                                 key={`${link.title}-${index}`}
                                 className="flex items-center justify-between gap-3 px-3 py-2.5 bg-emerald-500/5 border border-emerald-500/15 rounded-lg"
                               >
-                                <div className="flex items-center gap-2 min-w-0">
+                                <div className="flex items-start gap-2 min-w-0">
                                   {link.title === "LinkedIn" ? (
                                     <FaLinkedin className="text-base  flex-shrink-0" />
                                   ) : link.title === "GitHub" ? (
