@@ -10,8 +10,7 @@
 
 
 [![License: MIT](https://img.shields.io/github/license/YUGESHKARAN/Tech-Community-App)](./LICENSE)
-[![GitHub forks](https://img.shields.io/github/forks/YUGESHKARAN/Node-Blog-App?style=social)](https://github.com/YUGESHKARAN/Node-Blog-App/network/members)
-[![Node.js Version](https://img.shields.io/badge/node-%3E%3D14.0.0-brightgreen.svg)](https://nodejs.org/)
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D17.9.1-brightgreen.svg)](https://nodejs.org/)
 [![Last Commit](https://img.shields.io/github/last-commit/YUGESHKARAN/Node-Blog-App)](https://github.com/YUGESHKARAN/Node-Blog-App/commits/main)
 [![Contributors](https://img.shields.io/github/contributors/YUGESHKARAN/Tech-Community-App)](https://github.com/YUGESHKARAN/Tech-Community-App/graphs/contributors)
 [![Issues](https://img.shields.io/github/issues/YUGESHKARAN/Tech-Community-App)](https://github.com/YUGESHKARAN/Tech-Community-App/issues)
