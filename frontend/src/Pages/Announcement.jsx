@@ -1463,7 +1463,7 @@ function Announcement() {
                   <h3 className="text-sm text-white mt-1">Community Summary</h3>
                 </div>
 
-                {announcement.length > 0 && (
+                {announcement?.length > 1 && (
                   <button
                     onClick={clearAllAnnouncements}
                     className="text-red-400 hover:text-red-300 transition-colors duration-200"
