@@ -270,7 +270,7 @@ function ProfilePage() {
 
   return (
     <>
-      <div className=" bg-gray-900 text-white">
+      <div className=" bg-gray-900 relative text-white">
         <NavBar />
 
         {!loader ? (

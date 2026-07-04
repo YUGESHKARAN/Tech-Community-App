@@ -163,7 +163,7 @@ function ViewSingleAuthor() {
   // console.log("email", email)
 
   return (
-    <div className=" bg-gray-900 min-h-screen flex flex-col justify-between text-white">
+    <div className=" bg-gray-900 min-h-screen flex relative flex-col justify-between text-white">
       <NavBar />
       {!loading ? (
         authorName && (
