@@ -42,6 +42,21 @@ const BookmarkPlaylistCard = ({ playlist, setBookMarPlaylist }) => {
     }
   };
 
+   const avatarColor = (name) => {
+    const colors = [
+      "#10b981",
+      "#1871ff",
+      "#f59e0b",
+      "#f6238c",
+      "#8b5cf6",
+      "#09b2d0",
+      "#f97316",
+    ];
+    return colors[(name?.charCodeAt(0) ?? 0) % colors.length];
+  };
+
+  const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
+
   return (
     <div className="relative cursor-pointer w-full mt-4 max-w-sm">
       {/* STACK LAYER 3 (BACK) */}
@@ -105,30 +120,40 @@ const BookmarkPlaylistCard = ({ playlist, setBookMarPlaylist }) => {
               </span> */}
 
               <div className="flex -space-x-2">
-                {collaborators.length > 0 &&
-                  collaborators
-                    .slice(0, 3)
-                    .map((collab) => (
-                      <img
-                        key={collab._id}
-                        src={
-                          collab.profile
-                            ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${collab.profile}`
-                            : user
-                        }
-                        alt={collab.name}
-                        className="h-6 w-6 rounded-full border-2 border-teal-600 bg-gray-400"
-                      />
-                    ))}
-                <img
-                  src={
-                    profile
-                      ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`
-                      : user
-                  }
-                  // alt={collab.name}
-                  className="h-6 w-6 rounded-full border-2 border-teal-600 bg-gray-400"
-                />
+                  {collaborators.length > 0 &&
+                  collaborators.slice(0, 3).map((collab) => (
+                    <>
+                      {collab.profile ? (
+                        <img
+                          key={collab._id}
+                          src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${collab.profile}`}
+                          alt={collab.name}
+                          className="h-6 w-6 rounded-full border-2 border-teal-600 bg-gray-400"
+                        />
+                      ) : (
+                        <div
+                          className="w-6 h-6 rounded-full flex items-center border border-neutral-800 justify-center text-[9px] font-bold text-white shrink-0"
+                          style={{ backgroundColor: avatarColor(collab.name) }}
+                        >
+                          {initials(collab.name)}
+                        </div>
+                      )}
+                    </>
+                  ))}
+                {profile ? (
+                  <img
+                    src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`}
+                    // alt={collab.name}
+                    className="h-6 w-6 rounded-full border-2 border-teal-600 bg-gray-400"
+                  />
+                ) : (
+                  <div
+                    className="w-6 h-6 rounded-full flex items-center border border-neutral-800 justify-center text-[9px] font-bold text-white shrink-0"
+                    style={{ backgroundColor: avatarColor(name) }}
+                  >
+                    {initials(name)}
+                  </div>
+                )}
               </div>
               <div
                 onClick={() => {

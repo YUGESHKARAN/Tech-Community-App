@@ -8,7 +8,11 @@ import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 import highlightText from "../hooks/highlightText";
 import { getItem } from "../utils/encode";
-const TutorPlaylistCard = ({ playlist, setPlaylistCategory,debouncedSearch }) => {
+const TutorPlaylistCard = ({
+  playlist,
+  setPlaylistCategory,
+  debouncedSearch,
+}) => {
   const {
     title,
     domain,
@@ -21,13 +25,13 @@ const TutorPlaylistCard = ({ playlist, setPlaylistCategory,debouncedSearch }) =>
   } = playlist;
 
   const [bookMarkId, setBookMarkId] = useState([]);
-//  const email = localStorage.getItem("email");
- const email = getItem("email");
- 
+  //  const email = localStorage.getItem("email");
+  const email = getItem("email");
+
   const getBookMarkPlaylist = async () => {
     try {
       const response = await axiosInstance.get(
-        `/blog/playlist/bookmark/${email}`
+        `/blog/playlist/bookmark/${email}`,
       );
       if (response.status == 200) {
         setBookMarkId(response.data.playlistIds);
@@ -47,7 +51,7 @@ const TutorPlaylistCard = ({ playlist, setPlaylistCategory,debouncedSearch }) =>
     try {
       const response = await axiosInstance.post(
         `/blog/posts/bookmarkPosts/${email}`,
-        { postId:_id }
+        { postId: _id },
       );
       if (response.status == 200) {
         setBookMarkId((prev) => {
@@ -65,6 +69,21 @@ const TutorPlaylistCard = ({ playlist, setPlaylistCategory,debouncedSearch }) =>
       // toast.error("unable to bookmark");
     }
   };
+
+  const avatarColor = (name) => {
+    const colors = [
+      "#10b981",
+      "#1871ff",
+      "#f59e0b",
+      "#f6238c",
+      "#8b5cf6",
+      "#09b2d0",
+      "#f97316",
+    ];
+    return colors[(name?.charCodeAt(0) ?? 0) % colors.length];
+  };
+
+  const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
 
   return (
     <div className="relative  w-full md:mb-7 max-w-sm">
@@ -90,30 +109,30 @@ const TutorPlaylistCard = ({ playlist, setPlaylistCategory,debouncedSearch }) =>
       >
         {/* Thumbnail */}
         <Link to={`/viewplaylist/${_id}`}>
-        <div className="cursor-pointer rounded-xl relative h-48 md:h-44 bg-zinc-800">
-          {thumbnail ? (
-            <img
-              src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${thumbnail}`}
-              alt={title}
-              className="h-full w-full rounded-xl  object-cover"
-            />
-          ) : (
-            <div className="flex h-full items-center justify-center text-zinc-400 text-sm">
-              No Thumbnail
-            </div>
-          )}
+          <div className="cursor-pointer rounded-xl relative h-48 md:h-44 bg-zinc-800">
+            {thumbnail ? (
+              <img
+                src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${thumbnail}`}
+                alt={title}
+                className="h-full w-full rounded-xl  object-cover"
+              />
+            ) : (
+              <div className="flex h-full items-center justify-center text-zinc-400 text-sm">
+                No Thumbnail
+              </div>
+            )}
 
-          {/* Playlist Badge */}
-          <span className="absolute top-3 left-3 bg-emerald-600 text-white text-xs font-medium px-2 py-1 rounded">
-            Playlist
-            {/* {domain} */}
-          </span>
+            {/* Playlist Badge */}
+            <span className="absolute top-3 left-3 bg-emerald-600 text-white text-xs font-medium px-2 py-1 rounded">
+              Playlist
+              {/* {domain} */}
+            </span>
 
-          {/* Lessons count */}
-          <span className="absolute bottom-2 right-2 bg-black/80 text-white flex items-center gap-0.5 text-xs px-2 py-1 rounded">
-            <MdOutlinePlaylistPlay className="text-sm" /> {post_ids.length}
-          </span>
-        </div>
+            {/* Lessons count */}
+            <span className="absolute bottom-2 right-2 bg-black/80 text-white flex items-center gap-0.5 text-xs px-2 py-1 rounded">
+              <MdOutlinePlaylistPlay className="text-sm" /> {post_ids.length}
+            </span>
+          </div>
         </Link>
 
         {/* Content */}
@@ -124,35 +143,47 @@ const TutorPlaylistCard = ({ playlist, setPlaylistCategory,debouncedSearch }) =>
           </h3>
 
           <div className="flex items-center justify-between ">
-            
             <div className="flex items-center  gap-3">
               {/* <span className="inline-block text-[10px]  bg-emerald-600/20 text-emerald-400 px-2 py-1  rounded-lg">
                 {domain}
              
               </span> */}
               <div className="flex -space-x-2">
-                
-                {collaborators.length>0 && collaborators.slice(0, 3).map((collab) => (
+                {collaborators.length > 0 &&
+                  collaborators.slice(0, 3).map((collab) => (
+                    <>
+                      {collab.profile ? (
+                        <img
+                          key={collab._id}
+                          src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${collab.profile}`}
+                          alt={collab.name}
+                          className="h-6 w-6 rounded-full border-2 border-teal-600 bg-gray-400"
+                        />
+                      ) : (
+                        <div
+                          className="w-6 h-6 rounded-full flex items-center border border-neutral-800 justify-center text-[9px] font-bold text-white shrink-0"
+                          style={{ backgroundColor: avatarColor(collab.name) }}
+                        >
+                          {initials(collab.name)}
+                        </div>
+                      )}
+                    </>
+                  ))}
+
+                {profile ? (
                   <img
-                    key={collab._id}
-                    src={
-                      collab.profile
-                        ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${collab.profile}`
-                        : user
-                    }
-                    alt={collab.name}
+                    src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`}
+                    // alt={collab.name}
                     className="h-6 w-6 rounded-full border-2 border-teal-600 bg-gray-400"
                   />
-                ))}
-                <img
-                  src={
-                    profile
-                      ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`
-                      : user
-                  }
-                  // alt={collab.name}
-                  className="h-6 w-6 rounded-full border-2 border-teal-600 bg-gray-400"
-                />
+                ) : (
+                  <div
+                    className="w-6 h-6 rounded-full flex items-center border border-neutral-800 justify-center text-[9px] font-bold text-white shrink-0"
+                    style={{ backgroundColor: avatarColor(name) }}
+                  >
+                    {initials(name)}
+                  </div>
+                )}
               </div>
               <div
                 onClick={() => {
@@ -162,18 +193,17 @@ const TutorPlaylistCard = ({ playlist, setPlaylistCategory,debouncedSearch }) =>
                 {Array.isArray(bookMarkId) && bookMarkId.includes(_id) ? (
                   <PiBookmarksSimpleFill className="text-teal-500 text-base cursor-pointer" />
                 ) : (
-                  <PiBookmarksSimpleLight className="text-teal-500 text-base cursor-pointer"/>
+                  <PiBookmarksSimpleLight className="text-teal-500 text-base cursor-pointer" />
                 )}
               </div>
             </div>
 
-
-              <span 
-              onClick={()=>setPlaylistCategory(domain)}
-              className="inline-block cursor-pointer text-[10px] md:text-xs  bg-emerald-600/20 text-emerald-400 px-2 py-1  rounded">
-                {domain}
-             
-              </span>
+            <span
+              onClick={() => setPlaylistCategory(domain)}
+              className="inline-block cursor-pointer text-[10px] md:text-xs  bg-emerald-600/20 text-emerald-400 px-2 py-1  rounded"
+            >
+              {domain}
+            </span>
 
             {/* <div className="flex -space-x-2">
                 
@@ -202,7 +232,6 @@ const TutorPlaylistCard = ({ playlist, setPlaylistCategory,debouncedSearch }) =>
           </div>
         </div>
       </div>
-      
     </div>
   );
 };
