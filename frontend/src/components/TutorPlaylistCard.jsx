@@ -161,6 +161,7 @@ const TutorPlaylistCard = ({
                         />
                       ) : (
                         <div
+                        key={collab._id}
                           className="w-6 h-6 rounded-full flex items-center border border-neutral-800 justify-center text-[9px] font-bold text-white shrink-0"
                           style={{ backgroundColor: avatarColor(collab.name) }}
                         >

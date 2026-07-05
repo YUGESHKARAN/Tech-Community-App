@@ -216,6 +216,22 @@ function ViewTutorPlaylist() {
     setSelectedImage(null);
   };
 
+   const avatarColor = (name) => {
+    const colors = [
+      "#10b981",
+      "#1871ff",
+      "#f59e0b",
+      "#f6238c",
+      "#8b5cf6",
+      "#09b2d0",
+      "#f97316",
+    ];
+    return colors[(name?.charCodeAt(0) ?? 0) % colors.length];
+  };
+
+  const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
+
+
   // console.log("playlist data", playlistData);
   return (
     <div className="min-h-screen bg-gray-900 text-white">
@@ -327,27 +343,41 @@ function ViewTutorPlaylist() {
                         }}
                       >
                         {playlistData?.collaborators?.map((collab) => (
-                          <img
-                            key={collab._id}
-                            src={
-                              collab.profile
-                                ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${collab.profile}`
-                                : user
-                            }
-                            alt={collab.name}
-                            className="h-6 md:h-7 w-6 md:w-7 rounded-full border border-teal-600 bg-gray-300"
-                          />
+                          <>
+                         {collab.profile ? (
+                        <img
+                          key={collab._id}
+                          src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${collab.profile}`}
+                          alt={collab.name}
+                          className="h-6 w-6 md:h-7 md:w-7 rounded-full border-2 border-teal-600 bg-gray-400"
+                        />
+                      ) : (
+                        <div
+                        key={collab._id}
+                          className="w-6 h-6 md:h-7 md:w-7 rounded-full flex items-center border border-neutral-800 justify-center text-[9px] font-bold text-white shrink-0"
+                          style={{ backgroundColor: avatarColor(collab.name) }}
+                        >
+                          {initials(collab.name)}
+                        </div>
+                      )}
+                          </>
+                          
                         ))}
 
-                        <img
-                          src={
-                            playlistData.profile
-                              ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.profile}`
-                              : user
-                          }
-                          // alt={collab.name}
-                          className="h-6 md:h-7 w-6 md:w-7 rounded-full border border-teal-600 bg-gray-300"
-                        />
+                        {playlistData.profile ? (
+                  <img
+                    src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.profile}`}
+                    // alt={collab.name}
+                    className="h-6 w-6 rounded-full border-2 border-teal-600 bg-gray-400"
+                  />
+                ) : (
+                  <div
+                    className="w-6 h-6 md:h-7 md:w-7 rounded-full flex items-center border border-neutral-800 justify-center text-[9px] font-bold text-white shrink-0"
+                    style={{ backgroundColor: avatarColor(playlistData.name) }}
+                  >
+                    {initials(playlistData.name)}
+                  </div>
+                )}
                       </div>
 
                       {/* Contributors details */}
@@ -362,15 +392,20 @@ function ViewTutorPlaylist() {
                           to={`/viewProfile/${playlistData.email}`}
                           className="flex hover:bg-gray-400/20 items-center cursor-pointer gap-2  text-gray-400 text-xs p-1 rounded-md"
                         >
-                          <img
-                            src={
-                              playlistData.profile
-                                ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.profile}`
-                                : user
-                            }
-                            alt=""
-                            className="h-6 md:h-7 w-6 md:w-7 bg-gray-300  rounded-full object-cover border border-green-400"
-                          />
+                          {playlistData.profile ? (
+                  <img
+                    src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.profile}`}
+                    // alt={collab.name}
+                    className="h-6 w-6 rounded-full border-2 border-teal-600 bg-gray-400"
+                  />
+                ) : (
+                  <div
+                    className="w-6 h-6 rounded-full flex items-center border border-neutral-800 justify-center text-[9px] font-bold text-white shrink-0"
+                    style={{ backgroundColor: avatarColor(playlistData.name) }}
+                  >
+                    {initials(playlistData.name)}
+                  </div>
+                )}
                           {playlistData.name}{" "}
                           <span className="text-gray-200">(Author)</span>
                         </Link>
@@ -380,15 +415,21 @@ function ViewTutorPlaylist() {
                             key={index}
                             className="flex  hover:bg-gray-400/20 items-center cursor-pointer gap-2  text-gray-400 text-xs p-1 rounded-md"
                           >
-                            <img
-                              src={
-                                data.profile
-                                  ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.profile}`
-                                  : user
-                              }
-                              alt=""
-                              className="h-6 md:h-7 w-6 md:w-7 bg-gray-300  rounded-full object-cover border border-green-400"
-                            />
+                            
+                             {data.profile ? (
+                        <img
+                          src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.profile}`}
+                          alt={data.name}
+                          className="h-6 w-6 md:h-7 md:w-7 rounded-full border-2 border-teal-600 bg-gray-400"
+                        />
+                      ) : (
+                        <div
+                          className="w-6 h-6 md:h-7 md:w-7 rounded-full flex items-center border border-neutral-800 justify-center text-[9px] font-bold text-white shrink-0"
+                          style={{ backgroundColor: avatarColor(data.name) }}
+                        >
+                          {initials(data.name)}
+                        </div>
+                      )}
                             {/* {data.name} */}
                             <p className="line-clamp-1 max-w-[250px]  md:max-w-[300px]">{data.name}</p>
                            
@@ -599,26 +640,39 @@ function ViewTutorPlaylist() {
                       }}
                     >
                       {playlistData?.collaborators?.map((collab) => (
+                        <>
+                         {collab.profile ? (
                         <img
                           key={collab._id}
-                          src={
-                            collab.profile
-                              ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${collab.profile}`
-                              : user
-                          }
+                          src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${collab.profile}`}
                           alt={collab.name}
-                          className="h-6 md:h-7 w-6 md:w-7 rounded-full border-2 border-teal-600 bg-gray-400"
+                          className="h-6 w-6 md:h-7 md:w-7 rounded-full border-2 border-teal-600 bg-gray-400"
                         />
+                      ) : (
+                        <div
+                        key={collab._id}
+                          className="w-6 h-6 md:h-7 md:w-7 rounded-full flex items-center border border-neutral-800 justify-center text-[9px] font-bold text-white shrink-0"
+                          style={{ backgroundColor: avatarColor(collab.name) }}
+                        >
+                          {initials(collab.name)}
+                        </div>
+                      )}
+                          </>
                       ))}
-                      <img
-                        src={
-                          playlistData.profile
-                            ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.profile}`
-                            : user
-                        }
-                        // alt={collab.name}
-                        className="h-6 md:h-7 w-6 md:w-7 rounded-full border-2 border-teal-600 bg-gray-400"
-                      />
+                      {playlistData.profile ? (
+                  <img
+                    src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.profile}`}
+                    // alt={collab.name}
+                    className="h-6 w-6 md:w-7 md:h-7 rounded-full border-2 border-teal-600 bg-gray-400"
+                  />
+                ) : (
+                  <div
+                    className="w-6 h-6 md:h-7 md:w-7 rounded-full flex items-center border border-neutral-800 justify-center text-[9px] font-bold text-white shrink-0"
+                    style={{ backgroundColor: avatarColor(playlistData.name) }}
+                  >
+                    {initials(playlistData.name)}
+                  </div>
+                )}
                     </div>
 
                     {/* Contributors details */}
@@ -633,15 +687,20 @@ function ViewTutorPlaylist() {
                         to={`/viewProfile/${playlistData.email}`}
                         className="flex hover:bg-gray-400/20 items-center cursor-pointer gap-2  text-gray-400 text-xs p-1 rounded-md"
                       >
-                        <img
-                          src={
-                            playlistData.profile
-                              ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.profile}`
-                              : user
-                          }
-                          alt=""
-                          className="h-6 md:h-7 w-6 md:w-7 bg-gray-400  rounded-full object-cover border border-teal-600"
-                        />
+                       {playlistData.profile ? (
+                      <img
+                        src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.profile}`}
+                        // alt={collab.name}
+                        className="h-6 w-6 md:w-7 md:h-7 rounded-full border-2 border-teal-600 bg-gray-400"
+                      />
+                    ) : (
+                      <div
+                        className="w-6 h-6 md:w-7 md:h-7 rounded-full flex items-center border border-neutral-800 justify-center text-[9px] font-bold text-white shrink-0"
+                        style={{ backgroundColor: avatarColor(playlistData.name) }}
+                      >
+                        {initials(playlistData.name)}
+                      </div>
+                    )}
                         {playlistData.name}{" "}
                         <span className="text-gray-200">(Author)</span>
                       </Link>
@@ -651,15 +710,20 @@ function ViewTutorPlaylist() {
                           key={index}
                           className="flex hover:bg-gray-400/20 items-center cursor-pointer gap-2  text-gray-400 text-xs p-1 rounded-md"
                         >
-                          <img
-                            src={
-                              data.profile
-                                ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.profile}`
-                                : user
-                            }
-                            alt=""
-                            className="h-6 md:h-7 w-6 md:w-7 bg-gray-400  rounded-full object-cover border border-teal-600"
-                          />
+                          {data.profile ? (
+                        <img
+                          src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.profile}`}
+                          alt={data.name}
+                          className="h-6 w-6 md:h-7 md:w-7 rounded-full border-2 border-teal-600 bg-gray-400"
+                        />
+                      ) : (
+                        <div
+                          className="w-6 h-6 md:h-7 md:w-7 rounded-full flex items-center border border-neutral-800 justify-center text-[9px] font-bold text-white shrink-0"
+                          style={{ backgroundColor: avatarColor(data.name) }}
+                        >
+                          {initials(data.name)}
+                        </div>
+                      )}
                           {data.name}
                         </Link>
                       ))}
