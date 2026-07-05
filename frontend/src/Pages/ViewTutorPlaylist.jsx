@@ -349,7 +349,7 @@ function ViewTutorPlaylist() {
                           key={collab._id}
                           src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${collab.profile}`}
                           alt={collab.name}
-                          className="h-6 w-6 md:h-7 md:w-7 rounded-full border-2 border-teal-600 bg-gray-400"
+                          className="h-6 w-6 md:h-7 md:w-7 rounded-full border border-teal-600 bg-gray-400"
                         />
                       ) : (
                         <div
@@ -368,7 +368,7 @@ function ViewTutorPlaylist() {
                   <img
                     src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.profile}`}
                     // alt={collab.name}
-                    className="h-6 w-6 rounded-full border-2 border-teal-600 bg-gray-400"
+                    className="h-6 w-6 rounded-full border border-teal-600 bg-gray-400"
                   />
                 ) : (
                   <div
@@ -396,7 +396,7 @@ function ViewTutorPlaylist() {
                   <img
                     src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.profile}`}
                     // alt={collab.name}
-                    className="h-6 w-6 rounded-full border-2 border-teal-600 bg-gray-400"
+                    className="h-6 w-6 rounded-full border border-teal-600 bg-gray-400"
                   />
                 ) : (
                   <div
@@ -420,7 +420,7 @@ function ViewTutorPlaylist() {
                         <img
                           src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.profile}`}
                           alt={data.name}
-                          className="h-6 w-6 md:h-7 md:w-7 rounded-full border-2 border-teal-600 bg-gray-400"
+                          className="h-6 w-6 md:h-7 md:w-7 rounded-full border border-teal-600 bg-gray-400"
                         />
                       ) : (
                         <div
@@ -646,7 +646,7 @@ function ViewTutorPlaylist() {
                           key={collab._id}
                           src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${collab.profile}`}
                           alt={collab.name}
-                          className="h-6 w-6 md:h-7 md:w-7 rounded-full border-2 border-teal-600 bg-gray-400"
+                          className="h-6 w-6 md:h-7 md:w-7 rounded-full border border-teal-600 bg-gray-400"
                         />
                       ) : (
                         <div
@@ -663,7 +663,7 @@ function ViewTutorPlaylist() {
                   <img
                     src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.profile}`}
                     // alt={collab.name}
-                    className="h-6 w-6 md:w-7 md:h-7 rounded-full border-2 border-teal-600 bg-gray-400"
+                    className="h-6 w-6 md:w-7 md:h-7 rounded-full border border-teal-600 bg-gray-400"
                   />
                 ) : (
                   <div
@@ -691,7 +691,7 @@ function ViewTutorPlaylist() {
                       <img
                         src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.profile}`}
                         // alt={collab.name}
-                        className="h-6 w-6 md:w-7 md:h-7 rounded-full border-2 border-teal-600 bg-gray-400"
+                        className="h-6 w-6 md:w-7 md:h-7 rounded-full border border-teal-600 bg-gray-400"
                       />
                     ) : (
                       <div
@@ -714,7 +714,7 @@ function ViewTutorPlaylist() {
                         <img
                           src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.profile}`}
                           alt={data.name}
-                          className="h-6 w-6 md:h-7 md:w-7 rounded-full border-2 border-teal-600 bg-gray-400"
+                          className="h-6 w-6 md:h-7 md:w-7 rounded-full border border-teal-600 bg-gray-400"
                         />
                       ) : (
                         <div

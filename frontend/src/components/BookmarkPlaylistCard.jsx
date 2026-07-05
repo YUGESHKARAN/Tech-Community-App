@@ -128,10 +128,11 @@ const BookmarkPlaylistCard = ({ playlist, setBookMarPlaylist }) => {
                           key={collab._id}
                           src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${collab.profile}`}
                           alt={collab.name}
-                          className="h-6 w-6 rounded-full border-2 border-teal-600 bg-gray-400"
+                          className="h-6 w-6 rounded-full border border-teal-600 bg-gray-400"
                         />
                       ) : (
                         <div
+                        key={collab._id}
                           className="w-6 h-6 rounded-full flex items-center border border-neutral-800 justify-center text-[9px] font-bold text-white shrink-0"
                           style={{ backgroundColor: avatarColor(collab.name) }}
                         >
@@ -144,7 +145,7 @@ const BookmarkPlaylistCard = ({ playlist, setBookMarPlaylist }) => {
                   <img
                     src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`}
                     // alt={collab.name}
-                    className="h-6 w-6 rounded-full border-2 border-teal-600 bg-gray-400"
+                    className="h-6 w-6 rounded-full border border-teal-600 bg-gray-400"
                   />
                 ) : (
                   <div
@@ -179,7 +180,7 @@ const BookmarkPlaylistCard = ({ playlist, setBookMarPlaylist }) => {
                         : user
                     }
                     alt={collab.name}
-                    className="h-6 w-6 rounded-full border-2 border-teal-600 bg-white"
+                    className="h-6 w-6 rounded-full border border-teal-600 bg-white"
                   />
                 ))}
                   <img
@@ -189,7 +190,7 @@ const BookmarkPlaylistCard = ({ playlist, setBookMarPlaylist }) => {
                       : user
                   }
                   // alt={collab.name}
-                  className="h-6 w-6 rounded-full border-2 border-teal-600 bg-white"
+                  className="h-6 w-6 rounded-full border border-teal-600 bg-white"
                 />
               </div> */}
           </div>

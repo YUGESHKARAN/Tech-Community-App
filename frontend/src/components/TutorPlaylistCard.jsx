@@ -157,7 +157,7 @@ const TutorPlaylistCard = ({
                           key={collab._id}
                           src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${collab.profile}`}
                           alt={collab.name}
-                          className="h-6 w-6 rounded-full border-2 border-teal-600 bg-gray-400"
+                          className="h-6 w-6 rounded-full border border-teal-600 bg-gray-400"
                         />
                       ) : (
                         <div
@@ -175,7 +175,7 @@ const TutorPlaylistCard = ({
                   <img
                     src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`}
                     // alt={collab.name}
-                    className="h-6 w-6 rounded-full border-2 border-teal-600 bg-gray-400"
+                    className="h-6 w-6 rounded-full border border-teal-600 bg-gray-400"
                   />
                 ) : (
                   <div
@@ -217,7 +217,7 @@ const TutorPlaylistCard = ({
                         : user
                     }
                     alt={collab.name}
-                    className="h-6 w-6 rounded-full border-2 border-teal-600 bg-white"
+                    className="h-6 w-6 rounded-full border border-teal-600 bg-white"
                   />
                 ))}
                   <img
@@ -227,7 +227,7 @@ const TutorPlaylistCard = ({
                       : user
                   }
                   // alt={collab.name}
-                  className="h-6 w-6 rounded-full border-2 border-teal-600 bg-white"
+                  className="h-6 w-6 rounded-full border border-teal-600 bg-white"
                 />
               </div> */}
           </div>
