@@ -128,10 +128,10 @@ function LoginPage() {
         transition={{ duration: 0.55, ease: "easeOut" }}
         className={`relative w-full min-h-screen  overflow-y-hidden border border-white/10 bg-[#070a16] shadow-[0_45px_120px_-60px_rgba(0,0,0,0.8)] `}
       >
-       {!loader && <>
-        <div className="absolute inset-0 overflow-hidden bg-[radial-gradient(circle_at_top_right,_rgba(34,197,94,0.18),_transparent_42%),radial-gradient(circle_at_bottom_left,_rgba(14,165,233,0.14),_transparent_30%)] pointer-events-none" />
+       { <>
+        <div className={` ${loader && 'opacity-80'} absolute inset-0 overflow-hidden bg-[radial-gradient(circle_at_top_right,_rgba(34,197,94,0.18),_transparent_42%),radial-gradient(circle_at_bottom_left,_rgba(14,165,233,0.14),_transparent_30%)] pointer-events-none`} />
 
-        <div className="grid grid-cols-1 min-h-screen lg:grid-cols-2">
+        <div className={`grid grid-cols-1 min-h-screen lg:grid-cols-2 ${loader && 'opacity-80'}`}>
           <div className="relative hidden lg:flex flex-col justify-center gap-8 bg-gradient-to-b from-[#0f172a] via-[#111827] to-[#0b1230] p-10 lg:p-12">
             <div>
              
