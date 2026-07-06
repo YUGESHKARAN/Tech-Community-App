@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../AuthContext";
-import {CirclesWithBar} from 'react-loader-spinner'
+import { CirclesWithBar } from 'react-loader-spinner'
+import { motion } from "framer-motion";
 import axiosInstance from "../instances/Axiosinstances";
 import Cookies from 'js-cookie'
 import { storeItem } from "../utils/encode";
@@ -115,184 +116,197 @@ function LoginPage() {
 
   return (
 
-    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center px-4">
-  {!loader && (
-    <div className="w-full max-w-md bg-gray-900 border border-gray-700 rounded-2xl shadow-2xl p-8">
+    // <div className="min-h-screen bg-[#0b1120] flex items-center justify-center px-4 py-8">
       
-      {/* Header */}
-      <div className="text-center relative mb-6">
-        <img src={logoicon} className="md:w-12 md:h-12 w-9 h-9 object-cover bg-white rounded-full absolute top-1 left-0" alt="" />
-        <h2 className="md:text-2xl text-xl font-bold text-white tracking-wide">
-          {title}
-        </h2>
-        <p className="md:text-sm text-xs text-gray-400 mt-0">
-          Secure access to your account
-        </p>
-      </div>
 
-      {/* Form */}
-      <form
-        className={`w-full ${
-          forgotPassword ? "space-y-4 " : "space-y-6 "
-        }`}
+     
+    // </div>
+
+    <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.55, ease: "easeOut" }}
+        className={`relative w-full min-h-screen  overflow-y-hidden rounded-[32px] border border-white/10 bg-[#070a16] shadow-[0_45px_120px_-60px_rgba(0,0,0,0.8)] `}
       >
-        {success && !isError && (
-          <p className="text-sm text-green-500 bg-green-500/10 px-3 py-2 rounded-md">
-            {success}
-          </p>
-        )}
+       {!loader && <>
+        <div className="absolute inset-0 overflow-hidden bg-[radial-gradient(circle_at_top_right,_rgba(34,197,94,0.18),_transparent_42%),radial-gradient(circle_at_bottom_left,_rgba(14,165,233,0.14),_transparent_30%)] pointer-events-none" />
 
-        {errors.apiError && isError &&(
-          <p className="text-sm text-red-500 bg-red-500/10 px-3 py-2 rounded-md">
-            {errors.apiError}
-          </p>
-        )}
+        <div className="grid grid-cols-1 min-h-screen lg:grid-cols-2">
+          <div className="relative hidden lg:flex flex-col justify-center gap-8 bg-gradient-to-b from-[#0f172a] via-[#111827] to-[#0b1230] p-10 lg:p-12">
+            <div>
+             
+              <p className="mt-8 text-sm flex items-center gap-3 uppercase tracking-[0.36em] text-slate-400">  <img src={logoicon} alt="Bytes Base" className="h-12 w-12 rounded-2xl bg-white/10 p-2 shadow-lg shadow-black/20" /> Bytes Base access</p>
+              <h1 className="mt-4 text-4xl font-semibold leading-tight text-white"> One Place to Connect <span className="bg-gradient-to-r from-green-400 via-blue-400 to-pink-400 bg-clip-text text-transparent drop-shadow-lg truncate  tracking-tight"> Developer minds.</span></h1>
+              <p className="mt-4 max-w-md text-sm leading-7 text-slate-300">
+               
+                Secure workspace sign in
+              </p>
+            </div>
 
-        {/* Email */}
-        <div>
-        <div className="md:mb-4 mb-2">
-          <label className="block text-sm font-medium text-gray-300 mb-1">
-            Email address
-          </label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            autoComplete="user email"
-            required
-            placeholder="University Email"
-            className="w-full px-4 py-2.5 text-sm bg-gray-800 text-white border border-gray-700 rounded-lg focus:outline-none focus:ring-1 focus:ring-green-500"
-          />
-        </div>
- 
+        
+          </div>
 
-        {/* Password */}
-        {!forgotPassword && (
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">
-              {passwordLabel}
-            </label>
-            <div className="relative">
-              <input
-                type={showPassword ? "text" : "password"}
-                id="password"
-                name="password"
-                value={formData.password}
-                autoComplete="current-password"
-                onChange={handleChange}
-                required
-                placeholder="••••••••"
-                className="w-full px-4 py-2.5 pr-12 text-sm bg-gray-800 text-white border border-gray-700 rounded-lg focus:outline-none focus:ring-1 focus:ring-green-500 transition-all duration-200"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 md:hover:text-gray-400 transition-all duration-400 outline-none"
-                aria-label={showPassword ? "Hide password" : "Show password"}
-              >
-                {showPassword ? (
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-4.803m5.596-3.856a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0M15 12a3 3 0 11-6 0 3 3 0 016 0zm6 0c0 1.657-.672 3.157-1.757 4.243A6 6 0 0121 12a6 6 0 00-4.757-5.814m-2.956 5.814a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                ) : (
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                  </svg>
+          <div className="relative flex flex-col justify-center px-8 py-10 sm:px-12  sm:py-14 lg:px-14 lg:py-16">
+            <div className="relative z-10 mx-auto w-full max-w-md">
+              
+              <div className="mb-8 block lg:flex space-y-6 items-center justify-between gap-4">
+                
+                 <p className="mt-8 text-xs md:text-sm lg:hidden flex items-center  gap-3 uppercase tracking-[0.36em] text-slate-400">  <img src={logoicon} alt="Bytes Base" className="h-12 w-12 rounded-2xl bg-white/10 p-2 shadow-lg shadow-black/20" /> Bytes Base access</p>
+                <div>
+                  
+                 <h2 className="mt-3 md:text-3xl text-2xl font-semibold text-white">{title}</h2>
+                   <p className="md:text-sm text-xs font-semibold mt-2 uppercase tracking-[0.3em] text-emerald-400/90">Author Portal</p>
+                </div>
+             
+              </div>
+
+              <form className="space-y-6 ">
+                {success && !isError && (
+                  <motion.p
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="rounded-3xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-200"
+                  >
+                    {success}
+                  </motion.p>
                 )}
-              </button>
+
+                {errors.apiError && isError && (
+                  <motion.p
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="rounded-3xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-200"
+                  >
+                    {errors.apiError}
+                  </motion.p>
+                )}
+
+                <div className="space-y-4">
+                  <label htmlFor="email" className="text-sm font-medium text-slate-300">
+                    Email address
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    autoComplete="user email"
+                    required
+                    placeholder="you@university.edu"
+                    className="w-full rounded-3xl border border-white/10 bg-slate-950/80 px-5 py-3 text-sm text-white placeholder:text-slate-500 shadow-sm shadow-black/20 outline-none transition focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/20"
+                  />
+                </div>
+
+                {!forgotPassword && (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between gap-4">
+                      <label htmlFor="password" className="text-sm font-medium text-slate-300">
+                        {passwordLabel}
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="text-sm font-medium text-emerald-300 hover:text-emerald-200"
+                      >
+                        {showPassword ? "Hide" : "Show"}
+                      </button>
+                    </div>
+                    <div className="relative">
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        id="password"
+                        name="password"
+                        value={formData.password}
+                        autoComplete="current-password"
+                        onChange={handleChange}
+                        required
+                        placeholder="Enter your secure password"
+                        className="w-full rounded-3xl border border-white/10 bg-slate-950/80 px-5 py-3 text-sm text-white placeholder:text-slate-500 shadow-sm shadow-black/20 outline-none transition focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/20"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {!forgotPassword && (
+                  <button
+                    onClick={handleSubmit}
+                    type="submit"
+                    disabled={loader2}
+                    className="inline-flex w-full items-center justify-center rounded-3xl bg-gradient-to-r from-emerald-500 to-cyan-500 px-5 py-3 text-sm font-semibold text-slate-950 shadow-lg shadow-emerald-500/20 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-70"
+                  >
+                    {loader2 ? "Logging in..." : "Login"}
+                  </button>
+                )}
+
+                {forgotPassword && (
+                  <button
+                    onClick={(e) => sendOtp(e, formData.email)}
+                    type="submit"
+                    disabled={loader2}
+                    className="inline-flex w-full items-center justify-center rounded-3xl bg-gradient-to-r from-emerald-500 to-cyan-500 px-5 py-3 text-sm font-semibold text-slate-950 shadow-lg shadow-emerald-500/20 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-70"
+                  >
+                    {loader2 ? "Sending OTP..." : "Send OTP"}
+                  </button>
+                )}
+              </form>
+
+              <div className="mt-6 space-y-3 text-sm text-slate-400">
+                {forgotPassword ? (
+                  <p className="leading-6">
+                    Remembered your password?{' '}
+                    <span
+                      onClick={() => {
+                        setForgotPassword(false);
+                        setPasswordLabel("Password");
+                        setTitle("Login");
+                      }}
+                      className="cursor-pointer text-emerald-400 hover:text-emerald-200"
+                    >
+                      Sign in
+                    </span>
+                  </p>
+                ) : (
+                  <>
+                    <p
+                      onClick={() => {
+                        setForgotPassword(true);
+                        setPasswordLabel("New Password");
+                        setTitle("Forgot Password");
+                      }}
+                      className="cursor-pointer text-emerald-400 hover:text-emerald-200"
+                    >
+                      Forgot Password?
+                    </p>
+                    <p>
+                      Don&apos;t have an account?{' '}
+                      <Link to="/register" className="text-emerald-400 hover:text-emerald-200">
+                        Register here
+                      </Link>
+                    </p>
+                  </>
+                )}
+              </div>
             </div>
           </div>
-        )}
+        </div>
+        </>}
 
-               </div>
-
-        {/* Buttons */}
-        {!forgotPassword && (
-          <button
-            onClick={handleSubmit}
-            type="submit"
-            disabled={loader2}
-            className="w-full p-1.5 md:py-2.5 bg-red-600 hover:bg-red-700 transition text-white font-semibold mt-2 rounded-lg"
-          >
-            {loader2 ? "Logging in..." : "Login"}
-          </button>
-        )}
-
-        {forgotPassword && (
-          <button
-            onClick={(e) => sendOtp(e, formData.email)}
-            type="submit"
-            disabled={loader2}
-            className="w-full py-1.5 md:py-2.5 bg-red-600 hover:bg-red-700 transition text-white font-semibold rounded-lg"
-          >
-            {loader2 ? "Sending OTP..." : "Send OTP"}
-          </button>
-        )}
-      </form>
-
-      {/* Footer Links */}
-      {forgotPassword && (
-        <p className="mt-5 text-[13px] md:text-sm text-gray-400">
-          Go to Login?{" "}
-          <span
-            onClick={() => {
-              setForgotPassword(false);
-              setPasswordLabel("Password");
-              setTitle("Login");
-            }}
-            className="text-green-500 cursor-pointer hover:underline"
-          >
-            Login here
-          </span>
-        </p>
+        {loader && (
+        <div className="absolute inset-0 flex items-center justify-center bg-slate-950/80">
+          <CirclesWithBar
+            height="100"
+            width="100"
+            color="#22c55e"
+            outerCircleColor="#22c55e"
+            innerCircleColor="#22c55e"
+            barColor="#22c55e"
+            ariaLabel="circles-with-bar-loading"
+            visible={true}
+          />
+        </div>
       )}
-
-      {!forgotPassword && (
-        <>
-          <p
-            onClick={() => {
-              setForgotPassword(true);
-              setPasswordLabel("New Password");
-              setTitle("Forgot Password");
-            }}
-            className="mt-5 text-[13px] md:text-sm text-gray-400 cursor-pointer"
-          >
-            Forgot Password?{" "}
-            <span className="text-green-500 hover:underline">
-              Click here
-            </span>
-          </p>
-
-          <p className="mt-0.5 md:mt-1.5 text-[13px] md:text-sm text-gray-400">
-            Don&apos;t have an account?{" "}
-            <Link to="/register" className="text-green-500 hover:underline">
-              Register here
-            </Link>
-          </p>
-        </>
-      )}
-    </div>
-  )}
-
-  {/* Loader */}
-  {loader && (
-    <div className="flex justify-center items-center">
-      <CirclesWithBar
-        height="100"
-        width="100"
-        color="#4fa94d"
-        outerCircleColor="#4fa94d"
-        innerCircleColor="#4fa94d"
-        barColor="#4fa94d"
-        ariaLabel="circles-with-bar-loading"
-        visible={true}
-      />
-    </div>
-  )}
-</div>
+      </motion.div>
 
   );
 }
@@ -300,162 +314,3 @@ function LoginPage() {
 export default LoginPage;
 
 
-//  <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center px-4">
-//   {!loader && (
-//     <div className="w-full max-w-md bg-gray-900 border border-gray-700 rounded-2xl shadow-2xl p-8">
-      
-//       {/* Header */}
-//       <div className="text-center relative mb-6">
-//         <img src={logoicon} className="md:w-12 md:h-12 w-9 h-9 object-cover bg-white rounded-full absolute top-1 left-0" alt="" />
-//         <h2 className="md:text-2xl text-xl font-bold text-white tracking-wide">
-//           {title}
-//         </h2>
-//         <p className="md:text-sm text-xs text-gray-400 mt-0">
-//           Secure access to your account
-//         </p>
-//       </div>
-
-//       {/* Form */}
-//       <form
-//         className={`w-full ${
-//           forgotPassword ? "space-y-4 " : "space-y-6 "
-//         }`}
-//       >
-//         {success && !isError && (
-//           <p className="text-sm text-green-500 bg-green-500/10 px-3 py-2 rounded-md">
-//             {success}
-//           </p>
-//         )}
-
-//         {errors.apiError && isError &&(
-//           <p className="text-sm text-red-500 bg-red-500/10 px-3 py-2 rounded-md">
-//             {errors.apiError}
-//           </p>
-//         )}
-
-//         {/* Email */}
-//         <div>
-//         <div className="md:mb-4 mb-2">
-//           <label className="block text-sm font-medium text-gray-300 mb-1">
-//             Email address
-//           </label>
-//           <input
-//             type="email"
-//             id="email"
-//             name="email"
-//             value={formData.email}
-//             onChange={handleChange}
-//             autoComplete="user email"
-//             required
-//             placeholder="University Email"
-//             className="w-full px-4 py-2.5 text-sm bg-gray-800 text-white border border-gray-700 rounded-lg focus:outline-none focus:ring-1 focus:ring-green-500"
-//           />
-//         </div>
- 
-
-//         {/* Password */}
-//         {!forgotPassword && (
-//           <div>
-//             <label className="block text-sm font-medium text-gray-300 mb-1">
-//               {passwordLabel}
-//             </label>
-//             <input
-//               type="password"
-//               id="password"
-//               name="password"
-//               value={formData.password}
-//               autoComplete="current-password"
-//               onChange={handleChange}
-//               required
-//               placeholder="••••••••"
-//               className="w-full px-4 py-2.5 text-sm bg-gray-800 text-white border border-gray-700 rounded-lg focus:outline-none focus:ring-1 focus:ring-green-500"
-//             />
-//           </div>
-//         )}
-
-//                </div>
-
-//         {/* Buttons */}
-//         {!forgotPassword && (
-//           <button
-//             onClick={handleSubmit}
-//             type="submit"
-//             disabled={loader2}
-//             className="w-full p-1.5 md:py-2.5 bg-red-600 hover:bg-red-700 transition text-white font-semibold mt-2 rounded-lg"
-//           >
-//             {loader2 ? "Logging in..." : "Login"}
-//           </button>
-//         )}
-
-//         {forgotPassword && (
-//           <button
-//             onClick={(e) => sendOtp(e, formData.email)}
-//             type="submit"
-//             disabled={loader2}
-//             className="w-full py-1.5 md:py-2.5 bg-red-600 hover:bg-red-700 transition text-white font-semibold rounded-lg"
-//           >
-//             {loader2 ? "Sending OTP..." : "Send OTP"}
-//           </button>
-//         )}
-//       </form>
-
-//       {/* Footer Links */}
-//       {forgotPassword && (
-//         <p className="mt-5 text-[13px] md:text-sm text-gray-400">
-//           Go to Login?{" "}
-//           <span
-//             onClick={() => {
-//               setForgotPassword(false);
-//               setPasswordLabel("Password");
-//               setTitle("Login");
-//             }}
-//             className="text-green-500 cursor-pointer hover:underline"
-//           >
-//             Login here
-//           </span>
-//         </p>
-//       )}
-
-//       {!forgotPassword && (
-//         <>
-//           <p
-//             onClick={() => {
-//               setForgotPassword(true);
-//               setPasswordLabel("New Password");
-//               setTitle("Forgot Password");
-//             }}
-//             className="mt-5 text-[13px] md:text-sm text-gray-400 cursor-pointer"
-//           >
-//             Forgot Password?{" "}
-//             <span className="text-green-500 hover:underline">
-//               Click here
-//             </span>
-//           </p>
-
-//           <p className="mt-0.5 md:mt-1.5 text-[13px] md:text-sm text-gray-400">
-//             Don&apos;t have an account?{" "}
-//             <Link to="/register" className="text-green-500 hover:underline">
-//               Register here
-//             </Link>
-//           </p>
-//         </>
-//       )}
-//     </div>
-//   )}
-
-//   {/* Loader */}
-//   {loader && (
-//     <div className="flex justify-center items-center">
-//       <CirclesWithBar
-//         height="100"
-//         width="100"
-//         color="#4fa94d"
-//         outerCircleColor="#4fa94d"
-//         innerCircleColor="#4fa94d"
-//         barColor="#4fa94d"
-//         ariaLabel="circles-with-bar-loading"
-//         visible={true}
-//       />
-//     </div>
-//   )}
-// </div>
