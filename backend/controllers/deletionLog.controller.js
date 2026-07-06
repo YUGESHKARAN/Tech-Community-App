@@ -438,7 +438,7 @@ const rollbackDeletion = async (req, res) => {
     const restoredName = authorSnap.authorname;
     const restoredItems =
       authorSnap?.role !== "student"
-        ? "posts, playlists, followers, "
+        ? "posts, playlists, followers, achievements, "
         : "";
 
     const deletedAt = log.deletedAt
