@@ -33,12 +33,23 @@ const notificationUrl = process.env.NOTIFICATION_URL || "http://localhost:5173";
 // ─────────────────────────────────────────────────────────────
 //  HELPER — build a full snapshot of an author + their posts + playlists
 // ─────────────────────────────────────────────────────────────
+const normalizeSnapshotPosts = (posts = []) =>
+  posts.map((post) => ({
+    ...post,
+    messages: (post.messages || []).map((message) => ({
+      ...message,
+      authorId: message.authorId || null,
+    })),
+  }));
+
 const buildSnapshot = async (author) => {
-  const posts = await Post.find({ authorId: author._id }).lean();
-  
+  const posts = normalizeSnapshotPosts(
+    await Post.find({ authorId: author._id }).lean()
+  );
+
   // NEW: fetch playlists created by this author (email match)
   const playlists = await TutorPlayList.find({ email: author.email }).lean();
-  
+
   const authorObj = author.toObject ? author.toObject() : { ...author };
 
   // fix: explicitly preserve _id — toObject() includes it but

@@ -536,6 +536,7 @@ const {badgeSchema} = require("./badgeSchema")
 
 // ── Sub-schemas ──────────────────────────────────────────────
 const messageSchema = new mongoose.Schema({
+  authorId:  { type: mongoose.Schema.Types.ObjectId, ref: 'Author', required: false },
   user:      { type: String, required: false },
   message:   { type: String, required: false },
   profile:   { type: String, required: false },

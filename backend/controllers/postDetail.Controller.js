@@ -34,6 +34,70 @@ const transporter = nodemailer.createTransport({
 
 const notificationUrl = process.env.NOTIFICATION_URL || 'http://localhost:5173';
 
+const resolveMessageAuthorProfiles = async (messages = []) => {
+  const items = Array.isArray(messages) ? messages : [];
+  if (items.length === 0) return [];
+
+  const emailSet = new Set();
+  const authorIdSet = new Set();
+
+  for (const message of items) {
+    const rawEmail = String(message?.email || '').trim().toLowerCase();
+    if (rawEmail) emailSet.add(rawEmail);
+
+    const rawAuthorId = message?.authorId;
+    if (rawAuthorId) {
+      const idString = rawAuthorId.toString();
+      if (idString) authorIdSet.add(idString);
+    }
+  }
+
+  const authorQueries = [];
+  if (emailSet.size > 0) {
+    authorQueries.push(
+      Author.find({ email: { $in: Array.from(emailSet) } })
+        .select('email profile authorname role badges')
+        .lean()
+    );
+  }
+
+  if (authorIdSet.size > 0) {
+    authorQueries.push(
+      Author.find({ _id: { $in: Array.from(authorIdSet) } })
+        .select('email profile authorname role badges')
+        .lean()
+    );
+  }
+
+  const authorDocs = (await Promise.all(authorQueries)).flat();
+  const authorByEmail = new Map(
+    authorDocs
+      .filter((author) => author?.email)
+      .map((author) => [String(author.email).trim().toLowerCase(), author])
+  );
+  const authorById = new Map(
+    authorDocs
+      .filter((author) => author?._id)
+      .map((author) => [author._id.toString(), author])
+  );
+
+  return items.map((message) => {
+    const email = String(message?.email || '').trim().toLowerCase();
+    const authorId = message?.authorId ? message.authorId.toString() : '';
+    const author = authorByEmail.get(email) || (authorId ? authorById.get(authorId) : null);
+
+    return {
+      ...message,
+      // profile: author?.profile || message?.profile || '',
+      profile: author?.profile || '',
+      user: author?.authorname || message?.user || '',
+      authorName: author?.authorname || message?.user || '',
+      role: author?.role || message?.role || '',
+      badges: Array.isArray(author?.badges) ? author.badges : [],
+    };
+  });
+};
+
 // s3 integration
 const { S3Client,PutObjectCommand, DeleteObjectCommand } = require("@aws-sdk/client-s3");
 const { link } = require("fs");
@@ -1617,9 +1681,12 @@ const getSinglePost = async (req, res) => {
       return res.status(404).json({ message: "Post not found" });
     }
 
+    const normalizedMessages = await resolveMessageAuthorProfiles(post.messages || []);
+
     // response shape kept identical — same fields as before
     const postWithAuthorDetails = {
       ...post,
+      messages: normalizedMessages,
       authorname: author.authorname,
       authoremail: author.email,
       profile: author.profile || '',
@@ -2048,8 +2115,10 @@ const getParticipants = async (req, res) => {
       return res.status(404).json({ message: "Post not found" });
     }
 
+    const normalizedMessages = await resolveMessageAuthorProfiles(post.messages || []);
+
     const participantMap = new Map();
-    for (const message of post.messages || []) {
+    for (const message of normalizedMessages) {
       const email = (message?.email || "").trim().toLowerCase();
       if (!email) continue;
 

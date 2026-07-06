@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 
 const snapshotMessageSchema = new mongoose.Schema({
   _id:       { type: mongoose.Schema.Types.ObjectId },
+  authorId:  { type: mongoose.Schema.Types.ObjectId, ref: 'Author', required: false },
   user:      { type: String },
   message:   { type: String },
   profile:   { type: String },
