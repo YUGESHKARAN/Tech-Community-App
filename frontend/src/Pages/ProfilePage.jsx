@@ -160,7 +160,12 @@ function ProfilePage() {
 
       if (response.status === 201) {
         // navigate("/home"); // Redirect to the homepage
+        console.log("response", response.data)
         toast.success("Updated", "Account details updated successfully");
+        if (image !== "") {
+          formData.append("profile", image);
+          localStorage.setItem("profile",response.data.data.profile)
+        }
         setLinks([]);
         fetchAuthor();
         setLinkId(null); // Reset link ID after submission
@@ -917,7 +922,7 @@ function ProfilePage() {
                     <button
                       type="submit"
                       disabled={loading || !updateButton}
-                      className="px-5 py-2.5 text-xs md:text-sm rounded-lg scale-105 animate-pulse bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition-colors disabled:bg-gray-700/50 disabled:border-none disabled:text-gray-400 disabled:cursor-not-allowed"
+                      className={`px-5 py-2.5 text-xs md:text-sm rounded-lg scale-105 ${!loading && 'animate-pulse'} bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition-colors disabled:bg-gray-700/50 disabled:border-none disabled:text-gray-400 disabled:cursor-not-allowed`}
                     >
                       {loading ? "Updating…" : "Update My Profile"}
                     </button>

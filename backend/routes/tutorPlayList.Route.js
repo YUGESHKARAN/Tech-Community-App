@@ -25,9 +25,9 @@ router.get("/recommended/:email",readLimiter, authenticateToken, getRecommendedT
 
 
 
-router.get("/:playlistId", readLimiter, authenticateToken, getPlaylistById);  
 router.get("/coordinator/:email", readLimiter, authenticateToken, getPlaylistByEmail);
 router.get("/bookmark/:email", readLimiter, authenticateToken,getBookmarkedPlaylists)
+router.get("/:playlistId", readLimiter, authenticateToken, getPlaylistById);  
 
 router.post("/add", limiter, authenticateToken,upload.single('thumbnail'), addTutorPlayList);
 router.put("/update/:id", limiter,  authenticateToken, upload.single('thumbnail'), updateTutorPlayList);
