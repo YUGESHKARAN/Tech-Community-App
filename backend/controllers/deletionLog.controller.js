@@ -443,9 +443,9 @@ const rollbackDeletion = async (req, res) => {
     const recoveryMessage = `
       Hi ${restoredName},
 
-      Account has been successfully recovered. Your account was deleted on **${deletedAt}** and has now been fully restored. All your previous data such as ${authorSnap?.role !== 'student' && 'posts, playlists, followers,'} bookmarks, communities, and profile details are restored.
+      Your account was deleted on **${deletedAt}** and has now been fully restored. All your previous data such as ${authorSnap?.role !== 'student' && 'posts, playlists, followers,'} bookmarks, communities, and profile details are restored successfully.
       
-      Welcome back to the **Bytes Base**.
+      Welcome back to **Bytes Base** platform.
 `;
 
     const newAnnouncement = {
