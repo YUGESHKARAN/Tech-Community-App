@@ -450,7 +450,7 @@ const rollbackDeletion = async (req, res) => {
 
       Your account was deleted on **${deletedAt}** and has now been fully restored. All your previous data such as ${restoredItems} bookmarks, communities, and profile details are restored successfully.
       
-      Welcome back to **Bytes Base** platform.
+      Welcome back to the **Bytes Base** platform.
 `;
 
     const newAnnouncement = {
