@@ -216,7 +216,7 @@ function ViewTutorPlaylist() {
     setSelectedImage(null);
   };
 
-   const avatarColor = (name) => {
+  const avatarColor = (name) => {
     const colors = [
       "#10b981",
       "#1871ff",
@@ -230,7 +230,6 @@ function ViewTutorPlaylist() {
   };
 
   const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
-
 
   // console.log("playlist data", playlistData);
   return (
@@ -319,7 +318,7 @@ function ViewTutorPlaylist() {
                     <div className="">
                       <h1 className="font-semibold uppercase tracking-wide flex items-center gap-1 mb-1  text-gray-400 text-[11px]">
                         Contributors
-                        <span
+                        {/* <span
                           onClick={() => {
                             setShowContributors(!showContributors);
                           }}
@@ -330,112 +329,243 @@ function ViewTutorPlaylist() {
                           ) : (
                             <IoMdArrowDropup className="text-xl" />
                           )}
-                        </span>
+                        </span> */}
+                        <motion.span
+                          whileTap={{ scale: 0.9 }}
+                          animate={{
+                            rotate: showContributors ? 180 : 0,
+                          }}
+                          transition={{
+                            duration: 0.3,
+                            ease: [0.22, 1, 0.36, 1],
+                          }}
+                          onClick={() => setShowContributors((prev) => !prev)}
+                          className="cursor-pointer flex items-center"
+                        >
+                          <MdArrowDropDown className="text-xl" />
+                        </motion.span>
                       </h1>
 
                       {/* Contributors profile */}
-                      <div
-                        className={`${
-                          !showContributors ? "flex -space-x-2" : "hidden "
-                        } cursor-pointer `}
-                        onClick={() => {
-                          setShowContributors(!showContributors);
-                        }}
-                      >
-                        {playlistData?.collaborators?.map((collab) => (
-                          <>
-                         {collab.profile ? (
-                        <img
-                          key={collab._id}
-                          src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${collab.profile}`}
-                          alt={collab.name}
-                          className="h-6 w-6 md:h-7 md:w-7 rounded-full border border-teal-600 bg-gray-400"
-                        />
-                      ) : (
-                        <div
-                        key={collab._id}
-                          className="w-6 h-6 md:h-7 md:w-7 rounded-full flex items-center border border-neutral-800 justify-center text-[9px] font-bold text-white shrink-0"
-                          style={{ backgroundColor: avatarColor(collab.name) }}
-                        >
-                          {initials(collab.name)}
-                        </div>
-                      )}
-                          </>
-                          
-                        ))}
+                      <AnimatePresence>
+                        {!showContributors && (
+                          <motion.div
+                            initial={{
+                              opacity: 0,
+                              height: 0,
+                              y: -6,
+                            }}
+                            animate={{
+                              opacity: 1,
+                              height: "auto",
+                              y: 0,
+                            }}
+                            exit={{
+                              opacity: 0,
+                              height: 0,
+                              y: -6,
+                            }}
+                            transition={{
+                              duration: 0.3,
+                              ease: [0.22, 1, 0.36, 1],
+                            }}
+                            className="overflow-hidden"
+                          >
+                            <div
+                              className="flex -space-x-2 cursor-pointer"
+                              onClick={() => setShowContributors(true)}
+                            >
+                              {/* avatars */}
 
-                        {playlistData.profile ? (
-                  <img
-                    src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.profile}`}
-                    // alt={collab.name}
-                    className="h-6 w-6 rounded-full border border-teal-600 bg-gray-400"
-                  />
-                ) : (
-                  <div
-                    className="w-6 h-6 md:h-7 md:w-7 rounded-full flex items-center border border-neutral-800 justify-center text-[9px] font-bold text-white shrink-0"
-                    style={{ backgroundColor: avatarColor(playlistData.name) }}
-                  >
-                    {initials(playlistData.name)}
-                  </div>
-                )}
-                      </div>
+                              {playlistData?.collaborators?.map((collab) => (
+                                <>
+                                  {collab.profile ? (
+                                    <img
+                                      key={collab._id}
+                                      src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${collab.profile}`}
+                                      alt={collab.name}
+                                      className="h-6 w-6 md:h-7 md:w-7 rounded-full border border-teal-600 bg-gray-400"
+                                    />
+                                  ) : (
+                                    <div
+                                      key={collab._id}
+                                      className="w-6 h-6 md:h-7 md:w-7 rounded-full flex items-center border border-neutral-800 justify-center text-[9px] font-bold text-white shrink-0"
+                                      style={{
+                                        backgroundColor: avatarColor(
+                                          collab.name,
+                                        ),
+                                      }}
+                                    >
+                                      {initials(collab.name)}
+                                    </div>
+                                  )}
+                                </>
+                              ))}
+
+                              {playlistData.profile ? (
+                                <img
+                                  src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.profile}`}
+                                  // alt={collab.name}
+                                  className="h-6 w-6 rounded-full border border-teal-600 bg-gray-400"
+                                />
+                              ) : (
+                                <div
+                                  className="w-6 h-6 md:h-7 md:w-7 rounded-full flex items-center border border-neutral-800 justify-center text-[9px] font-bold text-white shrink-0"
+                                  style={{
+                                    backgroundColor: avatarColor(
+                                      playlistData.name,
+                                    ),
+                                  }}
+                                >
+                                  {initials(playlistData.name)}
+                                </div>
+                              )}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
 
                       {/* Contributors details */}
-                      <div
-                        className={`${
-                          showContributors
-                            ? " w-full flex flex-col justify-center gap-0"
-                            : "hidden "
-                        } `}
-                      >
-                        <Link
-                          to={`/viewProfile/${playlistData.email}`}
-                          className="flex hover:bg-gray-400/20 items-center cursor-pointer gap-2  text-gray-400 text-xs p-1 rounded-md"
-                        >
-                          {playlistData.profile ? (
-                  <img
-                    src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.profile}`}
-                    // alt={collab.name}
-                    className="h-6 w-6 rounded-full border border-teal-600 bg-gray-400"
-                  />
-                ) : (
-                  <div
-                    className="w-6 h-6 rounded-full flex items-center border border-neutral-800 justify-center text-[9px] font-bold text-white shrink-0"
-                    style={{ backgroundColor: avatarColor(playlistData.name) }}
-                  >
-                    {initials(playlistData.name)}
-                  </div>
-                )}
-                          {playlistData.name}{" "}
-                          <span className="text-gray-200">(Author)</span>
-                        </Link>
-                        {playlistData?.collaborators?.map((data, index) => (
-                          <Link
-                            to={`/viewProfile/${data.email}`}
-                            key={index}
-                            className="flex  hover:bg-gray-400/20 items-center cursor-pointer gap-2  text-gray-400 text-xs p-1 rounded-md"
+
+                      <AnimatePresence initial={false}>
+                        {showContributors && (
+                          <motion.div
+                            initial={{
+                              opacity: 0,
+                              height: 0,
+                              y: -8,
+                            }}
+                            animate={{
+                              opacity: 1,
+                              height: "auto",
+                              y: 0,
+                            }}
+                            exit={{
+                              opacity: 0,
+                              height: 0,
+                              y: -8,
+                            }}
+                            transition={{
+                              duration: 0.35,
+                              ease: [0.22, 1, 0.36, 1],
+                            }}
+                            className="overflow-hidden"
                           >
-                            
-                             {data.profile ? (
-                        <img
-                          src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.profile}`}
-                          alt={data.name}
-                          className="h-6 w-6 md:h-7 md:w-7 rounded-full border border-teal-600 bg-gray-400"
-                        />
-                      ) : (
-                        <div
-                          className="w-6 h-6 md:h-7 md:w-7 rounded-full flex items-center border border-neutral-800 justify-center text-[9px] font-bold text-white shrink-0"
-                          style={{ backgroundColor: avatarColor(data.name) }}
-                        >
-                          {initials(data.name)}
-                        </div>
-                      )}
-                            {/* {data.name} */}
-                            <p className="line-clamp-1 max-w-[250px]  md:max-w-[300px]">{data.name}</p>
-                           
-                          </Link>
-                        ))}
-                      </div>
+                            <motion.div
+                              variants={{
+                                hidden: {},
+                                show: {
+                                  transition: {
+                                    staggerChildren: 0.04,
+                                  },
+                                },
+                              }}
+                              initial="hidden"
+                              animate="show"
+                              className="w-full flex flex-col justify-center gap-0"
+                            >
+                              {/* Author */}
+                              <motion.div
+                                variants={{
+                                  hidden: {
+                                    opacity: 0,
+                                    y: 8,
+                                  },
+                                  show: {
+                                    opacity: 1,
+                                    y: 0,
+                                  },
+                                }}
+                                transition={{
+                                  duration: 0.25,
+                                  ease: [0.22, 1, 0.36, 1],
+                                }}
+                              >
+                                <Link
+                                  to={`/viewProfile/${playlistData.email}`}
+                                  className="flex items-center gap-2 p-1 rounded-md text-xs text-gray-400 hover:bg-gray-400/20"
+                                >
+                                  {playlistData.profile ? (
+                                    <img
+                                      src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.profile}`}
+                                      className="h-6 w-6 rounded-full border border-teal-600 bg-gray-400"
+                                    />
+                                  ) : (
+                                    <div
+                                      className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold text-white border border-neutral-800 shrink-0"
+                                      style={{
+                                        backgroundColor: avatarColor(
+                                          playlistData.name,
+                                        ),
+                                      }}
+                                    >
+                                      {initials(playlistData.name)}
+                                    </div>
+                                  )}
+
+                                  <span>{playlistData.name}</span>
+
+                                  <span className="text-gray-200">
+                                    (Author)
+                                  </span>
+                                </Link>
+                              </motion.div>
+
+                              {/* Contributors */}
+                              {playlistData?.collaborators?.map(
+                                (data, index) => (
+                                  <motion.div
+                                    key={data.email}
+                                    variants={{
+                                      hidden: {
+                                        opacity: 0,
+                                        y: 8,
+                                      },
+                                      show: {
+                                        opacity: 1,
+                                        y: 0,
+                                      },
+                                    }}
+                                    transition={{
+                                      duration: 0.25,
+                                      delay: index * 0.02,
+                                      ease: [0.22, 1, 0.36, 1],
+                                    }}
+                                  >
+                                    <Link
+                                      to={`/viewProfile/${data.email}`}
+                                      className="flex items-center gap-2 p-1 rounded-md text-xs text-gray-400 hover:bg-gray-400/20"
+                                    >
+                                      {data.profile ? (
+                                        <img
+                                          src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.profile}`}
+                                          alt={data.name}
+                                          className="h-6 w-6 md:h-7 md:w-7 rounded-full border border-teal-600 bg-gray-400"
+                                        />
+                                      ) : (
+                                        <div
+                                          className="w-6 h-6 md:h-7 md:w-7 rounded-full flex items-center justify-center text-[9px] font-bold text-white border border-neutral-800 shrink-0"
+                                          style={{
+                                            backgroundColor: avatarColor(
+                                              data.name,
+                                            ),
+                                          }}
+                                        >
+                                          {initials(data.name)}
+                                        </div>
+                                      )}
+
+                                      <p className="line-clamp-1 max-w-[250px] md:max-w-[300px]">
+                                        {data.name}
+                                      </p>
+                                    </Link>
+                                  </motion.div>
+                                ),
+                              )}
+                            </motion.div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </div>
                   </div>
 
@@ -616,7 +746,7 @@ function ViewTutorPlaylist() {
                   <div className="">
                     <h1 className="font-medium tracking-wide uppercase flex items-center gap-2 mb-1 text-gray-400 text-xs ">
                       Contributors
-                      <span
+                      {/* <span
                         onClick={() => {
                           setShowContributors(!showContributors);
                         }}
@@ -627,107 +757,243 @@ function ViewTutorPlaylist() {
                         ) : (
                           <IoMdArrowDropup className="text-xl" />
                         )}
-                      </span>
+                      </span> */}
+                       <motion.span
+                          whileTap={{ scale: 0.9 }}
+                          animate={{
+                            rotate: showContributors ? 180 : 0,
+                          }}
+                          transition={{
+                            duration: 0.3,
+                            ease: [0.22, 1, 0.36, 1],
+                          }}
+                          onClick={() => setShowContributors((prev) => !prev)}
+                          className="cursor-pointer flex items-center"
+                        >
+                          <MdArrowDropDown className="text-xl" />
+                        </motion.span>
                     </h1>
 
                     {/* Contributors profile */}
-                    <div
-                      className={`${
-                        !showContributors ? "flex -space-x-2" : "hidden "
-                      } cursor-pointer `}
-                      onClick={() => {
-                        setShowContributors(!showContributors);
-                      }}
-                    >
-                      {playlistData?.collaborators?.map((collab) => (
-                        <>
-                         {collab.profile ? (
-                        <img
-                          key={collab._id}
-                          src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${collab.profile}`}
-                          alt={collab.name}
-                          className="h-6 w-6 md:h-7 md:w-7 rounded-full border border-teal-600 bg-gray-400"
-                        />
-                      ) : (
-                        <div
-                        key={collab._id}
-                          className="w-6 h-6 md:h-7 md:w-7 rounded-full flex items-center border border-neutral-800 justify-center text-[9px] font-bold text-white shrink-0"
-                          style={{ backgroundColor: avatarColor(collab.name) }}
-                        >
-                          {initials(collab.name)}
-                        </div>
-                      )}
-                          </>
-                      ))}
-                      {playlistData.profile ? (
-                  <img
-                    src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.profile}`}
-                    // alt={collab.name}
-                    className="h-6 w-6 md:w-7 md:h-7 rounded-full border border-teal-600 bg-gray-400"
-                  />
-                ) : (
-                  <div
-                    className="w-6 h-6 md:h-7 md:w-7 rounded-full flex items-center border border-neutral-800 justify-center text-[9px] font-bold text-white shrink-0"
-                    style={{ backgroundColor: avatarColor(playlistData.name) }}
-                  >
-                    {initials(playlistData.name)}
-                  </div>
-                )}
-                    </div>
+                    <AnimatePresence>
+                        {!showContributors && (
+                          <motion.div
+                            initial={{
+                              opacity: 0,
+                              height: 0,
+                              y: -6,
+                            }}
+                            animate={{
+                              opacity: 1,
+                              height: "auto",
+                              y: 0,
+                            }}
+                            exit={{
+                              opacity: 0,
+                              height: 0,
+                              y: -6,
+                            }}
+                            transition={{
+                              duration: 0.3,
+                              ease: [0.22, 1, 0.36, 1],
+                            }}
+                            className="overflow-hidden"
+                          >
+                            <div
+                              className="flex -space-x-2 cursor-pointer"
+                              onClick={() => setShowContributors(true)}
+                            >
+                              {/* avatars */}
 
-                    {/* Contributors details */}
-                    <div
-                      className={`${
-                        showContributors
-                          ? " w-full flex flex-col justify-center gap-0.5"
-                          : "hidden "
-                      } `}
-                    >
-                      <Link
-                        to={`/viewProfile/${playlistData.email}`}
-                        className="flex hover:bg-gray-400/20 items-center cursor-pointer gap-2  text-gray-400 text-xs p-1 rounded-md"
-                      >
-                       {playlistData.profile ? (
-                      <img
-                        src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.profile}`}
-                        // alt={collab.name}
-                        className="h-6 w-6 md:w-7 md:h-7 rounded-full border border-teal-600 bg-gray-400"
-                      />
-                    ) : (
-                      <div
-                        className="w-6 h-6 md:w-7 md:h-7 rounded-full flex items-center border border-neutral-800 justify-center text-[9px] font-bold text-white shrink-0"
-                        style={{ backgroundColor: avatarColor(playlistData.name) }}
-                      >
-                        {initials(playlistData.name)}
-                      </div>
-                    )}
-                        {playlistData.name}{" "}
-                        <span className="text-gray-200">(Author)</span>
-                      </Link>
-                      {playlistData?.collaborators?.map((data, index) => (
-                        <Link
-                          to={`/viewProfile/${data.email}`}
-                          key={index}
-                          className="flex hover:bg-gray-400/20 items-center cursor-pointer gap-2  text-gray-400 text-xs p-1 rounded-md"
-                        >
-                          {data.profile ? (
-                        <img
-                          src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.profile}`}
-                          alt={data.name}
-                          className="h-6 w-6 md:h-7 md:w-7 rounded-full border border-teal-600 bg-gray-400"
-                        />
-                      ) : (
-                        <div
-                          className="w-6 h-6 md:h-7 md:w-7 rounded-full flex items-center border border-neutral-800 justify-center text-[9px] font-bold text-white shrink-0"
-                          style={{ backgroundColor: avatarColor(data.name) }}
-                        >
-                          {initials(data.name)}
-                        </div>
-                      )}
-                          {data.name}
-                        </Link>
-                      ))}
-                    </div>
+                              {playlistData?.collaborators?.map((collab) => (
+                                <>
+                                  {collab.profile ? (
+                                    <img
+                                      key={collab._id}
+                                      src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${collab.profile}`}
+                                      alt={collab.name}
+                                      className="h-6 w-6 md:h-7 md:w-7 rounded-full border border-teal-600 bg-gray-400"
+                                    />
+                                  ) : (
+                                    <div
+                                      key={collab._id}
+                                      className="w-6 h-6 md:h-7 md:w-7 rounded-full flex items-center border border-neutral-800 justify-center text-[9px] font-bold text-white shrink-0"
+                                      style={{
+                                        backgroundColor: avatarColor(
+                                          collab.name,
+                                        ),
+                                      }}
+                                    >
+                                      {initials(collab.name)}
+                                    </div>
+                                  )}
+                                </>
+                              ))}
+
+                              {playlistData.profile ? (
+                                <img
+                                  src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.profile}`}
+                                  // alt={collab.name}
+                                  className="h-6 w-6 md:w-7 md:h-7 rounded-full border border-teal-600 bg-gray-400"
+                                />
+                              ) : (
+                                <div
+                                  className="w-6 h-6 md:h-7 md:w-7 rounded-full flex items-center border border-neutral-800 justify-center text-[9px] font-bold text-white shrink-0"
+                                  style={{
+                                    backgroundColor: avatarColor(
+                                      playlistData.name,
+                                    ),
+                                  }}
+                                >
+                                  {initials(playlistData.name)}
+                                </div>
+                              )}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+
+                      {/* Contributors details */}
+
+                      <AnimatePresence initial={false}>
+                        {showContributors && (
+                          <motion.div
+                            initial={{
+                              opacity: 0,
+                              height: 0,
+                              y: -8,
+                            }}
+                            animate={{
+                              opacity: 1,
+                              height: "auto",
+                              y: 0,
+                            }}
+                            exit={{
+                              opacity: 0,
+                              height: 0,
+                              y: -8,
+                            }}
+                            transition={{
+                              duration: 0.35,
+                              ease: [0.22, 1, 0.36, 1],
+                            }}
+                            className="overflow-hidden"
+                          >
+                            <motion.div
+                              variants={{
+                                hidden: {},
+                                show: {
+                                  transition: {
+                                    staggerChildren: 0.04,
+                                  },
+                                },
+                              }}
+                              initial="hidden"
+                              animate="show"
+                              className="w-full flex flex-col justify-center gap-0"
+                            >
+                              {/* Author */}
+                              <motion.div
+                                variants={{
+                                  hidden: {
+                                    opacity: 0,
+                                    y: 8,
+                                  },
+                                  show: {
+                                    opacity: 1,
+                                    y: 0,
+                                  },
+                                }}
+                                transition={{
+                                  duration: 0.25,
+                                  ease: [0.22, 1, 0.36, 1],
+                                }}
+                              >
+                                <Link
+                                  to={`/viewProfile/${playlistData.email}`}
+                                  className="flex items-center gap-2 p-1 rounded-md text-xs text-gray-400 hover:bg-gray-400/20"
+                                >
+                                  {playlistData.profile ? (
+                                    <img
+                                      src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.profile}`}
+                                      className="h-6 w-6 rounded-full border border-teal-600 bg-gray-400"
+                                    />
+                                  ) : (
+                                    <div
+                                      className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold text-white border border-neutral-800 shrink-0"
+                                      style={{
+                                        backgroundColor: avatarColor(
+                                          playlistData.name,
+                                        ),
+                                      }}
+                                    >
+                                      {initials(playlistData.name)}
+                                    </div>
+                                  )}
+
+                                  <span>{playlistData.name}</span>
+
+                                  <span className="text-gray-200">
+                                    (Author)
+                                  </span>
+                                </Link>
+                              </motion.div>
+
+                              {/* Contributors */}
+                              {playlistData?.collaborators?.map(
+                                (data, index) => (
+                                  <motion.div
+                                    key={data.email}
+                                    variants={{
+                                      hidden: {
+                                        opacity: 0,
+                                        y: 8,
+                                      },
+                                      show: {
+                                        opacity: 1,
+                                        y: 0,
+                                      },
+                                    }}
+                                    transition={{
+                                      duration: 0.25,
+                                      delay: index * 0.02,
+                                      ease: [0.22, 1, 0.36, 1],
+                                    }}
+                                  >
+                                    <Link
+                                      to={`/viewProfile/${data.email}`}
+                                      className="flex items-center gap-2 p-1 rounded-md text-xs text-gray-400 hover:bg-gray-400/20"
+                                    >
+                                      {data.profile ? (
+                                        <img
+                                          src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.profile}`}
+                                          alt={data.name}
+                                          className="h-6 w-6 md:h-7 md:w-7 rounded-full border border-teal-600 bg-gray-400"
+                                        />
+                                      ) : (
+                                        <div
+                                          className="w-6 h-6 md:h-7 md:w-7 rounded-full flex items-center justify-center text-[9px] font-bold text-white border border-neutral-800 shrink-0"
+                                          style={{
+                                            backgroundColor: avatarColor(
+                                              data.name,
+                                            ),
+                                          }}
+                                        >
+                                          {initials(data.name)}
+                                        </div>
+                                      )}
+
+                                      <p className="line-clamp-1 max-w-[250px] md:max-w-[300px]">
+                                        {data.name}
+                                      </p>
+                                    </Link>
+                                  </motion.div>
+                                ),
+                              )}
+                            </motion.div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                   </div>
                 </div>
 
@@ -970,7 +1236,7 @@ function ViewTutorPlaylist() {
         </div>
       )} */}
 
-       <AnimatePresence>
+      <AnimatePresence>
         {selectedImage && (
           <motion.div
             initial={{
@@ -1057,7 +1323,7 @@ function ViewTutorPlaylist() {
                   object-contain
                 "
               />
-      
+
               {/* Close Button */}
               <motion.button
                 onClick={handleCloseModal}
