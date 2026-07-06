@@ -126,7 +126,7 @@ function LoginPage() {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.55, ease: "easeOut" }}
-        className={`relative w-full min-h-screen  overflow-y-hidden rounded-[32px] border border-white/10 bg-[#070a16] shadow-[0_45px_120px_-60px_rgba(0,0,0,0.8)] `}
+        className={`relative w-full min-h-screen  overflow-y-hidden border border-white/10 bg-[#070a16] shadow-[0_45px_120px_-60px_rgba(0,0,0,0.8)] `}
       >
        {!loader && <>
         <div className="absolute inset-0 overflow-hidden bg-[radial-gradient(circle_at_top_right,_rgba(34,197,94,0.18),_transparent_42%),radial-gradient(circle_at_bottom_left,_rgba(14,165,233,0.14),_transparent_30%)] pointer-events-none" />
@@ -135,7 +135,7 @@ function LoginPage() {
           <div className="relative hidden lg:flex flex-col justify-center gap-8 bg-gradient-to-b from-[#0f172a] via-[#111827] to-[#0b1230] p-10 lg:p-12">
             <div>
              
-              <p className="mt-8 text-sm flex items-center gap-3 uppercase tracking-[0.36em] text-slate-400">  <img src={logoicon} alt="Bytes Base" className="h-12 w-12 rounded-2xl bg-white/10 p-2 shadow-lg shadow-black/20" /> Bytes Base access</p>
+              <p className="md:mt-8 text-sm flex items-center gap-3 uppercase tracking-[0.36em] text-slate-400">  <img src={logoicon} alt="Bytes Base" className="h-12 w-12 rounded-2xl bg-white/10 p-2 shadow-lg shadow-black/20" /> Bytes Base access</p>
               <h1 className="mt-4 text-4xl font-semibold leading-tight text-white"> One Place to Connect <span className="bg-gradient-to-r from-green-400 via-blue-400 to-pink-400 bg-clip-text text-transparent drop-shadow-lg truncate  tracking-tight"> Developer minds.</span></h1>
               <p className="mt-4 max-w-md text-sm leading-7 text-slate-300">
                
@@ -207,7 +207,7 @@ function LoginPage() {
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="text-sm font-medium text-emerald-300 hover:text-emerald-200"
+                        className="md:text-sm text-xs font-medium text-emerald-300 hover:text-emerald-200"
                       >
                         {showPassword ? "Hide" : "Show"}
                       </button>

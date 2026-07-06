@@ -94,10 +94,10 @@ function ChangePassword() {
       
   return (
     <div className="min-h-screen md:bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center px-4 py-10">
-      <div className="w-full max-w-lg rounded-[32px] p-8 md:shadow-[0_32px_120px_-48px_rgba(14,165,233,0.8)] backdrop-blur-xl sm:p-10">
+      <div className="w-full max-w-lg pt-0 md:pt-10 p-8 md:shadow-[0_32px_120px_-48px_rgba(14,165,233,0.8)] backdrop-blur-xl sm:p-10">
         <div className="mx-auto w-full max-w-sm">
           <div className="md:text-center space-y-4">
-             <p className="mt-8 text-xs md:text-sm flex md:justify-center items-center  gap-3 uppercase tracking-[0.36em] text-slate-400">  <img src={logoicon} alt="Bytes Base" className="h-12 w-12 rounded-2xl bg-white/10 p-2 shadow-lg shadow-black/20" /> Bytes Base access</p>
+             <p className="md:mt-8 text-xs md:text-sm flex md:justify-center items-center  gap-3 uppercase tracking-[0.36em] text-slate-400">  <img src={logoicon} alt="Bytes Base" className="h-12 w-12 rounded-2xl bg-white/10 p-2 shadow-lg shadow-black/20" /> Bytes Base access</p>
             
             <h1 className="mt-3 md:text-3xl text-2xl font-semibold text-white">Change Password</h1>
             <p className="md:text-sm text-xs font-semibold mt-2 uppercase tracking-[0.3em] text-emerald-400/90">Secure Reset</p>

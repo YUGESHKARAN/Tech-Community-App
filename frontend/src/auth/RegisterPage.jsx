@@ -164,7 +164,7 @@ function RegisterPage() {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.55, ease: "easeOut" }}
-        className={`relative w-full  min-h-screen overflow-hidden rounded-[32px] border border-white/10 bg-[#070a16] shadow-[0_45px_120px_-60px_rgba(0,0,0,0.8)]`}
+        className={`relative w-full  min-h-screen overflow-hidden  border border-white/10 bg-[#070a16] shadow-[0_45px_120px_-60px_rgba(0,0,0,0.8)]`}
       >
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(16,185,129,0.16),_transparent_28%),radial-gradient(circle_at_bottom_right,_rgba(56,189,248,0.18),_transparent_24%)] pointer-events-none" />
 
@@ -254,10 +254,10 @@ function RegisterPage() {
        
           
 
-          <div className="relative flex flex-col justify-center px-8 py-10 sm:px-12  sm:py-14 lg:px-14 lg:py-7">
+          <div className="relative flex flex-col justify-center px-8  sm:px-12  s lg:px-14 py-7">
             <div className="relative z-10 mx-auto w-full max-w-md">
               <div className="mb-8 block lg:flex space-y-6 items-center justify-between gap-4">
-                 <p className="mt-8 text-xs md:text-sm lg:hidden flex items-center  gap-3 uppercase tracking-[0.36em] text-slate-400">  <img src={logoicon} alt="Bytes Base" className="h-12 w-12 rounded-2xl bg-white/10 p-2 shadow-lg shadow-black/20" /> Bytes Base access</p>
+                 <p className="md:mt-8 text-xs md:text-sm lg:hidden flex items-center  gap-3 uppercase tracking-[0.36em] text-slate-400">  <img src={logoicon} alt="Bytes Base" className="h-12 w-12 rounded-2xl bg-white/10 p-2 shadow-lg shadow-black/20" /> Bytes Base access</p>
                 <div>
                   <p className="mt-3 md:text-3xl text-2xl font-semibold text-white">Author Portal</p>
                   <h2 className="md:text-sm text-xs font-semibold mt-2 uppercase tracking-[0.3em] text-emerald-400/90">Register</h2>
@@ -289,7 +289,7 @@ function RegisterPage() {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <label className="text-base font-medium text-slate-300">Password</label>
-                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="text-sm font-semibold text-emerald-300 hover:text-emerald-200">{showPassword ? 'Hide' : 'Show'}</button>
+                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="text-xs md:text-sm font-semibold text-emerald-300 hover:text-emerald-200">{showPassword ? 'Hide' : 'Show'}</button>
                   </div>
                   <input
                     type={showPassword ? "text" : "password"}
@@ -306,7 +306,7 @@ function RegisterPage() {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <label className="text-base font-medium text-slate-300">Confirm Password</label>
-                    <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="text-sm font-semibold text-emerald-300 hover:text-emerald-200">{showConfirmPassword ? 'Hide' : 'Show'}</button>
+                    <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="text-xs md:text-sm font-semibold text-emerald-300 hover:text-emerald-200">{showConfirmPassword ? 'Hide' : 'Show'}</button>
                   </div>
                   <input
                     type={showConfirmPassword ? "text" : "password"}
