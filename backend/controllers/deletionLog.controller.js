@@ -436,6 +436,11 @@ const rollbackDeletion = async (req, res) => {
     const restorerName = restorer.authorname;
     const restorerEmail = restorer.email;
     const restoredName = authorSnap.authorname;
+    const restoredItems =
+      authorSnap?.role !== "student"
+        ? "posts, playlists, followers, "
+        : "";
+
     const deletedAt = log.deletedAt
       ? new Date(log.deletedAt).toDateString()
       : "unknown date";
@@ -443,7 +448,7 @@ const rollbackDeletion = async (req, res) => {
     const recoveryMessage = `
       Hi ${restoredName},
 
-      Your account was deleted on **${deletedAt}** and has now been fully restored. All your previous data such as ${authorSnap?.role !== 'student' && 'posts, playlists, followers,'} bookmarks, communities, and profile details are restored successfully.
+      Your account was deleted on **${deletedAt}** and has now been fully restored. All your previous data such as ${restoredItems} bookmarks, communities, and profile details are restored successfully.
       
       Welcome back to **Bytes Base** platform.
 `;
