@@ -15,7 +15,7 @@ const StudentLoader = ({roleFilter}) => {
   {Array.from({ length: 6 }).map((_, index) => (
     <div
       key={index}
-      className="bg-gray-900 w-full p-4 flex flex-col justify-between rounded-lg shadow-md border border-neutral-700"
+      className="theme w-full p-4 flex flex-col justify-between rounded-lg shadow-md border border-neutral-700"
     >
       {/* Header */}
       <div className="flex justify-between items-center mb-3">

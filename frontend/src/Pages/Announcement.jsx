@@ -739,7 +739,7 @@ function Announcement() {
   // console.log("guidelinses", showGuidelines)
   // console.log("announcement", reversedAnnouncements)
   return (
-    <div className="min-h-screen  bg-[#0f172a] text-slate-200">
+    <div className="min-h-screen  theme text-slate-200">
       <NavBar />
       <div className="min-h-screen max-w-[1800px] mx-auto w-full">
         {/* ================= HEADER ================= */}
@@ -782,7 +782,7 @@ function Announcement() {
               //     py-1
               //     md:rounded-xl
               //     rounded-lg
-              //     bg-[#111827]
+              //     theme
               //     border
               //     border-slate-700
               //     text-slate-200
@@ -831,7 +831,7 @@ function Announcement() {
                   px-2
                   py-1
                   rounded-lg
-                  bg-[#111827]
+                  theme
                   border
                   border-slate-700
                   text-slate-200
@@ -1008,7 +1008,7 @@ function Announcement() {
        
       >
         {/* Entire existing form content */}
-         <div className="bg-[#111827] border border-emerald-500/20  rounded-lg  mb-6 md:mb-0 p-6 space-y-6">
+         <div className="theme border border-emerald-500/20  rounded-lg overflow-hidden mb-6 md:mb-0 p-6 space-y-6">
                       <div className="flex items-center justify-between">
                         {" "}
                         <h3 className="text-xs uppercase tracking-wide text-slate-400">
@@ -1034,7 +1034,7 @@ function Announcement() {
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
                             placeholder="Announcement title"
-                            className="w-full mt-1 px-3 py-2 bg-[#0f172a] border border-slate-700
+                            className="w-full mt-1 px-3 py-2 theme border border-slate-700
                      rounded-md focus:outline-none focus:border-emerald-500/20 text-xs"
                           />
                           {fieldErrors.title && (
@@ -1051,7 +1051,7 @@ function Announcement() {
                               Message <span className="text-red-500">*</span>
                             </label>
                             {/* Tabs */}
-                            <div className="flex items-center bg-gray-900 border border-gray-700 rounded-lg p-1">
+                            <div className="flex items-center theme border border-gray-700 rounded-lg p-1">
                               <button
                                 type="button"
                                 onClick={() => setPreview(false)}
@@ -1081,7 +1081,7 @@ function Announcement() {
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
                             placeholder="Announcement message..."
-                            className="w-full mt-1 px-3 py-2 bg-[#0f172a] border border-slate-700
+                            className="w-full mt-1 px-3 py-2 theme border border-slate-700
                      rounded-md focus:outline-none emerald-scrollbar focus:border-emerald-500/20 text-slate-300 leading-relaxed text-xs"
                           /> */}
 
@@ -1098,7 +1098,7 @@ function Announcement() {
                           emerald-scrollbar
                           px-4 py-3
                           rounded-md
-                          bg-gray-900
+                          theme
                           border border-gray-700
                           text-white text-xs 
                           leading-relaxed
@@ -1121,7 +1121,7 @@ function Announcement() {
                                 value={message}
                                 onChange={(e) => setMessage(e.target.value)}
                                 placeholder="Announcement message..."
-                                className="w-full mt-2  focus:border focus:border-emerald-500/40 emerald-scrollbar px-4 py-3 rounded-md bg-gray-900 border border-gray-700 outline-none  text-white text-xs leading-relaxed"
+                                className="w-full mt-2  focus:border focus:border-emerald-500/40 emerald-scrollbar px-4 py-3 rounded-md theme border border-gray-700 outline-none  text-white text-xs leading-relaxed"
                               />
                             )}
                           </div>
@@ -1160,7 +1160,7 @@ function Announcement() {
                                 setCurrentLinkTitle(e.target.value)
                               }
                               placeholder="Link Title"
-                              className="w-1/2 px-3 py-2 bg-[#0f172a] border border-slate-700
+                              className="w-1/2 px-3 py-2 theme border border-slate-700
                      rounded-md focus:outline-none focus:border-emerald-500/20 text-xs"
                             />
                             <input
@@ -1170,7 +1170,7 @@ function Announcement() {
                                 setCurrentLinkUrl(e.target.value)
                               }
                               placeholder="Link URL"
-                              className="w-1/2 px-3 py-2 bg-[#0f172a] border border-slate-700
+                              className="w-1/2 px-3 py-2 theme border border-slate-700
                      rounded-md focus:outline-none focus:border-emerald-500/20 text-xs"
                             />
                             <button
@@ -1302,7 +1302,7 @@ function Announcement() {
                           <select
                             value={deliveredTo}
                             onChange={(e) => setDeliveredTo(e.target.value)}
-                            className="mt-1 block w-full px-3 py-2 bg-[#0f172a]
+                            className="mt-1 block w-full px-3 py-2 theme
                     border border-slate-700 cursor-pointer rounded-md focus:outline-none focus:border-emerald-500/20 text-xs md:text-sm"
                           >
                             <option value="">Choose recipients</option>
@@ -1321,7 +1321,7 @@ function Announcement() {
 
                         {/* COMMUNITY MULTI SELECT */}
                         {deliveredTo === "community" && (
-                          <div className="bg-slate-800 border border-gray-700 rounded-md p-4">
+                          <div className="theme-fields-lite border border-gray-700 rounded-md p-4">
                             <div className="flex justify-between items-center mb-3">
                               <p className="text-xs text-slate-200 font-medium">
                                 Select communities
@@ -1387,7 +1387,7 @@ function Announcement() {
 
                 {/* DANGER ZONE */}
                 {/* {role === "admin" && (
-              <div className="bg-[#111827] border border-red-900 rounded-lg p-5">
+              <div className="theme border border-red-900 rounded-lg p-5">
                 <h3 className="text-xs uppercase tracking-wide text-red-400 mb-4">
                   Danger Zone
                 </h3>
@@ -1411,7 +1411,7 @@ function Announcement() {
             className={`space-y-6 md:space-y-8 md:block ${showGuidelines && "hidden md:block"}`}
           >
             {/* <div
-              className={`${role !== "student" ? "bg-[#111827] border border-slate-800 rounded-lg p-5" : "bg-[#111827] border border-slate-800 rounded-lg p-5"}`}
+              className={`${role !== "student" ? "theme border border-slate-800 rounded-lg p-5" : "theme border border-slate-800 rounded-lg p-5"}`}
             >
               <div className="flex items-center justify-between ">
                 <h3 className="text-xs uppercase tracking-wide text-emerald-400 font-semibold mb-4">
@@ -1512,7 +1512,7 @@ function Announcement() {
               reversedAnnouncements.map((item) => (
                 // <div
                 //   key={item._id}
-                //   className="bg-[#111827] border border-slate-800 rounded-lg p-4 md:p-7 space-y-6"
+                //   className="theme border border-slate-800 rounded-lg p-4 md:p-7 space-y-6"
                 // >
                 //   <div className="flex justify-between items-start">
                 //     <div>
@@ -1610,7 +1610,7 @@ function Announcement() {
                       rounded-3xl
                       border border-slate-800/80
                       bg-gradient-to-b
-                      from-[#0f172a]
+                      from-theme
                       via-[#0b1220]
                       to-[#0a101d]
                       shadow-xl
@@ -1878,7 +1878,7 @@ function Announcement() {
                         items-center
                         justify-center
                         rounded-full
-                        bg-gray-900
+                        theme
                         border border-gray-700
                         text-white
                         shadow-lg
@@ -2019,7 +2019,7 @@ function Announcement() {
                     items-center
                     justify-center
                     rounded-full
-                    bg-gray-900
+                    theme
                     border border-gray-700
                     text-white
                     shadow-lg

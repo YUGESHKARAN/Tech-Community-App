@@ -4,7 +4,7 @@ const AdminCardLoader = ({roleFilter}) => {
     //   {Array.from({ length: 6 }).map((_, i) => (
     //     <div
     //       key={i}
-    //       className="bg-gray-900 w-full h-fit p-4 flex flex-col justify-between rounded-lg shadow-md border border-neutral-700"
+    //       className="theme w-full h-fit p-4 flex flex-col justify-between rounded-lg shadow-md border border-neutral-700"
     //     >
     //       {/* Top Row */}
     //       <div className="flex justify-between items-center mb-3">
@@ -66,7 +66,7 @@ const AdminCardLoader = ({roleFilter}) => {
   {Array.from({ length: 6 }).map((_, index) => (
     <div
       key={index}
-      className="bg-gray-900 w-full p-4 flex flex-col justify-between rounded-lg shadow-md border border-neutral-700"
+      className="theme w-full p-4 flex flex-col justify-between rounded-lg shadow-md border border-neutral-700"
     >
       {/* Header */}
       <div className="flex justify-between items-center mb-3">

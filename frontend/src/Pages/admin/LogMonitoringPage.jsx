@@ -298,7 +298,7 @@ function LogMonitoringPage() {
   const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
 
   return (
-    <div className="min-h-screen bg-gray-900  text-white  ">
+    <div className="min-h-screen theme  text-white  ">
       {/* HEADER */}
       <div className="flex flex-col md:flex-row justify-between gap-4 mb-3">
         <div>

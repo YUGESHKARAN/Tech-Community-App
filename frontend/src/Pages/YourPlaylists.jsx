@@ -103,10 +103,10 @@ useEffect(() => {
   ];
 };
 
-    console.log("tutorPlayListByEmail", tutorPlayListByEmail);
+    // console.log("tutorPlayListByEmail", tutorPlayListByEmail);
     // console.log("filteredPlaylist", filteredPlaylist);
   return (
-    <div className="w-full min-h-screen bg-gray-900 h-auto reltive  ">
+    <div className="w-full min-h-screen theme h-auto reltive  ">
       <NavBar />
 
       <h1 className=" text-xl w-full max-w-[1800px] mx-auto px-4 md:px-6 flex items-center gap-2 mt-3 md:mt-4 mx-auto md:text-3xl font-semibold text-white tracking-wide">
@@ -138,7 +138,7 @@ useEffect(() => {
         {tutorPlayListByEmail?.length > 0 && (
         <div
           className={`w-full sticky max-w-[1800px] mx-auto top-0 z-40
-                ${isStickyActive ? "bg-gray-900 " : "bg-transparent"}`}
+                ${isStickyActive ? "theme " : "bg-transparent"}`}
         >
           <div
             // className="flex md:max-w-5xl md:w-fit mt-10 scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto"
@@ -175,7 +175,7 @@ useEffect(() => {
       )}
 
 
-      <div className="min-h-screen max-w-[1800px] mx-auto md:px-4 w-full md:mt-4 mx-auto bg-gray-900 pb-8">
+      <div className="min-h-screen max-w-[1800px] mx-auto md:px-4 w-full md:mt-4 mx-auto theme pb-8">
         {filteredPlaylist?.length > 0 && (
           <div
             className="

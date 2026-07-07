@@ -275,7 +275,7 @@ function ProfilePage() {
 
   return (
     <>
-      <div className=" bg-gray-900 relative text-white">
+      <div className=" theme relative text-white">
         <NavBar />
 
         {!loader ? (
@@ -366,7 +366,7 @@ function ProfilePage() {
             {/* ── Two-column layout ─────────────────────────────────── */}
             <div className="grid grid-cols-1 md:grid-cols-[300px_1fr]  md:gap-4 mt-4 md:mt-0 mb-3 items-start">
               {/* ══ LEFT — Profile card ══════════════════════════════ */}
-              <div className="md:sticky md:top-6 relative self-start bg-gray-900/50 border md:border-white/[0.1] border-white/[0.09] rounded-2xl mt-0 p-6 pb-3 text-center">
+              <div className="md:sticky md:top-6 relative self-start theme/50 border md:border-white/[0.1] border-white/[0.09] rounded-2xl mt-0 p-6 pb-3 text-center">
                 {/* Avatar */}
 
                 <div className="flex items-start md:items-center md:flex-col mt-9 w-full  justify-start gap-1.5 md:gap-2">
@@ -501,7 +501,7 @@ function ProfilePage() {
                         className="
                         w-full
                         rounded-lg
-                        bg-gray-900
+                        theme
                         border border-emerald-700
                         p-3
                         text-xs
@@ -596,7 +596,7 @@ function ProfilePage() {
               {/* ══ RIGHT — Form ═ ════════════════════════════════════ */}
               <form
                 onSubmit={handleSubmit}
-                className="bg-gray-900/50 border border-white/[0.09] md:border-white/[0.1] rounded-2xl mt-4 md:mt-0  p-6 "
+                className="theme/50 border border-white/[0.09] md:border-white/[0.1] rounded-2xl mt-4 md:mt-0  p-6 "
               >
                 <div className="md:grid flex flex-col md:grid-cols-1 gap-6">
                   
@@ -761,7 +761,7 @@ function ProfilePage() {
                                 className="w-full focus:border focus:border-emerald-500/40  focus:border-emerald-500/40
                                     focus:ring-2
                                     focus:ring-emerald-500/10
-                                    transition-all duration-200  px-4 py-2 cursor-pointer rounded-xl bg-gray-900  border border-emerald-700 outline-none text-xs md:text-sm text-white"         
+                                    transition-all duration-200  px-4 py-2 cursor-pointer rounded-xl theme  border border-emerald-700 outline-none text-xs md:text-sm text-white"         
                                  >
                                 <option value="" disabled>
                                   Add Bio Link
@@ -796,7 +796,7 @@ function ProfilePage() {
                                 type="text"
                                 placeholder="Platform name"
                                 onChange={(e) => setCustomTitle(e.target.value)}
-                                className="w-full focus:border focus:border-emerald-500/40 px-4 py-2 rounded-md bg-gray-900  border border-emerald-700 outline-none  focus:border-emerald-500/40
+                                className="w-full focus:border focus:border-emerald-500/40 px-4 py-2 rounded-md theme  border border-emerald-700 outline-none  focus:border-emerald-500/40
                         focus:ring-2
                         focus:ring-emerald-500/10
                         transition-all duration-200 text-white text-xs md:text-sm"
@@ -813,7 +813,7 @@ function ProfilePage() {
                               className="w-full focus:border  focus:border-emerald-500/40
                         focus:ring-2
                         focus:ring-emerald-500/10
-                        transition-all duration-200 focus:border-emerald-500/40 w-full px-4 py-2 rounded-md bg-gray-900  border border-emerald-700 outline-none  outline-none text-white text-xs md:text-sm"
+                        transition-all duration-200 focus:border-emerald-500/40 w-full px-4 py-2 rounded-md theme  border border-emerald-700 outline-none  outline-none text-white text-xs md:text-sm"
                             />
                               </div>
 
@@ -957,7 +957,7 @@ function ProfilePage() {
         {/* ── Delete confirm modal ──────────────────────────────────── */}
         {showConfirm && (
           <div className="fixed h-full inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm px-4">
-            <div className="w-full max-w-sm bg-gray-900 border border-white/[0.08] rounded-2xl shadow-2xl p-6">
+            <div className="w-full max-w-sm theme border border-white/[0.08] rounded-2xl shadow-2xl p-6">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-9 h-9 flex items-center justify-center rounded-xl bg-red-500/10 border border-red-500/20">
                   <RiDeleteBin6Line className="text-red-400 text-base" />

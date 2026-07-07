@@ -256,7 +256,7 @@ function BookMarkPage() {
   // #f8f0e8
 
   return (
-    <div className="w-full  bg-gray-900  h-auto reltive  ">
+    <div className="w-full  theme  h-auto reltive  ">
       <NavBar />
       <h1 className=" text-xl max-w-[1800px] mx-auto mt-3 md:mt-4 px-2  md:w-full flex items-center gap-2 md:gap-3 mx-auto md:text-3xl font-semibold text-white tracking-wide">
         <BiBookmarkAlt className="text-green-400"/>
@@ -373,7 +373,7 @@ function BookMarkPage() {
              {posts.length > 0 && (
                <div
                 className={`w-full sticky top-0 z-40
-                ${isStickyActive ? "bg-gray-900 " : "bg-transparent"}`}
+                ${isStickyActive ? "theme " : "bg-transparent"}`}
               >
 
       
@@ -387,7 +387,7 @@ function BookMarkPage() {
                   className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1.5 md:py-2 transition-all duration-200 ${
                     postCategory === ""
                       ? "bg-emerald-600/20 text-emerald-400"
-                      : "bg-gray-800 text-white"
+                      : "theme-fields-lite text-white"
                   }`}
                 >
                   All
@@ -402,7 +402,7 @@ function BookMarkPage() {
                     className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1.5 md:py-2 transition-all duration-200 ${
                       postCategory === data
                         ? "bg-emerald-600/20 text-emerald-400"
-                        : "bg-gray-800 text-white"
+                        : "theme-fields-lite text-white"
                     }`}
                   >
                     {data}
@@ -430,7 +430,7 @@ function BookMarkPage() {
                     <article
                       key={data._id}
                       className="
-                       bg-[#0f172a]
+                       theme-fields-dark
                       
                       overflow-hidden
                       

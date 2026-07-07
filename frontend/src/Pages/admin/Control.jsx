@@ -305,7 +305,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
 
   return (
     // <div className="relative w-full min-h-screen h-auto  bg-gradient-to-br from-gray-900 to-gray-700">
-    <div className="min-h-screen h-auto relative w-full   bg-gray-900">
+    <div className="min-h-screen h-auto relative w-full   theme">
       <NavBar />
       {/* <h1 className="md:text-4xl text-3xl font-semibold my-5 text-white text-left  w-full px-4 mx-auto">
        <MdManageAccounts/> Control Panel
@@ -322,7 +322,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
       <div className="w-full width-max px-4 py-2 mx-auto flex  md:flex-row  items-center gap-2 md:gap-3 mb-3 md:mb-6">
         <div
           // className="md:w-1/3 w-3/5 px-4 py-2 flex items-center gap-2 justify-center rounded-md bg-gray-600 border border-white text-xs md:text-sm text-white placeholder-gray-400"
-          className="w-full max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition"
+          className="w-full max-w-md flex items-center gap-3 theme-fields-lite border border-gray-700 rounded-xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition"
         >
           <IoSearch className="text-white" />
           <input
@@ -343,7 +343,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
             w-20 md:w-64
             px-2 py-2 md:px-5 md:py-2
             rounded-full
-            bg-gray-900/50 backdrop-blur-md
+            theme/50 backdrop-blur-md
             border border-gray-600
             text-xs md:text-sm
             text-white
@@ -352,22 +352,22 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
             transition-all duration-200
             focus:outline-none
             focus:ring-1 focus:ring-teal-500/50
-            hover:bg-gray-900
+            hover:theme
           "
         >
-          <option className="bg-gray-900" value="">
+          <option className="theme" value="">
             All Roles
           </option>
 
-           <option className="bg-gray-900" value="admin">
+           <option className="theme" value="admin">
             Admins
           </option>
           
-           <option className="bg-gray-900" value="coordinator">
+           <option className="theme" value="coordinator">
             Contributors
           </option>
          
-          <option className="bg-gray-900" value="student">
+          <option className="theme" value="student">
             Users
           </option>
          
@@ -391,7 +391,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
                   ref={authorFilterRef}
                   className={`${
                     showAuthorFilter
-                      ? "absolute top-12 md:mt-0 right-1 md:left-0 z-50 px-2 py-1 w-32 overflow-hidden rounded-lg border border-[#30363d] bg-gray-900 shadow-2xl"
+                      ? "absolute top-12 md:mt-0 right-1 md:left-0 z-50 px-2 py-1 w-32 overflow-hidden rounded-lg border border-[#30363d] theme shadow-2xl"
                       : "hidden"
                   }`}
                   onClick={()=>{setShowAuthorFilter(false)}}
@@ -407,7 +407,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
                         w-full flex items-center gap-2
                         pl-3  md:py-1.5 py-1
                         text-xs text-gray-100
-                        hover:bg-gray-800/70
+                        hover:theme-fields-lite/70
                         transition-all duration-200
                         rounded-lg
         
@@ -428,7 +428,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
                         w-full flex items-center gap-2
                         pl-3  md:py-1.5 py-1
                         text-xs text-gray-100
-                        hover:bg-gray-800/70
+                        hover:theme-fields-lite/70
                         transition-all duration-200
                         rounded-lg
         
@@ -448,7 +448,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
                         w-full flex items-center gap-2
                         pl-3  md:py-1.5 py-1
                         text-xs text-gray-100
-                        hover:bg-gray-800/70
+                        hover:theme-fields-lite/70
                         transition-all duration-200
                         rounded-lg
         
@@ -469,7 +469,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
                         w-full flex items-center gap-2
                         pl-3  md:py-1.5 py-1
                         text-xs text-gray-100
-                        hover:bg-gray-800/70
+                        hover:theme-fields-lite/70
                         transition-all duration-200
                         rounded-lg
         
@@ -516,7 +516,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
             filteredAdmins.map((author) => (
             <div
               key={author.id}
-              className="bg-gray-900 w-full px-4 mx-auto md:w-full h-fit p-4 flex flex-col justify-between rounded-lg shadow-md border md:border-neutral-800 border-neutral-700"
+              className="theme w-full px-4 mx-auto md:w-full h-fit p-4 flex flex-col justify-between rounded-lg shadow-md border md:border-neutral-800 border-neutral-700"
             >
               <div className="flex justify-between items-center text-xl font-semibold text-white">
                 <Link
@@ -708,7 +708,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
             filteredCoordinators.map((author) => (
             <div
               key={author.id}
-              className="bg-gray-900 w-full px-4 mx-auto md:w-full h-fit p-4 flex flex-col justify-between rounded-lg shadow-md border  border-neutral-700/70"
+              className="theme w-full px-4 mx-auto md:w-full h-fit p-4 flex flex-col justify-between rounded-lg shadow-md border  border-neutral-700/70"
             >
               <div className="flex justify-between items-center text-xl font-semibold text-white">
                 <Link
@@ -894,13 +894,13 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
               : roleFilter === "student"
                 ? " min-h-screen h-auto md:mb-16 mb-10  flex flex-col   md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 w-full px-4 mx-auto mt-2"
                 : "hidden"
-          } bg-gray-900 width-max mx-auto`}
+          } theme width-max mx-auto`}
         >
           {filteredStudents.length > 0 ? (
             filteredStudents.map((author) => (
             <div
               key={author.id}
-              className="bg-gray-900 w-full px-4 mx-auto md:w-full h-fit p-4 flex flex-col justify-between rounded-lg shadow-md border  border-neutral-700/70"
+              className="theme w-full px-4 mx-auto md:w-full h-fit p-4 flex flex-col justify-between rounded-lg shadow-md border  border-neutral-700/70"
             >
               <div className="flex justify-between items-center text-xl font-semibold text-white">
                 <Link

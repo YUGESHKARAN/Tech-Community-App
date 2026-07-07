@@ -75,7 +75,7 @@ const BookmarkPlaylistCard = ({ playlist, setBookMarPlaylist }) => {
 
       {/* MAIN CARD */}
       <div
-        className="relative z-20 bg-gray-900 rounded-xl 
+        className="relative z-20 theme rounded-xl 
         border border-zinc-900 overflow-hidden 
          transition-transform duration-300 hover:-translate-y-1"
       >

@@ -104,13 +104,13 @@ function Dashboard() {
   // console.log("months", months);
 
   return (
-    <div className="min-h-screen h-auto  relative bg-gray-900 text-white flex flex-col">
+    <div className="min-h-screen h-auto  relative theme text-white flex flex-col">
       <NavBar />
 
-      <div className="md:flex h-full width-max mx-auto  bg-gray-900 text-white overflow-hidden">
+      <div className="md:flex h-full width-max mx-auto  theme text-white overflow-hidden">
         {/* ── SIDEBAR ──────────────────────────────────────────────────────────── */}
         <aside
-          className={`${!showSideBar ? "w-20 py-5" : "md:w-80 shrink-0 bg-gray-900  flex flex-col py-5 px-3 gap-1"} transition-all duration-300  hidden`}
+          className={`${!showSideBar ? "w-20 py-5" : "md:w-80 shrink-0 theme  flex flex-col py-5 px-3 gap-1"} transition-all duration-300  hidden`}
         >
           {/* Logo */}
           <div
@@ -279,7 +279,7 @@ function Dashboard() {
 
               {/* Posts by Category */}
               {!postCategoryLoading ? (
-                <div className="bg-[#0f172a]  flex flex-col justify-between items-start  border border-[#1e293b] rounded-xl p-4">
+                <div className="dashboard-theme-fields-dark  flex flex-col justify-between items-start  border border-[#1e293b] rounded-xl p-4">
                   <div>
                     <p className="text-sm md:text-base font-semibold text-gray-200 ">
                       Posts by Category
@@ -316,7 +316,7 @@ function Dashboard() {
 
               {/* Community Membership */}
               {!postCategoryLoading ? (
-                <div className="bg-[#0f172a] flex flex-col justify-between items-start  border border-[#1e293b] rounded-xl p-4">
+                <div className="dashboard-theme-fields-dark flex flex-col justify-between items-start  border border-[#1e293b] rounded-xl p-4">
                   <div>
                     <p className="text-sm md:text-base font-semibold text-gray-200">
                       Community Membership
@@ -400,7 +400,7 @@ function Dashboard() {
 
               {/* Top Contributors */}
               {!topContributorsLoading ? (
-                <div className="bg-[#0f172a] border border-[#1e293b] rounded-xl p-4">
+                <div className="dashboard-theme-fields-dark border border-[#1e293b] rounded-xl p-4">
                   <div className="flex justify-between items-center mb-4">
                     <div>
                       <p className="text-sm md:text-base  font-semibold text-gray-200">
@@ -486,7 +486,7 @@ function Dashboard() {
               )}
 
               {!topContributorsLoading && topContributors.length === 0 && (
-                <div className="bg-[#0f172a] border border-[#1e293b] rounded-xl p-4">
+                <div className="dashboard-theme-fields-dark border border-[#1e293b] rounded-xl p-4">
                   <p className="text-sm font-semibold text-gray-200 mb-1">
                     Top 10 Contributors
                   </p>
@@ -659,7 +659,7 @@ const MiniBar = ({ data, valueKey, labelKey, color = "#0004ff" }) => {
 //   const yearOptions = [currentYear - 1, currentYear - 2];
 
 //   return (
-//     <div className="bg-[#0f172a]  border border-[#1e293b] rounded-xl p-4 flex flex-col">
+//     <div className="dashboard-theme-fields-dark  border border-[#1e293b] rounded-xl p-4 flex flex-col">
 //       {/* Header */}
 //       <div className="flex justify-between items-center mb-4">
 //         <div>
@@ -702,7 +702,7 @@ const MiniBar = ({ data, valueKey, labelKey, color = "#0004ff" }) => {
 //           />
 
 //           {/* Inner cut (to make it a ring) */}
-//           <div className="absolute top-[20px] left-[20px] w-[140px] h-[140px] bg-[#0f172a] rounded-full" />
+//           <div className="absolute top-[20px] left-[20px] w-[140px] h-[140px] dashboard-theme-fields-dark rounded-full" />
 
 //           {/* Center Text */}
 //           <div className="absolute inset-0 flex flex-col items-center justify-center mt-6 md:mt-4">
@@ -803,7 +803,7 @@ const PostsGaugeCard = ({ data, year, setYear, target, setTarget }) => {
   const yearOptions = [currentYear - 1, currentYear - 2];
 
   return (
-    <div className="bg-[#0f172a] border border-[#1e293b] rounded-xl p-4 flex flex-col">
+    <div className="dashboard-theme-fields-dark border border-[#1e293b] rounded-xl p-4 flex flex-col">
       {/* Header */}
       <div className="flex justify-between items-center mb-4">
         <div>
@@ -845,7 +845,7 @@ const PostsGaugeCard = ({ data, year, setYear, target, setTarget }) => {
             }}
           />
 
-          <div className="absolute top-[20px] left-[20px] w-[140px] h-[140px] bg-[#0f172a] rounded-full" />
+          <div className="absolute top-[20px] left-[20px] w-[140px] h-[140px] dashboard-theme-fields-dark rounded-full" />
 
           <div className="absolute inset-0 flex flex-col items-center justify-center mt-6 md:mt-4">
             <span className="md:text-2xl text-lg font-bold text-white">
@@ -950,7 +950,7 @@ const KPICard = ({
     <Link
       to={to}
       onClick={handleClick}
-      className="bg-gray-800/70 border border-[#1e293b] rounded-xl p-3 md:p-5  flex items-center justify-between gap-3 hover:border-white/10 transition-colors"
+      className="dashboard-theme-fields-dark border border-[#1e293b] rounded-xl p-3 md:p-5  flex items-center justify-between gap-3 hover:border-white/10 transition-colors"
     >
       {/* Top — icon + name */}
       <div className="flex items-center gap-2.5">
@@ -1099,7 +1099,7 @@ const AuthorsTable = ({
   }, [contributors, search, debouncedSearch]);
 
   return (
-    <div className="bg-[#0f172a] border border-[#1e293b] rounded-2xl md:w-full  flex flex-col md:overflow-x-hidden overflow-x-scroll md:flex-1">
+    <div className="theme border border-[#1e293b] rounded-2xl md:w-full  flex flex-col md:overflow-x-hidden overflow-x-scroll md:flex-1">
       <TableHeader
         title="Total Contributors"
         count={totalContributors}
@@ -1318,7 +1318,7 @@ const StudentsTable = ({
   return (
     <div
     id ="users"
-     className="bg-[#0f172a] scroll-mt-4 md:scroll-mt-24  border mt-4 md:mt-0 border-[#1e293b] rounded-2xl flex flex-col  overflow-hidden md:w-[600px]">
+     className="theme scroll-mt-4 md:scroll-mt-24  border mt-4 md:mt-0 border-[#1e293b] rounded-2xl flex flex-col  overflow-hidden md:w-[600px]">
       <TableHeader
         title="Total Students"
         count={totalStudents}

@@ -346,7 +346,7 @@ function NavBar() {
             w-[120px] md:w-[160px]
             rounded-lg
             md:rounded-lg
-            bg-[#0f172a]/80
+            bg-[#0f172a]/90
             border  
             hover:border-emerald-500/30
             hover:bg-[#111827]
@@ -704,12 +704,12 @@ function NavBar() {
         ref={notificationRef}
         className={`${
           showNotification && !showAddContent
-            ? "fixed  top-16 right-2 z-50 md:w-[320px] w-72 pb-4 bg-gray-900 border border-gray-700 shadow-2xl rounded-xl md:rounded-lg transition-all duration-300"
+            ? "fixed  top-16 right-2 z-50 md:w-[320px] w-72 pb-4 theme border border-gray-700 shadow-2xl rounded-xl md:rounded-lg transition-all duration-300"
             : "hidden"
         }`}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-4 py-3 border-b border-gray-700 sticky top-0 bg-gray-900 z-40 rounded-t-2xl">
+        <div className="flex items-center justify-between px-4 py-3 border-b border-gray-700 sticky top-0 theme z-40 rounded-t-2xl">
           <h2 className="text-sm font-semibold text-white tracking-wide flex items-center ">
             🔔 Notifications
           </h2>
@@ -807,7 +807,7 @@ function NavBar() {
         ref={addContentRef}
         className={`${
           showAddContent && !showNotification
-            ? "fixed top-16 right-12 z-50 px-2 py-1 w-48 overflow-hidden rounded-2xl border border-[#30363d] bg-gray-900 shadow-2xl"
+            ? "fixed top-16 right-12 z-50 px-2 py-1 w-48 overflow-hidden rounded-2xl border border-[#30363d] theme shadow-2xl"
             : "hidden"
         }`}
       >
@@ -883,7 +883,7 @@ function NavBar() {
         ref={showProfileSettings}
         className={`${
           !showAddContent && !showNotification && showProfile
-            ? "fixed top-16 right-2 z-50 px-2  w-32 overflow-hidden rounded-lg border border-[#30363d] bg-gray-900 shadow-2xl"
+            ? "fixed top-16 right-2 z-50 px-2  w-32 overflow-hidden rounded-lg border border-[#30363d] theme shadow-2xl"
             : "hidden"
         }`}
       >

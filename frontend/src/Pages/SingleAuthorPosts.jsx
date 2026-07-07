@@ -265,7 +265,7 @@ const filteredPosts = useMemo(() => {
   // console.log("badges", badges)
 
   return (
-    <div className="w-full reltive min-h-screen  bg-gray-900  h-auto reltive  ">
+    <div className="w-full reltive min-h-screen theme  h-auto reltive  ">
       <NavBar />
       <div className="relative min-h-screen max-w-[1800px] mx-auto  md:pb-8"> 
         <div className="w-full md:px-4 mx-auto mt-3 md:mt-4 ">
@@ -273,7 +273,7 @@ const filteredPosts = useMemo(() => {
             Posts Page
           </h1>
           {/* Profile Header Card */}
-          <div className={`flex items-center relative mx-2  py-7  bg-gradient-to-r from-slate-900 to-slate-800 border border-slate-700/50 rounded-2xl p-5 md:p-7 shadow-lg ${badges.length>1?'gap-3':'gap-5'} md:gap-6`}>
+          <div className={`flex items-center relative mx-2  py-7  bg-gradient-to-r from-theme to-slate-800 border border-slate-700/50 rounded-2xl p-5 md:p-7 shadow-lg ${badges.length>1?'gap-3':'gap-5'} md:gap-6`}>
             {/* Avatar */}
             <div
               // to={`/viewProfile/${email}`}
@@ -340,7 +340,7 @@ const filteredPosts = useMemo(() => {
         
                {/* ================= SEARCH ================= */}
             <div className="flex mx-3 md:mx-0 justify-center mb-2 mt-4 md:mt-6 md:mb-0 ">
-              <div className="w-full mx-auto max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
+              <div className="w-full mx-auto max-w-md flex items-center gap-3 theme-fields-lite border border-gray-700 rounded-xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
                 <IoSearchOutline className="text-xl text-gray-400" />
                 <input
                   type="text"
@@ -358,7 +358,7 @@ const filteredPosts = useMemo(() => {
        {posts.length > 0 && (
               <div
                 className={`w-full mt-2 md:mt-0 sticky top-0 z-40
-                ${isStickyActive ? "bg-gray-900 " : "bg-transparent"}`}
+                ${isStickyActive ? "theme " : "bg-transparent"}`}
               >
                 <div
                   // className="flex md:max-w-5xl md:w-fit mt-10 scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto"
@@ -370,7 +370,7 @@ const filteredPosts = useMemo(() => {
                     className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1.5 md:py-2 transition-all duration-200 ${
                       postCategory === ""
                         ? "bg-emerald-600/20 text-emerald-400"
-                        : "bg-gray-800 text-white"
+                        : "theme-fields-lite text-white"
                     }`}
                   >
                     All
@@ -384,7 +384,7 @@ const filteredPosts = useMemo(() => {
                       className={`flex-shrink-0 text-nowrap inline-block cursor-pointer rounded-md  text-xs px-3 py-1.5 md:py-2 transition-all duration-200 ${
                         postCategory === data
                           ? "bg-emerald-600/20 text-emerald-400"
-                          : "bg-gray-800 text-white"
+                          : "theme-fields-lite text-white"
                       }`}
                     >
                       {data}

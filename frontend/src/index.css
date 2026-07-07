@@ -129,3 +129,13 @@ body {
   /* background-color: #1f2937; */
   background-color: #141d2f;
 }
+
+.dashboard-theme-fields-lite{
+  /* background-color: #1f2937; */
+  background-color: #111827;
+}
+
+.dashboard-theme-fields-dark{
+  /* background-color: #1f2937; */
+  background-color: #101725;
+}

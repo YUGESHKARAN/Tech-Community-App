@@ -313,7 +313,7 @@ function Authors() {
   }, []);
 
   return (
-    <div className="w-full min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 ">
+    <div className="w-full min-h-screen theme ">
       <NavBar />
 
       {/* <h1 className=" text-3xl py-4  w-11/12 flex items-center gap-2 mx-auto md:text-3xl font-bold text-white tracking-wide">
@@ -332,7 +332,7 @@ function Authors() {
       <div className="w-full max-w-[1800px] px-4 mx-auto flex mt-0 md:mt-4   md:flex-row  items-center gap-2 md:gap-3 mb-3 md:mb-6">
         <div
           // className="md:w-1/3 w-3/5 px-4 py-2 flex items-center gap-2 justify-center rounded-md bg-gray-600 border border-white text-xs md:text-base text-white placeholder-gray-400"
-          className="w-full max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition"
+          className="w-full max-w-md flex items-center gap-3 theme-fields-lite border border-gray-700 rounded-xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition"
         >
           <IoSearch className="text-gray-400" />
           <input
@@ -387,7 +387,7 @@ function Authors() {
             ref={authorFilterRef}
             className={`${
               showAuthorFilter
-                ? "absolute top-12 md:top-10 right-0 md:left-0 z-50 px-2 py-1 w-32 overflow-hidden rounded-lg border border-[#30363d] bg-gray-900 shadow-2xl"
+                ? "absolute top-12 md:top-10 right-0 md:left-0 z-50 px-2 py-1 w-32 overflow-hidden rounded-lg border border-[#30363d] theme shadow-2xl"
                 : "hidden"
             }`}
             onClick={() => {
@@ -495,7 +495,7 @@ function Authors() {
         {recommendedAuthors.map((author, index) => (
           <div
             key={index}
-            className="min-w-[260px] bg-gray-900/70 border border-gray-700 rounded-xl p-4 shadow hover:shadow-xl transition"
+            className="min-w-[260px] theme border border-gray-700 rounded-xl p-4 shadow hover:shadow-xl transition"
           >
             <div className="flex items-center relative gap-3">
               <Link
@@ -614,7 +614,7 @@ function Authors() {
             .map((author, index) => (
               <div
                 key={index}
-                className="bg-gray-900/70 relative w-full border border-gray-700 rounded-xl p-5 text-center hover:shadow-xl transition"
+                className="theme relative w-full border border-gray-700 rounded-xl p-5 text-center hover:shadow-xl transition"
               >
                 <Link to={`/viewProfile/${author.email}`}>
                   <img
@@ -770,7 +770,7 @@ function Authors() {
               <div
                 key={index}
                 className="
-                  bg-gray-900/70
+                  theme
                   border border-gray-700
                   rounded-xl
                   p-5

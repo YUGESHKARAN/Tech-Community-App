@@ -108,7 +108,7 @@ function PostsComponent({ posts, filteredPosts, loading, hasMore, debouncedSearc
         <article
           key={data._id}
           className="
-                          bg-[#0f172a]
+                          theme-fields-dark
                           overflow-hidden
                           shadow-2xl
                           transition-transform

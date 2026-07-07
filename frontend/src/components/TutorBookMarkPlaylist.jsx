@@ -150,7 +150,7 @@ const TutorBookMarkPlaylist = ({loading, bookMarPlaylist, hasMore, bookMarkIds, 
         
             <div
               className={`w-full max-w-[1800px] mx-auto sticky top-0 z-40
-                ${isStickyActive ? "bg-gray-900 " : "bg-transparent"}`}
+                ${isStickyActive ? "theme " : "bg-transparent"}`}
             >
               <div
                 // className="flex md:max-w-5xl md:w-fit mt-10 scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto"
@@ -162,7 +162,7 @@ const TutorBookMarkPlaylist = ({loading, bookMarPlaylist, hasMore, bookMarkIds, 
                   className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1.5 md:py-2 transition-all duration-200 ${
                     playlistCategory === ""
                       ? "bg-emerald-600/20 text-emerald-400"
-                      : "bg-gray-800 text-white"
+                      : "theme-fields-lite text-white"
                   }`}
                 >
                   All
@@ -176,7 +176,7 @@ const TutorBookMarkPlaylist = ({loading, bookMarPlaylist, hasMore, bookMarkIds, 
                     className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1.5 md:py-2 transition-all duration-200 ${
                       playlistCategory === data
                         ? "bg-emerald-600/20 text-emerald-400"
-                        : "bg-gray-800 text-white"
+                        : "theme-fields-lite text-white"
                     }`}
                   >
                     {data}
