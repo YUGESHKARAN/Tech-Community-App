@@ -2,7 +2,7 @@ const CommunityCardSkeleton = () => (
     Array.from({ length: 6 }).map((_, index) => (
          <div 
          key={index}
-         className="group relative bg-gray-900 border border-[#1e293b] rounded-2xl overflow-hidden flex flex-col animate-pulse">
+         className="group relative theme border border-[#1e293b] rounded-2xl overflow-hidden flex flex-col animate-pulse">
   
   {/* Content */}
   <div className="flex-1 p-5 flex flex-col gap-4">

@@ -17,7 +17,7 @@ const ProfileViewSkeleton = ({role}) => {
 
       <div className="md:grid flex flex-col md:grid-cols-[300px_1fr] w-full  gap-4">
         {/* LEFT */}
-        <div className="rounded-2xl border h-fit border-white/10 bg-[#101827] p-6">
+        <div className="rounded-2xl border h-fit border-white/10 theme-fields-dark p-6">
         <div className="flex md:block  justify-start items-start gap-2">
            <div className="md:mx-auto h-16 shrink-0 w-16 md:h-24 md:w-24 rounded-full bg-gray-800 animate-pulse" />
         <div className="flex flex-col items-start justify-start">
@@ -51,7 +51,7 @@ const ProfileViewSkeleton = ({role}) => {
         </div>
 
         {/* RIGHT */}
-        <div className="rounded-2xl border border-white/10 bg-[#101827] p-6">
+        <div className="rounded-2xl border border-white/10 theme-fields-dark p-6">
           <div className="h-3 w-24 rounded bg-gray-800 animate-pulse mb-5" />
 
           {[1, 2, 3, 4].map((i) => (

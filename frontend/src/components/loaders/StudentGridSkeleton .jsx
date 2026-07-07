@@ -4,7 +4,7 @@ const StudentGridSkeleton = () => {
       {[...Array(7)].map((_, index) => (
         <div
           key={index}
-          className="bg-gray-900/70 border border-gray-700 rounded-xl p-5 flex flex-col items-center text-center"
+          className="theme border border-gray-700 rounded-xl p-5 flex flex-col items-center text-center"
         >
           {/* Avatar */}
           <div className="w-20 h-20 rounded-full bg-gray-700" />

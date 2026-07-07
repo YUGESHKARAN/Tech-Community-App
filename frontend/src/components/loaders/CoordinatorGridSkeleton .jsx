@@ -4,7 +4,7 @@ const CoordinatorGridSkeleton = () => {
       {[...Array(6)].map((_, index) => (
         <div
           key={index}
-          className="bg-gray-900/70 border border-gray-700 rounded-xl p-5 text-center"
+          className="theme border border-gray-700 rounded-xl p-5 text-center"
         >
           {/* Profile Image */}
           <div className="w-24 h-24 mx-auto rounded-full bg-gray-700" />

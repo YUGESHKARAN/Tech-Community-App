@@ -5,7 +5,7 @@ const RecommendedAuthorsSkeleton = () => {
       {[...Array(6)].map((_, index) => (
         <div
           key={index}
-          className="min-w-[260px] bg-gray-900/70 border border-gray-700 rounded-xl p-4 shadow"
+          className="min-w-[260px] theme border border-gray-700 rounded-xl p-4 shadow"
         >
           {/* Top Section */}
           <div className="flex items-center gap-3">
