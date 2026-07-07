@@ -193,7 +193,7 @@ function TutorPlaylist() {
   return (
     // bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800
 
-    <div className="w-full min-h-screen bg-gray-900 relative">
+    <div className="w-full min-h-screen theme relative">
       <NavBar />
       <div className="md:mb-8 max-w-[1800px] mx-auto w-full mb-6 mt-4 px-4 md:px-12 flex items-center justify-between">
         <div>
@@ -384,7 +384,7 @@ function TutorPlaylist() {
         className="w-full max-w-[1800px]  min-h-screen mx-auto px-4 md:px-12 pb-6 grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-6"
       >
         {/* LEFT — PLAYLIST DETAILS */}
-        <div className="lg:col-span-1 md:bg-gray-900/70 md:border h-fit border-emerald-500/20 rounded-lg space-y-4">
+        <div className="lg:col-span-1 md:theme/70 md:border h-fit border-emerald-500/20 rounded-lg space-y-4">
           <div className=" md:p-6 p-2 space-y-7 shadow-lg">
             <h2 className="text-lg hidden  tracking-wide lg:block font-semibold text-emerald-400">
               Playlist Details
@@ -445,7 +445,7 @@ function TutorPlaylist() {
                           data.profile,
                         )
                       }
-                      className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-900 border border-gray-700 cursor-pointer hover:bg-gray-800 transition-all duration-300"
+                      className="flex items-center gap-2 px-3 py-1.5 rounded-full theme border border-gray-700 cursor-pointer hover:bg-gray-800 transition-all duration-300"
                     >
                       {/* <img
                         src={
@@ -678,7 +678,7 @@ function TutorPlaylist() {
                 </div>
 
                 {/* Right — count pill */}
-                <div className="flex  items-center gap-1.5 bg-gray-900 border border-gray-800 rounded-full px-2.5 py-1 text-gray-300 text-xs flex-shrink-0">
+                <div className="flex  items-center gap-1.5 theme border border-gray-800 rounded-full px-2.5 py-1 text-gray-300 text-xs flex-shrink-0">
                   <div className="w-5 h-5 rounded-full text-emerald-400 bg-emerald-600/20 flex items-center justify-center text-[11px] font-semibold ">
                     {postIds?.length ?? 0}
                   </div>
@@ -709,7 +709,7 @@ function TutorPlaylist() {
                 ${
                   postIds.includes(data._id)
                     ? "border-emerald-500 bg-emerald-500/10"
-                    : "border-gray-700 bg-gray-900 "
+                    : "border-gray-700 theme "
                 }`}
                 >
                   {/* Selection order badge */}
@@ -883,7 +883,7 @@ function TutorPlaylist() {
       <Footer />
     </div>
 
-    //     <div className="w-full min-h-screen bg-gray-900 text-white">
+    //     <div className="w-full min-h-screen theme text-white">
     //   <NavBar />
 
     //   {/* ── HEADER ───────────────────────────── */}
@@ -910,7 +910,7 @@ function TutorPlaylist() {
     //     {/* ═════════ LEFT SIDEBAR ═════════ */}
     // <div className="lg:sticky top-6 h-fit">
 
-    //   <div className="bg-gray-900 border border-white/[0.05] rounded-2xl p-5 space-y-6">
+    //   <div className="theme border border-white/[0.05] rounded-2xl p-5 space-y-6">
 
     //     {/* Header */}
     //     <div className="pb-3 border-b border-white/[0.05]">
@@ -1034,7 +1034,7 @@ function TutorPlaylist() {
     //       )}
 
     //       {searchCollaborator && (
-    //         <div className="absolute w-full mt-1 bg-gray-900 border border-white/[0.08] rounded-lg max-h-48 overflow-y-auto z-20">
+    //         <div className="absolute w-full mt-1 theme border border-white/[0.08] rounded-lg max-h-48 overflow-y-auto z-20">
     //           {searchedCoordinators.length > 0 ? (
     //             searchedCoordinators.map((c, i) => (
     //               <div
@@ -1120,7 +1120,7 @@ function TutorPlaylist() {
 
     //       {/* Top bar */}
     //       {posts?.length > 0 && (
-    //         <div className="flex items-center justify-between bg-gray-900 border border-white/[0.05] rounded-xl px-4 py-3">
+    //         <div className="flex items-center justify-between theme border border-white/[0.05] rounded-xl px-4 py-3">
     //           <div>
     //             <p className="text-sm font-medium">
     //               Select posts
@@ -1150,7 +1150,7 @@ function TutorPlaylist() {
     //               className={`rounded-xl border p-3 cursor-pointer transition
     //               ${isSelected
     //                   ? "border-emerald-500 bg-emerald-500/10"
-    //                   : "border-white/[0.05] bg-gray-900"
+    //                   : "border-white/[0.05] theme"
     //               }`}
     //             >
     //               {isSelected && (

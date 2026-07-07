@@ -373,7 +373,7 @@ function AddPost() {
   // console.log("documents",documents)
 
   return (
-    <div className="min-h-screen relative bg-gray-900 text-white">
+    <div className="min-h-screen relative theme text-white">
       <NavBar />
 
       <div className="min-h-screen  max-w-[1800px] mx-auto  w-full pt-4 pb-8">
@@ -539,7 +539,7 @@ function AddPost() {
             <div className="md:space-y-4 lg:sticky top-7  self-start md:col-span-1">
               {/* Description / Tips */}
               <div
-                className={`bg-[#0f172a]/80 lg:w-11/12 border border-emerald-500/20 bg-gradient-to-br from-emerald-500/5 to-transparent rounded-lg md:rounded-xl px-4 ${showPostGuide?'py-6':'py-2'} md:p-6 text-gray-300 ${chatbot ? "hidden lg:block" : "block"}`}
+                className={`theme-fields-dark lg:w-11/12 border border-emerald-500/20 bg-gradient-to-br from-emerald-500/5 to-transparent rounded-lg md:rounded-xl px-4 ${showPostGuide?'py-6':'py-2'} md:p-6 text-gray-300 ${chatbot ? "hidden lg:block" : "block"}`}
               >
                 <div className={`flex items-center ${showPostGuide?' mb-3':'mb-0'} md:mb-3  justify-between `}>
                   <h2 className={`md:text-lg ${showPostGuide?'text-sm':'text-xs'} flex items-center gap-1.5 md:gap-2 font-semibold text-white`}>
@@ -684,7 +684,7 @@ function AddPost() {
                     className="
                       lg:hidden
                       relative overflow-hidden
-                      bg-[#0f172a]/80
+                      theme-fields-dark
                       border border-emerald-500/20
                       shadow-[0_0_40px_rgba(16,185,129,0.06)]
                       rounded-2xl
@@ -788,7 +788,7 @@ function AddPost() {
                     name="message"
                     placeholder="Ask DraftMate to transform your content..."
                     onKeyDown={()=>{ e.key === "Enter" && !e.shiftKey}}
-                    className="flex-1 px-4  rounded-xl border border-gray-700 py-2 bg-gray-900 text-xs outline-none text-white"
+                    className="flex-1 px-4  rounded-xl border border-gray-700 py-2 theme text-xs outline-none text-white"
                   /> */}
 
                       <textarea
@@ -803,7 +803,7 @@ function AddPost() {
                           setIsFocused(false);
                         }}
                         placeholder={PLACEHOLDERS[placeholderIndex]}
-                        className="flex-1  min-h-[40px] max-h-[200px] shrink-0 px-4 flex scrollbar-hide  rounded-xl border border-gray-700 py-2 transition-all duration-200 bg-gray-900 text-xs outline-none text-white"
+                        className="flex-1  min-h-[40px] max-h-[200px] shrink-0 px-4 flex scrollbar-hide  rounded-xl border border-gray-700 py-2 transition-all duration-200 theme text-xs outline-none text-white"
                         id=""
                         onChange={(e) => {
                           setPrompt(e.target.value);
@@ -851,7 +851,7 @@ function AddPost() {
 
               <div
                 className={`relative overflow-hidden
-                    bg-[#0f172a]/80
+                    theme-fields-dark
                     border border-emerald-500/20
                     shadow-[0_0_40px_rgba(16,185,129,0.06)]
                     rounded-2xl
@@ -958,7 +958,7 @@ function AddPost() {
                     name="message"
                     placeholder="Ask DraftMate to transform your content..."
                     onKeyDown={()=>{ e.key === "Enter" && !e.shiftKey}}
-                    className="flex-1 px-4  rounded-xl border border-gray-700 py-2 bg-gray-900 text-xs outline-none text-white"
+                    className="flex-1 px-4  rounded-xl border border-gray-700 py-2 theme text-xs outline-none text-white"
                   /> */}
 
                   <textarea
@@ -974,7 +974,7 @@ function AddPost() {
                     }}
                     placeholder={PLACEHOLDERS[placeholderIndex]}
                     className="flex-1  min-h-[40px]
-                     max-h-[200px] shrink-0 px-4 flex scrollbar-hide  rounded-xl border border-gray-700 py-2 transition-all duration-200 bg-gray-900 text-xs outline-none text-white"
+                     max-h-[200px] shrink-0 px-4 flex scrollbar-hide  rounded-xl border border-gray-700 py-2 transition-all duration-200 theme text-xs outline-none text-white"
                     id=""
                     onChange={(e) => {
                       setPrompt(e.target.value);
@@ -1021,7 +1021,7 @@ function AddPost() {
 
             {/* RIGHT COLUMN FORM */}
             <div
-              className={`bg-[#0f172a]/80   border border-emerald-500/20 rounded-lg px-4 py-6  md:p-8 shadow-xl
+              className={`theme-fields-dark   border border-emerald-500/20 rounded-lg px-4 py-6  md:p-8 shadow-xl
                ${chatbot ? "hidden lg:block" : "block"}`}
             >
               <form onSubmit={handleSubmit} className="space-y-9  md:space-y-7">
@@ -1036,7 +1036,7 @@ function AddPost() {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="Enter post title"
-                    className="w-full mt-2  px-4 py-2 rounded-md bg-gray-900 border border-gray-700 focus:border focus:border-emerald-500/40 outline-none text-white text-xs md:text-sm"
+                    className="w-full mt-2  px-4 py-2 rounded-md theme border border-gray-700 focus:border focus:border-emerald-500/40 outline-none text-white text-xs md:text-sm"
                   />
 
                   {fieldErrors.title && (
@@ -1055,7 +1055,7 @@ function AddPost() {
                     </label>
 
                     {/* Tabs */}
-                    <div className="flex items-center bg-gray-900 border border-gray-700 rounded-lg p-1">
+                    <div className="flex items-center theme border border-gray-700 rounded-lg p-1">
                       <button
                         type="button"
                         onClick={() => setPreview(false)}
@@ -1094,7 +1094,7 @@ function AddPost() {
                           overflow-y-auto
                           px-4 py-3
                           rounded-md
-                          bg-gray-900
+                          theme
                           border border-gray-700
                           text-white text-xs md:text-sm
                           leading-relaxed
@@ -1117,7 +1117,7 @@ function AddPost() {
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                         placeholder="Write your post description..."
-                        className="w-full mt-2  focus:border focus:border-emerald-500/40 emerald-scrollbar px-4 py-3 rounded-md bg-gray-900 border border-gray-700 outline-none  text-white text-xs leading-relaxed"
+                        className="w-full mt-2  focus:border focus:border-emerald-500/40 emerald-scrollbar px-4 py-3 rounded-md theme border border-gray-700 outline-none  text-white text-xs leading-relaxed"
                       />
                     )}
                   </div>
@@ -1145,7 +1145,7 @@ function AddPost() {
                   <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
-                    className="w-full mt-2 px-4 py-2 cursor-pointer focus:border focus:border-emerald-500/40 rounded-md bg-gray-900 border border-gray-700 outline-none text-xs md:text-sm text-white  "
+                    className="w-full mt-2 px-4 py-2 cursor-pointer focus:border focus:border-emerald-500/40 rounded-md theme border border-gray-700 outline-none text-xs md:text-sm text-white  "
                   >
                     <option value="">Select Domain</option>
                     <option value="GenAI">GenAI</option>
@@ -1174,7 +1174,7 @@ function AddPost() {
                       value={customCategory}
                       onChange={(e) => setCustomCategory(e.target.value)}
                       placeholder="Enter domain name"
-                      className="w-full mt-2 px-4 py-2 rounded-md bg-gray-900 border border-gray-700 outline-none  outline-none text-white text-xs md:text-sm"
+                      className="w-full mt-2 px-4 py-2 rounded-md theme border border-gray-700 outline-none  outline-none text-white text-xs md:text-sm"
                     />
                   )}
                   {fieldErrors.finalCategory && (
@@ -1276,7 +1276,7 @@ function AddPost() {
                         value={currentLinkTitle}
                         onChange={(e) => setCurrentLinkTitle(e.target.value)}
                         // w-full
-                        className="md:w-1/3 w-full focus:border focus:border-emerald-500/40  px-4 py-2 cursor-pointer rounded-xl bg-gray-900 border border-gray-700 outline-none text-xs md:text-sm text-white"
+                        className="md:w-1/3 w-full focus:border focus:border-emerald-500/40  px-4 py-2 cursor-pointer rounded-xl theme border border-gray-700 outline-none text-xs md:text-sm text-white"
                       >
                         <option value="" disabled>
                           Select Link
@@ -1295,7 +1295,7 @@ function AddPost() {
                         placeholder="Enter platform name"
                         value={customTitle}
                         onChange={(e) => setCustomTitle(e.target.value)}
-                        className="md:w-1/3 w-full focus:border focus:border-emerald-500/40 px-4 py-2 rounded-md bg-gray-900 border border-gray-700 outline-none  outline-none text-white text-xs md:text-sm"
+                        className="md:w-1/3 w-full focus:border focus:border-emerald-500/40 px-4 py-2 rounded-md theme border border-gray-700 outline-none  outline-none text-white text-xs md:text-sm"
                       />
                     )}
 
@@ -1305,7 +1305,7 @@ function AddPost() {
                       value={currentLinkUrl}
                       onChange={(e) => setCurrentLinkUrl(e.target.value)}
                       placeholder="Paste URL"
-                      className="md:w-2/3 focus:border focus:border-emerald-500/40 w-full px-4 py-2 rounded-md bg-gray-900 border border-gray-700 outline-none  outline-none text-white text-xs md:text-sm"
+                      className="md:w-2/3 focus:border focus:border-emerald-500/40 w-full px-4 py-2 rounded-md theme border border-gray-700 outline-none  outline-none text-white text-xs md:text-sm"
                     />
 
                     </div>
@@ -1451,7 +1451,7 @@ function AddPost() {
                         <div
                           // key={idx}
                           key={doc.name + doc.size}
-                          className="flex items-center gap-2 bg-gray-900 px-3 py-2 rounded-lg border border-emerald-500/20 text-xs text-gray-300"
+                          className="flex items-center gap-2 theme px-3 py-2 rounded-lg border border-emerald-500/20 text-xs text-gray-300"
                         >
                           <span className="text-emerald-400 font-semibold shrink-0">
                             {idx + 1}.
@@ -1469,7 +1469,7 @@ function AddPost() {
                       {documents.map((doc, idx) => (
                         <div
                           key={doc.name + doc.size}
-                          className="flex items-center justify-between gap-3 bg-gray-900 px-3 py-2 rounded-lg border border-emerald-500/20 text-xs text-gray-300"
+                          className="flex items-center justify-between gap-3 theme px-3 py-2 rounded-lg border border-emerald-500/20 text-xs text-gray-300"
                         >
                           <div className="flex items-center gap-2 overflow-hidden">
                             <span className="text-emerald-400 font-semibold shrink-0">

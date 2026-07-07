@@ -14,7 +14,7 @@ import Footer from "../ui/Footer";
 
 function Workspace() {
   return (
-    <div className="w-full relative min-h-screen bg-gray-900">
+    <div className="w-full relative min-h-screen theme">
       <NavBar />
 
       <div className="w-full max-w-[1800px] mx-auto mx-auto px-4 h-screen md:px-8 pt-4 text-white">
@@ -129,7 +129,7 @@ const StatCard = ({ icon, title, value }) => (
 const ActionCard = ({ to, icon, title, description }) => (
   <Link
     to={to}
-    className="group md:w-11/12 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700 rounded-2xl p-6 flex items-center gap-4 hover:border-teal-500/40 hover:shadow-xl transition-all"
+    className="group md:w-11/12 bg-gradient-to-br from-gray-900 to-gray-950 border border-gray-700 rounded-2xl p-6 flex items-center gap-4 hover:border-teal-500/40 hover:shadow-xl transition-all"
   >
     <div className="p-4 rounded-xl bg-teal-500/10 text-teal-400 text-xl md:text-2xl group-hover:scale-110 transition-transform">
       {icon}

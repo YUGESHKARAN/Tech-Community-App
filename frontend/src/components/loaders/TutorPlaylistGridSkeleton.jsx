@@ -8,7 +8,7 @@ const TutorPlaylistCardSkeleton = () => {
       <div className="absolute bottom-1 left-1.5 w-[97%] h-full bg-zinc-800 rounded-xl z-10" />
 
       {/* MAIN CARD */}
-      <div className="relative z-20 bg-gray-900 rounded-xl overflow-hidden ">
+      <div className="relative z-20 theme rounded-xl overflow-hidden ">
         
         {/* Thumbnail */}
         <div className=" h-48 md:h-44 rounded-xl bg-zinc-700" />

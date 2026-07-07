@@ -545,7 +545,8 @@ const getPlaylistByEmail = async (req, res) => {
     // console.log(`playlist page ${page} limit ${limit}`);
     if (!email) return res.status(400).json({ message: "email required" });
 
-    const tutorPlayList = await TutorPlayList.find({ email })
+    const tutorPlayList = await TutorPlayList.find({ email: { $eq: email } })
+      .lean()
       .skip(skip)
       .limit(limit);
     const normalizedPlaylists = await resolvePlaylistAuthorProfiles(tutorPlayList);
@@ -553,7 +554,7 @@ const getPlaylistByEmail = async (req, res) => {
     // if (!tutorPlayList || tutorPlayList.length == 0) {
     //   return res.status(204).json({ message: "Playlist is empty" });
     // }
-    const playlistCountByEmail = tutorPlayList.length;
+    const playlistCountByEmail = tutorPlayList?.length;
 
     res.status(200).json({
       message: "individual user playlist",

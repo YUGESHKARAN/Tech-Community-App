@@ -233,7 +233,7 @@ function ViewTutorPlaylist() {
 
   // console.log("playlist data", playlistData);
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
+    <div className="min-h-screen theme text-white">
       <NavBar />
 
       <div className="w-full mx-auto px-2 max-w-[1800px] mx-auto min-h-screen h-auto md:px-16 py-6">
@@ -1039,7 +1039,7 @@ function ViewTutorPlaylist() {
                   className="
                   flex gap-3
                   p-2
-                  bg-gray-900
+                  theme
                   rounded-lg
                   border border-neutral-800
                   transition
@@ -1222,7 +1222,7 @@ function ViewTutorPlaylist() {
           items-center
           justify-center
           rounded-full
-          bg-gray-900
+          theme
           border border-gray-700
           text-white
           shadow-lg
@@ -1364,7 +1364,7 @@ function ViewTutorPlaylist() {
                   items-center
                   justify-center
                   rounded-full
-                  bg-gray-900
+                  theme
                   border border-gray-700
                   text-white
                   shadow-lg

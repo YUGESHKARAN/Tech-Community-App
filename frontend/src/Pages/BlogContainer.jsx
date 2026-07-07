@@ -321,7 +321,7 @@ function BlogContainer({ activeTab, setActiveTab }) {
                     className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1.5 md:py-2 transition-all duration-200 ${
                       postCategory === ""
                         ? "bg-emerald-600/20 text-emerald-400"
-                        : "bg-gray-800 text-white"
+                        : "theme-fields-lite text-white"
                     }`}
                   >
                     All
@@ -335,7 +335,7 @@ function BlogContainer({ activeTab, setActiveTab }) {
                       className={`flex-shrink-0 text-nowrap inline-block cursor-pointer rounded-md  text-xs px-3 py-1.5 md:py-2 transition-all duration-200 ${
                         postCategory === data
                           ? "bg-emerald-600/20 text-emerald-400"
-                          : "bg-gray-800 text-white"
+                          : "theme-fields-lite text-white"
                       }`}
                     >
                       {data}
@@ -356,7 +356,7 @@ function BlogContainer({ activeTab, setActiveTab }) {
                   <article
                     key={data._id}
                     className="
-                      bg-[#0f172a]
+                      theme-fields-dark
                       overflow-hidden
                       shadow-2xl
                       transition-transform

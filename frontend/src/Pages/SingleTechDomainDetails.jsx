@@ -221,7 +221,7 @@ function SingleTechDomainDetails() {
 
   return (
 
-    <div className="w-full min-h-screen bg-gray-900 text-white">
+    <div className="w-full min-h-screen theme text-white">
       <NavBar />
 
       {/* ── HEADER ─────────────────────────────────────────────── */}
@@ -338,7 +338,7 @@ function SingleTechDomainDetails() {
                     .map((author, index) => (
                       <div
                         key={index}
-                        className="bg-gray-900/70 relative border border-gray-700 rounded-xl p-5 text-center hover:shadow-xl transition"
+                        className="theme relative border border-gray-700 rounded-xl p-5 text-center hover:shadow-xl transition"
                       >
                         <Link to={`/viewProfile/${author.email}`}>
                           <img
@@ -500,7 +500,7 @@ function SingleTechDomainDetails() {
                       <div
                         key={index}
                         className="
-                                    bg-gray-900/70
+                                    theme
                                     border border-gray-700
                                     rounded-xl
                                     p-5

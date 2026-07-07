@@ -113,3 +113,19 @@ body {
     display: none;
   }
 }
+
+.theme{
+  /* background-color: #111827; */
+  background-color: #0b0f19;
+}
+
+
+.theme-fields-dark{
+  /* background-color: #0f172a; */
+  background-color: #0d121d;
+}
+
+.theme-fields-lite{
+  /* background-color: #1f2937; */
+  background-color: #141d2f;
+}

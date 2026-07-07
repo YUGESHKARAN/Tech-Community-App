@@ -7,7 +7,7 @@ const BlogMiniSkeleton = ({ count = 9 }) => {
           className="
            min-w-[270px] sm:min-w-[150px] sm:col-span-1 
             rounded-2xl border border-neutral-800
-            bg-gray-900 p-4
+            theme p-4
             animate-pulse
           "
         >

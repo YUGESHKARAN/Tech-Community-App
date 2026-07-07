@@ -142,7 +142,7 @@ function TechCommunity() {
     domainAccents[name] || { from: "#10b981", to: "#059669", icon: "💡" };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white flex flex-col">
+    <div className="min-h-screen theme text-white flex flex-col">
       <NavBar />
 
       <div className="flex-grow px-4 max-w-[1800px] mx-auto w-full pb-20">
@@ -174,7 +174,7 @@ function TechCommunity() {
               return (
                 <div
                   key={index}
-                  className="group relative bg-gray-900 border border-[#1e293b] rounded-2xl overflow-hidden flex flex-col hover:border-white/10 transition-all duration-300"
+                  className="group relative theme border border-[#1e293b] rounded-2xl overflow-hidden flex flex-col hover:border-white/10 transition-all duration-300"
                 >
                   <Link
                     to={`/techDomainDetails/${encodeURIComponent(item.categoryname)}`}

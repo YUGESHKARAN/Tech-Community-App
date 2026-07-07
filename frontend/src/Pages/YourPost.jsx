@@ -259,7 +259,7 @@ function YourPost() {
   };
 
   return (
-    <div className="w-full min-h-screen bg-gray-900 h-auto reltive  ">
+    <div className="w-full min-h-screen theme h-auto reltive  ">
       <NavBar />
 
           <h1 className=" text-xl max-w-[1800px] mx-auto mt-3 md:mt-4 px-2 md:px-6  md:w-full flex items-center gap-2 mx-auto md:text-3xl font-semibold text-white tracking-wide">
@@ -269,7 +269,7 @@ function YourPost() {
         
     {/* ================= SEARCH ================= */}
            {posts.length > 0 &&  <div className="flex max-w-[1800px] xl:mx-auto mx-3 md:mx-0 justify-center mt-4 mb-2 md:mt-0 md:mb-0 ">
-              <div className="w-full mx-auto max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
+              <div className="w-full mx-auto max-w-md flex items-center gap-3 theme-fields-lite border border-gray-700 rounded-xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
                 <IoSearchOutline className="text-xl text-gray-400" />
                 <input
                   type="text"
@@ -286,7 +286,7 @@ function YourPost() {
         {posts.length > 0 && (
               <div
                 className={`w-full max-w-[1800px] w-full xl:mx-auto sticky top-0 z-40
-                ${isStickyActive ? "bg-gray-900 " : "bg-transparent"}`}
+                ${isStickyActive ? "theme " : "bg-transparent"}`}
               >
                 <div
                   // className="flex md:max-w-5xl md:w-fit mt-10 scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto"
@@ -298,7 +298,7 @@ function YourPost() {
                     className={`w-fit text-nowrap cursor-pointer rounded-md  text-xs px-3 py-1.5 md:py-2 transition-all duration-200 ${
                       postCategory === ""
                         ? "bg-emerald-600/20 text-emerald-400"
-                        : "bg-gray-800 text-white"
+                        : "theme-fields-lite text-white"
                     }`}
                   >
                     All
@@ -312,7 +312,7 @@ function YourPost() {
                       className={`flex-shrink-0 text-nowrap inline-block cursor-pointer rounded-md  text-xs px-3 py-1.5 md:py-2 transition-all duration-200 ${
                         postCategory === data
                           ? "bg-emerald-600/20 text-emerald-400"
-                          : "bg-gray-800 text-white"
+                          : "theme-fields-lite text-white"
                       }`}
                     >
                       {data}
@@ -334,7 +334,7 @@ function YourPost() {
               <article
                 key={data._id}
                 className="
-                   bg-[#0f172a]
+                   theme-fields-dark
                    overflow-hidden
                    shadow-2xl
                    transition-transform

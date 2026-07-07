@@ -194,7 +194,7 @@ return (
 
           {/* Lessons count */}
           <span className="absolute bottom-2 right-2 bg-black/80 text-white flex items-center gap-0.5 text-xs px-2 py-1 rounded">
-            <MdOutlinePlaylistPlay className="text-sm" /> {post_ids.length}
+            <MdOutlinePlaylistPlay className="text-sm" /> {post_ids?.length}
           </span>
         </div>
         {/* </Link> */}

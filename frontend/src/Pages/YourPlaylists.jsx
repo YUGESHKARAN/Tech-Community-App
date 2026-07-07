@@ -103,7 +103,7 @@ useEffect(() => {
   ];
 };
 
-  //   console.log("tutorPlayListByEmail", tutorPlayListByEmail);
+    console.log("tutorPlayListByEmail", tutorPlayListByEmail);
     // console.log("filteredPlaylist", filteredPlaylist);
   return (
     <div className="w-full min-h-screen bg-gray-900 h-auto reltive  ">
@@ -115,7 +115,7 @@ useEffect(() => {
       </h1>
 
              {/* ================= SEARCH ================= */}
-           { tutorPlayListByEmail.length > 0 &&  
+           { tutorPlayListByEmail?.length > 0 &&  
                  <div className="flex max-w-[1800px] xl:mx-auto mx-3 md:mx-0 justify-center mt-4 mb-2 md:mt-0 md:mb-0 ">
                               <div className="w-full mx-auto max-w-md flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
                                 <IoSearchOutline className="text-xl text-gray-400" />
@@ -134,8 +134,8 @@ useEffect(() => {
       
 
     
-           {loading && !tutorPlayListByEmail.length > 0 && <PillLoader />}
-        {tutorPlayListByEmail.length > 0 && (
+           {loading && !tutorPlayListByEmail?.length > 0 && <PillLoader />}
+        {tutorPlayListByEmail?.length > 0 && (
         <div
           className={`w-full sticky max-w-[1800px] mx-auto top-0 z-40
                 ${isStickyActive ? "bg-gray-900 " : "bg-transparent"}`}
@@ -176,7 +176,7 @@ useEffect(() => {
 
 
       <div className="min-h-screen max-w-[1800px] mx-auto md:px-4 w-full md:mt-4 mx-auto bg-gray-900 pb-8">
-        {filteredPlaylist.length > 0 && (
+        {filteredPlaylist?.length > 0 && (
           <div
             className="
               pb-4 gap-5 md:gap-6
@@ -193,7 +193,7 @@ useEffect(() => {
         "
           >
             {filteredPlaylist?.map((playlist) => (
-              <div key={playlist._id} className="min-w-[150px]  sm:min-w-0">
+              <div key={playlist?._id} className="min-w-[150px]  sm:min-w-0">
                 <YourPlaylistCard
                   playlist={playlist}
                   onRemove={() => {
@@ -211,7 +211,7 @@ useEffect(() => {
                 />
               </div>
             ))}
-            {loading && tutorPlayListByEmail.length > 0 && (
+            {loading && tutorPlayListByEmail?.length > 0 && (
               // <p className="text-center py-4 col-span-full text-gray-500">
               //   loading...
               // </p>

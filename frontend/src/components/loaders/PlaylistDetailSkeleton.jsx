@@ -26,20 +26,20 @@ const PlaylistDetailSkeleton = () => {
         <div className="w-full relative md:w-[99%] h-48 z-20 md:h-80 bg-gray-800 md:rounded-2xl rounded-xl border border-gray-700" />
   </div>
         {/* Title */}
-        <div className="h-6 w-3/4 bg-gray-700 rounded" />
+        <div className="h-6 w-3/4 theme-fields-lite rounded" />
 
         {/* Contributors Row */}
         <div className="flex justify-between items-center mt-4">
           
           <div className="flex gap-2">
-            <div className="h-6 w-6 rounded-full bg-gray-700" />
-            <div className="h-6 w-6 rounded-full bg-gray-700" />
-            <div className="h-6 w-6 rounded-full bg-gray-700" />
+            <div className="h-6 w-6 rounded-full theme-fields-lite" />
+            <div className="h-6 w-6 rounded-full theme-fields-lite" />
+            <div className="h-6 w-6 rounded-full theme-fields-lite" />
           </div>
 
           <div className="flex gap-3">
-            <div className="h-5 w-12 bg-gray-700 rounded" />
-            <div className="h-5 w-5 bg-gray-700 rounded-full" />
+            <div className="h-5 w-12 theme-fields-lite rounded" />
+            <div className="h-5 w-5 theme-fields-lite rounded-full" />
           </div>
         </div>
       </div>

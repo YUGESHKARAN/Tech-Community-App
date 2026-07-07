@@ -300,7 +300,7 @@ function ViewEditPost() {
   // console.log("singlePostData", singlePostData)
   return (
 
-    <div className="relative w-full bg-gray-900 min-h-screen">
+    <div className="relative w-full theme min-h-screen">
       <NavBar />
       <div className="md:mb-8 mb-6 mt-4 px-4 md:px-12 flex items-center justify-between">
         <div>
@@ -327,7 +327,7 @@ function ViewEditPost() {
           <div className="grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-6">
             {/* LEFT SIDEBAR */}
             {/* Thumbnail */}
-            <div className="shadow-xl border hidden md:block border-gray-800 rounded-lg bg-[#0f172a]/80 rounded-xl  p-4  lg:sticky top-7 self-start ">
+            <div className="shadow-xl border hidden md:block border-gray-800 rounded-lg bg-theme/70 rounded-xl  p-4  lg:sticky top-7 self-start ">
               <label className="text-sm text-gray-300 font-medium">
                 Thumbnail <span className="text-red-500">*</span>
               </label>
@@ -359,7 +359,7 @@ function ViewEditPost() {
             </div>
 
             {/* RIGHT MAIN */}
-            <div className=" bg-[#0f172a]/80 shadow-xl  border  border-emerald-500/20 rounded-lg px-4 py-6  md:p-8 space-y-9 md:space-y-7">
+            <div className=" bg-theme/80 shadow-xl  border  border-emerald-500/20 rounded-lg px-4 py-6  md:p-8 space-y-9 md:space-y-7">
               {/* Title */}
               <div className="  rounded-xl">
                 <label className="text-sm text-gray-300 font-medium">
@@ -370,7 +370,7 @@ function ViewEditPost() {
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder={title}
-                  className="w-full mt-2  px-4 py-2 rounded-md bg-gray-900 border border-gray-700 focus:border focus:border-emerald-500/40 outline-none text-white text-sm"
+                  className="w-full mt-2  px-4 py-2 rounded-md theme border border-gray-700 focus:border focus:border-emerald-500/40 outline-none text-white text-sm"
                 />
               </div>
 
@@ -384,7 +384,7 @@ function ViewEditPost() {
                   onChange={(e) => setDescription(e.target.value)}
                   rows={6}
                   placeholder={description}
-                  className="w-full mt-2  focus:border focus:border-emerald-500/40 emerald-scrollbar px-4 py-3 rounded-md bg-gray-900 border border-gray-700 outline-none  text-white text-xs leading-relaxed"
+                  className="w-full mt-2  focus:border focus:border-emerald-500/40 emerald-scrollbar px-4 py-3 rounded-md theme border border-gray-700 outline-none  text-white text-xs leading-relaxed"
                 />
               </div> */}
               <div className="scrollbar-hide">
@@ -395,7 +395,7 @@ function ViewEditPost() {
                     </label>
 
                     {/* Tabs */}
-                    <div className="flex items-center bg-gray-900 border border-gray-700 rounded-lg p-1">
+                    <div className="flex items-center theme border border-gray-700 rounded-lg p-1">
                       <button
                         type="button"
                         onClick={() => setPreview(false)}
@@ -436,7 +436,7 @@ function ViewEditPost() {
                           scrollbar-hide
                           px-4 py-3
                           rounded-md
-                          bg-gray-900
+                          theme
                           border border-gray-700
                           text-white text-xs md:text-sm
                           leading-relaxed
@@ -464,7 +464,7 @@ function ViewEditPost() {
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                         placeholder="Write your post description..."
-                        className="w-full mt-2  focus:border focus:border-emerald-500/40 emerald-scrollbar px-4 py-3 rounded-md bg-gray-900 border border-gray-700 outline-none  text-white text-xs leading-relaxed"
+                        className="w-full mt-2  focus:border focus:border-emerald-500/40 emerald-scrollbar px-4 py-3 rounded-md theme border border-gray-700 outline-none  text-white text-xs leading-relaxed"
                       />
                     )}
                   </div>
@@ -521,7 +521,7 @@ function ViewEditPost() {
                     {singlePostData.links.map((link, index) => (
                       <div
                         key={index}
-                        className="relative group bg-gray-900  rounded-lg p-3 border border-gray-700 focus:border focus:border-emerald-500/40 transition"
+                        className="relative group theme  rounded-lg p-3 border border-gray-700 focus:border focus:border-emerald-500/40 transition"
                       >
                         <a
                           href={link.url}
@@ -603,7 +603,7 @@ function ViewEditPost() {
                     <select
                       value={currentLinkTitle}
                       onChange={(e) => setCurrentLinkTitle(e.target.value)}
-                      className="flex-1 focus:border focus:border-emerald-500/40  px-4 py-2 cursor-pointer rounded-xl bg-gray-900 border border-gray-700 outline-none text-sm text-white"
+                      className="flex-1 focus:border focus:border-emerald-500/40  px-4 py-2 cursor-pointer rounded-xl theme border border-gray-700 outline-none text-sm text-white"
                     >
                       <option value="" disabled>
                         Select Link
@@ -630,7 +630,7 @@ function ViewEditPost() {
                       type="text"
                       onChange={(e) => setCustomTitle(e.target.value)}
                       placeholder="Custom title"
-                      className="flex-1 focus:border focus:border-emerald-500/40 w-full px-4 py-2 rounded-md bg-gray-900 border border-gray-700 outline-none  outline-none text-white text-sm"
+                      className="flex-1 focus:border focus:border-emerald-500/40 w-full px-4 py-2 rounded-md theme border border-gray-700 outline-none  outline-none text-white text-sm"
                     />
                   )}
 
@@ -639,7 +639,7 @@ function ViewEditPost() {
                     value={currentLinkUrl}
                     onChange={(e) => setCurrentLinkUrl(e.target.value)}
                     placeholder="Paste URL"
-                    className="flex-1 focus:border focus:border-emerald-500/40 w-full px-4 py-2 rounded-md bg-gray-900 border border-gray-700 outline-none  outline-none text-white text-sm"
+                    className="flex-1 focus:border focus:border-emerald-500/40 w-full px-4 py-2 rounded-md theme border border-gray-700 outline-none  outline-none text-white text-sm"
                   />
 
                   </div>
@@ -761,7 +761,7 @@ function ViewEditPost() {
                   {documents.map((doc, idx) => (
                     <div
                       key={doc.name + doc.size}
-                      className="flex items-center justify-between gap-3 bg-gray-900 px-3 py-2 rounded-lg border border-emerald-500/20 text-xs text-gray-300"
+                      className="flex items-center justify-between gap-3 theme px-3 py-2 rounded-lg border border-emerald-500/20 text-xs text-gray-300"
                     >
                       <div className="flex items-center gap-2 overflow-hidden">
                         <span className="text-emerald-400 font-semibold shrink-0">
@@ -859,7 +859,7 @@ function ViewEditPost() {
                           href={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${doc}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-xs bg-gray-900 px-3 py-2 rounded-lg border border-gray-700 text-gray-400 hover:text-emerald-400 truncate transition"
+                          className="text-xs theme px-3 py-2 rounded-lg border border-gray-700 text-gray-400 hover:text-emerald-400 truncate transition"
                         >
                           {doc.split("-").slice(5).join("-")}
                         </a>
@@ -887,7 +887,7 @@ function ViewEditPost() {
                         {selectedDocs.map((doc, idx) => (
                           <div
                             key={doc.name + doc.size}
-                            className="flex items-center justify-between gap-3 bg-gray-900 px-3 py-2 rounded-lg border border-emerald-500/20 text-xs text-gray-300"
+                            className="flex items-center justify-between gap-3 theme px-3 py-2 rounded-lg border border-emerald-500/20 text-xs text-gray-300"
                           >
                             <div className="flex items-center gap-2 overflow-hidden">
                               <span className="text-emerald-400 font-semibold">
@@ -944,7 +944,7 @@ function ViewEditPost() {
                 <select
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  className="mt-2 w-full px-3 py-2 bg-gray-900 border border-neutral-700 rounded-lg text-sm"
+                  className="mt-2 w-full px-3 py-2 theme border border-neutral-700 rounded-lg text-sm"
                 >
                   <option value="">Update Domain</option>
                   <option value="GenAI">GenAI</option>
@@ -970,7 +970,7 @@ function ViewEditPost() {
                     value={customCategory}
                     onChange={(e) => setCustomCategory(e.target.value)}
                     placeholder="Custom category"
-                    className="mt-2 w-full px-3 py-2 bg-gray-900 border border-neutral-700 rounded-lg text-sm"
+                    className="mt-2 w-full px-3 py-2 theme border border-neutral-700 rounded-lg text-sm"
                   />
                 )}
               </div>
