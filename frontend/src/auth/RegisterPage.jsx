@@ -259,8 +259,8 @@ function RegisterPage() {
               <div className="mb-8 block lg:flex space-y-6 items-center justify-between gap-4">
                  <p className="md:mt-8 text-xs md:text-sm lg:hidden flex items-center  gap-3 uppercase tracking-[0.36em] text-slate-400">  <img src={logoicon} alt="Bytes Base" className="h-12 w-12 rounded-2xl bg-white/10 p-2 shadow-lg shadow-black/20" /> Bytes Base access</p>
                 <div>
-                  <p className="mt-3 md:text-3xl text-2xl font-semibold text-white">Author Portal</p>
-                  <h2 className="md:text-sm text-xs font-semibold mt-2 uppercase tracking-[0.3em] text-emerald-400/90">Register</h2>
+                  <p className="mt-3 md:text-3xl text-2xl font-semibold text-white">Register</p>
+                  <h2 className="md:text-sm text-xs font-semibold mt-2 uppercase tracking-[0.3em] text-emerald-400/90">Author Portal</h2>
                 </div>
               </div>
 
