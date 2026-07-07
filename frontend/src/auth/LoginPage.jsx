@@ -131,7 +131,7 @@ function LoginPage() {
        { <>
         <div className={` ${loader && 'opacity-80'} absolute inset-0 overflow-hidden bg-[radial-gradient(circle_at_top_right,_rgba(34,197,94,0.18),_transparent_42%),radial-gradient(circle_at_bottom_left,_rgba(14,165,233,0.14),_transparent_30%)] pointer-events-none`} />
 
-        <div className={`grid grid-cols-1 min-h-screen lg:grid-cols-2 ${loader && 'opacity-80'}`}>
+        <div className={`grid grid-cols-1  min-h-screen lg:grid-cols-2 ${loader && 'opacity-80'}`}>
           <div className="relative hidden lg:flex flex-col justify-center gap-8 bg-gradient-to-b from-[#0f172a] via-[#111827] to-[#0b1230] p-10 lg:p-12">
             <div>
              
@@ -146,7 +146,7 @@ function LoginPage() {
         
           </div>
 
-          <div className="relative flex flex-col justify-center px-8 py-10 sm:px-12  sm:py-14 lg:px-14 lg:py-16">
+          <div className="relative h-fit mt-24 md:mt-0 md:h-full flex flex-col justify-center px-8 py-7 sm:px-7  sm:py-14 lg:px-14 lg:py-16">
             <div className="relative z-10 mx-auto w-full max-w-md">
               
               <div className="mb-8 block lg:flex space-y-6 items-center justify-between gap-4">

@@ -254,7 +254,7 @@ function RegisterPage() {
        
           
 
-          <div className="relative flex flex-col justify-center px-8  sm:px-12  s lg:px-14 py-7">
+          <div className="relative h-fit mt-10 md:mt-0 md:h-full flex flex-col justify-center px-8  sm:px-12  s lg:px-14 py-7">
             <div className="relative z-10 mx-auto w-full max-w-md">
               <div className="mb-8 block lg:flex space-y-6 items-center justify-between gap-4">
                  <p className="md:mt-8 text-xs md:text-sm lg:hidden flex items-center  gap-3 uppercase tracking-[0.36em] text-slate-400">  <img src={logoicon} alt="Bytes Base" className="h-12 w-12 rounded-2xl bg-white/10 p-2 shadow-lg shadow-black/20" /> Bytes Base access</p>
