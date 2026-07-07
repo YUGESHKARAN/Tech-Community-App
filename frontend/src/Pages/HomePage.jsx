@@ -33,8 +33,7 @@ function HomePage() {
     // <div className="min-h-screen h-auto  relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white flex flex-col">
     <div className="min-h-screen  h-auto  relative theme text-white flex flex-col">
       <NavBar />
-          
-
+        
 
       <div className=" flex  w-full items-center max-w-[1800px] justify-between p-2 pl-3 pb-0 md:p-0 md:pl-3  md:pt-2 md:ml-4 xl:mx-auto">
         {/* <div className="flex items-center gap-3 md:gap-5">
