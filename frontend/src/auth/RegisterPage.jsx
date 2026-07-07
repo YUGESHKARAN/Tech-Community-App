@@ -274,7 +274,7 @@ function RegisterPage() {
                   <label className="text-sm font-medium text-slate-300">User Name</label>
                   <input type="text" name="username" value={formData.username} onChange={handleChange}
                     placeholder="Enter Name" required
-                    className="w-full rounded-3xl border border-white/10 bg-slate-950/80 px-5 py-3 text-sm text-white placeholder:text-slate-500 shadow-sm shadow-black/20 outline-none transition focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/20" />
+                    className="w-full rounded-3xl border border-white/20  bg-slate-950/80 px-5 py-3 text-sm text-white placeholder:text-slate-500 shadow-sm shadow-black/20 outline-none transition focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/20" />
                   {errors.username && <p className="text-sm text-red-500 mt-1">{errors.username}</p>}
                 </div>
 
@@ -282,7 +282,7 @@ function RegisterPage() {
                   <label className="text-sm font-medium text-slate-300">Email Address</label>
                   <input type="email" name="email" value={formData.email} onChange={handleChange}
                     placeholder="University Email" required
-                    className="w-full rounded-3xl border border-white/10 bg-slate-950/80 px-5 py-3 text-sm text-white placeholder:text-slate-500 shadow-sm shadow-black/20 outline-none transition focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/20" />
+                    className="w-full rounded-3xl border border-white/20  bg-slate-950/80 px-5 py-3 text-sm text-white placeholder:text-slate-500 shadow-sm shadow-black/20 outline-none transition focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/20" />
                   {errors.email && <p className="text-sm text-red-500 mt-1">{errors.email}</p>}
                 </div>
 
@@ -298,7 +298,7 @@ function RegisterPage() {
                     onChange={handleChange}
                     placeholder="Enter secure password"
                     required
-                    className="w-full rounded-3xl border border-white/10 bg-slate-950/80 px-5 py-3 text-sm text-white placeholder:text-slate-500 shadow-sm shadow-black/20 outline-none transition focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/20"
+                    className="w-full rounded-3xl border border-white/20  bg-slate-950/80 px-5 py-3 text-sm text-white placeholder:text-slate-500 shadow-sm shadow-black/20 outline-none transition focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/20"
                   />
                   {errors.password && <p className="text-sm text-red-500 mt-1">{errors.password}</p>}
                 </div>
@@ -314,7 +314,7 @@ function RegisterPage() {
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="Confirm secure password"
                     required
-                    className="w-full rounded-3xl border border-white/10 bg-slate-950/80 px-5 py-3 text-sm text-white placeholder:text-slate-500 shadow-sm shadow-black/20 outline-none transition focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/20"
+                    className="w-full rounded-3xl border border-white/20  bg-slate-950/80 px-5 py-3 text-sm text-white placeholder:text-slate-500 shadow-sm shadow-black/20 outline-none transition focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/20"
                   />
                 </div>
 

@@ -194,7 +194,7 @@ function LoginPage() {
                     autoComplete="user email"
                     required
                     placeholder="you@university.edu"
-                    className="w-full rounded-3xl border border-white/10 bg-slate-950/80 px-5 py-3 text-sm text-white placeholder:text-slate-500 shadow-sm shadow-black/20 outline-none transition focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/20"
+                    className="w-full rounded-3xl border border-white/20  bg-slate-950/80 px-5 py-3 text-sm text-white placeholder:text-slate-500 shadow-sm shadow-black/20 outline-none transition focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/20"
                   />
                 </div>
 
@@ -222,7 +222,7 @@ function LoginPage() {
                         onChange={handleChange}
                         required
                         placeholder="Enter your secure password"
-                        className="w-full rounded-3xl border border-white/10 bg-slate-950/80 px-5 py-3 text-sm text-white placeholder:text-slate-500 shadow-sm shadow-black/20 outline-none transition focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/20"
+                        className="w-full rounded-3xl border border-white/20  bg-slate-950/80 px-5 py-3 text-sm text-white placeholder:text-slate-500 shadow-sm shadow-black/20 outline-none transition focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/20"
                       />
                     </div>
                   </div>
