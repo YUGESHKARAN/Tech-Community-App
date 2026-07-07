@@ -146,7 +146,7 @@ function LoginPage() {
         
           </div>
 
-          <div className="relative h-fit mt-24 md:mt-0 md:h-full flex flex-col justify-center px-8 py-7 sm:px-7  sm:py-14 lg:px-14 lg:py-16">
+          <div className="relative h-fit mt-20 md:mt-0 md:h-full flex flex-col justify-center px-8 py-7 sm:px-7  sm:py-14 lg:px-14 lg:py-16">
             <div className="relative z-10 mx-auto w-full max-w-md">
               
               <div className="mb-8 block lg:flex space-y-6 items-center justify-between gap-4">
@@ -181,7 +181,7 @@ function LoginPage() {
                   </motion.p>
                 )}
 
-                <div className="space-y-4">
+                <div className="space-y-2 md:space-y-4">
                   <label htmlFor="email" className="text-sm font-medium text-slate-300">
                     Email address
                   </label>
@@ -199,7 +199,7 @@ function LoginPage() {
                 </div>
 
                 {!forgotPassword && (
-                  <div className="space-y-4">
+                  <div className="space-y-2 md:space-y-4">
                     <div className="flex items-center justify-between gap-4">
                       <label htmlFor="password" className="text-sm font-medium text-slate-300">
                         {passwordLabel}
@@ -207,7 +207,7 @@ function LoginPage() {
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="md:text-sm text-xs font-medium text-emerald-300 hover:text-emerald-200"
+                        className="md:text-sm text-xs font-medium text-emerald-400 md:text-emerald-300 md:hover:text-emerald-200"
                       >
                         {showPassword ? "Hide" : "Show"}
                       </button>

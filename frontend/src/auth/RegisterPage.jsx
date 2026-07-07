@@ -270,26 +270,26 @@ function RegisterPage() {
                 {success && <p className="rounded-[28px] border border-emerald-500/20 bg-emerald-500/10 px-5 py-3 text-base text-emerald-200">{success}</p>}
                 {errors.apiError && <p className="rounded-[28px] border border-red-500/20 bg-red-500/10 px-5 py-3 text-base text-red-200">{errors.apiError}</p>}
 
-                <div className="space-y-4">
-                  <label className="text-base font-medium text-slate-300">User Name</label>
+                <div className="space-y-2 md:space-y-4">
+                  <label className="text-sm font-medium text-slate-300">User Name</label>
                   <input type="text" name="username" value={formData.username} onChange={handleChange}
                     placeholder="Enter Name" required
                     className="w-full rounded-3xl border border-white/10 bg-slate-950/80 px-5 py-3 text-sm text-white placeholder:text-slate-500 shadow-sm shadow-black/20 outline-none transition focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/20" />
                   {errors.username && <p className="text-sm text-red-500 mt-1">{errors.username}</p>}
                 </div>
 
-                <div className="space-y-4">
-                  <label className="text-base font-medium text-slate-300">Email Address</label>
+                <div className="space-y-2 md:space-y-4">
+                  <label className="text-sm font-medium text-slate-300">Email Address</label>
                   <input type="email" name="email" value={formData.email} onChange={handleChange}
                     placeholder="University Email" required
                     className="w-full rounded-3xl border border-white/10 bg-slate-950/80 px-5 py-3 text-sm text-white placeholder:text-slate-500 shadow-sm shadow-black/20 outline-none transition focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/20" />
                   {errors.email && <p className="text-sm text-red-500 mt-1">{errors.email}</p>}
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-2 md:space-y-4">
                   <div className="flex items-center justify-between">
-                    <label className="text-base font-medium text-slate-300">Password</label>
-                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="text-xs md:text-sm font-semibold text-emerald-300 hover:text-emerald-200">{showPassword ? 'Hide' : 'Show'}</button>
+                    <label className="text-sm font-medium text-slate-300">Password</label>
+                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="text-xs md:text-sm font-semibold text-emerald-400 md:text-emerald-300 text-emerald-300 md:hover:text-emerald-200">{showPassword ? 'Hide' : 'Show'}</button>
                   </div>
                   <input
                     type={showPassword ? "text" : "password"}
@@ -303,10 +303,10 @@ function RegisterPage() {
                   {errors.password && <p className="text-sm text-red-500 mt-1">{errors.password}</p>}
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-2 md:space-y-4">
                   <div className="flex items-center justify-between">
-                    <label className="text-base font-medium text-slate-300">Confirm Password</label>
-                    <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="text-xs md:text-sm font-semibold text-emerald-300 hover:text-emerald-200">{showConfirmPassword ? 'Hide' : 'Show'}</button>
+                    <label className="text-sm font-medium text-slate-300">Confirm Password</label>
+                    <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="text-xs md:text-sm font-semibold text-emerald-300 text-emerald-400 md:text-emerald-300 md:hover:text-emerald-200">{showConfirmPassword ? 'Hide' : 'Show'}</button>
                   </div>
                   <input
                     type={showConfirmPassword ? "text" : "password"}
