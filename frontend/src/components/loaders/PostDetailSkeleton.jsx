@@ -4,17 +4,17 @@ const PostDetailSkeleton = () => {
       {/* Header */}
       <div className="flex items-center justify-between md:mb-6">
         <div className="flex items-center gap-3">
-          <div className="md:w-10 md:h-10 w-7 h-7 rounded-full bg-gray-800" />
+          <div className="md:w-10 md:h-10 w-7 h-7 rounded-full theme-fields-lite" />
           <div className="space-y-2">
-            <div className="md:h-4 h-3 w-28 bg-gray-800 rounded" />
-            <div className="md:h-3 h-2 w-20 bg-gray-800 rounded" />
+            <div className="md:h-4 h-3 w-28 theme-fields-lite rounded" />
+            <div className="md:h-3 h-2 w-20 theme-fields-lite rounded" />
           </div>
         </div>
-        <div className="md:h-8  md:w-16 h-5 w-12 bg-gray-800 rounded-md" />
+        <div className="md:h-8  md:w-16 h-5 w-12 theme-fields-lite rounded-md" />
       </div>
 
       {/* Title */}
-      <div className="md:h-8 h-5 w-3/5 bg-gray-800 rounded my-4 md:mb-6" />
+      <div className="md:h-8 h-5 w-3/5 theme-fields-lite rounded my-4 md:mb-6" />
 
       {/* Two Column Layout */}
       <div className="grid grid-cols-1 mt-2 md:mt-0 lg:grid-cols-6 lg:gap-8 gap-4 md:gap-6">
@@ -23,36 +23,36 @@ const PostDetailSkeleton = () => {
           {/* Banner */}
           <div className="h-[190px]
                     sm:h-[220px]
-                    md:h-[400px] bg-gray-800 rounded-xl border border-gray-700" />
+                    md:h-[400px] theme-fields-lite rounded-xl border border-gray-700" />
 
           {/* AI assistant likes, share and bookmark */}
           <div className="flex items-center  justify-between md:justify-end mt-2 gap-4 my-3 md:mb-5">
-            <button className=" bottom-4 flex items-center gap-2 bg-gray-800 w-16 h-6  right-4 bg text-black text-sm px-5 py-2 rounded-full animate-pulse md:hidden shadow-xl"></button>
+            <button className=" bottom-4 flex items-center gap-2 theme-fields-lite w-16 h-6  right-4 bg text-black text-sm px-5 py-2 rounded-full animate-pulse md:hidden shadow-xl"></button>
 
             <div className="flex items-center gap-4 md:gap-3">
-              <button className=" bottom-4 flex items-center gap-2 bg-gray-800 w-28  md:w-16 h-6  right-4 bg text-black text-sm px-5 py-2 rounded-full animate-pulse  shadow-xl"></button>
-              <button className=" bottom-4 flex items-center gap-2 bg-gray-800 w-12  md:w-16 h-6  right-4 bg text-black text-sm px-5 py-2 rounded-full animate-pulse  shadow-xl"></button>
-              <button className=" bottom-4 flex items-center gap-2 bg-gray-800 w-12  md:w-16 h-6  right-4 bg text-black text-sm px-5 py-2 rounded-full animate-pulse  shadow-xl"></button>
-              <button className=" bottom-4 flex items-center gap-2 bg-gray-800 w-12  md:w-16 h-6  right-4 bg text-black text-sm px-5 py-2 rounded-full animate-pulse  shadow-xl"></button>
+              <button className=" bottom-4 flex items-center gap-2 theme-fields-lite w-28  md:w-16 h-6  right-4 bg text-black text-sm px-5 py-2 rounded-full animate-pulse  shadow-xl"></button>
+              <button className=" bottom-4 flex items-center gap-2 theme-fields-lite w-12  md:w-16 h-6  right-4 bg text-black text-sm px-5 py-2 rounded-full animate-pulse  shadow-xl"></button>
+              <button className=" bottom-4 flex items-center gap-2 theme-fields-lite w-12  md:w-16 h-6  right-4 bg text-black text-sm px-5 py-2 rounded-full animate-pulse  shadow-xl"></button>
+              <button className=" bottom-4 flex items-center gap-2 theme-fields-lite w-12  md:w-16 h-6  right-4 bg text-black text-sm px-5 py-2 rounded-full animate-pulse  shadow-xl"></button>
             </div>
           </div>
 
           {/* Description */}
           <div className="theme-fields-dark border border-gray-700 rounded-xl p-5 space-y-3">
-            <div className="h-4 w-full bg-gray-800 rounded" />
-            <div className="h-4 w-full bg-gray-800 rounded" />
-            <div className="h-4 w-5/6 bg-gray-800 rounded" />
-            <div className="h-4 w-2/3 bg-gray-800 rounded" />
+            <div className="h-4 w-full theme-fields-lite rounded" />
+            <div className="h-4 w-full theme-fields-lite rounded" />
+            <div className="h-4 w-5/6 theme-fields-lite rounded" />
+            <div className="h-4 w-2/3 theme-fields-lite rounded" />
           </div>
         </div>
 
         {/* RIGHT COLUMN */}
         <div className="md:col-span-2 space-y-4 md:space-y-6">
           {/* Assistant Box */}
-          <div className="h-40 bg-gray-800 rounded-xl border border-gray-700" />
+          <div className="h-40 theme-fields-lite rounded-xl border border-gray-700" />
 
           {/* Resources Box */}
-          <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 space-y-4">
+          <div className="theme-fields-lite rounded-xl border border-gray-700 p-6 space-y-4">
             <div className="h-5 w-32 bg-gray-700 rounded" />
             <div className="flex gap-3">
               <div className="h-10 w-28 bg-gray-700 rounded-xl" />
@@ -61,7 +61,7 @@ const PostDetailSkeleton = () => {
           </div>
 
           {/* Comments */}
-          <div className="bg-gray-800 rounded-xl border border-gray-700 p-5 space-y-4">
+          <div className="theme-fields-lite rounded-xl border border-gray-700 p-5 space-y-4">
             <div className="h-5 w-24 bg-gray-700 rounded" />
             {[...Array(3)].map((_, i) => (
               <div key={i} className="flex gap-3">

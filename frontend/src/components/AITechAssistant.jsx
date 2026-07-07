@@ -275,7 +275,7 @@ export default function AITechAssistant({
       {/* {!open && (
         <button
           onClick={() => setOpen(true)}
-          className=" bottom-4 flex items-center gap-2 right-4 bg-gray-900 hover:bg-gray-800 border border-neutral-700 text-emerald-400 text-sm md:px-5 px-3 py-1 rounded-full md:hidden z-50 shadow-xl"
+          className=" bottom-4 flex items-center gap-2 right-4 bg-gray-900 hover:theme-fields-lite border border-neutral-700 text-emerald-400 text-sm md:px-5 px-3 py-1 rounded-full md:hidden z-50 shadow-xl"
         >
          AI <SiGooglegemini />
         </button>
@@ -301,8 +301,7 @@ export default function AITechAssistant({
       w-full md:w-full
       md:relative
       text-white
-      bg-[#0a0f1d] 
-      md:bg-gray-900
+      theme
       md:border 
       border-t border-[#30363d] 
       rounded-t-2xl 
@@ -550,7 +549,7 @@ export default function AITechAssistant({
                             handleQueryClick(s);
                           }}
                           // className="bg-neutral-800 hover:bg-neutral-700 px-3 py-1.5 rounded-full text-sm"
-                          className="border border-neutral-600 w-fit text-left hover:bg-gray-800/70 px-3 md:py-1.5 transition-all duration-300 py-2 rounded-3xl text-sm disabled:opacity-50
+                          className="border border-neutral-600 w-fit text-left hover:theme-fields-lite/70 px-3 md:py-1.5 transition-all duration-300 py-2 rounded-3xl text-sm disabled:opacity-50
                               disabled:cursor-not-allowed
                               disabled:hover:bg-transparent "
                         >
@@ -606,13 +605,13 @@ export default function AITechAssistant({
         </div>
 
         {/* Input */}
-        <div className="p-3 pb-0  rounded-b-xl flex gap-2 bg-[#0a0f1d] md:bg-gray-900">
+        <div className="p-3 pb-0  rounded-b-xl flex gap-2 theme min-h-0">
           {/* <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && askAI()}
             placeholder="Ask your queries..."
-            className="flex-1 md:hidden bg-gray-800 border border-neutral-800 rounded-xl px-4 py-2 text-sm text-white placeholder-neutral-500 outline-none"
+            className="flex-1 md:hidden theme-fields-lite border border-neutral-800 rounded-xl px-4 py-2 text-sm text-white placeholder-neutral-500 outline-none"
             onFocus={() => setIsInputFocused(true)}
             // onBlur={() => setIsInputFocused(false)}
             onMouseOut={() => setIsInputFocused(false)}
@@ -626,7 +625,7 @@ export default function AITechAssistant({
             onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && askAI()}
             // placeholder="Ask your queries..."
             placeholder={PLACEHOLDERS[placeholderIndex]}
-            className="flex-1 md:hidden max-h-[150px] bg-gray-800 border border-neutral-800 rounded-xl px-4 py-2 text-sm text-white placeholder-neutral-500 outline-none"
+            className="flex-1 md:hidden min-h-[40px] max-h-[150px] shrink-0 theme-fields-lite border border-neutral-800 rounded-xl px-4 py-2 text-sm text-white placeholder-neutral-500 outline-none"
             onFocus={() => setIsInputFocused(true)}
             onBlur={() => setIsInputFocused(false)}
             onMouseOut={() => setIsInputFocused(false)}
@@ -638,7 +637,7 @@ export default function AITechAssistant({
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => {e.key === "Enter" && !e.shiftKey && askAI()}}
             placeholder="Ask your queries..."
-            className="flex-1 bg-gray-800 hidden md:block border border-neutral-800 rounded-xl px-4 py-2 text-sm text-white placeholder-neutral-500 outline-none"
+            className="flex-1 theme-fields-lite hidden md:block border border-neutral-800 rounded-xl px-4 py-2 text-sm text-white placeholder-neutral-500 outline-none"
           /> */}
 
           <textarea   
@@ -649,7 +648,7 @@ export default function AITechAssistant({
             ref={textareaRef2}
             // placeholder="Ask your queries..."
             placeholder={PLACEHOLDERS[placeholderIndex]}
-            className="flex-1 bg-gray-800 scrollbar-hide hidden max-h-[150px] md:block border border-neutral-800 rounded-xl px-4 py-2 text-sm text-white placeholder-neutral-500 outline-none"
+            className="flex-1 theme-fields-lite  min-h-[40px] shrink-0  scrollbar-hide hidden max-h-[150px] md:block border border-neutral-800 rounded-xl px-4 py-2 text-sm text-white placeholder-neutral-500 outline-none"
             rows={1}
             />
 
