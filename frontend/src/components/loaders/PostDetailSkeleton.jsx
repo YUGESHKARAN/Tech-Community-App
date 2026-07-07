@@ -52,7 +52,7 @@ const PostDetailSkeleton = () => {
           <div className="h-40 md:theme-fields-lite bg-gray-800 rounded-xl border border-gray-700" />
 
           {/* Resources Box */}
-          <div className= md:theme-fields-lite"bg-gray-800 rounded-xl border border-gray-700 p-6 space-y-4">
+          <div className= " md:theme-fields-lite bg-gray-800 rounded-xl border border-gray-700 p-6 space-y-4">
             <div className="h-5 w-32 bg-gray-700 rounded" />
             <div className="flex gap-3">
               <div className="h-10 w-28 bg-gray-700 rounded-xl" />
@@ -61,7 +61,7 @@ const PostDetailSkeleton = () => {
           </div>
 
           {/* Comments */}
-          <div className= md:theme-fields-lite"bg-gray-800 rounded-xl border border-gray-700 p-5 space-y-4">
+          <div className= "md:theme-fields-lite bg-gray-800 rounded-xl border border-gray-700 p-5 space-y-4">
             <div className="h-5 w-24 bg-gray-700 rounded" />
             {[...Array(3)].map((_, i) => (
               <div key={i} className="flex gap-3">
