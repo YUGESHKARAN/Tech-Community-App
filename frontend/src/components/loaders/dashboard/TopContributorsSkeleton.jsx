@@ -1,7 +1,7 @@
 
 const TopContributorsSkeleton = () => {
   return (
-    <div className="bg-[#0f172a] overflow-hidden relative border border-[#1e293b] rounded-xl p-4 animate-pulse">
+    <div className="dashboard-theme-fields-dark overflow-hidden relative border border-[#1e293b] rounded-xl p-4 animate-pulse">
        {/* Shimmer */}
       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-[shimmer_1.5s_infinite]" />
       {/* Header */}

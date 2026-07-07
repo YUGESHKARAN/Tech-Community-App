@@ -1,7 +1,7 @@
 
 const StudentsTableSkeleton = () => {
   return (
-    <div className="bg-[#0f172a] border mt-4 md:mt-0 overflow-hidden relative border-[#1e293b] rounded-2xl flex flex-col overflow-hidden md:w-[600px] animate-pulse">
+    <div className="theme border mt-4 md:mt-0 overflow-hidden relative border-[#1e293b] rounded-2xl flex flex-col overflow-hidden md:w-[600px] animate-pulse">
        {/* Shimmer */}
       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-[shimmer_1.5s_infinite]" />
       

@@ -316,7 +316,7 @@ function ProfilePage() {
                     md:py-2
                     py-1.5
                     rounded-lg
-                    bg-[#111827]
+                    theme
                     border
                     border-slate-700
                     text-slate-200
