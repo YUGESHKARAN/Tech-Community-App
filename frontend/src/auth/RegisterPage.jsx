@@ -289,7 +289,7 @@ function RegisterPage() {
                 <div className="space-y-2 md:space-y-4">
                   <div className="flex items-center justify-between">
                     <label className="text-sm font-medium text-slate-300">Password</label>
-                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="text-xs md:text-sm font-semibold text-emerald-400 md:text-emerald-300 text-emerald-300 md:hover:text-emerald-200">{showPassword ? 'Hide' : 'Show'}</button>
+                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="text-[10px] md:text-xs font-semibold text-emerald-500 md:text-emerald-300 text-emerald-300 md:hover:text-emerald-200">{showPassword ? 'Hide' : 'Show'}</button>
                   </div>
                   <input
                     type={showPassword ? "text" : "password"}
@@ -306,7 +306,7 @@ function RegisterPage() {
                 <div className="space-y-2 md:space-y-4">
                   <div className="flex items-center justify-between">
                     <label className="text-sm font-medium text-slate-300">Confirm Password</label>
-                    <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="text-xs md:text-sm font-semibold text-emerald-300 text-emerald-400 md:text-emerald-300 md:hover:text-emerald-200">{showConfirmPassword ? 'Hide' : 'Show'}</button>
+                    <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="text-[10px] md:text-xs font-semibold text-emerald-300 text-emerald-500 md:text-emerald-300 md:hover:text-emerald-200">{showConfirmPassword ? 'Hide' : 'Show'}</button>
                   </div>
                   <input
                     type={showConfirmPassword ? "text" : "password"}

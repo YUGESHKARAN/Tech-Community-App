@@ -207,7 +207,7 @@ function LoginPage() {
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="md:text-sm text-xs font-medium text-emerald-400 md:text-emerald-300 md:hover:text-emerald-200"
+                        className="md:text-xs text-[10px] font-medium text-emerald-500 md:text-emerald-300 md:hover:text-emerald-200"
                       >
                         {showPassword ? "Hide" : "Show"}
                       </button>
