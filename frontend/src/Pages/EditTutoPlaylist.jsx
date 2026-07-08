@@ -248,7 +248,7 @@ const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
 
 
   return (
-    <div className="w-full min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 relative">
+    <div className="w-full min-h-screen theme relative">
       <NavBar />
       <div className="md:mb-8 mt-4 px-4 md:px-12 mx-auto flex items-center justify-between">
         <div>
@@ -268,7 +268,7 @@ const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
         className="w-full mx-auto px-3 md:px-12 pb-6 grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-6"
       >
         {/* LEFT — PLAYLIST DETAILS */}
-        <div className="lg:col-span-1 md:bg-gray-900/70   md:border border-emerald-500/20 rounded-lg space-y-8">
+        <div className="lg:col-span-1 md:theme/70   md:border border-emerald-500/20 rounded-lg space-y-8">
           <div className="p-2 md:p-6 space-y-7 pt-0 shadow-lg">
             <h2 className="text-lg hidden  tracking-wide lg:block font-semibold text-emerald-400">
               Playlist Details
@@ -324,7 +324,7 @@ const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
                           data.profile,
                         )
                       }
-                      className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-900 border border-gray-700 cursor-pointer hover:bg-gray-800 transition-all duration-300"
+                      className="flex items-center gap-2 px-3 py-1.5 rounded-full theme border border-gray-700 cursor-pointer hover:bg-gray-800 transition-all duration-300"
                     >
                       {/* <img
                         src={
@@ -568,7 +568,7 @@ const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
                 </div>
 
                 {/* Right — count pill */}
-                <div className="flex items-center gap-1.5 bg-gray-900 border border-gray-800 rounded-full px-2.5 py-1 text-gray-300 text-xs flex-shrink-0">
+                <div className="flex items-center gap-1.5 theme border border-gray-800 rounded-full px-2.5 py-1 text-gray-300 text-xs flex-shrink-0">
                   <div className="w-5 h-5 rounded-full text-emerald-400 bg-emerald-600/20 flex items-center justify-center text-[11px] font-semibold ">
                     {postIds?.length ?? 0}
                   </div>
@@ -600,7 +600,7 @@ const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
                 ${
                   postIds.includes(data._id)
                     ? "border-emerald-500 bg-emerald-500/10"
-                    : "border-gray-700 bg-gray-900 "
+                    : "border-gray-700 theme "
                 }`}
                 >
                   {isSelected && (
