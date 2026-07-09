@@ -352,7 +352,7 @@ function YourPost() {
                           ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.profile}`
                           : user
                       }
-                      className="w-9 h-9 rounded-full bg-white object-cover border border-gray-700"
+                      className="md:w-9 md:h-9 w-7 h-7 rounded-full bg-white object-cover border border-gray-700"
                       alt={data.authorName}
                     />
                   </Link>
