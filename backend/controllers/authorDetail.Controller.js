@@ -696,10 +696,10 @@ const updateAuthor = async (req, res) => {
     author.email = email;
     author.bio = bio;
 
-    const profile = author.profile || `${uuidv4()}-${req.file.originalname}` ;
+   
 
     if (isNewProfile) {
-
+      const profile = author.profile || `${uuidv4()}-${req.file.originalname}` ;
       // delete old profile from S3 if one existed
       if (author.profile) {
         try {
