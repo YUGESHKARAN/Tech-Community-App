@@ -449,7 +449,7 @@ function BookMarkPage() {
                                 ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.profile}`
                                 : user
                             }
-                            className="md:w-9 md:h-9 w-7 h-7 rounded-full bg-gray-700 object-cover border border-gray-700"
+                            className="md:w-8 md:h-8 w-7 h-7 rounded-full bg-gray-700 object-cover border border-gray-700"
                             alt={data.authorName}
                           />
                         </Link>
