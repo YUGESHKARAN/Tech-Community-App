@@ -9,7 +9,7 @@ const BlogSkeleton = () => {
       
       {/* Author Section */}
       <div className="flex mb-2 gap-2 px-4 items-center">
-        <div className="w-8 h-8 rounded-full bg-gray-700"></div>
+        <div className="md:w-8 md:h-8 w-7 h-7 rounded-full bg-gray-700"></div>
         <div className="flex flex-col gap-2">
           <div className="h-3 w-20 bg-gray-700 rounded"></div>
           <div className="h-2 w-14 bg-gray-700 rounded"></div>
