@@ -644,7 +644,7 @@ function ViewPage() {
                       {singlePostData.category}
                     </p>
                     <p className=" text-[10px] md:text-xs text-gray-400">
-                      {singlePostData.views?.length &&
+                      {singlePostData.views?.length > 0 &&
                         `Views ${formatCount(singlePostData.views.length)}`}
                     </p>
                   </div>
