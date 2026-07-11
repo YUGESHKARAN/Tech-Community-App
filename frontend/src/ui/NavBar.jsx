@@ -122,6 +122,10 @@ function NavBar() {
     };
   }, []);
 
+
+
+  // -----remove in live stream-------------------------------
+
   // Fetch stored notifications from the server
   const fetchNotifications = async () => {
     if (note.length === 0) {
@@ -147,6 +151,77 @@ function NavBar() {
   useEffect(() => {
     fetchNotifications();
   }, [userEmail]);
+
+  // ----------------------------------------------------------
+
+
+  // ---- use in live stream-------------------------------------
+//   const [notificationCount, setNotificationCount] = useState(0);
+
+//   useEffect(() => {
+//   if (!userEmail) return;
+
+//    const fetchNotifications = async () => {
+//     if (note.length === 0) {
+//       setLoading(true);
+//     }
+
+//     try {
+//       const response = await axiosInstance.get(
+//         `/blog/author/queueMessage/${userEmail}`,
+//       );
+//       setNote(response.data.notifications);
+//       setAnnouncement(response.data.announcements);
+//       storeItem("notiCount", response.data.notifications.length);
+//       storeItem("announceCount", response.data.announcements.length);
+//       //   console.log("author email data", response.data.notification)
+//     } catch (error) {
+//       console.error("Error fetching notifications:", error);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   fetchNotifications();
+
+//   const baseUrl =
+//     axiosInstance.defaults.baseURL ||
+//     process.env.REACT_APP_API_URL ||
+//     "http://localhost:3000";
+
+//   const streamUrl = `${baseUrl}/blog/notifications/stream/${encodeURIComponent(userEmail)}`;
+
+//   const eventSource = new EventSource(streamUrl, { withCredentials: true });
+
+//   eventSource.addEventListener("message", (event) => {
+//     try {
+//       const incoming = JSON.parse(event.data);
+
+//       setNote((prev) => {
+//         const exists = prev.some((n) => n.postId === incoming.postId);
+//         if (exists) return prev;
+
+//         const next = [incoming, ...prev];
+
+//         setNotificationCount(next.length);
+//         storeItem("notiCount", next.length);
+
+//         return next;
+//       });
+//     } catch (err) {
+//       console.error("SSE parse error:", err);
+//     }
+//   });
+
+//   eventSource.onerror = () => {
+//     console.error("SSE connection error");
+//     eventSource.close();
+//   };
+
+//   return () => eventSource.close();
+// }, [userEmail]);
+
+// -----------------------------------------------------------------
 
   const notiCount = getItem("notiCount");
   const announceCount = getItem("announceCount");
