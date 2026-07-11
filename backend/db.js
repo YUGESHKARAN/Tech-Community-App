@@ -1,7 +1,21 @@
 
 const mongoose = require("mongoose");
+const dns = require("dns");
 const dotenv   = require("dotenv");
 dotenv.config();
+
+if (process.env.NODE_ENV === "development") {
+  // dns.setServers(["8.8.8.8", "8.8.4.4"]);
+  const dnsServers = (process.env.DNS_SERVERS || "8.8.8.8,8.8.4.4")
+  .split(",")
+  .map((server) => server.trim())
+  .filter(Boolean);
+
+if (dnsServers.length > 0) {
+  dns.setServers(dnsServers);
+}
+
+}
 
 const connectToDatabase = async (retries = 3) => {
   if (!process.env.MONGODB_URL) {
@@ -23,8 +37,10 @@ const connectToDatabase = async (retries = 3) => {
       console.log(`DB connect attempt ${attempt}/${retries}`);
       await mongoose.connect(process.env.MONGODB_URL, {
         maxPoolSize:              10,
-        serverSelectionTimeoutMS: 10000,
-        socketTimeoutMS:          45000,
+        serverSelectionTimeoutMS: 15000,
+        socketTimeoutMS:          60000,
+        family:                  4,
+        retryWrites:             true,
       });
       console.log("MongoDB connected");
       return;

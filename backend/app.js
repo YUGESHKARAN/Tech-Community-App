@@ -4,6 +4,7 @@ const cors = require("cors");
 const serverless = require("serverless-http");
 const connectToDatabase = require("./db");
 const bodyParser = require("body-parser");
+const { addSseClient } = require("./services/notificationQueue");
 require("dotenv").config();
 
 const dns = require("dns");
@@ -68,6 +69,18 @@ app.use("/blog/admin", adminRouter);
 app.use("/blog/director", directorRouter);
 app.use("/blog/search", searchRouter);
 
+app.get("/blog/notifications/stream/:email", async (req, res) => {
+  try {
+    await addSseClient(req.params.email, res);
+  } catch (err) {
+    console.error("SSE connection error:", err.message);
+    res.status(500).end();
+  }
+});
+
+app.get("/blog/notifications/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
+});
 
 // Start the server
 // app.listen(3000, () => {
