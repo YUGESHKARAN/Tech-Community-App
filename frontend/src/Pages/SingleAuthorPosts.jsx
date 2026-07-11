@@ -24,6 +24,7 @@ import highlightText from "../hooks/highlightText";
 import { getItem } from "../utils/encode";
 import PostsComponent from "../components/PostsComponent";
 import BadgeIcons from "../components/achievements/BadgeIcons";
+import AuthorCardSkeleton from "../components/loaders/AuthorCardSkeleton";
 function SingleAuthorPosts() {
   const [searchTerm, setSearchTerm] = useState("");
   const [posts, setPosts] = useState([]);
@@ -273,7 +274,7 @@ const filteredPosts = useMemo(() => {
             Posts Page
           </h1>
           {/* Profile Header Card */}
-          <div className={`flex items-center relative mx-2  py-7  bg-gradient-to-r from-theme to-slate-800 border border-slate-700/50 rounded-2xl p-5 md:p-7 shadow-lg ${badges.length>1?'gap-3':'gap-5'} md:gap-6`}>
+          {posts?.length>0 && <div className={`flex items-center relative mx-2  py-7 md:max-w-xl md:mx-auto  bg-gradient-to-r from-theme to-slate-800 border border-slate-700/50 rounded-2xl p-5 md:p-7 shadow-lg ${badges.length>1?'gap-3':'gap-5'} md:gap-10`}>
             {/* Avatar */}
             <div
               // to={`/viewProfile/${email}`}
@@ -333,7 +334,11 @@ const filteredPosts = useMemo(() => {
                   </Link>
                 )}
 
-          </div>
+          </div>}
+
+          {
+            posts?.length ===0 && loader && <AuthorCardSkeleton/>
+          }
         </div>
 
 
@@ -355,7 +360,7 @@ const filteredPosts = useMemo(() => {
               </div>
             </div>
 
-       {posts.length > 0 && (
+       {posts?.length > 0  && (
               <div
                 className={`w-full mt-2 md:mt-0 sticky top-0 z-40
                 ${isStickyActive ? "theme " : "bg-transparent"}`}
@@ -394,7 +399,7 @@ const filteredPosts = useMemo(() => {
               </div>
             )}
 
-            {loader && !posts.length > 0 && <PillLoader />}
+            {loader && !posts?.length > 0 && <PillLoader />}
 
 
         <div className="flex relative max-w-[1800px] mx-auto  w-full md:mx-2 flex-wrap justify-center h-auto mx-auto">
