@@ -158,10 +158,62 @@ function NavBar() {
   // ---- use in live stream-------------------------------------
 //   const [notificationCount, setNotificationCount] = useState(0);
 
-//   useEffect(() => {
+
+// useEffect(() => {
 //   if (!userEmail) return;
 
-//    const fetchNotifications = async () => {
+//   let eventSource;
+//   let reconnectTimer;
+//   let reconnectDelay = 1000;
+
+//   const connect = () => {
+//     // const baseUrl =
+//     //   axiosInstance.defaults.baseURL ||
+//     //   process.env.REACT_APP_API_URL ||
+//     //   "http://localhost:3000";
+//     const rawBaseUrl =
+//       axiosInstance.defaults.baseURL ||
+//       process.env.REACT_APP_API_URL ||
+//       "http://localhost:3000";
+
+//     const baseUrl = rawBaseUrl.replace(/\/+$/, ""); // strip trailing slash(es)
+
+//     const streamUrl = `${baseUrl}/blog/notifications/stream/${encodeURIComponent(userEmail)}`;
+//     eventSource = new EventSource(streamUrl, { withCredentials: true });
+
+//     eventSource.addEventListener("message", (event) => {
+//       try {
+//         const incoming = JSON.parse(event.data);
+//         setNote((prev) => {
+//           if (prev.some((n) => n.postId === incoming.postId)) return prev;
+//           const next = [incoming, ...prev];
+//           setNotificationCount(next.length);
+//           storeItem("notiCount", next.length);
+//           return next;
+//         });
+//       } catch (err) {
+//         console.error("SSE parse error:", err);
+//       }
+//     });
+
+//     eventSource.onopen = () => {
+//       reconnectDelay = 1000; // reset backoff once healthy again
+//     };
+
+//     eventSource.onerror = () => {
+//       console.error("SSE connection error, reconnecting...");
+//       eventSource.close();
+//       clearTimeout(reconnectTimer);
+//       reconnectTimer = setTimeout(() => {
+//         reconnectDelay = Math.min(reconnectDelay * 2, 30000);
+//         connect();
+//       }, reconnectDelay);
+//     };
+//   };
+
+//   connect();
+
+//     const fetchNotifications = async () => {
 //     if (note.length === 0) {
 //       setLoading(true);
 //     }
@@ -184,41 +236,10 @@ function NavBar() {
 
 //   fetchNotifications();
 
-//   const baseUrl =
-//     axiosInstance.defaults.baseURL ||
-//     process.env.REACT_APP_API_URL ||
-//     "http://localhost:3000";
-
-//   const streamUrl = `${baseUrl}/blog/notifications/stream/${encodeURIComponent(userEmail)}`;
-
-//   const eventSource = new EventSource(streamUrl, { withCredentials: true });
-
-//   eventSource.addEventListener("message", (event) => {
-//     try {
-//       const incoming = JSON.parse(event.data);
-
-//       setNote((prev) => {
-//         const exists = prev.some((n) => n.postId === incoming.postId);
-//         if (exists) return prev;
-
-//         const next = [incoming, ...prev];
-
-//         setNotificationCount(next.length);
-//         storeItem("notiCount", next.length);
-
-//         return next;
-//       });
-//     } catch (err) {
-//       console.error("SSE parse error:", err);
-//     }
-//   });
-
-//   eventSource.onerror = () => {
-//     console.error("SSE connection error");
-//     eventSource.close();
+//   return () => {
+//     clearTimeout(reconnectTimer);
+//     eventSource?.close();
 //   };
-
-//   return () => eventSource.close();
 // }, [userEmail]);
 
 // -----------------------------------------------------------------
