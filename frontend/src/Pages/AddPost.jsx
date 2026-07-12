@@ -594,8 +594,8 @@ function AddPost() {
                 <ul className={`space-y-2 text-sm list-disc pl-5 hidden md:block`}>
                   <li>Use a clear and descriptive title.</li>
                   <li>Provide a contextual description <span className="bg-gray-600/30 text-xs font-semibold px-2">(eg: Overview, Tech-Stack used, Sample Code Snippet, System Design Followed, Key Features, Contributions and Conclusion)</span> </li>
-                  <li>Description support upto 10,000 word limit.</li>
-                  <li>DraftMate Assistant support upto 2500 word limit per input query.</li>
+                  <li>Description support upto 10,000 words.</li>
+                  <li>DraftMate Assistant support upto 2500 words per input query.</li>
                   <li>Add reference links and document resources.</li>
                   <li>Include a suitable thumbnail poster (1280 × 720 px).</li>
                   <li>
@@ -637,8 +637,8 @@ function AddPost() {
                                    <ul className={`space-y-2 text-sm list-disc pl-5 `}>
                                       <li>Use a clear and descriptive title.</li>
                                       <li>Provide a contextual description <span className="bg-gray-600/30 text-xs font-semibold px-2">(eg: Overview, Tech-Stack used, Sample Code Snippet, System Design Followed, Key Features, Contributions and Conclusion)</span> </li>
-                                      <li>Description support upto 10,000 word limit.</li>
-                                      <li>DraftMate Assistant support upto 2500 word limit per input query.</li>
+                                      <li>Description support upto 10,000 words.</li>
+                                      <li>DraftMate Assistant support upto 2500 words per input query.</li>
                                       <li>Add reference links and document resources.</li>
                                       <li>Include a suitable thumbnail poster (1280 × 720 px).</li>
                                       <li>
