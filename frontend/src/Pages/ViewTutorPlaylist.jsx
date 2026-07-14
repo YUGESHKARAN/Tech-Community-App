@@ -377,7 +377,7 @@ function ViewTutorPlaylist() {
                             >
                               {/* avatars */}
 
-                              {playlistData?.collaborators?.map((collab) => (
+                              {playlistData?.collaborators?.slice(0,4).map((collab) => (
                                 <>
                                   {collab.profile ? (
                                     <img
@@ -805,7 +805,7 @@ function ViewTutorPlaylist() {
                             >
                               {/* avatars */}
 
-                              {playlistData?.collaborators?.map((collab) => (
+                              {playlistData?.collaborators?.slice(0,12).map((collab) => (
                                 <>
                                   {collab.profile ? (
                                     <img
