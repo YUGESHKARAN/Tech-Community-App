@@ -79,7 +79,7 @@ const TutorPlaylistGridSkeleton = () => {
               px-auto"
 
     >
-      {[...Array(4)].map((_, index) => (
+      {[...Array(8)].map((_, index) => (
         <div key={index} className="min-w-[150px] sm:min-w-0">
           <TutorPlaylistCardSkeleton />
         </div>
