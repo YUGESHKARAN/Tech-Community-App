@@ -1,5 +1,5 @@
 const CommunityCardSkeleton = () => (
-    Array.from({ length: 6 }).map((_, index) => (
+    Array.from({ length: 8 }).map((_, index) => (
          <div 
          key={index}
          className="group relative theme border border-[#1e293b] rounded-2xl overflow-hidden flex flex-col animate-pulse">
