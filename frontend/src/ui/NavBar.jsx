@@ -167,14 +167,12 @@ useEffect(() => {
   let reconnectDelay = 1000;
 
   const connect = () => {
-    // const baseUrl =
-    //   axiosInstance.defaults.baseURL ||
-    //   process.env.REACT_APP_API_URL ||
+
+    // const rawBaseUrl =
+    //   // axiosInstance.defaults.baseURL ||
     //   "http://localhost:3000";
-    const rawBaseUrl =
-      axiosInstance.defaults.baseURL ||
-      process.env.REACT_APP_API_URL ||
-      "http://localhost:3000";
+
+    const rawBaseUrl = import.meta.env.VITE_MESSAGE_QUEUE;
 
     const baseUrl = rawBaseUrl.replace(/\/+$/, ""); // strip trailing slash(es)
 
