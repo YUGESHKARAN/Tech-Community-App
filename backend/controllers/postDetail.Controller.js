@@ -539,62 +539,62 @@ const addPosts = async (req, res) => {
     const url = `${notificationUrl}/viewpage/${author.email}/${postId}`;
 
     // -----------OLD MESSAGE LOGIC- ------------------
-//       const communityAuthors = await Author.find({
-//       community: { $in: [category] },
-//       email: { $ne: author.email },
-//     }).select('email');
+      const communityAuthors = await Author.find({
+      community: { $in: [category] },
+      email: { $ne: author.email },
+    }).select('email');
 
-//     // const followerSet = new Set(author.followers);
-//     const followerSet = new Set(
-//   author.followers.filter(f => f !== author.email)  // fix: exclude self
-// );
-//     const communitySet = new Set();
-//     for (const a of communityAuthors) {
-//       if (!followerSet.has(a.email)) communitySet.add(a.email);
-//     }
+    // const followerSet = new Set(author.followers);
+    const followerSet = new Set(
+  author.followers.filter(f => f !== author.email)  // fix: exclude self
+);
+    const communitySet = new Set();
+    for (const a of communityAuthors) {
+      if (!followerSet.has(a.email)) communitySet.add(a.email);
+    }
 
-//     const combinedRecipients = [...followerSet, ...communitySet];
-//     const followersSet = [...followerSet];
+    const combinedRecipients = [...followerSet, ...communitySet];
+    const followersSet = [...followerSet];
 
-//     // --- Bulk notifications ---
-//     if (combinedRecipients.length > 0) {
-//       const bulkNotifications = combinedRecipients.map(email => {
-//         const isFollower = followerSet.has(email);
-//         const message = isFollower
-//           ? `New post from ${author.authorname}: ${title}`
-//           : `${author.authorname} from your community posted: ${title}`;
-//         return {
-//           updateOne: {
-//             filter: { email },
-//             update: {
-//               $push: {
-//                 notification: {
-//                   postId,
-//                   user: author.authorname,
-//                   authorEmail: author.email,
-//                   message,
-//                   url,
-//                   profile: author.profile || "",
-//                 },
-//               },
-//             },
-//           },
-//         };
-//       });
-//       await Author.bulkWrite(bulkNotifications);
-//     }
+    // --- Bulk notifications ---
+    if (combinedRecipients.length > 0) {
+      const bulkNotifications = combinedRecipients.map(email => {
+        const isFollower = followerSet.has(email);
+        const message = isFollower
+          ? `New post from ${author.authorname}: ${title}`
+          : `${author.authorname} from your community posted: ${title}`;
+        return {
+          updateOne: {
+            filter: { email },
+            update: {
+              $push: {
+                notification: {
+                  postId,
+                  user: author.authorname,
+                  authorEmail: author.email,
+                  message,
+                  url,
+                  profile: author.profile || "",
+                },
+              },
+            },
+          },
+        };
+      });
+      await Author.bulkWrite(bulkNotifications);
+    }
     // -------------OLD MESSAGE LOGIC ENDS---------------------  
 
 
     // ---- NEW SSE MESSAGE LOGIC WITH BULLMQ---------------
-    await enqueuePostNotification({
-      postId,
-      authorEmail: author.email,
-      authorName: author.authorname,
-      authorProfile: author.profile || "",
-      title,
-      url,
-    });
+    // await enqueuePostNotification({
+    //   postId,
+    //   authorEmail: author.email,
+    //   authorName: author.authorname,
+    //   authorProfile: author.profile || "",
+    //   title,
+    //   url,
+    // });
 
     // fix: strip sensitive fields — author.save() returns full doc with password
     const { password, otp, otpExpiresAt, ...safeAuthor } = author.toObject();
@@ -622,6 +622,34 @@ const addPosts = async (req, res) => {
     notifyAIIngestion(postDataForAI, req.token).catch(err => {
       console.error("AI ingestion error:", err.message);
     });
+
+     // --- Send emails in background ---
+    if (followersSet.length > 0) {
+      const sendEmailsSequentially = async () => {
+        for (const recipient of followersSet) {
+          try {
+            const safeAuthorName = escapeHtml(author.authorname);
+            const safeTitle = escapeHtml(title);
+            await transporter.sendMail({
+              from: `"${safeAuthorName}" <${process.env.EMAIL_USER}>`,
+              to: recipient,
+              subject: `New post from ${safeAuthorName}`,
+              html: `
+                <h3>${safeAuthorName} has posted a new Post!</h3>
+                <p><strong>Title:</strong> ${safeTitle}</p>
+                <p><a href="${url}">Click here to view the post</a></p>
+              `,
+            });
+            console.log(`Email sent to ${recipient}`);
+            await new Promise(r => setTimeout(r, 200));
+          } catch (err) {
+            console.error(`Failed to send email to ${recipient}:`, err.message);
+          }
+        }
+        console.log("All emails processed.");
+      };
+      sendEmailsSequentially();
+    }
 
   } catch (err) {
     console.error("Server error:", err);
