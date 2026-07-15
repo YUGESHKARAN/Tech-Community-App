@@ -127,7 +127,93 @@ function NavBar() {
   // -----remove in live stream-------------------------------
 
   // Fetch stored notifications from the server
-  const fetchNotifications = async () => {
+  // const fetchNotifications = async () => {
+  //   if (note.length === 0) {
+  //     setLoading(true);
+  //   }
+
+  //   try {
+  //     const response = await axiosInstance.get(
+  //       `/blog/author/queueMessage/${userEmail}`,
+  //     );
+  //     setNote(response.data.notifications);
+  //     setAnnouncement(response.data.announcements);
+  //     storeItem("notiCount", response.data.notifications.length);
+  //     storeItem("announceCount", response.data.announcements.length);
+  //     //   console.log("author email data", response.data.notification)
+  //   } catch (error) {
+  //     console.error("Error fetching notifications:", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   fetchNotifications();
+  // }, [userEmail]);
+
+  // ----------------------------------------------------------
+
+
+  // ---- use in live stream-------------------------------------
+  const [notificationCount, setNotificationCount] = useState(0);
+
+
+useEffect(() => {
+  if (!userEmail) return;
+
+  let eventSource;
+  let reconnectTimer;
+  let reconnectDelay = 1000;
+
+  const connect = () => {
+    // const baseUrl =
+    //   axiosInstance.defaults.baseURL ||
+    //   process.env.REACT_APP_API_URL ||
+    //   "http://localhost:3000";
+    const rawBaseUrl =
+      axiosInstance.defaults.baseURL ||
+      process.env.REACT_APP_API_URL ||
+      "http://localhost:3000";
+
+    const baseUrl = rawBaseUrl.replace(/\/+$/, ""); // strip trailing slash(es)
+
+    const streamUrl = `${baseUrl}/blog/notifications/stream/${encodeURIComponent(userEmail)}`;
+    eventSource = new EventSource(streamUrl, { withCredentials: true });
+
+    eventSource.addEventListener("message", (event) => {
+      try {
+        const incoming = JSON.parse(event.data);
+        setNote((prev) => {
+          if (prev.some((n) => n.postId === incoming.postId)) return prev;
+          const next = [incoming, ...prev];
+          setNotificationCount(next.length);
+          storeItem("notiCount", next.length);
+          return next;
+        });
+      } catch (err) {
+        console.error("SSE parse error:", err);
+      }
+    });
+
+    eventSource.onopen = () => {
+      reconnectDelay = 1000; // reset backoff once healthy again
+    };
+
+    eventSource.onerror = () => {
+      console.error("SSE connection error, reconnecting...");
+      eventSource.close();
+      clearTimeout(reconnectTimer);
+      reconnectTimer = setTimeout(() => {
+        reconnectDelay = Math.min(reconnectDelay * 2, 30000);
+        connect();
+      }, reconnectDelay);
+    };
+  };
+
+  connect();
+
+    const fetchNotifications = async () => {
     if (note.length === 0) {
       setLoading(true);
     }
@@ -148,99 +234,13 @@ function NavBar() {
     }
   };
 
-  useEffect(() => {
-    fetchNotifications();
-  }, [userEmail]);
+  fetchNotifications();
 
-  // ----------------------------------------------------------
-
-
-  // ---- use in live stream-------------------------------------
-//   const [notificationCount, setNotificationCount] = useState(0);
-
-
-// useEffect(() => {
-//   if (!userEmail) return;
-
-//   let eventSource;
-//   let reconnectTimer;
-//   let reconnectDelay = 1000;
-
-//   const connect = () => {
-//     // const baseUrl =
-//     //   axiosInstance.defaults.baseURL ||
-//     //   process.env.REACT_APP_API_URL ||
-//     //   "http://localhost:3000";
-//     const rawBaseUrl =
-//       axiosInstance.defaults.baseURL ||
-//       process.env.REACT_APP_API_URL ||
-//       "http://localhost:3000";
-
-//     const baseUrl = rawBaseUrl.replace(/\/+$/, ""); // strip trailing slash(es)
-
-//     const streamUrl = `${baseUrl}/blog/notifications/stream/${encodeURIComponent(userEmail)}`;
-//     eventSource = new EventSource(streamUrl, { withCredentials: true });
-
-//     eventSource.addEventListener("message", (event) => {
-//       try {
-//         const incoming = JSON.parse(event.data);
-//         setNote((prev) => {
-//           if (prev.some((n) => n.postId === incoming.postId)) return prev;
-//           const next = [incoming, ...prev];
-//           setNotificationCount(next.length);
-//           storeItem("notiCount", next.length);
-//           return next;
-//         });
-//       } catch (err) {
-//         console.error("SSE parse error:", err);
-//       }
-//     });
-
-//     eventSource.onopen = () => {
-//       reconnectDelay = 1000; // reset backoff once healthy again
-//     };
-
-//     eventSource.onerror = () => {
-//       console.error("SSE connection error, reconnecting...");
-//       eventSource.close();
-//       clearTimeout(reconnectTimer);
-//       reconnectTimer = setTimeout(() => {
-//         reconnectDelay = Math.min(reconnectDelay * 2, 30000);
-//         connect();
-//       }, reconnectDelay);
-//     };
-//   };
-
-//   connect();
-
-//     const fetchNotifications = async () => {
-//     if (note.length === 0) {
-//       setLoading(true);
-//     }
-
-//     try {
-//       const response = await axiosInstance.get(
-//         `/blog/author/queueMessage/${userEmail}`,
-//       );
-//       setNote(response.data.notifications);
-//       setAnnouncement(response.data.announcements);
-//       storeItem("notiCount", response.data.notifications.length);
-//       storeItem("announceCount", response.data.announcements.length);
-//       //   console.log("author email data", response.data.notification)
-//     } catch (error) {
-//       console.error("Error fetching notifications:", error);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   fetchNotifications();
-
-//   return () => {
-//     clearTimeout(reconnectTimer);
-//     eventSource?.close();
-//   };
-// }, [userEmail]);
+  return () => {
+    clearTimeout(reconnectTimer);
+    eventSource?.close();
+  };
+}, [userEmail]);
 
 // -----------------------------------------------------------------
 
