@@ -342,6 +342,8 @@ useEffect(() => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  // console.log("note", note)
   
   return (
     <div
@@ -822,7 +824,7 @@ useEffect(() => {
         <div className="flex flex-col divide-y max-h-[440px] overflow-y-auto emerald-scrollbar divide-gray-800">
           {[...note].reverse().map((data, index) => (
             <div
-              key={index}
+              key={data._id}
               className="group relative px-4 py-3 md:hover:bg-gray-800   transition duration-200"
             >
               <div
