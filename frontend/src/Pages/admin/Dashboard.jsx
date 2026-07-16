@@ -1175,7 +1175,7 @@ const AuthorsTable = ({
                     </Link>
                   </td>
                   {/* Role */}
-                  <td className="py-3 px-5 w-[30%] text-center">
+                  <td className="py-3 px-5 w-[30%] xl:w-[17%]  text-center">
                     <Link
                       to={`/viewProfile/${u.email}`}
                       className="block w-full"
@@ -1184,7 +1184,7 @@ const AuthorsTable = ({
                     </Link>
                   </td>
                   {/* Posts */}
-                  <td className="py-3 px-5 w-[12%] text-center hidden xl:table-cell">
+                  <td className="py-3 px-5 w-[10%] text-center hidden xl:table-cell">
                     <Link
                       to={`/viewProfile/${u.email}`}
                       className="block w-full"
