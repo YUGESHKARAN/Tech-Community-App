@@ -7,6 +7,7 @@ import axiosInstance from "../instances/Axiosinstances";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getItem } from "../utils/encode";
+import formatCount from "../utils/NumberConversion";
 const BookmarkPlaylistCard = ({ playlist, setBookMarPlaylist }) => {
   const {
     title,
@@ -120,6 +121,30 @@ const BookmarkPlaylistCard = ({ playlist, setBookMarPlaylist }) => {
               </span> */}
 
               <div className="flex -space-x-2">
+                {collaborators?.length > 3 && (
+                                      // <p className="text-[17px] cursor-pointer hover:text-gray-400/90  font-semibold ml-3 text-gray-500 transition-all duration-500">
+                                      //   +{totalParticipants - 2}
+                                      // </p>
+                                      <div
+                                        whileHover={{ scale: 1.08 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        className="
+                                         h-6
+                                         w-6
+                                         p-2
+                                         mr-1
+                                        rounded-full
+                                        border border-white/10
+                                        bg-white/[0.05]
+                                        text-[11px]
+                                        font-semibold
+                                        text-gray-200
+                                        flex flex-col t justify-center items-center
+                                      "
+                                      >
+                                       <p> +{formatCount(collaborators?.length - 3) } </p>
+                                      </div>
+                                    )}
                   {collaborators.length > 0 &&
                   collaborators.slice(0, 3).map((collab) => (
                     <>
