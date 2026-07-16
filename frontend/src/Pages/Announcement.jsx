@@ -1263,7 +1263,7 @@ function Announcement() {
                           />
 
                           {!image && (
-                            <div className="w-full h-32  mt-3 rounded-xl flex items-center justify-center bg-gray-700">
+                            <div className="w-full h-40  mt-3 rounded-xl flex items-center justify-center bg-gray-700">
                               <p className="text-gray-400 text-xs">No Poster</p>
                             </div>
                           )}
@@ -1288,7 +1288,7 @@ function Announcement() {
                             <div className="mt-3">
                               <img
                                 src={previewImage}
-                                className="w-full h-32 object-cover rounded-md border border-slate-700"
+                                className="w-full h-40 object-cover rounded-md border border-slate-700"
                               />
                             </div>
                           )}

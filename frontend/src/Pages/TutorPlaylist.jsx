@@ -601,7 +601,7 @@ function TutorPlaylist() {
                 file:cursor-pointer"
               />
               {!previewThumbnail && (
-                <div className="md:max-w-80 w-full h-40 mt-3 rounded-xl flex items-center justify-center bg-gray-700">
+                <div className="md:max-w-80 w-full h-44 mt-3 rounded-xl flex items-center justify-center bg-gray-700">
                   <p className="text-gray-400 text-xs">No Thumbnail</p>
                 </div>
               )}
@@ -623,7 +623,7 @@ function TutorPlaylist() {
                   <img
                     src={previewThumbnail}
                     alt="Preview"
-                    className="md:max-w-80 w-full h-40   object-cover rounded-xl border border-gray-700"
+                    className="md:max-w-80 w-full h-44   object-cover rounded-xl border border-gray-700"
                     // className="w-full h-48 md:h-[28vh] object-cover rounded-xl border border-gray-700"
                   />
                 </div>

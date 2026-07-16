@@ -467,7 +467,7 @@ const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
               />
 
               {!previewThumbnail && (
-                <div className="md:max-w-80 w-full h-40 mt-3 rounded-xl flex items-center justify-center bg-gray-700">
+                <div className="md:max-w-80 w-full h-44 mt-3 rounded-xl flex items-center justify-center bg-gray-700">
                   <p className="text-gray-400 text-xs">No Thumbnail</p>
                 </div>
               )}
@@ -489,7 +489,7 @@ const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
                   <img
                     src={previewThumbnail}
                     alt="Preview"
-                    className="md:max-w-80 w-full h-40 max-w-xs  object-cover rounded-xl border border-gray-700"
+                    className="md:max-w-80 w-full h-44 max-w-xs  object-cover rounded-xl border border-gray-700"
                   />
                 </div>
               )}

@@ -495,7 +495,7 @@ function ViewEditPost() {
                         ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${singlePostData.image}`
                         : blog1
                   }
-                  className="w-full h-48 md:h-[30vh] object-cover"
+                  className="w-full h-44 md:h-[30vh] object-cover"
                 />
 
                 <label className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 flex items-center justify-center cursor-pointer transition-all duration-500">
