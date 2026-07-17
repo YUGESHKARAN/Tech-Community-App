@@ -15,6 +15,7 @@ import { getItem } from "../utils/encode";
 import RenderTextWithHashtags from "../components/RenderTextWithHashtags";
 import {motion} from "framer-motion"
 import { VscGitStashApply } from "react-icons/vsc";
+import EditPostSkeleton from "../components/loaders/EditPostSkeleton";
 function ViewEditPost() {
   // const username = localStorage.getItem("username");
   // const email = localStorage.getItem("email");
@@ -43,6 +44,7 @@ function ViewEditPost() {
    const fileInputRef = useRef(null);
   const [postLinks, setPostLinks] = useState([]);
   const [preview, setPreview] = useState(false);
+  const [postLoader, setPostLoader] = useState(false)
 
     const sanitizeUrl = (rawUrl) => {
     try {
@@ -148,6 +150,7 @@ function ViewEditPost() {
   };
 
   const getSinglrPost = async () => {
+    setPostLoader(true)
     try {
       const response = await axiosInstance.get(
         `/blog/posts/${email}/${PostId}`,
@@ -163,6 +166,9 @@ function ViewEditPost() {
       setTimeStamp(postData.timestamp);
     } catch (err) {
       console.log(err);
+    }
+    finally{
+      setPostLoader(false)
     }
   };
   useEffect(() => {
@@ -229,74 +235,7 @@ function ViewEditPost() {
     }
   }
 
-  //  const renderTextWithHashtags = (text) => {
-  //     if (!text) return null;
-  
-  //     const cleanedText = text
-  //       .replace(/\\r\\n/g, "\n")
-  //       .replace(/\\n/g, "\n")
-  //       .replace(/\\r/g, "\n");
-  
-  //     return cleanedText.split("\n").map((line, lineIndex) => {
-  //       const parts = line.split(/(\*\*.*?\*\*|#{1,6}[^\n]+|\s?#\w+)/gm);
-  
-  //       return (
-  //         <React.Fragment key={lineIndex}>
-  //           {parts.map((part, index) => {
-  //             if (!part) return null;
-  
-  //             const trimmed = part.trim();
-  
-  //             // ---------- Markdown Headings ----------
-  //             // Supports:
-  //             // ###Heading
-  //             // ### Heading
-  //             if (/^#{1,6}/.test(trimmed)) {
-  //               return (
-  //                 <span
-  //                   key={index}
-  //                   className="font-semibold md:text-xl text-sm text-white"
-  //                 >
-  //                   {trimmed.replace(/^#{1,6}\s*/, "")}
-  //                 </span>
-  //               );
-  //             }
-  
-  //             // ---------- Bold ----------
-  //             if (trimmed.startsWith("**") && trimmed.endsWith("**")) {
-  //               return (
-  //                 <span key={index} className="font-semibold text-white">
-  //                   {trimmed.replace(/\*\*/g, "")}
-  //                 </span>
-  //               );
-  //             }
-  
-  //             // ---------- Hashtags ----------
-  //             if (/^(\s)?#\w+/.test(part)) {
-  //               return (
-  //                 <span key={index} className="text-emerald-400 font-medium">
-  //                   {part}
-  //                 </span>
-  //               );
-  //             }
-  
-  //             // ---------- Normal ----------
-  //             return (
-  //               <React.Fragment key={index}>
-  //                 {part.replace(/\\\*/g, "*").replace(/\\\\/g, "\\")}
-  //               </React.Fragment>
-  //             );
-  //           })}
-  
-  //           <br />
-  //         </React.Fragment>
-  //       );
-  //     });
-  //   };
 
-  // console.log("single post data", singlePostData);
-  // console.log("selectedDocs", selectedDocs)
-  // console.log("doc_size", doc_size)
   // console.log("singlePostData", singlePostData)
   return (
 
@@ -314,7 +253,7 @@ function ViewEditPost() {
         </div>
       </div>
 
-      <div className="w-full mx-auto px-3 md:px-12 ">
+      {!postLoader?<div className="w-full mx-auto px-3 md:px-12 ">
         <form
           onSubmit={handleSubmit}
           className="flex flex-col md:gap-6 text-white"
@@ -334,13 +273,7 @@ function ViewEditPost() {
 
               <div className="relative mt-2 group rounded-lg overflow-hidden border border-neutral-700">
                 <img
-                  // src={
-                  //   previewImage
-                  //     ? previewImage
-                  //     : singlePostData.image
-                  //       ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${singlePostData.image}`
-                  //       : blog1
-                  // }
+              
                   src={previewImage || (singlePostData.image ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${singlePostData.image}` : blog1)}
                   
                   className="w-full h-48 md:h-[30vh] object-cover"
@@ -375,18 +308,7 @@ function ViewEditPost() {
               </div>
 
               {/* Description */}
-              {/* <div className="  rounded-xl">
-                <label className="text-sm text-gray-300 font-medium">
-                  Description <span className="text-red-500">*</span>
-                </label>
-                <textarea
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  rows={6}
-                  placeholder={description}
-                  className="w-full mt-2  focus:border focus:border-emerald-500/40 emerald-scrollbar px-4 py-3 rounded-md theme border border-gray-700 outline-none  text-white text-xs leading-relaxed"
-                />
-              </div> */}
+            
               <div className="scrollbar-hide">
                   {/* Label */}
                   <div className="flex items-center justify-between mb-2">
@@ -1011,6 +933,9 @@ function ViewEditPost() {
           </div>
         </form>
       </div>
+      :
+      <EditPostSkeleton/>
+      }
 
       <Footer />
     </div>
