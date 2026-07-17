@@ -17,6 +17,7 @@ import useGetAllAuthorsByDomain from "../hooks/useGetAllAuthorsByDomain";
 import { getItem } from "../utils/encode";
 import { VscGitStashApply } from "react-icons/vsc";
 import {motion} from "framer-motion"
+import PlaylistEditSkeleton from "../components/loaders/PlaylistEditSkeleton";
 function EditTutorPlaylist() {
   // const email = localStorage.getItem("email");
   const email = getItem("email");
@@ -43,10 +44,12 @@ function EditTutorPlaylist() {
   const thumbnailInputRef = useRef(null);
   const [loader, setLoader] = useState(false);
   const { categories, setCategories } = useGetAuthorsPostsCategories(email);
+  const [editPlaylistLoader, setEditPlaylistLoader] = useState(false);
   // const [playlistData, setPlaylistData] = useState({});
   const { id } = useParams();
 
   const getTutorPlaylist = async () => {
+    setEditPlaylistLoader(true)
     try {
       const response = await axiosInstance.get(`/blog/playlist/${id}`);
       // console.log("data", response.data);
@@ -66,6 +69,9 @@ function EditTutorPlaylist() {
       }
     } catch (err) {
       console.log("error", err.message);
+    }
+    finally{
+      setEditPlaylistLoader(false)
     }
   };
 
@@ -139,22 +145,7 @@ function EditTutorPlaylist() {
     return coordinators.filter((coord) => coord.email !== email);
   }, [coordinators, domain]);
 
-  // const searchedCoordinators = useMemo(() => {
-  //   if (!searchCollaborator) return filteredCoordinators;
 
-  //   const query = searchCollaborator.toLowerCase();
-  //   return filteredCoordinators.filter((coord) => {
-  //     const authorMatch = coord.authorname?.toLowerCase().includes(query);
-
-  //     const emailMatch = coord.email?.toLowerCase().includes(query);
-
-  //     const alreadySelected = collaboratorsData.some(
-  //       (col) => col.email?.toLowerCase() === coord.email?.toLowerCase()
-  //     );
-
-  //     return (authorMatch || emailMatch) && !alreadySelected;
-  //   });
-  // }, [filteredCoordinators, searchCollaborator]);
 
   const [debouncedSearch, setDebouncedSearch] = useState(searchCollaborator);
 
@@ -176,16 +167,6 @@ function EditTutorPlaylist() {
   const searchedCoordinators = useMemo(() => {
     let filtered = [...filteredCoordinators];
 
-    // if (!searchCollaborator) return filteredCoordinators;
-    // const query = searchCollaborator.toLowerCase();
-    // return filteredCoordinators.filter((coord) => {
-    //   const authorMatch = coord.authorname?.toLowerCase().includes(query);
-    //   const emailMatch = coord.email?.toLowerCase().includes(query);
-    //   const alreadySelected = collaboratorsData.some(
-    //     (col) => col.email?.toLowerCase() === coord.email?.toLowerCase(),
-    //   );
-    //   return (authorMatch || emailMatch) && !alreadySelected;
-    // });
 
     if (debouncedSearch.trim() !== "") {
       filtered = fuse.search(debouncedSearch).map((r) => r.item);
@@ -262,7 +243,7 @@ const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
         </div>
       </div>
 
-      <form
+     {!editPlaylistLoader? <form
         onSubmit={hanldeSubmit}
         // className="w-full mx-auto px-3 md:px-4 pb-10 md:grid gap-10 lg:gap-4 lg:grid-cols-3"
         className="w-full mx-auto px-3 md:px-12 pb-6 grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-6"
@@ -496,14 +477,7 @@ const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
             </div>
 
             <div className="lg:col-span-3 hidden md:block flex justify-start pt-0">
-              {/* <button
-                type="submit"
-                disabled={loader}
-                className="md:px-5 px-3 py-2 md:py-2.5 bg-emerald-600/20 hover:bg-emerald-500/20
-                         rounded-md text-xs md:text-sm  text-emerald-400 transition-all duration-300 disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed"
-              >
-                {loader ? "Updating Playlist..." : "Update Playlist"}
-              </button> */}
+             
 
               <motion.button
                 whileTap={{ scale: 0.97 }}
@@ -511,8 +485,7 @@ const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
                 onClick={() => {}}
                 type="submit"
                 disabled={loader}
-                // className="md:px-5 px-3 py-2 md:py-2 bg-emerald-600/20 hover:bg-emerald-500/20
-                //          rounded-md text-xs md:text-sm  flex items-center justify-center gap-2   text-emerald-400 transition-all duration-300 disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed"
+                
                 className="md:px-5 px-3 py-2 md:py-2  border border-slate-700
                          rounded-lg text-xs flex items-center justify-center gap-2   text-slate-200 transition-all duration-300 disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed"
               >
@@ -537,11 +510,7 @@ const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
         className="mt-7 md:mt-0  space-y-0 h-fit"
 
         >
-          {/* {posts?.length > 0 && (
-            <h2 className="text-xl text-center md:text-left font-semibold text-white">
-              Select Posts for Playlist
-            </h2>
-          )} */}
+        
 
            {posts?.length > 0 && (
             <div className="flex  flex-col p-2 md:p-4 gap-3">
@@ -655,8 +624,6 @@ const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
                       {/* Outer Oval Ring */}
                       <div className="md:w-7 md:h-7 w-6 h-6 border-2 border-neutral-700 border-t-white/70 md:border-t-emerald-400 rounded-full animate-spin" />
 
-                      {/* Inner Glow Pulse */}
-                      {/* <div className="absolute w-10 h-10 md:w-12 md:h-12 bg-emerald-500/20 rounded-full blur-md animate-pulse" /> */}
                     </div>
                   </div>
             )}
@@ -680,14 +647,7 @@ const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
         {/* SUBMIT */}
         {posts?.length > 0 && (
           <div className="lg:col-span-3 p-4 md:mt-7 md:hidden flex justify-start ">
-            {/* <button
-              type="submit"
-              disabled={loader}
-              className="md:px-5 px-3 py-2 md:py-2.5 bg-emerald-600/20 hover:bg-emerald-500/20
-                         rounded-md text-xs md:text-sm  text-emerald-400 transition-all duration-300 disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed"
-            >
-              {loader ? "Updating Playlist..." : "Update Playlist"}
-            </button> */}
+            
 
               <motion.button
                 whileTap={{ scale: 0.97 }}
@@ -695,9 +655,8 @@ const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
                 onClick={() => {}}
                 type="submit"
                 disabled={loader}
-              // className="md:px-5 p-5 py-2 md:py-2 bg-emerald-600/20 hover:bg-emerald-500/20
-              //            rounded-md text-xs md:text-sm gap-2 flex items-center justify-center  text-emerald-400 transition-all duration-300 disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed"
-                            className="md:px-5 p-5 py-2 md:py-2 
+                
+                className="md:px-5 p-5 py-2 md:py-2 
                          rounded-lg text-xs gap-2 border border-slate-700 flex items-center justify-center  text-slate-200 transition-all duration-300 disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed"
             >
               <VscGitStashApply className="md:text-base text-emerald-400 text-sm" />{" "}
@@ -713,6 +672,8 @@ const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
           </div>
         )}
       </form>
+      :
+      <PlaylistEditSkeleton/>}
 
       <Footer />
     </div>
