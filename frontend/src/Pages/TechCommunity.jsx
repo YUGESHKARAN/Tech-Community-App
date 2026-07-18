@@ -9,6 +9,7 @@ import CommunityCardSkeleton from "../components/loaders/CommunityCardSkeleton";
 import toast from "../components/toaster/Toast";
 import { use } from "react";
 import useGetCommunityAnalytics from "../hooks/useGetCommunityAnalytics";
+import useGetCommunityStats from "../hooks/techCommunity/useGetCommunityStats";
 import { getItem } from "../utils/encode";
 import { MdCardMembership, MdOutlineCardMembership } from "react-icons/md";
 import formatCount from "../utils/NumberConversion";
@@ -16,57 +17,14 @@ function TechCommunity() {
   const [posts, setPosts] = useState([]);
 
   const username = localStorage.getItem("username");
-  // const email = localStorage.getItem("email");
   const email = getItem("email");
-  // const role = localStorage.getItem("role");
   const role = getItem("role");
-  // const [loading, setLoading] = useState(false)
-  // const [authorCommunity, setAuthorCommunity] = useState([]);
-  // const [authors, setAuthors] = useState([]);
+  const { communityStats, getCommunityStats } = useGetCommunityStats();
   const { authorCommunity, setAuthorCommunity } = useAuthorCommunity(email);
-  //  const [communities, setCommunities] = useState([]);
   const { communities, loading } = useGetCommunityAnalytics();
-  // const [updateDomain, setUpdateDomain] = useState(null)
 
   const [loadingDomains, setLoadingDomains] = useState(new Set());
 
-  // const updateCommunity = async (email, techCommunity) => {
-  //   try {
-  //     setUpdateDomain(techCommunity)
-  //     const response = await axiosInstance.put(
-  //       "/blog/author/control/updateCommunity",
-  //       {
-  //         email: email,
-  //         techcommunity: techCommunity,
-  //       }
-  //     );
-
-  //     if (authorCommunity?.includes(techCommunity)) {
-  //       setAuthorCommunity((prev)=>prev.filter((comm)=> comm!== techCommunity))
-  //       // toast.info('Left', 'You have left the community!');
-  //     }
-  //     else{
-  //       setAuthorCommunity((prev) => [...new Set([...prev, techCommunity])]);
-  //       // toast.success('Joined', 'You have joined the community!');
-  //     }
-  //     if (response.status === 201) {
-  //        if (authorCommunity?.includes(techCommunity)) {
-  //       // setAuthorCommunity((prev)=>prev.filter((comm)=> comm!== techCommunity))
-  //       toast.info('Left', 'You have left the community!');
-  //     }
-  //     else{
-  //       // setAuthorCommunity((prev) => [...new Set([...prev, techCommunity])]);
-  //       toast.success('Joined', 'You have joined the community!');
-  //     }
-
-  //     }
-  //   } catch (err) {
-  //     console.log("error", err);
-  //   }
-  //   finally{
-  //     setUpdateDomain(null)
-  //   }
-  // };
 
   // console.log("authorCommunity", authorCommunity);
   // console.log("communities", communities);
@@ -141,6 +99,8 @@ function TechCommunity() {
   const getAccent = (name) =>
     domainAccents[name] || { from: "#10b981", to: "#059669", icon: "💡" };
 
+
+  // console.log("communityStats", communityStats)
   return (
     <div className="min-h-screen theme text-white flex flex-col">
       <NavBar />

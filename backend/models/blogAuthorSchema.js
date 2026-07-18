@@ -53,6 +53,7 @@ const postSchema = new mongoose.Schema({
   authorId:    { type: mongoose.Schema.Types.ObjectId, ref: 'Author', required: true },
   title:       { type: String, required: true  },
   image:       { type: String, required: false },
+  tenantId:    { type: String, required: true}, 
   links: {
     type: [{ title: { type: String, required: false }, url: { type: String, required: false } }],
     default: [],
@@ -112,7 +113,7 @@ const authorSchema = new mongoose.Schema({
     },
   },
   password: { type: String, required: true },
-  tenantId: { type: String, required: false },
+  tenantId: { type: String, required: true,  default:"dsu" },
 
   email: {
     type: String, required: true, unique: true,

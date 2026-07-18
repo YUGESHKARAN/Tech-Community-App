@@ -1,4 +1,7 @@
 const { Author, Post } = require("../models/blogAuthorSchema");
+const Community = require('../models/communitySchema');
+const CommunityMembership = require('../models/communityMembershipSchema');
+
 const mongoose = require("mongoose");
 // s3 integration
 const {
@@ -1284,57 +1287,191 @@ const updateRole = async (req, res) => {
 };
 
 // reviewed-----------------------------------------------------------------------
+// const updateTechCommunity = async (req, res) => {
+//   const { email, techcommunity } = req.body;
+//   // console.log("community called");
+
+//   try {
+//     const author = await Author.findOne({ email: { $eq: email } });
+
+//     if (!author) {
+//       return res.status(404).json({ message: "Author not found" });
+//     }
+
+//     // Toggle community membership
+//     if (techcommunity) {
+//       const index = author.community.indexOf(techcommunity);
+//       if (index === -1) {
+//         author.community.push(techcommunity); // Add if not exists
+//       } else {
+//         author.community.splice(index, 1); // Remove if exists
+//       }
+//     }
+
+//     author.email = email;
+//     data = await author.save({ validateBeforeSave: false });
+//     res.status(201).json({ message: "author updated successfully", data });
+//   } catch (err) {
+//     res.status(500).json({ message: "server error" });
+//   }
+// };
+
+// // reviewed-----------------------------------------------------------------------
+// const updateTechCommunityCoordinator = async (req, res) => {
+//   const { email, techCommunities } = req.body; // techCommunities should be an array of strings
+//   console.log("communities called", email);
+
+//   try {
+//     const author = await Author.findOne({ email: { $eq: email } });
+
+//     if (!author) {
+//       return res.status(404).json({ message: "Author not found" });
+//     }
+
+//     if (Array.isArray(techCommunities)) {
+//       // Replace all existing communities with the new ones
+//       author.community = techCommunities;
+//     }
+
+//     const data = await author.save({ validateBeforeSave: false });
+//     res.status(201).json({ message: "Author updated successfully", data });
+//   } catch (err) {
+//     console.error("Update Error:", err);
+//     res.status(500).json({ message: "Server error" });
+//   }
+// };
+
+
+const GLOBAL_COORDINATOR_ROLES = ['coordinator', 'admin', 'director'];
+
+function slugify(name) {
+  return name
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+}
+
+// reviewed-----------------------------------------------------------------------
 const updateTechCommunity = async (req, res) => {
   const { email, techcommunity } = req.body;
-  // console.log("community called");
 
   try {
     const author = await Author.findOne({ email: { $eq: email } });
+    if (!author) return res.status(404).json({ message: 'Author not found' });
 
-    if (!author) {
-      return res.status(404).json({ message: "Author not found" });
-    }
+    const tenantId = author.tenantId;
+    const role = GLOBAL_COORDINATOR_ROLES.includes(author.role) ? 'coordinator' : 'member';
 
-    // Toggle community membership
     if (techcommunity) {
       const index = author.community.indexOf(techcommunity);
-      if (index === -1) {
-        author.community.push(techcommunity); // Add if not exists
+      const isJoining = index === -1;
+
+      // ── legacy field (dual-write, keep in sync) ──
+      if (isJoining) {
+        author.community.push(techcommunity);
       } else {
-        author.community.splice(index, 1); // Remove if exists
+        author.community.splice(index, 1);
+      }
+
+      // ── new source of truth ──
+      const community = await Community.findOne({
+        tenantId,
+        slug: slugify(techcommunity),
+      });
+
+      if (community) {
+        if (isJoining) {
+          await CommunityMembership.findOneAndUpdate(
+            { tenantId, communityId: community._id, authorId: author._id },
+            { $setOnInsert: { tenantId, communityId: community._id, authorId: author._id, role } },
+            { upsert: true }
+          );
+          await Community.updateOne({ _id: community._id }, { $inc: { memberCount: 1 } });
+        } else {
+          await CommunityMembership.deleteOne({
+            tenantId,
+            communityId: community._id,
+            authorId: author._id,
+          });
+          await Community.updateOne({ _id: community._id }, { $inc: { memberCount: -1 } });
+        }
       }
     }
 
-    author.email = email;
-    data = await author.save({ validateBeforeSave: false });
-    res.status(201).json({ message: "author updated successfully", data });
+    const data = await author.save({ validateBeforeSave: false });
+    res.status(201).json({ message: 'Author updated successfully', data });
   } catch (err) {
-    res.status(500).json({ message: "server error" });
+    console.error('updateTechCommunity error:', err);
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
 // reviewed-----------------------------------------------------------------------
 const updateTechCommunityCoordinator = async (req, res) => {
-  const { email, techCommunities } = req.body; // techCommunities should be an array of strings
-  console.log("communities called", email);
+  const { email, techCommunities } = req.body;
+  console.log('communities called', email);
 
   try {
     const author = await Author.findOne({ email: { $eq: email } });
+    if (!author) return res.status(404).json({ message: 'Author not found' });
 
-    if (!author) {
-      return res.status(404).json({ message: "Author not found" });
-    }
+    const tenantId = author.tenantId;
+    const role = GLOBAL_COORDINATOR_ROLES.includes(author.role) ? 'coordinator' : 'member';
 
     if (Array.isArray(techCommunities)) {
-      // Replace all existing communities with the new ones
+      const previous = new Set(author.community);
+      const next = new Set(techCommunities);
+
+      const joining = techCommunities.filter((c) => !previous.has(c));
+      const leaving = [...previous].filter((c) => !next.has(c));
+
+      // ── resolve Community docs for joining and leaving sets ──
+      const [joiningDocs, leavingDocs] = await Promise.all([
+        Community.find({ tenantId, slug: { $in: joining.map(slugify) } }),
+        Community.find({ tenantId, slug: { $in: leaving.map(slugify) } }),
+      ]);
+
+      // ── new memberships ──
+      if (joiningDocs.length) {
+        await Promise.all([
+          ...joiningDocs.map((c) =>
+            CommunityMembership.findOneAndUpdate(
+              { tenantId, communityId: c._id, authorId: author._id },
+              { $setOnInsert: { tenantId, communityId: c._id, authorId: author._id, role } },
+              { upsert: true }
+            )
+          ),
+          ...joiningDocs.map((c) =>
+            Community.updateOne({ _id: c._id }, { $inc: { memberCount: 1 } })
+          ),
+        ]);
+      }
+
+      // ── removed memberships ──
+      if (leavingDocs.length) {
+        const leavingIds = leavingDocs.map((c) => c._id);
+        await Promise.all([
+          CommunityMembership.deleteMany({
+            tenantId,
+            communityId: { $in: leavingIds },
+            authorId: author._id,
+          }),
+          ...leavingDocs.map((c) =>
+            Community.updateOne({ _id: c._id }, { $inc: { memberCount: -1 } })
+          ),
+        ]);
+      }
+
+      // ── legacy field (dual-write) ──
       author.community = techCommunities;
     }
 
     const data = await author.save({ validateBeforeSave: false });
-    res.status(201).json({ message: "Author updated successfully", data });
+    res.status(201).json({ message: 'Author updated successfully', data });
   } catch (err) {
-    console.error("Update Error:", err);
-    res.status(500).json({ message: "Server error" });
+    console.error('updateTechCommunityCoordinator error:', err);
+    res.status(500).json({ message: 'Server error' });
   }
 };
 

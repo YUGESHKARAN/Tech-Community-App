@@ -1,68 +1,117 @@
 const { Author, Post } = require("../models/blogAuthorSchema");
 const TutorPlayList = require("../models/tutorPlaylistSchema");
+const Community = require("../models/communitySchema");
+const CommunityMembership = require("../models/communityMembershipSchema");
 const { v4: uuidv4 } = require("uuid"); // For generating unique IDs
 const mongoose = require("mongoose");
 
 dotenv = require("dotenv");
 dotenv.config();
 
+// const getCategoryAnalytics = async (req, res) => {
+//   try {
+//     const [authors, postCounts] = await Promise.all([
+//       Author.find({}, { role: 1, community: 1, followers: 1 }),
+//       Post.aggregate([{ $group: { _id: "$category", count: { $sum: 1 } } }]),
+//     ]);
+
+//     const analyticsMap = {};
+
+//     // postscount from Post collection — not from author.posts
+//     for (const { _id: category, count } of postCounts) {
+//       if (!category) continue;
+//       analyticsMap[category] = {
+//         categoryname: category,
+//         followerscount: 0,
+//         authorcount: 0,
+//         postscount: count,
+//       };
+//     }
+
+//     // authorcount and followerscount from Author collection — unchanged
+//     for (const author of authors) {
+//       if (author.role === "coordinator") {
+//         for (const domain of author.community) {
+//           if (!analyticsMap[domain]) {
+//             analyticsMap[domain] = {
+//               categoryname: domain,
+//               followerscount: 0,
+//               authorcount: 0,
+//               postscount: 0,
+//             };
+//           }
+//           analyticsMap[domain].authorcount += 1;
+//         }
+//       }
+
+//       if (author.role === "student") {
+//         for (const domain of author.community) {
+//           if (!analyticsMap[domain]) {
+//             analyticsMap[domain] = {
+//               categoryname: domain,
+//               followerscount: 0,
+//               authorcount: 0,
+//               postscount: 0,
+//             };
+//           }
+//           analyticsMap[domain].followerscount += 1;
+//         }
+//       }
+//     }
+
+//     res.status(200).json({ analytics: Object.values(analyticsMap) });
+//   } catch (err) {
+//     console.error("getCategoryAnalytics error:", err.message);
+//     res.status(500).json({ message: err.message });
+//   }
+// };
+
 const getCategoryAnalytics = async (req, res) => {
   try {
-    const [authors, postCounts] = await Promise.all([
-      Author.find({}, { role: 1, community: 1, followers: 1 }),
-      Post.aggregate([{ $group: { _id: "$category", count: { $sum: 1 } } }]),
+    // console.log("req.user",req.user)
+    // fallback: if token predates tenantId inclusion, look it up from DB
+    let tenantId = req.user.tenantId;
+    if (!tenantId) {
+      const author = await Author.findOne(
+        { email: req.user.email },
+        'tenantId'
+      );
+      tenantId = author?.tenantId || 'dsu';
+    }
+
+    const [communities, memberships, postCounts] = await Promise.all([
+      Community.find({ tenantId }),
+      CommunityMembership.aggregate([
+        { $match: { tenantId, role: 'coordinator' } },
+        { $group: { _id: '$communityId', coordinatorCount: { $sum: 1 } } },
+      ]),
+      Post.aggregate([
+        { $match: { tenantId } },
+        { $group: { _id: '$category', count: { $sum: 1 } } },
+      ]),
     ]);
 
-    const analyticsMap = {};
+    const coordinatorMap = Object.fromEntries(
+      memberships.map((m) => [m._id.toString(), m.coordinatorCount])
+    );
+    const postCountMap = Object.fromEntries(
+      postCounts.map((p) => [p._id, p.count])
+    );
 
-    // postscount from Post collection — not from author.posts
-    for (const { _id: category, count } of postCounts) {
-      if (!category) continue;
-      analyticsMap[category] = {
-        categoryname: category,
-        followerscount: 0,
-        authorcount: 0,
-        postscount: count,
-      };
-    }
+    const analytics = communities.map((c) => ({
+      categoryname:     c.name,
+      followerscount:   c.memberCount,
+      authorcount: coordinatorMap[c._id.toString()] || 0,
+      postscount:       postCountMap[c.name] || 0,
+    }));
 
-    // authorcount and followerscount from Author collection — unchanged
-    for (const author of authors) {
-      if (author.role === "coordinator") {
-        for (const domain of author.community) {
-          if (!analyticsMap[domain]) {
-            analyticsMap[domain] = {
-              categoryname: domain,
-              followerscount: 0,
-              authorcount: 0,
-              postscount: 0,
-            };
-          }
-          analyticsMap[domain].authorcount += 1;
-        }
-      }
-
-      if (author.role === "student") {
-        for (const domain of author.community) {
-          if (!analyticsMap[domain]) {
-            analyticsMap[domain] = {
-              categoryname: domain,
-              followerscount: 0,
-              authorcount: 0,
-              postscount: 0,
-            };
-          }
-          analyticsMap[domain].followerscount += 1;
-        }
-      }
-    }
-
-    res.status(200).json({ analytics: Object.values(analyticsMap) });
+    res.status(200).json({ analytics });
   } catch (err) {
-    console.error("getCategoryAnalytics error:", err.message);
+    console.error('getCategoryAnalytics error:', err.message);
     res.status(500).json({ message: err.message });
   }
 };
+
 const getAppSummary = async (req, res) => {
   const { email } = req.params;
   try {

@@ -12,7 +12,7 @@ const verifyUser = async (req, res) => {
     const { email, password } = req.body;
 
     const user = await Author.findOne({ email: { $eq: email } })
-      .select('password authorname email role profile');
+      .select('password authorname email role profile tenantId');
 
     if (!user) {
       // fix: check deletion log before returning generic "Invalid Email"
@@ -51,10 +51,11 @@ const verifyUser = async (req, res) => {
 
     const payload = {
       authorname: user.authorname,
+      authorId:        user._id,
       email:      user.email,
       role:       user.role,
       profile:    user.profile,
-      // tenantId:   user.tenantId,
+      tenantId:   user.tenantId,
     };
 
     const token = jwt.sign(payload, process.env.JWT_TOKEN_ACCESS_KEY, { expiresIn: "1d" });

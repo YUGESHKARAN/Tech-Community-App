@@ -17,6 +17,7 @@ const authencateToken = (req, res, next) => {
     message: "Invalid token", });
 
     // decoded is the token payload (claims). Attach for downstream handlers.
+    // console.log("decoded",decoded)
     req.user = decoded;
     req.token = token;   // ✅ store token for later use
 

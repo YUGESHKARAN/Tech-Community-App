@@ -5,6 +5,8 @@ const mongoose = require("mongoose");
 const { Author, Post } = require("../models/blogAuthorSchema");
 const { DeletionLog } = require("../models/deletionLogSchema");
 const TutorPlayList = require("../models/tutorPlaylistSchema");
+const Community = require("../models/communitySchema");
+const CommunityMembership = require("../models/communityMembershipSchema");
 // const { DeleteObjectCommand } = require('@aws-sdk/client-s3');
 // const { s3, bucketName }      = require('../config/s3');
 
@@ -89,6 +91,63 @@ const createDeletionLog = async ({
 // ─────────────────────────────────────────────────────────────
 //  DELETE AUTHOR (self) — replaces old deleteAuthor controller
 // ─────────────────────────────────────────────────────────────
+// const deleteAuthor = async (req, res) => {
+//   const { email } = req.params;
+//   const { password } = req.body;
+//   console.log("deleteAuthor called");
+
+//   try {
+//     if (!email)
+//       return res.status(400).json({ message: "Author email required" });
+//     if (!password)
+//       return res.status(400).json({ message: "Password required" });
+
+//     const author = await Author.findOne({ email: { $eq: email } });
+//     if (!author) return res.status(404).json({ message: "Author not found" });
+
+//     const isMatch = await author.comparePassword(password);
+//     if (!isMatch) return res.status(401).json({ message: "Invalid password" });
+
+//     // 1. snapshot + log BEFORE deletion
+//     const log = await createDeletionLog({
+//       authorToDelete: author,
+//       deletedBy: {
+//         email: author.email,
+//         name: author.authorname,
+//         role: author.role,
+//       },
+//       deletionType: "self",
+//     });
+
+//     // 2. delete posts from Post collection
+//     await Post.deleteMany({ authorId: author._id });
+
+//     // NEW: 2.5 delete playlists created by this author
+//     await TutorPlayList.deleteMany({ email: author.email });
+
+//     // 3. delete author
+//     await Author.deleteOne({ email: author.email });
+
+//     // 4. S3 profile cleanup (non-blocking)
+//     // if (author.profile) {
+//     //   s3.send(new DeleteObjectCommand({ Bucket: bucketName, Key: author.profile }))
+//     //     .catch(err => console.error("S3 profile delete error:", err.message));
+//     // }
+
+//     const { password: _, otp, otpExpiresAt, ...safeAuthor } = author.toObject();
+
+//     return res.status(200).json({
+//       message: "Author deleted successfully",
+//       author: safeAuthor,
+//       logId: log._id, // return logId so user can reference it for restore
+//     });
+//   } catch (err) {
+//     console.error("deleteAuthor error:", err);
+//     return res
+//       .status(500)
+//       .json({ message: "Server error", error: err.message });
+//   }
+// };
 const deleteAuthor = async (req, res) => {
   const { email } = req.params;
   const { password } = req.body;
@@ -117,43 +176,119 @@ const deleteAuthor = async (req, res) => {
       deletionType: "self",
     });
 
-    // 2. delete posts from Post collection
+    // 2. delete posts
     await Post.deleteMany({ authorId: author._id });
 
-    // NEW: 2.5 delete playlists created by this author
+    // 2.5 delete playlists
     await TutorPlayList.deleteMany({ email: author.email });
+
+    // 2.6 sync Community memberCount and remove memberships
+    const memberships = await CommunityMembership.find({
+      tenantId: author.tenantId,
+      authorId: author._id,
+    }, 'communityId');
+
+    if (memberships.length) {
+      const communityIds = memberships.map((m) => m.communityId);
+
+      await Promise.all([
+        CommunityMembership.deleteMany({
+          tenantId: author.tenantId,
+          authorId: author._id,
+        }),
+        ...communityIds.map((id) =>
+          Community.updateOne({ _id: id }, { $inc: { memberCount: -1 } })
+        ),
+      ]);
+    }
 
     // 3. delete author
     await Author.deleteOne({ email: author.email });
-
-    // 4. S3 profile cleanup (non-blocking)
-    // if (author.profile) {
-    //   s3.send(new DeleteObjectCommand({ Bucket: bucketName, Key: author.profile }))
-    //     .catch(err => console.error("S3 profile delete error:", err.message));
-    // }
 
     const { password: _, otp, otpExpiresAt, ...safeAuthor } = author.toObject();
 
     return res.status(200).json({
       message: "Author deleted successfully",
       author: safeAuthor,
-      logId: log._id, // return logId so user can reference it for restore
+      logId: log._id,
     });
   } catch (err) {
     console.error("deleteAuthor error:", err);
-    return res
-      .status(500)
-      .json({ message: "Server error", error: err.message });
+    return res.status(500).json({ message: "Server error", error: err.message });
   }
 };
 
 // ─────────────────────────────────────────────────────────────
 //  DELETE AUTHOR BY ADMIN
 // ─────────────────────────────────────────────────────────────
+// const deleteAuthorByAdmin = async (req, res) => {
+//   try {
+//     const { authorEmail } = req.params; // admin's email
+//     const { email, password } = req.body; // target author + admin password
+
+//     if (!authorEmail)
+//       return res.status(400).json({ message: "Admin email required" });
+//     if (!email)
+//       return res.status(400).json({ message: "Author email required" });
+//     if (!password)
+//       return res.status(400).json({ message: "Password required" });
+
+//     const admin = await Author.findOne({ email: { $eq: authorEmail } });
+//     if (!admin) return res.status(404).json({ message: "Admin not found" });
+//     if (admin.role !== "admin")
+//       return res.status(403).json({ message: "Access denied" });
+
+//     const isMatch = await admin.comparePassword(password);
+//     if (!isMatch)
+//       return res.status(401).json({ message: "Invalid admin password" });
+
+//     const author = await Author.findOne({ email: { $eq: email } });
+//     if (!author) return res.status(404).json({ message: "Author not found" });
+
+//     // 1. snapshot + log BEFORE deletion
+//     const log = await createDeletionLog({
+//       authorToDelete: author,
+//       deletedBy: {
+//         email: admin.email,
+//         name: admin.authorname,
+//         role: admin.role,
+//       },
+//       deletionType: "admin_action",
+//     });
+
+//     // 2. delete posts
+//     await Post.deleteMany({ authorId: author._id });
+
+//     // NEW: 2.5 delete playlists created by this author
+//     await TutorPlayList.deleteMany({ email: author.email });
+
+//     // 3. delete author
+//     await Author.deleteOne({ email: author.email });
+
+//     // 4. S3 profile cleanup
+//     // if (author.profile) {
+//     //   s3.send(new DeleteObjectCommand({ Bucket: bucketName, Key: author.profile }))
+//     //     .catch(err => console.error("S3 profile delete error:", err.message));
+//     // }
+
+//     const { password: _, otp, otpExpiresAt, ...safeAuthor } = author.toObject();
+
+//     return res.status(200).json({
+//       message: "Author deleted successfully",
+//       author: safeAuthor,
+//       logId: log._id,
+//     });
+//   } catch (err) {
+//     console.error("deleteAuthorByAdmin error:", err);
+//     return res
+//       .status(500)
+//       .json({ message: "Internal server error", error: err.message });
+//   }
+// };
 const deleteAuthorByAdmin = async (req, res) => {
   try {
-    const { authorEmail } = req.params; // admin's email
-    const { email, password } = req.body; // target author + admin password
+    const { authorEmail } = req.params;
+    const { email, password } = req.body;
 
     if (!authorEmail)
       return res.status(400).json({ message: "Admin email required" });
@@ -188,17 +323,31 @@ const deleteAuthorByAdmin = async (req, res) => {
     // 2. delete posts
     await Post.deleteMany({ authorId: author._id });
 
-    // NEW: 2.5 delete playlists created by this author
+    // 2.5 delete playlists
     await TutorPlayList.deleteMany({ email: author.email });
+
+    // 2.6 sync Community memberCount and remove memberships
+    const memberships = await CommunityMembership.find({
+      tenantId: author.tenantId,
+      authorId: author._id,
+    }, 'communityId');
+
+    if (memberships.length) {
+      const communityIds = memberships.map((m) => m.communityId);
+
+      await Promise.all([
+        CommunityMembership.deleteMany({
+          tenantId: author.tenantId,
+          authorId: author._id,
+        }),
+        ...communityIds.map((id) =>
+          Community.updateOne({ _id: id }, { $inc: { memberCount: -1 } })
+        ),
+      ]);
+    }
 
     // 3. delete author
     await Author.deleteOne({ email: author.email });
-
-    // 4. S3 profile cleanup
-    // if (author.profile) {
-    //   s3.send(new DeleteObjectCommand({ Bucket: bucketName, Key: author.profile }))
-    //     .catch(err => console.error("S3 profile delete error:", err.message));
-    // }
 
     const { password: _, otp, otpExpiresAt, ...safeAuthor } = author.toObject();
 
@@ -209,9 +358,7 @@ const deleteAuthorByAdmin = async (req, res) => {
     });
   } catch (err) {
     console.error("deleteAuthorByAdmin error:", err);
-    return res
-      .status(500)
-      .json({ message: "Internal server error", error: err.message });
+    return res.status(500).json({ message: "Internal server error", error: err.message });
   }
 };
 
@@ -310,21 +457,171 @@ const getDeletionLogById = async (req, res) => {
 };
 
 
+// const rollbackDeletion = async (req, res) => {
+//   try {
+//     const { logId } = req.params;
+//     const { restoredBy } = req.body;
+
+//     if (!restoredBy) {
+//       return res.status(400).json({ message: "restoredBy email required" });
+//     }
+
+//     const restorer = await Author.findOne({
+//       email: { $eq: restoredBy },
+//     }).select("role authorname email");
+//     if (!restorer) {
+//       return res.status(404).json({ message: "Restorer account not found" });
+//     }
+
+//     const log = await DeletionLog.findById(logId);
+//     if (!log)
+//       return res.status(404).json({ message: "Deletion log not found" });
+
+//     const isAdmin = restorer.role === "admin";
+//     const isSelfRestore =
+//       log.deletionType === "self" && log.snapshot.author.email === restoredBy;
+
+//     if (!isAdmin && !isSelfRestore) {
+//       return res
+//         .status(403)
+//         .json({ message: "Not authorised to restore this account" });
+//     }
+
+//     if (log.status !== "deleted") {
+//       return res.status(400).json({
+//         message: `Cannot restore — log status is '${log.status}'`,
+//       });
+//     }
+
+//     const { author: authorSnap, posts: postsSnap, playlists: playlistsSnap } = log.snapshot;
+
+//     // If you need assistance at any point, refer to the user guide available within the platform. \n
+
+//     const url = `${notificationUrl}/announcement`;
+//     const restorerName = restorer.authorname;
+//     const restorerEmail = restorer.email;
+//     const restoredName = authorSnap.authorname;
+//     const restoredItems =
+//       authorSnap?.role !== "student"
+//         ? "posts, playlists, followers, achievements, "
+//         : "";
+
+//     const deletedAt = log.deletedAt
+//       ? new Date(log.deletedAt).toDateString()
+//       : "unknown date";
+
+//     const recoveryMessage = `
+//       Hi ${restoredName},
+
+//       Your account was deleted on **${deletedAt}** and has now been fully restored. All your previous data such as ${restoredItems} bookmarks, communities, and profile details are restored successfully.
+      
+//       Welcome back to the **Bytes Base** platform.
+// `;
+
+//     const newAnnouncement = {
+//        _id:   new mongoose.Types.ObjectId(), 
+//       user: restorerName,
+//       title: "♻️ Account Recovered Successfully",
+//       message: recoveryMessage,
+//       authorEmail: restorerEmail,
+//       deliveredTo: "all",
+//     };
+
+//     const newNotification = {
+//       _id:         new mongoose.Types.ObjectId(), 
+//       user: restorerName,
+//       authorEmail: restorerEmail,
+//       message: `Welcome back, Your account has been successfully recovered !`,
+//       url,
+//     };
+
+//     // fix: build clean insert doc with original _id explicitly set
+//     const rawAuthor = authorSnap.toObject
+//       ? authorSnap.toObject()
+//       : { ...authorSnap };
+
+//     const authorToInsert = {
+//       ...rawAuthor,
+//       _id: authorSnap._id, 
+      
+//       // push notification and announcement at restore time
+//       notification: [...(rawAuthor.notification || []), newNotification],
+//       announcement: [...(rawAuthor.announcement || []), newAnnouncement],
+      
+//     };
+//     delete authorToInsert.otp;
+//     delete authorToInsert.otpExpiresAt;
+
+//     await Author.collection.insertOne(authorToInsert);
+
+//     if (postsSnap.length > 0) {
+//       const postDocs = postsSnap.map((p) => {
+//         const raw = p.toObject ? p.toObject() : { ...p };
+//         return {
+//           ...raw,
+//           _id: p._id, // preserve original post ObjectId
+//           authorId: authorSnap._id, // re-link to restored author _id
+//         };
+//       });
+
+//       await Post.insertMany(postDocs, { ordered: false });
+
+//       const postIds = postDocs.map((p) => p._id);
+//       // match by _id — more reliable than email
+//       await Author.updateOne(
+//         { _id: authorSnap._id },
+//         { $set: { posts: postIds } },
+//       );
+//     }
+
+//     // NEW: restore playlists — insert all at once preserving original _ids
+//     if (playlistsSnap && playlistsSnap.length > 0) {
+//       const playlistDocs = playlistsSnap.map((pl) => {
+//         const raw = pl.toObject ? pl.toObject() : { ...pl };
+//         return {
+//           ...raw,
+//           _id: pl._id, // preserve original playlist ObjectId
+//           email: authorSnap.email, // re-link to restored author email
+//           name: authorSnap.authorname, // update name to current author name
+//         };
+//       });
+
+//       await TutorPlayList.insertMany(playlistDocs, { ordered: false });
+//     }
+
+//     log.status = "restored";
+//     log.restoredAt = new Date();
+//     log.restoredBy = restoredBy;
+//     await log.save();
+
+//     return res.status(200).json({
+//       message: "Account, posts, and playlists restored successfully",
+//       restoredEmail: authorSnap.email,
+//       postCount: postsSnap.length,
+//       playlistCount: playlistsSnap ? playlistsSnap.length : 0,
+//       logId: log._id,
+//     });
+//   } catch (err) {
+//     console.error("rollbackDeletion error:", err);
+//     return res
+//       .status(500)
+//       .json({ message: "Server error", error: err.message });
+//   }
+// };
+// rollbackDeletion
 const rollbackDeletion = async (req, res) => {
   try {
     const { logId } = req.params;
     const { restoredBy } = req.body;
 
-    if (!restoredBy) {
+    if (!restoredBy)
       return res.status(400).json({ message: "restoredBy email required" });
-    }
 
     const restorer = await Author.findOne({
       email: { $eq: restoredBy },
     }).select("role authorname email");
-    if (!restorer) {
+    if (!restorer)
       return res.status(404).json({ message: "Restorer account not found" });
-    }
 
     const log = await DeletionLog.findById(logId);
     if (!log)
@@ -334,21 +631,15 @@ const rollbackDeletion = async (req, res) => {
     const isSelfRestore =
       log.deletionType === "self" && log.snapshot.author.email === restoredBy;
 
-    if (!isAdmin && !isSelfRestore) {
-      return res
-        .status(403)
-        .json({ message: "Not authorised to restore this account" });
-    }
+    if (!isAdmin && !isSelfRestore)
+      return res.status(403).json({ message: "Not authorised to restore this account" });
 
-    if (log.status !== "deleted") {
+    if (log.status !== "deleted")
       return res.status(400).json({
         message: `Cannot restore — log status is '${log.status}'`,
       });
-    }
 
     const { author: authorSnap, posts: postsSnap, playlists: playlistsSnap } = log.snapshot;
-
-    // If you need assistance at any point, refer to the user guide available within the platform. \n
 
     const url = `${notificationUrl}/announcement`;
     const restorerName = restorer.authorname;
@@ -369,10 +660,10 @@ const rollbackDeletion = async (req, res) => {
       Your account was deleted on **${deletedAt}** and has now been fully restored. All your previous data such as ${restoredItems} bookmarks, communities, and profile details are restored successfully.
       
       Welcome back to the **Bytes Base** platform.
-`;
+    `;
 
     const newAnnouncement = {
-       _id:   new mongoose.Types.ObjectId(), 
+      _id: new mongoose.Types.ObjectId(),
       user: restorerName,
       title: "♻️ Account Recovered Successfully",
       message: recoveryMessage,
@@ -381,65 +672,89 @@ const rollbackDeletion = async (req, res) => {
     };
 
     const newNotification = {
-      _id:         new mongoose.Types.ObjectId(), 
+      _id: new mongoose.Types.ObjectId(),
       user: restorerName,
       authorEmail: restorerEmail,
       message: `Welcome back, Your account has been successfully recovered !`,
       url,
     };
 
-    // fix: build clean insert doc with original _id explicitly set
     const rawAuthor = authorSnap.toObject
       ? authorSnap.toObject()
       : { ...authorSnap };
 
     const authorToInsert = {
       ...rawAuthor,
-      _id: authorSnap._id, 
-      
-      // push notification and announcement at restore time
+      _id: authorSnap._id,
       notification: [...(rawAuthor.notification || []), newNotification],
       announcement: [...(rawAuthor.announcement || []), newAnnouncement],
-      
     };
     delete authorToInsert.otp;
     delete authorToInsert.otpExpiresAt;
 
     await Author.collection.insertOne(authorToInsert);
 
+    // restore posts
     if (postsSnap.length > 0) {
       const postDocs = postsSnap.map((p) => {
         const raw = p.toObject ? p.toObject() : { ...p };
-        return {
-          ...raw,
-          _id: p._id, // preserve original post ObjectId
-          authorId: authorSnap._id, // re-link to restored author _id
-        };
+        return { ...raw, _id: p._id, authorId: authorSnap._id };
       });
-
       await Post.insertMany(postDocs, { ordered: false });
-
-      const postIds = postDocs.map((p) => p._id);
-      // match by _id — more reliable than email
       await Author.updateOne(
         { _id: authorSnap._id },
-        { $set: { posts: postIds } },
+        { $set: { posts: postDocs.map((p) => p._id) } }
       );
     }
 
-    // NEW: restore playlists — insert all at once preserving original _ids
-    if (playlistsSnap && playlistsSnap.length > 0) {
+    // restore playlists
+    if (playlistsSnap?.length > 0) {
       const playlistDocs = playlistsSnap.map((pl) => {
         const raw = pl.toObject ? pl.toObject() : { ...pl };
         return {
           ...raw,
-          _id: pl._id, // preserve original playlist ObjectId
-          email: authorSnap.email, // re-link to restored author email
-          name: authorSnap.authorname, // update name to current author name
+          _id: pl._id,
+          email: authorSnap.email,
+          name: authorSnap.authorname,
         };
       });
-
       await TutorPlayList.insertMany(playlistDocs, { ordered: false });
+    }
+
+    // restore CommunityMembership from author's community array
+    // uses the same role rule: coordinator/admin/director = coordinator, else member
+    const GLOBAL_COORDINATOR_ROLES = ['coordinator', 'admin', 'director'];
+    const tenantId = rawAuthor.tenantId;
+    const role = GLOBAL_COORDINATOR_ROLES.includes(rawAuthor.role)
+      ? 'coordinator'
+      : 'member';
+
+    if (tenantId && rawAuthor.community?.length) {
+      const communities = await Community.find({
+        tenantId,
+        slug: {
+          $in: rawAuthor.community.map((c) =>
+            c.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+          ),
+        },
+      });
+
+      if (communities.length) {
+        await Promise.all([
+          // upsert memberships — safe if they somehow already exist
+          ...communities.map((c) =>
+            CommunityMembership.findOneAndUpdate(
+              { tenantId, communityId: c._id, authorId: authorSnap._id },
+              { $setOnInsert: { tenantId, communityId: c._id, authorId: authorSnap._id, role } },
+              { upsert: true }
+            )
+          ),
+          // increment memberCount per community
+          ...communities.map((c) =>
+            Community.updateOne({ _id: c._id }, { $inc: { memberCount: 1 } })
+          ),
+        ]);
+      }
     }
 
     log.status = "restored";
@@ -456,9 +771,7 @@ const rollbackDeletion = async (req, res) => {
     });
   } catch (err) {
     console.error("rollbackDeletion error:", err);
-    return res
-      .status(500)
-      .json({ message: "Server error", error: err.message });
+    return res.status(500).json({ message: "Server error", error: err.message });
   }
 };
 
