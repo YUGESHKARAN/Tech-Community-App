@@ -58,7 +58,9 @@ const tutorPlaylist = require("./routes/tutorPlayList.Route");
 const appAnalysisRouter = require("./routes/appAnalysis.Route");
 const adminRouter = require("./routes/admin.Route");
 const directorRouter = require("./routes/director.Route");
-const searchRouter = require("./routes/search.Route")
+const searchRouter = require("./routes/search.Route");
+
+const techCommunityRouter = require("./routes/techCommunity.Route")
 
 app.use("/blog/login", loginRouter);
 app.use("/blog/author", authorRouter);
@@ -68,6 +70,7 @@ app.use("/blog/analytics", appAnalysisRouter);
 app.use("/blog/admin", adminRouter);
 app.use("/blog/director", directorRouter);
 app.use("/blog/search", searchRouter);
+app.use("/blog/techCommunity",techCommunityRouter)
 
 app.get("/blog/notifications/stream/:email", async (req, res) => {
   try {
