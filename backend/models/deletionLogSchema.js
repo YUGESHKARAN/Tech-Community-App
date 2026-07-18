@@ -36,6 +36,7 @@ const snapshotPostSchema = new mongoose.Schema({
   _id:         { type: mongoose.Schema.Types.ObjectId },  // preserve original ID
   authorId:    { type: mongoose.Schema.Types.ObjectId },
   title:       { type: String },
+  tenantId:       { type: String },
   description: { type: String },
   category:    { type: String },
   image:       { type: String },
@@ -77,6 +78,7 @@ const snapshotPlaylistSchema = new mongoose.Schema({
 const snapshotAuthorSchema = new mongoose.Schema({
   _id:          { type: mongoose.Schema.Types.ObjectId }, // fix: was missing — caused id mismatch on restore
   authorname:   { type: String },
+  tenantId:   { type: String },
   bio:   { type: String },
   email:        { type: String },
   password:     { type: String },

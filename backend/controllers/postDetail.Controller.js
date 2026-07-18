@@ -517,6 +517,7 @@ const addPosts = async (req, res) => {
         category,
         documents: documentUrls,
         links: parsedLinks,
+        tenantId: author.tenantId,
       });
 
       // push only the ObjectId ref into author.posts
