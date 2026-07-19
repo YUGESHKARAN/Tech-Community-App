@@ -468,7 +468,7 @@ function ViewEditPost() {
                           <button
                             type="button"
                             onClick={() => {
-                              const dropDown = ['GitHub', 'LinkedIn', 'Portfolio']
+                              const dropDown = ['GitHub','YouTube', 'LinkedIn', 'Portfolio']
 
                               if(dropDown.includes(link.title)){
                                 setCurrentLinkTitle(link.title);

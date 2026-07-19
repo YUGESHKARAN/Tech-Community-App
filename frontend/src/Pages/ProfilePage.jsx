@@ -24,6 +24,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import formatCount from "../utils/NumberConversion";
 import { IoClose } from "react-icons/io5";
 import useGetFollowersDetails from "../hooks/useGetFollowersDetails";
+
 function ProfilePage() {
   const { logout } = useAuth();
   // const email = localStorage.getItem("email");
@@ -776,27 +777,27 @@ function ProfilePage() {
                                 </option>
                                 {!profileLinks.some(
                                   (l) =>
-                                    l.title === "GitHub" ||
+                                    l.title === "GitHub" &&
                                     currentLinkTitle !== "GitHub",
                                 ) && <option value="GitHub">GitHub</option>}
                                 {!profileLinks.some(
                                   (l) =>
-                                    l.title === "LinkedIn" ||
+                                    l.title === "LinkedIn" &&
                                     currentLinkTitle !== "LinkedIn",
                                 ) && <option value="LinkedIn">LinkedIn</option>}
                                 {!profileLinks.some(
                                   (l) =>
-                                    l.title === "Portfolio" ||
+                                    l.title === "Portfolio" &&
                                     currentLinkTitle !== "Portfolio",
                                 ) && (
                                   <option value="Portfolio">Portfolio</option>
                                 )}
-                                {showLinkBox &&
+                                {/* {showLinkBox &&
                                   profileLinks.map((row) => (
                                     <option key={row.title} value={row.title}>
                                       {row.title}
                                     </option>
-                                  ))}
+                                  ))} */}
                                 <option value="Others">Others</option>
                               </select>
                             ) : (
