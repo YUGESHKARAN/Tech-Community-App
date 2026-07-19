@@ -670,7 +670,15 @@ function ProfilePage() {
                                   <button
                                     type="button"
                                     onClick={() => {
-                                      setCurrentLinkTitle(link.title);
+                                      const dropDown = ['GitHub', 'LinkedIn', 'Portfolio']
+                                      if(dropDown.includes(link.title)){
+                                         setCurrentLinkTitle(link.title);
+                                      }
+                                      else{
+                                        setCurrentLinkTitle("Others");
+                                        setCustomTitle(link.title)
+                                      }
+                                     
                                       setCurrentLinkUrl(link.url);
                                       setLinkId(link._id);
                                       setLinks((prev) =>
@@ -768,17 +776,17 @@ function ProfilePage() {
                                 </option>
                                 {!profileLinks.some(
                                   (l) =>
-                                    l.title === "GitHub" &&
+                                    l.title === "GitHub" ||
                                     currentLinkTitle !== "GitHub",
                                 ) && <option value="GitHub">GitHub</option>}
                                 {!profileLinks.some(
                                   (l) =>
-                                    l.title === "LinkedIn" &&
+                                    l.title === "LinkedIn" ||
                                     currentLinkTitle !== "LinkedIn",
                                 ) && <option value="LinkedIn">LinkedIn</option>}
                                 {!profileLinks.some(
                                   (l) =>
-                                    l.title === "Portfolio" &&
+                                    l.title === "Portfolio" ||
                                     currentLinkTitle !== "Portfolio",
                                 ) && (
                                   <option value="Portfolio">Portfolio</option>
@@ -795,6 +803,7 @@ function ProfilePage() {
                               <input
                                 type="text"
                                 placeholder="Platform name"
+                                value={customTitle}
                                 onChange={(e) => setCustomTitle(e.target.value)}
                                 className="w-full focus:border focus:border-emerald-500/40 px-4 py-2 rounded-md theme  border border-emerald-700 outline-none  focus:border-emerald-500/40
                         focus:ring-2
