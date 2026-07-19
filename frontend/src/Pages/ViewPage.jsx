@@ -69,7 +69,7 @@ function ViewPage() {
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [msgLoading, setMsgLoading] = useState(false);
   const [liveParticipants, setLiveParticipants] = useState(0);
-  // ✅ useParams at component top level — not inside useEffect or async function
+  // useParams at component top level — not inside useEffect or async function
   useEffect(() => {
     const myEmail = getItem("email");
 
@@ -108,6 +108,7 @@ function ViewPage() {
       }
     };
   useEffect(() => {
+    setSinglePostData([]);
     getSinglePost();
   }, [email, id]);
 
