@@ -468,7 +468,16 @@ function ViewEditPost() {
                           <button
                             type="button"
                             onClick={() => {
-                              setCurrentLinkTitle(link.title);
+                              const dropDown = ['GitHub', 'LinkedIn', 'Portfolio']
+
+                              if(dropDown.includes(link.title)){
+                                setCurrentLinkTitle(link.title);
+                              }
+                              else{
+                                setCurrentLinkTitle("Others");
+                                setCustomTitle(link.title);
+                              }
+                              
                               setCurrentLinkUrl(link.url);
                               setLinkId(link._id);
                               setLinks((prev) =>
@@ -550,6 +559,7 @@ function ViewEditPost() {
                   {currentLinkTitle === "Others" && (
                     <input
                       type="text"
+                      value={customTitle}
                       onChange={(e) => setCustomTitle(e.target.value)}
                       placeholder="Custom title"
                       className="flex-1 focus:border focus:border-emerald-500/40 w-full px-4 py-2 rounded-md theme border border-gray-700 outline-none  outline-none text-white text-sm"
