@@ -22,7 +22,7 @@ const useGetFollowersDetails = (email)=> {
       }
     } catch (err) {
       console.log("error", err.message);
-      toast.error("Error", "Error getting follower/following details");
+      toast.error("Author not found", "Unable to fetch details");
     }
     finally{
       setFollowLoading(false);

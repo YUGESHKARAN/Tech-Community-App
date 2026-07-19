@@ -45,6 +45,7 @@ function ViewSingleAuthor() {
       setLoading(true);
       const response = await axiosInstance.get(`/blog/author/${email}`);
       const authorData = response.data;
+      if (response.status===200){
       setAuthorName(authorData.authorname);
       setCoordEmail(authorData.email);
       setAuthor(response.data);
@@ -54,6 +55,7 @@ function ViewSingleAuthor() {
       setProfileLinks(authorData.personalLinks);
       setPosts(authorData.posts);
       setBioDescription(authorData.bio);
+      }
     } catch (err) {
       console.log(err);
     } finally {
@@ -61,6 +63,7 @@ function ViewSingleAuthor() {
     }
   };
   useEffect(() => {
+    setAuthorName("");
     fetchAuthor();
   }, [email]);
 

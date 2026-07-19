@@ -40,6 +40,7 @@ import logoicon from "../assets/assistant_1.png";
 import { motion, AnimatePresence } from "framer-motion";
 import BadgeIcons from "../components/achievements/BadgeIcons.jsx";
 import formatCount from "../utils/NumberConversion.jsx";
+import toast from "../components/toaster/Toast.jsx";
 
 function ViewPage() {
   const user = getItem("username");
@@ -90,8 +91,7 @@ function ViewPage() {
   }, [email, id]); // fix: add email and id as deps — re-runs if post changes
 
   // Fetch post data
-  useEffect(() => {
-    const getSinglePost = async () => {
+  const getSinglePost = async () => {
       try {
         setLoading(true);
         const response = await axiosInstance.get(`/blog/posts/${email}/${id}`);
@@ -102,10 +102,12 @@ function ViewPage() {
         setProfile(postData.profile);
       } catch (err) {
         console.error("Error fetching post data", err);
+        toast.error("Post not found", "unable to fetch the post data")
       } finally {
         setLoading(false);
       }
     };
+  useEffect(() => {
     getSinglePost();
   }, [email, id]);
 
