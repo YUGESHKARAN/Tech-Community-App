@@ -100,7 +100,7 @@ function TechCommunity() {
     domainAccents[name] || { from: "#10b981", to: "#059669", icon: "💡" };
 
 
-  // console.log("communityStats", communityStats)
+  console.log("communityStats", communityStats)
   return (
     <div className="min-h-screen theme text-white flex flex-col">
       <NavBar />
