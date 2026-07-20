@@ -32,6 +32,7 @@ import ScrollToTop from "./components/ScrollTop.jsx";
 import Dashboard from "./Pages/admin/Dashboard.jsx";
 import SingleDomainPosts from "./components/SingleDomainPosts.jsx";
 import ScrollToHash from "./utils/ScrollToHash.jsx";
+import TechCommunityLanding from "./Pages/TechCommunityLanding.jsx";
 function App() {
   return (
     // <AuthProvider>
@@ -281,7 +282,8 @@ function App() {
 
               <Route
                 path="/community"
-                element={<ProtectedRoute element={<TechCommunity />} />}
+                // element={<ProtectedRoute element={<TechCommunity />} />}
+                element={<ProtectedRoute element={<TechCommunityLanding />} />}
               />
             </Routes>
             

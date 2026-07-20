@@ -36,6 +36,8 @@ import Fuse from "fuse.js";
 import LogMonitoringPage from "./LogMonitoringPage";
 import BadgeIcons from "../../components/achievements/BadgeIcons";
 import formatCount from "../../utils/NumberConversion";
+import { getLast3MonthsName } from "../../utils/dateFunction";
+import { TbCrown } from "react-icons/tb";
 
 // ── Main Dashboard ─────────────────────────────────────────────────────────────
 function Dashboard() {
@@ -48,7 +50,7 @@ function Dashboard() {
   const { statsSummary, statsLoader } = useStatsSummary(email);
   const [year, setYear] = useState("");
   const [target, setTarget] = useState(50);
-  const [filter, setFilter] = useState("overall");
+  const [filter, setFilter] = useState("current_month");
 
   const { communities, loading: postCategoryLoading } =
     useGetCommunityAnalytics();
@@ -78,28 +80,28 @@ function Dashboard() {
   //  console.log("statsSummary",statsSummary)
   //  console.log("communities",communities)
   //  console.log("postsByMonth",postsByMonth);
-  console.log("topContributors", topContributors);
+  // console.log("topContributors", topContributors);
   // console.log("contributors", contributors);
   // console.log("students", students);
 
-  const getLast3MonthsName = () => {
-    const now = new Date();
+  // const getLast3MonthsName = () => {
+  //   const now = new Date();
 
-    const formatMonth = (offset) => {
-      const d = new Date(now.getFullYear(), now.getMonth() - offset, 1);
+  //   const formatMonth = (offset) => {
+  //     const d = new Date(now.getFullYear(), now.getMonth() - offset, 1);
 
-      const month = d.toLocaleString("default", { month: "short" }); // May
-      const year = String(d.getFullYear()); // 26
+  //     const month = d.toLocaleString("default", { month: "short" }); // May
+  //     const year = String(d.getFullYear()); // 26
 
-      return `${month} ${year}`;
-    };
+  //     return `${month} ${year}`;
+  //   };
 
-    return {
-      current_month: formatMonth(0),
-      previous_month: formatMonth(1),
-      two_months_ago: formatMonth(2),
-    };
-  };
+  //   return {
+  //     current_month: formatMonth(0),
+  //     previous_month: formatMonth(1),
+  //     two_months_ago: formatMonth(2),
+  //   };
+  // };
   const months = getLast3MonthsName();
   // console.log("months", months);
 
@@ -426,13 +428,22 @@ function Dashboard() {
                   </div>
 
                   <div className="flex overflow-y-auto overflow-x-hidden scrollbar-hide h-52 flex-col gap-2">
-                    {topContributors.map((u, i) => (
+                    {topContributors.map((u, i) => 
+                   {
+                    const isYou =
+                    u.email === email;
+                    const rank = i + 1;
+                    const medalColors = ["#00f01c", "#cd7f32", "#8f9296"];
+                     return(
                       <Link
                         to={`/viewProfile/${u.email}`}
                         key={i}
-                        className="flex cursor-pointer md:p-2 md:hover:bg-gray-800/50 rounded-lg items-center gap-3"
+                        // className="flex cursor-pointer md:p-2 md:hover:bg-gray-800/50 rounded-lg items-center gap-3"
+                         className={`flex items-center gap-2 py-1.5 px-1 rounded-lg ${
+                        isYou ? "bg-emerald-500/10" : ""
+                      }`}
                       >
-                        <span
+                        {/* <span
                           className={`md:text-[11px] text-[9px] bg-gray-800 rounded-full text-gray-300 px-2 py-1 md:px-3  md:py-1.5 md:font-bold font-semibold ${i+1<10 && 'mr-1'}`}
                           style={{
                             color:
@@ -442,7 +453,22 @@ function Dashboard() {
                           }}
                         >
                           {i + 1} {i+1<10 && '  '}
-                        </span>
+                        </span> */}
+                         {rank <= 3 ? (
+                                                <div
+                                                  className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
+                                                  style={{ background: `${medalColors[rank - 1]}33` }}
+                                                >
+                                                  <TbCrown
+                                                    className="text-[11px]"
+                                                    style={{ color: medalColors[rank - 1] }}
+                                                  />
+                                                </div>
+                                              ) : (
+                                                <span className="w-5 text-center text-[11px] text-gray-500 font-medium flex-shrink-0">
+                                                  {rank}
+                                                </span>
+                                              )}
                         {!u.profile ? (
                           <div
                             className="md:w-8 md:h-8 w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold text-white shrink-0"
@@ -461,6 +487,11 @@ function Dashboard() {
                         <span className="text-xs flex-1 font-semibold text-gray-200 truncate">
                           <p className="truncate line-clamp-1 w-[150px] md:w-[300px]">
                             {u.name}
+                            {isYou && (
+                          <span className="ml-1.5 text-[9px] font-semibold px-1.5 py-0.5 rounded-full bg-emerald-500 text-black">
+                            You
+                          </span>
+                        )}
                           </p>
                           
                           <p className="md:text-[10px]  hidden  md:block text-[9px] text-gray-500 truncate">
@@ -478,7 +509,9 @@ function Dashboard() {
                           {formatCount(u.postsCount)} posts
                         </span>
                       </Link>
-                    ))}
+                    
+                    )
+                    })}
                   </div>
                 </div>
               ) : (

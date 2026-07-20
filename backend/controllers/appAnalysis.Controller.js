@@ -328,8 +328,8 @@ const getTopContributors = async (req, res) => {
       "role",
     );
     if (!admin) return res.status(404).json({ message: "Author not found" });
-    if (admin.role !== "admin")
-      return res.status(403).json({ message: "Access denied" });
+    // if (admin.role !== "admin")
+    //   return res.status(403).json({ message: "Access denied" });
 
     // ── build date range from filter ──────────────────────────
     let dateRange = null; // null = no filter = overall
