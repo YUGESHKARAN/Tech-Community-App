@@ -268,7 +268,7 @@ function TechCommunityLanding() {
             }}
           >
             <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
-              <Icon className="text-white text-lg" />
+              <Icon className="text-white text-sm md:text-lg" />
             </div>
             <div className="min-w-0">
               <h2 className="text-white font-semibold text-base truncate">
@@ -277,9 +277,10 @@ function TechCommunityLanding() {
               <p className="text-white/80 text-[11px]">Tech Domain</p>
             </div>
 
-            {item.userRole === "coordinator" && (
+            {item.userRole && (
               <span className="absolute top-3 right-3 text-[10px] font-semibold px-2.5 py-1 rounded-full bg-white/25 text-white">
-                Coordinator
+                {/* Coordinator */}
+                {item.userRole}
               </span>
             )}
           </div>
@@ -315,7 +316,7 @@ function TechCommunityLanding() {
                       style={{
                         marginLeft: i === 0 ? 0 : "-6px",
                       }}
-                      className="h-7 w-7 rounded-full border border-teal-600 bg-gray-400"
+                      className="h-7 min-w-7 rounded-full border border-teal-600 bg-gray-400"
                     />
                   ) : (
                     <div
@@ -521,7 +522,7 @@ function TechCommunityLanding() {
                       </div>}
 
                       <span
-                        className={`text-[11px] font-medium truncate flex-1 ${
+                        className={`text-[11px]  font-medium truncate flex-1 ${
                           isYou ? "text-emerald-400" : "text-gray-200"
                         }`}
                       >
