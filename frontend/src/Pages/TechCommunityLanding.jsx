@@ -35,46 +35,6 @@ import TopContributorsSkeleton from "../components/loaders/dashboard/TopContribu
 import TechCommunityTopContributorsSkeleton from "../components/loaders/TechCommunityTopContributorsSkeleton";
 
 
-const topContributorsSample = {
-  period: "weekly", // 'weekly' | 'monthly' | 'allTime'
-  contributors: [
-    {
-      name: "Yugesh Karan",
-      email: "yugeshkaran01@gmail.com",
-      points: 210,
-      streak: 12,
-    },
-    {
-      name: "haricharan_1133",
-      email: "haricharan@dsuniversity.ac.in",
-      points: 175,
-      streak: 6,
-    },
-    {
-      name: "ajayvarsanr",
-      email: "ajayvarsan2020@gmail.com",
-      points: 140,
-      streak: 3,
-    },
-    {
-      name: "Kumaran",
-      email: "kumaranv.set2022@dsuniversity.ac.in",
-      points: 98,
-      streak: 4,
-    },
-    {
-      name: "Rosinii",
-      email: "rosiniis.set2022@dsuniversity.ac.in",
-      points: 72,
-      streak: 1,
-    },
-    { name: "Sibi", email: "ssibi3290@gmail.com", points: 64, streak: 0 },
-  ],
-  // email of the currently logged-in user — used to highlight their row
-  currentUserEmail: "kumaranv.set2022@dsuniversity.ac.in",
-};
-
-
 
 const streakSample = {
   currentStreak: 4,
@@ -525,7 +485,8 @@ function TechCommunityLanding() {
                   const medalColors = ["#00f01c", "#cd7f32", "#8f9296"];
 
                   return (
-                    <div
+                    <Link
+                     to={`/viewProfile/${c.email}`}
                       key={c.email}
                       className={`flex items-center gap-2 py-1.5 px-1 rounded-lg ${
                         isYou ? "bg-emerald-500/10" : ""
@@ -547,9 +508,17 @@ function TechCommunityLanding() {
                         </span>
                       )}
 
+                      {c.profile? <img
+                      key={c.email}
+                      src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${c.profile}`}
+                      alt={c.name}
+                      
+                      className="h-6 w-6 rounded-full border border-teal-600 bg-gray-400"
+                    />:
+
                       <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-[9px] font-semibold text-gray-200 flex-shrink-0">
                         {initials(c.name)}
-                      </div>
+                      </div>}
 
                       <span
                         className={`text-[11px] font-medium truncate flex-1 ${
@@ -571,7 +540,7 @@ function TechCommunityLanding() {
                       >
                         {c.postsCount} Posts
                       </span>
-                    </div>
+                    </Link>
                   );
                 })}
           
