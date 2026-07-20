@@ -1,6 +1,6 @@
 import React from 'react'
 
-function TechCommunityTopContributorsSkeleton() {
+const TechCommunityTopContributorsSkeleton = ()=> {
   return (
     <div className="theme border border-[#1e293b] rounded-2xl p-4 animate-pulse">
       {/* Header */}
