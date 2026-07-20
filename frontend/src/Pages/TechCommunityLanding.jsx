@@ -32,7 +32,7 @@ import { FILTERS } from "../utils/techCommunityFilters";
 import useTopContributors from "../hooks/admins/useTopContributors";
 import { getLast3MonthsName } from "../utils/dateFunction";
 import TopContributorsSkeleton from "../components/loaders/dashboard/TopContributorsSkeleton";
-import TechCommunityTopContributorsSkeleton from "../components/loaders/techCommunityTopContributorsSkeleton";
+import TechCommunityTopContributorsSkeleton from "../components/loaders/TechCommunityTopContributorsSkeleton";
 
 
 const topContributorsSample = {
