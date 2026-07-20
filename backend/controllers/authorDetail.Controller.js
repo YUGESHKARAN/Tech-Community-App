@@ -1353,6 +1353,59 @@ function slugify(name) {
 }
 
 // reviewed-----------------------------------------------------------------------
+// const updateTechCommunity = async (req, res) => {
+//   const { email, techcommunity } = req.body;
+
+//   try {
+//     const author = await Author.findOne({ email: { $eq: email } });
+//     if (!author) return res.status(404).json({ message: 'Author not found' });
+
+//     const tenantId = author.tenantId;
+//     const role = GLOBAL_COORDINATOR_ROLES.includes(author.role) ? 'coordinator' : 'member';
+
+//     if (techcommunity) {
+//       const index = author.community.indexOf(techcommunity);
+//       const isJoining = index === -1;
+
+//       // ── legacy field (dual-write, keep in sync) ──
+//       if (isJoining) {
+//         author.community.push(techcommunity);
+//       } else {
+//         author.community.splice(index, 1);
+//       }
+
+//       // ── new source of truth ──
+//       const community = await Community.findOne({
+//         tenantId,
+//         slug: slugify(techcommunity),
+//       });
+
+//       if (community) {
+//         if (isJoining) {
+//           await CommunityMembership.findOneAndUpdate(
+//             { tenantId, communityId: community._id, authorId: author._id },
+//             { $setOnInsert: { tenantId, communityId: community._id, authorId: author._id, role } },
+//             { upsert: true }
+//           );
+//           await Community.updateOne({ _id: community._id }, { $inc: { memberCount: 1 } });
+//         } else {
+//           await CommunityMembership.deleteOne({
+//             tenantId,
+//             communityId: community._id,
+//             authorId: author._id,
+//           });
+//           await Community.updateOne({ _id: community._id }, { $inc: { memberCount: -1 } });
+//         }
+//       }
+//     }
+
+//     const data = await author.save({ validateBeforeSave: false });
+//     res.status(201).json({ message: 'Author updated successfully', data });
+//   } catch (err) {
+//     console.error('updateTechCommunity error:', err);
+//     res.status(500).json({ message: 'Server error' });
+//   }
+// };
 const updateTechCommunity = async (req, res) => {
   const { email, techcommunity } = req.body;
 
@@ -1367,14 +1420,18 @@ const updateTechCommunity = async (req, res) => {
       const index = author.community.indexOf(techcommunity);
       const isJoining = index === -1;
 
-      // ── legacy field (dual-write, keep in sync) ──
-      if (isJoining) {
-        author.community.push(techcommunity);
-      } else {
-        author.community.splice(index, 1);
-      }
+      // ── Update community array atomically ──
+      const updateOp = isJoining
+        ? { $push: { community: techcommunity } }
+        : { $pull: { community: techcommunity } };
 
-      // ── new source of truth ──
+      const data = await Author.findOneAndUpdate(
+        { email: { $eq: email } },
+        updateOp,
+        { new: true, runValidators: false }
+      );
+
+      // ── sync CommunityMembership ──
       const community = await Community.findOne({
         tenantId,
         slug: slugify(techcommunity),
@@ -1397,10 +1454,11 @@ const updateTechCommunity = async (req, res) => {
           await Community.updateOne({ _id: community._id }, { $inc: { memberCount: -1 } });
         }
       }
+
+      return res.status(201).json({ message: 'Author updated successfully', data });
     }
 
-    const data = await author.save({ validateBeforeSave: false });
-    res.status(201).json({ message: 'Author updated successfully', data });
+    res.status(400).json({ message: 'Community name required' });
   } catch (err) {
     console.error('updateTechCommunity error:', err);
     res.status(500).json({ message: 'Server error' });
