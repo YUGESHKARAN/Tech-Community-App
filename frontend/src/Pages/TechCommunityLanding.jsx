@@ -28,121 +28,12 @@ import {
 
 import { initials, avatarColor } from "../utils/ProfileAvatar";
 import useGetCommunityStats from "../hooks/techCommunity/useGetCommunityStats";
+import { FILTERS } from "../utils/techCommunityFilters";
+import useTopContributors from "../hooks/admins/useTopContributors";
+import { getLast3MonthsName } from "../utils/dateFunction";
+import TopContributorsSkeleton from "../components/loaders/dashboard/TopContributorsSkeleton";
+import TechCommunityTopContributorsSkeleton from "../components/loaders/techCommunityTopContributorsSkeleton";
 
-// ── Filter chip definitions — value must match the switch in filteredCommunities ──
-// ── Filter chip definitions ──
-const FILTERS = [
-  { value: "all", label: "All", color: "text-white" },
-  {
-    value: "trending",
-    label: "Trending",
-    icon: TbFlameFilter,
-    color: "text-red-500",
-  },
-  {
-    value: "active",
-    label: "Most active",
-    icon: TbClockHour4,
-    color: "text-yellow-500",
-  },
-  {
-    value: "newest",
-    label: "Newest",
-    icon: TbSparklesFilter,
-    color: "text-blue-500",
-  },
-];
-
-// const communityLandingSample = {
-//   communities: [
-//     {
-//       _id: "66f1a2b3c4d5e6f7a8b9c0d1",
-//       tenantId: "dsu",
-//       name: "AI/ML",
-//       slug: "ai-ml",
-//       memberCount: 14,
-//       postCount: 8,
-//       userRole: "coordinator", // 'coordinator' | 'member' | null
-//       weeklyPostCount: 6,
-//       coordinatorsCount: 5,
-//       createdAt: "2025-11-02T10:00:00.000Z",
-//       profiles: [
-//         { profile: "", name: "Kumaran", email: "kumaranv.set2022@dsuniversity.ac.in" },
-//         { profile: "", name: "Yugesh Karan", email: "yugeshkaran01@gmail.com" },
-//         { profile: "", name: "Sibi", email: "ssibi3290@gmail.com" },
-//         { profile: "", name: "ajayvarsanr", email: "ajayvarsan2020@gmail.com" },
-//       ],
-//     },
-//     {
-//       _id: "66f1a2b3c4d5e6f7a8b9c0d2",
-//       tenantId: "dsu",
-//       name: "Cyber Security",
-//       slug: "cyber-security",
-//       memberCount: 9,
-//       postCount: 3,
-//       userRole: "coordinator",
-//       weeklyPostCount: 0,
-//       coordinatorsCount: 2,
-//       createdAt: "2025-09-14T10:00:00.000Z",
-//       profiles: [
-//         { profile: "", name: "Deepak", email: "deepak@dsuniversity.ac.in" },
-//         { profile: "", name: "Meena", email: "meena@dsuniversity.ac.in" },
-//       ],
-//     },
-//     {
-//       _id: "66f1a2b3c4d5e6f7a8b9c0d3",
-//       tenantId: "dsu",
-//       name: "Data Science",
-//       slug: "data-science",
-//       memberCount: 11,
-//       postCount: 3,
-//       userRole: null,
-//       weeklyPostCount: 3,
-//       coordinatorsCount: 3,
-//       createdAt: "2025-12-20T10:00:00.000Z",
-//       profiles: [
-//         { profile: "", name: "Priya", email: "priya@dsuniversity.ac.in" },
-//         { profile: "", name: "Jai", email: "jai@dsuniversity.ac.in" },
-//       ],
-//     },
-//     {
-//       _id: "66f1a2b3c4d5e6f7a8b9c0d4",
-//       tenantId: "dsu",
-//       name: "GenAI",
-//       slug: "genai",
-//       memberCount: 7,
-//       postCount: 8,
-//       userRole: null,
-//       weeklyPostCount: 8,
-//       coordinatorsCount: 2,
-//       createdAt: "2026-06-30T10:00:00.000Z",
-//       profiles: [
-//         { profile: "", name: "Lakshmi", email: "lakshmi@dsuniversity.ac.in" },
-//         { profile: "", name: "Qadir", email: "qadir@dsuniversity.ac.in" },
-//       ],
-//     },
-//     {
-//       _id: "66f1a2b3c4d5e6f7a8b9c0d5",
-//       tenantId: "dsu",
-//       name: "Web Development",
-//       slug: "web-development",
-//       memberCount: 18,
-//       postCount: 3,
-//       userRole: null,
-//       weeklyPostCount: 1,
-//       coordinatorsCount: 6,
-//       createdAt: "2025-06-01T10:00:00.000Z",
-//       profiles: [
-//         { profile: "", name: "Bala", email: "bala@dsuniversity.ac.in" },
-//         { profile: "", name: "Wilson", email: "wilson@dsuniversity.ac.in" },
-//       ],
-//     },
-//   ],
-// };
-
-// Sample data for the "Top contributors" leaderboard sidebar widget.
-// Shape mirrors what a future LeaderboardSnapshot read endpoint would return —
-// rank is implicit via array order, points already sorted descending.
 
 const topContributorsSample = {
   period: "weekly", // 'weekly' | 'monthly' | 'allTime'
@@ -183,9 +74,7 @@ const topContributorsSample = {
   currentUserEmail: "kumaranv.set2022@dsuniversity.ac.in",
 };
 
-// Sample data for the "Your streak" sidebar widget.
-// Shape mirrors the currentStreak / longestStreak / lastActiveDate fields
-// discussed for the future Author streak schema.
+
 
 const streakSample = {
   currentStreak: 4,
@@ -198,37 +87,34 @@ const domainStyle = {
   "AI/ML": { icon: TbBrain, from: "#0d9488", to: "#0f766e" },
   "Cyber Security": { icon: TbShieldLock, from: "#7c3aed", to: "#6d28d9" },
   "Data Science": { icon: TbChartDots, from: "#059669", to: "#047857" },
-  "GenAI": { icon: TbSparkles, from: "#ea580c", to: "#c2410c" },
+  GenAI: { icon: TbSparkles, from: "#ea580c", to: "#c2410c" },
   "Web Development": { icon: TbWorldWww, from: "#2563eb", to: "#1d4ed8" },
 };
 const defaultStyle = { icon: TbBulb, from: "#0d9488", to: "#0f766e" };
 const getDomainStyle = (name) => domainStyle[name] || defaultStyle;
 
-// const initials = (name = "") =>
-//   name
-//     .split(" ")
-//     .map((w) => w[0])
-//     .join("")
-//     .slice(0, 2)
-//     .toUpperCase();
 
 function TechCommunityLanding() {
   const email = getItem("email");
   const role = getItem("role");
+  const [filter, setFilter] = useState("current_month");
+  const [limit, setLimit] = useState(10);
+   const months = getLast3MonthsName();
+  const { topContributors, topContributorsLoading } = useTopContributors(
+      email,
+      limit,
+      filter
+    );
 
   // ── real membership toggle logic — unchanged from before ──
   const { authorCommunity, setAuthorCommunity } = useAuthorCommunity(email);
   const { communityStats, statsLoader, setcommunityStats, getCommunityStats } = useGetCommunityStats();
-  // ── sample data for now, per-field swap points noted above ──
-  // const [communities, setCommunities] = useState(
-  //   communityLandingSample.communities
-  // );
+  
   const loading = false; // swap for your hook's loading flag
 
   const [loadingDomains, setLoadingDomains] = useState(new Set());
   const [activeFilter, setActiveFilter] = useState("all");
 
- 
   // const updateCommunity = async (techCommunityName, communityId) => {
   //   if (loadingDomains.has(techCommunityName)) return;
 
@@ -284,60 +170,60 @@ function TechCommunityLanding() {
   //     });
   //   }
   // };
-const updateCommunity = async (email, techCommunity) => {
-  if (loadingDomains.has(techCommunity)) return;
+  const updateCommunity = async (email, techCommunity) => {
+    if (loadingDomains.has(techCommunity)) return;
 
-  setLoadingDomains((prev) => new Set(prev).add(techCommunity));
+    setLoadingDomains((prev) => new Set(prev).add(techCommunity));
 
-  const isJoined = authorCommunity?.includes(techCommunity);
+    const isJoined = authorCommunity?.includes(techCommunity);
 
-  try {
-    const response = await axiosInstance.put(
-      "/blog/author/control/updateCommunity",
-      { email, techcommunity: techCommunity }
-    );
-
-    // optimistic update — legacy community array
-    if (isJoined) {
-      setAuthorCommunity((prev) => prev.filter((c) => c !== techCommunity));
-    } else {
-      setAuthorCommunity((prev) => [...new Set([...prev, techCommunity])]);
-    }
-
-    // optimistic update — new landing page userRole, matched by name
-    setcommunityStats((prev) =>
-      prev.map((c) =>
-        c.name === techCommunity
-          ? {
-              ...c,
-              userRole: isJoined ? null : "member",
-              memberCount: c.memberCount + (isJoined ? -1 : 1),
-            }
-          : c
-      )
-    );
-
-    if (response.status === 201) {
-      toast[isJoined ? "info" : "success"](
-        isJoined ? "Left" : "Joined",
-        isJoined
-          ? "You have left the community!"
-          : "You have joined the community!"
+    try {
+      const response = await axiosInstance.put(
+        "/blog/author/control/updateCommunity",
+        { email, techcommunity: techCommunity },
       );
-      // getCommunityStats();
-    }
-  } catch (err) {
-    console.log("error", err);
-  } finally {
-    setLoadingDomains((prev) => {
-      const updated = new Set(prev);
-      updated.delete(techCommunity);
-      return updated;
-    });
-  }
-};
 
- const filteredCommunities = useMemo(() => {
+      // optimistic update — legacy community array
+      if (isJoined) {
+        setAuthorCommunity((prev) => prev.filter((c) => c !== techCommunity));
+      } else {
+        setAuthorCommunity((prev) => [...new Set([...prev, techCommunity])]);
+      }
+
+      // optimistic update — new landing page userRole, matched by name
+      setcommunityStats((prev) =>
+        prev.map((c) =>
+          c.name === techCommunity
+            ? {
+                ...c,
+                userRole: isJoined ? null : "member",
+                memberCount: c.memberCount + (isJoined ? -1 : 1),
+              }
+            : c,
+        ),
+      );
+
+      if (response.status === 201) {
+        toast[isJoined ? "info" : "success"](
+          isJoined ? "Left" : "Joined",
+          isJoined
+            ? "You have left the community!"
+            : "You have joined the community!",
+        );
+        // getCommunityStats();
+      }
+    } catch (err) {
+      console.log("error", err);
+    } finally {
+      setLoadingDomains((prev) => {
+        const updated = new Set(prev);
+        updated.delete(techCommunity);
+        return updated;
+      });
+    }
+  };
+
+  const filteredCommunities = useMemo(() => {
     // const list = [...communities];
     const list = [...communityStats];
     switch (activeFilter) {
@@ -363,44 +249,45 @@ const updateCommunity = async (email, techCommunity) => {
 
   // console.log("communityStats", communityStats);
   // console.log("statsLoader", statsLoader);
+  // console.log("topContributors", topContributors);
 
   const containerVariants = {
-  hidden: {
-    opacity: 0,
-  },
-  show: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.05,
-      delayChildren: 0.03,
+    hidden: {
+      opacity: 0,
     },
-  },
-};
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.05,
+        delayChildren: 0.03,
+      },
+    },
+  };
 
-const cardVariants = {
-  hidden: {
-    opacity: 0,
-    y: 18,
-    scale: 0.96,
-  },
-  show: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: {
-      duration: 0.35,
-      ease: [0.22, 1, 0.36, 1],
+  const cardVariants = {
+    hidden: {
+      opacity: 0,
+      y: 18,
+      scale: 0.96,
     },
-  },
-  exit: {
-    opacity: 0,
-    y: -12,
-    scale: 0.96,
-    transition: {
-      duration: 0.2,
+    show: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        duration: 0.35,
+        ease: [0.22, 1, 0.36, 1],
+      },
     },
-  },
-};
+    exit: {
+      opacity: 0,
+      y: -12,
+      scale: 0.96,
+      transition: {
+        duration: 0.2,
+      },
+    },
+  };
 
   const CommunityCard = ({ item }) => {
     const style = getDomainStyle(item.name);
@@ -458,11 +345,11 @@ const cardVariants = {
 
             <div className="flex mt-1 md:mt-3 items-center">
               {item.profiles.slice(0, 4).map((p, i) => (
-                <>
+                <div
+                key={p.email}>
                   {p.profile ? (
-                   
                     <img
-                      key={p._id}
+                      key={p.email}
                       src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${p.profile}`}
                       alt={p.name}
                       style={{
@@ -482,7 +369,7 @@ const cardVariants = {
                       {initials(p.name)}
                     </div>
                   )}
-                </>
+                </div>
               ))}
               {item.memberCount > 4 && (
                 <span className="text-[10px] md:text-xs text-gray-500 ml-1.5">
@@ -509,43 +396,41 @@ const cardVariants = {
             </span>
           )}
 
-         {item.userRole === "coordinator" ? (
-  <div
-    className="text-xs font-semibold px-3.5 py-1.5 rounded-full"
-    style={{ background: `${style.from}22`, color: style.from }}
-  >
-    Coordinating
-  </div>
-) : item.userRole === "member" ? (
-  <button
-    type="button"
-    onClick={() => updateCommunity(email, item.name)}
-    disabled={isLoading}
-    className="text-xs font-semibold px-3.5 py-1.5 rounded-full border border-white/10 bg-white/5 text-gray-300 disabled:opacity-50"
-  >
-    {isLoading ? "Leaving..." : "✓ Joined"}
-  </button>
-) : (
-  <>
-    {role === "student" ? (
-      <button
-        type="button"
-        onClick={() => updateCommunity(email, item.name)}
-        disabled={isLoading}
-        className="text-xs font-semibold px-3.5 py-1.5 rounded-full text-white disabled:opacity-50"
-        style={{ background: style.from }}
-      >
-        {isLoading ? "Joining..." : "+ Join"}
-      </button>
-    ) : (
-      <div
-        className="text-xs font-semibold px-3.5 py-1.5 border border-neutral-700 rounded-full text-white disabled:opacity-50"
-      >
-        {role === "coordinator" ? "Contributor" : "Maintainer"}
-      </div>
-    )}
-  </>
-)}
+          {item.userRole === "coordinator" ? (
+            <div
+              className="text-xs font-semibold px-3.5 py-1.5 rounded-full"
+              style={{ background: `${style.from}22`, color: style.from }}
+            >
+              Coordinating
+            </div>
+          ) : item.userRole === "member" ? (
+            <button
+              type="button"
+              onClick={() => updateCommunity(email, item.name)}
+              disabled={isLoading}
+              className="text-xs font-semibold px-3.5 py-1.5 rounded-full border border-white/10 bg-white/5 text-gray-300 disabled:opacity-50"
+            >
+              {isLoading ? "Leaving..." : "✓ Joined"}
+            </button>
+          ) : (
+            <>
+              {role === "student" ? (
+                <button
+                  type="button"
+                  onClick={() => updateCommunity(email, item.name)}
+                  disabled={isLoading}
+                  className="text-xs font-semibold px-3.5 py-1.5 rounded-full text-white disabled:opacity-50"
+                  style={{ background: style.from }}
+                >
+                  {isLoading ? "Joining..." : "+ Join"}
+                </button>
+              ) : (
+                <div className="text-xs font-semibold px-3.5 py-1.5 border border-neutral-700 rounded-full text-white disabled:opacity-50">
+                  {role === "coordinator" ? "Contributor" : "Maintainer"}
+                </div>
+              )}
+            </>
+          )}
         </div>
       </div>
     );
@@ -555,7 +440,7 @@ const cardVariants = {
     <div className="min-h-screen theme text-white flex flex-col">
       <NavBar />
 
-      <div className="flex-grow px-4  relative max-w-[1800px] mx-auto w-full pb-20">
+      <div className="flex-grow px-4 md:px-12  relative max-w-[1800px] mx-auto w-full pb-20">
         {/* ── Hero header ── */}
         <div className="pt-3  relative pb-1 md:pb-3 text-center">
           <h1 className="text-2xl md:text-4xl font-bold text-gray-200 leading-none mb-2">
@@ -602,7 +487,6 @@ const cardVariants = {
 
         {/* ── Main layout: communities left, leaderboard + streak right ── */}
         <div className="grid grid-cols-1 md:gird-cols-2 lg:grid-cols-4 gap-6 items-start">
-          
           {/* ── Main column ── */}
 
           {/* ── Sidebar ── */}
@@ -611,22 +495,33 @@ const cardVariants = {
             <h3 className="text-sm md:ml-2 font-semibold text-gray-300 ">
               Overall Leaderboard
             </h3>
-            <div className="theme border border-[#1e293b] rounded-2xl p-4">
+            {!topContributorsLoading?
+              <div className="theme border border-[#1e293b] rounded-2xl p-4">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2 text-sm font-semibold text-gray-200">
                   <TbTrophy className="text-amber-400" />
                   Top contributors
                 </div>
-                <span className="text-[10px] text-gray-500 capitalize">
-                  {topContributorsSample.period}
-                </span>
+                
+                <select
+                      value={filter}
+                      onChange={(e) => setFilter(e.target.value)}
+                      className="theme outline-none text-gray-200 cursor-pointer text-xs rounded px-2 py-1 border border-[#334155]"
+                    >
+                      <option value="overall">Overall</option>
+                      {Object.keys(months).map((key) => (
+                        <option key={key} value={key}>
+                          {key==="current_month"? "This Month": months[key]}
+                        </option>
+                      ))} 
+                    </select>
               </div>
 
-              <div className="flex flex-col gap-1">
-                {topContributorsSample.contributors.map((c, i) => {
+              <div className="flex flex-col overflow-y-auto overflow-x-hidden scrollbar-hide max-h-96 gap-1">
+                {topContributors.slice(0,4)?.map((c, i) => {
                   const rank = i + 1;
                   const isYou =
-                    c.email === topContributorsSample.currentUserEmail;
+                    c.email === email;
                   const medalColors = ["#00f01c", "#cd7f32", "#8f9296"];
 
                   return (
@@ -674,23 +569,25 @@ const cardVariants = {
                           isYou ? "text-emerald-400" : "text-gray-400"
                         }`}
                       >
-                        {c.points}
+                        {c.postsCount} Posts
                       </span>
                     </div>
                   );
                 })}
+          
               </div>
-            </div>
+            </div>:
+            <TechCommunityTopContributorsSkeleton/>}
           </div>
 
-          <div className="md:col-span-2 col-span-1 order-3 md:order-2">
+          {<div className="md:col-span-3 col-span-1 order-3 md:order-2">
             {statsLoader ? (
               <div className="grid grid-cols-1 sm:grid-cols-2  gap-5">
                 {/* <CommunityCardSkeleton /> */}
                 <h3 className="text-sm col-span-full font-semibold text-gray-300 ">
-                      Your Communities
-                    </h3>
-                 {[...Array(8)].map((_, index) => (
+                  Your Communities
+                </h3>
+                {[...Array(8)].map((_, index) => (
                   <CommunityCardSkeleton key={index} />
                 ))}
               </div>
@@ -702,94 +599,91 @@ const cardVariants = {
                       Your Communities
                     </h3>
                     {/* <div className="grid grid-cols-1 sm:grid-cols-2  gap-5"> */}
-                      <motion.div
+                    <motion.div
                       layout
                       variants={containerVariants}
                       initial="hidden"
                       animate="show"
                       className="grid grid-cols-1 sm:grid-cols-2 gap-5"
->
+                    >
                       {yourCommunities.map((item) => (
                         <CommunityCard key={item._id} item={item} />
                       ))}
-                      </motion.div>
+                    </motion.div>
                     {/* </div> */}
-                    
                   </div>
                 )}
 
-                {exploreCommunities.length> 0 &&
+                {exploreCommunities.length > 0 && (
                   <div>
-                  <h3 className="text-sm font-semibold text-gray-300 mb-3">
-                    Explore Communities
-                  </h3>
-                  {/* <div className="grid grid-cols-1 sm:grid-cols-2  gap-5"> */}
+                    <h3 className="text-sm font-semibold text-gray-300 mb-3">
+                      Explore Communities
+                    </h3>
+                    {/* <div className="grid grid-cols-1 sm:grid-cols-2  gap-5"> */}
                     <motion.div
                       layout
                       variants={containerVariants}
                       initial="hidden"
                       animate="show"
                       className="grid grid-cols-1 sm:grid-cols-2 gap-5"
-                      >                    
-{exploreCommunities.map((item) => (
-                      <CommunityCard key={item._id} item={item} />
-                    ))}
+                    >
+                      {exploreCommunities.map((item) => (
+                        <CommunityCard key={item._id} item={item} />
+                      ))}
                     </motion.div>
 
-                  {/* </div> */}
-                </div>}
+                    {/* </div> */}
+                  </div>
+                )}
               </>
             ) : (
               // <div>
-                <AnimatePresence mode="wait">
-  <motion.div
-    key={activeFilter}
-    initial={{ opacity: 0, y: 12 }}
-    animate={{ opacity: 1, y: 0 }}
-    exit={{ opacity: 0, y: -12 }}
-    transition={{
-      duration: 0.3,
-      ease: [0.22, 1, 0.36, 1],
-    }}
-  >
-                <h3 className="text-sm font-semibold text-gray-300 mb-3">
-                  {FILTERS.find((f) => f.value === activeFilter)?.label}
-                  <span className="text-gray-500 font-normal ml-1.5">
-                    ({filteredCommunities.length})
-                  </span>
-                </h3>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeFilter}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -12 }}
+                  transition={{
+                    duration: 0.3,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
+                >
+                  <h3 className="text-sm font-semibold text-gray-300 mb-3">
+                    {FILTERS.find((f) => f.value === activeFilter)?.label}
+                    <span className="text-gray-500 font-normal ml-1.5">
+                      ({filteredCommunities.length})
+                    </span>
+                  </h3>
 
-                {filteredCommunities.length > 0 ? (
-                  // <div className="grid grid-cols-1 sm:grid-cols-2  gap-5">
+                  {filteredCommunities.length > 0 ? (
+                    // <div className="grid grid-cols-1 sm:grid-cols-2  gap-5">
                     <motion.div
-  layout
-  variants={containerVariants}
-  initial="hidden"
-  animate="show"
-  className="grid grid-cols-1 sm:grid-cols-2 gap-5"
->
-                    
-                    {filteredCommunities.map((item) => (
-                      <CommunityCard key={item._id} item={item} />
-                    ))}
+                      layout
+                      variants={containerVariants}
+                      initial="hidden"
+                      animate="show"
+                      className="grid grid-cols-1 sm:grid-cols-2 gap-5"
+                    >
+                      {filteredCommunities.map((item) => (
+                        <CommunityCard key={item._id} item={item} />
+                      ))}
                     </motion.div>
-          
-                ) : (
-                  <p className="text-xs text-gray-500">
-                    No communities posted anything this week yet.
-                  </p>
-                )}
+                  ) : (
+                    <p className="text-xs text-gray-500">
+                      No communities posted anything this week yet.
+                    </p>
+                  )}
                 </motion.div>
-  </AnimatePresence>
+              </AnimatePresence>
               // </div>
             )}
-          </div>
+          </div>}
 
-          <div className="flex col-span-1 w-full  lg:order-3 order-2 md:col-span-2 lg:col-span-1 flex-col gap-2 lg:sticky lg:top-16">
+          {/* <div className="flex col-span-1 w-full  lg:order-3 order-2 md:col-span-2 lg:col-span-1 flex-col gap-2 lg:sticky lg:top-16">
             <h3 className="text-sm md:ml-2 font-semibold text-gray-300 ">
               Performance Tracker
             </h3>
-            {/* Streak */}
             <div className="w-full theme border   border-[#1e293b] rounded-2xl p-4">
               <div className="flex items-center gap-2 text-sm font-semibold text-gray-200 mb-2">
                 <TbFlame className="text-amber-400" />
@@ -806,7 +700,7 @@ const cardVariants = {
                 {streakSample.longestStreak} days
               </p>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
 
