@@ -19,6 +19,7 @@ import { BsTag } from "react-icons/bs";
 import { TfiTag } from "react-icons/tfi";
 import { SlTag } from "react-icons/sl";
 import { motion, AnimatePresence } from "framer-motion";
+import formatCount from "../utils/NumberConversion";
 function ViewTutorPlaylist() {
   // const email = localStorage.getItem("email");
   const email = getItem("email");
@@ -245,41 +246,19 @@ function ViewTutorPlaylist() {
             {/* LEFT PANEL (Banner + Info) */}
             <div className="lg:col-span-1 md:hidden  p-1 md:sticky top-4 self-start  md:p-0 space-y-2 md:space-y-4">
               {/* Banner */}
-              {/* <div className="relative rounded-xl   overflow-hidden bg-black border border-gray-700">
-                <img
-                  src={
-                    playlistData.thumbnail
-                      ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.thumbnail}`
-                      : blog1
-                  }
-                  onClick={() =>
-                    handleImageClick(
-                      playlistData.thumbnail
-                        ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.thumbnail}`
-                        : blog1,
-                    )
-                  }
-                  alt="Playlist Banner"
-                  className="w-full h-48 md:h-[60vh]  object-cover md:object-contain"
-                />
-                <span className="absolute bottom-2 right-2 bg-black/80 text-white flex items-center gap-1 text-[10px] px-2 py-1 rounded-full">
-                          <SlTag className="text-[11px] " />  {playlistData?.domain}
-                          </span>
-                
-              </div> */}
-
+           
               <div className="relative">
                 <div
                   className="absolute bottom-2 left-3 w-[95%] h-full 
-        bg-zinc-600 rounded-xl border border-zinc-700 
-         z-0"
+                    bg-zinc-600 rounded-xl border border-zinc-700 
+                    z-0"
                 />
 
                 {/* STACK LAYER 2 (MIDDLE) */}
                 <div
                   className="absolute bottom-1 left-1.5 w-[97%] h-full 
-        bg-zinc-700 rounded-xl border border-zinc-800 
-         z-10"
+                    bg-zinc-700 rounded-xl border border-zinc-800 
+                    z-10"
                 />
 
                 <div className="relative rounded-xl z-20 md:hover:-translate-y-1  overflow-hidden bg-black border border-gray-700 transition-transform duration-300 hover:-translate-y-1 group">
@@ -317,19 +296,12 @@ function ViewTutorPlaylist() {
 
                     <div className="">
                       <h1 className="font-semibold uppercase tracking-wide flex items-center gap-1 mb-1  text-gray-400 text-[11px]">
-                        Contributors
-                        {/* <span
-                          onClick={() => {
-                            setShowContributors(!showContributors);
-                          }}
-                          className=" cursor-pointer  "
-                        >
-                          {!showContributors ? (
-                            <MdArrowDropDown className="text-xl" />
-                          ) : (
-                            <IoMdArrowDropup className="text-xl" />
-                          )}
-                        </span> */}
+                        Contributors {" "}
+                       {playlistData?.collaborators?.length >0 &&
+                       <span className="text-white rounded-full px-1.5 py-0.5 text-[9px] border border-neutral-700">
+                        {formatCount(playlistData?.collaborators?.length?? 0)}
+                       </span>
+                      }
                         <motion.span
                           whileTap={{ scale: 0.9 }}
                           animate={{
@@ -375,8 +347,33 @@ function ViewTutorPlaylist() {
                               className="flex -space-x-2 cursor-pointer"
                               onClick={() => setShowContributors(true)}
                             >
-                              {/* avatars */}
 
+                               {playlistData?.collaborators?.length > 5 && (
+                
+                              <div
+                                whileHover={{ scale: 1.08 }}
+                                whileTap={{ scale: 0.95 }}
+                                className="
+                                  h-6
+                                  w-6
+                                  md:w-7
+                                  md:h-7
+                                  p-2
+                                  mr-2
+                                rounded-full
+                                border border-white/10
+                                bg-white/[0.05]
+                                text-[11px]
+                                font-semibold
+                                text-gray-200
+                                flex flex-col t justify-center items-center
+                              "
+                              >
+                                <p> +{formatCount(playlistData?.collaborators?.length - 5) } </p>
+                              </div>
+                            )}
+
+                              {/* avatars */}
                               {playlistData?.collaborators?.slice(0,4).map((collab) => (
                                 <>
                                   {collab.profile ? (
@@ -449,7 +446,7 @@ function ViewTutorPlaylist() {
                               duration: 0.35,
                               ease: [0.22, 1, 0.36, 1],
                             }}
-                            className="overflow-hidden"
+                            className="overflow-hidden max-h-56 overflow-x-hidden overflow-y-auto scrollbar-hide"
                           >
                             <motion.div
                               variants={{
@@ -606,65 +603,20 @@ function ViewTutorPlaylist() {
 
             {/* LEFT PANEL (Banner + Info) */}
             <div className="lg:col-span-1 hidden md:block lg:sticky top-6 self-start space-y-4">
-              {/* HERO BANNER */}
-              {/* <div className="relative rounded-2xl overflow-hidden border border-gray-800 shadow-xl group">
-                <img
-                  src={
-                    playlistData.thumbnail
-                      ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.thumbnail}`
-                      : blog1
-                  }
-                  onClick={() =>
-                    handleImageClick(
-                      playlistData.thumbnail
-                        ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.thumbnail}`
-                        : blog1,
-                    )
-                  }
-                  alt="Playlist Banner"
-                  className="w-full h-[260px] md:h-[50vh] cursor-pointer object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-
-               
-                <div
-                  onClick={() =>
-                    handleImageClick(
-                      playlistData.thumbnail
-                        ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.thumbnail}`
-                        : blog1,
-                    )
-                  }
-                  className="absolute inset-0 bg-gradient-to-t cursor-pointer from-black via-black/10 to-transparent"
-                />
-
-          
-                <div className="absolute bottom-4 left-4 right-4 space-y-2">
-                  <h1 className="text-xl md:text-2xl font-semibold text-white leading-snug">
-                    {playlistData?.domain}
-                  </h1>
-
-                  <div className="flex items-center justify-between">
-                    <p className="text-xs md:text-sm text-gray-300">
-                      Playlist • {playlistData?.post_ids?.length} posts
-                    </p>
-
-                  
-                  </div>
-                </div>
-              </div> */}
+  
 
               <div className="relative">
                 <div
                   className="absolute bottom-2 left-3 w-[95%] h-full 
-        bg-zinc-600 rounded-xl border border-zinc-700 
-         z-0"
+                  bg-zinc-600 rounded-xl border border-zinc-700 
+                  z-0"
                 />
 
                 {/* STACK LAYER 2 (MIDDLE) */}
                 <div
                   className="absolute bottom-1 left-1.5 w-[97%] h-full 
-        bg-zinc-700 rounded-xl border border-zinc-800 
-         z-10"
+                  bg-zinc-700 rounded-xl border border-zinc-800 
+                  z-10"
                 />
 
                 <div className="relative z-20 w-[99%] rounded-2xl overflow-hidden border border-gray-800 shadow-xl transition-transform duration-300 hover:-translate-y-1 group">
@@ -707,31 +659,6 @@ function ViewTutorPlaylist() {
                       <p className="text-xs md:text-sm text-gray-300">
                         Playlist • {playlistData?.post_ids?.length} posts
                       </p>
-
-                      {/* <div className="flex items-center gap-3">
-                    
-                      <button
-                        onClick={() => addBookMarkPostIdPlaylist(playlistData._id)}
-                        className="text-teal-400 hover:text-teal-300 transition"
-                      >
-                        {Array.isArray(playlistbookMarkId) &&
-                        playlistbookMarkId.includes(playlistData._id) ? (
-                          <PiBookmarksSimpleFill className="text-xl" />
-                        ) : (
-                          <PiBookmarksSimpleLight className="text-xl" />
-                        )}
-                      </button>
-
-                     
-                      <button
-                        onClick={() =>
-                          sharePlayList(playlistData.title, playlistData._id)
-                        }
-                        className="text-teal-400 hover:text-teal-300 transition"
-                      >
-                        <IoShareSocial className="text-xl" />
-                      </button>
-                    </div> */}
                     </div>
                   </div>
                 </div>
@@ -745,7 +672,13 @@ function ViewTutorPlaylist() {
 
                   <div className="">
                     <h1 className="font-medium tracking-wide uppercase flex items-center gap-2 mb-1 text-gray-400 text-xs ">
-                      Contributors
+                      Contributors {" "}
+                     
+                      {playlistData?.collaborators?.length >0 &&
+                       <span className="text-white rounded-full px-2 py-0.5 text-xs border border-neutral-700">
+                        {playlistData?.collaborators?.length}
+                       </span>
+                      }
                       {/* <span
                         onClick={() => {
                           setShowContributors(!showContributors);
@@ -805,7 +738,32 @@ function ViewTutorPlaylist() {
                             >
                               {/* avatars */}
 
-                              {playlistData?.collaborators?.slice(0,12).map((collab) => (
+                              {playlistData?.collaborators?.length > 5 && (
+                
+                              <div
+                                whileHover={{ scale: 1.08 }}
+                                whileTap={{ scale: 0.95 }}
+                                className="
+                                  h-6
+                                  w-6
+                                  md:w-7
+                                  md:h-7
+                                  p-2
+                                  mr-2
+                                rounded-full
+                                border border-white/10
+                                bg-white/[0.05]
+                                text-[11px]
+                                font-semibold
+                                text-gray-200
+                                flex flex-col t justify-center items-center
+                              "
+                              >
+                                <p> +{formatCount(playlistData?.collaborators?.length - 5) } </p>
+                              </div>
+                            )}
+
+                              {playlistData?.collaborators?.slice(0,4).map((collab) => (
                                 <>
                                   {collab.profile ? (
                                     <img
@@ -890,7 +848,7 @@ function ViewTutorPlaylist() {
                               }}
                               initial="hidden"
                               animate="show"
-                              className="w-full flex flex-col justify-center gap-0"
+                              className="w-full flex flex-col md:max-h-52 overflow-x-hidden overflow-y-auto scrollbar-hide justify-center gap-0"
                             >
                               {/* Author */}
                               <motion.div
@@ -1052,15 +1010,15 @@ function ViewTutorPlaylist() {
                     to={`/viewpage/${playlistData.email}/${post._id}`}
                     onClick={() => postViews(playlistData.email, post._id)}
                     className="
-            relative
-            w-28
-            md:w-40
-            h-20
-            md:h-24
-            flex-shrink-0
-            rounded-md
-            overflow-hidden
-          "
+                      relative
+                      w-28
+                      md:w-40
+                      h-20
+                      md:h-24
+                      flex-shrink-0
+                      rounded-md
+                      overflow-hidden
+                    "
                   >
                     <img
                       src={

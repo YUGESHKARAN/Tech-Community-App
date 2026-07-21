@@ -10,7 +10,7 @@ const TechCommunityTopContributorsSkeleton = ()=> {
       </div>
 
       {/* Contributors */}
-      <div className="flex flex-col gap-2">
+      <div className="flex max-h-52 md:max-h-96 overflow-y-auto srollbar-hide flex-col gap-2">
         {[...Array(4)].map((_, i) => (
           <div
             key={i}

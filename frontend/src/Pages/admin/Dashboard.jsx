@@ -427,7 +427,7 @@ function Dashboard() {
                     </select>
                   </div>
 
-                  <div className="flex overflow-y-auto overflow-x-hidden scrollbar-hide h-52 flex-col gap-2">
+                  <div className="flex overflow-y-auto overflow-x-hidden scrollbar-hide h-52 flex-col md:gap-2">
                     {topContributors.map((u, i) => 
                    {
                     const isYou =
@@ -455,20 +455,20 @@ function Dashboard() {
                           {i + 1} {i+1<10 && '  '}
                         </span> */}
                          {rank <= 3 ? (
-                                                <div
-                                                  className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
-                                                  style={{ background: `${medalColors[rank - 1]}33` }}
-                                                >
-                                                  <TbCrown
-                                                    className="text-[11px]"
-                                                    style={{ color: medalColors[rank - 1] }}
-                                                  />
-                                                </div>
-                                              ) : (
-                                                <span className="w-5 text-center text-[11px] text-gray-500 font-medium flex-shrink-0">
-                                                  {rank}
-                                                </span>
-                                              )}
+                          <div
+                            className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
+                            style={{ background: `${medalColors[rank - 1]}33` }}
+                          >
+                            <TbCrown
+                              className="text-[11px]"
+                              style={{ color: medalColors[rank - 1] }}
+                            />
+                          </div>
+                        ) : (
+                          <span className="w-5 text-center text-[11px] text-gray-500 font-medium flex-shrink-0">
+                            {rank}
+                          </span>
+                        )}
                         {!u.profile ? (
                           <div
                             className="md:w-8 md:h-8 w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold text-white shrink-0"

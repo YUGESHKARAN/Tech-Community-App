@@ -33,6 +33,7 @@ import useTopContributors from "../hooks/admins/useTopContributors";
 import { getLast3MonthsName } from "../utils/dateFunction";
 import TopContributorsSkeleton from "../components/loaders/dashboard/TopContributorsSkeleton";
 import TechCommunityTopContributorsSkeleton from "../components/loaders/TechCommunityTopContributorsSkeleton";
+import BadgeIcons from "../components/achievements/BadgeIcons";
 
 
 
@@ -425,7 +426,7 @@ function TechCommunityLanding() {
                   key={f.value}
                   type="button"
                   onClick={() => setActiveFilter(f.value)}
-                  className={`flex items-center gap-1.5 text-xs font-medium md:px-3.5 px-2 py-1 md:py-1.5 rounded-full border transition-colors 
+                  className={`flex items-center gap-1.5 text-xs font-medium md:px-3.5 px-2.5 justify-center py-1 md:py-1.5 rounded-full border transition-colors 
             ${
               isActive
                 ? // ? "bg-emerald-500 text-black border-transparent"
@@ -478,8 +479,8 @@ function TechCommunityLanding() {
                     </select>
               </div>
 
-              <div className="flex flex-col overflow-y-auto overflow-x-hidden scrollbar-hide max-h-96 gap-1">
-                {topContributors.slice(0,4)?.map((c, i) => {
+              <div className="flex flex-col overflow-y-auto overflow-x-hidden scrollbar-hide max-h-52 md:max-h-96 gap-1">
+                {topContributors?.map((c, i) => {
                   const rank = i + 1;
                   const isYou =
                     c.email === email;
@@ -533,6 +534,12 @@ function TechCommunityLanding() {
                           </span>
                         )}
                       </span>
+
+                       <BadgeIcons
+                          badges={c?.badges}
+                          parentClass="static  -space-x-2"
+                          shieldClassName="w-4 h-4 md:h-4 md:w-4"
+                        />
 
                       <span
                         className={`text-[11px] whitespace-nowrap ${

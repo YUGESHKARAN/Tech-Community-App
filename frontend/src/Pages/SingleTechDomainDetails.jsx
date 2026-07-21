@@ -278,7 +278,7 @@ function SingleTechDomainDetails() {
             {[
               { label: "Coordinators" },
               { label: "Posts" },
-              { label: "Members" },
+              { label: "Total Members" },
             ].map(({ label }, i) => (
               <div
                 key={i}
@@ -297,7 +297,7 @@ function SingleTechDomainDetails() {
             {[
               { label: "Coordinators", value: categoryStats?.authorcount || 0 },
               { label: "Posts", value: categoryStats?.postscount || 0 },
-              { label: "Members", value: categoryStats?.followerscount || 0 },
+              { label: "Total Members", value: categoryStats?.followerscount || 0 },
             ].map(({ label, value }, i) => (
               <div key={i} className="flex flex-col px-7 py-4 bg-white/[0.03]">
                 {/* <span className="text-xl font-medium text-center text-white tracking-tight">
