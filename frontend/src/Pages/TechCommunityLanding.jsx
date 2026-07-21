@@ -426,7 +426,7 @@ function TechCommunityLanding() {
                   key={f.value}
                   type="button"
                   onClick={() => setActiveFilter(f.value)}
-                  className={`flex items-center gap-1.5 text-xs font-medium md:px-3.5 px-2 py-1 md:py-1.5 rounded-full border transition-colors 
+                  className={`flex items-center gap-1.5 text-xs font-medium md:px-3.5 px-2.5 justify-center py-1 md:py-1.5 rounded-full border transition-colors 
             ${
               isActive
                 ? // ? "bg-emerald-500 text-black border-transparent"
