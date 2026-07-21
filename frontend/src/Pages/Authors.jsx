@@ -24,34 +24,24 @@ import highlightText from "../hooks/highlightText";
 import BadgeIcons from "../components/achievements/BadgeIcons";
 import formatCount from "../utils/NumberConversion";
 function Authors() {
+
   const [authors, setAuthors] = useState([]);
-  // const email = localStorage.getItem("email");
   const email = getItem("email");
   const [roleFilter, setRoleFilter] = useState("");
   const [follow, setFollow] = useState(false);
   const [recommendation, setRecommendation] = useState([]);
   const [loading, setLoading] = useState(false);
   const token = Cookies.get("token");
+
   // Search query
   const [searchQuery, setSearchQuery] = useState("");
-  // const [filteredAuthors, setFilteredAuthors] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const limit = 20;
   const isFetching = useRef(false);
-  // const [followAuthorLoaderId, setFollowAuthorLoaderId] = useState(null);
   const [followLoadingIds, setFollowLoadingIds] = useState(new Set());
   const [showAuthorFilter, setShowAuthorFilter] = useState(false);
-  // const authorsDetails = async () => {
-  //   try {
-  //     const response = await axiosInstance.get("/blog/author/profiles/");
-  //     // const response = await axiosInstance.get('http://127.0.0.1:3000/blog/author/profiles/');
-  //     setAuthors(response.data.filter((author) => author.email !== email));
-  //     // setAuthors(response.data);
-  //   } catch (err) {
-  //     console.error("error", err);
-  //   }
-  // };
+
   const authorsDetails = async () => {
     if (!hasMore || isFetching.current) return; // IMPORTANT
 
@@ -99,31 +89,6 @@ function Authors() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [page, hasMore]);
 
-  // Search quary
-  // useEffect(() => {
-  //   filterAndSearch();
-  // }, [searchQuery, roleFilter, authors]);
-
-  // const filterAndSearch = () => {
-  //   let filtered = authors;
-
-  //   if (searchQuery.trim() !== "") {
-  //     const query = searchQuery.toLowerCase();
-  //     filtered = filtered.filter(
-  //       (author) =>
-  //         author.authorName?.toLowerCase().includes(query) ||
-  //         "" ||
-  //         author.email?.toLowerCase().includes(query) ||
-  //         "",
-  //     );
-  //   }
-
-  //   if (roleFilter !== "") {
-  //     filtered = filtered.filter((author) => author.role === roleFilter);
-  //   }
-
-  //   setFilteredAuthors(filtered);
-  // };
 
   const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
 
@@ -169,7 +134,7 @@ function Authors() {
         },
       );
 
-      // console.log("recommedation data",response.data)
+      console.log("recommedation data",response.data)
       setRecommendation(response.data.recommended_people);
     } catch (err) {
       console.log("error", err);
@@ -180,46 +145,7 @@ function Authors() {
     recommendtion_system();
   }, []);
 
-  // const addFollower = async (userEmail) => {
 
-  //   setFollowAuthorLoaderId(userEmail);
-
-  //   try {
-
-  //     const response = await axiosInstance.put(
-  //       `/blog/author/follow/${userEmail}`,
-  //       { emailAuthor: email },
-  //     );
-
-  //     if (response.status === 200) {
-  //       setAuthors((prev) =>
-  //         prev.map((author) => {
-  //           if (author.email === userEmail) {
-  //             const isFollowing = author.followers?.includes(email);
-
-  //             return {
-  //               ...author,
-  //               followers: isFollowing
-  //                 ? author.followers.filter((f) => f !== email)
-  //                 : [...(author.followers || []), email],
-  //             };
-  //           }
-  //           return author;
-  //         }),
-  //       );
-  //     }
-
-  //   } catch (err) {
-  //     console.log("error", err);
-  //   }
-  //   finally{
-  //     setFollowAuthorLoaderId(null)
-  //   }
-  // };
-
-  // const recommendedAuthors = authors
-  //   .filter((author) => recommendation.includes(author.email))
-  //   .filter((author) => author.role === "coordinator");
 
   const addFollower = async (userEmail) => {
     setFollowLoadingIds((prev) => new Set(prev).add(userEmail));
@@ -273,14 +199,7 @@ function Authors() {
       threshold: 0.1, // lower = stricter search
     });
   }, [rcmdAuthors]);
-  // const recommendedAuthors = useMemo(() => {
 
-  //   return authors.filter(
-  //     (author) =>
-  //       recommendationSet.has(author.email) &&
-  //       author.role === "coordinator"
-  //   );
-  // }, [authors, searchQuery, recommendationSet]);
 
   const recommendedAuthors = useMemo(() => {
     let filtered = authors.filter(
@@ -312,14 +231,12 @@ function Authors() {
     };
   }, []);
 
+  // console.log("authors", authors)
+  console.log("recommendation", recommendation)
+
   return (
     <div className="w-full min-h-screen theme ">
       <NavBar />
-
-      {/* <h1 className=" text-3xl py-4  w-11/12 flex items-center gap-2 mx-auto md:text-3xl font-bold text-white tracking-wide">
-        <IoIosGitNetwork />
-        <span className="group text-white">My Network </span>{" "}
-      </h1> */}
 
       <div className="w-full max-w-[1800px] mx-auto px-4 mx-auto flex items-center gap-2 md:gap-3 py-3 md:pt-6">
         <IoIosGitNetwork className="text-green-400 text-xl md:text-3xl" />
@@ -340,34 +257,9 @@ function Authors() {
             placeholder="Search by name or email..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            // className="w-full bg-gray-600   focus:outline-none focus:ring-0"
             className="bg-transparent w-full focus:outline-none text-xs md:text-sm text-white placeholder-gray-400"
           />
         </div>
-
-        {/* <select
-          value={roleFilter}
-          onChange={(e) => setRoleFilter(e.target.value)}
-          className="
-            w-28 md:w-64
-            px-3 py-2
-            rounded-2xl
-            bg-gray-800 backdrop-blur-md
-            border border-gray-600
-            text-xs 
-            text-white
-            shadow-md
-            cursor-pointer
-            transition-all duration-200
-            focus:outline-none
-            focus:ring-1 focus:ring-teal-500/50
-            hover:bg-gray-900
-          "
-        >
-          <option value="">All Roles</option>
-          <option value="coordinator">Contributors</option>
-          <option value="student">Users</option>
-        </select> */}
 
         <div className="relative transition-all duration-300 cursor-pointer">
           <span
@@ -408,13 +300,9 @@ function Authors() {
                 text-xs text-gray-100
                 hover:bg-gray-800/70
                 transition-all duration-200
-                rounded-lg
-
-
-        
+                rounded-lg        
               "
                 >
-                  {/* <FiPlusCircle className="text-[17px] text-gray-400" /> */}
                   <span className="flex items-center gap-2">
                     All{" "}
                     {roleFilter === "" && (
@@ -440,7 +328,6 @@ function Authors() {
 
               "
                 >
-                  {/* <FiLayers className="text-[17px] text-gray-400" /> */}
                   <span className="flex items-center gap-2">
                     {" "}
                     Contributors{" "}
@@ -467,7 +354,6 @@ function Authors() {
 
               "
                 >
-                  {/* <VscGitStashApply className="text-[17px] text-gray-400" /> */}
                   <span className="flex items-center gap-2">
                     {" "}
                     Users{" "}
@@ -524,11 +410,10 @@ function Authors() {
 
               <div className="flex-1 min-w-0 md:w-48 w-44">
                 <h3 className="text-sm font-semibold min-w-0 text-white truncate">
-                  {/* {author.authorName} */}
+               
                   {highlightText(author.authorName, debouncedSearch)}
                 </h3>
                 <p className="text-xs text-gray-400 min-w-0 text-[9px] w-9/12 md:w-9/12 truncate">
-                  {/* {author.email} */}
                   {highlightText(author.email, debouncedSearch)}
                 </p>
               </div>
@@ -568,7 +453,6 @@ function Authors() {
               ) : (
                 <button
                   onClick={() => addFollower(author.email)}
-                  // className="w-full py-2 rounded-lg bg-green-500 text-gray-900 text-sm font-medium hover:bg-green-400 transition-all duration-400 disabled:bg-transparent"
                   className={`w-full py-2 rounded-lg text-green-400 outline-0 ${!followLoadingIds.has(author.email) ? "border border-green-700" : "border-gray-900"}  text-sm font-medium outline-none hover:text-green-400 hover:border-green-700  md:hover:text-green-300 md:hover:border-green-600 transition-all duration-300 disabled:bg-transparent`}
                   disabled={followLoadingIds.has(author.email)}
                 >
@@ -602,7 +486,6 @@ function Authors() {
         {/* Coordinators Section */}
         {filteredAuthors.filter((author) => author.role === "coordinator")
           .length > 0 && (
-          // <h2 className="text-center text-2xl md:text-4xl font-semibold mb-6 bg-gradient-to-r from-orange-400 to-yellow-300 bg-clip-text text-transparent">
           <h2 className="w-full   text-center text-sm md:text-gray-500 tracking-widest uppercase text-gray-500  font-semibold my-4 md:my-6">
             Contributors
           </h2>
@@ -641,11 +524,11 @@ function Authors() {
                 )}
 
                 <h3 className="mt-3 font-semibold text-white truncate">
-                  {/* {author.authorName} */}
+                  
                   {highlightText(author.authorName, debouncedSearch)}
                 </h3>
                 <p className="text-xs text-gray-400 mx-auto truncate">
-                  {/* {author.email} */}
+           
                   {highlightText(author.email, debouncedSearch)}
                 </p>
 
@@ -661,23 +544,7 @@ function Authors() {
                   )}
                 </div>
 
-                {/* Social media components */}
-
-                {/* {author.profileLinks?.length > 0 && (
-                  <div className="flex justify-center gap-3 mt-4">
-                    {author.profileLinks.map((link, i) => (
-                      <Link key={i} to={link.url} target="_blank">
-                        {link.title === "LinkedIn" ? (
-                          <FaLinkedin className="text-gray-300 hover:text-green-400 transition" />
-                        ) : link.title === "GitHub" ? (
-                          <FaSquareGithub className="text-gray-300 hover:text-green-400 transition" />
-                        ) : (
-                          <PiLinkSimpleFill className="text-gray-300 hover:text-green-400 transition" />
-                        )}
-                      </Link>
-                    ))}
-                  </div>
-                )} */}
+            
 
                 <div className="md:mt-5 mt-3">
                   {author.followers.includes(email) ? (
@@ -699,7 +566,6 @@ function Authors() {
                   ) : (
                     <button
                       onClick={() => addFollower(author.email)}
-                      // className="w-full py-2 rounded-lg bg-green-500 text-gray-900 text-sm font-medium hover:bg-green-400 transition-all duration-400 disabled:bg-transparent"
                       className={`w-full py-2 rounded-lg text-green-400 outline-0  ${!followLoadingIds.has(author.email) ? " border border-green-700" : "border-0 "} text-sm font-medium  hover:text-green-400 hover:border-green-700  md:hover:text-green-300 md:hover:border-green-600 transition-all duration-400 disabled:bg-transparent`}
                       disabled={followLoadingIds.has(author.email)}
                     >
@@ -723,11 +589,7 @@ function Authors() {
             loading && (
               <div className="col-span-full flex justify-center py-4">
                 <div className="relative flex items-center justify-center">
-                  {/* Outer Oval Ring */}
                   <div className="w-7 h-7  border-2 border-neutral-700 border-t-emerald-400 rounded-full animate-spin" />
-
-                  {/* Inner Glow Pulse */}
-                  {/* <div className="absolute w-10 h-10 md:w-12 md:h-12 bg-emerald-500/20 rounded-full blur-md animate-pulse" /> */}
                 </div>
               </div>
             )}
@@ -806,41 +668,16 @@ function Authors() {
 
                 {/* Name */}
                 <h3 className="mt-4 font-semibold text-sm md:text-base text-white truncate w-full">
-                  {/* {author.authorName} */}
+
                   {highlightText(author.authorName, debouncedSearch)}
                 </h3>
 
                 {/* Email */}
                 <p className="text-xs text-gray-400 truncate w-full">
-                  {/* {author.email} */}
+               
                   {highlightText(author.email, debouncedSearch)}
                 </p>
 
-                {/* Social Links */}
-
-                {/* {author.profileLinks?.length > 0 && (
-                  <div className="flex justify-center gap-4 mt-4">
-                    {author.profileLinks.map((link, i) => (
-                      <Link
-                        key={i}
-                        to={link.url}
-                        title={link.title}
-                        target="_blank"
-                        className="text-gray-400 hover:text-green-400 transition"
-                      >
-                        {link.title === "LinkedIn" ? (
-                          <FaLinkedin className="text-lg" />
-                        ) : link.title === "GitHub" ? (
-                          <FaSquareGithub className="text-lg" />
-                        ) : link.title === "Portfolio" ? (
-                          <BsPersonSquare className="text-lg" />
-                        ) : (
-                          <PiLinkSimpleFill className="text-lg" />
-                        )}
-                      </Link>
-                    ))}
-                  </div>
-                )} */}
               </div>
             ))}
 
@@ -852,8 +689,6 @@ function Authors() {
                   {/* Outer Oval Ring */}
                   <div className="w-7 h-7  border-2 border-neutral-700 border-t-emerald-400 rounded-full animate-spin" />
 
-                  {/* Inner Glow Pulse */}
-                  {/* <div className="absolute w-10 h-10 md:w-12 md:h-12 bg-emerald-500/20 rounded-full blur-md animate-pulse" /> */}
                 </div>
               </div>
             )}

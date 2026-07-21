@@ -449,7 +449,7 @@ function TechCommunityLanding() {
 
         {/* ── Main layout: communities left, leaderboard + streak right ── */}
         <div className="grid grid-cols-1 md:gird-cols-2 lg:grid-cols-4 gap-6 items-start">
-          {/* ── Main column ── */}
+          
 
           {/* ── Sidebar ── */}
           <div className="flex col-span-1 order-3 lg:order-1 md:col-span-2 lg:col-span-1 flex-col gap-3 lg:sticky lg:top-16">
@@ -557,10 +557,12 @@ function TechCommunityLanding() {
             <TechCommunityTopContributorsSkeleton/>}
           </div>
 
-          {<div className="md:col-span-3 col-span-1 order-3 md:order-2">
+
+          {/* ── Main column ── */}
+          {<div className="md:col-span-2 col-span-1 order-3 md:order-2">
             {statsLoader ? (
               <div className="grid grid-cols-1 sm:grid-cols-2  gap-5">
-                {/* <CommunityCardSkeleton /> */}
+         
                 <h3 className="text-sm col-span-full font-semibold text-gray-300 ">
                   Your Communities
                 </h3>
@@ -575,19 +577,30 @@ function TechCommunityLanding() {
                     <h3 className="text-sm font-semibold text-gray-300 mb-3">
                       Your Communities
                     </h3>
-                    {/* <div className="grid grid-cols-1 sm:grid-cols-2  gap-5"> */}
+
                     <motion.div
-                      layout
+                      // layout
                       variants={containerVariants}
                       initial="hidden"
                       animate="show"
                       className="grid grid-cols-1 sm:grid-cols-2 gap-5"
                     >
                       {yourCommunities.map((item) => (
+                         <motion.div
+                          key={item._id}
+                          // layout
+                          transition={{
+                            layout: {
+                              duration: 0.35,
+                              ease: [0.22, 1, 0.36, 1],
+                            },
+                          }}
+                        >
                         <CommunityCard key={item._id} item={item} />
+                        </motion.div>
                       ))}
                     </motion.div>
-                    {/* </div> */}
+                    
                   </div>
                 )}
 
@@ -596,20 +609,30 @@ function TechCommunityLanding() {
                     <h3 className="text-sm font-semibold text-gray-300 mb-3">
                       Explore Communities
                     </h3>
-                    {/* <div className="grid grid-cols-1 sm:grid-cols-2  gap-5"> */}
+                  
                     <motion.div
-                      layout
+                      // layout
                       variants={containerVariants}
                       initial="hidden"
                       animate="show"
                       className="grid grid-cols-1 sm:grid-cols-2 gap-5"
                     >
                       {exploreCommunities.map((item) => (
+                         <motion.div
+                          key={item._id}
+                          // layout
+                          transition={{
+                            layout: {
+                              duration: 0.35,
+                              ease: [0.22, 1, 0.36, 1],
+                            },
+                          }}
+                        >
                         <CommunityCard key={item._id} item={item} />
+                        </motion.div>
                       ))}
                     </motion.div>
-
-                    {/* </div> */}
+                    
                   </div>
                 )}
               </>
@@ -634,18 +657,30 @@ function TechCommunityLanding() {
                   </h3>
 
                   {filteredCommunities.length > 0 ? (
-                    // <div className="grid grid-cols-1 sm:grid-cols-2  gap-5">
+                    
                     <motion.div
-                      layout
+                      // layout
                       variants={containerVariants}
                       initial="hidden"
                       animate="show"
                       className="grid grid-cols-1 sm:grid-cols-2 gap-5"
                     >
                       {filteredCommunities.map((item) => (
+                        <motion.div
+                          key={item._id}
+                          // layout
+                          transition={{
+                            layout: {
+                              duration: 0.35,
+                              ease: [0.22, 1, 0.36, 1],
+                            },
+                          }}
+                        >
                         <CommunityCard key={item._id} item={item} />
+                          </motion.div>
                       ))}
                     </motion.div>
+                  
                   ) : (
                     <p className="text-xs text-gray-500">
                       No communities posted anything this week yet.
@@ -653,11 +688,11 @@ function TechCommunityLanding() {
                   )}
                 </motion.div>
               </AnimatePresence>
-              // </div>
+            
             )}
           </div>}
 
-          {/* <div className="flex col-span-1 w-full  lg:order-3 order-2 md:col-span-2 lg:col-span-1 flex-col gap-2 lg:sticky lg:top-16">
+          <div className="flex col-span-1 w-full  lg:order-3 order-2 md:col-span-2 lg:col-span-1 flex-col gap-2 lg:sticky lg:top-16">
             <h3 className="text-sm md:ml-2 font-semibold text-gray-300 ">
               Performance Tracker
             </h3>
@@ -677,7 +712,7 @@ function TechCommunityLanding() {
                 {streakSample.longestStreak} days
               </p>
             </div>
-          </div> */}
+          </div>
         </div>
       </div>
 
