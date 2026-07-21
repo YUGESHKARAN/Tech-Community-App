@@ -405,6 +405,12 @@ function NavBar() {
           <NavIconDesktop to="/home" icon={<GoHome />} label="Browse" />
         )}
 
+        <NavIconDesktop
+          to="/community"
+          icon={<MdGroups />}
+          label="Communities"
+        />
+
         {role !== "student" && (
           <NavIconDesktop
             to="/workspace"
@@ -413,11 +419,6 @@ function NavBar() {
           />
         )}
 
-        <NavIconDesktop
-          to="/community"
-          icon={<MdGroups />}
-          label="Communities"
-        />
         <NavIconDesktop
           to="/authors"
           icon={<IoIosGitNetwork />}
