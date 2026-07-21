@@ -559,7 +559,7 @@ function TechCommunityLanding() {
 
 
           {/* ── Main column ── */}
-          {<div className="md:col-span-2 col-span-1 order-3 md:order-2">
+          {<div className="md:col-span-3 col-span-1 order-3 md:order-2">
             {statsLoader ? (
               <div className="grid grid-cols-1 sm:grid-cols-2  gap-5">
          
@@ -692,7 +692,7 @@ function TechCommunityLanding() {
             )}
           </div>}
 
-          <div className="flex col-span-1 w-full  lg:order-3 order-2 md:col-span-2 lg:col-span-1 flex-col gap-2 lg:sticky lg:top-16">
+          {/* <div className="flex col-span-1 w-full  lg:order-3 order-2 md:col-span-2 lg:col-span-1 flex-col gap-2 lg:sticky lg:top-16">
             <h3 className="text-sm md:ml-2 font-semibold text-gray-300 ">
               Performance Tracker
             </h3>
@@ -712,7 +712,7 @@ function TechCommunityLanding() {
                 {streakSample.longestStreak} days
               </p>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
 
