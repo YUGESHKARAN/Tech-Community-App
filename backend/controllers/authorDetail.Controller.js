@@ -197,20 +197,126 @@ const addAuthor = async (req, res) => {
   }
 };
 
-const getProfile = async (req, res) => {
-  try {
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
-    const skip = (page - 1) * limit;
+// const getProfile = async (req, res) => {
+//   try {
+//     const page = parseInt(req.query.page) || 1;
+//     const limit = parseInt(req.query.limit) || 10;
+//     const skip = (page - 1) * limit;
 
-    // posts is now [ObjectId] refs — .length still gives correct count, no populate needed
-    const authorsProfile = await Author.find({})
-      .select("-password -otp -otpExpiresAt")
-      .skip(skip)
-      .limit(limit)
+//     // posts is now [ObjectId] refs — .length still gives correct count, no populate needed
+//     const authorsProfile = await Author.find({})
+//       .select("-password -otp -otpExpiresAt")
+//       .skip(skip)
+//       .limit(limit)
+//       .lean();
+
+    // const shuffleArray = (arr) => {
+    //   const a = arr.slice();
+    //   for (let i = a.length - 1; i > 0; i--) {
+    //     const j = Math.floor(Math.random() * (i + 1));
+    //     [a[i], a[j]] = [a[j], a[i]];
+    //   }
+    //   return a;
+    // };
+
+//     const shuffledAuthors = shuffleArray(authorsProfile);
+
+//     const data = shuffledAuthors.map((author) => ({
+//       authorName: author.authorname,
+//       email: author.email,
+//       postCount: author.posts?.length || 0,
+//       profile: author.profile,
+//       followers: author.followers,
+//       role: author.role,
+//       profileLinks: author.personalLinks,
+//       community: author.community,
+//       badges: author?.badges || [],
+//     }));
+
+//     const total = await Author.countDocuments();
+
+//     res.status(200).json({
+//       page,
+//       limit,
+//       total,
+//       totalPages: Math.ceil(total / limit),
+//       data,
+//     });
+//   } catch (err) {
+//     console.error("Error fetching profiles:", err);
+//     res.status(500).json({ error: "Server error" });
+//   }
+// };
+
+
+const getProfile = async (req, res) => {
+  const { page = 1, limit = 20 } = req.query;
+  const { tenantId } = req.user;
+  const skip = (page - 1) * limit;
+
+  try {
+    const authors = await Author.find({ tenantId })
+      .select(
+        'authorname email profile role posts followers following badges profileLinks'
+      )
+      .skip(Number(skip))
+      .limit(Number(limit))
       .lean();
 
-    const shuffleArray = (arr) => {
+    const authorIds = authors.map((a) => a._id);
+
+    // authoritative community + per-community role, replaces legacy
+    // Author.community string array
+    const memberships = await CommunityMembership.find(
+      { tenantId, authorId: { $in: authorIds } },
+      'authorId communityId role'
+    ).lean();
+
+    const communityIds = [...new Set(memberships.map((m) => m.communityId.toString()))];
+    const communities = await Community.find(
+      { _id: { $in: communityIds } },
+      'name'
+    ).lean();
+    const communityNameMap = Object.fromEntries(
+      communities.map((c) => [c._id.toString(), c.name])
+    );
+
+    const membershipsByAuthor = {};
+    for (const m of memberships) {
+      const key = m.authorId.toString();
+      if (!membershipsByAuthor[key]) membershipsByAuthor[key] = [];
+      membershipsByAuthor[key].push({
+        name: communityNameMap[m.communityId.toString()],
+        role: m.role,
+      });
+    }
+
+//      authorName: author.authorname,
+//       email: author.email,
+//       postCount: author.posts?.length || 0,
+//       profile: author.profile,
+//       followers: author.followers,
+//       role: author.role,
+//       profileLinks: author.personalLinks,
+//       community: author.community,
+//       badges: author?.badges || [],
+
+    const auhtorDetails = authors.map((a) => ({
+      // ...a,
+      authorName:a.authorname,
+      email: a.email,
+      profile: a.profile,
+      role: a.role,
+      profileLinks: a.personalLinks,
+      badges: a?.badges || [],
+      postCount:a.posts?.length || 0,
+      followers:a.followers ||[],
+      followersCount: a.followers?.length || 0,
+      followingCount: a.following?.length || 0,
+      communities: membershipsByAuthor[a._id.toString()] || [],
+    }));
+
+     const shuffleArray = (arr) => {
       const a = arr.slice();
       for (let i = a.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -219,35 +325,14 @@ const getProfile = async (req, res) => {
       return a;
     };
 
-    const shuffledAuthors = shuffleArray(authorsProfile);
+    const data = shuffleArray(auhtorDetails)
 
-    const data = shuffledAuthors.map((author) => ({
-      authorName: author.authorname,
-      email: author.email,
-      postCount: author.posts?.length || 0,
-      profile: author.profile,
-      followers: author.followers,
-      role: author.role,
-      profileLinks: author.personalLinks,
-      community: author.community,
-      badges: author?.badges || [],
-    }));
-
-    const total = await Author.countDocuments();
-
-    res.status(200).json({
-      page,
-      limit,
-      total,
-      totalPages: Math.ceil(total / limit),
-      data,
-    });
+    res.status(200).json({ data });
   } catch (err) {
-    console.error("Error fetching profiles:", err);
-    res.status(500).json({ error: "Server error" });
+    console.error('getAuthorProfiles error:', err.message);
+    res.status(500).json({ message: 'Server error' });
   }
 };
-
 const getSingleAuthor = async (req, res) => {
   try {
     const { email } = req.params;
@@ -682,71 +767,140 @@ const deleteAuthorByAdmin = async (req, res) => {
 };
 
 // reviewd-------------------------------------------------------------------
+// const updateFollowers = async (req, res) => {
+//   try {
+//     const { email } = req.params;
+//     const { emailAuthor } = req.body;
+
+//     console.log("Following request:", { email, emailAuthor });
+
+//     if (!email || !emailAuthor) {
+//       return res.status(400).json({ message: "Both emails are required" });
+//     }
+
+//     // fix: prevent self-follow
+//     if (email === emailAuthor) {
+//       return res.status(400).json({ message: "You cannot follow yourself" });
+//     }
+
+//     const author = await Author.findOne({ email: { $eq: email } });
+//     const followerAuthor = await Author.findOne({
+//       email: { $eq: emailAuthor },
+//     });
+
+//     if (!author || !followerAuthor) {
+//       return res.status(404).json({ message: "Author not found" });
+//     }
+
+//     // Unfollow
+//     if (author.followers.includes(emailAuthor)) {
+//       author.followers = author.followers.filter((f) => f !== emailAuthor);
+//       followerAuthor.following = followerAuthor.following.filter(
+//         (f) => f !== email,
+//       );
+
+//       // await author.save();
+//       // await followerAuthor.save();
+//       await author.save({ validateBeforeSave: false });
+//       await followerAuthor.save({ validateBeforeSave: false });
+
+//       return res.status(200).json({
+//         message: "Unfollowed successfully",
+//         followers: author.followers,
+//         following: followerAuthor.following,
+//       });
+//     }
+
+//     // Follow
+//     author.followers.push(emailAuthor);
+//     followerAuthor.following.push(email);
+
+//     // await author.save();
+//     // await followerAuthor.save();
+//     await author.save({ validateBeforeSave: false });
+//     await followerAuthor.save({ validateBeforeSave: false });
+
+//     res.status(200).json({
+//       message: "Author followed successfully",
+//       followers: author.followers,
+//       following: followerAuthor.following,
+//     });
+
+//     // in updateFollowers controller — after both saves
+//     checkAndAwardBadges(email, ["community_builder"], {
+//       eventTitle: "Followers milestone",
+//     }).catch((err) => console.error("Badge check error:", err.message));
+//   } catch (err) {
+//     console.error("SERVER ERROR:", err); // Add this line
+//     return res
+//       .status(500)
+//       .json({ message: "Server error", error: err.message });
+//   }
+// };
 const updateFollowers = async (req, res) => {
   try {
-    const { email } = req.params;
-    const { emailAuthor } = req.body;
+    const { email } = req.params; // target being followed
+    const { emailAuthor } = req.body; // current logged-in user
 
-    // console.log("Following request:", { email, emailAuthor });
+    console.log("email", email)
+    console.log("emailAuthor", emailAuthor)
 
     if (!email || !emailAuthor) {
       return res.status(400).json({ message: "Both emails are required" });
     }
 
-    // fix: prevent self-follow
     if (email === emailAuthor) {
       return res.status(400).json({ message: "You cannot follow yourself" });
     }
 
-    const author = await Author.findOne({ email: { $eq: email } });
-    const followerAuthor = await Author.findOne({
-      email: { $eq: emailAuthor },
-    });
+    const author = await Author.findOne(
+      { email: { $eq: email } },
+      "followers"
+    );
+    if (!author) return res.status(404).json({ message: "Author not found" });
 
-    if (!author || !followerAuthor) {
+    const isFollowing = author.followers.includes(emailAuthor);
+
+    const targetUpdateOp = isFollowing
+      ? { $pull: { followers: emailAuthor } }
+      : { $addToSet: { followers: emailAuthor } }; // addToSet avoids dupes from any race that slips through
+
+    const followerUpdateOp = isFollowing
+      ? { $pull: { following: email } }
+      : { $addToSet: { following: email } };
+
+    const [updatedAuthor, updatedFollower] = await Promise.all([
+      Author.findOneAndUpdate(
+        { email: { $eq: email } },
+        targetUpdateOp,
+        { new: true, runValidators: false }
+      ),
+      Author.findOneAndUpdate(
+        { email: { $eq: emailAuthor } },
+        followerUpdateOp,
+        { new: true, runValidators: false }
+      ),
+    ]);
+
+    if (!updatedAuthor || !updatedFollower) {
       return res.status(404).json({ message: "Author not found" });
     }
 
-    // Unfollow
-    if (author.followers.includes(emailAuthor)) {
-      author.followers = author.followers.filter((f) => f !== emailAuthor);
-      followerAuthor.following = followerAuthor.following.filter(
-        (f) => f !== email,
-      );
-
-      // await author.save();
-      // await followerAuthor.save();
-      await author.save({ validateBeforeSave: false });
-      await followerAuthor.save({ validateBeforeSave: false });
-
-      return res.status(200).json({
-        message: "Unfollowed successfully",
-        followers: author.followers,
-        following: followerAuthor.following,
-      });
-    }
-
-    // Follow
-    author.followers.push(emailAuthor);
-    followerAuthor.following.push(email);
-
-    // await author.save();
-    // await followerAuthor.save();
-    await author.save({ validateBeforeSave: false });
-    await followerAuthor.save({ validateBeforeSave: false });
-
     res.status(200).json({
-      message: "Author followed successfully",
-      followers: author.followers,
-      following: followerAuthor.following,
+      message: isFollowing
+        ? "Unfollowed successfully"
+        : "Author followed successfully",
+      followers: updatedAuthor.followers,
+      following: updatedFollower.following,
     });
 
-    // in updateFollowers controller — after both saves
-    checkAndAwardBadges(email, ["community_builder"], {
-      eventTitle: "Followers milestone",
-    }).catch((err) => console.error("Badge check error:", err.message));
+    if (!isFollowing) {
+      checkAndAwardBadges(email, ["community_builder"], {
+        eventTitle: "Followers milestone",
+      }).catch((err) => console.error("Badge check error:", err.message));
+    }
   } catch (err) {
-    console.error("SERVER ERROR:", err); // Add this line
+    console.error("SERVER ERROR:", err);
     return res
       .status(500)
       .json({ message: "Server error", error: err.message });
