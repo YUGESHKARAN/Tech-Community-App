@@ -155,6 +155,28 @@ const authorSchema = new mongoose.Schema({
       message: "Duplicate badge type — use history[] for multiple tiers",
     },
   },
+
+  recentlyViewed: {
+  posts: {
+    type: [{
+      authorEmail:{type: String, required: true},
+      authorName:{type: String, required: true},
+      postId:   { type: mongoose.Schema.Types.ObjectId, ref: 'Post', required: true },
+      viewedAt: { type: Date, default: Date.now },
+    }],
+    default: [],
+  },
+  playlists: {
+   
+    type: [{
+      authorEmail:{type: String, required: true},
+      authorName:{type: String, required: true},
+      playlistId: { type: mongoose.Schema.Types.ObjectId, ref: 'TutorPlayList', required: true },
+      viewedAt:   { type: Date, default: Date.now },
+    }],
+    default: [],
+  },
+},
   
   otp:          { type: String },
   otpExpiresAt: { type: Date   },
