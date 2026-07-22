@@ -1309,7 +1309,7 @@ function Authors() {
               <button
                 key={f.value}
                 onClick={() => setRoleFilter(f.value)}
-                className={`md:text-xs text-[9px] md:font-medium px-1.5 md:px-3.5 py-0.5 md:py-1.5 rounded-xl md:rounded-2xl border transition-all duration-300 ${
+                className={`md:text-xs text-[9px] font-medium px-2 md:px-3.5 py-0.5 md:py-1.5 rounded-xl md:rounded-2xl border transition-all duration-300 ${
                   isActive
                     ? "bg-emerald-500 text-black border-transparent"
                     : "bg-white/5 text-gray-400 border-white/10 hover:text-gray-200 hover:border-white/20"
