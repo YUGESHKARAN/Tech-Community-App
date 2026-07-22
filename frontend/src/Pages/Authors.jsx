@@ -1290,26 +1290,26 @@ function Authors() {
       </div>
 
       {/* Search + filter chips */}
-      <div className="w-full max-w-[1800px] px-4 md:px-12 mx-auto flex flex-wrap mt-0 md:mt-4  items-center gap-1 md:gap-3 mb-4 md:mb-6">
-        <div className="max-w-xs  md:w-96 flex items-center gap-3 theme-fields-lite border border-gray-700 rounded-lg md:rounded-xl px-3 md:px-3 py-1 md:py-1.5 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
+      <div className="w-full max-w-[1800px] px-4 md:px-12 mx-auto px-auto justify-between flex flex-wrap mt-0 md:mt-4  items-center gap-2 md:gap-3 mb-4 md:mb-6">
+        <div className="max-w-44 md:min-w-96 flex items-center gap-1 md:gap-3 theme-fields-lite border border-gray-700 rounded-lg md:rounded-xl px-3 md:px-3 py-1 md:py-1.5 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
           <IoSearch className="text-gray-400" />
           <input
             type="text"
             placeholder="Search by name or email..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="bg-transparent w-full focus:outline-none text-xs md:text-sm text-white placeholder-gray-400"
+            className="bg-transparent w-full focus:outline-none text-[11px] md:text-sm text-white placeholder-gray-400"
           />
         </div>
 
-        <div className="flex gp-1.5 md:gap-2 flex-wrap">
+        <div className="flex gap-1 md:gap-2 mt-0 flex-wrap">
           {FILTERS.map((f) => {
             const isActive = roleFilter === f.value;
             return (
               <button
                 key={f.value}
                 onClick={() => setRoleFilter(f.value)}
-                className={`md:text-xs text-[10px] font-medium px-2 md:px-3.5 py-0.5 md:py-1.5 rounded-2xl border transition-all duration-300 ${
+                className={`md:text-xs text-[9px] md:font-medium px-1.5 md:px-3.5 py-0.5 md:py-1.5 rounded-xl md:rounded-2xl border transition-all duration-300 ${
                   isActive
                     ? "bg-emerald-500 text-black border-transparent"
                     : "bg-white/5 text-gray-400 border-white/10 hover:text-gray-200 hover:border-white/20"
@@ -1331,7 +1331,7 @@ function Authors() {
       <div
         className={
           showRecommended
-            ? "flex w-full px-4 md:px-12 max-w-[1800px] overflow-y-hidden mx-auto gap-3 overflow-x-auto scrollbar-hide  pb-2"
+            ? "flex w-full px-4 md:px-12 max-w-[1800px] overflow-y-hidden mx-auto gap-3 overflow-x-auto scrollbar-hide  md:pb-2"
             : "hidden"
         }
       >

@@ -410,6 +410,12 @@ function NavBar() {
           icon={<MdGroups />}
           label="Communities"
         />
+        
+        <NavIconDesktop
+          to="/authors"
+          icon={<IoIosGitNetwork />}
+          label="Network"
+        />
 
         {role !== "student" && (
           <NavIconDesktop
@@ -419,11 +425,7 @@ function NavBar() {
           />
         )}
 
-        <NavIconDesktop
-          to="/authors"
-          icon={<IoIosGitNetwork />}
-          label="Network"
-        />
+        
         <NavIconDesktop
           to="/bookMarkPage"
           icon={<RiBookMarkedFill />}
