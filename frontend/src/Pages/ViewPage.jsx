@@ -50,6 +50,7 @@ function ViewPage() {
   const [socket, setSocket] = useState(null);
   const [messages, setMessages] = useState([]);
   const [singlePostData, setSinglePostData] = useState([]);
+  const [authorName, setAuthorName] = useState(null);
   const [timeStamp, setTimeStamp] = useState("");
   const [postId, setPostId] = useState("");
   const { email, id } = useParams();
@@ -92,21 +93,22 @@ function ViewPage() {
 
   // Fetch post data
   const getSinglePost = async () => {
-      try {
-        setLoading(true);
-        const response = await axiosInstance.get(`/blog/posts/${email}/${id}`);
-        const postData = response.data.data;
-        setSinglePostData(postData);
-        setTimeStamp(postData.timestamp);
-        setPostId(postData._id);
-        setProfile(postData.profile);
-      } catch (err) {
-        console.error("Error fetching post data", err);
-        toast.error("Post not found", "unable to fetch the post data")
-      } finally {
-        setLoading(false);
-      }
-    };
+    try {
+      setLoading(true);
+      const response = await axiosInstance.get(`/blog/posts/${email}/${id}`);
+      const postData = response.data.data;
+      setSinglePostData(postData);
+      setAuthorName(postData.authorname);
+      setTimeStamp(postData.timestamp);
+      setPostId(postData._id);
+      setProfile(postData.profile);
+    } catch (err) {
+      console.error("Error fetching post data", err);
+      toast.error("Post not found", "unable to fetch the post data");
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
     setSinglePostData([]);
     getSinglePost();
@@ -493,7 +495,7 @@ function ViewPage() {
 
   useEffect(() => {
     getParticipants();
-  }, [postId,messages]);
+  }, [postId, messages]);
 
   const RoleBadge = ({ role }) => {
     const styles = {
@@ -511,6 +513,28 @@ function ViewPage() {
       </span>
     );
   };
+
+  const recentlyVisited = async () => {
+    try {
+      const response = await axiosInstance.put("/blog/recentHistory/track", {
+        email: userEmail,
+        itemType: "post",
+        itemId: postId,
+        authorEmail: email,
+        authorName,
+      });
+
+      if (response.status === 200) {
+        console.log("post trackied", response.data.message);
+      }
+    } catch (err) {
+      console.log("error", err.message);
+    }
+  };
+
+  useEffect(() => {
+    recentlyVisited();
+  }, [email, userEmail, postId]);
 
   // console.log("total participants", totalParticipants)
 
@@ -1177,40 +1201,40 @@ function ViewPage() {
               </div>
 
               {/* participants profiles */}
-              {participants.length > 0 &&
+              {participants.length > 0 && (
                 <div className="flex flex-col p-2 py-2.5 border-t border-neutral-800">
-                <p className="text-gray-400 text-xs font-semibold">
-                  Participants
-                </p>
-                <div className="mt-4 gap-1 flex flex-wrap   items-center ">
-                  {participants?.slice(0, 3).map((p) => (
-                    <Link to={`/viewProfile/${p?.email}`} className="">
-                      {!p.profile ? (
-                        <div
-                          className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold text-gray-200 shrink-0"
-                          style={{ backgroundColor: avatarColor(p?.name) }}
-                        >
-                          {initials(p?.name)}
-                        </div>
-                      ) : (
-                        <img
-                          src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${p?.profile}`}
-                          alt=""
-                          className="w-6 h-6  rounded-full object-cover"
-                        />
-                      )}
-                    </Link>
-                  ))}
+                  <p className="text-gray-400 text-xs font-semibold">
+                    Participants
+                  </p>
+                  <div className="mt-4 gap-1 flex flex-wrap   items-center ">
+                    {participants?.slice(0, 3).map((p) => (
+                      <Link to={`/viewProfile/${p?.email}`} className="">
+                        {!p.profile ? (
+                          <div
+                            className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold text-gray-200 shrink-0"
+                            style={{ backgroundColor: avatarColor(p?.name) }}
+                          >
+                            {initials(p?.name)}
+                          </div>
+                        ) : (
+                          <img
+                            src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${p?.profile}`}
+                            alt=""
+                            className="w-6 h-6  rounded-full object-cover"
+                          />
+                        )}
+                      </Link>
+                    ))}
 
-                  {participants.length > 3 && (
-                    // <p className="text-[17px] cursor-pointer hover:text-gray-400/90  font-semibold ml-3 text-gray-500 transition-all duration-500">
-                    //   +{totalParticipants - 2}
-                    // </p>
-                    <motion.button
-                      whileHover={{ scale: 1.08 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => setShowParticipants(true)}
-                      className="
+                    {participants.length > 3 && (
+                      // <p className="text-[17px] cursor-pointer hover:text-gray-400/90  font-semibold ml-3 text-gray-500 transition-all duration-500">
+                      //   +{totalParticipants - 2}
+                      // </p>
+                      <motion.button
+                        whileHover={{ scale: 1.08 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => setShowParticipants(true)}
+                        className="
                       ml-2
                       h-7
                       px-2.5
@@ -1224,13 +1248,13 @@ function ViewPage() {
                       hover:border-emerald-500/30
                       transition-all
                     "
-                    >
-                      +{formatCount(totalParticipants - 3) }
-                    </motion.button>
-                  )}
+                      >
+                        +{formatCount(totalParticipants - 3)}
+                      </motion.button>
+                    )}
+                  </div>
                 </div>
-              </div>
-              }
+              )}
 
               {/* Mobile: YouTube-style bottom sheet */}
               <div
@@ -1393,7 +1417,6 @@ function ViewPage() {
       )}
 
       {loading && <PostDetailSkeleton />}
-
 
       <AnimatePresence>
         {selectedImage && (

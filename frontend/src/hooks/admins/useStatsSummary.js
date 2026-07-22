@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import axiosInstance from "../../instances/Axiosinstances";
 
-const useStatsSummary = (email) => {
+const useGetStatsSummary = (email) => {
     const [statsSummary, setStatSummary] = useState([])
     const [statsLoader, setStatsLoader] = useState(false)
 
@@ -32,4 +32,4 @@ const useStatsSummary = (email) => {
 
 }
 
-export default useStatsSummary;
+export default useGetStatsSummary;

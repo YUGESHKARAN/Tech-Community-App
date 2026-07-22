@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useContext } from "react";
 import { useAuth } from "../AuthContext";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   MdAnnouncement,
   MdManageAccounts,
@@ -8,6 +8,7 @@ import {
   MdGroups,
   MdLogout,
   MdPostAdd,
+  MdHistory,
 } from "react-icons/md";
 import { IoHome, IoLogOut, IoLogOutOutline, IoPeople } from "react-icons/io5";
 
@@ -58,6 +59,8 @@ import toast from "../components/toaster/Toast";
 import { MdDashboard } from "react-icons/md";
 import { getItem, removeItem, storeItem } from "../utils/encode";
 import SearchModal from "../components/SearchModal";
+import useGetRecentHistory from "../hooks/useGetRecentHistory"
+import logNotFound from "../assets/log_not_found.png"
 
 function NavBar() {
   const { logout } = useAuth();
@@ -81,6 +84,8 @@ function NavBar() {
   const [showProfile, setShowProfile] = useState(false)
   const { searchTerm, setSearchTerm, inputValue, setInputValue } =
     useContext(GlobalStateContext);
+
+  const { recentPosts, recentPlaylists, histroyLoader} = useGetRecentHistory(userEmail);
 
   // const [inputValue, setInputValue] = useState(searchTerm || "");
 
@@ -342,6 +347,24 @@ function NavBar() {
   }, []);
 
   // console.log("note", note)
+  // console.log("recentPosts", recentPosts);
+  // console.log("recentPlaylists", recentPlaylists);
+   const navigate  = useNavigate();
+
+   const handlePostClick = (post) => {
+    setSearchTerm("");
+    setInputValue("");
+    navigate(`/viewpage/${post.authorEmail}/${post._id}`);
+    setOpen(false);
+  };
+
+  const handlePlaylistClick = (playlist) => {
+    setSearchTerm("");
+    setInputValue("");
+
+    navigate(`/viewplaylist/${playlist._id}`);
+    setOpen(false);
+  };
   
   return (
     <div
@@ -624,22 +647,22 @@ function NavBar() {
           <MdLogout />
         </button>
       </div>
-      {/* Sidebar */}
 
-    <div
-  ref={sidebarRef}
-  className={`fixed top-0 left-0 w-[300px]
-    bg-[#0b1220]
-    text-white shadow-2xl z-50 h-screen
-    flex flex-col
-    transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]
-    rounded-br-2xl rounded-tr-2xl border border-white/10
-    ${
-      isSidebarOpen
-        ? "opacity-100 translate-x-0"
-        : "opacity-0 -translate-x-full pointer-events-none"
-    }`}
->
+      `{/* Sidebar */}
+        <div
+            ref={sidebarRef}
+            className={`fixed top-0 left-0 w-[300px]
+              bg-[#0b1220]
+              text-white shadow-2xl z-50 h-screen
+              flex flex-col
+              transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]
+              rounded-br-2xl rounded-tr-2xl border border-white/10
+              ${
+                isSidebarOpen
+                  ? "opacity-100 translate-x-0"
+                  : "opacity-0 -translate-x-full pointer-events-none"
+              }`}
+          >
         {/* ================= HEADER ================= */}
         <div className="flex items-center justify-between px-5 py-4 pb-3">
           {role !== "admin" ? (
@@ -669,7 +692,7 @@ function NavBar() {
         </div>
 
         {/* ================= PRIMARY ICON NAV ================= */}
-        <div className="flex flex-col space-y-4 px-6 pt-10 pb-3">
+        <div className="flex flex-col  space-y-4 px-6 pt-10 pb-3">
           {role != "admin" && (
             <NavIcon
               to="/home"
@@ -730,12 +753,12 @@ function NavBar() {
         </div>
 
         {/* ================= SECONDARY TILES ================= */}
-        <div className="flex flex-col  flex-1 border-t border-neutral-700 px-6 mt-5 pt-5 pb-5 min-h-0">
+        <div className={`flex flex-col max-h-68    border-t border-neutral-700 px-6 pt-3 pb-3  ${role==='student' && 'hidden'}`}>
           {role !== "student" && (
-            <p className="text-gray-400 font-medium text-xs mb-5">Controls</p>
+            <p className="text-gray-400 font-medium text-xs mb-3">Controls</p>
           )}
 
-          <div className="flex flex-col space-y-4  pb-3 overflow-y-auto pr-1">
+          <div className="flex flex-col space-y-4  pb-3 pr-1">
    
             {/* ------------------------------------------- */}
 
@@ -796,6 +819,143 @@ function NavBar() {
               <span className="text-[11px]">Sign Out</span>
             </button>
           </div> */}
+        </div>
+
+        
+
+        <div className="flex flex-col   border-t border-neutral-700   pt-3 min-h-0">
+          <p className="text-gray-400 py-1 font-medium flex items-center gap-1 text-xs px-4 ">Recent Visits  <MdHistory className="text-xs text-gray-500" /></p>
+
+         <div className="overflow-y-auto scrollbar-hide">
+
+          {!histroyLoader && (recentPosts.length>0 || recentPlaylists?.length>0) && (
+              <>
+                {/* Post suggestions */}
+                {recentPosts.length > 0 && (
+                  <div>
+                    <p className="px-4 pt-2  text-[10px] uppercase tracking-widest text-gray-500 font-medium">
+                      Posts
+                    </p>
+                    <div className="w-full flex flex-col overflow-x-hidden overflow-y-auto scrollbar-hide">
+                    {recentPosts.map(post => (
+                      <button
+                        key={post._id}
+                        onClick={() => handlePostClick(post)}
+                        className="
+                          w-full flex items-center gap-2 px-4 py-2.5
+                          hover:bg-white/5 transition-colors duration-150
+                          text-left group
+                        "
+                      >
+                        {/* thumbnail */}
+                        <div className="w-7 h-7 rounded-md bg-gray-800 shrink-0 overflow-hidden">
+                          {post.image ? (
+                            <img
+                              src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${post.image}`}
+                              alt={post.title}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center">
+                              <IoIosSearch className="text-gray-600 text-sm" />
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="flex-1 items-center min-w-0">
+                          <p className="text-xs text-white truncate  transition-colors">
+                            {post.title}
+                             {/* {highlightText(post.title, searchTerm)} */}
+                          </p>
+                          <p className="text-[10px] text-gray-500 truncate">
+                            {post.category} · {post.authorName}
+                          </p>
+                        </div>
+
+                        <span className="text-[10px] text-emerald-400 shrink-0 bg-emerald-600/30 px-2 py-0.5 rounded-full">
+                          post
+                        </span>
+                      </button>
+                    ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Playlist suggestions */}
+                {recentPlaylists.length > 0 && (
+                  <div>
+                    <p className="px-4 pt-2  text-[10px] uppercase tracking-widest text-gray-500 font-medium">
+                      Playlists
+                    </p>
+                     <div className="w-full flex flex-col overflow-x-hidden overflow-y-auto scrollbar-hide">
+                    {recentPlaylists.map(playlist => (
+                      <button
+                        key={playlist._id}
+                        onClick={() => handlePlaylistClick(playlist)}
+                        className="
+                          w-full flex items-center gap-2 px-4 py-2.5
+                          hover:bg-white/5 transition-colors duration-150
+                          text-left group
+                        "
+                      >
+                        {/* thumbnail */}
+                        <div className="w-7 h-7 rounded-md bg-gray-800 shrink-0 overflow-hidden">
+                          {playlist.thumbnail ? (
+                            <img
+                              src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlist.thumbnail}`}
+                              alt={playlist.title}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center">
+                              <IoIosSearch className="text-gray-600 text-sm" />
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="flex-1 items-center min-w-0">
+                          <p className="text-xs text-white truncate  transition-colors">
+                            {playlist.title}
+                          </p>
+                          <p className="text-[10px] text-gray-500 truncate">
+                            {playlist.domain} · {playlist.name}
+                          </p>
+                        </div>
+
+                        <span className="text-[10px] text-emerald-400 shrink-0 bg-emerald-600/30 px-2 py-0.5 rounded-full">
+                          playlist
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                  </div>
+                )}
+              </>
+            )}
+
+            {
+              histroyLoader && 
+              <div className="w-full items-center flex justify-center">
+                    <div className="relative flex items-center justify-center">
+                      {/* Outer Oval Ring */}
+                      <div className="w-7 h-7  border-2 border-neutral-700 border-t-emerald-400 rounded-full animate-spin" />
+
+                      {/* Inner Glow Pulse */}
+                      {/* <div className="absolute w-10 h-10 md:w-12 md:h-12 bg-emerald-500/20 rounded-full blur-md animate-pulse" /> */}
+                    </div>
+                  </div>
+            }
+
+            {!histroyLoader && (recentPlaylists.length===0 && recentPosts.length===0)  && (
+              <div className="px-4 py-4 text-sm h-52 flex items-center justify-center text-gray-500 text-center">
+                 <div className="flex gap-0 flex-col ">
+                              <img src={logNotFound} alt="" className=" object-cover mx-auto  w-32 h-32" />
+                              <p className="text-center text-gray-500 text-sm mt-0"> No recent visits !</p>
+                            </div>
+            
+              </div>
+            )}
+        </div>
         </div>
       </div>
 

@@ -103,7 +103,23 @@ const snapshotAuthorSchema = new mongoose.Schema({
   // fix: added badges — preserved in snapshot so rollback restores all earned badges
   badges: [snapshotBadgeSchema],
   
-});  // fix: removed { _id: false } — was stripping the author's original _id
+  recentlyViewed: {
+    posts: [{
+      authorEmail:{type: String},
+      authorName:{type: String},
+      postId:   { type: mongoose.Schema.Types.ObjectId },
+      viewedAt: { type: Date },
+    }],
+    playlists: [{
+      authorEmail:{type: String},
+      playlistId: { type: mongoose.Schema.Types.ObjectId },
+      viewedAt:   { type: Date },
+    }],
+  },
+  
+}); 
+
+// fix: removed { _id: false } — was stripping the author's original _id
 
 // ── Main deletion log schema ──────────────────────────────────
 const deletionLogSchema = new mongoose.Schema({
@@ -128,8 +144,6 @@ const deletionLogSchema = new mongoose.Schema({
   },
 
   // ── state machine ───────────────────────────────────────────
-  // deleted → restored  (normal rollback)
-  // deleted → expired   (TTL hit or admin manual expire)
   status: {
     type:    String,
     enum:    ['deleted', 'restored', 'expired'],
@@ -148,9 +162,6 @@ const deletionLogSchema = new mongoose.Schema({
   },
 
   // ── GDPR / retention ────────────────────────────────────────
-  // set to Date.now + 90 days on creation
-  // MongoDB TTL index auto-deletes the log document after this date
-  // set to null to keep indefinitely
   expiresAt: {
     type:    Date,
     default: () => new Date(Date.now() + 90 * 24 * 60 * 60 * 1000), // 90 days
