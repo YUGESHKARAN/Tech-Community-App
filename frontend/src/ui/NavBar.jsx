@@ -648,7 +648,7 @@ function NavBar() {
         </button>
       </div>
 
-      `{/* Sidebar */}
+      {/* Sidebar */}
         <div
             ref={sidebarRef}
             className={`fixed top-0 left-0 w-[300px]
@@ -826,7 +826,7 @@ function NavBar() {
         <div className="flex flex-col   border-t border-neutral-700   pt-3 min-h-0">
           <p className="text-gray-400 py-1 font-medium flex items-center gap-1 text-xs px-4 ">Recent Visits  <MdHistory className="text-xs text-gray-500" /></p>
 
-         <div className="overflow-y-auto scrollbar-hide">
+         <div className="overflow-y-auto pb-4 overflow-x-hidden scrollbar-hide">
 
           {!histroyLoader && (recentPosts.length>0 || recentPlaylists?.length>0) && (
               <>
@@ -935,7 +935,7 @@ function NavBar() {
 
             {
               histroyLoader && 
-              <div className="w-full items-center flex justify-center">
+              <div className="w-full items-center h-40 flex justify-center">
                     <div className="relative flex items-center justify-center">
                       {/* Outer Oval Ring */}
                       <div className="w-7 h-7  border-2 border-neutral-700 border-t-emerald-400 rounded-full animate-spin" />
@@ -946,7 +946,7 @@ function NavBar() {
                   </div>
             }
 
-            {!histroyLoader && (recentPlaylists.length===0 && recentPosts.length===0)  && (
+            {histroyLoader && (recentPlaylists.length===0 && recentPosts.length===0)  && (
               <div className="px-4 py-4 text-sm h-52 flex items-center justify-center text-gray-500 text-center">
                  <div className="flex gap-0 flex-col ">
                               <img src={logNotFound} alt="" className=" object-cover mx-auto  w-32 h-32" />
