@@ -810,11 +810,13 @@ function Authors() {
   // ── header stat pills: following / followers / communities ──
   const { authorCommunity } = useAuthorCommunity(email);
   const [ownStats, setOwnStats] = useState({ followingCount: 0, followersCount: 0 });
+  const [statsLoader, setStatsLoader] = useState(false)
 
   useEffect(() => {
     if (!email) return;
     const fetchOwnStats = async () => {
       try {
+        setStatsLoader(true)
         // NOTE: adjust this path to whatever your "get single author by
         // email" route actually is — this is a placeholder guess.
         const response = await axiosInstance.get(`/blog/author/${email}`);
@@ -825,6 +827,9 @@ function Authors() {
         });
       } catch (err) {
         console.log("error fetching own network stats", err);
+      }
+      finally{
+        setStatsLoader(false)
       }
     };
     fetchOwnStats();
@@ -1277,20 +1282,25 @@ function Authors() {
       </div>
 
         <div className="flex gap-1 md:gap-2 flex-wrap">
+          
 
-          {role!=="student"&& <span className="text-[10px] md:text-xs text-gray-300 bg-white/5 md:border border-white/10 rounded-lg px-2 md:px-3.5 py-1 md:py-1.5">
+    
+
+          {ownStats?.followersCount>0 && role!=="student"&& <span className="text-[10px] md:text-xs text-gray-300 bg-white/5 md:border border-white/10 rounded-lg px-2 md:px-3.5 py-1 md:py-1.5">
             <b className="text-white font-semibold">
               {formatCount(ownStats.followersCount)}
+            
             </b>{" "}
             followers
           </span>}
 
-          <span className="text-[10px] md:text-xs text-gray-300 bg-white/5 md:border border-white/10 rounded-lg px-2 md:px-3.5 py-1 md:py-1.5">
+          {ownStats?.followingCount>0 && <span className="text-[10px] md:text-xs text-gray-300 bg-white/5 md:border border-white/10 rounded-lg px-2 md:px-3.5 py-1 md:py-1.5">
             <b className="text-white font-semibold">
               {formatCount(ownStats.followingCount)}
+              
             </b>{" "}
             following
-          </span>
+          </span>}
          
           <span className="text-[10px] md:text-xs text-gray-300 bg-white/5 md:border border-white/10 rounded-lg px-2 md:px-3.5 py-1 md:py-1.5">
             <b className="text-white font-semibold">
