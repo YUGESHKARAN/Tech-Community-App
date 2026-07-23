@@ -29,8 +29,8 @@ function ViewTutorPlaylist() {
   const [showContributors, setShowContributors] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [authorEmail, setAuthorEmail] = useState(null)
-  const [authorName, setAuthorName] = useState(null)
+  const [authorEmail, setAuthorEmail] = useState(null);
+  const [authorName, setAuthorName] = useState(null);
   // console.log("playlist Id", playlistId);
 
   const getTutorPlaylist = async () => {
@@ -325,9 +325,9 @@ function ViewTutorPlaylist() {
                         Contributors{" "}
                         {playlistData?.collaborators?.length > 0 && (
                           <span className="text-white rounded-full px-1.5 py-0.5 text-[9px] border border-neutral-700">
-                            {formatCount(
-                              playlistData?.collaborators?.length ?? 0,
-                            )}
+                            { formatCount(
+                              playlistData?.collaborators?.length + 1
+                            ) }
                           </span>
                         )}
                         <motion.span
@@ -375,7 +375,7 @@ function ViewTutorPlaylist() {
                               className="flex -space-x-2 cursor-pointer"
                               onClick={() => setShowContributors(true)}
                             >
-                              {playlistData?.collaborators?.length > 5 && (
+                              {playlistData?.collaborators?.length > 4 && (
                                 <div
                                   whileHover={{ scale: 1.08 }}
                                   whileTap={{ scale: 0.95 }}
@@ -399,7 +399,7 @@ function ViewTutorPlaylist() {
                                     {" "}
                                     +
                                     {formatCount(
-                                      playlistData?.collaborators?.length - 5,
+                                      playlistData?.collaborators?.length - 4,
                                     )}{" "}
                                   </p>
                                 </div>
