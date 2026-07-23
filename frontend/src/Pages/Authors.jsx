@@ -786,8 +786,8 @@ const reasonLabel = (reason) => {
   if (!reason) return null;
   if (reason.type === "coordinates") return `Coordinates ${reason.community}`;
   if (reason.type === "sharedCommunity") return `Also in ${reason.community}`;
-  if (reason.type === "mutualFollowers")
-    return `${reason.count} mutual follower${reason.count > 1 ? "s" : ""}`;
+  if (reason.type === "mutualFollowing")
+    return `${reason.count} mutual Following${reason.count > 1 ? "s" : ""}`;
   return null;
 };
 
