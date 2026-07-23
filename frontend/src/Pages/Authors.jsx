@@ -1286,7 +1286,7 @@ function Authors() {
 
     
 
-          {ownStats?.followersCount>0 && role!=="student"&& <span className="text-[10px] md:text-xs text-gray-300 bg-white/5 md:border border-white/10 rounded-lg px-2 md:px-3.5 py-1 md:py-1.5">
+          {role!=="student"&& <span className="text-[10px] md:text-xs text-gray-300 bg-white/5 md:border border-white/10 rounded-lg px-2 md:px-3.5 py-1 md:py-1.5">
             <b className="text-white font-semibold">
               {formatCount(ownStats.followersCount)}
             
@@ -1294,7 +1294,7 @@ function Authors() {
             followers
           </span>}
 
-          {ownStats?.followingCount>0 && <span className="text-[10px] md:text-xs text-gray-300 bg-white/5 md:border border-white/10 rounded-lg px-2 md:px-3.5 py-1 md:py-1.5">
+          { <span className="text-[10px] md:text-xs text-gray-300 bg-white/5 md:border border-white/10 rounded-lg px-2 md:px-3.5 py-1 md:py-1.5">
             <b className="text-white font-semibold">
               {formatCount(ownStats.followingCount)}
               
