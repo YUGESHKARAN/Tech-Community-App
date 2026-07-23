@@ -6,6 +6,7 @@ import {
   IoClose,
   IoShareSocial,
   IoRemoveOutline,
+  IoSearch,
 } from "react-icons/io5";
 
 import { MdEdit } from "react-icons/md";
@@ -262,15 +263,19 @@ function YourPost() {
     <div className="w-full min-h-screen theme h-auto reltive  ">
       <NavBar />
 
-          <h1 className=" text-xl max-w-[1800px] mx-auto mt-3 md:mt-4 px-2 md:px-6  md:w-full flex items-center gap-2 mx-auto md:text-3xl font-semibold text-white tracking-wide">
-          <BsPersonWorkspace />
-          <span className="group text-white tracking-tight"> My Posts</span>{" "}
-        </h1>
+      <div className="flex items-center max-w-[1800px] mx-auto mt-3 px-4 md:w-full gap-2 md:gap-3">
+                    <BsPersonWorkspace className=" text-xl text-white md:text-3xl" />
+                    <h1 className="text-lg md:text-3xl font-semibold tracking-tight text-gray-100">
+                     My Posts
+                    </h1>
+                  </div>
+
+          
         
     {/* ================= SEARCH ================= */}
-           {posts.length > 0 &&  <div className="flex max-w-[1800px] xl:mx-auto mx-3 md:mx-0 justify-center mt-4 mb-2 md:mt-0 md:mb-0 ">
-              <div className="w-full mx-auto max-w-md flex items-center gap-3 theme-fields-lite border border-gray-700 rounded-xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
-                <IoSearchOutline className="text-xl text-gray-400" />
+           {posts.length > 0 &&  <div className="flex max-w-[1800px] xl:mx-auto mx-2 md:mx-0 justify-center mt-4 mb-2 md:mt-0 md:mb-0 ">
+              <div className="w-full max-w-sm flex items-center gap-1 md:gap-3 theme-fields-lite border border-gray-700 rounded-lg md:rounded-xl px-3 md:px-3 py-1.5 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
+                <IoSearch className=" text-gray-400" />
                 <input
                   type="text"
                   placeholder="Search posts, topics, or categories"
@@ -279,7 +284,7 @@ function YourPost() {
                   onChange={(e) => {
                     setSearchTerm(e.target.value);
                   }}
-                  className="bg-transparent w-full focus:outline-none text-sm text-white placeholder-gray-400"
+                  className="bg-transparent w-full focus:outline-none text-[11px] md:text-sm text-white placeholder-gray-400"
                 />
               </div>
             </div>}

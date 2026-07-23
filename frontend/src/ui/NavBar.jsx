@@ -946,7 +946,7 @@ function NavBar() {
                   </div>
             }
 
-            {histroyLoader && (recentPlaylists.length===0 && recentPosts.length===0)  && (
+            {!histroyLoader && (recentPlaylists.length===0 && recentPosts.length===0)  && (
               <div className="px-4 py-4 text-sm h-52 flex items-center justify-center text-gray-500 text-center">
                  <div className="flex gap-0 flex-col ">
                               <img src={logNotFound} alt="" className=" object-cover mx-auto  w-32 h-32" />

@@ -37,22 +37,22 @@ function Control() {
   const [filteredCoordinators, setFilteredCoordinators] = useState([]);
   const [filteredStudents, setFilteredStudents] = useState([]);
   const { communities } = useGetCommunityAnalytics();
-  const [updateId , setUpdateId] = useState(null);
-  const [ updateCommuntiyId, setUpdateCommunityId] = useState(null)
+  const [updateId, setUpdateId] = useState(null);
+  const [updateCommuntiyId, setUpdateCommunityId] = useState(null);
 
   const {
     students,
     totalStudents,
     loading: studentLoading,
     hasMore: studentHashMore,
-    setStudents
+    setStudents,
   } = useGetStudents(email);
   const {
     coordinators,
     totalCoordinators,
     loading: coordinatorsLoading,
     hasMore: coordinatorHashMore,
-    setCoordinators
+    setCoordinators,
   } = useGetCoordinators(email);
 
   const {
@@ -61,11 +61,10 @@ function Control() {
     loading: adminLoading,
     hasMore: adminHashMore,
     loadMore,
-    setAdmins
+    setAdmins,
   } = useGetAdmins(email);
 
-
-const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
+  const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(searchQuery);
@@ -74,7 +73,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
-   const fuse = useMemo(() => {
+  const fuse = useMemo(() => {
     return new Fuse([...admins, ...coordinators, ...students], {
       keys: ["name", "email"],
       threshold: 0.3, // lower = stricter search
@@ -90,13 +89,22 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
         filtered = filtered.filter(
           (item) =>
             item.name?.toLowerCase().includes(query) ||
-            item.email?.toLowerCase().includes(query)
+            item.email?.toLowerCase().includes(query),
         );
       }
 
-      if (roleFilter !== "" && roleFilter !== "admin" && roleFilter !== "coordinator" && roleFilter !== "student") {
+      if (
+        roleFilter !== "" &&
+        roleFilter !== "admin" &&
+        roleFilter !== "coordinator" &&
+        roleFilter !== "student"
+      ) {
         // If a specific role filter is set, apply it
-      } else if (roleFilter === "admin" || roleFilter === "coordinator" || roleFilter === "student") {
+      } else if (
+        roleFilter === "admin" ||
+        roleFilter === "coordinator" ||
+        roleFilter === "student"
+      ) {
         filtered = filtered.filter((item) => item.role === roleFilter);
       }
 
@@ -106,7 +114,14 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
     setFilteredAdmins(applyFilters(admins));
     setFilteredCoordinators(applyFilters(coordinators));
     setFilteredStudents(applyFilters(students));
-  }, [searchQuery, roleFilter, admins, coordinators, debouncedSearch,  students]);
+  }, [
+    searchQuery,
+    roleFilter,
+    admins,
+    coordinators,
+    debouncedSearch,
+    students,
+  ]);
 
   const handleRoleChange = (id, newRole) => {
     setUpdatedRoles((prev) => ({ ...prev, [id]: newRole }));
@@ -115,9 +130,15 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
   const reloadRoleLists = async () => {
     try {
       const [adminsRes, coordinatorsRes, studentsRes] = await Promise.all([
-        axiosInstance.get(`/blog/analytics/view/admins/${email}?page=1&limit=20`),
-        axiosInstance.get(`/blog/analytics/view/coordinators/${email}?page=1&limit=50`),
-        axiosInstance.get(`/blog/analytics/view/users/${email}?page=1&limit=50`),
+        axiosInstance.get(
+          `/blog/analytics/view/admins/${email}?page=1&limit=20`,
+        ),
+        axiosInstance.get(
+          `/blog/analytics/view/coordinators/${email}?page=1&limit=50`,
+        ),
+        axiosInstance.get(
+          `/blog/analytics/view/users/${email}?page=1&limit=50`,
+        ),
       ]);
 
       setAdmins(adminsRes.data.admins || []);
@@ -129,7 +150,6 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
   };
 
   const updateRole = async (userEmail, id) => {
-   
     const roleToUpdate = updatedRoles[id];
     if (!roleToUpdate) {
       toast.warning("Warning", "Please select a role before updating");
@@ -144,7 +164,6 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
         { role: roleToUpdate, userEmail },
       );
       if (response.status === 200) {
-       
         await reloadRoleLists();
         toast.success("Updated", "Role updated successfully");
         setUpdatedRoles((prev) => {
@@ -155,22 +174,21 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
       }
     } catch (err) {
       console.error(err);
-    }
-    finally{
+    } finally {
       setUpdateId(null);
     }
   };
 
   const deleteAuthorByAdmin = async () => {
     setShowConfirm(true);
-     if (!password) {
-          toast.warning(
-            "Required",
-            "Your password is required to delete the user account",
-          );
-          setShowConfirm(false);
-          return "";
-        }
+    if (!password) {
+      toast.warning(
+        "Required",
+        "Your password is required to delete the user account",
+      );
+      setShowConfirm(false);
+      return "";
+    }
     setLoading(true);
 
     try {
@@ -181,24 +199,21 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
       );
 
       if (response.status == 200) {
-        toast.success("Deleted",`${response.data.message}`);
+        toast.success("Deleted", `${response.data.message}`);
         // getAuthors();
         await reloadRoleLists();
         setPassword("");
       }
     } catch (err) {
       // toast.error(`${response.data.message}`);
-       toast.error("Unauthorized", "unable to delete the author");
+      toast.error("Unauthorized", "unable to delete the author");
       console.log(err);
     } finally {
       setLoading(false);
       setShowConfirm(false);
       setPassword("");
-     
     }
   };
-
-
 
   const handleCommunityCheckbox = (email, categoryname) => {
     setAssignedCommunities((prev) => {
@@ -215,7 +230,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
 
   const updateAssignedCommunities = async (email, id) => {
     // console.log("updateAssignedCommunities email", email);
-    setUpdateCommunityId(id)
+    setUpdateCommunityId(id);
     const selectedCommunities = assignedCommunities[email] || [];
     // console.log("selected commu", selectedCommunities);
     try {
@@ -235,9 +250,8 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
       }
     } catch (err) {
       console.error("Error updating communities", err);
-    }
-    finally{
-      setUpdateCommunityId(null)
+    } finally {
+      setUpdateCommunityId(null);
     }
   };
 
@@ -268,25 +282,29 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
   // console.log("authorCommusnity",authorCommunity)
   //  console.log("students", students)
 
-   const [showAuthorFilter, setShowAuthorFilter] = useState(false)
-   const authorFilterRef = useRef();
-  
-    useEffect(() => {
-      const handleClickOutside = (event) => {
-        if (
-          authorFilterRef.current &&
-          !authorFilterRef.current.contains(event.target)
-        ) {
-         
-          setShowAuthorFilter(false)
-        }
-      };
-  
-      document.addEventListener("mousedown", handleClickOutside);
-      return () => {
-        document.removeEventListener("mousedown", handleClickOutside);
-      };
-    }, []);
+  const [showAuthorFilter, setShowAuthorFilter] = useState(false);
+  const authorFilterRef = useRef();
+  const FILTERS = [
+  { value: "", label: "All" },
+  { value: "coordinator", label: "Contributors" },
+  { value: "student", label: "Students" },
+];
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        authorFilterRef.current &&
+        !authorFilterRef.current.contains(event.target)
+      ) {
+        setShowAuthorFilter(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const avatarColor = (name) => {
     const colors = [
@@ -307,19 +325,23 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
     // <div className="relative w-full min-h-screen h-auto  bg-gradient-to-br from-gray-900 to-gray-700">
     <div className="min-h-screen h-auto relative w-full   theme">
       <NavBar />
-      {/* <h1 className="md:text-4xl text-3xl font-semibold my-5 text-white text-left  w-full px-4 mx-auto">
-       <MdManageAccounts/> Control Panel
-      </h1> */}
 
-       <div className="w-full px-4 mx-auto flex width-max items-center gap-2 pt-3 pb-1 md:pb-3 md:pt-6">
+      {/* <div className="w-full px-4 mx-auto flex width-max items-center gap-2 pt-3 pb-1 md:pb-3 md:pt-6">
               <MdManageAccounts className="text-green-400 text-xl md:text-3xl" />
               <h1 className="text-xl md:text-3xl font-semibold tracking-tight text-white">
                 Control Panel
               </h1>
-            </div>
+            </div> */}
+
+      <div className="flex px-4 mx-auto width-max items-center items-center gap-1 py-3 md:gap-3">
+        <MdManageAccounts className="text-emerald-500/70 text-lg md:text-3xl" />
+        <h1 className="text-lg md:text-3xl font-semibold tracking-tight text-gray-100">
+          Control Panel
+        </h1>
+      </div>
 
       {/* Search and Filter */}
-      <div className="w-full width-max px-4 py-2 mx-auto flex  md:flex-row  items-center gap-2 md:gap-3 mb-3 md:mb-6">
+      {/* <div className="w-full width-max px-4 py-2 mx-auto flex  md:flex-row  items-center gap-2 md:gap-3 mb-3 md:mb-6">
         <div
           // className="md:w-1/3 w-3/5 px-4 py-2 flex items-center gap-2 justify-center rounded-md bg-gray-600 border border-white text-xs md:text-sm text-white placeholder-gray-400"
           className="w-full max-w-md flex items-center gap-3 theme-fields-lite border border-gray-700 rounded-xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition"
@@ -335,96 +357,66 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
           />
         </div>
 
-        {/* <select
-          value={roleFilter}
-          onChange={(e) => setRoleFilter(e.target.value)}
-          // className=" md:w-1/4 w-1/5 md:px-4 md:py-2 px-2 py-1 rounded bg-gray-600 text-xs md:text-sm text-white"
-          className="
-            w-20 md:w-64
-            px-2 py-2 md:px-5 md:py-2
-            rounded-full
-            theme/50 backdrop-blur-md
-            border border-gray-600
-            text-xs md:text-sm
-            text-white
-            shadow-md
-            cursor-pointer
-            transition-all duration-200
-            focus:outline-none
-            focus:ring-1 focus:ring-teal-500/50
-            hover:theme
-          "
-        >
-          <option className="theme" value="">
-            All Roles
-          </option>
+        <div className="relative transition-all duration-300 cursor-pointer">
+          <span
+            onClick={() => {
+              setShowAuthorFilter(true);
+            }}
+            className="reltive"
+          >
+            <BsFilterLeft className="text-gray-300  rounded-full p-0.5 text-3xl " />
 
-           <option className="theme" value="admin">
-            Admins
-          </option>
-          
-           <option className="theme" value="coordinator">
-            Contributors
-          </option>
-         
-          <option className="theme" value="student">
-            Users
-          </option>
-         
-        </select> */}
+            <IoCheckmark
+              className={`${roleFilter !== "" ? "text-emerald-400" : "text-gray-300"} absolute bottom-1 right-0 transition-all duration-300`}
+            />
+          </span>
 
-          <div className="relative transition-all duration-300 cursor-pointer">
-                  <span
-                   onClick={()=>{setShowAuthorFilter(true)}}
-                   className="reltive">
-                     <BsFilterLeft 
-                 
-                  className="text-gray-300  rounded-full p-0.5 text-3xl " />
+          <div
+            ref={authorFilterRef}
+            className={`${
+              showAuthorFilter
+                ? "absolute top-12 md:mt-0 right-1 md:left-0 z-50 px-2 py-1 w-32 overflow-hidden rounded-lg border border-[#30363d] theme shadow-2xl"
+                : "hidden"
+            }`}
+            onClick={() => {
+              setShowAuthorFilter(false);
+            }}
+          >
+            <div className="py-1.5">
+              <div
+                onClick={() => {
+                  setRoleFilter("");
+                }}
+              >
+                <button
+                  className="
+                        w-full flex items-center gap-2
+                        pl-3  md:py-1.5 py-1
+                        text-xs text-gray-100
+                        hover:theme-fields-lite/70
+                        transition-all duration-200
+                        rounded-lg
         
-                 <IoCheckmark className={`${roleFilter!==""?'text-emerald-400':'text-gray-300'} absolute bottom-1 right-0 transition-all duration-300`} />
-                   
         
-                  </span>
-                 
-                   
-                   <div
-                  ref={authorFilterRef}
-                  className={`${
-                    showAuthorFilter
-                      ? "absolute top-12 md:mt-0 right-1 md:left-0 z-50 px-2 py-1 w-32 overflow-hidden rounded-lg border border-[#30363d] theme shadow-2xl"
-                      : "hidden"
-                  }`}
-                  onClick={()=>{setShowAuthorFilter(false)}}
+                
+                      "
                 >
-                  {/* Top Section */}
-                  <div className="py-1.5">
-                    <div
-                    onClick={()=>{setRoleFilter("")}}
-        
-                    >
-                    <button
-                      className="
-                        w-full flex items-center gap-2
-                        pl-3  md:py-1.5 py-1
-                        text-xs text-gray-100
-                        hover:theme-fields-lite/70
-                        transition-all duration-200
-                        rounded-lg
-        
-        
-                
-                      "
-                    >
-                      {/* <FiPlusCircle className="text-[17px] text-gray-400" /> */}
-                     <span className="flex items-center gap-2">All  {roleFilter==="" && <IoCheckmark  className="text-sm text-emerald-400"/>}</span>
-                    </button>
-                    </div>
+                  <span className="flex items-center gap-2">
+                    All{" "}
+                    {roleFilter === "" && (
+                      <IoCheckmark className="text-sm text-emerald-400" />
+                    )}
+                  </span>
+                </button>
+              </div>
 
-                     <div
-                   onClick={()=>{setRoleFilter("admin")}}
-                   >
-                    <button
-                      className="
+              <div
+                onClick={() => {
+                  setRoleFilter("admin");
+                }}
+              >
+                <button
+                  className="
                         w-full flex items-center gap-2
                         pl-3  md:py-1.5 py-1
                         text-xs text-gray-100
@@ -433,18 +425,24 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
                         rounded-lg
         
                       "
-                    >
-                      {/* <FiLayers className="text-[17px] text-gray-400" /> */}
-                      <span className="flex items-center gap-2"> Admins {roleFilter==="admin" && <IoCheckmark  className="text-sm text-emerald-400"/>}</span>
-                    </button>
-                   
-                   </div>
-                   
-                   <div
-                   onClick={()=>{setRoleFilter("coordinator")}}
-                   >
-                    <button
-                      className="
+                >
+                  <span className="flex items-center gap-2">
+                    {" "}
+                    Admins{" "}
+                    {roleFilter === "admin" && (
+                      <IoCheckmark className="text-sm text-emerald-400" />
+                    )}
+                  </span>
+                </button>
+              </div>
+
+              <div
+                onClick={() => {
+                  setRoleFilter("coordinator");
+                }}
+              >
+                <button
+                  className="
                         w-full flex items-center gap-2
                         pl-3  md:py-1.5 py-1
                         text-xs text-gray-100
@@ -453,19 +451,24 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
                         rounded-lg
         
                       "
-                    >
-                      {/* <FiLayers className="text-[17px] text-gray-400" /> */}
-                      <span className="flex items-center gap-2"> Contributors {roleFilter==="coordinator" && <IoCheckmark  className="text-sm text-emerald-400"/>}</span>
-                    </button>
-                   
-                   </div>
-                
-                   <div
-                   onClick={()=>{setRoleFilter("student")}}
-                
-                   >
-                    <button
-                      className="
+                >
+                  <span className="flex items-center gap-2">
+                    {" "}
+                    Contributors{" "}
+                    {roleFilter === "coordinator" && (
+                      <IoCheckmark className="text-sm text-emerald-400" />
+                    )}
+                  </span>
+                </button>
+              </div>
+
+              <div
+                onClick={() => {
+                  setRoleFilter("student");
+                }}
+              >
+                <button
+                  className="
                         w-full flex items-center gap-2
                         pl-3  md:py-1.5 py-1
                         text-xs text-gray-100
@@ -474,33 +477,66 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
                         rounded-lg
         
                       "
+                >
+                  <span className="flex items-center gap-2">
+                    {" "}
+                    Users{" "}
+                    {roleFilter === "student" && (
+                      <IoCheckmark className="text-sm text-emerald-400" />
+                    )}
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> */}
+
+       {/* Search + filter chips */}
+            <div className="w-full max-w-[1800px] px-4 mx-auto px-auto justify-between flex flex-wrap mt-0 md:mt-4  items-center gap-2 md:gap-3 mb-4 md:mb-6">
+              <div className="max-w-44 md:min-w-96 flex items-center gap-1 md:gap-3 theme-fields-lite border border-gray-700 rounded-lg md:rounded-xl px-3 md:px-3 py-1 md:py-1.5 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
+                <IoSearch className="text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search by name or email..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="bg-transparent w-full focus:outline-none text-[11px] md:text-sm text-white placeholder-gray-400"
+                />
+              </div>
+      
+              <div className="flex gap-1 md:gap-2 mt-0 flex-wrap">
+                {FILTERS.map((f) => {
+                  const isActive = roleFilter === f.value;
+                  return (
+                    <button
+                      key={f.value}
+                      onClick={() => setRoleFilter(f.value)}
+                      className={`md:text-xs text-[9px] font-medium px-2 md:px-3.5 py-0.5 md:py-1.5 rounded-xl md:rounded-2xl border transition-all duration-300 ${
+                        isActive
+                          ? "bg-emerald-500 text-black border-transparent"
+                          : "bg-white/5 text-gray-400 border-white/10 hover:text-gray-200 hover:border-white/20"
+                      }`}
                     >
-                      {/* <VscGitStashApply className="text-[17px] text-gray-400" /> */}
-                      <span className="flex items-center gap-2"> Users {roleFilter==="student" && <IoCheckmark  className="text-sm text-emerald-400"/>}</span>
+                      {f.label}
                     </button>
-                    </div>
-                
-                  </div>
-                
-           
-                </div>
-        
-                </div>
-      </div>
+                  );
+                })}
+              </div>
+            </div>
 
       {/* -------------------------------------------------Admins--------------------------------------- */}
 
-        <h1
+      <h1
         // id="admins"
         className={`${
           roleFilter === "admin" || roleFilter === ""
-            ? " mx-4 text-center width-max w-full mx-auto text-sm md:text-base   tracking-widest uppercase text-gray-400  font-semibold mb-6"
+            ? " w-full text-center text-[11px] md:text-xs tracking-[0.2em] uppercase text-gray-500 font-medium my-4 md:my-6"
             : "hidden"
         } scroll-mt-24`}
       >
         Admins
       </h1>
-      
 
       {admins.length > 0 ? (
         <div
@@ -514,142 +550,152 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
         >
           {filteredAdmins.length > 0 ? (
             filteredAdmins.map((author) => (
-            <div
-              key={author.id}
-              className="theme w-full px-4 mx-auto md:w-full h-fit p-4 flex flex-col justify-between rounded-lg shadow-md border md:border-neutral-800 border-neutral-700"
-            >
-              <div className="flex justify-between items-center text-xl font-semibold text-white">
-                <Link
-                  to={`/viewProfile/${author.email}`}
-                  className="flex items-start min-w-0 gap-2"
-                >
-                  {!author.profile ? (
-                    <div
-                      className="w-9 h-9  rounded-full flex items-center justify-center  text-[9px] md:text-xs font-bold text-white shrink-0"
-                      style={{ backgroundColor: avatarColor(author.name) }}
+              <div
+                key={author.id}
+                className="theme w-full px-4 mx-auto md:w-full h-fit p-4 flex flex-col justify-between rounded-lg shadow-md border md:border-neutral-800 border-neutral-700"
+              >
+                <div className="flex justify-between items-center text-xl font-semibold text-white">
+                  <Link
+                    to={`/viewProfile/${author.email}`}
+                    className="flex items-start min-w-0 gap-2"
+                  >
+                    {!author.profile ? (
+                      <div
+                        className="w-9 h-9  rounded-full flex items-center justify-center  text-[9px] md:text-xs font-bold text-white shrink-0"
+                        style={{ backgroundColor: avatarColor(author.name) }}
+                      >
+                        {initials(author.name)}
+                      </div>
+                    ) : (
+                      <img
+                        src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`}
+                        alt=""
+                        className="w-9 h-9  border border-green-500/70 rounded-full object-cover"
+                      />
+                    )}
+                    <span className="text-base truncate flex-1 min-w-0 font-semibold text-gray-200 truncate">
+                      {/* {author.name} */}
+                      {highlightText(author.name, debouncedSearch)}
+                      <p className="text-gray-500 truncate text-xs md:text-xs mb-2">
+                        {/* {author.email} */}
+                        {highlightText(author.email, debouncedSearch)}
+                      </p>
+                    </span>
+                  </Link>
+                  {email !== author.email && (
+                    <span
+                      // onClick={() => deleteAuthorByAdmin(author.email)}
+                      onClick={() => {
+                        setAuthorEmail(author.email);
+                        setShowConfirm(true);
+                      }}
+                      className="text-red-400 cursor-pointer"
                     >
-                      {initials(author.name)}
-                    </div>
-                  ) : (
-                    <img
-                      src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`}
-                      alt=""
-                      className="w-9 h-9  border border-green-500/70 rounded-full object-cover"
-                    />
+                      <MdDeleteForever />
+                    </span>
                   )}
-                  <span className="text-base truncate flex-1 min-w-0 font-semibold text-gray-200 truncate">
-                    {/* {author.name} */}
-                       {highlightText(author.name, debouncedSearch)}
-                    <p className="text-gray-500 truncate text-xs md:text-xs mb-2">
-                      {/* {author.email} */}
-                       {highlightText(author.email, debouncedSearch)}
-                    </p>
-                  </span>
-                </Link>
-                {email!==author.email && <span
-                  // onClick={() => deleteAuthorByAdmin(author.email)}
-                  onClick={() => {
-                    setAuthorEmail(author.email);
-                    setShowConfirm(true);
-                  }}
-                  className="text-red-400 cursor-pointer"
-                >
-                  <MdDeleteForever />
-                </span>}
-              </div>
-              {/* <p className="text-gray-600 text-xs md:text-sm mt-2">
+                </div>
+                {/* <p className="text-gray-600 text-xs md:text-sm mt-2">
               {author.email}
             </p> */}
 
-              <div className="md:flex justify-start md:space-x-4 items-center">
-                <p className="text-gray-400 text-xs md:text-sm mt-2">
-                  Role: {author.role}
-                </p>
-                <p
-                  className={`${
-                    author.role === "student"
-                      ? "hidden"
-                      : "text-gray-400 text-xs md:text-sm mt-2"
-                  }`}
-                >
-                  {/* Followers: {author.followerscount} */}
-                  Followers: {formatCount(author.followerscount)}
-                </p>
-                <p
-                  className={`${
-                    author.role === "student"
-                      ? "hidden"
-                      : "text-gray-400 text-xs md:text-sm mt-2"
-                  }`}
-                >
-                  {/* Posts: {author.postsCount} */}
-                  Posts: {formatCount(author.postsCount)}
-                </p>
-              </div>
+                <div className="md:flex justify-start md:space-x-4 items-center">
+                  <p className="text-gray-400 text-xs md:text-sm mt-2">
+                    Role: {author.role}
+                  </p>
+                  <p
+                    className={`${
+                      author.role === "student"
+                        ? "hidden"
+                        : "text-gray-400 text-xs md:text-sm mt-2"
+                    }`}
+                  >
+                    {/* Followers: {author.followerscount} */}
+                    Followers: {formatCount(author.followerscount)}
+                  </p>
+                  <p
+                    className={`${
+                      author.role === "student"
+                        ? "hidden"
+                        : "text-gray-400 text-xs md:text-sm mt-2"
+                    }`}
+                  >
+                    {/* Posts: {author.postsCount} */}
+                    Posts: {formatCount(author.postsCount)}
+                  </p>
+                </div>
 
-              <div className="flex items-center mt-4">
-                <select
-                  className="cursor-pointer mt-2 p-2  text-xs md:text-sm mr-4 rounded bg-gray-800 text-white  disabled:cursor-not-allowed"
-                  value={updatedRoles[author.id] || author.role}
-                  onChange={(e) => handleRoleChange(author.id, e.target.value)}
-                  disabled={email === author.email}
-                >
-                  <option value="admin">Admin</option>
-                  <option value="coordinator">Contributor</option>
-                  <option value="student">User</option>
-                </select>
+                <div className="flex items-center mt-4">
+                  <select
+                    className="cursor-pointer mt-2 p-2  text-xs md:text-sm mr-4 rounded bg-gray-800 text-white  disabled:cursor-not-allowed"
+                    value={updatedRoles[author.id] || author.role}
+                    onChange={(e) =>
+                      handleRoleChange(author.id, e.target.value)
+                    }
+                    disabled={email === author.email}
+                  >
+                    <option value="admin">Admin</option>
+                    <option value="coordinator">Contributor</option>
+                    <option value="student">User</option>
+                  </select>
 
-                <button
-                  className="mt-2 md:px-4 px-2  text-xs md:text-sm py-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white  font-semibold hover:bg-gray-500 bg-white text-gray-800 transition-all duration-200 rounded"
-                  onClick={() => updateRole(author.email, author.id)}
-                  disabled={email === author.email || updateId === author.id}
-                >
-                  {updateId === author.id ? "Updating..." : "Update Role"}
-                </button>
-              </div>
+                  <button
+                    className="mt-2 md:px-4 px-2  text-xs md:text-sm py-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white  font-semibold hover:bg-gray-500 bg-white text-gray-800 transition-all duration-200 rounded"
+                    onClick={() => updateRole(author.email, author.id)}
+                    disabled={email === author.email || updateId === author.id}
+                  >
+                    {updateId === author.id ? "Updating..." : "Update Role"}
+                  </button>
+                </div>
 
                 <div className="mt-4 text-white">
-                <p className="mb-3 text-sm ">Assign Tech Communities:</p>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                  {communities.map((community, idx) => (
-                    <label
-                      key={idx}
-                      className="flex items-center space-x-2 text-xs"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={
-                          assignedCommunities[author.email]?.includes(
-                            community.categoryname,
-                          ) || false
-                        }
-                        onChange={() =>
-                          handleCommunityCheckbox(
-                            author.email,
-                            community.categoryname,
-                          )
-                        }
-                        className="form-checkbox cursor-pointer accent-emerald-500"
-                      />
-                      <span>{community.categoryname}</span>
-                    </label>
-                  ))}
-                </div>
-                <button
-                  onClick={() => updateAssignedCommunities(author.email, author.id)}
-                  className="md:px-5 px-3 py-2 mt-4 bg-emerald-600/20 hover:bg-emerald-500/20
+                  <p className="mb-3 text-sm ">Assign Tech Communities:</p>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                    {communities.map((community, idx) => (
+                      <label
+                        key={idx}
+                        className="flex items-center space-x-2 text-xs"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={
+                            assignedCommunities[author.email]?.includes(
+                              community.categoryname,
+                            ) || false
+                          }
+                          onChange={() =>
+                            handleCommunityCheckbox(
+                              author.email,
+                              community.categoryname,
+                            )
+                          }
+                          className="form-checkbox cursor-pointer accent-emerald-500"
+                        />
+                        <span>{community.categoryname}</span>
+                      </label>
+                    ))}
+                  </div>
+                  <button
+                    onClick={() =>
+                      updateAssignedCommunities(author.email, author.id)
+                    }
+                    className="md:px-5 px-3 py-2 mt-4 bg-emerald-600/20 hover:bg-emerald-500/20
                          rounded-md text-xs md:text-xs  text-emerald-400 transition-all duration-300 disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed"
-                  disabled={updateCommuntiyId===author.id}
-                >
-                  {updateCommuntiyId===author.id?'Saving...':'Save Communities'}
-                </button>
+                    disabled={updateCommuntiyId === author.id}
+                  >
+                    {updateCommuntiyId === author.id
+                      ? "Saving..."
+                      : "Save Communities"}
+                  </button>
+                </div>
               </div>
-            </div>
-          ))
+            ))
           ) : (
             <div className="col-span-full flex flex-col items-center justify-center py-12">
               <p className="text-center text-gray-400 text-sm md:text-base">
-                {searchQuery ? "No admins found matching your search" : "No admins available"}
+                {searchQuery
+                  ? "No admins found matching your search"
+                  : "No admins available"}
               </p>
             </div>
           )}
@@ -672,22 +718,21 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
             </p>
           )}
         </div>
+      ) : adminLoading ? (
+        <AdminCardLoader roleFilter={roleFilter} />
       ) : (
-        adminLoading? <AdminCardLoader roleFilter={roleFilter} />
-        :
-         <p className=" text-center width-max mx-auto text-[10px] md:text-xs col-span-full py-4 text-gray-500">
-              No Admins found
-            </p>
-        
+        <p className=" text-center width-max mx-auto text-[10px] md:text-xs col-span-full py-4 text-gray-500">
+          No Admins found
+        </p>
       )}
 
       {/* -------------------------------------------------Coordinators----------------------------------------------------- */}
 
       <h1
-      id="coordinators"
+        id="coordinators"
         className={`${
           roleFilter === "coordinator" || roleFilter === ""
-            ? " mx-4 text-center text-sm md:text-base  tracking-widest uppercase text-gray-400  font-semibold mb-6"
+            ? "w-full text-center text-[11px] md:text-xs tracking-[0.2em] uppercase text-gray-500 font-medium my-4 md:my-6"
             : "hidden"
         } width-max mx-auto scroll-mt-24`}
       >
@@ -706,184 +751,189 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
         >
           {filteredCoordinators.length > 0 ? (
             filteredCoordinators.map((author) => (
-            <div
-              key={author.id}
-              className="theme w-full px-4 mx-auto md:w-full h-fit p-4 flex flex-col justify-between rounded-lg shadow-md border  border-neutral-700/70"
-            >
-              <div className="flex justify-between items-center text-xl font-semibold text-white">
-                <Link
-                  to={`/viewProfile/${author.email}`}
-                  className="flex items-start min-w-0 gap-2"
-                >
-                  {!author.profile ? (
-                    <div
-                      className="w-9 h-9 rounded-full flex items-center justify-center text-[9px] md:text-xs font-bold text-white shrink-0"
-                      style={{ backgroundColor: avatarColor(author.name) }}
-                    >
-                      {initials(author.name)}
-                    </div>
-                  ) : (
-                    <img
-                      src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`}
-                      alt=""
-                      className="w-9 h-9 border border-green-500/70 rounded-full object-cover"
-                    />
-                  )}
-                  <span className="text-base truncate flex-1 min-w-0 font-semibold text-gray-200 truncate">
-                    {/* {author.name} */}
-                     {highlightText(author.name, debouncedSearch)}
-                    <p className="text-gray-500 truncate text-xs md:text-xs mb-2">
-                      {/* {author.email} */}
-                        {highlightText(author.email, debouncedSearch)}
-                    </p>
-                  </span>
-                </Link>
-                <span
-                  // onClick={() => deleteAuthorByAdmin(author.email)}
-                  onClick={() => {
-                    setAuthorEmail(author.email);
-                    setShowConfirm(true);
-                  }}
-                  className="text-red-400 cursor-pointer"
-                >
-                  <MdDeleteForever />
-                </span>
-              </div>
-          
-
-              <div className="md:flex justify-start md:space-x-4 items-center">
-                <p className="text-gray-400 text-xs md:text-sm mt-2">
-                  Role: {author.role}
-                </p>
-                <p
-                  className={`${
-                    author.role === "student"
-                      ? "hidden"
-                      : "text-gray-400 text-xs md:text-sm mt-2"
-                  }`}
-                >
-                  {/* Followers: {author.followerscount} */}
-                  Followers: {formatCount(author.followerscount)}
-                </p>
-                <p
-                  className={`${
-                    author.role === "student"
-                      ? "hidden"
-                      : "text-gray-400 text-xs md:text-sm mt-2"
-                  }`}
-                >
-                  {/* Posts: {author.postsCount} */}
-                  Posts: {formatCount(author.postsCount)}
-                </p>
-              </div>
-
-              <div className="flex items-center mt-4">
-                <select
-                  className="cursor-pointer mt-2 p-2  text-xs md:text-sm mr-4 rounded bg-gray-800 text-white"
-                  value={updatedRoles[author.id] || author.role}
-                  onChange={(e) => handleRoleChange(author.id, e.target.value)}
-                >
-                  <option value="admin">Admin</option>
-                  <option value="coordinator">Contributor</option>
-                  <option value="student">User</option>
-                </select>
-
-                <button
-                  className="mt-2 md:px-4 px-2  text-xs md:text-sm py-1 font-semibold hover:bg-gray-500 bg-white text-gray-800 transition-all duration-200 rounded disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white"
-                  onClick={() => updateRole(author.email, author.id)}
-                  disabled = {updateId === author.id}
-                >
-                  
-                 {updateId === author.id ? "Updating..." : "Update Role"}
-                </button>
-              </div>
-
-              <div className="mt-4 text-white">
-                <p className="mb-3 text-sm ">Assign Tech Communities:</p>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                  {communities.map((community, idx) => (
-                    <label
-                      key={idx}
-                      className="flex items-center space-x-2 text-xs"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={
-                          assignedCommunities[author.email]?.includes(
-                            community.categoryname,
-                          ) || false
-                        }
-                        onChange={() =>
-                          handleCommunityCheckbox(
-                            author.email,
-                            community.categoryname,
-                          )
-                        }
-                        className="form-checkbox cursor-pointer accent-emerald-500"
+              <div
+                key={author.id}
+                className="theme w-full px-4 mx-auto md:w-full h-fit p-4 flex flex-col justify-between rounded-lg shadow-md border  border-neutral-700/70"
+              >
+                <div className="flex justify-between items-center text-xl font-semibold text-white">
+                  <Link
+                    to={`/viewProfile/${author.email}`}
+                    className="flex items-start min-w-0 gap-2"
+                  >
+                    {!author.profile ? (
+                      <div
+                        className="w-9 h-9 rounded-full flex items-center justify-center text-[9px] md:text-xs font-bold text-white shrink-0"
+                        style={{ backgroundColor: avatarColor(author.name) }}
+                      >
+                        {initials(author.name)}
+                      </div>
+                    ) : (
+                      <img
+                        src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`}
+                        alt=""
+                        className="w-9 h-9 border border-green-500/70 rounded-full object-cover"
                       />
-                      <span>{community.categoryname}</span>
-                    </label>
-                  ))}
+                    )}
+                    <span className="text-base truncate flex-1 min-w-0 font-semibold text-gray-200 truncate">
+                      {/* {author.name} */}
+                      {highlightText(author.name, debouncedSearch)}
+                      <p className="text-gray-500 truncate text-xs md:text-xs mb-2">
+                        {/* {author.email} */}
+                        {highlightText(author.email, debouncedSearch)}
+                      </p>
+                    </span>
+                  </Link>
+                  <span
+                    // onClick={() => deleteAuthorByAdmin(author.email)}
+                    onClick={() => {
+                      setAuthorEmail(author.email);
+                      setShowConfirm(true);
+                    }}
+                    className="text-red-400 cursor-pointer"
+                  >
+                    <MdDeleteForever />
+                  </span>
                 </div>
-                <button
-                  onClick={() => updateAssignedCommunities(author.email, author.id)}
-                  className="md:px-5 px-3 py-2 mt-4 bg-emerald-600/20 hover:bg-emerald-500/20
-                         rounded-md text-xs md:text-xs  text-emerald-400 transition-all duration-300 disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed"
-                  
-                  disabled = {updateCommuntiyId===author.id}
-                >
-                  {updateCommuntiyId === author.id?'Saving...':'Save Communities'}
 
-                </button>
+                <div className="md:flex justify-start md:space-x-4 items-center">
+                  <p className="text-gray-400 text-xs md:text-sm mt-2">
+                    Role: {author.role}
+                  </p>
+                  <p
+                    className={`${
+                      author.role === "student"
+                        ? "hidden"
+                        : "text-gray-400 text-xs md:text-sm mt-2"
+                    }`}
+                  >
+                    {/* Followers: {author.followerscount} */}
+                    Followers: {formatCount(author.followerscount)}
+                  </p>
+                  <p
+                    className={`${
+                      author.role === "student"
+                        ? "hidden"
+                        : "text-gray-400 text-xs md:text-sm mt-2"
+                    }`}
+                  >
+                    {/* Posts: {author.postsCount} */}
+                    Posts: {formatCount(author.postsCount)}
+                  </p>
+                </div>
+
+                <div className="flex items-center mt-4">
+                  <select
+                    className="cursor-pointer mt-2 p-2  text-xs md:text-sm mr-4 rounded bg-gray-800 text-white"
+                    value={updatedRoles[author.id] || author.role}
+                    onChange={(e) =>
+                      handleRoleChange(author.id, e.target.value)
+                    }
+                  >
+                    <option value="admin">Admin</option>
+                    <option value="coordinator">Contributor</option>
+                    <option value="student">User</option>
+                  </select>
+
+                  <button
+                    className="mt-2 md:px-4 px-2  text-xs md:text-sm py-1 font-semibold hover:bg-gray-500 bg-white text-gray-800 transition-all duration-200 rounded disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white"
+                    onClick={() => updateRole(author.email, author.id)}
+                    disabled={updateId === author.id}
+                  >
+                    {updateId === author.id ? "Updating..." : "Update Role"}
+                  </button>
+                </div>
+
+                <div className="mt-4 text-white">
+                  <p className="mb-3 text-sm ">Assign Tech Communities:</p>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                    {communities.map((community, idx) => (
+                      <label
+                        key={idx}
+                        className="flex items-center space-x-2 text-xs"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={
+                            assignedCommunities[author.email]?.includes(
+                              community.categoryname,
+                            ) || false
+                          }
+                          onChange={() =>
+                            handleCommunityCheckbox(
+                              author.email,
+                              community.categoryname,
+                            )
+                          }
+                          className="form-checkbox cursor-pointer accent-emerald-500"
+                        />
+                        <span>{community.categoryname}</span>
+                      </label>
+                    ))}
+                  </div>
+                  <button
+                    onClick={() =>
+                      updateAssignedCommunities(author.email, author.id)
+                    }
+                    className="md:px-5 px-3 py-2 mt-4 bg-emerald-600/20 hover:bg-emerald-500/20
+                         rounded-md text-xs md:text-xs  text-emerald-400 transition-all duration-300 disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed"
+                    disabled={updateCommuntiyId === author.id}
+                  >
+                    {updateCommuntiyId === author.id
+                      ? "Saving..."
+                      : "Save Communities"}
+                  </button>
+                </div>
               </div>
-            </div>
-          ))
+            ))
           ) : (
             <div className="col-span-full flex flex-col items-center justify-center py-12">
               <p className="text-center text-gray-400 text-sm md:text-base">
-                {searchQuery ? "No contributors found matching your search" : "No contributors available"}
+                {searchQuery
+                  ? "No contributors found matching your search"
+                  : "No contributors available"}
               </p>
             </div>
           )}
 
-          {filteredCoordinators.length > 0 && coordinators.length > 0 && coordinatorsLoading && (
-            <div className="col-span-full flex justify-center">
-              <div className="relative flex items-center justify-center">
-                {/* Outer Oval Ring */}
-                <div className="w-7 h-7  border-2 border-neutral-700 border-t-emerald-400 rounded-full animate-spin" />
+          {filteredCoordinators.length > 0 &&
+            coordinators.length > 0 &&
+            coordinatorsLoading && (
+              <div className="col-span-full flex justify-center">
+                <div className="relative flex items-center justify-center">
+                  {/* Outer Oval Ring */}
+                  <div className="w-7 h-7  border-2 border-neutral-700 border-t-emerald-400 rounded-full animate-spin" />
 
-                {/* Inner Glow Pulse */}
-                {/* <div className="absolute w-10 h-10 md:w-12 md:h-12 bg-emerald-500/20 rounded-full blur-md animate-pulse" /> */}
+                  {/* Inner Glow Pulse */}
+                  {/* <div className="absolute w-10 h-10 md:w-12 md:h-12 bg-emerald-500/20 rounded-full blur-md animate-pulse" /> */}
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          { searchQuery.length === 0 && !coordinatorHashMore && (
+          {searchQuery.length === 0 && !coordinatorHashMore && (
             <p className=" text-center text-[10px] md:text-xs col-span-full py-4 text-gray-500">
               No more Contributors
             </p>
           )}
         </div>
+      ) : coordinatorsLoading ? (
+        <CoordinatorLoader roleFilter={roleFilter} />
       ) : (
-       coordinatorsLoading? <CoordinatorLoader roleFilter={roleFilter} />
-       :
         <p className=" text-center text-[10px] width-max mx-auto md:text-xs col-span-full py-4 text-gray-500">
-              No Coordinators found
-            </p>
+          No Coordinators found
+        </p>
       )}
 
       {/*------------------------------------------------------------- Students----------------------------------------------------------- */}
 
-
       <h1
-      id="users"
+        id="users"
         className={`${
           roleFilter === "student" || roleFilter === ""
-            ? " mx-4 text-center text-sm md:text-base  tracking-widest uppercase text-gray-400  font-semibold mb-6"
+            ? " w-full text-center text-[11px] md:text-xs tracking-[0.2em] uppercase text-gray-500 font-medium my-4 md:my-6"
             : "hidden"
         } width-max mx-auto scroll-mt-24`}
       >
-        Users
+        Students
       </h1>
 
       {students.length > 0 ? (
@@ -898,109 +948,120 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
         >
           {filteredStudents.length > 0 ? (
             filteredStudents.map((author) => (
-            <div
-              key={author.id}
-              className="theme w-full px-4 mx-auto md:w-full h-fit p-4 flex flex-col justify-between rounded-lg shadow-md border  border-neutral-700/70"
-            >
-              <div className="flex justify-between items-center text-xl font-semibold text-white">
-                <Link
-                  to={`/viewProfile/${author.email}`}
-                  className="flex items-start min-w-0 gap-2"
-                >
-                  {!author.profile ? (
-                    <div
-                      className="w-9 h-9  rounded-full flex items-center justify-center text-[9px] md:text-xs font-bold text-white shrink-0"
-                      style={{ backgroundColor: avatarColor(author.name) }}
-                    >
-                      {initials(author.name)}
-                    </div>
-                  ) : (
-                    <img
-                      src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`}
-                      alt=""
-                      className="w-9 h-9  border border-green-500/70 rounded-full object-cover"
-                    />
-                  )}
-                  <span className="text-xs min-w-0  flex-1 font-semibold text-gray-200">
-                    {/* {author.name} */}
-                    <p className="truncate"> {highlightText(author.name, debouncedSearch)}</p>
-                    <p className="text-gray-500 truncate text-xs md:text-xs mb-2">
-                      {/* {author.email} */}
-                       {highlightText(author.email, debouncedSearch)}
-                    </p>
+              <div
+                key={author.id}
+                className="theme w-full px-4 mx-auto md:w-full h-fit p-4 flex flex-col justify-between rounded-lg shadow-md border  border-neutral-700/70"
+              >
+                <div className="flex justify-between items-center text-xl font-semibold text-white">
+                  <Link
+                    to={`/viewProfile/${author.email}`}
+                    className="flex items-start min-w-0 gap-2"
+                  >
+                    {!author.profile ? (
+                      <div
+                        className="w-9 h-9  rounded-full flex items-center justify-center text-[9px] md:text-xs font-bold text-white shrink-0"
+                        style={{ backgroundColor: avatarColor(author.name) }}
+                      >
+                        {initials(author.name)}
+                      </div>
+                    ) : (
+                      <img
+                        src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`}
+                        alt=""
+                        className="w-9 h-9  border border-green-500/70 rounded-full object-cover"
+                      />
+                    )}
+                    <span className="text-xs min-w-0  flex-1 font-semibold text-gray-200">
+                      {/* {author.name} */}
+                      <p className="truncate">
+                        {" "}
+                        {highlightText(author.name, debouncedSearch)}
+                      </p>
+                      <p className="text-gray-500 truncate text-xs md:text-xs mb-2">
+                        {/* {author.email} */}
+                        {highlightText(author.email, debouncedSearch)}
+                      </p>
+                    </span>
+                  </Link>
+                  <span
+                    // onClick={() => deleteAuthorByAdmin(author.email)}
+                    onClick={() => {
+                      setAuthorEmail(author.email);
+                      setShowConfirm(true);
+                    }}
+                    className="text-red-400 cursor-pointer"
+                  >
+                    <MdDeleteForever />
                   </span>
-                </Link>
-                <span
-                  // onClick={() => deleteAuthorByAdmin(author.email)}
-                  onClick={() => {
-                    setAuthorEmail(author.email);
-                    setShowConfirm(true);
-                  }}
-                  className="text-red-400 cursor-pointer"
-                >
-                  <MdDeleteForever />
-                </span>
-              </div>
-              {/* <p className="text-gray-400 text-xs md:text-sm mt-2">
+                </div>
+                {/* <p className="text-gray-400 text-xs md:text-sm mt-2">
               {author.email}
             </p> */}
 
-            <div className="md:flex justify-start md:space-x-4 items-center">
-                <p className="text-gray-400 text-xs md:text-sm mt-2">
-                  Role: {author.role}
-                </p>
+                <div className="md:flex justify-start md:space-x-4 items-center">
+                  <p className="text-gray-400 text-xs md:text-sm mt-2">
+                    Role: {author.role}
+                  </p>
                 </div>
 
-              <div className="flex items-center mt-4">
-                <select
-                  className="cursor-pointer mt-2 p-2  text-xs md:text-sm mr-4 rounded bg-gray-800 text-white"
-                  value={updatedRoles[author.id] || author.role}
-                  onChange={(e) => handleRoleChange(author.id, e.target.value)}
-                >
-                  <option value="student">User</option>
-                  <option value="coordinator">Contributor</option>
-                </select>
+                <div className="flex items-center mt-4">
+                  <select
+                    className="cursor-pointer mt-2 p-2  text-xs md:text-sm mr-4 rounded bg-gray-800 text-white"
+                    value={updatedRoles[author.id] || author.role}
+                    onChange={(e) =>
+                      handleRoleChange(author.id, e.target.value)
+                    }
+                  >
+                    <option value="student">User</option>
+                    <option value="coordinator">Contributor</option>
+                  </select>
 
-                <button
-                  className="mt-2 md:px-4 px-2  text-xs md:text-sm py-1 font-semibold hover:bg-gray-500 bg-white text-gray-800 transition-all duration-200 rounded disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white"
-                  onClick={() => updateRole(author.email, author.id)}
-                  disabled = {updateId === author.id}
-                >
-                  {updateId === author.id ? "Updating..." : "Update Role"}
-                </button>
+                  <button
+                    className="mt-2 md:px-4 px-2  text-xs md:text-sm py-1 font-semibold hover:bg-gray-500 bg-white text-gray-800 transition-all duration-200 rounded disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white"
+                    onClick={() => updateRole(author.email, author.id)}
+                    disabled={updateId === author.id}
+                  >
+                    {updateId === author.id ? "Updating..." : "Update Role"}
+                  </button>
+                </div>
               </div>
-            </div>
-          ))
+            ))
           ) : (
             <div className="col-span-full flex flex-col items-center justify-center py-12">
               <p className="text-center text-gray-400 text-sm md:text-base">
-                {searchQuery ? "No users found matching your search" : "No users available"}
+                {searchQuery
+                  ? "No users found matching your search"
+                  : "No users available"}
               </p>
             </div>
           )}
 
-          {filteredStudents.length > 0 && students.length > 0 && studentLoading && (
-            <div className="col-span-full flex justify-center">
-              <div className="relative flex items-center justify-center">
-                {/* Outer Oval Ring */}
-                <div className="w-7 h-7  border-2 border-neutral-700 border-t-emerald-400 rounded-full animate-spin" />
+          {filteredStudents.length > 0 &&
+            students.length > 0 &&
+            studentLoading && (
+              <div className="col-span-full flex justify-center">
+                <div className="relative flex items-center justify-center">
+                  {/* Outer Oval Ring */}
+                  <div className="w-7 h-7  border-2 border-neutral-700 border-t-emerald-400 rounded-full animate-spin" />
 
-                {/* Inner Glow Pulse */}
-                {/* <div className="absolute w-10 h-10 md:w-12 md:h-12 bg-emerald-500/20 rounded-full blur-md animate-pulse" /> */}
+                  {/* Inner Glow Pulse */}
+                  {/* <div className="absolute w-10 h-10 md:w-12 md:h-12 bg-emerald-500/20 rounded-full blur-md animate-pulse" /> */}
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          { searchQuery.length === 0 && !studentHashMore && (
+          {searchQuery.length === 0 && !studentHashMore && (
             <p className=" text-center text-[10px] md:text-xs col-span-full py-4 text-gray-500">
               No more Users
             </p>
           )}
         </div>
+      ) : studentLoading ? (
+        <StudentLoader roleFilter={roleFilter} />
       ) : (
-        studentLoading ? <StudentLoader roleFilter={roleFilter} />:  <p className=" text-center width-max mx-auto text-[10px] md:text-xs col-span-full py-4 text-gray-500">
-              No Users found
-            </p>
+        <p className=" text-center width-max mx-auto text-[10px] md:text-xs col-span-full py-4 text-gray-500">
+          No Users found
+        </p>
       )}
 
       {showConfirm && (
@@ -1066,7 +1127,7 @@ const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
         </div>
       )}
 
-      <Footer/>
+      <Footer />
     </div>
   );
 }

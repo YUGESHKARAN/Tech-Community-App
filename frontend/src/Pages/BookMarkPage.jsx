@@ -258,10 +258,13 @@ function BookMarkPage() {
   return (
     <div className="w-full  theme  h-auto reltive  ">
       <NavBar />
-      <h1 className=" text-xl max-w-[1800px] mx-auto mt-3 md:mt-4 px-2  md:w-full flex items-center gap-2 md:gap-3 mx-auto md:text-3xl font-semibold text-white tracking-wide">
-        <BiBookmarkAlt className="text-green-400"/>
-        <span className="group tracking-tight text-white"> My Bookmarks </span>{" "}
-      </h1>
+    
+      <div className="flex items-center max-w-[1800px] mx-auto mt-3 px-2 md:w-full gap-1 md:gap-3">
+              <BiBookmarkAlt className="text-emerald-500/70 text-lg md:text-3xl" />
+              <h1 className="text-lg md:text-3xl font-semibold tracking-tight text-gray-100">
+               My Bookmarks
+              </h1>
+            </div>
 
       <div
         // className="w-11/12  mx-auto mb-10 border-b border-gray-800"
