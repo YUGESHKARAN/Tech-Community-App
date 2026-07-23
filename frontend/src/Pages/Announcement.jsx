@@ -746,11 +746,17 @@ function Announcement() {
         <div className="w-full">
           <div className="w-full mx-auto px-4 md:px-20 pt-4 pb-5 md:pt-6 flex justify-between items-center">
             <div className="flex items-center justify-center gap-2">
-              <h1 className="md:text-3xl text-xl font-semibold  tracking-tight  flex items-center gap-1 justify-center">
+              {/* <h1 className="md:text-3xl text-xl font-semibold  tracking-tight  flex items-center gap-1 justify-center">
                 <MdAnnouncement className="tetxt-xl pt-0.5 md:pt-0 md:text-3xl " />{" "}
                 Announcements
-              </h1>
+              </h1> */}
 
+              <div className="flex items-center gap-1 md:gap-2">
+                      <MdAnnouncement className="text-xl  pt-0.5 md:pt-0 md:text-3xl" />
+                      <h1 className="text-lg md:text-3xl font-semibold tracking-tight text-gray-100">
+                         Announcements
+                      </h1>
+                    </div>
               {role === "student" && (
                 <span
                   onClick={() => {
@@ -764,57 +770,7 @@ function Announcement() {
             </div>
 
             {role !== "student" && (
-              // <button
-              //   onClick={() => {
-              //     setShowGuidelines(!showGuidelines);
-              //     setShowAnnouncement(false);
-              //   }}
-              //   className="
-              //     md:hidden
-              //     group
-              //     inline-flex
-              //     items-center
-              //     md:gap-2
-              //     gap-1.5
-              //     md:px-4
-              //     md:py-2.5
-              //     px-2
-              //     py-1
-              //     md:rounded-xl
-              //     rounded-lg
-              //     theme
-              //     border
-              //     border-slate-700
-              //     text-slate-200
-              //     md:text-xs
-              //     text-[11px]
-              //     font-medium
-              //     md:hover:border-emerald-500/40
-              //     md:hover:bg-emerald-500/5
-              //     transition-all
-              //     duration-500
-              //   "
-              // >
-              //   <div
-              //     className="
-              //       md:w-6
-              //       md:h-6
-              //       w-5
-              //       h-5
-              //       rounded-full
-              //       flex
-              //       items-center
-              //       justify-center
-              //       bg-emerald-500/10
-              //       text-emerald-400
-              //       group-hover:bg-emerald-500/15
-              //     "
-              //   >
-              //     {showGuidelines ? <X size={11} /> : <Plus size={11} />}
-              //   </div>
-
-              //   <span>{showGuidelines ? "Close Panel" : "Create New"}</span>
-              // </button>
+          
               <motion.button
                 whileTap={{ scale: 0.97 }}
                 whileHover={{ scale: 1.02 }}
