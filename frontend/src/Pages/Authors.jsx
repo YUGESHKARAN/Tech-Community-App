@@ -1018,10 +1018,18 @@ function Authors() {
     const isFollowing = author.followers?.includes(email);
     const isLoading = followLoadingIds.has(author.email);
 
+
+  const handleClick = (e) => {
+    e.preventDefault();   // stops any parent <a> from navigating
+    e.stopPropagation();  // stops the event bubbling up to parent Link
+    addFollower(author.email);
+  };
+
     if (isFollowing) {
       return (
         <button
-          onClick={() => addFollower(author.email)}
+          // onClick={() => addFollower(author.email)}
+          onClick={handleClick}
           disabled={isLoading}
           className="w-full py-2 rounded-full bg-white/5 border border-white/10 text-gray-400 text-xs font-semibold disabled:opacity-50"
         >
@@ -1031,7 +1039,8 @@ function Authors() {
     }
     return (
       <button
-        onClick={() => addFollower(author.email)}
+        // onClick={() => addFollower(author.email)}
+        onClick={handleClick}
         disabled={isLoading}
         className="w-full py-2 rounded-full text-emerald-400 border border-emerald-700 text-xs font-semibold disabled:opacity-50 flex items-center justify-center gap-1 hover:text-emerald-300 hover:border-emerald-600 transition-colors duration-300"
       >
@@ -1127,7 +1136,10 @@ function Authors() {
           </div>
         </Link>
 
-        <div className="px-4 pb-4">
+        <div 
+        className="px-4 pb-4"
+        onClick={(e) => e.stopPropagation()}
+        >
           <FollowButton author={author} />
         </div>
       </div>

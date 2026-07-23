@@ -270,7 +270,7 @@ const filteredPosts = useMemo(() => {
       <NavBar />
       <div className="relative min-h-screen max-w-[1800px] mx-auto  md:pb-8"> 
         <div className="w-full md:px-4 mx-auto mt-3 md:mt-4 ">
-          <h1 className="text-2xl px-2 md:text-3xl mb-3 font-semibold tracking-tight  text-white w-full mx-auto">
+          <h1 className="text-lg px-2 md:text-3xl mb-3 font-semibold tracking-tight  text-white w-full mx-auto">
             Posts Page
           </h1>
           {/* Profile Header Card */}
@@ -345,7 +345,7 @@ const filteredPosts = useMemo(() => {
         
                {/* ================= SEARCH ================= */}
             <div className="flex mx-3 md:mx-0 justify-center mb-2 mt-4 md:mt-6 md:mb-0 ">
-              <div className="w-full mx-auto max-w-md flex items-center gap-3 theme-fields-lite border border-gray-700 rounded-xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
+              <div className="w-full max-w-sm flex items-center gap-1 md:gap-3 theme-fields-lite border border-gray-700 rounded-lg md:rounded-xl px-3 md:px-3 py-1.5 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
                 <IoSearchOutline className="text-xl text-gray-400" />
                 <input
                   type="text"
@@ -355,7 +355,7 @@ const filteredPosts = useMemo(() => {
                   onChange={(e) => {
                     setSearchTerm(e.target.value);
                   }}
-                  className="bg-transparent w-full focus:outline-none text-sm text-white placeholder-gray-400"
+                  className="bg-transparent w-full focus:outline-none text-[11px] md:text-sm text-white placeholder-gray-400"
                 />
               </div>
             </div>
