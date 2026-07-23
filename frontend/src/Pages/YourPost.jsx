@@ -273,7 +273,7 @@ function YourPost() {
           
         
     {/* ================= SEARCH ================= */}
-           {posts.length > 0 &&  <div className="flex max-w-[1800px] xl:mx-auto mx-2 md:mx-0 justify-center mt-4 mb-2 md:mt-0 md:mb-0 ">
+           {posts.length > 0 &&  <div className="flex max-w-[1800px] xl:mx-auto mx-2 md:mx-0 justify-center mt-2 mb-2 md:mt-0 md:mb-0 ">
               <div className="w-full max-w-sm flex items-center gap-1 md:gap-3 theme-fields-lite border border-gray-700 rounded-lg md:rounded-xl px-3 md:px-3 py-1.5 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
                 <IoSearch className=" text-gray-400" />
                 <input
