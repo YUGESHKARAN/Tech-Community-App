@@ -404,8 +404,8 @@ function TechCommunityLanding() {
 
       <div className="flex-grow px-4 md:px-12  relative max-w-[1800px] mx-auto w-full pb-20">
         {/* ── Hero header ── */}
-        <div className="pt-3  relative pb-1 md:pb-3 text-center">
-          <h1 className="text-2xl md:text-4xl font-bold text-gray-200 leading-none mb-2">
+        <div className="pt-3  relative pb-1 text-center">
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-200 leading-none mb-1">
             Tech Communities
           </h1>
           <p className="text-xs text-gray-400 max-w-sm md:max-w-xl mx-auto leading-relaxed">
@@ -572,12 +572,14 @@ function TechCommunityLanding() {
               </div>
             ) : activeFilter === "all" ? (
               <>
-                {yourCommunities?.length > 0 && (
-                  <div className="mb-8">
-                    <h3 className="text-sm font-semibold text-gray-300 mb-3">
-                      Your Communities
-                    </h3>
+                
 
+                {exploreCommunities.length > 0 && (
+                  <div>
+                    <h3 className="text-sm font-semibold text-gray-300 mb-3">
+                      Explore Communities
+                    </h3>
+                  
                     <motion.div
                       // layout
                       variants={containerVariants}
@@ -585,7 +587,7 @@ function TechCommunityLanding() {
                       animate="show"
                       className="grid grid-cols-1 sm:grid-cols-2 gap-5"
                     >
-                      {yourCommunities.map((item) => (
+                      {exploreCommunities.map((item) => (
                          <motion.div
                           key={item._id}
                           // layout
@@ -603,13 +605,12 @@ function TechCommunityLanding() {
                     
                   </div>
                 )}
-
-                {exploreCommunities.length > 0 && (
-                  <div>
+                {yourCommunities?.length > 0 && (
+                  <div className="mb-8">
                     <h3 className="text-sm font-semibold text-gray-300 mb-3">
-                      Explore Communities
+                      Your Communities
                     </h3>
-                  
+
                     <motion.div
                       // layout
                       variants={containerVariants}
@@ -617,7 +618,7 @@ function TechCommunityLanding() {
                       animate="show"
                       className="grid grid-cols-1 sm:grid-cols-2 gap-5"
                     >
-                      {exploreCommunities.map((item) => (
+                      {yourCommunities.map((item) => (
                          <motion.div
                           key={item._id}
                           // layout

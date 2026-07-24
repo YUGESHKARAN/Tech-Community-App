@@ -5,7 +5,7 @@ const KPISkeleton = () => {
   {[...Array(7)].map((_, i) => (
     <div
       key={i}
-      className="relative overflow-hidden rounded-2xl border border-white/5 dashboard-theme-fields-dark p-4 md:p-5 animate-pulse"
+      className="relative overflow-hidden rounded-2xl border border-white/5 dashboard-theme-fields-dark p-4 md:p-4 animate-pulse"
     >
       {/* Shimmer Effect */}
       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-[shimmer_1.5s_infinite]" />

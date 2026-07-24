@@ -333,7 +333,7 @@ function Control() {
               </h1>
             </div> */}
 
-      <div className="flex px-4 mx-auto width-max items-center items-center gap-1 py-3 md:gap-3">
+      <div className="flex px-4 mx-auto width-max items-center items-center gap-1 pt-3 md:gap-3">
         <MdManageAccounts className="text-emerald-500/70 text-lg md:text-3xl" />
         <h1 className="text-lg md:text-3xl font-semibold tracking-tight text-gray-100">
           Control Panel
@@ -531,7 +531,7 @@ function Control() {
         // id="admins"
         className={`${
           roleFilter === "admin" || roleFilter === ""
-            ? " w-full text-center text-[11px] md:text-xs tracking-[0.2em] uppercase text-gray-500 font-medium my-4 md:my-6"
+            ? " w-full text-center text-[11px] md:text-xs tracking-[0.2em] uppercase text-gray-500 font-medium my-4 "
             : "hidden"
         } scroll-mt-24`}
       >
@@ -732,7 +732,7 @@ function Control() {
         id="coordinators"
         className={`${
           roleFilter === "coordinator" || roleFilter === ""
-            ? "w-full text-center text-[11px] md:text-xs tracking-[0.2em] uppercase text-gray-500 font-medium my-4 md:my-6"
+            ? "w-full text-center text-[11px] md:text-xs tracking-[0.2em] uppercase text-gray-500 font-medium my-4 "
             : "hidden"
         } width-max mx-auto scroll-mt-24`}
       >
@@ -929,7 +929,7 @@ function Control() {
         id="users"
         className={`${
           roleFilter === "student" || roleFilter === ""
-            ? " w-full text-center text-[11px] md:text-xs tracking-[0.2em] uppercase text-gray-500 font-medium my-4 md:my-6"
+            ? " w-full text-center text-[11px] md:text-xs tracking-[0.2em] uppercase text-gray-500 font-medium my-4 "
             : "hidden"
         } width-max mx-auto scroll-mt-24`}
       >

@@ -983,7 +983,7 @@ const KPICard = ({
     <Link
       to={to}
       onClick={handleClick}
-      className="dashboard-theme-fields-dark border border-[#1e293b] rounded-xl p-3 md:p-5  flex items-center justify-between gap-3 hover:border-white/10 transition-colors"
+      className="dashboard-theme-fields-dark border border-[#1e293b] rounded-xl p-3 md:p-4  flex items-center justify-between gap-3 hover:border-white/10 transition-colors"
     >
       {/* Top — icon + name */}
       <div className="flex items-center gap-2.5">
