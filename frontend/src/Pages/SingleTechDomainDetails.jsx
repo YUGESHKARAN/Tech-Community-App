@@ -206,7 +206,7 @@ function SingleTechDomainDetails() {
     }
   };
 
-  // console.log("authors", authors)
+  console.log("authors", authors)
   // console.log("role", role)
   // console.log("decodedCategory", decodedCategory)
   // console.log("authorCommunity", authorCommunity)
@@ -486,7 +486,7 @@ function SingleTechDomainDetails() {
             )}
 
           {/* ── MEMBERS ──────────────────────────────────────────── */}
-          {(filter === "Members" || filter === "") &&
+          {(filter === "Total Members" || filter === "") &&
             authors.filter((a) => a.role === "student").length > 0 && (
               <section className="mt-10">
                 <p className="text-xs text-center md:text-sm font-medium tracking-widest uppercase  text-gray-500 mb-4">

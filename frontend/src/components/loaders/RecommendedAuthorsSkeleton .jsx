@@ -1,6 +1,6 @@
 const RecommendedAuthorsSkeleton = () => {
   return (
-    <div className="flex w-full px-4  max-w-[1800px] px-4 md:px-12 mx-auto gap-2 overflow-x-auto scrollbar-hide mt-2 md:mt-4 md:pb-2 animate-pulse">
+    <div className="flex w-full px-4  max-w-[1800px] px-4 md:px-12 mx-auto gap-2 overflow-x-auto scrollbar-hide mt-2 md:mt-4 md:pb-1 animate-pulse">
       {[...Array(6)].map((_, index) => (
         <div
           key={index}

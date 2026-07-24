@@ -89,7 +89,6 @@
 //     return () => window.removeEventListener("scroll", handleScroll);
 //   }, [page, hasMore]);
 
-
 //   const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
 
 //   useEffect(() => {
@@ -145,8 +144,6 @@
 //     recommendtion_system();
 //   }, []);
 
-
-
 //   const addFollower = async (userEmail) => {
 //     setFollowLoadingIds((prev) => new Set(prev).add(userEmail));
 
@@ -199,7 +196,6 @@
 //       threshold: 0.1, // lower = stricter search
 //     });
 //   }, [rcmdAuthors]);
-
 
 //   const recommendedAuthors = useMemo(() => {
 //     let filtered = authors.filter(
@@ -300,7 +296,7 @@
 //                 text-xs text-gray-100
 //                 hover:bg-gray-800/70
 //                 transition-all duration-200
-//                 rounded-lg        
+//                 rounded-lg
 //               "
 //                 >
 //                   <span className="flex items-center gap-2">
@@ -410,7 +406,7 @@
 
 //               <div className="flex-1 min-w-0 md:w-48 w-44">
 //                 <h3 className="text-sm font-semibold min-w-0 text-white truncate">
-               
+
 //                   {highlightText(author.authorName, debouncedSearch)}
 //                 </h3>
 //                 <p className="text-xs text-gray-400 min-w-0 text-[9px] w-9/12 md:w-9/12 truncate">
@@ -524,11 +520,11 @@
 //                 )}
 
 //                 <h3 className="mt-3 font-semibold text-white truncate">
-                  
+
 //                   {highlightText(author.authorName, debouncedSearch)}
 //                 </h3>
 //                 <p className="text-xs text-gray-400 mx-auto truncate">
-           
+
 //                   {highlightText(author.email, debouncedSearch)}
 //                 </p>
 
@@ -543,8 +539,6 @@
 //                     </span>
 //                   )}
 //                 </div>
-
-            
 
 //                 <div className="md:mt-5 mt-3">
 //                   {author.followers.includes(email) ? (
@@ -674,7 +668,7 @@
 
 //                 {/* Email */}
 //                 <p className="text-xs text-gray-400 truncate w-full">
-               
+
 //                   {highlightText(author.email, debouncedSearch)}
 //                 </p>
 
@@ -760,7 +754,7 @@ const domainStyle = {
   "AI/ML": { icon: TbBrain, from: "#0d9488", to: "#0f766e" },
   "Cyber Security": { icon: TbShieldLock, from: "#7c3aed", to: "#6d28d9" },
   "Data Science": { icon: TbChartDots, from: "#059669", to: "#047857" },
-  "GenAI": { icon: TbSparkles, from: "#ea580c", to: "#c2410c" },
+  GenAI: { icon: TbSparkles, from: "#ea580c", to: "#c2410c" },
   "Web Development": { icon: TbWorldWww, from: "#2563eb", to: "#1d4ed8" },
 };
 const defaultDomainStyle = { icon: TbBulb, from: "#0d9488", to: "#0f766e" };
@@ -809,14 +803,17 @@ function Authors() {
 
   // ── header stat pills: following / followers / communities ──
   const { authorCommunity } = useAuthorCommunity(email);
-  const [ownStats, setOwnStats] = useState({ followingCount: 0, followersCount: 0 });
-  const [statsLoader, setStatsLoader] = useState(false)
+  const [ownStats, setOwnStats] = useState({
+    followingCount: 0,
+    followersCount: 0,
+  });
+  const [statsLoader, setStatsLoader] = useState(false);
 
   useEffect(() => {
     if (!email) return;
     const fetchOwnStats = async () => {
       try {
-        setStatsLoader(true)
+        setStatsLoader(true);
         // NOTE: adjust this path to whatever your "get single author by
         // email" route actually is — this is a placeholder guess.
         const response = await axiosInstance.get(`/blog/author/${email}`);
@@ -827,9 +824,8 @@ function Authors() {
         });
       } catch (err) {
         console.log("error fetching own network stats", err);
-      }
-      finally{
-        setStatsLoader(false)
+      } finally {
+        setStatsLoader(false);
       }
     };
     fetchOwnStats();
@@ -843,11 +839,11 @@ function Authors() {
 
     try {
       const response = await axiosInstance.get(
-        `/blog/author/profiles?page=${page}&limit=${limit}`
+        `/blog/author/profiles?page=${page}&limit=${limit}`,
       );
 
       const newAuthors = response.data.data.filter(
-        (author) => author.email !== email
+        (author) => author.email !== email,
       );
 
       if (newAuthors.length === 0) {
@@ -889,7 +885,7 @@ function Authors() {
 
   const fuse = useMemo(
     () => new Fuse(authors, { keys: ["authorName", "email"], threshold: 0.2 }),
-    [authors]
+    [authors],
   );
 
   const filteredAuthors = useMemo(() => {
@@ -912,7 +908,7 @@ function Authors() {
       const response = await axios.post(
         `${recommendationURL}`,
         {},
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token}` } },
       );
       setRecommendation(response.data.recommended_people || []);
     } catch (err) {
@@ -930,7 +926,7 @@ function Authors() {
         keys: ["authorName", "email"],
         threshold: 0.2,
       }),
-    [recommendation]
+    [recommendation],
   );
 
   const filteredRecommended = useMemo(() => {
@@ -940,7 +936,6 @@ function Authors() {
 
   const showRecommended =
     filteredRecommended.length > 0 && roleFilter === "" && !debouncedSearch;
-
 
   //     const addFollower = async (userEmail) => {
   //   setFollowLoadingIds((prev) => new Set(prev).add(userEmail));
@@ -984,7 +979,7 @@ function Authors() {
     try {
       const response = await axiosInstance.put(
         `/blog/author/follow/${userEmail}`,
-        { emailAuthor: email }
+        { emailAuthor: email },
       );
 
       if (response.status === 200) {
@@ -1017,18 +1012,16 @@ function Authors() {
   };
 
   // ── Follow button, shared between contributor and recommended cards ──
-  
-  
+
   const FollowButton = ({ author }) => {
     const isFollowing = author.followers?.includes(email);
     const isLoading = followLoadingIds.has(author.email);
 
-
-  const handleClick = (e) => {
-    e.preventDefault();   // stops any parent <a> from navigating
-    e.stopPropagation();  // stops the event bubbling up to parent Link
-    addFollower(author.email);
-  };
+    const handleClick = (e) => {
+      e.preventDefault(); // stops any parent <a> from navigating
+      e.stopPropagation(); // stops the event bubbling up to parent Link
+      addFollower(author.email);
+    };
 
     if (isFollowing) {
       return (
@@ -1129,22 +1122,22 @@ function Authors() {
           <div className="flex justify-center gap-4 text-[10px] text-gray-400 pt-2 border-t border-white/5 mb-3">
             {author?.postCount > 0 && (
               <span>
-                <b className="text-white">{formatCount(author.postCount)}</b> posts
+                <b className="text-white">{formatCount(author.postCount)}</b>{" "}
+                posts
               </span>
             )}
             <span>
               <b className="text-white">
-                {formatCount(author.followersCount ?? author.followers?.length ?? 0)}
+                {formatCount(
+                  author.followersCount ?? author.followers?.length ?? 0,
+                )}
               </b>{" "}
               followers
             </span>
           </div>
         </Link>
 
-        <div 
-        className="px-4 pb-4"
-        onClick={(e) => e.stopPropagation()}
-        >
+        <div className="px-4 pb-4" onClick={(e) => e.stopPropagation()}>
           <FollowButton author={author} />
         </div>
       </div>
@@ -1208,7 +1201,7 @@ function Authors() {
     const style = getDomainStyle(
       typeof primaryCommunity === "string"
         ? primaryCommunity
-        : primaryCommunity?.name
+        : primaryCommunity?.name,
     );
     const reason = reasonLabel(author.reason);
 
@@ -1244,17 +1237,15 @@ function Authors() {
             </p>
           </div>
           <p className="text-white">{author.posts?.length}</p>
-
-      
         </div>
 
         {author?.badges?.length > 0 && (
-            <BadgeIcons
-                badges={author.badges}
-                parentClass="top-4 md:top-6 right-4 -space-x-0"
-                shieldClassName="w-4 h-4"
-              />
-          )}
+          <BadgeIcons
+            badges={author.badges}
+            parentClass="top-4 md:top-6 right-4 -space-x-0"
+            shieldClassName="w-4 h-4"
+          />
+        )}
 
         <div className="mb-3">
           <DomainTags communities={author.communities} />
@@ -1271,37 +1262,33 @@ function Authors() {
     <div className="w-full min-h-screen theme">
       <NavBar />
 
-      <div className="w-full max-w-[1800px] md:px-12 mx-auto px-4 flex items-center justify-between flex-wrap gap-1.5 md:gap-3 py-3 md:pt-6">
-     
-
-      <div className="flex items-center gap-1 md:gap-3">
-        <IoIosGitNetwork className="text-emerald-500/70 text-lg md:text-3xl" />
-        <h1 className="text-lg md:text-3xl font-semibold tracking-tight text-gray-100">
-          My Network
-        </h1>
-      </div>
+      <div className="w-full max-w-[1800px] md:px-12 mx-auto px-4 flex items-center justify-between flex-wrap gap-1.5 md:gap-3 py-3 md:pb-0.5 md:pt-3">
+        <div className="flex items-center gap-1 md:gap-3">
+          <IoIosGitNetwork className="text-emerald-500/70 text-lg md:text-3xl" />
+          <h1 className="text-lg md:text-3xl font-semibold tracking-tight text-gray-100">
+            My Network
+          </h1>
+        </div>
 
         <div className="flex gap-1 md:gap-2 flex-wrap">
-          
+          {ownStats?.followersCount > 0 && role !== "student" && (
+            <span className="text-[10px] md:text-xs text-gray-300 bg-white/5 md:border border-white/10 rounded-lg px-2 md:px-3.5 py-1 md:py-1.5">
+              <b className="text-white font-semibold">
+                {formatCount(ownStats.followersCount)}
+              </b>{" "}
+              followers
+            </span>
+          )}
 
-    
+          {ownStats?.followingCount > 0 &&
+            <span className="text-[10px] md:text-xs text-gray-300 bg-white/5 md:border border-white/10 rounded-lg px-2 md:px-3.5 py-1 md:py-1.5">
+              <b className="text-white font-semibold">
+                {formatCount(ownStats.followingCount)}
+              </b>{" "}
+              following
+            </span>
+          }
 
-          {role!=="student"&& <span className="text-[10px] md:text-xs text-gray-300 bg-white/5 md:border border-white/10 rounded-lg px-2 md:px-3.5 py-1 md:py-1.5">
-            <b className="text-white font-semibold">
-              {formatCount(ownStats.followersCount)}
-            
-            </b>{" "}
-            followers
-          </span>}
-
-          { <span className="text-[10px] md:text-xs text-gray-300 bg-white/5 md:border border-white/10 rounded-lg px-2 md:px-3.5 py-1 md:py-1.5">
-            <b className="text-white font-semibold">
-              {formatCount(ownStats.followingCount)}
-              
-            </b>{" "}
-            following
-          </span>}
-         
           <span className="text-[10px] md:text-xs text-gray-300 bg-white/5 md:border border-white/10 rounded-lg px-2 md:px-3.5 py-1 md:py-1.5">
             <b className="text-white font-semibold">
               {formatCount(authorCommunity?.length || 0)}
@@ -1346,14 +1333,14 @@ function Authors() {
 
       {/* Recommended */}
       {showRecommended && (
-          <h2 className="w-full text-left px-4 md:px-12 text-[11px] md:text-xs tracking-[0.2em] uppercase text-gray-500 font-medium mb-2 mt-4 md:mt-6 md:mb-3">
-              Recommended
-            </h2>
+        <h2 className="w-full text-left px-4 md:px-12 text-[11px] md:text-xs tracking-[0.2em] uppercase text-gray-500 font-medium mb-2 mt-4 md:mt-6 md:mb-3">
+          Recommended
+        </h2>
       )}
       <div
         className={
           showRecommended
-            ? "flex w-full px-4 md:px-12 max-w-[1800px] overflow-y-hidden mx-auto gap-3 overflow-x-auto scrollbar-hide  md:pb-2"
+            ? "flex w-full px-4 md:px-12 max-w-[1800px] overflow-y-hidden mx-auto gap-3 overflow-x-auto scrollbar-hide  md:pb-1"
             : "hidden"
         }
       >
@@ -1366,7 +1353,7 @@ function Authors() {
         filteredRecommended.length === 0 &&
         filteredAuthors.length === 0 && (
           <>
-          <h2 className="w-full text-left px-4 md:px-12 text-[11px] md:text-xs tracking-[0.2em] uppercase text-gray-500 font-medium mb-2 mt-4 md:mt-6 md:mb-3">
+            <h2 className="w-full text-left px-4 md:px-12 text-[11px] md:text-xs tracking-[0.2em] uppercase text-gray-500 font-medium mb-2 mt-4 md:mt-6 md:mb-3">
               Recommended
             </h2>
             <RecommendedAuthorsSkeleton />
@@ -1377,8 +1364,7 @@ function Authors() {
         {/* Contributors */}
         {filteredAuthors.filter((a) => a.role === "coordinator").length > 0 &&
           roleFilter !== "student" && (
-      
-            <h2 className="w-full text-center text-[11px] md:text-xs tracking-[0.2em] uppercase text-gray-500 font-medium my-4 md:my-6">
+            <h2 className="w-full text-center text-[11px] md:text-xs tracking-[0.2em] uppercase text-gray-500 font-medium my-4">
               Contributors
             </h2>
           )}
@@ -1390,8 +1376,7 @@ function Authors() {
               <ContributorCard key={author.email || index} author={author} />
             ))}
 
-          {filteredAuthors.filter((a) => a.role === "coordinator").length >
-            0 &&
+          {filteredAuthors.filter((a) => a.role === "coordinator").length > 0 &&
             loading && (
               <div className="col-span-full flex justify-center py-4">
                 <div className="w-7 h-7 border-2 border-neutral-700 border-t-emerald-400 rounded-full animate-spin" />
@@ -1403,15 +1388,14 @@ function Authors() {
             roleFilter !== "student" &&
             loading && (
               <div className="col-span-full">
-                <h2 className="w-full text-center text-[11px] md:text-xs tracking-[0.2em] uppercase text-gray-500 font-medium my-4 md:my-6">
+                <h2 className="w-full text-center text-[11px] md:text-xs tracking-[0.2em] uppercase text-gray-500 font-medium my-4 ">
                   Contributors
                 </h2>
                 <CoordinatorGridSkeleton />
               </div>
             )}
 
-          {filteredAuthors.filter((a) => a.role === "coordinator").length >
-            0 &&
+          {filteredAuthors.filter((a) => a.role === "coordinator").length > 0 &&
             !hasMore && (
               <p className="text-center text-[10px] md:text-xs col-span-full py-4 text-gray-500">
                 No more coordinators
@@ -1422,9 +1406,8 @@ function Authors() {
         {/* Students */}
         {filteredAuthors.filter((a) => a.role === "student").length > 0 &&
           roleFilter !== "coordinator" && (
-          
             <h2
-              className={`w-full text-center text-[11px] md:text-xs tracking-[0.2em] uppercase text-gray-500 font-medium mt-6 ${
+              className={`w-full text-center text-[11px] md:text-xs tracking-[0.2em] uppercase text-gray-500 font-medium mt-4${
                 roleFilter === "student" && "md:mt-6"
               }`}
             >
@@ -1451,7 +1434,7 @@ function Authors() {
             loading && (
               <div className="col-span-full">
                 <h2
-                  className={`w-full text-center text-[11px] md:text-xs tracking-[0.2em] uppercase text-gray-500 font-medium mt-6 ${
+                  className={`w-full text-center text-[11px] md:text-xs tracking-[0.2em] uppercase text-gray-500 font-medium mt-4 ${
                     roleFilter === "student" && "md:mt-6"
                   }`}
                 >
@@ -1468,14 +1451,15 @@ function Authors() {
               </p>
             )}
 
-            {!loading && filteredAuthors?.length==0 &&
-                    <div className="w-full h-[44vh] col-span-full max-w-[1800px] mx-auto mb-24 md:h-[55vh] flex flex-col items-center justify-center">
-                      {/* <p className="text-gray-500">Post not found.</p> */}
-                      <img className="w-60 md:w-72 " src={empty_state_author} alt="" />
-                      <p className="text-gray-400 max-w-xs md:max-w-md text-sm md:text-base flex justify-center items-center text-center">
-                        People Not Found !
-                      </p>
-                    </div>}
+          {!loading && filteredAuthors?.length == 0 && (
+            <div className="w-full h-[44vh] col-span-full max-w-[1800px] mx-auto mb-24 md:h-[55vh] flex flex-col items-center justify-center">
+              {/* <p className="text-gray-500">Post not found.</p> */}
+              <img className="w-60 md:w-72 " src={empty_state_author} alt="" />
+              <p className="text-gray-400 max-w-xs md:max-w-md text-sm md:text-base flex justify-center items-center text-center">
+                People Not Found !
+              </p>
+            </div>
+          )}
         </div>
       </div>
 
