@@ -529,14 +529,7 @@ const updateAuthor = async (req, res) => {
   // console.log("updateAuthor called");
   const { authorname, email, role, techcommunity, links, bio } = req.body;
 
-  // fix: generate S3 key in same format used when profile was first uploaded
-  // Option A — no folder prefix (flat): "uuid-originalname.jpg"
   const isNewProfile = req.file ? `${uuidv4()}-${req.file.originalname}` : null;
-
-  // Option B — with folder prefix: "Profiles/uuid-originalname.jpg"
-  // const profileFolder = "Profiles/";
-  // const profile = req.file ? `${profileFolder}${uuidv4()}-${req.file.originalname}` : null;
-
   try {
     const author = await Author.findOne({ email: { $eq: req.params.email } });
     if (!author) {
@@ -1012,32 +1005,32 @@ const notificationAuthor = async (req, res) => {
 
 // reviewed-----------------------------------------------------------------------
 const notificationAuthorDelete = async (req, res) => {
-  const { email, notificationId } = req.query; // Expecting `notificationId` to identify which notification to delete.
+  const { email, notificationId } = req.query;
+  // console.log("data", req.query);
 
   try {
-    // Find the author by email
-    const author = await Author.findOne({ email: { $eq: email } });
-    if (!author) {
-      return res.status(404).json({ message: "Author not found" });
+    if (!email || !notificationId) {
+      return res.status(400).json({ message: "email and notificationId are required" });
     }
 
-    // Filter out the notification with the given notificationId
-    const updatedNotifications = author.notification.filter(
-      (notif) => notif._id.toString() !== notificationId,
+    const result = await Author.findOneAndUpdate(
+      {
+        email: { $eq: email },
+        "notification._id": new mongoose.Types.ObjectId(notificationId),
+      },
+      {
+        $pull: { notification: { _id: new mongoose.Types.ObjectId(notificationId) } },
+      },
+      { new: true, runValidators: false }
     );
 
-    // If no notification matches the provided ID
-    if (updatedNotifications.length === author.notification.length) {
-      return res.status(404).json({ message: "Notification not found" });
+    if (!result) {
+      return res.status(404).json({ message: "Author or notification not found" });
     }
-
-    // Update the author's notifications and save
-    author.notification = updatedNotifications;
-    await author.save();
 
     res.status(200).json({
       message: "Notification deleted successfully",
-      notifications: author.notification,
+      notifications: result.notification,
     });
   } catch (error) {
     console.error("Error deleting notification:", error);
@@ -1047,22 +1040,26 @@ const notificationAuthorDelete = async (req, res) => {
 
 // reviewed-----------------------------------------------------------------------
 const notificationAuthorDeleteAll = async (req, res) => {
-  const { email } = req.query; // Expecting the author's email in the request body.
+  const { email } = req.query;
 
   try {
-    // Find the author by email
-    const author = await Author.findOne({ email: { $eq: email } });
-    if (!author) {
+    if (!email) {
+      return res.status(400).json({ message: "email is required" });
+    }
+
+    const result = await Author.findOneAndUpdate(
+      { email: { $eq: email } },
+      { $set: { notification: [] } },
+      { new: true, runValidators: false }
+    );
+
+    if (!result) {
       return res.status(404).json({ message: "Author not found" });
     }
 
-    // Set the notifications array to empty
-    author.notification = [];
-    await author.save();
-
     res.status(200).json({
       message: "All notifications deleted successfully",
-      notifications: author.notification, // This will now be an empty array
+      notifications: [],
     });
   } catch (error) {
     console.error("Error deleting all notifications:", error);
