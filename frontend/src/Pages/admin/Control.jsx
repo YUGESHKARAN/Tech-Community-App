@@ -333,7 +333,7 @@ function Control() {
               </h1>
             </div> */}
 
-      <div className="flex px-4 mx-auto width-max items-center items-center gap-1 pt-3 md:gap-3">
+      <div className="flex px-4 mx-auto width-max items-center items-center gap-1 pt-3 pb-2 md:pb-0 md:gap-3">
         <MdManageAccounts className="text-emerald-500/70 text-lg md:text-3xl" />
         <h1 className="text-lg md:text-3xl font-semibold tracking-tight text-gray-100">
           Control Panel
