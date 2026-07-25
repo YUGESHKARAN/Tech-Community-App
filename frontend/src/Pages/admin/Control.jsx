@@ -721,7 +721,7 @@ function Control() {
       ) : adminLoading ? (
         <AdminCardLoader roleFilter={roleFilter} />
       ) : (
-        <p className=" text-center width-max mx-auto text-[10px] md:text-xs col-span-full py-4 text-gray-500">
+        <p className=" text-center width-max flex items-center justify-center h-screen mx-auto text-[10px] md:text-xs col-span-full py-4 text-gray-500">
           No Admins found
         </p>
       )}
@@ -918,7 +918,7 @@ function Control() {
       ) : coordinatorsLoading ? (
         <CoordinatorLoader roleFilter={roleFilter} />
       ) : (
-        <p className=" text-center text-[10px] width-max mx-auto md:text-xs col-span-full py-4 text-gray-500">
+        <p className=" text-center text-[10px] flex items-center justify-center h-screen width-max mx-auto md:text-xs col-span-full py-4 text-gray-500">
           No Coordinators found
         </p>
       )}
@@ -1059,7 +1059,7 @@ function Control() {
       ) : studentLoading ? (
         <StudentLoader roleFilter={roleFilter} />
       ) : (
-        <p className=" text-center width-max mx-auto text-[10px] md:text-xs col-span-full py-4 text-gray-500">
+        <p className=" text-center width-max flex items-center justify-center h-screen mx-auto text-[10px] md:text-xs col-span-full py-4 text-gray-500">
           No Users found
         </p>
       )}
