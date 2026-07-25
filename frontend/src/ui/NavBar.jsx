@@ -251,6 +251,7 @@ function NavBar() {
   const announceCount = getItem("announceCount");
 
   const deleteSigleNotification = async (userEmail, notificationId) => {
+    // console.log("userEmail", userEmail)
     setNote((note) => note.filter((n) => n._id !== notificationId));
     storeItem("notiCount", notiCount - 1);
     try {
