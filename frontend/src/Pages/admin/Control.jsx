@@ -333,7 +333,7 @@ function Control() {
               </h1>
             </div> */}
 
-      <div className="flex px-4 mx-auto width-max items-center items-center gap-1 pt-3 md:gap-3">
+      <div className="flex px-4 mx-auto width-max items-center items-center gap-1 pt-3 pb-2 md:pb-0 md:gap-3">
         <MdManageAccounts className="text-emerald-500/70 text-lg md:text-3xl" />
         <h1 className="text-lg md:text-3xl font-semibold tracking-tight text-gray-100">
           Control Panel
@@ -721,7 +721,7 @@ function Control() {
       ) : adminLoading ? (
         <AdminCardLoader roleFilter={roleFilter} />
       ) : (
-        <p className=" text-center width-max flex items-center justify-center h-screen mx-auto text-[10px] md:text-xs col-span-full py-4 text-gray-500">
+        <p className="text-center width-max flex flex-col items-center mx-auto text-[10px] md:text-xs col-span-full py-4 text-gray-500">
           No Admins found
         </p>
       )}
@@ -918,7 +918,7 @@ function Control() {
       ) : coordinatorsLoading ? (
         <CoordinatorLoader roleFilter={roleFilter} />
       ) : (
-        <p className=" text-center text-[10px] flex items-center justify-center h-screen width-max mx-auto md:text-xs col-span-full py-4 text-gray-500">
+        <p className={`text-center text-[10px] flex flex-col items-center  ${roleFilter==='coordinater'?'h-screen pt-40 md:pt-52':'h-auto'} width-max mx-auto md:text-xs col-span-full py-4 text-gray-500`}>
           No Coordinators found
         </p>
       )}
@@ -1059,7 +1059,7 @@ function Control() {
       ) : studentLoading ? (
         <StudentLoader roleFilter={roleFilter} />
       ) : (
-        <p className=" text-center width-max flex items-center justify-center h-screen mx-auto text-[10px] md:text-xs col-span-full py-4 text-gray-500">
+        <p className={`text-center width-max flex flex-col items-center  ${roleFilter==='student'?'h-screen md:pt-52 pt-40':'h-auto'} mx-auto text-[10px] md:text-xs col-span-full py-4 text-gray-500`}>
           No Users found
         </p>
       )}
