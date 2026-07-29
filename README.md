@@ -1,7 +1,7 @@
 
 <div
   align="center">
-  <img src="assets/bytes_base_logo_icon.png" width="100" height="100" alt="Cute Llama"> 
+  <img src="assets/bytes_base_logo_icon.png" width="100" height="100" alt="Bytes Base Logo"> 
 </div>
 
 <div align="center">
