@@ -376,7 +376,7 @@ function NavBar() {
       "
     >
       {/* ================= LEFT (LOGO) ================= */}
-      <div className="flex items-center gap-3 w-1/2 md:w-1/5">
+      <div className="flex shrink-0 items-center mr-1 md:mr-0 gap-3 w-1/4 md:w-1/5">
         <button
           onClick={toggleSidebar}
           className="xl:hidden border border-neutral-700 rounded-md p-1 text-white"
@@ -387,14 +387,14 @@ function NavBar() {
           <Link to="/home">
             <img
               src={bloglogo}
-              className="w-7 h-7 md:w-9 md:h-9 rounded-full"
+              className="w-7 h-7 md:w-9 shrink-0 md:h-9 rounded-full"
             />
           </Link>
         ) : (
           <Link to="/dashboard">
             <img
               src={bloglogo}
-              className="w-7 h-7 md:w-9 md:h-9 rounded-full"
+              className="w-7 h-7 md:w-9 shrink-0 md:h-9 rounded-full"
             />
           </Link>
         )}
@@ -453,8 +453,10 @@ function NavBar() {
         />
       </ul>
 
+    
+
       {/* ================= RIGHT SECTION (DESKTOP + MOBILE SYNCED) ================= */}
-      <div className="flex items-center gap-2 md:gap-4">
+      <div className="flex w-full md:w-fit items-center gap-2 md:gap-4">
         <div
           onClick={() => setShowSearchModal(true)}
           className={`
@@ -462,8 +464,9 @@ function NavBar() {
             flex items-center gap-2
             justify-center
             md:px-3 px-2  py-1.5
-            w-[120px] md:w-[160px]
-       
+        md:w-[160px]
+        w-full
+           
             rounded-2xl
             theme
             border  
