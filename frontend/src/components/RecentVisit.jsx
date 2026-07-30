@@ -38,7 +38,7 @@ function RecentVisit({ parentClass = "", titleClass = "", childClass = "" }) {
         Recent Visits <MdHistory className="text-xs text-gray-500" />
       </p>
       <div
-        className="overflow-y-auto pb-4 overflow-x-hidden scrollbar-hide"
+        // className="overflow-y-auto pb-4 overflow-x-hidden scrollbar-hide"
         className={twMerge(
           clsx(
             `
