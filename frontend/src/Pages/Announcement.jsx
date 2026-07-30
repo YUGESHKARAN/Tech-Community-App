@@ -744,7 +744,7 @@ function Announcement() {
       <div className="min-h-screen max-w-[1800px] mx-auto w-full">
         {/* ================= HEADER ================= */}
         <div className="w-full">
-          <div className="w-full mx-auto px-4 md:px-20 pt-4 pb-5 md:pt-6 flex justify-between items-center">
+          <div className="w-full mx-auto px-4 md:px-20 py-3  md:pb-2 flex justify-between items-center">
             <div className="flex items-center justify-center gap-2">
               {/* <h1 className="md:text-3xl text-xl font-semibold  tracking-tight  flex items-center gap-1 justify-center">
                 <MdAnnouncement className="tetxt-xl pt-0.5 md:pt-0 md:text-3xl " />{" "}
@@ -752,8 +752,8 @@ function Announcement() {
               </h1> */}
 
               <div className="flex items-center gap-1 md:gap-2">
-                      <MdAnnouncement className="text-xl  pt-0.5 md:pt-0 md:text-3xl" />
-                      <h1 className="text-lg md:text-3xl font-semibold tracking-tight text-gray-100">
+                      <MdAnnouncement className="text-xl  pt-0.5 md:pt-0 md:text-xl" />
+                      <h1 className="text-lg md:text-xl font-semibold tracking-tight text-gray-100">
                          Announcements
                       </h1>
                     </div>

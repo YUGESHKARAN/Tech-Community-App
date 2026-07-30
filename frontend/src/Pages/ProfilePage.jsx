@@ -283,13 +283,13 @@ function ProfilePage() {
           <div className="w-full min-h-screen 3xl:max-w-[1800px]  max-w-7xl mx-auto mx-auto px-4 md:px-6 pt-2   pb-8 pb-24">
             {/* ── Page header ──────────────────────────────────────── */}
 
-            <div className="flex items-center justify-between mb-0 md:mb-8 px-1">
+            <div className="flex items-center justify-between mb-0 md:mt-2 md:mb-4 px-1">
               <div>
                 <p className="text-[11px] font-medium tracking-widest uppercase text-gray-300 mb-0.5">
                   Account
                 </p>
 
-                <h1 className="text-xl md:text-3xl font-medium tracking-tight text-emerald-400">
+                <h1 className="text-xl font-medium tracking-tight text-emerald-400">
                   My Profile
                 </h1>
               </div>

@@ -3,7 +3,7 @@ const ProfilePageSkeleton = () => {
    
      <div className="w-full min-h-screen max-w-7xl mx-auto px-4 md:px-6 pt-2 pb-24">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center pt-2 md:pt-4  justify-between mb-6">
         <div>
           <div className="h-3 w-16 md:w-20 rounded bg-gray-800 animate-pulse mb-3" />
           <div className="md:h-8 h-5 w-28 md:w-44 rounded bg-gray-800 animate-pulse" />

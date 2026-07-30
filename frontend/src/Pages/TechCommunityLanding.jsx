@@ -693,7 +693,7 @@ function TechCommunityLanding() {
             
             )}
           </div>}
-          <RecentVisit parentClass="flex col-span-1 order-3 lg:order-1 border-none md:col-span-2 lg:col-span-1 flex-col hidden md:block gap-3 pt-0 lg:sticky lg:top-16" titleClass="text-sm  font-semibold text-gray-300 " childClass="theme border border-[#1e293b] rounded-2xl p-1 mt-2"/>
+          <RecentVisit parentClass="flex col-span-1 order-3 lg:order-1 border-none md:col-span-2 lg:col-span-1 flex-col hidden lg:block gap-3 pt-0 lg:sticky lg:top-16" titleClass="text-sm  font-semibold text-gray-300 " childClass="theme border border-[#1e293b] rounded-2xl p-1 mt-2"/>
 
           {/* <div className="flex col-span-1 w-full  lg:order-3 order-2 md:col-span-2 lg:col-span-1 flex-col gap-2 lg:sticky lg:top-16">
             <h3 className="text-sm md:ml-2 font-semibold text-gray-300 ">

@@ -231,9 +231,9 @@ const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
   return (
     <div className="w-full min-h-screen theme relative">
       <NavBar />
-      <div className="md:mb-8 mt-4 px-4 md:px-12 mx-auto flex items-center justify-between">
+      <div className="mb-6 mt-4 px-4 md:px-12 mx-auto flex items-center justify-between">
         <div>
-          <h1 className="md:text-3xl text-xl font-semibold   text-white tracking-tight">
+          <h1 className="md:text-xl text-xl font-semibold   text-white tracking-tight">
             Update Playlist
           </h1>
           <p className="text-xs text-gray-400 mt-1">
