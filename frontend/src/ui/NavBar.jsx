@@ -461,11 +461,11 @@ function NavBar() {
             group
             flex items-center gap-2
             justify-center
-            px-3   py-1.5
+            md:px-3 px-2  py-1.5
             w-[120px] md:w-[160px]
-            rounded-lg
-            md:rounded-lg
-            bg-[#0f172a]/90
+       
+            rounded-2xl
+            theme
             border  
             hover:border-emerald-500/30
             hover:bg-[#111827]

@@ -5,6 +5,7 @@ import { getItem } from "../utils/encode";
 import logNotFound from "../assets/log_not_found.png";
 import { twMerge } from "tailwind-merge";
 import clsx from "clsx";
+import { IoIosSearch } from "react-icons/io";
 
 function RecentVisit({ parentClass = "", titleClass = "", childClass = "" }) {
   const userEmail = getItem("email");
@@ -92,7 +93,7 @@ function RecentVisit({ parentClass = "", titleClass = "", childClass = "" }) {
                           </p>
                         </div>
 
-                        <span className="text-[10px] text-emerald-400 shrink-0 bg-emerald-600/30 px-2 py-0.5 rounded-full">
+                        <span className="text-[10px] text-emerald-400 shrink-0 bg-gray-900 border border-neutral-800 px-2 py-0.5 rounded-full">
                           post
                         </span>
                       </button>
@@ -142,7 +143,7 @@ function RecentVisit({ parentClass = "", titleClass = "", childClass = "" }) {
                           </p>
                         </div>
 
-                        <span className="text-[10px] text-emerald-400 shrink-0 bg-emerald-600/30 px-2 py-0.5 rounded-full">
+                        <span className="text-[10px] text-emerald-400 shrink-0 bg-gray-900 border border-neutral-800 px-2 py-0.5 rounded-full">
                           playlist
                         </span>
                       </button>
