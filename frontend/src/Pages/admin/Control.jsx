@@ -326,14 +326,7 @@ function Control() {
     <div className="min-h-screen h-auto relative w-full   theme">
       <NavBar />
 
-      {/* <div className="w-full px-4 mx-auto flex width-max items-center gap-2 pt-3 pb-1 md:pb-3 md:pt-6">
-              <MdManageAccounts className="text-green-400 text-xl md:text-3xl" />
-              <h1 className="text-xl md:text-3xl font-semibold tracking-tight text-white">
-                Control Panel
-              </h1>
-            </div> */}
-
-      <div className="flex px-4 mx-auto width-max items-center items-center gap-1 pt-3 pb-2 md:pb-0 md:gap-3">
+      <div className="flex px-4 md:px-12 mx-auto width-max items-center items-center gap-1 pt-3 pb-2 md:pb-0 md:gap-3">
         <MdManageAccounts className="text-emerald-500/70 text-lg " />
         <h1 className="text-lg md:text-xl font-semibold tracking-tight text-gray-100">
           Control Panel
@@ -343,7 +336,7 @@ function Control() {
 
 
        {/* Search + filter chips */}
-            <div className="w-full max-w-[1800px] px-4 mx-auto px-auto justify-between flex flex-wrap mt-0 md:mt-2.5 items-center gap-2 md:gap-3 mb-4 md:mb-6">
+        <div className="w-full max-w-[1800px] px-4 md:px-12 mx-auto px-auto justify-between flex flex-wrap mt-0 md:mt-2.5 items-center gap-2 md:gap-3 mb-4 md:mb-6">
               <div className="max-w-44 md:min-w-96 flex items-center gap-1 md:gap-3 theme-fields-lite border border-gray-700 rounded-lg md:rounded-xl px-3 md:px-3 py-1 md:py-1.5 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
                 <IoSearch className="text-gray-400" />
                 <input
@@ -381,7 +374,7 @@ function Control() {
         // id="admins"
         className={`${
           roleFilter === "admin" || roleFilter === ""
-            ? " w-full text-center text-[11px] md:text-xs tracking-[0.2em] uppercase text-gray-500 font-medium my-4 "
+            ? " w-full text-center text-[11px] md:text-xs tracking-[0.2em] uppercase text-gray-500 font-medium my-4"
             : "hidden"
         } scroll-mt-24`}
       >
@@ -392,9 +385,9 @@ function Control() {
         <div
           className={`${
             roleFilter === ""
-              ? "h-auto  mb-10   grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full px-4 mx-auto mt-2"
+              ? "h-auto  mb-10   grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full px-4 md:px-12 mx-auto mt-2"
               : roleFilter === "admin"
-                ? "min-h-screen md:mb-16 mb-10 flex flex-col   md:grid  md:grid-cols-2 lg:grid-cols-3 gap-4 w-full px-4 mx-auto mt-2"
+                ? "min-h-screen md:mb-16 mb-10 flex flex-col   md:grid  md:grid-cols-2 lg:grid-cols-3 gap-4 w-full px-4 md:px-12 mx-auto mt-2"
                 : "hidden"
           } width-max mx-auto`}
         >
@@ -411,7 +404,7 @@ function Control() {
                   >
                     {!author.profile ? (
                       <div
-                        className="w-9 h-9  rounded-full flex items-center justify-center  text-[9px] md:text-xs font-bold text-white shrink-0"
+                        className="w-7 h-7  rounded-full flex items-center justify-center  text-[9px] md:text-[11px] font-bold text-white shrink-0"
                         style={{ backgroundColor: avatarColor(author.name) }}
                       >
                         {initials(author.name)}
@@ -420,10 +413,10 @@ function Control() {
                       <img
                         src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`}
                         alt=""
-                        className="w-9 h-9  border border-green-500/70 rounded-full object-cover"
+                        className="w-7 h-7  border border-green-500/70 rounded-full object-cover"
                       />
                     )}
-                    <span className="text-base truncate flex-1 min-w-0 font-semibold text-gray-200 truncate">
+                    <span className="text-sm truncate flex-1 min-w-0 font-semibold text-gray-200 truncate">
                       {/* {author.name} */}
                       {highlightText(author.name, debouncedSearch)}
                       <p className="text-gray-500 truncate text-xs md:text-xs mb-2">
@@ -450,14 +443,14 @@ function Control() {
             </p> */}
 
                 <div className="md:flex justify-start md:space-x-4 items-center">
-                  <p className="text-gray-400 text-xs md:text-sm mt-2">
+                  <p className="text-gray-400 text-xs  mt-2">
                     Role: {author.role}
                   </p>
                   <p
                     className={`${
                       author.role === "student"
                         ? "hidden"
-                        : "text-gray-400 text-xs md:text-sm mt-2"
+                        : "text-gray-400 text-xs  mt-2"
                     }`}
                   >
                     {/* Followers: {author.followerscount} */}
@@ -467,7 +460,7 @@ function Control() {
                     className={`${
                       author.role === "student"
                         ? "hidden"
-                        : "text-gray-400 text-xs md:text-sm mt-2"
+                        : "text-gray-400 text-xs  mt-2"
                     }`}
                   >
                     {/* Posts: {author.postsCount} */}
@@ -477,7 +470,7 @@ function Control() {
 
                 <div className="flex items-center mt-4">
                   <select
-                    className="cursor-pointer mt-2 p-2  text-xs md:text-sm mr-4 rounded bg-gray-800 text-white  disabled:cursor-not-allowed"
+                    className="cursor-pointer mt-2 p-1  text-xs mr-4 rounded bg-gray-800 text-white  disabled:cursor-not-allowed"
                     value={updatedRoles[author.id] || author.role}
                     onChange={(e) =>
                       handleRoleChange(author.id, e.target.value)
@@ -490,7 +483,7 @@ function Control() {
                   </select>
 
                   <button
-                    className="mt-2 md:px-4 px-2  text-xs md:text-sm py-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white  font-semibold hover:bg-gray-500 bg-white text-gray-800 transition-all duration-200 rounded"
+                    className="mt-2 md:px-4   text-xs  p-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white  font-semibold hover:bg-gray-500 bg-white text-gray-800 transition-all duration-200 rounded"
                     onClick={() => updateRole(author.email, author.id)}
                     disabled={email === author.email || updateId === author.id}
                   >
@@ -499,7 +492,7 @@ function Control() {
                 </div>
 
                 <div className="mt-4 text-white">
-                  <p className="mb-3 text-sm ">Assign Tech Communities:</p>
+                  <p className="mb-3 text-sm">Assign Tech Communities:</p>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                     {communities.map((community, idx) => (
                       <label
@@ -593,9 +586,9 @@ function Control() {
         <div
           className={`${
             roleFilter === ""
-              ? "h-auto  mb-10  grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full px-4 mx-auto mt-2"
+              ? "h-auto  mb-10  grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full px-4 md:px-12 mx-auto mt-2"
               : roleFilter === "coordinator"
-                ? "min-h-screen h-auto  mb-10 flex flex-col  md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 w-full px-4 mx-auto mt-2"
+                ? "min-h-screen h-auto  mb-10 flex flex-col  md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 w-full px-4 md:px-12 mx-auto mt-2"
                 : "hidden"
           } width-max mx-auto`}
         >
@@ -612,7 +605,7 @@ function Control() {
                   >
                     {!author.profile ? (
                       <div
-                        className="w-9 h-9 rounded-full flex items-center justify-center text-[9px] md:text-xs font-bold text-white shrink-0"
+                        className="w-7 h-7 rounded-full flex items-center justify-center text-[9px] md:text-[11px] font-bold text-white shrink-0"
                         style={{ backgroundColor: avatarColor(author.name) }}
                       >
                         {initials(author.name)}
@@ -621,10 +614,10 @@ function Control() {
                       <img
                         src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`}
                         alt=""
-                        className="w-9 h-9 border border-green-500/70 rounded-full object-cover"
+                        className="w-7 h-7 border border-green-500/70 rounded-full object-cover"
                       />
                     )}
-                    <span className="text-base truncate flex-1 min-w-0 font-semibold text-gray-200 truncate">
+                    <span className="text-sm truncate flex-1 min-w-0 font-semibold text-gray-200 truncate">
                       {/* {author.name} */}
                       {highlightText(author.name, debouncedSearch)}
                       <p className="text-gray-500 truncate text-xs md:text-xs mb-2">
@@ -646,14 +639,14 @@ function Control() {
                 </div>
 
                 <div className="md:flex justify-start md:space-x-4 items-center">
-                  <p className="text-gray-400 text-xs md:text-sm mt-2">
+                  <p className="text-gray-400 text-xs  mt-2">
                     Role: {author.role}
                   </p>
                   <p
                     className={`${
                       author.role === "student"
                         ? "hidden"
-                        : "text-gray-400 text-xs md:text-sm mt-2"
+                        : "text-gray-400 text-xs  mt-2"
                     }`}
                   >
                     {/* Followers: {author.followerscount} */}
@@ -663,7 +656,7 @@ function Control() {
                     className={`${
                       author.role === "student"
                         ? "hidden"
-                        : "text-gray-400 text-xs md:text-sm mt-2"
+                        : "text-gray-400 text-xs  mt-2"
                     }`}
                   >
                     {/* Posts: {author.postsCount} */}
@@ -673,7 +666,7 @@ function Control() {
 
                 <div className="flex items-center mt-4">
                   <select
-                    className="cursor-pointer mt-2 p-2  text-xs md:text-sm mr-4 rounded bg-gray-800 text-white"
+                    className="cursor-pointer mt-2 p-1  text-xs mr-4 rounded bg-gray-800 text-white"
                     value={updatedRoles[author.id] || author.role}
                     onChange={(e) =>
                       handleRoleChange(author.id, e.target.value)
@@ -685,7 +678,7 @@ function Control() {
                   </select>
 
                   <button
-                    className="mt-2 md:px-4 px-2  text-xs md:text-sm py-1 font-semibold hover:bg-gray-500 bg-white text-gray-800 transition-all duration-200 rounded disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white"
+                    className="mt-2 md:px-4  text-xs  p-1 font-semibold hover:bg-gray-500 bg-white text-gray-800 transition-all duration-200 rounded disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white"
                     onClick={() => updateRole(author.email, author.id)}
                     disabled={updateId === author.id}
                   >
@@ -790,9 +783,9 @@ function Control() {
         <div
           className={`${
             roleFilter === ""
-              ? "h-auto md:mb-16 mb-10  grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full px-4 mx-auto mt-2"
+              ? "h-auto md:mb-16 mb-10  grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full px-4 md:px-12 mx-auto mt-2"
               : roleFilter === "student"
-                ? " min-h-screen h-auto md:mb-16 mb-10  flex flex-col   md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 w-full px-4 mx-auto mt-2"
+                ? " min-h-screen h-auto md:mb-16 mb-10  flex flex-col   md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 w-full px-4 md:px-12 mx-auto mt-2"
                 : "hidden"
           } theme width-max mx-auto`}
         >
@@ -809,7 +802,7 @@ function Control() {
                   >
                     {!author.profile ? (
                       <div
-                        className="w-9 h-9  rounded-full flex items-center justify-center text-[9px] md:text-xs font-bold text-white shrink-0"
+                        className="w-7 h-7  rounded-full flex items-center justify-center text-[9px] md:text-[11px] font-bold text-white shrink-0"
                         style={{ backgroundColor: avatarColor(author.name) }}
                       >
                         {initials(author.name)}
@@ -818,7 +811,7 @@ function Control() {
                       <img
                         src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`}
                         alt=""
-                        className="w-9 h-9  border border-green-500/70 rounded-full object-cover"
+                        className="w-7 h-7  border border-green-500/70 rounded-full object-cover"
                       />
                     )}
                     <span className="text-xs min-w-0  flex-1 font-semibold text-gray-200">
@@ -844,19 +837,19 @@ function Control() {
                     <MdDeleteForever />
                   </span>
                 </div>
-                {/* <p className="text-gray-400 text-xs md:text-sm mt-2">
+                {/* <p className="text-gray-400 text-xs  mt-2">
               {author.email}
             </p> */}
 
                 <div className="md:flex justify-start md:space-x-4 items-center">
-                  <p className="text-gray-400 text-xs md:text-sm mt-2">
+                  <p className="text-gray-400 text-xs  mt-2">
                     Role: {author.role}
                   </p>
                 </div>
 
                 <div className="flex items-center mt-4">
                   <select
-                    className="cursor-pointer mt-2 p-2  text-xs md:text-sm mr-4 rounded bg-gray-800 text-white"
+                    className="cursor-pointer mt-2 p-1  text-xs mr-4 rounded bg-gray-800 text-white"
                     value={updatedRoles[author.id] || author.role}
                     onChange={(e) =>
                       handleRoleChange(author.id, e.target.value)
@@ -867,7 +860,7 @@ function Control() {
                   </select>
 
                   <button
-                    className="mt-2 md:px-4 px-2  text-xs md:text-sm py-1 font-semibold hover:bg-gray-500 bg-white text-gray-800 transition-all duration-200 rounded disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white"
+                    className="mt-2 md:px-4  text-xs  p-1 font-semibold hover:bg-gray-500 bg-white text-gray-800 transition-all duration-200 rounded disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white"
                     onClick={() => updateRole(author.email, author.id)}
                     disabled={updateId === author.id}
                   >

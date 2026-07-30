@@ -6,7 +6,7 @@ const StudentLoader = ({roleFilter}) => {
           <div
   className={`${
     roleFilter === ""
-      ? "h-auto md:mb-16 mb-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full px-4 mx-auto mt-2"
+      ? "h-auto md:mb-16 mb-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full px-4 md:px-12 mx-auto mt-2"
       : roleFilter === "admin"
       ? "min-h-screen md:mb-16 mb-10 flex flex-col md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 w-full px-4 mx-auto mt-2"
       : "hidden"
@@ -43,8 +43,8 @@ const StudentLoader = ({roleFilter}) => {
 
       {/* Role + Button */}
       <div className="flex items-center gap-3">
-        <div className="md:h-8 md:w-28 h-5 w-20 bg-gray-800 rounded-md" />
-        <div className="md:h-8 md:w-24 h-5 w-20 bg-gray-700 rounded-md" />
+        <div className=" h-5 w-20 bg-gray-800 rounded-md" />
+        <div className=" h-5 w-20 bg-gray-700 rounded-md" />
       </div>
     </div>
   ))}
