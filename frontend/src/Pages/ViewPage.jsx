@@ -809,6 +809,42 @@ function ViewPage() {
 
               {/* Description */}
               {/* <div className=" md:border border-neutral-700/40 md:rounded-xl rounded-lg p-1 pt-4 md:p-5"> */}
+               <div
+                className="
+                  md:mt-4
+                  md:rounded-2xl
+                  md:border border-neutral-800
+                  md:bg-neutral-900/40
+                  md:p-5
+                  hidden lg:block 
+                  p-1 
+                "
+              >
+                {singlePostData.description &&  (
+                  <>
+                    <p
+                      className="
+                        prose
+                        md:prose-invert
+                        md:max-w-none
+                   
+                        md:prose-p:text-gray-300
+                         break-words
+                        md:prose-p:md:leading-6
+                        md:prose-p:text-sm
+                        prose-headings:text-white
+                      "
+                    >
+                      {/* {renderTextWithHashtags(singlePostData.description)} */}
+                      <RenderTextWithHashtags
+                        text={singlePostData.description}
+                      />
+                    </p>
+                    
+                  </>
+                ) }
+              </div>
+
               <div
                 className="
                   md:mt-4
@@ -816,6 +852,7 @@ function ViewPage() {
                   md:border border-neutral-800
                   md:bg-neutral-900/40
                   md:p-5
+                  lg:hidden
                   p-1 
                 "
               >
