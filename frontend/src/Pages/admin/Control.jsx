@@ -334,166 +334,16 @@ function Control() {
             </div> */}
 
       <div className="flex px-4 mx-auto width-max items-center items-center gap-1 pt-3 pb-2 md:pb-0 md:gap-3">
-        <MdManageAccounts className="text-emerald-500/70 text-lg md:text-3xl" />
-        <h1 className="text-lg md:text-3xl font-semibold tracking-tight text-gray-100">
+        <MdManageAccounts className="text-emerald-500/70 text-lg " />
+        <h1 className="text-lg md:text-xl font-semibold tracking-tight text-gray-100">
           Control Panel
         </h1>
       </div>
 
-      {/* Search and Filter */}
-      {/* <div className="w-full width-max px-4 py-2 mx-auto flex  md:flex-row  items-center gap-2 md:gap-3 mb-3 md:mb-6">
-        <div
-          // className="md:w-1/3 w-3/5 px-4 py-2 flex items-center gap-2 justify-center rounded-md bg-gray-600 border border-white text-xs md:text-sm text-white placeholder-gray-400"
-          className="w-full max-w-md flex items-center gap-3 theme-fields-lite border border-gray-700 rounded-xl px-4 py-2 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition"
-        >
-          <IoSearch className="text-white" />
-          <input
-            type="text"
-            placeholder="Search by name or email..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            // className="w-full bg-gray-600   focus:outline-none focus:ring-0"
-            className="bg-transparent w-full focus:outline-none text-sm text-white placeholder-gray-400"
-          />
-        </div>
 
-        <div className="relative transition-all duration-300 cursor-pointer">
-          <span
-            onClick={() => {
-              setShowAuthorFilter(true);
-            }}
-            className="reltive"
-          >
-            <BsFilterLeft className="text-gray-300  rounded-full p-0.5 text-3xl " />
-
-            <IoCheckmark
-              className={`${roleFilter !== "" ? "text-emerald-400" : "text-gray-300"} absolute bottom-1 right-0 transition-all duration-300`}
-            />
-          </span>
-
-          <div
-            ref={authorFilterRef}
-            className={`${
-              showAuthorFilter
-                ? "absolute top-12 md:mt-0 right-1 md:left-0 z-50 px-2 py-1 w-32 overflow-hidden rounded-lg border border-[#30363d] theme shadow-2xl"
-                : "hidden"
-            }`}
-            onClick={() => {
-              setShowAuthorFilter(false);
-            }}
-          >
-            <div className="py-1.5">
-              <div
-                onClick={() => {
-                  setRoleFilter("");
-                }}
-              >
-                <button
-                  className="
-                        w-full flex items-center gap-2
-                        pl-3  md:py-1.5 py-1
-                        text-xs text-gray-100
-                        hover:theme-fields-lite/70
-                        transition-all duration-200
-                        rounded-lg
-        
-        
-                
-                      "
-                >
-                  <span className="flex items-center gap-2">
-                    All{" "}
-                    {roleFilter === "" && (
-                      <IoCheckmark className="text-sm text-emerald-400" />
-                    )}
-                  </span>
-                </button>
-              </div>
-
-              <div
-                onClick={() => {
-                  setRoleFilter("admin");
-                }}
-              >
-                <button
-                  className="
-                        w-full flex items-center gap-2
-                        pl-3  md:py-1.5 py-1
-                        text-xs text-gray-100
-                        hover:theme-fields-lite/70
-                        transition-all duration-200
-                        rounded-lg
-        
-                      "
-                >
-                  <span className="flex items-center gap-2">
-                    {" "}
-                    Admins{" "}
-                    {roleFilter === "admin" && (
-                      <IoCheckmark className="text-sm text-emerald-400" />
-                    )}
-                  </span>
-                </button>
-              </div>
-
-              <div
-                onClick={() => {
-                  setRoleFilter("coordinator");
-                }}
-              >
-                <button
-                  className="
-                        w-full flex items-center gap-2
-                        pl-3  md:py-1.5 py-1
-                        text-xs text-gray-100
-                        hover:theme-fields-lite/70
-                        transition-all duration-200
-                        rounded-lg
-        
-                      "
-                >
-                  <span className="flex items-center gap-2">
-                    {" "}
-                    Contributors{" "}
-                    {roleFilter === "coordinator" && (
-                      <IoCheckmark className="text-sm text-emerald-400" />
-                    )}
-                  </span>
-                </button>
-              </div>
-
-              <div
-                onClick={() => {
-                  setRoleFilter("student");
-                }}
-              >
-                <button
-                  className="
-                        w-full flex items-center gap-2
-                        pl-3  md:py-1.5 py-1
-                        text-xs text-gray-100
-                        hover:theme-fields-lite/70
-                        transition-all duration-200
-                        rounded-lg
-        
-                      "
-                >
-                  <span className="flex items-center gap-2">
-                    {" "}
-                    Users{" "}
-                    {roleFilter === "student" && (
-                      <IoCheckmark className="text-sm text-emerald-400" />
-                    )}
-                  </span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div> */}
 
        {/* Search + filter chips */}
-            <div className="w-full max-w-[1800px] px-4 mx-auto px-auto justify-between flex flex-wrap mt-0 md:mt-4  items-center gap-2 md:gap-3 mb-4 md:mb-6">
+            <div className="w-full max-w-[1800px] px-4 mx-auto px-auto justify-between flex flex-wrap mt-0 md:mt-2.5 items-center gap-2 md:gap-3 mb-4 md:mb-6">
               <div className="max-w-44 md:min-w-96 flex items-center gap-1 md:gap-3 theme-fields-lite border border-gray-700 rounded-lg md:rounded-xl px-3 md:px-3 py-1 md:py-1.5 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
                 <IoSearch className="text-gray-400" />
                 <input

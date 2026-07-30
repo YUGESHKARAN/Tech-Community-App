@@ -34,6 +34,7 @@ import { getLast3MonthsName } from "../utils/dateFunction";
 import TopContributorsSkeleton from "../components/loaders/dashboard/TopContributorsSkeleton";
 import TechCommunityTopContributorsSkeleton from "../components/loaders/TechCommunityTopContributorsSkeleton";
 import BadgeIcons from "../components/achievements/BadgeIcons";
+import RecentVisit from "../components/RecentVisit";
 
 
 
@@ -402,21 +403,21 @@ function TechCommunityLanding() {
     <div className="min-h-screen theme text-white flex flex-col">
       <NavBar />
 
-      <div className="flex-grow px-4 md:px-12  relative max-w-[1800px] mx-auto w-full pb-20">
+      <div className="flex-grow px-4   relative max-w-[1800px] mx-auto w-full pb-20">
         {/* ── Hero header ── */}
-        <div className="pt-3  relative pb-1 text-center">
+        {/* <div className="pt-3  relative pb-0.5 text-center">
           <h1 className="text-2xl md:text-3xl font-bold text-gray-200 leading-none mb-1">
             Tech Communities
           </h1>
-          <p className="text-xs text-gray-400 max-w-sm md:max-w-xl mx-auto leading-relaxed">
+          <p className="text-[10px] text-gray-400 max-w-sm md:max-w-xl mx-auto leading-relaxed">
             {role === "student"
               ? "Join a domain, connect with coordinators, and stay at the frontier of technology."
               : "Lead with knowledge - contribute content, collaborate with people, and elevate the ecosystem."}
           </p>
-        </div>
+        </div> */}
 
         {/* ── Sticky filter bar — now a sibling, not nested inside the short hero div ── */}
-        <div className="sticky top-0 z-40 -mx-4 md:-mx-12 px-4 md:px-12 py-3  mb-3 theme ">
+        <div className="sticky top-0 z-40 -mx-4 md:-mx-12 px-4  mt-2 py-2  mb-2 theme ">
           <div className="flex items-center justify-center gap-2 md:gap-4  flex-wrap">
             {FILTERS.map((f) => {
               const isActive = activeFilter === f.value;
@@ -452,7 +453,7 @@ function TechCommunityLanding() {
           
 
           {/* ── Sidebar ── */}
-          <div className="flex col-span-1 order-3 lg:order-1 md:col-span-2 lg:col-span-1 flex-col gap-3 lg:sticky lg:top-16">
+          <div className="flex col-span-1  md:col-span-2 lg:col-span-1 flex-col gap-3 lg:sticky lg:top-16">
             {/* Top contributors */}
             <h3 className="text-sm md:ml-2 font-semibold text-gray-300 ">
               Overall Leaderboard
@@ -559,7 +560,7 @@ function TechCommunityLanding() {
 
 
           {/* ── Main column ── */}
-          {<div className="md:col-span-3 col-span-1 order-3 md:order-2">
+          {<div className="md:col-span-2 col-span-1 ">
             {statsLoader ? (
               <div className="grid grid-cols-1 sm:grid-cols-2  gap-5">
          
@@ -606,7 +607,7 @@ function TechCommunityLanding() {
                   </div>
                 )}
                 {yourCommunities?.length > 0 && (
-                  <div className="mb-8">
+                  <div className="mt-8">
                     <h3 className="text-sm font-semibold text-gray-300 mb-3">
                       Your Communities
                     </h3>
@@ -692,6 +693,7 @@ function TechCommunityLanding() {
             
             )}
           </div>}
+          <RecentVisit parentClass="flex col-span-1 order-3 lg:order-1 border-none md:col-span-2 lg:col-span-1 flex-col hidden lg:block gap-3 pt-0 lg:sticky lg:top-16" titleClass="text-sm  font-semibold text-gray-300 " childClass="theme border border-[#1e293b] rounded-2xl p-1 mt-2"/>
 
           {/* <div className="flex col-span-1 w-full  lg:order-3 order-2 md:col-span-2 lg:col-span-1 flex-col gap-2 lg:sticky lg:top-16">
             <h3 className="text-sm md:ml-2 font-semibold text-gray-300 ">

@@ -59,8 +59,8 @@ import toast from "../components/toaster/Toast";
 import { MdDashboard } from "react-icons/md";
 import { getItem, removeItem, storeItem } from "../utils/encode";
 import SearchModal from "../components/SearchModal";
-import useGetRecentHistory from "../hooks/useGetRecentHistory"
-import logNotFound from "../assets/log_not_found.png"
+import useGetRecentHistory from "../hooks/useGetRecentHistory";
+import logNotFound from "../assets/log_not_found.png";
 
 function NavBar() {
   const { logout } = useAuth();
@@ -81,11 +81,12 @@ function NavBar() {
   const [loading, setLoading] = useState(false);
   const [showAddContent, setShowAddContent] = useState(false);
   const [showSearchModal, setShowSearchModal] = useState(false);
-  const [showProfile, setShowProfile] = useState(false)
+  const [showProfile, setShowProfile] = useState(false);
   const { searchTerm, setSearchTerm, inputValue, setInputValue } =
     useContext(GlobalStateContext);
 
-  const { recentPosts, recentPlaylists, histroyLoader} = useGetRecentHistory(userEmail);
+  const { recentPosts, recentPlaylists, histroyLoader } =
+    useGetRecentHistory(userEmail);
 
   // const [inputValue, setInputValue] = useState(searchTerm || "");
 
@@ -127,8 +128,6 @@ function NavBar() {
     };
   }, []);
 
-
-
   // -----remove in live stream-------------------------------
 
   // Fetch stored notifications from the server
@@ -159,93 +158,91 @@ function NavBar() {
 
   // ----------------------------------------------------------
 
-
   // ---- use in live stream-------------------------------------
-//   const [notificationCount, setNotificationCount] = useState(0);
+  //   const [notificationCount, setNotificationCount] = useState(0);
 
+  // useEffect(() => {
+  //   if (!userEmail) return;
 
-// useEffect(() => {
-//   if (!userEmail) return;
+  //   let eventSource;
+  //   let reconnectTimer;
+  //   let reconnectDelay = 1000;
 
-//   let eventSource;
-//   let reconnectTimer;
-//   let reconnectDelay = 1000;
+  //   const connect = () => {
 
-//   const connect = () => {
+  //     // const rawBaseUrl =
+  //     //   // axiosInstance.defaults.baseURL ||
+  //     //   "http://localhost:3000";
 
-//     // const rawBaseUrl =
-//     //   // axiosInstance.defaults.baseURL ||
-//     //   "http://localhost:3000";
+  //     const rawBaseUrl = import.meta.env.VITE_MESSAGE_QUEUE;
 
-//     const rawBaseUrl = import.meta.env.VITE_MESSAGE_QUEUE;
+  //     const baseUrl = rawBaseUrl.replace(/\/+$/, ""); // strip trailing slash(es)
 
-//     const baseUrl = rawBaseUrl.replace(/\/+$/, ""); // strip trailing slash(es)
+  //     const streamUrl = `${baseUrl}/blog/notifications/stream/${encodeURIComponent(userEmail)}`;
+  //     eventSource = new EventSource(streamUrl, { withCredentials: true });
 
-//     const streamUrl = `${baseUrl}/blog/notifications/stream/${encodeURIComponent(userEmail)}`;
-//     eventSource = new EventSource(streamUrl, { withCredentials: true });
+  //     eventSource.addEventListener("message", (event) => {
+  //       try {
+  //         const incoming = JSON.parse(event.data);
+  //         setNote((prev) => {
+  //           if (prev.some((n) => n.postId === incoming.postId)) return prev;
+  //           const next = [incoming, ...prev];
+  //           setNotificationCount(next.length);
+  //           storeItem("notiCount", next.length);
+  //           return next;
+  //         });
+  //       } catch (err) {
+  //         console.error("SSE parse error:", err);
+  //       }
+  //     });
 
-//     eventSource.addEventListener("message", (event) => {
-//       try {
-//         const incoming = JSON.parse(event.data);
-//         setNote((prev) => {
-//           if (prev.some((n) => n.postId === incoming.postId)) return prev;
-//           const next = [incoming, ...prev];
-//           setNotificationCount(next.length);
-//           storeItem("notiCount", next.length);
-//           return next;
-//         });
-//       } catch (err) {
-//         console.error("SSE parse error:", err);
-//       }
-//     });
+  //     eventSource.onopen = () => {
+  //       reconnectDelay = 1000; // reset backoff once healthy again
+  //     };
 
-//     eventSource.onopen = () => {
-//       reconnectDelay = 1000; // reset backoff once healthy again
-//     };
+  //     eventSource.onerror = () => {
+  //       console.error("SSE connection error, reconnecting...");
+  //       eventSource.close();
+  //       clearTimeout(reconnectTimer);
+  //       reconnectTimer = setTimeout(() => {
+  //         reconnectDelay = Math.min(reconnectDelay * 2, 30000);
+  //         connect();
+  //       }, reconnectDelay);
+  //     };
+  //   };
 
-//     eventSource.onerror = () => {
-//       console.error("SSE connection error, reconnecting...");
-//       eventSource.close();
-//       clearTimeout(reconnectTimer);
-//       reconnectTimer = setTimeout(() => {
-//         reconnectDelay = Math.min(reconnectDelay * 2, 30000);
-//         connect();
-//       }, reconnectDelay);
-//     };
-//   };
+  //   connect();
 
-//   connect();
+  //     const fetchNotifications = async () => {
+  //     if (note.length === 0) {
+  //       setLoading(true);
+  //     }
 
-//     const fetchNotifications = async () => {
-//     if (note.length === 0) {
-//       setLoading(true);
-//     }
+  //     try {
+  //       const response = await axiosInstance.get(
+  //         `/blog/author/queueMessage/${userEmail}`,
+  //       );
+  //       setNote(response.data.notifications);
+  //       setAnnouncement(response.data.announcements);
+  //       storeItem("notiCount", response.data.notifications.length);
+  //       storeItem("announceCount", response.data.announcements.length);
+  //       //   console.log("author email data", response.data.notification)
+  //     } catch (error) {
+  //       console.error("Error fetching notifications:", error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
 
-//     try {
-//       const response = await axiosInstance.get(
-//         `/blog/author/queueMessage/${userEmail}`,
-//       );
-//       setNote(response.data.notifications);
-//       setAnnouncement(response.data.announcements);
-//       storeItem("notiCount", response.data.notifications.length);
-//       storeItem("announceCount", response.data.announcements.length);
-//       //   console.log("author email data", response.data.notification)
-//     } catch (error) {
-//       console.error("Error fetching notifications:", error);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
+  //   fetchNotifications();
 
-//   fetchNotifications();
+  //   return () => {
+  //     clearTimeout(reconnectTimer);
+  //     eventSource?.close();
+  //   };
+  // }, [userEmail]);
 
-//   return () => {
-//     clearTimeout(reconnectTimer);
-//     eventSource?.close();
-//   };
-// }, [userEmail]);
-
-// -----------------------------------------------------------------
+  // -----------------------------------------------------------------
 
   const notiCount = getItem("notiCount");
   const announceCount = getItem("announceCount");
@@ -350,9 +347,9 @@ function NavBar() {
   // console.log("note", note)
   // console.log("recentPosts", recentPosts);
   // console.log("recentPlaylists", recentPlaylists);
-   const navigate  = useNavigate();
+  const navigate = useNavigate();
 
-   const handlePostClick = (post) => {
+  const handlePostClick = (post) => {
     setSearchTerm("");
     setInputValue("");
     navigate(`/viewpage/${post.authorEmail}/${post._id}`);
@@ -366,7 +363,7 @@ function NavBar() {
     navigate(`/viewplaylist/${playlist._id}`);
     setOpen(false);
   };
-  
+
   return (
     <div
       className="
@@ -434,7 +431,7 @@ function NavBar() {
           icon={<MdGroups />}
           label="Communities"
         />
-        
+
         <NavIconDesktop
           to="/authors"
           icon={<IoIosGitNetwork />}
@@ -449,7 +446,6 @@ function NavBar() {
           />
         )}
 
-        
         <NavIconDesktop
           to="/bookMarkPage"
           icon={<RiBookMarkedFill />}
@@ -465,11 +461,11 @@ function NavBar() {
             group
             flex items-center gap-2
             justify-center
-            px-3   py-1.5
+            md:px-3 px-2  py-1.5
             w-[120px] md:w-[160px]
-            rounded-lg
-            md:rounded-lg
-            bg-[#0f172a]/90
+       
+            rounded-2xl
+            theme
             border  
             hover:border-emerald-500/30
             hover:bg-[#111827]
@@ -594,7 +590,6 @@ function NavBar() {
 
         {role !== "student" && (
           <div className="relative lg:hidden ">
-            {/* <IoMdNotifications */}
             <GoPlus
               onClick={() => setShowAddContent(!showAddContent)}
               className="text-[27px] text-gray-300 rounded-md p-[5px] border border-neutral-600 hover:text-white transition-all duration-300 cursor-pointer transition"
@@ -603,7 +598,6 @@ function NavBar() {
         )}
 
         <div className="relative lg:hidden">
-          {/* <IoMdNotifications */}
           <RiNotification3Line
             onClick={() => setShowNotification(!showNotification)}
             className="text-[27px] text-gray-300 rounded-md p-[5px] border border-neutral-600 hover:text-white transition-all duration-300 cursor-pointer transition"
@@ -623,9 +617,12 @@ function NavBar() {
             rounded-full transition
           "
         >
-          <div 
-          onClick={()=>{ setShowProfile((prev)=> !prev)}}
-          className="  items-center gap-1">
+          <div
+            onClick={() => {
+              setShowProfile((prev) => !prev);
+            }}
+            className="  items-center gap-1"
+          >
             {profile !== "undefined" ? (
               <img
                 src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`}
@@ -650,9 +647,9 @@ function NavBar() {
       </div>
 
       {/* Sidebar */}
-        <div
-            ref={sidebarRef}
-            className={`fixed top-0 left-0 w-[300px]
+      <div
+        ref={sidebarRef}
+        className={`fixed top-0 left-0 w-[300px]
               bg-[#0b1220]
               text-white shadow-2xl z-50 h-screen
               flex flex-col
@@ -663,7 +660,7 @@ function NavBar() {
                   ? "opacity-100 translate-x-0"
                   : "opacity-0 -translate-x-full pointer-events-none"
               }`}
-          >
+      >
         {/* ================= HEADER ================= */}
         <div className="flex items-center justify-between px-5 py-4 pb-3">
           {role !== "admin" ? (
@@ -734,15 +731,6 @@ function NavBar() {
             close={setIsSidebarOpen}
           />
 
-          {/* {role == "student" && (
-            <NavIcon
-              to="/profile"
-              icon={<FaUserAlt />}
-              label="Profile"
-              close={setIsSidebarOpen}
-            />
-          )} */}
-
           <NavTile
             to="/announcement"
             icon={<MdAnnouncement />}
@@ -754,18 +742,18 @@ function NavBar() {
         </div>
 
         {/* ================= SECONDARY TILES ================= */}
-        <div className={`flex flex-col max-h-68    border-t border-neutral-700 px-6 pt-3 pb-3  ${role==='student' && 'hidden'}`}>
+        <div
+          className={`flex flex-col max-h-68    border-t border-neutral-700 px-6 pt-3 pb-3  ${role === "student" && "hidden"}`}
+        >
           {role !== "student" && (
             <p className="text-gray-400 font-medium text-xs mb-3">Controls</p>
           )}
 
           <div className="flex flex-col space-y-4  pb-3 pr-1">
-   
             {/* ------------------------------------------- */}
 
             {role == "admin" && (
               <NavIcon
-                // to={`/bookMarkPage/${email}`}
                 to={`/dashboard`}
                 icon={<MdDashboard />}
                 label="Analytics"
@@ -775,7 +763,6 @@ function NavBar() {
 
             {role === "admin" && (
               <NavIcon
-                // to={`/bookMarkPage/${email}`}
                 to={`/control`}
                 icon={<MdManageAccounts />}
                 label="Control Panel"
@@ -783,14 +770,7 @@ function NavBar() {
               />
             )}
 
-            {/* {role !== "student" && (
-            <NavIcon
-              to="/workspace"
-              icon={<BsPersonWorkspace />}
-              label="Workspace"
-              close={setIsSidebarOpen}
-            />
-          )} */}
+    
 
             {role !== "student" && (
               <>
@@ -810,154 +790,9 @@ function NavBar() {
               </>
             )}
           </div>
-
-          {/* <div className="mt-auto  pt-6 flex justify-center">
-            <button
-              onClick={exit}
-              className="flex items-center gap-2 text-white/70 hover:text-white transition"
-            >
-              <IoLogOutOutline className="text-xl text-red-400" />
-              <span className="text-[11px]">Sign Out</span>
-            </button>
-          </div> */}
         </div>
 
-        
-
-        <div className="flex flex-col   border-t border-neutral-700   pt-3 min-h-0">
-          <p className="text-gray-400 py-1 font-medium flex items-center gap-1 text-xs px-4 ">Recent Visits  <MdHistory className="text-xs text-gray-500" /></p>
-
-         <div className="overflow-y-auto pb-4 overflow-x-hidden scrollbar-hide">
-
-          {!histroyLoader && (recentPosts.length>0 || recentPlaylists?.length>0) && (
-              <>
-                {/* Post suggestions */}
-                {recentPosts.length > 0 && (
-                  <div>
-                    <p className="px-4 pt-2  text-[10px] uppercase tracking-widest text-gray-500 font-medium">
-                      Posts
-                    </p>
-                    <div className="w-full flex flex-col overflow-x-hidden overflow-y-auto scrollbar-hide">
-                    {recentPosts.map(post => (
-                      <button
-                        key={post._id}
-                        onClick={() => handlePostClick(post)}
-                        className="
-                          w-full flex items-center gap-2 px-4 py-2.5
-                          hover:bg-white/5 transition-colors duration-150
-                          text-left group
-                        "
-                      >
-                        {/* thumbnail */}
-                        <div className="w-7 h-7 rounded-md bg-gray-800 shrink-0 overflow-hidden">
-                          {post.image ? (
-                            <img
-                              src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${post.image}`}
-                              alt={post.title}
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center">
-                              <IoIosSearch className="text-gray-600 text-sm" />
-                            </div>
-                          )}
-                        </div>
-
-                        <div className="flex-1 items-center min-w-0">
-                          <p className="text-xs text-white truncate  transition-colors">
-                            {post.title}
-                             {/* {highlightText(post.title, searchTerm)} */}
-                          </p>
-                          <p className="text-[10px] text-gray-500 truncate">
-                            {post.category} · {post.authorName}
-                          </p>
-                        </div>
-
-                        <span className="text-[10px] text-emerald-400 shrink-0 bg-emerald-600/30 px-2 py-0.5 rounded-full">
-                          post
-                        </span>
-                      </button>
-                    ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Playlist suggestions */}
-                {recentPlaylists.length > 0 && (
-                  <div>
-                    <p className="px-4 pt-2  text-[10px] uppercase tracking-widest text-gray-500 font-medium">
-                      Playlists
-                    </p>
-                     <div className="w-full flex flex-col overflow-x-hidden overflow-y-auto scrollbar-hide">
-                    {recentPlaylists.map(playlist => (
-                      <button
-                        key={playlist._id}
-                        onClick={() => handlePlaylistClick(playlist)}
-                        className="
-                          w-full flex items-center gap-2 px-4 py-2.5
-                          hover:bg-white/5 transition-colors duration-150
-                          text-left group
-                        "
-                      >
-                        {/* thumbnail */}
-                        <div className="w-7 h-7 rounded-md bg-gray-800 shrink-0 overflow-hidden">
-                          {playlist.thumbnail ? (
-                            <img
-                              src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlist.thumbnail}`}
-                              alt={playlist.title}
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center">
-                              <IoIosSearch className="text-gray-600 text-sm" />
-                            </div>
-                          )}
-                        </div>
-
-                        <div className="flex-1 items-center min-w-0">
-                          <p className="text-xs text-white truncate  transition-colors">
-                            {playlist.title}
-                          </p>
-                          <p className="text-[10px] text-gray-500 truncate">
-                            {playlist.domain} · {playlist.name}
-                          </p>
-                        </div>
-
-                        <span className="text-[10px] text-emerald-400 shrink-0 bg-emerald-600/30 px-2 py-0.5 rounded-full">
-                          playlist
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                  </div>
-                )}
-              </>
-            )}
-
-            {
-              histroyLoader && 
-              <div className="w-full items-center h-40 flex justify-center">
-                    <div className="relative flex items-center justify-center">
-                      {/* Outer Oval Ring */}
-                      <div className="w-7 h-7  border-2 border-neutral-700 border-t-emerald-400 rounded-full animate-spin" />
-
-                      {/* Inner Glow Pulse */}
-                      {/* <div className="absolute w-10 h-10 md:w-12 md:h-12 bg-emerald-500/20 rounded-full blur-md animate-pulse" /> */}
-                    </div>
-                  </div>
-            }
-
-            {!histroyLoader && (recentPlaylists.length===0 && recentPosts.length===0)  && (
-              <div className="px-4 py-4 text-sm h-52 flex items-center justify-center text-gray-500 text-center">
-                 <div className="flex gap-0 flex-col ">
-                              <img src={logNotFound} alt="" className=" object-cover mx-auto  w-32 h-32" />
-                              <p className="text-center text-gray-500 text-sm mt-0"> No recent visits !</p>
-                            </div>
-            
-              </div>
-            )}
-        </div>
-        </div>
+        <RecentVisit />
       </div>
 
       <div
@@ -997,9 +832,7 @@ function NavBar() {
                 className="flex gap-3  items-start"
               >
                 {/* Avatar */}
-                <Link
-                  to={data.url}
-                  className="relative flex-shrink-0">
+                <Link to={data.url} className="relative flex-shrink-0">
                   {data.profile ? (
                     <img
                       src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.profile}`}
@@ -1018,15 +851,17 @@ function NavBar() {
 
                 {/* Content */}
                 <div className="flex relative  flex-col flex-1 min-w-0">
-                  < Link
-                  to={data.url}
-                   className="text-sm text-white font-medium line-clamp-1 w-[170px]  md:w-[200px] truncate">
+                  <Link
+                    to={data.url}
+                    className="text-sm text-white font-medium line-clamp-1 w-[170px]  md:w-[200px] truncate"
+                  >
                     {data.user}
                   </Link>
 
                   <Link
-                  to={data.url}
-                   className="text-xs  md:mt-1 line-clamp-3 text-gray-400 ">
+                    to={data.url}
+                    className="text-xs  md:mt-1 line-clamp-3 text-gray-400 "
+                  >
                     {data.message || "You got a notification"}
                   </Link>
 
@@ -1138,8 +973,7 @@ function NavBar() {
         </div>
       </div>
 
-
-       <div
+      <div
         ref={showProfileSettings}
         className={`${
           !showAddContent && !showNotification && showProfile
@@ -1171,12 +1005,14 @@ function NavBar() {
             </button>
           </Link>
 
-            <div className=" w-full flex items-center gap-1.5
+          <div
+            className=" w-full flex items-center gap-1.5
                 pl-2 py-1.5 pt-1
                 text-sm text-gray-100
                 hover:bg-gray-800/70
                 transition-all duration-200
-                rounded-lg">
+                rounded-lg"
+          >
             <button
               onClick={exit}
               className="flex items-center gap-2 text-white/70 hover:text-white transition"
@@ -1185,8 +1021,6 @@ function NavBar() {
               <span className="text-[11px]">Sign Out</span>
             </button>
           </div>
-
-          
         </div>
       </div>
 
@@ -1221,6 +1055,7 @@ import { motion } from "framer-motion";
 import { useLocation } from "react-router-dom";
 import { House } from "lucide-react";
 import formatCount from "../utils/NumberConversion";
+import RecentVisit from "../components/RecentVisit";
 
 function NavIconDesktop({ to, icon, label }) {
   const location = useLocation();

@@ -260,8 +260,8 @@ function BookMarkPage() {
       <NavBar />
     
       <div className="flex items-center max-w-[1800px] mx-auto mt-3 px-2 md:w-full gap-1 md:gap-3">
-              <BiBookmarkAlt className="text-emerald-500/70 text-lg md:text-3xl" />
-              <h1 className="text-lg md:text-3xl font-semibold tracking-tight text-gray-100">
+              <BiBookmarkAlt className="text-emerald-500/70 text-lg md:text-xl" />
+              <h1 className="text-lg md:text-xl font-semibold tracking-tight text-gray-100">
                My Bookmarks
               </h1>
             </div>

@@ -264,8 +264,8 @@ function YourPost() {
       <NavBar />
 
       <div className="flex items-center max-w-[1800px] mx-auto mt-3 px-4 md:w-full gap-2 md:gap-3">
-                    <BsPersonWorkspace className=" text-xl text-white md:text-3xl" />
-                    <h1 className="text-lg md:text-3xl font-semibold tracking-tight text-gray-100">
+                    <BsPersonWorkspace className=" text-xl text-white md:text-xl" />
+                    <h1 className="text-lg md:text-xl font-semibold tracking-tight text-gray-100">
                      My Posts
                     </h1>
                   </div>

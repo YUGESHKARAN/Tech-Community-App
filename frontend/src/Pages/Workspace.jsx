@@ -20,8 +20,8 @@ function Workspace() {
       <div className="w-full max-w-[1800px] mx-auto mx-auto px-4 md:px-12 h-screen py-3 md:pt-6  pt-4 text-white">
         {/* Header */}
         <div className="md:mb-10 mb-7">
-          <h1 className="text-lg md:text-3xl  flex items-center tracking-tight gap-2 md:gap-3  font-semibold ">
-            <BsPersonWorkspace className="text-xl  pt-0.5 md:pt-0 md:text-3xl" /> Workspace
+          <h1 className="text-lg md:text-xl  flex items-center tracking-tight gap-2 md:gap-3  font-semibold ">
+            <BsPersonWorkspace className="text-xl  pt-0.5 md:pt-0 md:text-xl" /> Workspace
           </h1>
           <p className="text-gray-400 mt-2 text-sm">
             Manage your posts and playlists content
