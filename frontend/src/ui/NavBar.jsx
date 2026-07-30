@@ -513,7 +513,7 @@ function NavBar() {
                 max-w-[100px]
               "
             >
-              {searchTerm || "Search posts..."}
+              {searchTerm || "Search posts / playlists..."}
             </span>
 
             {/* Clear */}
@@ -567,6 +567,15 @@ function NavBar() {
           )}
         </Link>
 
+         {role !== "student" && (
+          <div className="relative xl:hidden ">
+            <GoPlus
+              onClick={() => setShowAddContent(!showAddContent)}
+              className="text-[27px] text-gray-300 rounded-md p-[5px] border border-neutral-600 hover:text-white transition-all duration-300 cursor-pointer transition"
+            />
+          </div>
+        )}
+
         {/* 👤 USER PILL (DESKTOP) */}
         <Link
           to="/profile"
@@ -578,7 +587,7 @@ function NavBar() {
           {profile !== "undefined" ? (
             <img
               src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`}
-              className="w-5 h-5 rounded-full object-cover border border-emerald-400"
+              className="min-w-5 h-5 rounded-full object-cover border border-emerald-400"
             />
           ) : (
             <RiUser3Line className="text-lg text-emerald-400" />
@@ -591,14 +600,7 @@ function NavBar() {
 
         {/* 👤 MOBILE USER */}
 
-        {role !== "student" && (
-          <div className="relative lg:hidden ">
-            <GoPlus
-              onClick={() => setShowAddContent(!showAddContent)}
-              className="text-[27px] text-gray-300 rounded-md p-[5px] border border-neutral-600 hover:text-white transition-all duration-300 cursor-pointer transition"
-            />
-          </div>
-        )}
+       
 
         <div className="relative lg:hidden">
           <RiNotification3Line
@@ -629,7 +631,7 @@ function NavBar() {
             {profile !== "undefined" ? (
               <img
                 src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`}
-                className="w-[27px] h-[27px] rounded-full border border-emerald-400 object-cover"
+                className="min-w-[27px] h-[27px] rounded-full border border-emerald-400 object-cover"
               />
             ) : (
               <RiUser3Line className="text-2xl px-1 py-1 px-auto text-center text-emerald-400" />
