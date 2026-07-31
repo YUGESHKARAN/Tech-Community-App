@@ -85,8 +85,8 @@ function NavBar() {
   const { searchTerm, setSearchTerm, inputValue, setInputValue } =
     useContext(GlobalStateContext);
 
-  const { recentPosts, recentPlaylists, histroyLoader } =
-    useGetRecentHistory(userEmail);
+  // const { recentPosts, recentPlaylists, histroyLoader } =
+  //   useGetRecentHistory(userEmail);
 
   // const [inputValue, setInputValue] = useState(searchTerm || "");
 
@@ -784,7 +784,7 @@ function NavBar() {
           </div>
         </div>
 
-        <RecentVisit />
+        <RecentVisit setIsSidebarOpen={setIsSidebarOpen} />
       </div>
 
       <div
