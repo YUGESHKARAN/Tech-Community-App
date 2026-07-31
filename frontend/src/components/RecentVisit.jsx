@@ -9,7 +9,7 @@ import { IoIosSearch } from "react-icons/io";
 import { GlobalStateContext } from "../GlobalStateContext";
 import { useNavigate } from "react-router-dom";
 
-function RecentVisit({ parentClass = "", titleClass = "", childClass = "" }) {
+function RecentVisit({ parentClass = "", titleClass = "", childClass = "", setIsSidebarOpen }) {
 
   const userEmail = getItem("email");
   const navigate = useNavigate();
@@ -19,12 +19,15 @@ function RecentVisit({ parentClass = "", titleClass = "", childClass = "" }) {
   
   const { recentPosts, recentPlaylists, histroyLoader } =
     useGetRecentHistory(userEmail);
+   
 
      const handlePostClick = (post) => {
     setSearchTerm("");
     setInputValue("");
+    
     navigate(`/viewpage/${post.authorEmail}/${post._id}`);
-    setOpen(false);
+    setIsSidebarOpen(false)
+    // setOpen(false);
   };
 
   const handlePlaylistClick = (playlist) => {
@@ -32,7 +35,8 @@ function RecentVisit({ parentClass = "", titleClass = "", childClass = "" }) {
     setInputValue("");
 
     navigate(`/viewplaylist/${playlist._id}`);
-    setOpen(false);
+    setIsSidebarOpen(false)
+    // setOpen(false);
   };
   
   return (
