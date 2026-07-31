@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { MdHistory } from "react-icons/md";
 import useGetRecentHistory from "../hooks/useGetRecentHistory";
 import { getItem } from "../utils/encode";
@@ -6,11 +6,35 @@ import logNotFound from "../assets/log_not_found.png";
 import { twMerge } from "tailwind-merge";
 import clsx from "clsx";
 import { IoIosSearch } from "react-icons/io";
+import { GlobalStateContext } from "../GlobalStateContext";
+import { useNavigate } from "react-router-dom";
 
 function RecentVisit({ parentClass = "", titleClass = "", childClass = "" }) {
+
   const userEmail = getItem("email");
+  const navigate = useNavigate();
+
+   const { searchTerm, setSearchTerm, inputValue, setInputValue } =
+      useContext(GlobalStateContext);
+  
   const { recentPosts, recentPlaylists, histroyLoader } =
     useGetRecentHistory(userEmail);
+
+     const handlePostClick = (post) => {
+    setSearchTerm("");
+    setInputValue("");
+    navigate(`/viewpage/${post.authorEmail}/${post._id}`);
+    setOpen(false);
+  };
+
+  const handlePlaylistClick = (playlist) => {
+    setSearchTerm("");
+    setInputValue("");
+
+    navigate(`/viewplaylist/${playlist._id}`);
+    setOpen(false);
+  };
+  
   return (
     <div
       // className='flex flex-col   border-t border-neutral-700   pt-3 min-h-0'

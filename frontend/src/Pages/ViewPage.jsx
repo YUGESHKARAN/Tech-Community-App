@@ -537,6 +537,7 @@ function ViewPage() {
   }, [email, userEmail, postId]);
 
   // console.log("total participants", totalParticipants)
+  // console.log("participants", participants)
 
   return (
     <div className="w-full min-h-screen flex flex-col justify-between theme relative">
@@ -1245,7 +1246,9 @@ function ViewPage() {
                   </p>
                   <div className="mt-4 gap-1 flex flex-wrap   items-center ">
                     {participants?.slice(0, 3).map((p) => (
-                      <Link to={`/viewProfile/${p?.email}`} className="">
+                      <Link 
+                      key={p.email}
+                      to={`/viewProfile/${p?.email}`} className="">
                         {!p.profile ? (
                           <div
                             className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold text-gray-200 shrink-0"
