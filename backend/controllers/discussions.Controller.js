@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
-const Discussion = require('../models/Discussion');
-const DiscussionReply = require('../models/DiscussionReply');
-const Upvote = require('../models/Upvote');
-const { CommunityTag, CommunitySettings } = require('../models/CommunityTagAndSettings');
+const Discussion = require('../models/communityDiscussions/discussionsSchema');
+const DiscussionReply = require('../models/communityDiscussions/discussionsReplySchema');
+const Upvote = require('../models/communityDiscussions/upvoteSchema');
+const { CommunityTag, CommunitySettings } = require('../models/communityDiscussions/communityTagAndSettingsSchema');
 const CommunityMembership = require('../models/communityMembershipSchema');
 const { Author } = require('../models/blogAuthorSchema');
 
