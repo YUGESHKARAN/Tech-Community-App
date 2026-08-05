@@ -136,6 +136,7 @@ const CommunityBanner = ({ community, style }) => {
       />
 
       <div className="relative px-5 pt-6 pb-5">
+        
         {community.userRole ? (
           <span className="absolute top-4 right-4 text-[10px] font-semibold px-2.5 py-1 rounded-full bg-white/20 text-white capitalize">
             {community?.userRole}
@@ -151,7 +152,7 @@ const CommunityBanner = ({ community, style }) => {
             <Icon className="text-white text-xl" />
           </div>
           <div>
-            <span className="text-xs animate-pulse font-semibold text-black ">Tech community is under construction, still some of the features are under development, feel free to explore the platform 😊. </span>
+            
             <p className="text-[10px] font-medium tracking-widest uppercase text-white/60 mb-0.5">
               Tech Domain · BytesBase
             </p>
@@ -844,9 +845,10 @@ function SingleTechCommunity() {
   return (
     <div className="min-h-screen theme text-white flex flex-col">
       <NavBar />
+        <span className="text-[9px] pb-2  px-4 md:px-20 max-w-[1800px] mx-auto w-full animate-pulse font-semibold ">Tech community is under construction, still some of the features are under development, feel free to explore the platform 😊. </span>
 
-      <div className="flex-grow px-4 md:px-20 max-w-[1800px] mx-auto w-full pb-20 pt-4">
-        {/* ── Banner ── */}
+      <div className="flex-grow px-4 md:px-20 max-w-[1800px] mx-auto w-full pb-20 md:pt-4">
+    
         <CommunityBanner community={community} style={style} />
 
         {/* ── Tab bar ── */}
