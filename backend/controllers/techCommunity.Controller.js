@@ -1,4 +1,5 @@
 
+const mongoose = require('mongoose');
 const { Author, Post } = require("../models/blogAuthorSchema");
 const Community = require('../models/communitySchema');
 const CommunityMembership = require('../models/communityMembershipSchema');
@@ -141,7 +142,135 @@ const getCommunityLandingPage = async (req, res) => {
 
 
 
+const getCommunityById = async (req, res) => {
+  const { tenantId, authorId } = req.user;
+  const { communityId } = req.params;
 
+  if (!communityId) {
+    return res.status(400).json({ message: 'communityId required' });
+  }
 
+  if (!mongoose.Types.ObjectId.isValid(communityId)) {
+    return res.status(400).json({ message: 'Invalid communityId' });
+  }
 
-module.exports = {getCommunityLandingPage}
+  try {
+    const community = await Community.findOne({ _id: communityId, tenantId }).lean();
+
+    if (!community) {
+      return res.status(404).json({ message: 'Community not found' });
+    }
+
+    const membership = await CommunityMembership.findOne(
+      { tenantId, communityId, authorId },
+      'role'
+    ).lean();
+
+    community.userRole = membership?.role || null;
+
+    const coordinatorsCount = await CommunityMembership.countDocuments({
+      tenantId,
+      communityId,
+      role: 'coordinator',
+    });
+
+    community.coordinatorsCount = coordinatorsCount || 0;
+
+    return res.status(200).json({ community });
+  } catch (err) {
+    console.error('getCommunityById error:', err.message);
+    return res.status(500).json({ message: 'Server error' });
+  }
+};
+
+const getCommunityMembersById = async (req, res) => {
+  const { tenantId } = req.user;
+  const { communityId } = req.params;
+  const page = parseInt(req.query.page, 10) || 1;
+  const limit = Math.min(parseInt(req.query.limit, 10) || 20, 100);
+  const skip = (page - 1) * limit;
+ 
+  if (!communityId) {
+    return res.status(400).json({ message: 'communityId required' });
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(communityId)) {
+    return res.status(400).json({ message: 'Invalid communityId' });
+  }
+
+  try {
+    const community = await Community.findOne({ _id: communityId, tenantId }).lean();
+
+    if (!community) {
+      return res.status(404).json({ message: 'Community not found' });
+    }
+
+    const matchFilter = { tenantId, communityId: new mongoose.Types.ObjectId(communityId) };
+    const totalCount = await CommunityMembership.countDocuments(matchFilter);
+    const totalPages = Math.max(1, Math.ceil(totalCount / limit));
+
+    const memberships = await CommunityMembership.aggregate([
+      { $match: matchFilter },
+      {
+        $lookup: {
+          from: Author.collection.name,
+          localField: 'authorId',
+          foreignField: '_id',
+          as: 'author',
+        },
+      },
+      { $unwind: '$author' },
+      {
+        $project: {
+          _id: 0,
+          authorId: '$author._id',
+          authorName: '$author.authorname',
+          email: '$author.email',
+          profile: '$author.profile',
+          role: '$role',
+          joinedAt: '$joinedAt',
+          postsCount: { $size: { $ifNull: ['$author.posts', []] } },
+          followersCount: { $size: { $ifNull: ['$author.followers', []] } },
+          followingCount: { $size: { $ifNull: ['$author.following', []] } },
+          badges: '$author.badges',
+        },
+      },
+      { $sort: { role: -1, name: 1 } },
+      { $skip: skip },
+      { $limit: limit },
+    ]);
+
+    const coordinators = [];
+    const members = [];
+
+    memberships.forEach((m) => {
+      if (m.role === 'coordinator') {
+        coordinators.push(m);
+      } else {
+        members.push(m);
+      }
+    });
+
+    return res.status(200).json({
+      community: {
+        _id: community._id,
+        name: community.name,
+        slug: community.slug,
+      },
+      coordinators,
+      members,
+      coordinatorsCount: coordinators.length,
+      membersCount: members.length,
+      page,
+      limit,
+      totalPages,
+      totalCount,
+    });
+  } catch (err) {
+    console.log("community members error",err.message )
+    console.error('getCommunityMembersById error:', err.message);
+    return res.status(500).json({ message: 'Server error' });
+  }
+};
+
+module.exports = { getCommunityLandingPage, getCommunityById, getCommunityMembersById }

@@ -2,7 +2,7 @@
 
 import axiosInstance from '../instances/Axiosinstances';
 
-const BASE = (communityId) => `/blog/discuss/${communityId}`;
+const BASE = (communityId) => `/bytes/discuss/${communityId}`;
 
 // ── Settings ──
 export const getSettings = (communityId) =>

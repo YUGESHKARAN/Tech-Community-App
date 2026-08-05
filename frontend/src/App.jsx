@@ -33,6 +33,8 @@ import Dashboard from "./Pages/admin/Dashboard.jsx";
 import SingleDomainPosts from "./components/SingleDomainPosts.jsx";
 import ScrollToHash from "./utils/ScrollToHash.jsx";
 import TechCommunityLanding from "./Pages/TechCommunityLanding.jsx";
+import SingleTechCommunity from "./Pages/SingleTechCommunity.jsx";
+import ViewDiscussion from "./Pages/ViewDiscussion.jsx";
 function App() {
   return (
     // <AuthProvider>
@@ -221,8 +223,15 @@ function App() {
               />
 
               <Route
-                path="/techDomainDetails/:category"
-                element={<ProtectedRoute element={<SingleTechDomainDetails />} />}
+                // path="/techDomainDetails/:category"
+                path="/tecCommunityDetails/:communityId"
+                // element={<ProtectedRoute element={<SingleTechDomainDetails />} />}
+                element={<ProtectedRoute element={<SingleTechCommunity />} />}
+              />
+
+              <Route
+                path="/discussion/:discussionId/:communityId"
+                element={<ProtectedRoute element={<ViewDiscussion />} />}
               />
 
             
