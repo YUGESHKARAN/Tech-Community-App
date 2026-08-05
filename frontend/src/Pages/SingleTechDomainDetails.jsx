@@ -206,7 +206,7 @@ function SingleTechDomainDetails() {
     }
   };
 
-  console.log("authors", authors)
+  // console.log("authors", authors)
   // console.log("role", role)
   // console.log("decodedCategory", decodedCategory)
   // console.log("authorCommunity", authorCommunity)

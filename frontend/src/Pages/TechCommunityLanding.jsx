@@ -132,6 +132,8 @@ function TechCommunityLanding() {
   //     });
   //   }
   // };
+
+  console.log("communityStats", communityStats)
   const updateCommunity = async (email, techCommunity) => {
     if (loadingDomains.has(techCommunity)) return;
 
@@ -259,7 +261,8 @@ function TechCommunityLanding() {
     return (
       <div className="group h-52 md:h-60 relative theme border border-[#1e293b] rounded-2xl overflow-hidden flex flex-col hover:border-white/10 transition-all duration-300">
         <Link
-          to={`/techDomainDetails/${encodeURIComponent(item.name)}`}
+          // to={`/techDomainDetails/${encodeURIComponent(item.name)}`}
+          to={`/tecCommunityDetails/${item?._id}`}
           className="flex flex-col"
         >
           {/* ── colored banner header ── */}

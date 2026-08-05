@@ -62,6 +62,7 @@ const searchRouter = require("./routes/search.Route");
 
 const techCommunityRouter = require("./routes/techCommunity.Route");
 const recentHistroyRouter = require("./routes/recentHistory.Route");
+const discussionsRouter = require("./routes/discussions.Route")
 
 app.use("/blog/login", loginRouter);
 app.use("/blog/author", authorRouter);
@@ -73,6 +74,7 @@ app.use("/blog/director", directorRouter);
 app.use("/blog/search", searchRouter);
 app.use("/blog/techCommunity", techCommunityRouter);
 app.use("/blog/recentHistory", recentHistroyRouter);
+app.use("/bytes/discuss",discussionsRouter)
 
 app.get("/blog/notifications/stream/:email", async (req, res) => {
   try {
