@@ -50,6 +50,7 @@ import getTimeAgo from "../components/DateCovertion";
 import useGetAllMembersByDomain from "../hooks/SingleTechDomain/useGetAllMembersByDomain";
 // import coordinatorsCard from "../components/authors/CoordinatorsCard";
 import CoordinatorsCard from "../components/authors/CoordinatorsCard";
+import { deriveGradient } from "../utils/bannerTheme";
 
 // ── S3 image base ─────────────────────────────────────────────────────────────
 const S3 = "https://open-access-blog-image.s3.us-east-1.amazonaws.com/";
@@ -120,55 +121,6 @@ const timeAgo = (dateStr) => {
 
 // ── Community banner ──────────────────────────────────────────────────────────
 const CommunityBanner = ({ community, style, communityId, canEdit }) => {
-  
-
-  const hexToHsl = (hex) => {
-  const r = parseInt(hex.slice(1, 3), 16) / 255;
-  const g = parseInt(hex.slice(3, 5), 16) / 255;
-  const b = parseInt(hex.slice(5, 7), 16) / 255;
-  const max = Math.max(r, g, b), min = Math.min(r, g, b);
-  let h, s, l = (max + min) / 2;
-  if (max === min) { h = s = 0; }
-  else {
-    const d = max - min;
-    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-    switch (max) {
-      case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
-      case g: h = ((b - r) / d + 2) / 6; break;
-      case b: h = ((r - g) / d + 4) / 6; break;
-    }
-  }
-  return [Math.round(h * 360), Math.round(s * 100), Math.round(l * 100)];
-};
-
-const hslToHex = (h, s, l) => {
-  h /= 360; s /= 100; l /= 100;
-  const hue2rgb = (p, q, t) => {
-    if (t < 0) t += 1; if (t > 1) t -= 1;
-    if (t < 1 / 6) return p + (q - p) * 6 * t;
-    if (t < 1 / 2) return q;
-    if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
-    return p;
-  };
-  const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-  const p = 2 * l - q;
-  const r = Math.round(hue2rgb(p, q, h + 1 / 3) * 255);
-  const g = Math.round(hue2rgb(p, q, h) * 255);
-  const b = Math.round(hue2rgb(p, q, h - 1 / 3) * 255);
-  return `#${[r, g, b].map((x) => x.toString(16).padStart(2, "0")).join("")}`;
-};
-
-  const deriveGradient = (baseHex) => {
-    if (!baseHex || !/^#[0-9A-Fa-f]{6}$/.test(baseHex)) {
-      return { from: "#0d9488", to: "#0f766e" };
-    }
-    const [h, s, l] = hexToHsl(baseHex);
-    return {
-      from: baseHex,
-      to: hslToHex(h, Math.min(s + 5, 100), Math.max(l - 15, 5)),
-    };
-  };
-
   const gradient = useMemo(() => {
     const theme = community?.colorTheme;
     return deriveGradient(theme);
@@ -177,10 +129,10 @@ const hslToHex = (h, s, l) => {
   const Icon = community.icon ? TbIcons[community.icon] : style.icon;
   return (
     <div
-      className="relative rounded-2xl md:px-2 overflow-hidden mb-0"
+      className="relative rounded-xl md:rounded-2xl md:px-2 overflow-hidden mb-0"
       style={{
         // background: `linear-gradient(135deg, ${style.from}, ${style.to})`,
-        background: `${community?.colorTheme ?`linear-gradient(135deg, ${gradient?.from}, ${gradient?.to})`: `linear-gradient(135deg, ${style?.from}, ${style?.to})`}`,
+        background: `${community?.colorTheme ? `linear-gradient(135deg, ${gradient?.from}, ${gradient?.to})` : `linear-gradient(135deg, ${style?.from}, ${style?.to})`}`,
       }}
     >
       {/* subtle texture overlay */}
@@ -192,13 +144,13 @@ const hslToHex = (h, s, l) => {
         }}
       />
 
-      <div className="relative px-5 pt-4 pb-5">
+      <div className="relative px-5 p-3.5 md:pt-4 md:pb-5">
         {community.userRole ? (
-          <span className="absolute top-4 right-12 text-[10px] font-semibold px-2.5 py-1 rounded-full bg-white/20 text-white capitalize">
+          <span className="absolute top-4 right-12 text-[10px] md:font-semibold px-2.5 py-1 rounded-full bg-white/20 text-white capitalize">
             {community?.userRole}
           </span>
         ) : (
-          <span className="absolute top-4 right-12 text-[10px] font-semibold px-2.5 py-1 rounded-full bg-white/20 text-white capitalize">
+          <span className="absolute top-4 right-12 text-[10px] md:font-semibold px-2.5 py-1 rounded-full bg-white/20 text-white capitalize">
             Member
           </span>
         )}
@@ -206,29 +158,29 @@ const hslToHex = (h, s, l) => {
         {canEdit && communityId && (
           <Link
             to={`/tecCommunityDetails/${communityId}/edit`}
-            className="absolute top-4 right-2 md:right-0 text-[10px] font-semibold px-3 py-1 rounded-full  text-white hover:bg-white/30 transition-colors"
+            className="absolute top-4 right-2 md:right-0 text-[10px] md:font-semibold px-3 py-1 rounded-full  text-white hover:bg-white/30 transition-colors"
           >
             Edit
           </Link>
         )}
 
-        <div className="flex items-center gap-3 mb-0">
-          <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
-            <Icon className="text-white text-xl" />
+        <div className="flex items-center gap-3 mb-0.5 md:mb-1">
+          <div className="md:w-10 w-9 h-9 md:h-10 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
+            <Icon className="text-white text-lg md:text-xl" />
           </div>
           <div>
             {/* <p className="text-[10px] font-medium tracking-widest uppercase text-white/60 mb-0.5">
               Tech Domain · BytesBase
             </p> */}
-            <h1 className="text-xl md:text-2xl font-semibold text-white leading-tight">
+            <h1 className="text-lg md:text-2xl font-semibold text-white leading-tight">
               {community?.name}
             </h1>
             {community.tagline ? (
-              <p className="text-xs text-white/70 max-w-2xl leading-relaxed md:mb-2 mb-1">
+              <p className="md:text-xs text-[10px] text-white/70 max-w-2xl leading-relaxed md:mb-2 mb-1">
                 {community?.tagline}
               </p>
             ) : (
-              <p className="text-xs text-white/70 max-w-2xl leading-relaxed md:mb-2 mb-1.5">
+              <p className="md:text-xs text-[10px] text-white/70 max-w-2xl leading-relaxed md:mb-2 mb-1">
                 No tag line set
               </p>
             )}
@@ -236,16 +188,16 @@ const hslToHex = (h, s, l) => {
         </div>
 
         {community.description ? (
-          <p className="text-xs text-white font-semibold line-clamp-2 max-w-2xl leading-relaxed md:mb-2 mb-1.5">
+          <p className="md:text-xs text-[10px] text-white font-semibold max-w-2xl leading-relaxed mb-2 md:mb-2.5">
             {community?.description}
           </p>
         ) : (
-          <p className="text-xs text-white/70 max-w-md leading-relaxed md:mb-2 mb-1">
+          <p className="text-xs text-white/70 max-w-md leading-relaxed mb-2 md:mb-2.5">
             description not set
           </p>
         )}
 
-        <div className="flex flex-wrap gap-4">
+        <div className="flex flex-wrap gap-2 md:gap-4">
           {[
             { icon: TbUsers, val: community.memberCount, label: "members" },
             { icon: TbFileText, val: community.postCount, label: "posts" },
@@ -262,7 +214,7 @@ const hslToHex = (h, s, l) => {
           ].map(({ icon: StatIcon, val, label }) => (
             <span
               key={label}
-              className="flex items-center gap-1.5 text-xs text-white/80"
+              className="flex items-center md:text-xs text-[10px]  gap-1 md:gap-1.5 text-white/80"
             >
               <StatIcon className="text-sm text-white/60" />
               <b className="text-white font-semibold">{formatCount(val)}</b>
@@ -276,19 +228,29 @@ const hslToHex = (h, s, l) => {
 };
 
 // ── Tab bar ───────────────────────────────────────────────────────────────────
-const TabBar = ({ active, onChange }) => {
-  const TABS = ["Feed", "Discussions", "Members"];
+const TabBar = ({ active, theme, onChange }) => {
+  // const gradient = deriveGradient(theme);
+  // console.log('gradient', gradient.from)
+  // let themeColor = theme
+  const TABS = ["Discussions", "Feed", "Members"];
   return (
-    <div className="flex border-b border-white/5 mb-5">
+    <div className="flex border-b border-white/5 mb-3 md:mb-5">
       {TABS.map((tab) => (
         <button
           key={tab}
           onClick={() => onChange(tab.toLowerCase())}
           className={`px-4 py-2 text-xs font-medium border-b-2 transition-colors ${
             active === tab.toLowerCase()
-              ? "border-emerald-500 text-white"
+              ? "text-white"
               : "border-transparent text-gray-400 hover:text-gray-200"
           }`}
+          style={
+            active === tab.toLowerCase() && theme
+              ? { borderBottomColor: theme } // Applies your custom hex string directly
+              : active === tab.toLowerCase()
+                ? { borderBottomColor: "#34d399" } // Hardcoded hex for 'emerald-400'
+                : {} // Empty object when tab is inactive (falls back to border-transparent)
+          }
         >
           {tab}
         </button>
@@ -306,8 +268,7 @@ const DiscussionCard = ({
 }) => {
   const cat = CATEGORY_COLORS[discussion.category] || CATEGORY_COLORS.qa;
   return (
-    <Link
-      to={`/discussion/${discussion._id}/${communityId}`}
+    <div
       className={`block theme border rounded-xl px-4 py-3 hover:border-white/10 transition-all duration-200 ${
         discussion.isPinned ? "border-l-2" : "border-[#1e293b]"
       }`}
@@ -325,7 +286,10 @@ const DiscussionCard = ({
         </div>
 
         {/* content */}
-        <div className="flex-1 min-w-0">
+        <Link
+          to={`/discussion/${discussion._id}/${communityId}`}
+          className="flex-1 min-w-0"
+        >
           <div className="flex items-start gap-2 mb-1 flex-wrap">
             <span className="text-sm font-medium text-gray-100 leading-snug">
               {discussion.title}
@@ -383,9 +347,9 @@ const DiscussionCard = ({
               {formatCount(discussion.views?.length || 0)} views
             </span>
           </div>
-        </div>
+        </Link>
       </div>
-    </Link>
+    </div>
   );
 };
 
@@ -428,7 +392,7 @@ const DiscussionsTab = ({
           <Link
             to={`?tab=discussions&action=new`}
             className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full text-white"
-            style={{ background: accentColor }}
+            style={{ background: community?.colorTheme || accentColor }}
           >
             <TbPlus className="text-sm" />
             New discussion
@@ -858,20 +822,19 @@ const TrendingTagsCard = ({ data }) => {
 // ─────────────────────────────────────────────────────────────────────────────
 function SingleTechCommunity() {
   const { communityId } = useParams();
-    const {
+  const {
     communityDetails: community,
     commLoading,
     getCommunitDetails,
   } = useGetSingleTechCommunity(communityId);
 
   const [searchParams, setSearchParams] = useSearchParams();
-  const activeTab = searchParams.get("tab") || "feed";
+  const activeTab = searchParams.get("tab") || "discussions";
 
   const currentUserEmail = getItem("email");
   const currentUserRole = getItem("role");
 
-
-    const {
+  const {
     posts,
     loading: feedLoad,
     hasMore: feedHashMore,
@@ -889,7 +852,6 @@ function SingleTechCommunity() {
     fetchAuthors,
   } = useGetAllMembersByDomain(communityId);
 
-  
   // console.log("posts", posts);
   // console.log("members", members);
   // console.log("coordinators", coordinators);
@@ -897,7 +859,6 @@ function SingleTechCommunity() {
   useEffect(() => {
     fetchAuthors();
   }, [communityId]);
-
 
   const canEditCommunity =
     currentUserRole === "admin" ||
@@ -921,17 +882,20 @@ function SingleTechCommunity() {
   // const posts       = feedPostsSample;
 
   const style = getDomainStyle(community?.name);
+  const gradient = deriveGradient(community?.colorTheme);
 
   const handleTabChange = (tab) => {
     setSearchParams({ tab });
   };
+
+  const accentColor = community?.colorTheme ?? style.from;
 
   console.log("community", community);
 
   return (
     <div className="min-h-screen theme text-white flex flex-col">
       <NavBar />
-      <span className="text-[9px] pb-2  px-4 md:px-20 max-w-[1800px] mx-auto w-full animate-pulse font-semibold ">
+      <span className="text-[9px] md:pt-2 pb-2 md:pb-0  px-4 md:px-20 max-w-[1800px] mx-auto w-full animate-pulse font-semibold ">
         Tech community is under construction, still some of the features are
         under development, feel free to explore the platform 😊.{" "}
       </span>
@@ -945,8 +909,12 @@ function SingleTechCommunity() {
         />
 
         {/* ── Tab bar ── */}
-        <div className="mt-4">
-          <TabBar active={activeTab} onChange={handleTabChange} />
+        <div className="mt-1 md:mt-4">
+          <TabBar
+            active={activeTab}
+            theme={gradient?.from}
+            onChange={handleTabChange}
+          />
         </div>
 
         {/* ── Two-column layout: main + sidebar ── */}
@@ -965,7 +933,7 @@ function SingleTechCommunity() {
               <DiscussionsTab
                 discussions={discussions}
                 community={community}
-                accentColor={style.from}
+                accentColor={accentColor}
                 currentUserEmail={currentUserEmail}
                 userRole={community.userRole}
               />

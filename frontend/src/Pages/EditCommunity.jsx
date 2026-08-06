@@ -210,44 +210,49 @@ const BannerPreview = ({ form, gradient, userRole, community }) => {
   const Icon = TbIcons[form.icon] || TbBrain;
   return (
     <div
-      className="relative rounded-2xl overflow-hidden"
+      className="relative rounded-xl md:rounded-2xl overflow-hidden"
       style={{ background: `linear-gradient(135deg, ${gradient.from}, ${gradient.to})` }}
     >
       <div className="absolute inset-0 opacity-10"
         style={{ backgroundImage: "radial-gradient(circle at 80% 20%, rgba(255,255,255,.4) 0%, transparent 60%)" }}
       />
-      <div className="relative px-5 pt-6 pb-5">
+      <div className="relative px-5 p-3.5 md:pt-4 md:pb-5">
         {userRole && (
           <span className="absolute top-4 right-4 text-[10px] font-semibold px-2.5 py-1 rounded-full bg-white/20 text-white capitalize">
             {userRole}
           </span>
         )}
-        <div className="flex items-center gap-3 mb-3">
-          <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
-            <Icon className="text-white text-xl" />
+        <div className="flex items-center mb-0.5 md:mb-1  gap-3">
+          <div className="md:w-10 w-9 h-9 md:h-10 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
+            <Icon className="text-white text-lg md:text-xl" />
           </div>
           <div>
-            <p className="text-[10px] font-medium tracking-widest uppercase text-white/60 mb-0.5">
+            {/* <p className="text-[10px] font-medium tracking-widest uppercase text-white/60 mb-0.5">
               Tech Domain · BytesBase
-            </p>
-            <h1 className="text-xl md:text-2xl font-semibold text-white leading-tight">
+            </p> */}
+            <h1 className="text-lg md:text-2xl font-semibold text-white leading-tight">
               {form.name || "Community name"}
             </h1>
-          </div>
-        </div>
-        {form.tagline && (
-          <p className="text-xs text-white/70 max-w-md leading-relaxed mb-4">
+            {form.tagline && (
+          <p className="md:text-xs text-[10px] text-white/70 max-w-md leading-relaxed md:mb-2 mb-1">
             {form.tagline}
           </p>
         )}
-        <div className="flex flex-wrap gap-4">
+          </div>
+        </div>
+
+        <p className="md:text-xs text-[10px] text-white font-semibold line-clamp-2 max-w-2xl leading-relaxed mb-2 md:mb-2.5">
+            {form.description}
+          </p>
+        
+        <div className="flex flex-wrap gap-2 md:gap-3">
           {[
             { Icon: TbUsers,          val: community.memberCount,      label: "members" },
             { Icon: TbFileText,       val: community.postCount,        label: "posts" },
             { Icon: TbMessageCircle,  val: 0,                          label: "discussions" },
             { Icon: TbUserCheck,      val: community.coordinatorsCount,label: "coordinators" },
           ].map(({ Icon: Si, val, label }) => (
-            <span key={label} className="flex items-center gap-1.5 text-xs text-white/80">
+            <span key={label} className="flex items-center gap-1 md:gap-1.5  md:text-xs text-[10px] text-white/80">
               <Si className="text-sm text-white/60" />
               <b className="text-white font-semibold">{val}</b> {label}
             </span>
@@ -483,16 +488,7 @@ function EditCommunity() {
           </div> */}
 
           {/* description card */}
-          {form.description && (
-            <div className="mt-6 theme border border-[#1e293b] rounded-xl p-5">
-              <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2">
-                About this community
-              </h3>
-              <p className="text-sm text-gray-300 leading-relaxed">
-                {form.description}
-              </p>
-            </div>
-          )}
+        
         </div>
       </div>
     );

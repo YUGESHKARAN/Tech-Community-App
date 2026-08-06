@@ -35,7 +35,8 @@ import TopContributorsSkeleton from "../components/loaders/dashboard/TopContribu
 import TechCommunityTopContributorsSkeleton from "../components/loaders/TechCommunityTopContributorsSkeleton";
 import BadgeIcons from "../components/achievements/BadgeIcons";
 import RecentVisit from "../components/RecentVisit";
-
+import * as TbIcons from "react-icons/tb";
+import { deriveGradient } from "../utils/bannerTheme";
 
 
 const streakSample = {
@@ -211,7 +212,7 @@ function TechCommunityLanding() {
   const yourCommunities = communityStats.filter((c) => c.userRole !== null);
   const exploreCommunities = communityStats.filter((c) => c.userRole === null);
 
-  // console.log("communityStats", communityStats);
+  console.log("communityStats", communityStats);
   // console.log("statsLoader", statsLoader);
   // console.log("topContributors", topContributors);
 
@@ -254,8 +255,15 @@ function TechCommunityLanding() {
   };
 
   const CommunityCard = ({ item }) => {
+
+    const gradient = useMemo(() => {
+        const theme = item?.colorTheme;
+        return deriveGradient(theme);
+      }, [item?.colorTheme]);
+
     const style = getDomainStyle(item.name);
-    const Icon = style.icon;
+    // const Icon = style.icon;
+     const Icon = item.icon ? TbIcons[item.icon] : style.icon;
     const isLoading = loadingDomains.has(item.name);
 
     return (
@@ -268,9 +276,10 @@ function TechCommunityLanding() {
           {/* ── colored banner header ── */}
           <div
             className="px-4 pt-4 pb-3 flex items-center gap-3 relative"
-            style={{
-              background: `linear-gradient(135deg, ${style.from}, ${style.to})`,
-            }}
+             style={{
+        // background: `linear-gradient(135deg, ${style.from}, ${style.to})`,
+        background: `${item?.colorTheme ?`linear-gradient(135deg, ${gradient?.from}, ${gradient?.to})`: `linear-gradient(135deg, ${style?.from}, ${style?.to})`}`,
+      }}
           >
             <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
               <Icon className="text-white text-sm md:text-lg" />
