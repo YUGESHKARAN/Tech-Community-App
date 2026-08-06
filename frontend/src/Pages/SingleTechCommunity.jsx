@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import { useParams, useSearchParams, Link } from "react-router-dom";
 import NavBar from "../ui/NavBar";
 import Footer from "../ui/Footer";
+
 import userPlaceholder from "../images/user.png";
 import empty_state_post from "../assets/empty_state_post.png";
 import {
@@ -28,6 +29,7 @@ import {
   TbClock,
   TbHeartFilled,
 } from "react-icons/tb";
+import * as TbIcons from "react-icons/tb";
 import { getItem } from "../utils/encode";
 import formatCount from "../utils/NumberConversion";
 import BadgeIcons from "../components/achievements/BadgeIcons";
@@ -118,12 +120,70 @@ const timeAgo = (dateStr) => {
 
 // ── Community banner ──────────────────────────────────────────────────────────
 const CommunityBanner = ({ community, style }) => {
-  const Icon = style.icon;
+    const [hexInput, setHexInput] = useState("#0d9488");
+    const [hexError, setHexError] = useState("");
+     useEffect(() => { setHexInput(community?.colorTheme || '#0d9488'); }, [community?.colorTheme|| '#0d9488']);
+    
+
+  const hexToHsl = (hex) => {
+  const r = parseInt(hex.slice(1, 3), 16) / 255;
+  const g = parseInt(hex.slice(3, 5), 16) / 255;
+  const b = parseInt(hex.slice(5, 7), 16) / 255;
+  const max = Math.max(r, g, b), min = Math.min(r, g, b);
+  let h, s, l = (max + min) / 2;
+  if (max === min) { h = s = 0; }
+  else {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    switch (max) {
+      case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
+      case g: h = ((b - r) / d + 2) / 6; break;
+      case b: h = ((r - g) / d + 4) / 6; break;
+    }
+  }
+  return [Math.round(h * 360), Math.round(s * 100), Math.round(l * 100)];
+};
+
+const hslToHex = (h, s, l) => {
+  h /= 360; s /= 100; l /= 100;
+  const hue2rgb = (p, q, t) => {
+    if (t < 0) t += 1; if (t > 1) t -= 1;
+    if (t < 1 / 6) return p + (q - p) * 6 * t;
+    if (t < 1 / 2) return q;
+    if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+    return p;
+  };
+  const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+  const p = 2 * l - q;
+  const r = Math.round(hue2rgb(p, q, h + 1 / 3) * 255);
+  const g = Math.round(hue2rgb(p, q, h) * 255);
+  const b = Math.round(hue2rgb(p, q, h - 1 / 3) * 255);
+  return `#${[r, g, b].map((x) => x.toString(16).padStart(2, "0")).join("")}`;
+};
+
+  const deriveGradient = (baseHex) => {
+    if (!baseHex || !/^#[0-9A-Fa-f]{6}$/.test(baseHex)) {
+      return { from: "#0d9488", to: "#0f766e" };
+    }
+    const [h, s, l] = hexToHsl(baseHex);
+    return {
+      from: baseHex,
+      to: hslToHex(h, Math.min(s + 5, 100), Math.max(l - 15, 5)),
+    };
+  };
+
+  const gradient = useMemo(() => {
+    const theme = community?.colorTheme;
+    return deriveGradient(theme);
+  }, [community?.colorTheme]);
+
+  const Icon = community.icon ? TbIcons[community.icon] : style.icon;
   return (
     <div
       className="relative rounded-2xl overflow-hidden mb-0"
       style={{
-        background: `linear-gradient(135deg, ${style.from}, ${style.to})`,
+        // background: `linear-gradient(135deg, ${style.from}, ${style.to})`,
+        background: `${community?.colorTheme ?`linear-gradient(135deg, ${gradient?.from}, ${gradient?.to})`: `linear-gradient(135deg, ${style?.from}, ${style?.to})`}`,
       }}
     >
       {/* subtle texture overlay */}
@@ -135,8 +195,7 @@ const CommunityBanner = ({ community, style }) => {
         }}
       />
 
-      <div className="relative px-5 pt-6 pb-5">
-        
+      <div className="relative px-5 pt-4 pb-5">
         {community.userRole ? (
           <span className="absolute top-4 right-4 text-[10px] font-semibold px-2.5 py-1 rounded-full bg-white/20 text-white capitalize">
             {community?.userRole}
@@ -147,28 +206,36 @@ const CommunityBanner = ({ community, style }) => {
           </span>
         )}
 
-        <div className="flex items-center gap-3 mb-3">
+        <div className="flex items-center gap-3 mb-0">
           <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
             <Icon className="text-white text-xl" />
           </div>
           <div>
-            
-            <p className="text-[10px] font-medium tracking-widest uppercase text-white/60 mb-0.5">
+            {/* <p className="text-[10px] font-medium tracking-widest uppercase text-white/60 mb-0.5">
               Tech Domain · BytesBase
-            </p>
+            </p> */}
             <h1 className="text-xl md:text-2xl font-semibold text-white leading-tight">
               {community?.name}
             </h1>
+            {community.tagline ? (
+              <p className="text-xs text-white/70 max-w-2xl leading-relaxed mb-1">
+                {community?.tagline}
+              </p>
+            ) : (
+              <p className="text-xs text-white/70 max-w-2xl leading-relaxed mb-1.5">
+                No tag line set
+              </p>
+            )}
           </div>
         </div>
 
-        {community.tagline ? (
-          <p className="text-xs text-white/70 max-w-md leading-relaxed mb-4">
-            {community?.tagline}
+        {community.description ? (
+          <p className="text-xs text-white font-semibold max-w-2xl leading-relaxed mb-1.5">
+            {community?.description}
           </p>
         ) : (
-          <p className="text-xs text-white/70 max-w-md leading-relaxed mb-4">
-            Tag line not set
+          <p className="text-xs text-white/70 max-w-md leading-relaxed mb-1">
+            description not set
           </p>
         )}
 
@@ -225,7 +292,12 @@ const TabBar = ({ active, onChange }) => {
 };
 
 // ── Discussion card ───────────────────────────────────────────────────────────
-const DiscussionCard = ({ discussion, currentUserEmail, communityId,  accentColor }) => {
+const DiscussionCard = ({
+  discussion,
+  currentUserEmail,
+  communityId,
+  accentColor,
+}) => {
   const cat = CATEGORY_COLORS[discussion.category] || CATEGORY_COLORS.qa;
   return (
     <Link
@@ -368,7 +440,7 @@ const DiscussionsTab = ({
             <DiscussionCard
               key={disc._id}
               discussion={disc}
-              communityId= {community._id}
+              communityId={community._id}
               currentUserEmail={currentUserEmail}
               accentColor={accentColor}
             />
@@ -407,7 +479,7 @@ const FeedCard = ({ post, email, setPosts }) => {
       console.error("Error updating views:", err);
     }
   };
-     const sharePost = async (title, email, id) => {
+  const sharePost = async (title, email, id) => {
     try {
       const data = {
         title: title,
@@ -421,7 +493,7 @@ const FeedCard = ({ post, email, setPosts }) => {
     }
   };
 
-    const addBookMarkPostId = async (postId) => {
+  const addBookMarkPostId = async (postId) => {
     try {
       const response = await axiosInstance.post(
         `/blog/posts/bookmarkPosts/${email}`,
@@ -502,15 +574,12 @@ const FeedCard = ({ post, email, setPosts }) => {
             {formatCount(post.likes?.length || 0)}
           </span>
 
-          <span 
-            onClick={() =>
-            sharePost(post.title, post.authorEmail, post._id)
-                }
-          className="flex items-center cursor-pointer gap-1">
+          <span
+            onClick={() => sharePost(post.title, post.authorEmail, post._id)}
+            className="flex items-center cursor-pointer gap-1"
+          >
             <IoShareSocial className="text-xs" />
           </span>
-
-         
 
           <span className="flex cursor-pointer items-center gap-1">
             <TbMessageCircle className="text-xs" />{" "}
@@ -546,13 +615,12 @@ const FeedTab = ({ posts, setPosts, feedLoad, feedHashMore }) => {
   };
   if (posts.length === 0 && !feedLoad) {
     return (
-     <div className="flex h-[70vh] col-span-full md:h-[55vh] flex-col justify-center items-center ">
-                      <img className="w-48 md:w-60 " src={empty_state_post} alt="" />
-                      <p className="text-center text-gray-500 text-sm">
-                        No posts available !
-                      </p>
-                    </div>
-      
+      <div className="flex h-[70vh] col-span-full md:h-[55vh] flex-col justify-center items-center ">
+        <img className="w-48 md:w-60 " src={empty_state_post} alt="" />
+        <p className="text-center text-gray-500 text-sm">
+          No posts available !
+        </p>
+      </div>
     );
   }
   return (
@@ -564,28 +632,26 @@ const FeedTab = ({ posts, setPosts, feedLoad, feedHashMore }) => {
             post={post}
             setPosts={setPosts}
             email={email}
-           
           />
         );
       })}
       {posts?.length > 0 && feedLoad && (
-                  <div className="col-span-full flex justify-center">
-                    <div className="relative flex items-center justify-center">
-                      {/* Outer Oval Ring */}
-                      <div className="w-7 h-7  border-2 border-neutral-700 border-t-emerald-400 rounded-full animate-spin" />
+        <div className="col-span-full flex justify-center">
+          <div className="relative flex items-center justify-center">
+            {/* Outer Oval Ring */}
+            <div className="w-7 h-7  border-2 border-neutral-700 border-t-emerald-400 rounded-full animate-spin" />
 
-                      {/* Inner Glow Pulse */}
-                      {/* <div className="absolute w-10 h-10 md:w-12 md:h-12 bg-emerald-500/20 rounded-full blur-md animate-pulse" /> */}
-                    </div>
-                  </div>
-                )}
+            {/* Inner Glow Pulse */}
+            {/* <div className="absolute w-10 h-10 md:w-12 md:h-12 bg-emerald-500/20 rounded-full blur-md animate-pulse" /> */}
+          </div>
+        </div>
+      )}
 
-       {!feedHashMore && posts?.length > 0 && (
-                  <p className="text-center text-[10px] md:text-xs col-span-full py-4 text-gray-500">
-                    No more posts
-                  </p>
-                )}
-    
+      {!feedHashMore && posts?.length > 0 && (
+        <p className="text-center text-[10px] md:text-xs col-span-full py-4 text-gray-500">
+          No more posts
+        </p>
+      )}
     </div>
   );
 };
@@ -781,8 +847,6 @@ const TrendingTagsCard = ({ data }) => {
   );
 };
 
-
-
 // ─────────────────────────────────────────────────────────────────────────────
 //  PAGE
 // ─────────────────────────────────────────────────────────────────────────────
@@ -820,35 +884,42 @@ function SingleTechCommunity() {
     setSearchParams({ tab });
   };
 
-  const { posts, loading:feedLoad, hasMore:feedHashMore, postCount, setPosts } =
-    useGetPostsByCommunity(community?.name);
+  const {
+    posts,
+    loading: feedLoad,
+    hasMore: feedHashMore,
+    postCount,
+    setPosts,
+  } = useGetPostsByCommunity(community?.name);
 
-   const {
+  const {
     members,
     coordinators,
     page,
     setPage,
     hasMore,
     loading,
-    fetchAuthors
-  } =  useGetAllMembersByDomain(community?._id);
+    fetchAuthors,
+  } = useGetAllMembersByDomain(community?._id);
 
-  // console.log("community", community)
+  console.log("community", community);
   // console.log("posts", posts);
   // console.log("members", members);
   // console.log("coordinators", coordinators);
   // console.log("communityId", communityId)
-  useEffect(()=>{
+  useEffect(() => {
     fetchAuthors();
-  },[])
+  }, []);
 
   return (
     <div className="min-h-screen theme text-white flex flex-col">
       <NavBar />
-        <span className="text-[9px] pb-2  px-4 md:px-20 max-w-[1800px] mx-auto w-full animate-pulse font-semibold ">Tech community is under construction, still some of the features are under development, feel free to explore the platform 😊. </span>
+      <span className="text-[9px] pb-2  px-4 md:px-20 max-w-[1800px] mx-auto w-full animate-pulse font-semibold ">
+        Tech community is under construction, still some of the features are
+        under development, feel free to explore the platform 😊.{" "}
+      </span>
 
       <div className="flex-grow px-4 md:px-20 max-w-[1800px] mx-auto w-full pb-20 md:pt-4">
-    
         <CommunityBanner community={community} style={style} />
 
         {/* ── Tab bar ── */}
@@ -861,7 +932,12 @@ function SingleTechCommunity() {
           {/* ── Main column ── */}
           <div>
             {activeTab === "feed" && (
-              <FeedTab posts={posts} setPosts={setPosts} feedLoad={feedLoad} feedHashMore={feedHashMore} />
+              <FeedTab
+                posts={posts}
+                setPosts={setPosts}
+                feedLoad={feedLoad}
+                feedHashMore={feedHashMore}
+              />
             )}
             {activeTab === "discussions" && (
               <DiscussionsTab
@@ -872,7 +948,9 @@ function SingleTechCommunity() {
                 userRole={community.userRole}
               />
             )}
-            {activeTab === "members" && <MembersTab members={members} coordinators={coordinators} />}
+            {activeTab === "members" && (
+              <MembersTab members={members} coordinators={coordinators} />
+            )}
           </div>
 
           {/* ── Sidebar — sticky, always visible regardless of tab ── */}

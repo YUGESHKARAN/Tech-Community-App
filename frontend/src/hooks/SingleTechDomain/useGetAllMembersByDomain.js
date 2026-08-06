@@ -7,6 +7,7 @@ function useGetAllMembersByDomain(communityId) {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [hasFetched, setHasFetched] = useState(false);
   const fetchingRef = useRef(false);
 
   const fetchAuthors = useCallback(async () => {
@@ -47,6 +48,7 @@ function useGetAllMembersByDomain(communityId) {
     } finally {
       setLoading(false);
       fetchingRef.current = false;
+      setHasFetched(true);
     }
   }, [communityId, page, loading, hasMore]);
 
@@ -68,7 +70,8 @@ function useGetAllMembersByDomain(communityId) {
     setPage,
     hasMore,
     loading,
-    fetchAuthors
+    hasFetched,
+    fetchAuthors,
   };
 }
 

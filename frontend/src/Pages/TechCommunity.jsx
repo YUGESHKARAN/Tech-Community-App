@@ -84,13 +84,13 @@ function TechCommunity() {
   };
 
   const domainAccents = {
-    GenAI: { from: "#10b981", to: "#059669" },
+    "GenAI": { from: "#10b981", to: "#059669" },
     "AI/ML": { from: "#10b981", to: "#059669" },
     "Web Development": { from: "#10b981", to: "#059669" },
     "Cyber Security": { from: "#10b981", to: "#059669" },
     "Data Science": { from: "#10b981", to: "#059669" },
-    Blockchain: { from: "#10b981", to: "#059669" },
-    IoT: { from: "#10b981", to: "#059669" },
+    "Blockchain": { from: "#10b981", to: "#059669" },
+    "IoT": { from: "#10b981", to: "#059669" },
     "Embedded System": { from: "#10b981", to: "#059669" },
     "Satellite Space Technology": { from: "#10b981", to: "#059669" },
     "Design Thinking": { from: "#10b981", to: "#059669" },
