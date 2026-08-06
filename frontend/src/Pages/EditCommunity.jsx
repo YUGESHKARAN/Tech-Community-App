@@ -454,7 +454,7 @@ function EditCommunity() {
           />
 
           {/* Tab bar preview */}
-          <div className="flex border-b border-white/5 mt-4 mb-6">
+          {/* <div className="flex border-b border-white/5 mt-4 mb-6">
             {["Feed", "Discussions", "Members"].map((tab, i) => (
               <div
                 key={tab}
@@ -467,7 +467,7 @@ function EditCommunity() {
                 {tab}
               </div>
             ))}
-          </div>
+          </div> */}
 
           {/* placeholder content */}
           {/* <div className="grid grid-cols-1 lg:grid-cols-[1fr_260px] gap-6">

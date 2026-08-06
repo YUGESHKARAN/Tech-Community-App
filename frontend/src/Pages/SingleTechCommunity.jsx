@@ -119,11 +119,8 @@ const timeAgo = (dateStr) => {
 // ─────────────────────────────────────────────────────────────────────────────
 
 // ── Community banner ──────────────────────────────────────────────────────────
-const CommunityBanner = ({ community, style }) => {
-    const [hexInput, setHexInput] = useState("#0d9488");
-    const [hexError, setHexError] = useState("");
-     useEffect(() => { setHexInput(community?.colorTheme || '#0d9488'); }, [community?.colorTheme|| '#0d9488']);
-    
+const CommunityBanner = ({ community, style, communityId, canEdit }) => {
+  
 
   const hexToHsl = (hex) => {
   const r = parseInt(hex.slice(1, 3), 16) / 255;
@@ -180,7 +177,7 @@ const hslToHex = (h, s, l) => {
   const Icon = community.icon ? TbIcons[community.icon] : style.icon;
   return (
     <div
-      className="relative rounded-2xl overflow-hidden mb-0"
+      className="relative rounded-2xl md:px-2 overflow-hidden mb-0"
       style={{
         // background: `linear-gradient(135deg, ${style.from}, ${style.to})`,
         background: `${community?.colorTheme ?`linear-gradient(135deg, ${gradient?.from}, ${gradient?.to})`: `linear-gradient(135deg, ${style?.from}, ${style?.to})`}`,
@@ -197,13 +194,22 @@ const hslToHex = (h, s, l) => {
 
       <div className="relative px-5 pt-4 pb-5">
         {community.userRole ? (
-          <span className="absolute top-4 right-4 text-[10px] font-semibold px-2.5 py-1 rounded-full bg-white/20 text-white capitalize">
+          <span className="absolute top-4 right-12 text-[10px] font-semibold px-2.5 py-1 rounded-full bg-white/20 text-white capitalize">
             {community?.userRole}
           </span>
         ) : (
-          <span className="absolute top-4 right-4 text-[10px] font-semibold px-2.5 py-1 rounded-full bg-white/20 text-white capitalize">
+          <span className="absolute top-4 right-12 text-[10px] font-semibold px-2.5 py-1 rounded-full bg-white/20 text-white capitalize">
             Member
           </span>
+        )}
+
+        {canEdit && communityId && (
+          <Link
+            to={`/tecCommunityDetails/${communityId}/edit`}
+            className="absolute top-4 right-2 md:right-0 text-[10px] font-semibold px-3 py-1 rounded-full  text-white hover:bg-white/30 transition-colors"
+          >
+            Edit
+          </Link>
         )}
 
         <div className="flex items-center gap-3 mb-0">
@@ -218,11 +224,11 @@ const hslToHex = (h, s, l) => {
               {community?.name}
             </h1>
             {community.tagline ? (
-              <p className="text-xs text-white/70 max-w-2xl leading-relaxed mb-1">
+              <p className="text-xs text-white/70 max-w-2xl leading-relaxed md:mb-2 mb-1">
                 {community?.tagline}
               </p>
             ) : (
-              <p className="text-xs text-white/70 max-w-2xl leading-relaxed mb-1.5">
+              <p className="text-xs text-white/70 max-w-2xl leading-relaxed md:mb-2 mb-1.5">
                 No tag line set
               </p>
             )}
@@ -230,11 +236,11 @@ const hslToHex = (h, s, l) => {
         </div>
 
         {community.description ? (
-          <p className="text-xs text-white font-semibold max-w-2xl leading-relaxed mb-1.5">
+          <p className="text-xs text-white font-semibold line-clamp-2 max-w-2xl leading-relaxed md:mb-2 mb-1.5">
             {community?.description}
           </p>
         ) : (
-          <p className="text-xs text-white/70 max-w-md leading-relaxed mb-1">
+          <p className="text-xs text-white/70 max-w-md leading-relaxed md:mb-2 mb-1">
             description not set
           </p>
         )}
@@ -278,7 +284,7 @@ const TabBar = ({ active, onChange }) => {
         <button
           key={tab}
           onClick={() => onChange(tab.toLowerCase())}
-          className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${
+          className={`px-4 py-2 text-xs font-medium border-b-2 transition-colors ${
             active === tab.toLowerCase()
               ? "border-emerald-500 text-white"
               : "border-transparent text-gray-400 hover:text-gray-200"
@@ -852,39 +858,20 @@ const TrendingTagsCard = ({ data }) => {
 // ─────────────────────────────────────────────────────────────────────────────
 function SingleTechCommunity() {
   const { communityId } = useParams();
+    const {
+    communityDetails: community,
+    commLoading,
+    getCommunitDetails,
+  } = useGetSingleTechCommunity(communityId);
+
   const [searchParams, setSearchParams] = useSearchParams();
   const activeTab = searchParams.get("tab") || "feed";
 
   const currentUserEmail = getItem("email");
   const currentUserRole = getItem("role");
 
-  // ── Sample data — swap each for its real hook when ready ──────────────────
-  // const { community, loading } = useGetCommunityById(communityId);
-  // const { discussions } = useGetDiscussions(communityId, { category, page });
-  // const { members }     = useGetCommunityMembers(communityId);
-  // const { leaderboard } = useGetCommunityLeaderboard(communityId, period);
-  // const { tags }        = useGetTrendingTags(communityId);
-  // const { posts }       = useGetCommunityFeed(communityId, { page });
-  //   const community   = communitySample;
-  const {
-    communityDetails: community,
-    commLoading,
-    getCommunitDetails,
-  } = useGetSingleTechCommunity(communityId);
 
-  const discussions = discussionsSample;
-  // const members = membersSample;
-  const leaderboard = leaderboardSample;
-  const trendingTags = trendingTagsSample;
-  // const posts       = feedPostsSample;
-
-  const style = getDomainStyle(community?.name);
-
-  const handleTabChange = (tab) => {
-    setSearchParams({ tab });
-  };
-
-  const {
+    const {
     posts,
     loading: feedLoad,
     hasMore: feedHashMore,
@@ -900,16 +887,46 @@ function SingleTechCommunity() {
     hasMore,
     loading,
     fetchAuthors,
-  } = useGetAllMembersByDomain(community?._id);
+  } = useGetAllMembersByDomain(communityId);
 
-  console.log("community", community);
+  
   // console.log("posts", posts);
   // console.log("members", members);
   // console.log("coordinators", coordinators);
   // console.log("communityId", communityId)
   useEffect(() => {
     fetchAuthors();
-  }, []);
+  }, [communityId]);
+
+
+  const canEditCommunity =
+    currentUserRole === "admin" ||
+    currentUserRole === "director" ||
+    community?.userRole === "coordinator" ||
+    coordinators.some((coord) => coord.authorId?.email === currentUserEmail);
+
+  // ── Sample data — swap each for its real hook when ready ──────────────────
+  // const { community, loading } = useGetCommunityById(communityId);
+  // const { discussions } = useGetDiscussions(communityId, { category, page });
+  // const { members }     = useGetCommunityMembers(communityId);
+  // const { leaderboard } = useGetCommunityLeaderboard(communityId, period);
+  // const { tags }        = useGetTrendingTags(communityId);
+  // const { posts }       = useGetCommunityFeed(communityId, { page });
+  //   const community   = communitySample;
+
+  const discussions = discussionsSample;
+  // const members = membersSample;
+  const leaderboard = leaderboardSample;
+  const trendingTags = trendingTagsSample;
+  // const posts       = feedPostsSample;
+
+  const style = getDomainStyle(community?.name);
+
+  const handleTabChange = (tab) => {
+    setSearchParams({ tab });
+  };
+
+  console.log("community", community);
 
   return (
     <div className="min-h-screen theme text-white flex flex-col">
@@ -920,7 +937,12 @@ function SingleTechCommunity() {
       </span>
 
       <div className="flex-grow px-4 md:px-20 max-w-[1800px] mx-auto w-full pb-20 md:pt-4">
-        <CommunityBanner community={community} style={style} />
+        <CommunityBanner
+          community={community}
+          style={style}
+          communityId={communityId}
+          canEdit={canEditCommunity}
+        />
 
         {/* ── Tab bar ── */}
         <div className="mt-4">
