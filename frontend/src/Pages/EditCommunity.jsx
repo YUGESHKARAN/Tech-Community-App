@@ -222,25 +222,30 @@ const BannerPreview = ({ form, gradient, userRole, community }) => {
             {userRole}
           </span>
         )}
-        <div className="flex items-center gap-3 mb-3">
+        <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
             <Icon className="text-white text-xl" />
           </div>
           <div>
-            <p className="text-[10px] font-medium tracking-widest uppercase text-white/60 mb-0.5">
+            {/* <p className="text-[10px] font-medium tracking-widest uppercase text-white/60 mb-0.5">
               Tech Domain · BytesBase
-            </p>
+            </p> */}
             <h1 className="text-xl md:text-2xl font-semibold text-white leading-tight">
               {form.name || "Community name"}
             </h1>
-          </div>
-        </div>
-        {form.tagline && (
+            {form.tagline && (
           <p className="text-xs text-white/70 max-w-md leading-relaxed mb-4">
             {form.tagline}
           </p>
         )}
-        <div className="flex flex-wrap gap-4">
+          </div>
+        </div>
+
+        <p className="text-xs text-white font-semibold line-clamp-2 max-w-2xl leading-relaxed md:mb-2 mb-1">
+            {form.description}
+          </p>
+        
+        <div className="flex flex-wrap gap-2 md:gap-3">
           {[
             { Icon: TbUsers,          val: community.memberCount,      label: "members" },
             { Icon: TbFileText,       val: community.postCount,        label: "posts" },
@@ -483,16 +488,7 @@ function EditCommunity() {
           </div> */}
 
           {/* description card */}
-          {form.description && (
-            <div className="mt-6 theme border border-[#1e293b] rounded-xl p-5">
-              <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2">
-                About this community
-              </h3>
-              <p className="text-sm text-gray-300 leading-relaxed">
-                {form.description}
-              </p>
-            </div>
-          )}
+        
         </div>
       </div>
     );
