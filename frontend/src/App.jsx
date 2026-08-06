@@ -35,6 +35,7 @@ import ScrollToHash from "./utils/ScrollToHash.jsx";
 import TechCommunityLanding from "./Pages/TechCommunityLanding.jsx";
 import SingleTechCommunity from "./Pages/SingleTechCommunity.jsx";
 import ViewDiscussion from "./Pages/ViewDiscussion.jsx";
+import EditCommunity from "./Pages/EditCommunity.jsx";
 function App() {
   return (
     // <AuthProvider>
@@ -227,6 +228,11 @@ function App() {
                 path="/tecCommunityDetails/:communityId"
                 // element={<ProtectedRoute element={<SingleTechDomainDetails />} />}
                 element={<ProtectedRoute element={<SingleTechCommunity />} />}
+              />
+
+              <Route
+                path="/tecCommunityDetails/:communityId/edit"
+                element={<ProtectedRoute element={<EditCommunity />} />}
               />
 
               <Route

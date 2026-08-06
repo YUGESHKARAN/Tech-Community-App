@@ -1,0 +1,211 @@
+/**
+ * tablerIconSubset.js
+ *
+ * Curated ~150 Tabler Icons grouped by category for the community
+ * icon picker. Each entry carries:
+ *   - key:       the react-icons import name  (e.g. "TbBrain")
+ *   - label:     human-readable search label  (e.g. "brain")
+ *   - category:  display group in the picker
+ *
+ * The Component is resolved at runtime from the react-icons/tb barrel.
+ * Import the barrel once at the top of the picker component and pass
+ * it here, rather than importing every icon individually.
+ */
+
+export const ICON_SUBSET = [
+  // ── AI / ML ──────────────────────────────────────────────────────────────
+  { key: "TbBrain",           label: "brain",             category: "AI & ML" },
+  { key: "TbRobot",           label: "robot",             category: "AI & ML" },
+  { key: "TbSparkles",        label: "sparkles",          category: "AI & ML" },
+  { key: "TbAtom",            label: "atom",              category: "AI & ML" },
+  { key: "TbAtom2",           label: "atom 2",            category: "AI & ML" },
+  { key: "TbMathFunction",    label: "math function",     category: "AI & ML" },
+  { key: "TbChartDots",       label: "scatter chart",     category: "AI & ML" },
+  { key: "TbChartBubble",     label: "bubble chart",      category: "AI & ML" },
+  { key: "TbChartNetwork",    label: "network chart",     category: "AI & ML" },
+  { key: "TbBinaryTree",      label: "binary tree",       category: "AI & ML" },
+  { key: "TbBinaryTree2",     label: "binary tree 2",     category: "AI & ML" },
+  { key: "TbVectorBezier",    label: "bezier vector",     category: "AI & ML" },
+  { key: "TbLogicAnd",        label: "logic and",         category: "AI & ML" },
+  { key: "TbLogicOr",         label: "logic or",          category: "AI & ML" },
+  { key: "TbLogicXor",        label: "logic xor",         category: "AI & ML" },
+  { key: "TbEye",             label: "eye vision",        category: "AI & ML" },
+  { key: "TbEyeSpark",        label: "eye spark",         category: "AI & ML" },
+
+  // ── Cybersecurity ─────────────────────────────────────────────────────────
+  { key: "TbShieldLock",      label: "shield lock",       category: "Security" },
+  { key: "TbShield",          label: "shield",            category: "Security" },
+  { key: "TbShieldCheck",     label: "shield check",      category: "Security" },
+  { key: "TbShieldHalf",      label: "shield half",       category: "Security" },
+  { key: "TbLock",            label: "lock",              category: "Security" },
+  { key: "TbLockOpen",        label: "lock open",         category: "Security" },
+  { key: "TbFingerprint",     label: "fingerprint",       category: "Security" },
+  { key: "TbKey",             label: "key",               category: "Security" },
+  { key: "TbBug",             label: "bug",               category: "Security" },
+  { key: "TbVirus",           label: "virus",             category: "Security" },
+  { key: "TbSword",           label: "sword",             category: "Security" },
+  { key: "TbRadar",           label: "radar",             category: "Security" },
+  { key: "TbRadar2",          label: "radar 2",           category: "Security" },
+  { key: "TbScan",            label: "scan",              category: "Security" },
+
+  // ── Data Science ──────────────────────────────────────────────────────────
+  { key: "TbChartBar",        label: "bar chart",         category: "Data" },
+  { key: "TbChartLine",       label: "line chart",        category: "Data" },
+  { key: "TbChartPie",        label: "pie chart",         category: "Data" },
+  { key: "TbChartHistogram",  label: "histogram",         category: "Data" },
+  { key: "TbChartAreaLine",   label: "area line",         category: "Data" },
+  { key: "TbChartInfographic",label: "infographic",       category: "Data" },
+  { key: "TbDatabase",        label: "database",          category: "Data" },
+  { key: "TbTable",           label: "table",             category: "Data" },
+  { key: "TbTableImport",     label: "table import",      category: "Data" },
+  { key: "TbFilter",          label: "filter",            category: "Data" },
+  { key: "TbSortAscending",   label: "sort ascending",    category: "Data" },
+  { key: "TbMathIntegral",    label: "integral",          category: "Data" },
+  { key: "TbSigma",           label: "sigma",             category: "Data" },
+
+  // ── Web Development ───────────────────────────────────────────────────────
+  { key: "TbWorldWww",        label: "world wide web",    category: "Web Dev" },
+  { key: "TbCode",            label: "code",              category: "Web Dev" },
+  { key: "TbCodeDots",        label: "code dots",         category: "Web Dev" },
+  { key: "TbCodeCircle",      label: "code circle",       category: "Web Dev" },
+  { key: "TbBrandHtml5",      label: "html5",             category: "Web Dev" },
+  { key: "TbBrandCss3",       label: "css3",              category: "Web Dev" },
+  { key: "TbBrandJavascript", label: "javascript",        category: "Web Dev" },
+  { key: "TbBrandReact",      label: "react",             category: "Web Dev" },
+  { key: "TbBrandNodejs",     label: "nodejs",            category: "Web Dev" },
+  { key: "TbBrandNextjs",     label: "nextjs",            category: "Web Dev" },
+  { key: "TbBrandVue",        label: "vue",               category: "Web Dev" },
+  { key: "TbBrandTypescript", label: "typescript",        category: "Web Dev" },
+  { key: "TbBrandTailwind",   label: "tailwind",          category: "Web Dev" },
+  { key: "TbApi",             label: "api",               category: "Web Dev" },
+  { key: "TbWebhook",         label: "webhook",           category: "Web Dev" },
+  { key: "TbServer",          label: "server",            category: "Web Dev" },
+  { key: "TbServerBolt",      label: "server bolt",       category: "Web Dev" },
+  { key: "TbCloud",           label: "cloud",             category: "Web Dev" },
+  { key: "TbCloudCode",       label: "cloud code",        category: "Web Dev" },
+  { key: "TbTerminal",        label: "terminal",          category: "Web Dev" },
+  { key: "TbTerminal2",       label: "terminal 2",        category: "Web Dev" },
+
+  // ── GenAI ─────────────────────────────────────────────────────────────────
+  { key: "TbWand",            label: "wand magic",        category: "GenAI" },
+  { key: "TbWandOff",         label: "wand off",          category: "GenAI" },
+  { key: "TbMessageBolt",     label: "message bolt",      category: "GenAI" },
+  { key: "TbMessageCode",     label: "message code",      category: "GenAI" },
+  { key: "TbPrompt",          label: "prompt",            category: "GenAI" },
+  { key: "TbTransform",       label: "transform",         category: "GenAI" },
+  { key: "TbCpu",             label: "cpu chip",          category: "GenAI" },
+  { key: "TbCpuOff",          label: "cpu off",           category: "GenAI" },
+  { key: "TbMicrochip",       label: "microchip",         category: "GenAI" },
+  { key: "TbChip",            label: "chip",              category: "GenAI" },
+  { key: "TbInfinity",        label: "infinity",          category: "GenAI" },
+  { key: "TbVariable",        label: "variable",          category: "GenAI" },
+
+  // ── Cloud & Infrastructure ────────────────────────────────────────────────
+  { key: "TbCloudComputing",  label: "cloud computing",   category: "Cloud" },
+  { key: "TbCloudUpload",     label: "cloud upload",      category: "Cloud" },
+  { key: "TbCloudDownload",   label: "cloud download",    category: "Cloud" },
+  { key: "TbBrandDocker",     label: "docker",            category: "Cloud" },
+  { key: "TbBrandKubernetes", label: "kubernetes",        category: "Cloud" },
+  { key: "TbBrandAws",        label: "aws",               category: "Cloud" },
+  { key: "TbNetwork",         label: "network",           category: "Cloud" },
+  { key: "TbRouter",          label: "router",            category: "Cloud" },
+  { key: "TbTopologyStar",    label: "star topology",     category: "Cloud" },
+  { key: "TbTopologyRing",    label: "ring topology",     category: "Cloud" },
+
+  // ── Community & People ────────────────────────────────────────────────────
+  { key: "TbUsers",           label: "users group",       category: "Community" },
+  { key: "TbUsersGroup",      label: "users group 2",     category: "Community" },
+  { key: "TbUser",            label: "user",              category: "Community" },
+  { key: "TbUserCheck",       label: "user check",        category: "Community" },
+  { key: "TbUserStar",        label: "user star",         category: "Community" },
+  { key: "TbUserHeart",       label: "user heart",        category: "Community" },
+  { key: "TbAffiliate",       label: "affiliate network", category: "Community" },
+  { key: "TbHierarchy",       label: "hierarchy",         category: "Community" },
+  { key: "TbHierarchy2",      label: "hierarchy 2",       category: "Community" },
+  { key: "TbSocial",          label: "social",            category: "Community" },
+  { key: "TbMessages",        label: "messages",          category: "Community" },
+  { key: "TbMessage",         label: "message",           category: "Community" },
+  { key: "TbMessageCircle",   label: "message circle",    category: "Community" },
+  { key: "TbHandshake",       label: "handshake",         category: "Community" },
+  { key: "TbHeart",           label: "heart",             category: "Community" },
+  { key: "TbStar",            label: "star",              category: "Community" },
+  { key: "TbTrophy",          label: "trophy",            category: "Community" },
+  { key: "TbMedal",           label: "medal",             category: "Community" },
+  { key: "TbCrown",           label: "crown",             category: "Community" },
+  { key: "TbFlame",           label: "flame",             category: "Community" },
+
+  // ── Science & Research ────────────────────────────────────────────────────
+  { key: "TbMicroscope",      label: "microscope",        category: "Science" },
+  { key: "TbTestPipe",        label: "test pipe",         category: "Science" },
+  { key: "TbDna",             label: "dna",               category: "Science" },
+  { key: "TbDna2",            label: "dna 2",             category: "Science" },
+  { key: "TbFlask",           label: "flask",             category: "Science" },
+  { key: "TbFlask2",          label: "flask 2",           category: "Science" },
+  { key: "TbSatellite",       label: "satellite",         category: "Science" },
+  { key: "TbTelescope",       label: "telescope",         category: "Science" },
+  { key: "TbPlanet",          label: "planet",            category: "Science" },
+  { key: "TbMathPi",          label: "math pi",           category: "Science" },
+  { key: "TbCalculator",      label: "calculator",        category: "Science" },
+
+  // ── Design & Creative ─────────────────────────────────────────────────────
+  { key: "TbPalette",         label: "palette",           category: "Design" },
+  { key: "TbPencil",          label: "pencil",            category: "Design" },
+  { key: "TbBrush",           label: "brush",             category: "Design" },
+  { key: "TbVector",          label: "vector",            category: "Design" },
+  { key: "TbVectorTriangle",  label: "triangle vector",   category: "Design" },
+  { key: "TbFrame",           label: "frame",             category: "Design" },
+  { key: "TbLayout",          label: "layout",            category: "Design" },
+  { key: "TbLayoutDashboard", label: "dashboard layout",  category: "Design" },
+  { key: "TbPhoto",           label: "photo",             category: "Design" },
+  { key: "TbFocus",           label: "focus",             category: "Design" },
+
+  // ── Devices & Hardware ────────────────────────────────────────────────────
+  { key: "TbDeviceLaptop",    label: "laptop",            category: "Devices" },
+  { key: "TbDeviceDesktop",   label: "desktop",           category: "Devices" },
+  { key: "TbDeviceMobile",    label: "mobile",            category: "Devices" },
+  { key: "TbDeviceTablet",    label: "tablet",            category: "Devices" },
+  { key: "TbPrinter",         label: "printer",           category: "Devices" },
+  { key: "TbKeyboard",        label: "keyboard",          category: "Devices" },
+  { key: "TbMouse",           label: "mouse",             category: "Devices" },
+  { key: "TbHeadphones",      label: "headphones",        category: "Devices" },
+  { key: "TbCamera",          label: "camera",            category: "Devices" },
+  { key: "TbDrone",           label: "drone",             category: "Devices" },
+
+  // ── Misc / General ────────────────────────────────────────────────────────
+  { key: "TbBulb",            label: "bulb idea",         category: "General" },
+  { key: "TbRocket",          label: "rocket",            category: "General" },
+  { key: "TbCompass",         label: "compass",           category: "General" },
+  { key: "TbMap",             label: "map",               category: "General" },
+  { key: "TbBook",            label: "book",              category: "General" },
+  { key: "TbBooks",           label: "books",             category: "General" },
+  { key: "TbSchool",          label: "school",            category: "General" },
+  { key: "TbCertificate",     label: "certificate",       category: "General" },
+  { key: "TbAward",           label: "award",             category: "General" },
+  { key: "TbNotebook",        label: "notebook",          category: "General" },
+  { key: "TbNotes",           label: "notes",             category: "General" },
+  { key: "TbPresentation",    label: "presentation",      category: "General" },
+  { key: "TbSpeakerphone",    label: "speakerphone",      category: "General" },
+  { key: "TbWorld",           label: "world globe",       category: "General" },
+  { key: "TbGitBranch",       label: "git branch",        category: "General" },
+  { key: "TbGitMerge",        label: "git merge",         category: "General" },
+  { key: "TbGitPullRequest",  label: "git pull request",  category: "General" },
+  { key: "TbBrandGithub",     label: "github",            category: "General" },
+  { key: "TbBrandGitlab",     label: "gitlab",            category: "General" },
+  { key: "TbPackage",         label: "package",           category: "General" },
+  { key: "TbPuzzle",          label: "puzzle",            category: "General" },
+  { key: "TbSettings",        label: "settings",          category: "General" },
+  { key: "TbTools",           label: "tools",             category: "General" },
+  { key: "TbBuildingFactory", label: "factory",           category: "General" },
+  { key: "TbCube",            label: "cube 3d",           category: "General" },
+  { key: "TbBoxModel",        label: "box model",         category: "General" },
+  { key: "TbArrowsShuffle",   label: "shuffle",           category: "General" },
+  { key: "TbZoomCode",        label: "zoom code",         category: "General" },
+  { key: "TbApi",             label: "api endpoint",      category: "General" },
+  { key: "TbBlockquote",      label: "blockquote",        category: "General" },
+];
+
+// Unique categories in display order
+export const ICON_CATEGORIES = [
+  "AI & ML", "Security", "Data", "Web Dev", "GenAI",
+  "Cloud", "Community", "Science", "Design", "Devices", "General",
+];

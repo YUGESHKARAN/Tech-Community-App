@@ -273,4 +273,81 @@ const getCommunityMembersById = async (req, res) => {
   }
 };
 
-module.exports = { getCommunityLandingPage, getCommunityById, getCommunityMembersById }
+const editTechCommunity = async (req, res) => {
+
+  const { tenantId, authorId, role: userRole } = req.user;
+  const { communityId } = req.params;
+  const updatePayload = req.body || {};
+
+  console.log("editTechCommunity called")
+
+  if (!communityId) {
+    return res.status(400).json({ message: 'communityId required' });
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(communityId)) {
+    return res.status(400).json({ message: 'Invalid communityId' });
+  }
+
+  const allowedFields = ['name', 'tagline', 'description', 'icon', 'banner', 'colorTheme', 'slug'];
+  const updates = {};
+
+  allowedFields.forEach((field) => {
+    if (Object.prototype.hasOwnProperty.call(updatePayload, field)) {
+      updates[field] = updatePayload[field];
+    }
+  });
+
+  if (Object.keys(updates).length === 0) {
+    return res.status(400).json({ message: 'No valid fields provided for update' });
+  }
+
+  try {
+    const community = await Community.findOne({ _id: communityId, tenantId }).lean();
+
+    if (!community) {
+      return res.status(404).json({ message: 'Community not found' });
+    }
+
+    const membership = await CommunityMembership.findOne(
+      { tenantId, communityId, authorId },
+      'role'
+    ).lean();
+
+    const isCoordinator = membership?.role === 'coordinator';
+    const isAdmin = userRole === 'admin';
+
+    if (!isCoordinator && !isAdmin) {
+      return res.status(403).json({ message: 'Only community coordinators or admins can edit this community' });
+    }
+
+    if (updates.slug) {
+      const existingCommunity = await Community.findOne({
+        tenantId,
+        slug: updates.slug,
+        _id: { $ne: communityId },
+      }).lean();
+
+      if (existingCommunity) {
+        return res.status(409).json({ message: 'A community with this slug already exists' });
+      }
+    }
+
+    const updatedCommunity = await Community.findOneAndUpdate(
+      { _id: communityId, tenantId },
+      { $set: updates },
+      { new: true, runValidators: true }
+    );
+
+    return res.status(200).json({
+      message: 'Community updated successfully',
+      community: updatedCommunity,
+    });
+  } catch (err) {
+    console.error('editTechCommunity error:', err.message);
+    console.log('editTechCommunity error:', err.message);
+    return res.status(500).json({ message: 'Server error' });
+  }
+};
+
+module.exports = { getCommunityLandingPage, getCommunityById, getCommunityMembersById, editTechCommunity }
