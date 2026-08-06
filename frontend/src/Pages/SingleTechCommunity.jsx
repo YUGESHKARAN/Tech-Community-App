@@ -121,8 +121,6 @@ const timeAgo = (dateStr) => {
 
 // ── Community banner ──────────────────────────────────────────────────────────
 const CommunityBanner = ({ community, style, communityId, canEdit }) => {
-  
-
   const gradient = useMemo(() => {
     const theme = community?.colorTheme;
     return deriveGradient(theme);
@@ -131,10 +129,10 @@ const CommunityBanner = ({ community, style, communityId, canEdit }) => {
   const Icon = community.icon ? TbIcons[community.icon] : style.icon;
   return (
     <div
-      className="relative rounded-2xl md:px-2 overflow-hidden mb-0"
+      className="relative rounded-xl md:rounded-2xl md:px-2 overflow-hidden mb-0"
       style={{
         // background: `linear-gradient(135deg, ${style.from}, ${style.to})`,
-        background: `${community?.colorTheme ?`linear-gradient(135deg, ${gradient?.from}, ${gradient?.to})`: `linear-gradient(135deg, ${style?.from}, ${style?.to})`}`,
+        background: `${community?.colorTheme ? `linear-gradient(135deg, ${gradient?.from}, ${gradient?.to})` : `linear-gradient(135deg, ${style?.from}, ${style?.to})`}`,
       }}
     >
       {/* subtle texture overlay */}
@@ -166,7 +164,7 @@ const CommunityBanner = ({ community, style, communityId, canEdit }) => {
           </Link>
         )}
 
-        <div className="flex items-center gap-3 mb-0.5 md:mb-0">
+        <div className="flex items-center gap-3 mb-0.5 md:mb-1">
           <div className="md:w-10 w-9 h-9 md:h-10 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
             <Icon className="text-white text-lg md:text-xl" />
           </div>
@@ -190,11 +188,11 @@ const CommunityBanner = ({ community, style, communityId, canEdit }) => {
         </div>
 
         {community.description ? (
-          <p className="md:text-xs text-[10px] text-white font-semibold max-w-2xl leading-relaxed md:mb-2 mb-1.5">
+          <p className="md:text-xs text-[10px] text-white font-semibold max-w-2xl leading-relaxed mb-2 md:mb-2.5">
             {community?.description}
           </p>
         ) : (
-          <p className="text-xs text-white/70 max-w-md leading-relaxed md:mb-2 mb-1.5">
+          <p className="text-xs text-white/70 max-w-md leading-relaxed mb-2 md:mb-2.5">
             description not set
           </p>
         )}
@@ -231,9 +229,10 @@ const CommunityBanner = ({ community, style, communityId, canEdit }) => {
 
 // ── Tab bar ───────────────────────────────────────────────────────────────────
 const TabBar = ({ active, theme, onChange }) => {
-  const gradient = deriveGradient(theme);
-  let themeColor = theme 
-  const TABS = [ "Discussions", "Feed", "Members"];
+  // const gradient = deriveGradient(theme);
+  // console.log('gradient', gradient.from)
+  // let themeColor = theme
+  const TABS = ["Discussions", "Feed", "Members"];
   return (
     <div className="flex border-b border-white/5 mb-3 md:mb-5">
       {TABS.map((tab) => (
@@ -242,9 +241,16 @@ const TabBar = ({ active, theme, onChange }) => {
           onClick={() => onChange(tab.toLowerCase())}
           className={`px-4 py-2 text-xs font-medium border-b-2 transition-colors ${
             active === tab.toLowerCase()
-              ? `border-${theme?`[${gradient?.from}]`:'emerald-400'} text-white`
+              ? "text-white"
               : "border-transparent text-gray-400 hover:text-gray-200"
           }`}
+          style={
+            active === tab.toLowerCase() && theme
+              ? { borderBottomColor: theme } // Applies your custom hex string directly
+              : active === tab.toLowerCase()
+                ? { borderBottomColor: "#34d399" } // Hardcoded hex for 'emerald-400'
+                : {} // Empty object when tab is inactive (falls back to border-transparent)
+          }
         >
           {tab}
         </button>
@@ -263,7 +269,6 @@ const DiscussionCard = ({
   const cat = CATEGORY_COLORS[discussion.category] || CATEGORY_COLORS.qa;
   return (
     <div
-      
       className={`block theme border rounded-xl px-4 py-3 hover:border-white/10 transition-all duration-200 ${
         discussion.isPinned ? "border-l-2" : "border-[#1e293b]"
       }`}
@@ -282,8 +287,9 @@ const DiscussionCard = ({
 
         {/* content */}
         <Link
-        to={`/discussion/${discussion._id}/${communityId}`}
-         className="flex-1 min-w-0">
+          to={`/discussion/${discussion._id}/${communityId}`}
+          className="flex-1 min-w-0"
+        >
           <div className="flex items-start gap-2 mb-1 flex-wrap">
             <span className="text-sm font-medium text-gray-100 leading-snug">
               {discussion.title}
@@ -816,7 +822,7 @@ const TrendingTagsCard = ({ data }) => {
 // ─────────────────────────────────────────────────────────────────────────────
 function SingleTechCommunity() {
   const { communityId } = useParams();
-    const {
+  const {
     communityDetails: community,
     commLoading,
     getCommunitDetails,
@@ -828,8 +834,7 @@ function SingleTechCommunity() {
   const currentUserEmail = getItem("email");
   const currentUserRole = getItem("role");
 
-
-    const {
+  const {
     posts,
     loading: feedLoad,
     hasMore: feedHashMore,
@@ -847,7 +852,6 @@ function SingleTechCommunity() {
     fetchAuthors,
   } = useGetAllMembersByDomain(communityId);
 
-  
   // console.log("posts", posts);
   // console.log("members", members);
   // console.log("coordinators", coordinators);
@@ -855,7 +859,6 @@ function SingleTechCommunity() {
   useEffect(() => {
     fetchAuthors();
   }, [communityId]);
-
 
   const canEditCommunity =
     currentUserRole === "admin" ||
@@ -879,10 +882,13 @@ function SingleTechCommunity() {
   // const posts       = feedPostsSample;
 
   const style = getDomainStyle(community?.name);
+  const gradient = deriveGradient(community?.colorTheme);
 
   const handleTabChange = (tab) => {
     setSearchParams({ tab });
   };
+
+  const accentColor = community?.colorTheme ?? style.from;
 
   console.log("community", community);
 
@@ -904,7 +910,11 @@ function SingleTechCommunity() {
 
         {/* ── Tab bar ── */}
         <div className="mt-1 md:mt-4">
-          <TabBar active={activeTab}  theme = {community.colorTheme || ''} onChange={handleTabChange} />
+          <TabBar
+            active={activeTab}
+            theme={gradient?.from}
+            onChange={handleTabChange}
+          />
         </div>
 
         {/* ── Two-column layout: main + sidebar ── */}
@@ -923,7 +933,7 @@ function SingleTechCommunity() {
               <DiscussionsTab
                 discussions={discussions}
                 community={community}
-                accentColor={style.from}
+                accentColor={accentColor}
                 currentUserEmail={currentUserEmail}
                 userRole={community.userRole}
               />
