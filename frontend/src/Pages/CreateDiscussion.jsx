@@ -1,5 +1,9 @@
 import React, {
-  useState, useEffect, useRef, useMemo, useCallback,
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+  useCallback,
 } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import * as TbIcons from "react-icons/tb";
@@ -8,35 +12,61 @@ import axiosInstance from "../instances/Axiosinstances";
 import { getItem } from "../utils/encode";
 import { renderMarkdown } from "../utils/markdownRenderer";
 import {
-  TbArrowLeft, TbBold, TbItalic, TbCode, TbList,
-  TbListNumbers, TbBlockquote, TbH1, TbH2,
-  TbLink, TbEye, TbPencil, TbX, TbPlus, TbSearch,
-  TbTag, TbAlertCircle, TbSend, TbFileText,
-  TbCheck, TbChevronDown, TbPhoto,
+  TbArrowLeft,
+  TbBold,
+  TbItalic,
+  TbCode,
+  TbList,
+  TbListNumbers,
+  TbBlockquote,
+  TbH1,
+  TbH2,
+  TbLink,
+  TbEye,
+  TbPencil,
+  TbX,
+  TbPlus,
+  TbSearch,
+  TbTag,
+  TbAlertCircle,
+  TbSend,
+  TbFileText,
+  TbCheck,
+  TbChevronDown,
+  TbPhoto,
 } from "react-icons/tb";
 import userPlaceholder from "../images/user.png";
+import toast from "../components/toaster/Toast";
+import useCommunityPosts from "../hooks/SingleTechDomain/useCommunityPosts";
+import getTimeAgo from "../components/DateCovertion";
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 const S3 = "https://open-access-blog-image.s3.us-east-1.amazonaws.com/";
 const av = (p) => (p ? `${S3}${p}` : userPlaceholder);
 
 const CATEGORIES = [
-  { value: "qa",           label: "Q&A",          desc: "Ask a question" },
-  { value: "idea",         label: "Idea",          desc: "Suggest something" },
-  { value: "showcase",     label: "Show & tell",   desc: "Share your work" },
-  { value: "announcement", label: "Announcement",  desc: "Coordinator only" },
+  { value: "qa", label: "Q&A", desc: "Ask a question" },
+  { value: "idea", label: "Idea", desc: "Suggest something" },
+  { value: "showcase", label: "Show & tell", desc: "Share your work" },
+  { value: "announcement", label: "Announcement", desc: "Coordinator only" },
 ];
 
 const CATEGORY_COLORS = {
-  qa:           "text-blue-400 bg-blue-500/10 border-blue-500/20",
-  idea:         "text-amber-400 bg-amber-500/10 border-amber-500/20",
-  showcase:     "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
+  qa: "text-blue-400 bg-blue-500/10 border-blue-500/20",
+  idea: "text-amber-400 bg-amber-500/10 border-amber-500/20",
+  showcase: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
   announcement: "text-purple-400 bg-purple-500/10 border-purple-500/20",
 };
 
 const TAG_PRESET_COLORS = [
-  "#0d9488", "#059669", "#2563eb", "#7c3aed",
-  "#ea580c", "#e11d48", "#0284c7", "#d97706",
+  "#0d9488",
+  "#059669",
+  "#2563eb",
+  "#7c3aed",
+  "#ea580c",
+  "#e11d48",
+  "#0284c7",
+  "#d97706",
 ];
 
 const timeAgo = (d) => {
@@ -55,86 +85,149 @@ const timeAgo = (d) => {
 
 const SAMPLE_TAGS = [
   { _id: "tag001", name: "fine-tuning", color: "#0d9488" },
-  { _id: "tag002", name: "lora",        color: "#7c3aed" },
-  { _id: "tag003", name: "prompting",   color: "#ea580c" },
-  { _id: "tag004", name: "rag",         color: "#2563eb" },
-  { _id: "tag005", name: "transformers",color: "#059669" },
+  { _id: "tag002", name: "lora", color: "#7c3aed" },
+  { _id: "tag003", name: "prompting", color: "#ea580c" },
+  { _id: "tag004", name: "rag", color: "#2563eb" },
+  { _id: "tag005", name: "transformers", color: "#059669" },
 ];
 
-const SAMPLE_POSTS = [
-  { _id: "post001", title: "Evaluating LLMs using LangSmith",           image: "", authorId: { authorName: "Yugesh Karan", profile: "" },   timestamp: new Date(Date.now() - 86400000).toISOString() },
-  { _id: "post002", title: "Multi-Agent System using LangGraph",         image: "", authorId: { authorName: "Yugesh Karan", profile: "" },   timestamp: new Date(Date.now() - 172800000).toISOString() },
-  { _id: "post003", title: "Supervised Machine Learning",                image: "", authorId: { authorName: "haricharan_1133", profile: "" },timestamp: new Date(Date.now() - 259200000).toISOString() },
-  { _id: "post004", title: "Reinforcement Learning from scratch",        image: "", authorId: { authorName: "Kumaran", profile: "" },         timestamp: new Date(Date.now() - 345600000).toISOString() },
-  { _id: "post005", title: "Computer Vision with PyTorch",               image: "", authorId: { authorName: "haricharan_1133", profile: "" },timestamp: new Date(Date.now() - 432000000).toISOString() },
-];
+// const SAMPLE_POSTS = [
+//   {
+//     _id: "post001",
+//     title: "Evaluating LLMs using LangSmith",
+//     image: "",
+//     authorId: { authorName: "Yugesh Karan", profile: "" },
+//     timestamp: new Date(Date.now() - 86400000).toISOString(),
+//   },
+//   {
+//     _id: "post002",
+//     title: "Multi-Agent System using LangGraph",
+//     image: "",
+//     authorId: { authorName: "Yugesh Karan", profile: "" },
+//     timestamp: new Date(Date.now() - 172800000).toISOString(),
+//   },
+//   {
+//     _id: "post003",
+//     title: "Supervised Machine Learning",
+//     image: "",
+//     authorId: { authorName: "haricharan_1133", profile: "" },
+//     timestamp: new Date(Date.now() - 259200000).toISOString(),
+//   },
+//   {
+//     _id: "post004",
+//     title: "Reinforcement Learning from scratch",
+//     image: "",
+//     authorId: { authorName: "Kumaran", profile: "" },
+//     timestamp: new Date(Date.now() - 345600000).toISOString(),
+//   },
+//   {
+//     _id: "post005",
+//     title: "Computer Vision with PyTorch",
+//     image: "",
+//     authorId: { authorName: "haricharan_1133", profile: "" },
+//     timestamp: new Date(Date.now() - 432000000).toISOString(),
+//   },
+// ];
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  MARKDOWN EDITOR
 // ─────────────────────────────────────────────────────────────────────────────
+
 const MD_TOOLBAR = [
-  { icon: TbBold,        action: "bold",       title: "Bold",        wrap: ["**", "**"],     placeholder: "bold text" },
-  { icon: TbItalic,      action: "italic",     title: "Italic",      wrap: ["*", "*"],        placeholder: "italic text" },
-  { icon: TbCode,        action: "code",       title: "Inline code", wrap: ["`", "`"],        placeholder: "code" },
-  { icon: null,          action: "divider" },
-  { icon: TbH1,          action: "h1",         title: "Heading 1",   prefix: "# " },
-  { icon: TbH2,          action: "h2",         title: "Heading 2",   prefix: "## " },
-  { icon: null,          action: "divider" },
-  { icon: TbList,        action: "ul",         title: "Bullet list", prefix: "- " },
-  { icon: TbListNumbers, action: "ol",         title: "Numbered list",prefix: "1. " },
-  { icon: TbBlockquote,  action: "blockquote", title: "Blockquote",  prefix: "> " },
-  { icon: null,          action: "divider" },
-  { icon: TbCode,        action: "codeblock",  title: "Code block",  block: true },
-  { icon: TbLink,        action: "link",       title: "Link",        link: true },
+  {
+    icon: TbBold,
+    action: "bold",
+    title: "Bold",
+    wrap: ["**", "**"],
+    placeholder: "bold text",
+  },
+  {
+    icon: TbItalic,
+    action: "italic",
+    title: "Italic",
+    wrap: ["*", "*"],
+    placeholder: "italic text",
+  },
+  {
+    icon: TbCode,
+    action: "code",
+    title: "Inline code",
+    wrap: ["`", "`"],
+    placeholder: "code",
+  },
+  { icon: null, action: "divider" },
+  { icon: TbH1, action: "h1", title: "Heading 1", prefix: "# " },
+  { icon: TbH2, action: "h2", title: "Heading 2", prefix: "## " },
+  { icon: null, action: "divider" },
+  { icon: TbList, action: "ul", title: "Bullet list", prefix: "- " },
+  { icon: TbListNumbers, action: "ol", title: "Numbered list", prefix: "1. " },
+  {
+    icon: TbBlockquote,
+    action: "blockquote",
+    title: "Blockquote",
+    prefix: "> ",
+  },
+  { icon: null, action: "divider" },
+  { icon: TbCode, action: "codeblock", title: "Code block", block: true },
+  { icon: TbLink, action: "link", title: "Link", link: true },
 ];
 
 const MarkdownEditor = ({ value, onChange }) => {
   const [tab, setTab] = useState("write"); // 'write' | 'preview'
   const textareaRef = useRef();
 
-  const applyAction = useCallback((item) => {
-    const el = textareaRef.current;
-    if (!el) return;
-    const start = el.selectionStart;
-    const end = el.selectionEnd;
-    const selected = value.slice(start, end);
-    let newVal = value;
-    let newCursor = start;
+  const applyAction = useCallback(
+    (item) => {
+      const el = textareaRef.current;
+      if (!el) return;
+      const start = el.selectionStart;
+      const end = el.selectionEnd;
+      const selected = value.slice(start, end);
+      let newVal = value;
+      let newCursor = start;
 
-    if (item.wrap) {
-      const [open, close] = item.wrap;
-      const text = selected || item.placeholder;
-      newVal = value.slice(0, start) + open + text + close + value.slice(end);
-      newCursor = start + open.length + text.length + close.length;
-    } else if (item.prefix) {
-      // apply prefix to each selected line
-      const lineStart = value.lastIndexOf("\n", start - 1) + 1;
-      const lineEnd = value.indexOf("\n", end);
-      const segment = value.slice(lineStart, lineEnd === -1 ? undefined : lineEnd);
-      const prefixed = segment
-        .split("\n")
-        .map((l) => (l.startsWith(item.prefix) ? l : item.prefix + l))
-        .join("\n");
-      newVal = value.slice(0, lineStart) + prefixed + (lineEnd === -1 ? "" : value.slice(lineEnd));
-      newCursor = lineStart + prefixed.length;
-    } else if (item.block) {
-      const fence = "```\n" + (selected || "your code here") + "\n```";
-      newVal = value.slice(0, start) + fence + value.slice(end);
-      newCursor = start + fence.length;
-    } else if (item.link) {
-      const text = selected || "link text";
-      const link = `[${text}](url)`;
-      newVal = value.slice(0, start) + link + value.slice(end);
-      newCursor = start + link.length;
-    }
+      if (item.wrap) {
+        const [open, close] = item.wrap;
+        const text = selected || item.placeholder;
+        newVal = value.slice(0, start) + open + text + close + value.slice(end);
+        newCursor = start + open.length + text.length + close.length;
+      } else if (item.prefix) {
+        // apply prefix to each selected line
+        const lineStart = value.lastIndexOf("\n", start - 1) + 1;
+        const lineEnd = value.indexOf("\n", end);
+        const segment = value.slice(
+          lineStart,
+          lineEnd === -1 ? undefined : lineEnd,
+        );
+        const prefixed = segment
+          .split("\n")
+          .map((l) => (l.startsWith(item.prefix) ? l : item.prefix + l))
+          .join("\n");
+        newVal =
+          value.slice(0, lineStart) +
+          prefixed +
+          (lineEnd === -1 ? "" : value.slice(lineEnd));
+        newCursor = lineStart + prefixed.length;
+      } else if (item.block) {
+        const fence = "```\n" + (selected || "your code here") + "\n```";
+        newVal = value.slice(0, start) + fence + value.slice(end);
+        newCursor = start + fence.length;
+      } else if (item.link) {
+        const text = selected || "link text";
+        const link = `[${text}](url)`;
+        newVal = value.slice(0, start) + link + value.slice(end);
+        newCursor = start + link.length;
+      }
 
-    onChange(newVal);
-    // restore cursor after React re-render
-    requestAnimationFrame(() => {
-      el.focus();
-      el.setSelectionRange(newCursor, newCursor);
-    });
-  }, [value, onChange]);
+      onChange(newVal);
+      // restore cursor after React re-render
+      requestAnimationFrame(() => {
+        el.focus();
+        el.setSelectionRange(newCursor, newCursor);
+      });
+    },
+    [value, onChange],
+  );
 
   return (
     <div className="theme border border-[#1e293b] rounded-xl overflow-hidden focus-within:border-white/15 transition-colors">
@@ -153,7 +246,17 @@ const MarkdownEditor = ({ value, onChange }) => {
                   : "text-gray-500 hover:text-gray-300"
               }`}
             >
-              {t === "write" ? <><TbPencil className="inline text-xs mr-1" />Write</> : <><TbEye className="inline text-xs mr-1" />Preview</>}
+              {t === "write" ? (
+                <>
+                  <TbPencil className="inline text-xs mr-1" />
+                  Write
+                </>
+              ) : (
+                <>
+                  <TbEye className="inline text-xs mr-1" />
+                  Preview
+                </>
+              )}
             </button>
           ))}
         </div>
@@ -205,7 +308,15 @@ const MarkdownEditor = ({ value, onChange }) => {
 
       <div className="flex items-center justify-between px-4 py-2 border-t border-[#1e293b]">
         <p className="text-[10px] text-gray-600">
-          Markdown supported · <a href="https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-400">syntax guide</a>
+          Markdown supported ·{" "}
+          <a
+            href="https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:text-gray-400"
+          >
+            syntax guide
+          </a>
         </p>
         <p className="text-[10px] text-gray-600">{value.length} chars</p>
       </div>
@@ -217,8 +328,12 @@ const MarkdownEditor = ({ value, onChange }) => {
 //  TAG SELECTOR
 // ─────────────────────────────────────────────────────────────────────────────
 const TagSelector = ({
-  communityId, existingTags, selectedIds, onToggle,
-  onTagCreated, canCreate,
+  communityId,
+  existingTags,
+  selectedIds,
+  onToggle,
+  onTagCreated,
+  canCreate,
 }) => {
   const [query, setQuery] = useState("");
   const [creating, setCreating] = useState(false);
@@ -236,7 +351,9 @@ const TagSelector = ({
   const showCreateOption =
     canCreate &&
     query.trim().length > 0 &&
-    !existingTags.some((t) => t.name.toLowerCase() === query.toLowerCase().trim());
+    !existingTags.some(
+      (t) => t.name.toLowerCase() === query.toLowerCase().trim(),
+    );
 
   const handleCreate = async () => {
     const name = (creating ? newTagName : query).trim();
@@ -246,7 +363,7 @@ const TagSelector = ({
     try {
       const res = await axiosInstance.post(
         `/bytes/discuss/${communityId}/tags`,
-        { name, color: newTagColor }
+        { name, color: newTagColor },
       );
       onTagCreated(res.data.tag);
       onToggle(res.data.tag._id);
@@ -268,22 +385,30 @@ const TagSelector = ({
         <input
           type="text"
           value={query}
-          onChange={(e) => { setQuery(e.target.value); setCreating(false); }}
+          onChange={(e) => {
+            setQuery(e.target.value);
+            setCreating(false);
+          }}
           placeholder="Search or create a tag..."
           className="bg-transparent text-xs text-gray-200 placeholder-gray-600 focus:outline-none flex-1"
         />
         {query && (
-          <button onClick={() => setQuery("")} className="text-gray-500 hover:text-gray-300">
+          <button
+            onClick={() => setQuery("")}
+            className="text-gray-500 hover:text-gray-300"
+          >
             <TbX className="text-xs" />
           </button>
         )}
       </div>
 
       {/* tag list */}
-      <div className="max-h-40 overflow-y-auto p-2">
+      <div className="max-h-40 overflow-y-auto emerald-scrollbar p-2">
         {filtered.length === 0 && !showCreateOption && (
           <p className="text-[10px] text-gray-600 text-center py-4">
-            {canCreate ? 'No tags found. Type a name to create one.' : 'No tags found.'}
+            {canCreate
+              ? "No tags found. Type a name to create one."
+              : "No tags found."}
           </p>
         )}
 
@@ -310,7 +435,10 @@ const TagSelector = ({
         {showCreateOption && !creating && (
           <button
             type="button"
-            onClick={() => { setCreating(true); setNewTagName(query); }}
+            onClick={() => {
+              setCreating(true);
+              setNewTagName(query);
+            }}
             className="flex items-center gap-2 w-full px-2 py-1.5 rounded-lg hover:bg-white/5 transition-colors text-left"
           >
             <TbPlus className="text-xs text-emerald-400" />
@@ -371,14 +499,23 @@ const TagSelector = ({
 // ─────────────────────────────────────────────────────────────────────────────
 //  LINKED POST PANEL
 // ─────────────────────────────────────────────────────────────────────────────
-const LinkedPostPanel = ({ posts, selectedPost, onSelect, onClose }) => {
+const LinkedPostPanel = ({ posts, selectedPost, onSelect, onClose, hasMore, isLoading, onLoadMore }) => {
   const [query, setQuery] = useState("");
+  const listRef = useRef(null);
 
   const filtered = useMemo(() => {
     const q = query.toLowerCase().trim();
     if (!q) return posts;
     return posts.filter((p) => p.title.toLowerCase().includes(q));
   }, [posts, query]);
+
+  const handleScroll = useCallback(() => {
+    const el = listRef.current;
+    if (!el || isLoading || !hasMore) return;
+    if (el.scrollHeight - el.scrollTop - el.clientHeight < 60) {
+      onLoadMore();
+    }
+  }, [hasMore, isLoading, onLoadMore]);
 
   return (
     <div className="theme border border-[#1e293b] rounded-xl overflow-hidden">
@@ -409,7 +546,11 @@ const LinkedPostPanel = ({ posts, selectedPost, onSelect, onClose }) => {
         </div>
       </div>
 
-      <div className="max-h-64 overflow-y-auto">
+      <div
+        ref={listRef}
+        onScroll={handleScroll}
+        className="max-h-64 emerald-scrollbar overflow-y-auto"
+      >
         {/* clear selection */}
         {selectedPost && (
           <button
@@ -433,7 +574,10 @@ const LinkedPostPanel = ({ posts, selectedPost, onSelect, onClose }) => {
               <button
                 key={post._id}
                 type="button"
-                onClick={() => { onSelect(post); onClose(); }}
+                onClick={() => {
+                  onSelect(post);
+                  onClose();
+                }}
                 className={`flex items-center gap-3 w-full px-4 py-2.5 hover:bg-white/5 transition-colors text-left ${
                   isSelected ? "bg-emerald-500/5" : ""
                 }`}
@@ -450,15 +594,25 @@ const LinkedPostPanel = ({ posts, selectedPost, onSelect, onClose }) => {
                   </div>
                 )}
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs font-medium text-gray-200 truncate">{post.title}</p>
+                  <p className="text-xs font-medium text-gray-200 truncate">
+                    {post.title}
+                  </p>
                   <p className="text-[10px] text-gray-500">
-                    {post.authorId?.authorName} · {timeAgo(post.timestamp)}
+                    {post.authorId?.authorName} · {getTimeAgo(post.timestamp)}
                   </p>
                 </div>
-                {isSelected && <TbCheck className="text-emerald-400 text-sm flex-shrink-0" />}
+                {isSelected && (
+                  <TbCheck className="text-emerald-400 text-sm flex-shrink-0" />
+                )}
               </button>
             );
           })
+        )}
+
+        {isLoading && (
+          <div className="px-4 py-3 text-[10px] text-gray-400 text-center">
+            Loading more posts...
+          </div>
         )}
       </div>
     </div>
@@ -486,6 +640,7 @@ function CreateDiscussion() {
   const [linkedPost, setLinkedPost] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
 
   // ── Data state ────────────────────────────────────────────────────────────
   // Replace with real hooks:
@@ -493,13 +648,23 @@ function CreateDiscussion() {
   // const { posts }                       = useGetCommunityFeed(communityId);
   // const { settings }                    = useGetCommunitySettings(communityId);
   const [tags, setTags] = useState(SAMPLE_TAGS);
-  const posts = SAMPLE_POSTS;
+  // const posts = SAMPLE_POSTS;
   const whoCanPost = "coordinator"; // swap for settings.whoCanPost
 
   // ── UI state ──────────────────────────────────────────────────────────────
   const [showPostPanel, setShowPostPanel] = useState(false);
   const [categoryOpen, setCategoryOpen] = useState(false);
   const categoryRef = useRef();
+  const {
+    posts,
+    totalCount,
+    totalPages,
+    hasMore,
+    isLoading,
+    error,
+    fetchCommunityPosts,
+    loadMorePosts,
+  } = useCommunityPosts(communityId);
 
   // close category dropdown on outside click
   useEffect(() => {
@@ -525,7 +690,9 @@ function CreateDiscussion() {
 
   const toggleTag = useCallback((tagId) => {
     setSelectedTagIds((prev) =>
-      prev.includes(tagId) ? prev.filter((id) => id !== tagId) : [...prev, tagId]
+      prev.includes(tagId)
+        ? prev.filter((id) => id !== tagId)
+        : [...prev, tagId],
     );
   }, []);
 
@@ -536,7 +703,8 @@ function CreateDiscussion() {
   const validate = () => {
     const e = {};
     if (!title.trim()) e.title = "Title is required.";
-    if (title.trim().length > 300) e.title = "Title must be under 300 characters.";
+    if (title.trim().length > 300)
+      e.title = "Title must be under 300 characters.";
     if (!body.trim()) e.body = "Body is required.";
     if (!isCoordinator && category === "announcement")
       e.category = "Only coordinators can post announcements.";
@@ -546,12 +714,17 @@ function CreateDiscussion() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const errs = validate();
-    if (Object.keys(errs).length) { setErrors(errs); return; }
+    if (Object.keys(errs).length) {
+      setErrors(errs);
+      return;
+    }
     setErrors({});
     setSubmitting(true);
 
+    setLoading(true);
+
     try {
-      await axiosInstance.post(
+      const res = await axiosInstance.post(
         `/bytes/discuss/${communityId}/discussions`,
         {
           category,
@@ -559,17 +732,26 @@ function CreateDiscussion() {
           body: body.trim(),
           tags: selectedTagIds,
           linkedPostId: linkedPost?._id || null,
-        }
+        },
       );
-      navigate(`/techCommunityDetails/${communityId}`);
+      if (res.status === 201) {
+        toast.success("Discussion created Successfully !");
+        navigate(`/techCommunityDetails/${communityId}`);
+      }
     } catch (err) {
-      setErrors({ submit: err?.response?.data?.message || "Failed to post. Try again." });
+      setErrors({
+        submit: err?.response?.data?.message || "Failed to post. Try again.",
+      });
       setSubmitting(false);
+    } finally {
+      setLoading(false);
     }
   };
 
   // ── Selected tags display ─────────────────────────────────────────────────
   const selectedTags = tags.filter((t) => selectedTagIds.includes(t._id));
+
+  // console.log("posts", posts)
 
   // ─────────────────────────────────────────────────────────────────────────
   //  RENDER
@@ -579,7 +761,6 @@ function CreateDiscussion() {
       <NavBar />
 
       <div className="flex-grow px-4 md:px-8 max-w-[900px] mx-auto w-full pb-20 pt-4">
-
         {/* ── Header ── */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
@@ -593,7 +774,6 @@ function CreateDiscussion() {
         </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-
           {/* ── Category picker ── */}
           <div>
             <label className="block text-xs font-semibold text-gray-300 mb-2">
@@ -618,20 +798,30 @@ function CreateDiscussion() {
               {categoryOpen && (
                 <div className="absolute top-12 left-0 z-50 w-64 theme border border-[#1e293b] rounded-xl overflow-hidden shadow-2xl py-1">
                   {CATEGORIES.map((cat) => {
-                    const isDisabled = cat.value === "announcement" && !isCoordinator;
+                    const isDisabled =
+                      cat.value === "announcement" && !isCoordinator;
                     return (
                       <button
                         key={cat.value}
                         type="button"
                         disabled={isDisabled}
-                        onClick={() => { setCategory(cat.value); setCategoryOpen(false); }}
+                        onClick={() => {
+                          setCategory(cat.value);
+                          setCategoryOpen(false);
+                        }}
                         className={`flex items-center justify-between w-full px-4 py-2.5 text-left transition-colors disabled:opacity-30 disabled:cursor-not-allowed ${
-                          category === cat.value ? "bg-white/5" : "hover:bg-white/5"
+                          category === cat.value
+                            ? "bg-white/5"
+                            : "hover:bg-white/5"
                         }`}
                       >
                         <div>
-                          <p className="text-sm text-gray-200 font-medium">{cat.label}</p>
-                          <p className="text-[10px] text-gray-500">{cat.desc}</p>
+                          <p className="text-sm text-gray-200 font-medium">
+                            {cat.label}
+                          </p>
+                          <p className="text-[10px] text-gray-500">
+                            {cat.desc}
+                          </p>
                         </div>
                         {category === cat.value && (
                           <TbCheck className="text-emerald-400 text-sm" />
@@ -667,7 +857,9 @@ function CreateDiscussion() {
                 <p className="text-[10px] text-red-400 flex items-center gap-1">
                   <TbAlertCircle className="text-xs" /> {errors.title}
                 </p>
-              ) : <span />}
+              ) : (
+                <span />
+              )}
               <p className="text-[10px] text-gray-600">{title.length}/300</p>
             </div>
           </div>
@@ -729,7 +921,9 @@ function CreateDiscussion() {
             <div className="flex items-center justify-between mb-2">
               <label className="flex items-center gap-1.5 text-xs font-semibold text-gray-300">
                 <TbFileText className="text-sm" /> Link a post
-                <span className="text-gray-600 font-normal ml-1">— optional</span>
+                <span className="text-gray-600 font-normal ml-1">
+                  — optional
+                </span>
               </label>
               <button
                 type="button"
@@ -737,9 +931,13 @@ function CreateDiscussion() {
                 className="flex items-center gap-1 text-[10px] font-medium text-gray-400 hover:text-gray-200 transition-colors"
               >
                 {showPostPanel ? (
-                  <><TbX className="text-xs" /> Close</>
+                  <>
+                    <TbX className="text-xs" /> Close
+                  </>
                 ) : (
-                  <><TbSearch className="text-xs" /> Browse posts</>
+                  <>
+                    <TbSearch className="text-xs" /> Browse posts
+                  </>
                 )}
               </button>
             </div>
@@ -759,9 +957,12 @@ function CreateDiscussion() {
                   </div>
                 )}
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs font-medium text-gray-200 truncate">{linkedPost.title}</p>
+                  <p className="text-xs font-medium text-gray-200 truncate">
+                    {linkedPost.title}
+                  </p>
                   <p className="text-[10px] text-gray-500">
-                    {linkedPost.authorId?.authorName} · {timeAgo(linkedPost.timestamp)}
+                    {linkedPost.authorId?.authorName} ·{" "}
+                    {getTimeAgo(linkedPost.timestamp)}
                   </p>
                 </div>
                 <button
@@ -780,6 +981,9 @@ function CreateDiscussion() {
                 selectedPost={linkedPost}
                 onSelect={setLinkedPost}
                 onClose={() => setShowPostPanel(false)}
+                hasMore={hasMore}
+                isLoading={isLoading}
+                onLoadMore={loadMorePosts}
               />
             )}
           </div>
@@ -809,7 +1013,6 @@ function CreateDiscussion() {
               {submitting ? "Posting..." : "Post discussion"}
             </button>
           </div>
-
         </form>
       </div>
     </div>

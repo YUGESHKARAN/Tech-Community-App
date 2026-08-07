@@ -273,6 +273,100 @@ const getCommunityMembersById = async (req, res) => {
   }
 };
 
+const getCommunityPostsByCommunityId = async (req, res) => {
+  const { tenantId, authorId, role: userRole } = req.user;
+  const { communityId } = req.params;
+  let page = parseInt(req.query.page, 10) || 1;
+  let limit = parseInt(req.query.limit, 10) || 20;
+  limit = Math.min(Math.max(limit, 1), 100);
+  const skip = (page - 1) * limit;
+
+  if (!communityId) {
+    return res.status(400).json({ message: 'communityId required' });
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(communityId)) {
+    return res.status(400).json({ message: 'Invalid communityId' });
+  }
+
+  try {
+    const community = await Community.findOne({ _id: communityId, tenantId }).lean();
+
+    if (!community) {
+      return res.status(404).json({ message: 'Community not found' });
+    }
+
+    const membership = await CommunityMembership.findOne({ tenantId, communityId, authorId }).lean();
+    const isAdmin = ['admin', 'director'].includes(userRole);
+
+    if (!membership && !isAdmin) {
+      return res.status(403).json({ message: 'Access denied to community posts' });
+    }
+
+    const communityMatchValues = [community.name, community.slug].filter(Boolean);
+
+    const postFilter = {
+      tenantId,
+      category: { $in: communityMatchValues },
+    };
+
+    const [totalCount, posts] = await Promise.all([
+      Post.countDocuments(postFilter),
+      Post.aggregate([
+        { $match: postFilter },
+        { $sort: { timestamp: -1 } },
+        { $skip: skip },
+        { $limit: limit },
+        {
+          $lookup: {
+            from: Author.collection.name,
+            localField: 'authorId',
+            foreignField: '_id',
+            as: 'author',
+          },
+        },
+        { $unwind: { path: '$author', preserveNullAndEmptyArrays: true } },
+        {
+          $project: {
+            _id: 1,
+            authorId: 1,
+            title: 1,
+            image: 1,
+            description: 1,
+            category: 1,
+            links: 1,
+            documents: 1,
+            views: 1,
+            likes: 1,
+            messages: 1,
+            timestamp: 1,
+            authorName: '$author.authorname',
+            authorEmail: '$author.email',
+            profile: '$author.profile',
+            role: '$author.role',
+            community: '$author.community',
+          },
+        },
+      ]),
+    ]);
+
+    const totalPages = Math.max(1, Math.ceil(totalCount / limit));
+
+    return res.status(200).json({
+      community: { _id: community._id, name: community.name, slug: community.slug },
+      page,
+      limit,
+      totalCount,
+      totalPages,
+      hasMore: skip + posts.length < totalCount,
+      posts,
+    });
+  } catch (err) {
+    console.error('getCommunityPostsByCommunityId error:', err.message);
+    return res.status(500).json({ message: 'Server error' });
+  }
+};
+
 const editTechCommunity = async (req, res) => {
 
   const { tenantId, authorId, role: userRole } = req.user;
@@ -350,4 +444,4 @@ const editTechCommunity = async (req, res) => {
   }
 };
 
-module.exports = { getCommunityLandingPage, getCommunityById, getCommunityMembersById, editTechCommunity }
+module.exports = { getCommunityLandingPage, getCommunityById, getCommunityMembersById, getCommunityPostsByCommunityId, editTechCommunity }

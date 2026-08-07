@@ -45,6 +45,46 @@ const getUpvotedSet = async (targetIds, authorId) => {
   return new Set(votes.map((v) => v.targetId.toString()));
 };
 
+const normalizeDiscussionTags = async (tenantId, communityId, tags) => {
+  if (!Array.isArray(tags)) return [];
+
+  const normalizedTagIds = [];
+  const seenTagIds = new Set();
+
+  for (const rawTag of tags) {
+    if (!rawTag) continue;
+
+    if (mongoose.Types.ObjectId.isValid(rawTag)) {
+      const objectId = new mongoose.Types.ObjectId(rawTag);
+      const key = objectId.toString();
+      if (!seenTagIds.has(key)) {
+        seenTagIds.add(key);
+        normalizedTagIds.push(objectId);
+      }
+      continue;
+    }
+
+    const tagName = String(rawTag).trim();
+    if (!tagName) continue;
+
+    const existingTag = await CommunityTag.findOne({
+      tenantId,
+      communityId,
+      name: tagName,
+    }).lean();
+
+    if (existingTag) {
+      const key = existingTag._id.toString();
+      if (!seenTagIds.has(key)) {
+        seenTagIds.add(key);
+        normalizedTagIds.push(existingTag._id);
+      }
+    }
+  }
+
+  return normalizedTagIds;
+};
+
 // ─────────────────────────────────────────────────────────────────────────────
 //  GROUP 1 — COMMUNITY SETTINGS
 // ─────────────────────────────────────────────────────────────────────────────
@@ -79,7 +119,7 @@ const getSettings = async (req, res) => {
  */
 const updateWhoCanPost = async (req, res) => {
   const { communityId } = req.params;
-  const { tenantId, _id: authorId } = req.user;
+  const { tenantId, authorId } = req.user;
   const { whoCanPost } = req.body;
 
   try {
@@ -122,8 +162,9 @@ const updateWhoCanPost = async (req, res) => {
  */
 const createTag = async (req, res) => {
   const { communityId } = req.params;
-  const { tenantId, _id: authorId } = req.user;
+  const { tenantId, authorId } = req.user;
   const { name, color } = req.body;
+  // console.log("createTag called", req.body, tenantId, authorId);
 
   try {
     if (!name || !color) {
@@ -131,6 +172,7 @@ const createTag = async (req, res) => {
     }
 
     const communityRole = await getUserCommunityRole(tenantId, communityId, authorId);
+    // console.log("communityRole", communityRole)
     if (communityRole !== 'coordinator') {
       return res.status(403).json({ message: 'Only coordinators can create tags' });
     }
@@ -149,6 +191,7 @@ const createTag = async (req, res) => {
       return res.status(409).json({ message: 'A tag with this name already exists in this community' });
     }
     console.error('createTag error:', err.message);
+    // console.log('createTag error:', err.message);
     res.status(500).json({ message: 'Server error' });
   }
 };
@@ -181,7 +224,7 @@ const getTags = async (req, res) => {
  */
 const updateTag = async (req, res) => {
   const { communityId, tagId } = req.params;
-  const { tenantId, _id: authorId } = req.user;
+  const { tenantId, authorId } = req.user;
   const { name, color } = req.body;
 
   try {
@@ -219,7 +262,7 @@ const updateTag = async (req, res) => {
  */
 const deleteTag = async (req, res) => {
   const { communityId, tagId } = req.params;
-  const { tenantId, _id: authorId } = req.user;
+  const { tenantId, authorId } = req.user;
 
   try {
     const communityRole = await getUserCommunityRole(tenantId, communityId, authorId);
@@ -257,9 +300,9 @@ const deleteTag = async (req, res) => {
  */
 const createDiscussion = async (req, res) => {
   const { communityId } = req.params;
-  const { tenantId, _id: authorId } = req.user;
+  const { tenantId, authorId } = req.user;
   const { category, title, body, linkedPostId, tags } = req.body;
-
+  //  console.log("req.body", req.body)
   try {
     if (!category || !title || !body) {
       return res.status(400).json({ message: 'category, title, and body are required' });
@@ -285,6 +328,8 @@ const createDiscussion = async (req, res) => {
       });
     }
 
+    const normalizedTags = await normalizeDiscussionTags(tenantId, communityId, tags);
+
     const discussion = await Discussion.create({
       tenantId,
       communityId,
@@ -293,7 +338,7 @@ const createDiscussion = async (req, res) => {
       title: title.trim(),
       body: body.trim(),
       linkedPostId: linkedPostId || null,
-      tags: tags || [],
+      tags: normalizedTags,
     });
 
     res.status(201).json({ message: 'Discussion created', discussion });
@@ -311,7 +356,7 @@ const createDiscussion = async (req, res) => {
  */
 const getDiscussions = async (req, res) => {
   const { communityId } = req.params;
-  const { tenantId, _id: authorId } = req.user;
+  const { tenantId, authorId } = req.user;
   const {
     page = 1,
     limit = 20,
@@ -372,7 +417,7 @@ const getDiscussions = async (req, res) => {
  */
 const getDiscussionById = async (req, res) => {
   const { communityId, discussionId } = req.params;
-  const { tenantId, _id: authorId } = req.user;
+  const { tenantId, authorId } = req.user;
   const { replyPage = 1, replyLimit = 10 } = req.query;
 
   const skip = (Number(replyPage) - 1) * Number(replyLimit);
@@ -470,7 +515,7 @@ const getDiscussionById = async (req, res) => {
  */
 const updateDiscussion = async (req, res) => {
   const { communityId, discussionId } = req.params;
-  const { tenantId, _id: authorId } = req.user;
+  const { tenantId, authorId } = req.user;
   const { title, body, category, tags, linkedPostId } = req.body;
 
   try {
@@ -514,7 +559,7 @@ const updateDiscussion = async (req, res) => {
  */
 const deleteDiscussion = async (req, res) => {
   const { communityId, discussionId } = req.params;
-  const { tenantId, _id: authorId } = req.user;
+  const { tenantId, authorId } = req.user;
 
   try {
     const [discussion, communityRole] = await Promise.all([
@@ -561,7 +606,7 @@ const deleteDiscussion = async (req, res) => {
  */
 const pinDiscussion = async (req, res) => {
   const { communityId, discussionId } = req.params;
-  const { tenantId, _id: authorId } = req.user;
+  const { tenantId, authorId } = req.user;
 
   try {
     const communityRole = await getUserCommunityRole(tenantId, communityId, authorId);
@@ -596,7 +641,7 @@ const pinDiscussion = async (req, res) => {
  */
 const markSolved = async (req, res) => {
   const { communityId, discussionId } = req.params;
-  const { tenantId, _id: authorId } = req.user;
+  const { tenantId, authorId } = req.user;
   const { solvedReplyId } = req.body;
 
   try {
@@ -661,7 +706,7 @@ const markSolved = async (req, res) => {
  */
 const upvoteDiscussion = async (req, res) => {
   const { communityId, discussionId } = req.params;
-  const { tenantId, _id: authorId } = req.user;
+  const { tenantId, authorId } = req.user;
 
   try {
     await Upvote.create({
@@ -693,7 +738,7 @@ const upvoteDiscussion = async (req, res) => {
  */
 const removeUpvoteDiscussion = async (req, res) => {
   const { discussionId } = req.params;
-  const { tenantId, _id: authorId } = req.user;
+  const { tenantId, authorId } = req.user;
 
   try {
     const result = await Upvote.deleteOne({
@@ -734,7 +779,7 @@ const removeUpvoteDiscussion = async (req, res) => {
  */
 const createReply = async (req, res) => {
   const { communityId, discussionId } = req.params;
-  const { tenantId, _id: authorId } = req.user;
+  const { tenantId, authorId } = req.user;
   const { body, parentReplyId } = req.body;
 
   try {
@@ -797,7 +842,7 @@ const createReply = async (req, res) => {
  */
 const getReplies = async (req, res) => {
   const { communityId, discussionId } = req.params;
-  const { tenantId, _id: authorId } = req.user;
+  const { tenantId, authorId } = req.user;
   const { page = 1, limit = 10 } = req.query;
 
   const skip = (Number(page) - 1) * Number(limit);
@@ -859,7 +904,7 @@ const getReplies = async (req, res) => {
  */
 const updateReply = async (req, res) => {
   const { replyId, tenantId: paramTenantId } = req.params;
-  const { tenantId, _id: authorId } = req.user;
+  const { tenantId, authorId } = req.user;
   const { body } = req.body;
 
   try {
@@ -890,7 +935,7 @@ const updateReply = async (req, res) => {
  */
 const deleteReply = async (req, res) => {
   const { communityId, discussionId, replyId } = req.params;
-  const { tenantId, _id: authorId } = req.user;
+  const { tenantId, authorId } = req.user;
 
   try {
     const [reply, communityRole] = await Promise.all([
@@ -945,7 +990,7 @@ const deleteReply = async (req, res) => {
  */
 const upvoteReply = async (req, res) => {
   const { replyId } = req.params;
-  const { tenantId, _id: authorId } = req.user;
+  const { tenantId, authorId } = req.user;
 
   try {
     await Upvote.create({
@@ -976,7 +1021,7 @@ const upvoteReply = async (req, res) => {
  */
 const removeUpvoteReply = async (req, res) => {
   const { replyId } = req.params;
-  const { _id: authorId } = req.user;
+  const { authorId } = req.user;
 
   try {
     const result = await Upvote.deleteOne({
