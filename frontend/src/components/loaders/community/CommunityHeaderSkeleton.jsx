@@ -29,10 +29,10 @@ const CommunityHeaderSkeleton = () => {
         {[...Array(4)].map((_, i) => (
           <div
             key={i}
-            className="flex items-center gap-2"
+            className="flex items-center gap-1 md:gap-2"
           >
-            <div className="w-4 h-4 rounded-full bg-white/10" />
-            <div className="h-3 w-20 rounded bg-white/10" />
+            <div className="md:w-4 w-3 h-3 md:h-4 rounded-full bg-white/10" />
+            <div className="h-3 w-12 md:w-20 rounded bg-white/10" />
           </div>
         ))}
       </div>
