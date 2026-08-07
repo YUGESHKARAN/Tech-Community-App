@@ -36,6 +36,7 @@ import TechCommunityLanding from "./Pages/TechCommunityLanding.jsx";
 import SingleTechCommunity from "./Pages/SingleTechCommunity.jsx";
 import ViewDiscussion from "./Pages/ViewDiscussion.jsx";
 import EditCommunity from "./Pages/EditCommunity.jsx";
+import CreateDiscussion from "./Pages/CreateDiscussion.jsx";
 function App() {
   return (
     // <AuthProvider>
@@ -225,14 +226,19 @@ function App() {
 
               <Route
                 // path="/techDomainDetails/:category"
-                path="/tecCommunityDetails/:communityId"
+                path="/techCommunityDetails/:communityId"
                 // element={<ProtectedRoute element={<SingleTechDomainDetails />} />}
                 element={<ProtectedRoute element={<SingleTechCommunity />} />}
               />
 
               <Route
-                path="/tecCommunityDetails/:communityId/edit"
+                path="/techCommunityDetails/:communityId/edit"
                 element={<ProtectedRoute element={<EditCommunity />} />}
+              />
+
+              <Route
+                path="/techCommunityDetails/:communityId/discussions/new"
+                element={<ProtectedRoute element={<CreateDiscussion />} />}
               />
 
               <Route

@@ -397,7 +397,7 @@ const DiscussionsTab = ({
         </div>
         {canPost && (
           <Link
-            to={`?tab=discussions&action=new`}
+            to={`/techCommunityDetails/${community._id}/discussions/new`}
             className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full text-white"
             style={{ background: community?.colorTheme || accentColor }}
           >
