@@ -38,7 +38,6 @@ import RecentVisit from "../components/RecentVisit";
 import * as TbIcons from "react-icons/tb";
 import { deriveGradient } from "../utils/bannerTheme";
 
-
 const streakSample = {
   currentStreak: 4,
   longestStreak: 9,
@@ -56,23 +55,23 @@ const domainStyle = {
 const defaultStyle = { icon: TbBulb, from: "#0d9488", to: "#0f766e" };
 const getDomainStyle = (name) => domainStyle[name] || defaultStyle;
 
-
 function TechCommunityLanding() {
   const email = getItem("email");
   const role = getItem("role");
   const [filter, setFilter] = useState("current_month");
   const [limit, setLimit] = useState(10);
-   const months = getLast3MonthsName();
+  const months = getLast3MonthsName();
   const { topContributors, topContributorsLoading } = useTopContributors(
-      email,
-      limit,
-      filter
-    );
+    email,
+    limit,
+    filter,
+  );
 
   // ── real membership toggle logic — unchanged from before ──
   const { authorCommunity, setAuthorCommunity } = useAuthorCommunity(email);
-  const { communityStats, statsLoader, setcommunityStats, getCommunityStats } = useGetCommunityStats();
-  
+  const { communityStats, statsLoader, setcommunityStats, getCommunityStats } =
+    useGetCommunityStats();
+
   const loading = false; // swap for your hook's loading flag
 
   const [loadingDomains, setLoadingDomains] = useState(new Set());
@@ -134,7 +133,7 @@ function TechCommunityLanding() {
   //   }
   // };
 
-  console.log("communityStats", communityStats)
+  console.log("communityStats", communityStats);
   const updateCommunity = async (email, techCommunity) => {
     if (loadingDomains.has(techCommunity)) return;
 
@@ -255,19 +254,19 @@ function TechCommunityLanding() {
   };
 
   const CommunityCard = ({ item }) => {
-
     const gradient = useMemo(() => {
-        const theme = item?.colorTheme;
-        return deriveGradient(theme);
-      }, [item?.colorTheme]);
+      const theme = item?.colorTheme;
+      return deriveGradient(theme);
+    }, [item?.colorTheme]);
 
     const style = getDomainStyle(item.name);
     // const Icon = style.icon;
-     const Icon = item.icon ? TbIcons[item.icon] : style.icon;
+    const Icon = item?.icon ? TbIcons[item.icon] : style.icon;
     const isLoading = loadingDomains.has(item.name);
+    const bgColor = gradient?.from ?? style.from;
 
     return (
-      <div className="group h-52 md:h-60 relative theme border border-[#1e293b] rounded-2xl overflow-hidden flex flex-col hover:border-white/10 transition-all duration-300">
+      <div className="group  relative theme border border-[#1e293b] rounded-2xl overflow-hidden flex flex-col hover:border-white/10 transition-all duration-300">
         <Link
           // to={`/techDomainDetails/${encodeURIComponent(item.name)}`}
           to={`/tecCommunityDetails/${item?._id}`}
@@ -276,87 +275,97 @@ function TechCommunityLanding() {
           {/* ── colored banner header ── */}
           <div
             className="px-4 pt-4 pb-3 flex items-center gap-3 relative"
-             style={{
-        // background: `linear-gradient(135deg, ${style.from}, ${style.to})`,
-        background: `${item?.colorTheme ?`linear-gradient(135deg, ${gradient?.from}, ${gradient?.to})`: `linear-gradient(135deg, ${style?.from}, ${style?.to})`}`,
-      }}
+            style={{
+              // background: `linear-gradient(135deg, ${style.from}, ${style.to})`,
+              background: `${item?.colorTheme ? `linear-gradient(135deg, ${gradient?.from}, ${gradient?.to})` : `linear-gradient(135deg, ${style?.from}, ${style?.to})`}`,
+            }}
           >
             <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
               <Icon className="text-white text-sm md:text-lg" />
             </div>
             <div className="min-w-0">
               <h2 className="text-white font-semibold text-base truncate">
-                {item.name}
+                {item?.name}
               </h2>
-              <p className="text-white/80 text-[11px]">Tech Domain</p>
+              <p className="text-white/80 text-[11px]">
+                {/* Tech Domain */}
+                {item?.tagline ?? "Tech Domain"}
+              </p>
             </div>
 
             {item.userRole && (
-              <span className="absolute top-3 right-3 text-[10px] font-semibold px-2.5 py-1 rounded-full bg-white/25 text-white">
+              <span className="absolute top-3 right-3 text-[10px] md:font-semibold px-2.5 py-1 rounded-full bg-white/25 text-white">
                 {/* Coordinator */}
-                {item.userRole}
+                {item?.userRole}
               </span>
             )}
           </div>
 
           {/* ── stats + avatar stack ── */}
-          <div className="px-4 pt-4 md:mt-3 pb-2 flex flex-col   gap-2.5">
-            <div className="flex  gap-4">
-              <span className="flex items-center gap-1.5 md:text-sm text-xs text-gray-300">
-                <TbUsers className="text-sm md:text-base text-gray-500" />
-                <b className="text-gray-100 font-semibold">
-                  {formatCount(item.memberCount)}
-                </b>
-                members
+          <div className="px-4 pt-2 md:pt-4 pb-2 flex flex-col gap-2  md:gap-2.5">
+            {item?.description && (
+              <span className="text-xs text-gray-200 line-clamp-2 font-normal leading-relaxed">
+                {item?.description}
               </span>
-              <span className="flex items-center gap-1.5 text-xs md:text-sm text-gray-300">
-                <TbFileText className="text-sm md:text-base text-gray-500" />
-                <b className="text-gray-100 font-semibold">
-                  {formatCount(item.postCount)}
-                </b>
-                posts
-              </span>
-            </div>
+            )}
 
-            <div className="flex mt-1 md:mt-3 items-center">
-              {item.profiles.slice(0, 4).map((p, i) => (
-                <div
-                key={p.email}>
-                  {p.profile ? (
-                    <img
-                      key={p.email}
-                      src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${p.profile}`}
-                      alt={p.name}
-                      style={{
-                        marginLeft: i === 0 ? 0 : "-6px",
-                      }}
-                      className="h-7 min-w-7 rounded-full border border-teal-600 bg-gray-400"
-                    />
-                  ) : (
-                    <div
-                      key={p.email}
-                      className="w-7 h-7 rounded-full border-2 border-[#0f172a] flex items-center justify-center text-[9px] font-semibold text-white flex-shrink-0"
-                      style={{
-                        backgroundColor: avatarColor(p.name),
-                        marginLeft: i === 0 ? 0 : "-6px",
-                      }}
-                    >
-                      {initials(p.name)}
-                    </div>
-                  )}
-                </div>
-              ))}
-              {item.memberCount > 4 && (
-                <span className="text-[10px] md:text-xs text-gray-500 ml-1.5">
-                  +{item.memberCount - 4} more
+            <div className="md:flex grid gap-2 items-center justify-between">
+              <div className="flex  gap-4">
+                <span className="flex items-center gap-1 md:text-sm text-xs text-gray-300">
+                  <TbUsers className="text-sm md:text-base text-gray-500" />
+                  <b className="text-gray-100 text-xs font-semibold">
+                    {formatCount(item.memberCount)}
+                  </b>
+                  members
                 </span>
-              )}
+                <span className="flex items-center gap-1 text-xs md:text-sm text-gray-300">
+                  <TbFileText className="text-sm md:text-base text-gray-500" />
+                  <b className="text-gray-100 text-xs font-semibold">
+                    {formatCount(item.postCount)}
+                  </b>
+                  posts
+                </span>
+              </div>
+
+              <div className="flex mt-1 md::mt-0  items-center">
+                {item.profiles.slice(0, 4).map((p, i) => (
+                  <div key={p.email}>
+                    {p.profile ? (
+                      <img
+                        key={p.email}
+                        src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${p.profile}`}
+                        alt={p.name}
+                        style={{
+                          marginLeft: i === 0 ? 0 : "-6px",
+                        }}
+                        className="h-7 min-w-7 rounded-full border border-teal-600 bg-gray-400"
+                      />
+                    ) : (
+                      <div
+                        key={p.email}
+                        className="w-7 h-7 rounded-full border-2 border-[#0f172a] flex items-center justify-center text-[9px] font-semibold text-white flex-shrink-0"
+                        style={{
+                          backgroundColor: avatarColor(p.name),
+                          marginLeft: i === 0 ? 0 : "-6px",
+                        }}
+                      >
+                        {initials(p.name)}
+                      </div>
+                    )}
+                  </div>
+                ))}
+                {item.memberCount > 4 && (
+                  <span className="text-[10px] md:text-xs text-gray-500 ml-1.5">
+                    +{item.memberCount - 4} more
+                  </span>
+                )}
+              </div>
             </div>
           </div>
         </Link>
 
         {/* ── footer — trend badge + join/leave button ── */}
-        <div className="px-4 pb-4 pt-1 flex items-center mt-2 md:mt-3 justify-between gap-2">
+        <div className="px-4 pb-4 pt-1 md:pt-2 flex items-center justify-between gap-2">
           {item.weeklyPostCount >= 5 ? (
             <span className="flex items-center gap-1 text-[10px] md:text-xs md:text-xs md:px-3 py-2 font-semibold px-2.5 py-1 rounded-full bg-green-500/15 text-emerald-400">
               <TbFlame /> {item.weeklyPostCount} posts this week
@@ -374,7 +383,7 @@ function TechCommunityLanding() {
           {item.userRole === "coordinator" ? (
             <div
               className="text-xs font-semibold px-3.5 py-1.5 rounded-full"
-              style={{ background: `${style.from}22`, color: style.from }}
+              style={{ background: `${bgColor}22`, color: bgColor }}
             >
               Coordinating
             </div>
@@ -395,7 +404,7 @@ function TechCommunityLanding() {
                   onClick={() => updateCommunity(email, item.name)}
                   disabled={isLoading}
                   className="text-xs font-semibold px-3.5 py-1.5 rounded-full text-white disabled:opacity-50"
-                  style={{ background: style.from }}
+                  style={{ background: bgColor }}
                 >
                   {isLoading ? "Joining..." : "+ Join"}
                 </button>
@@ -462,250 +471,247 @@ function TechCommunityLanding() {
 
         {/* ── Main layout: communities left, leaderboard + streak right ── */}
         <div className="grid grid-cols-1 md:gird-cols-2 lg:grid-cols-4 gap-6 items-start">
-          
-
           {/* ── Sidebar ── */}
           <div className="flex col-span-1  md:col-span-2 lg:col-span-1 flex-col gap-3 lg:sticky lg:top-16">
             {/* Top contributors */}
             <h3 className="text-sm md:ml-2 font-semibold text-gray-300 ">
               Overall Leaderboard
             </h3>
-            {!topContributorsLoading?
+            {!topContributorsLoading ? (
               <div className="theme border border-[#1e293b] rounded-2xl p-4">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2 text-sm font-semibold text-gray-200">
-                  <TbTrophy className="text-amber-400" />
-                  Top contributors
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-gray-200">
+                    <TbTrophy className="text-amber-400" />
+                    Top contributors
+                  </div>
+
+                  <select
+                    value={filter}
+                    onChange={(e) => setFilter(e.target.value)}
+                    className="theme outline-none text-gray-200 cursor-pointer text-xs rounded px-2 py-1 border border-[#334155]"
+                  >
+                    <option value="overall">Overall</option>
+                    {Object.keys(months).map((key) => (
+                      <option key={key} value={key}>
+                        {key === "current_month" ? "This Month" : months[key]}
+                      </option>
+                    ))}
+                  </select>
                 </div>
-                
-                <select
-                      value={filter}
-                      onChange={(e) => setFilter(e.target.value)}
-                      className="theme outline-none text-gray-200 cursor-pointer text-xs rounded px-2 py-1 border border-[#334155]"
-                    >
-                      <option value="overall">Overall</option>
-                      {Object.keys(months).map((key) => (
-                        <option key={key} value={key}>
-                          {key==="current_month"? "This Month": months[key]}
-                        </option>
-                      ))} 
-                    </select>
-              </div>
 
-              <div className="flex flex-col overflow-y-auto overflow-x-hidden scrollbar-hide max-h-52 md:max-h-96 gap-1">
-                {topContributors?.map((c, i) => {
-                  const rank = i + 1;
-                  const isYou =
-                    c.email === email;
-                  const medalColors = ["#00f01c", "#cd7f32", "#8f9296"];
+                <div className="flex flex-col overflow-y-auto overflow-x-hidden scrollbar-hide max-h-52 md:max-h-96 gap-1">
+                  {topContributors?.map((c, i) => {
+                    const rank = i + 1;
+                    const isYou = c.email === email;
+                    const medalColors = ["#00f01c", "#cd7f32", "#8f9296"];
 
-                  return (
-                    <Link
-                     to={`/viewProfile/${c.email}`}
-                      key={c.email}
-                      className={`flex items-center gap-2 py-1.5 px-1 rounded-lg ${
-                        isYou ? "bg-emerald-500/10" : ""
-                      }`}
-                    >
-                      {rank <= 3 ? (
-                        <div
-                          className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
-                          style={{ background: `${medalColors[rank - 1]}33` }}
-                        >
-                          <TbCrown
-                            className="text-[11px]"
-                            style={{ color: medalColors[rank - 1] }}
-                          />
-                        </div>
-                      ) : (
-                        <span className="w-5 text-center text-[11px] text-gray-500 font-medium flex-shrink-0">
-                          {rank}
-                        </span>
-                      )}
-
-                      {c.profile? <img
-                      key={c.email}
-                      src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${c.profile}`}
-                      alt={c.name}
-                      
-                      className="h-6 w-6 rounded-full border border-teal-600 bg-gray-400"
-                    />:
-
-                      <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-[9px] font-semibold text-gray-200 flex-shrink-0">
-                        {initials(c.name)}
-                      </div>}
-
-                      <span
-                        className={`text-[11px]  font-medium truncate flex-1 ${
-                          isYou ? "text-emerald-400" : "text-gray-200"
+                    return (
+                      <Link
+                        to={`/viewProfile/${c.email}`}
+                        key={c.email}
+                        className={`flex items-center gap-2 py-1.5 px-1 rounded-lg ${
+                          isYou ? "bg-emerald-500/10" : ""
                         }`}
                       >
-                        {c.name}
-                        {isYou && (
-                          <span className="ml-1.5 text-[9px] font-semibold px-1.5 py-0.5 rounded-full bg-emerald-500 text-black">
-                            You
+                        {rank <= 3 ? (
+                          <div
+                            className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
+                            style={{ background: `${medalColors[rank - 1]}33` }}
+                          >
+                            <TbCrown
+                              className="text-[11px]"
+                              style={{ color: medalColors[rank - 1] }}
+                            />
+                          </div>
+                        ) : (
+                          <span className="w-5 text-center text-[11px] text-gray-500 font-medium flex-shrink-0">
+                            {rank}
                           </span>
                         )}
-                      </span>
 
-                       <BadgeIcons
+                        {c.profile ? (
+                          <img
+                            key={c.email}
+                            src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${c.profile}`}
+                            alt={c.name}
+                            className="h-6 w-6 rounded-full border border-teal-600 bg-gray-400"
+                          />
+                        ) : (
+                          <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-[9px] font-semibold text-gray-200 flex-shrink-0">
+                            {initials(c.name)}
+                          </div>
+                        )}
+
+                        <span
+                          className={`text-[11px]  font-medium truncate flex-1 ${
+                            isYou ? "text-emerald-400" : "text-gray-200"
+                          }`}
+                        >
+                          {c.name}
+                          {isYou && (
+                            <span className="ml-1.5 text-[9px] font-semibold px-1.5 py-0.5 rounded-full bg-emerald-500 text-black">
+                              You
+                            </span>
+                          )}
+                        </span>
+
+                        <BadgeIcons
                           badges={c?.badges}
                           parentClass="static  -space-x-2"
                           shieldClassName="w-4 h-4 md:h-4 md:w-4"
                         />
 
-                      <span
-                        className={`text-[11px] whitespace-nowrap ${
-                          isYou ? "text-emerald-400" : "text-gray-400"
-                        }`}
-                      >
-                        {c.postsCount} Posts
-                      </span>
-                    </Link>
-                  );
-                })}
-          
+                        <span
+                          className={`text-[11px] whitespace-nowrap ${
+                            isYou ? "text-emerald-400" : "text-gray-400"
+                          }`}
+                        >
+                          {c.postsCount} Posts
+                        </span>
+                      </Link>
+                    );
+                  })}
+                </div>
               </div>
-            </div>:
-            <TechCommunityTopContributorsSkeleton/>}
+            ) : (
+              <TechCommunityTopContributorsSkeleton />
+            )}
           </div>
 
-
           {/* ── Main column ── */}
-          {<div className="md:col-span-2 col-span-1 ">
-            {statsLoader ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2  gap-5">
-         
-                <h3 className="text-sm col-span-full font-semibold text-gray-300 ">
-                  Your Communities
-                </h3>
-                {[...Array(8)].map((_, index) => (
-                  <CommunityCardSkeleton key={index} />
-                ))}
-              </div>
-            ) : activeFilter === "all" ? (
-              <>
-                
-
-                {exploreCommunities.length > 0 && (
-                  <div>
-                    <h3 className="text-sm font-semibold text-gray-300 mb-3">
-                      Explore Communities
-                    </h3>
-                  
-                    <motion.div
-                      // layout
-                      variants={containerVariants}
-                      initial="hidden"
-                      animate="show"
-                      className="grid grid-cols-1 sm:grid-cols-2 gap-5"
-                    >
-                      {exploreCommunities.map((item) => (
-                         <motion.div
-                          key={item._id}
-                          // layout
-                          transition={{
-                            layout: {
-                              duration: 0.35,
-                              ease: [0.22, 1, 0.36, 1],
-                            },
-                          }}
-                        >
-                        <CommunityCard key={item._id} item={item} />
-                        </motion.div>
-                      ))}
-                    </motion.div>
-                    
-                  </div>
-                )}
-                {yourCommunities?.length > 0 && (
-                  <div className="mt-8">
-                    <h3 className="text-sm font-semibold text-gray-300 mb-3">
-                      Your Communities
-                    </h3>
-
-                    <motion.div
-                      // layout
-                      variants={containerVariants}
-                      initial="hidden"
-                      animate="show"
-                      className="grid grid-cols-1 sm:grid-cols-2 gap-5"
-                    >
-                      {yourCommunities.map((item) => (
-                         <motion.div
-                          key={item._id}
-                          // layout
-                          transition={{
-                            layout: {
-                              duration: 0.35,
-                              ease: [0.22, 1, 0.36, 1],
-                            },
-                          }}
-                        >
-                        <CommunityCard key={item._id} item={item} />
-                        </motion.div>
-                      ))}
-                    </motion.div>
-                    
-                  </div>
-                )}
-              </>
-            ) : (
-              // <div>
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeFilter}
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -12 }}
-                  transition={{
-                    duration: 0.3,
-                    ease: [0.22, 1, 0.36, 1],
-                  }}
-                >
-                  <h3 className="text-sm font-semibold text-gray-300 mb-3">
-                    {FILTERS.find((f) => f.value === activeFilter)?.label}
-                    <span className="text-gray-500 font-normal ml-1.5">
-                      ({filteredCommunities.length})
-                    </span>
+          {
+            <div className="md:col-span-2 col-span-1 ">
+              {statsLoader ? (
+                <div className="grid grid-cols-1   gap-5">
+                  <h3 className="text-sm col-span-full font-semibold text-gray-300 ">
+                    Your Communities
                   </h3>
+                  {[...Array(8)].map((_, index) => (
+                    <CommunityCardSkeleton key={index} />
+                  ))}
+                </div>
+              ) : activeFilter === "all" ? (
+                <>
+                  {yourCommunities?.length > 0 && (
+                    <div className="">
+                      <h3 className="text-sm font-semibold text-gray-300 mb-3">
+                        Your Communities
+                      </h3>
 
-                  {filteredCommunities.length > 0 ? (
-                    
-                    <motion.div
-                      // layout
-                      variants={containerVariants}
-                      initial="hidden"
-                      animate="show"
-                      className="grid grid-cols-1 sm:grid-cols-2 gap-5"
-                    >
-                      {filteredCommunities.map((item) => (
-                        <motion.div
-                          key={item._id}
-                          // layout
-                          transition={{
-                            layout: {
-                              duration: 0.35,
-                              ease: [0.22, 1, 0.36, 1],
-                            },
-                          }}
-                        >
-                        <CommunityCard key={item._id} item={item} />
+                      <motion.div
+                        // layout
+                        variants={containerVariants}
+                        initial="hidden"
+                        animate="show"
+                        className="grid grid-cols-1  gap-5"
+                      >
+                        {yourCommunities.map((item) => (
+                          <motion.div
+                            key={item._id}
+                            // layout
+                            transition={{
+                              layout: {
+                                duration: 0.35,
+                                ease: [0.22, 1, 0.36, 1],
+                              },
+                            }}
+                          >
+                            <CommunityCard key={item._id} item={item} />
                           </motion.div>
-                      ))}
-                    </motion.div>
-                  
-                  ) : (
-                    <p className="text-xs text-gray-500">
-                      No communities posted anything this week yet.
-                    </p>
+                        ))}
+                      </motion.div>
+                    </div>
                   )}
-                </motion.div>
-              </AnimatePresence>
-            
-            )}
-          </div>}
-          <RecentVisit parentClass="flex col-span-1 order-3 lg:order-1 border-none md:col-span-2 lg:col-span-1 flex-col hidden lg:block gap-3 pt-0 lg:sticky lg:top-16" titleClass="text-sm  font-semibold text-gray-300 " childClass="theme border border-[#1e293b] rounded-2xl p-1 mt-2"/>
+
+                  {exploreCommunities.length > 0 && (
+                    <div className="mt-8">
+                      <h3 className="text-sm font-semibold text-gray-300 mb-3">
+                        Explore Communities
+                      </h3>
+
+                      <motion.div
+                        // layout
+                        variants={containerVariants}
+                        initial="hidden"
+                        animate="show"
+                        className="grid grid-cols-1  gap-5"
+                      >
+                        {exploreCommunities.map((item) => (
+                          <motion.div
+                            key={item._id}
+                            // layout
+                            transition={{
+                              layout: {
+                                duration: 0.35,
+                                ease: [0.22, 1, 0.36, 1],
+                              },
+                            }}
+                          >
+                            <CommunityCard key={item._id} item={item} />
+                          </motion.div>
+                        ))}
+                      </motion.div>
+                    </div>
+                  )}
+                </>
+              ) : (
+                // <div>
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeFilter}
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -12 }}
+                    transition={{
+                      duration: 0.3,
+                      ease: [0.22, 1, 0.36, 1],
+                    }}
+                  >
+                    <h3 className="text-sm font-semibold text-gray-300 mb-3">
+                      {FILTERS.find((f) => f.value === activeFilter)?.label}
+                      <span className="text-gray-500 font-normal ml-1.5">
+                        ({filteredCommunities.length})
+                      </span>
+                    </h3>
+
+                    {filteredCommunities.length > 0 ? (
+                      <motion.div
+                        // layout
+                        variants={containerVariants}
+                        initial="hidden"
+                        animate="show"
+                        className="grid grid-cols-1  gap-5"
+                      >
+                        {filteredCommunities.map((item) => (
+                          <motion.div
+                            key={item._id}
+                            // layout
+                            transition={{
+                              layout: {
+                                duration: 0.35,
+                                ease: [0.22, 1, 0.36, 1],
+                              },
+                            }}
+                          >
+                            <CommunityCard key={item._id} item={item} />
+                          </motion.div>
+                        ))}
+                      </motion.div>
+                    ) : (
+                      <p className="text-xs text-gray-500">
+                        No communities posted anything this week yet.
+                      </p>
+                    )}
+                  </motion.div>
+                </AnimatePresence>
+              )}
+            </div>
+          }
+          <RecentVisit
+            parentClass="flex col-span-1 order-3 lg:order-1 border-none md:col-span-2 lg:col-span-1 flex-col hidden lg:block gap-3 pt-0 lg:sticky lg:top-16"
+            titleClass="text-sm  font-semibold text-gray-300 "
+            childClass="theme border border-[#1e293b] rounded-2xl p-1 mt-2"
+          />
 
           {/* <div className="flex col-span-1 w-full  lg:order-3 order-2 md:col-span-2 lg:col-span-1 flex-col gap-2 lg:sticky lg:top-16">
             <h3 className="text-sm md:ml-2 font-semibold text-gray-300 ">
