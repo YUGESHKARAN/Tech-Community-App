@@ -269,7 +269,7 @@ function TechCommunityLanding() {
       <div className="group  relative theme border border-[#1e293b] rounded-2xl overflow-hidden flex flex-col hover:border-white/10 transition-all duration-300">
         <Link
           // to={`/techDomainDetails/${encodeURIComponent(item.name)}`}
-          to={`/tecCommunityDetails/${item?._id}`}
+          to={`/techCommunityDetails/${item?._id}`}
           className="flex flex-col"
         >
           {/* ── colored banner header ── */}
