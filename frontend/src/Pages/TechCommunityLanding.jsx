@@ -265,9 +265,10 @@ function TechCommunityLanding() {
     // const Icon = style.icon;
      const Icon = item.icon ? TbIcons[item.icon] : style.icon;
     const isLoading = loadingDomains.has(item.name);
+    const bgColor = gradient?.from??style.from;
 
     return (
-      <div className="group h-52 md:h-60 relative theme border border-[#1e293b] rounded-2xl overflow-hidden flex flex-col hover:border-white/10 transition-all duration-300">
+      <div className="group  relative theme border border-[#1e293b] rounded-2xl overflow-hidden flex flex-col hover:border-white/10 transition-all duration-300">
         <Link
           // to={`/techDomainDetails/${encodeURIComponent(item.name)}`}
           to={`/tecCommunityDetails/${item?._id}`}
@@ -286,39 +287,50 @@ function TechCommunityLanding() {
             </div>
             <div className="min-w-0">
               <h2 className="text-white font-semibold text-base truncate">
-                {item.name}
+                {item?.name}
               </h2>
-              <p className="text-white/80 text-[11px]">Tech Domain</p>
+              <p className="text-white/80 text-[11px]">
+              {/* Tech Domain */}
+              {item?.tagline?? 'Tech Domain'}
+              </p>
             </div>
 
             {item.userRole && (
               <span className="absolute top-3 right-3 text-[10px] font-semibold px-2.5 py-1 rounded-full bg-white/25 text-white">
                 {/* Coordinator */}
-                {item.userRole}
+                {item?.userRole}
               </span>
             )}
           </div>
 
           {/* ── stats + avatar stack ── */}
-          <div className="px-4 pt-4 md:mt-3 pb-2 flex flex-col   gap-2.5">
+          <div className="px-4 pt-2 md:pt-4 pb-2 flex flex-col gap-2  md:gap-2.5">
+            {item?.description && <span className="text-xs text-gray-200 line-clamp-2 font-normal leading-relaxed">
+
+                {item?.description}
+            </span>}
+
+            <div className="md:flex grid gap-2 items-center justify-between">
+
+       
             <div className="flex  gap-4">
-              <span className="flex items-center gap-1.5 md:text-sm text-xs text-gray-300">
+              <span className="flex items-center gap-1 md:text-sm text-xs text-gray-300">
                 <TbUsers className="text-sm md:text-base text-gray-500" />
-                <b className="text-gray-100 font-semibold">
+                <b className="text-gray-100 text-xs font-semibold">
                   {formatCount(item.memberCount)}
                 </b>
                 members
               </span>
-              <span className="flex items-center gap-1.5 text-xs md:text-sm text-gray-300">
+              <span className="flex items-center gap-1 text-xs md:text-sm text-gray-300">
                 <TbFileText className="text-sm md:text-base text-gray-500" />
-                <b className="text-gray-100 font-semibold">
+                <b className="text-gray-100 text-xs font-semibold">
                   {formatCount(item.postCount)}
                 </b>
                 posts
               </span>
             </div>
 
-            <div className="flex mt-1 md:mt-3 items-center">
+            <div className="flex mt-1 md::mt-0  items-center">
               {item.profiles.slice(0, 4).map((p, i) => (
                 <div
                 key={p.email}>
@@ -352,11 +364,12 @@ function TechCommunityLanding() {
                 </span>
               )}
             </div>
+                 </div>
           </div>
         </Link>
 
         {/* ── footer — trend badge + join/leave button ── */}
-        <div className="px-4 pb-4 pt-1 flex items-center mt-2 md:mt-3 justify-between gap-2">
+        <div className="px-4 pb-4 pt-1 md:pt-2 flex items-center justify-between gap-2">
           {item.weeklyPostCount >= 5 ? (
             <span className="flex items-center gap-1 text-[10px] md:text-xs md:text-xs md:px-3 py-2 font-semibold px-2.5 py-1 rounded-full bg-green-500/15 text-emerald-400">
               <TbFlame /> {item.weeklyPostCount} posts this week
@@ -374,7 +387,7 @@ function TechCommunityLanding() {
           {item.userRole === "coordinator" ? (
             <div
               className="text-xs font-semibold px-3.5 py-1.5 rounded-full"
-              style={{ background: `${style.from}22`, color: style.from }}
+              style={{ background: `${bgColor}22`, color: bgColor }}
             >
               Coordinating
             </div>
@@ -395,7 +408,7 @@ function TechCommunityLanding() {
                   onClick={() => updateCommunity(email, item.name)}
                   disabled={isLoading}
                   className="text-xs font-semibold px-3.5 py-1.5 rounded-full text-white disabled:opacity-50"
-                  style={{ background: style.from }}
+                  style={{ background: bgColor }}
                 >
                   {isLoading ? "Joining..." : "+ Join"}
                 </button>
@@ -574,7 +587,7 @@ function TechCommunityLanding() {
           {/* ── Main column ── */}
           {<div className="md:col-span-2 col-span-1 ">
             {statsLoader ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2  gap-5">
+              <div className="grid grid-cols-1   gap-5">
          
                 <h3 className="text-sm col-span-full font-semibold text-gray-300 ">
                   Your Communities
@@ -598,7 +611,7 @@ function TechCommunityLanding() {
                       variants={containerVariants}
                       initial="hidden"
                       animate="show"
-                      className="grid grid-cols-1 sm:grid-cols-2 gap-5"
+                      className="grid grid-cols-1  gap-5"
                     >
                       {exploreCommunities.map((item) => (
                          <motion.div
@@ -629,7 +642,7 @@ function TechCommunityLanding() {
                       variants={containerVariants}
                       initial="hidden"
                       animate="show"
-                      className="grid grid-cols-1 sm:grid-cols-2 gap-5"
+                      className="grid grid-cols-1  gap-5"
                     >
                       {yourCommunities.map((item) => (
                          <motion.div
@@ -677,7 +690,7 @@ function TechCommunityLanding() {
                       variants={containerVariants}
                       initial="hidden"
                       animate="show"
-                      className="grid grid-cols-1 sm:grid-cols-2 gap-5"
+                      className="grid grid-cols-1  gap-5"
                     >
                       {filteredCommunities.map((item) => (
                         <motion.div
