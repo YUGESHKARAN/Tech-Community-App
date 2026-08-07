@@ -51,6 +51,7 @@ import useGetAllMembersByDomain from "../hooks/SingleTechDomain/useGetAllMembers
 // import coordinatorsCard from "../components/authors/CoordinatorsCard";
 import CoordinatorsCard from "../components/authors/CoordinatorsCard";
 import { deriveGradient } from "../utils/bannerTheme";
+import CommunityHeaderSkeleton from "../components/loaders/community/CommunityHeaderSkeleton";
 
 // ── S3 image base ─────────────────────────────────────────────────────────────
 const S3 = "https://open-access-blog-image.s3.us-east-1.amazonaws.com/";
@@ -120,14 +121,15 @@ const timeAgo = (dateStr) => {
 // ─────────────────────────────────────────────────────────────────────────────
 
 // ── Community banner ──────────────────────────────────────────────────────────
-const CommunityBanner = ({ community, style, communityId, canEdit }) => {
+const CommunityBanner = ({ community, style, loader, communityId, canEdit }) => {
   const gradient = useMemo(() => {
     const theme = community?.colorTheme;
     return deriveGradient(theme);
   }, [community?.colorTheme]);
 
   const Icon = community.icon ? TbIcons[community.icon] : style.icon;
-  return (
+  if(!loader && community){
+     return (
     <div
       className="relative rounded-xl md:rounded-2xl md:px-2 overflow-hidden mb-0"
       style={{
@@ -225,6 +227,11 @@ const CommunityBanner = ({ community, style, communityId, canEdit }) => {
       </div>
     </div>
   );
+   
+  }
+ 
+
+   return <CommunityHeaderSkeleton/>
 };
 
 // ── Tab bar ───────────────────────────────────────────────────────────────────
@@ -904,6 +911,7 @@ function SingleTechCommunity() {
         <CommunityBanner
           community={community}
           style={style}
+          loader={commLoading}
           communityId={communityId}
           canEdit={canEditCommunity}
         />
