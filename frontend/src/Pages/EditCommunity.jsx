@@ -14,6 +14,8 @@ import {
 import useGetSingleTechCommunity from "../hooks/SingleTechDomain/useGetSingleTechCommunity";
 import useGetAllMembersByDomain from "../hooks/SingleTechDomain/useGetAllMembersByDomain";
 import toast from "../components/toaster/Toast";
+import { deriveGradient } from "../utils/bannerTheme";
+import CommunityHeaderSkeleton from "../components/loaders/community/CommunityHeaderSkeleton";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -21,52 +23,52 @@ import toast from "../components/toaster/Toast";
  * Derive a gradient pair from a single base hex color.
  * `from` = base, `to` = base darkened by 15% lightness in HSL.
  */
-const hexToHsl = (hex) => {
-  const r = parseInt(hex.slice(1, 3), 16) / 255;
-  const g = parseInt(hex.slice(3, 5), 16) / 255;
-  const b = parseInt(hex.slice(5, 7), 16) / 255;
-  const max = Math.max(r, g, b), min = Math.min(r, g, b);
-  let h, s, l = (max + min) / 2;
-  if (max === min) { h = s = 0; }
-  else {
-    const d = max - min;
-    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-    switch (max) {
-      case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
-      case g: h = ((b - r) / d + 2) / 6; break;
-      case b: h = ((r - g) / d + 4) / 6; break;
-    }
-  }
-  return [Math.round(h * 360), Math.round(s * 100), Math.round(l * 100)];
-};
+// const hexToHsl = (hex) => {
+//   const r = parseInt(hex.slice(1, 3), 16) / 255;
+//   const g = parseInt(hex.slice(3, 5), 16) / 255;
+//   const b = parseInt(hex.slice(5, 7), 16) / 255;
+//   const max = Math.max(r, g, b), min = Math.min(r, g, b);
+//   let h, s, l = (max + min) / 2;
+//   if (max === min) { h = s = 0; }
+//   else {
+//     const d = max - min;
+//     s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+//     switch (max) {
+//       case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
+//       case g: h = ((b - r) / d + 2) / 6; break;
+//       case b: h = ((r - g) / d + 4) / 6; break;
+//     }
+//   }
+//   return [Math.round(h * 360), Math.round(s * 100), Math.round(l * 100)];
+// };
 
-const hslToHex = (h, s, l) => {
-  h /= 360; s /= 100; l /= 100;
-  const hue2rgb = (p, q, t) => {
-    if (t < 0) t += 1; if (t > 1) t -= 1;
-    if (t < 1 / 6) return p + (q - p) * 6 * t;
-    if (t < 1 / 2) return q;
-    if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
-    return p;
-  };
-  const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-  const p = 2 * l - q;
-  const r = Math.round(hue2rgb(p, q, h + 1 / 3) * 255);
-  const g = Math.round(hue2rgb(p, q, h) * 255);
-  const b = Math.round(hue2rgb(p, q, h - 1 / 3) * 255);
-  return `#${[r, g, b].map((x) => x.toString(16).padStart(2, "0")).join("")}`;
-};
+// const hslToHex = (h, s, l) => {
+//   h /= 360; s /= 100; l /= 100;
+//   const hue2rgb = (p, q, t) => {
+//     if (t < 0) t += 1; if (t > 1) t -= 1;
+//     if (t < 1 / 6) return p + (q - p) * 6 * t;
+//     if (t < 1 / 2) return q;
+//     if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+//     return p;
+//   };
+//   const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+//   const p = 2 * l - q;
+//   const r = Math.round(hue2rgb(p, q, h + 1 / 3) * 255);
+//   const g = Math.round(hue2rgb(p, q, h) * 255);
+//   const b = Math.round(hue2rgb(p, q, h - 1 / 3) * 255);
+//   return `#${[r, g, b].map((x) => x.toString(16).padStart(2, "0")).join("")}`;
+// };
 
-const deriveGradient = (baseHex) => {
-  if (!baseHex || !/^#[0-9A-Fa-f]{6}$/.test(baseHex)) {
-    return { from: "#0d9488", to: "#0f766e" };
-  }
-  const [h, s, l] = hexToHsl(baseHex);
-  return {
-    from: baseHex,
-    to: hslToHex(h, Math.min(s + 5, 100), Math.max(l - 15, 5)),
-  };
-};
+// const deriveGradient = (baseHex) => {
+//   if (!baseHex || !/^#[0-9A-Fa-f]{6}$/.test(baseHex)) {
+//     return { from: "#0d9488", to: "#0f766e" };
+//   }
+//   const [h, s, l] = hexToHsl(baseHex);
+//   return {
+//     from: baseHex,
+//     to: hslToHex(h, Math.min(s + 5, 100), Math.max(l - 15, 5)),
+//   };
+// };
 
 const isValidHex = (v) => /^#[0-9A-Fa-f]{6}$/.test(v);
 
@@ -206,8 +208,10 @@ const IconPicker = ({ value, onChange, accentColor }) => {
 // ─────────────────────────────────────────────────────────────────────────────
 //  BANNER PREVIEW (used in both edit sidebar and full-screen preview)
 // ─────────────────────────────────────────────────────────────────────────────
-const BannerPreview = ({ form, gradient, userRole, community }) => {
+const BannerPreview = ({ form, gradient, loader, userRole, community }) => {
   const Icon = TbIcons[form.icon] || TbBrain;
+
+  if(!loader && community?.colorTheme){
   return (
     <div
       className="relative rounded-xl md:rounded-2xl overflow-hidden"
@@ -261,6 +265,8 @@ const BannerPreview = ({ form, gradient, userRole, community }) => {
       </div>
     </div>
   );
+  }
+  return <CommunityHeaderSkeleton/>
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -505,7 +511,7 @@ function EditCommunity() {
 
         {/* ── Header ── */}
         <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1 md:gap-3">
             <Link
               to={`/tecCommunityDetails/${communityId}`}
               className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-200 transition-colors"
@@ -514,21 +520,21 @@ function EditCommunity() {
               Back
             </Link>
             <div className="w-px h-4 bg-white/10" />
-            <h1 className="text-base font-semibold text-gray-200">
+            <h1 className="md:text-sm text-xs font-semibold text-gray-300">
               Edit community
             </h1>
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={() => setPreview(true)}
-              className="flex items-center gap-1.5 text-xs font-medium px-3.5 py-2 rounded-xl border border-white/10 text-gray-300 hover:text-white hover:border-white/20 transition-colors"
+              className="flex items-center gap-1.5 text-[10px] md:text-xs font-medium px-2 md:px-3.5 py-1 md:py-2 rounded-lg md:rounded-xl border border-white/10 text-gray-300 hover:text-white hover:border-white/20 transition-colors"
             >
               <TbEye className="text-sm" /> Preview
             </button>
-            <button
+            {!commLoading && community?.colorTheme ?<button
               onClick={handleSave}
               disabled={!isDirty || loading}
-              className="flex items-center gap-1.5 text-xs font-semibold px-3.5 py-2 rounded-xl text-white disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+              className="flex items-center gap-1.5 text-[10px] md:text-xs  font-semibold px-3.5 py-1 md:py-2 rounded-lg md:rounded-xl text-white disabled:opacity-40 disabled:cursor-not-allowed transition-all"
               style={{ background: isDirty && !loading ? gradient.from : undefined }}
             >
               {loading ? (
@@ -541,7 +547,12 @@ function EditCommunity() {
               ) : (
                 "Save changes"
               )}
-            </button>
+            </button>:<>
+            <button className="w-24 h-6 md:h-7 bg-gray-800 animate-pulse rounded-lg"/>
+          
+            </>
+            }
+            
           </div>
         </div>
 
@@ -715,6 +726,7 @@ function EditCommunity() {
               gradient={gradient}
               userRole={currentUserRole}
               community={community}
+              loader={commLoading}
             />
 
             {/* Mini icon + color summary */}
