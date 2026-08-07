@@ -147,26 +147,27 @@ const CommunityBanner = ({ community, style, loader, communityId, canEdit }) => 
       />
 
       <div className="relative px-5 p-3.5 md:pt-4 md:pb-5">
-        {community.userRole ? (
-          <span className="absolute top-4 right-12 text-[10px] md:font-semibold px-2.5 py-1 rounded-full bg-white/20 text-white capitalize">
-            {community?.userRole}
-          </span>
-        ) : (
-          <span className="absolute top-4 right-12 text-[10px] md:font-semibold px-2.5 py-1 rounded-full bg-white/20 text-white capitalize">
-            Member
-          </span>
-        )}
-
         {canEdit && communityId && (
           <Link
             to={`/tecCommunityDetails/${communityId}/edit`}
-            className="absolute top-4 right-2 md:right-0 text-[10px] md:font-semibold px-3 py-1 rounded-full  text-white hover:bg-white/30 transition-colors"
+            className="absolute top-2.5 md:top-4 right-20 md:right-24 text-[10px] md:font-semibold px-3 py-1 rounded-full  text-white hover:bg-white/30 transition-colors"
           >
             Edit
           </Link>
         )}
+        {community.userRole ? (
+          <span className="absolute top-2.5 md:top-4 right-2 text-[10px] md:font-semibold px-2.5 py-0.5 md:py-1 rounded-full bg-white/20 text-white capitalize">
+            {community?.userRole}
+          </span>
+        ) : (
+          <span className="absolute top-2.5 md:top-4 right-2 text-[10px] md:font-semibold px-2.5 py-0.5 md:py-1 rounded-full bg-white/20 text-white capitalize">
+            Member
+          </span>
+        )}
 
-        <div className="flex items-center gap-3 mb-0.5 md:mb-1">
+        
+
+        <div className="flex items-start justify-start gap-3 mb-0.5 mt-0.5 md:mb-1">
           <div className="md:w-10 w-9 h-9 md:h-10 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
             <Icon className="text-white text-lg md:text-xl" />
           </div>
@@ -190,7 +191,7 @@ const CommunityBanner = ({ community, style, loader, communityId, canEdit }) => 
         </div>
 
         {community.description ? (
-          <p className="md:text-xs text-[10px] text-white font-semibold max-w-2xl leading-relaxed mb-2 md:mb-2.5">
+          <p className="md:text-xs text-[10px] text-white font-semibold max-w-2xl leading-relaxed mb-2 mt-1 md:mb-2.5">
             {community?.description}
           </p>
         ) : (
@@ -229,7 +230,6 @@ const CommunityBanner = ({ community, style, loader, communityId, canEdit }) => 
   );
    
   }
- 
 
    return <CommunityHeaderSkeleton/>
 };
@@ -902,8 +902,8 @@ function SingleTechCommunity() {
   return (
     <div className="min-h-screen theme text-white flex flex-col">
       <NavBar />
-      <span className="text-[9px] md:pt-2 pb-2 md:pb-0  px-4 md:px-20 max-w-[1800px] mx-auto w-full animate-pulse font-semibold ">
-        Tech community is under construction, still some of the features are
+      <span className="text-[9px] md:pt-2 py-2 md:pb-0  px-4 md:px-20 max-w-[1800px] mx-auto w-full animate-pulse font-semibold ">
+        This site is under construction, still some of the features are
         under development, feel free to explore the platform 😊.{" "}
       </span>
 
