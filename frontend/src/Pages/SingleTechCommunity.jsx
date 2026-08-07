@@ -128,7 +128,7 @@ const CommunityBanner = ({ community, style, loader, communityId, canEdit }) => 
   }, [community?.colorTheme]);
 
   const Icon = community.icon ? TbIcons[community.icon] : style.icon;
-  if(!loader && community){
+  if(!loader && community?.colorTheme){
      return (
     <div
       className="relative rounded-xl md:rounded-2xl md:px-2 overflow-hidden mb-0"
