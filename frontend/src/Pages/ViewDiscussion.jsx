@@ -899,7 +899,7 @@ function ViewDiscussion() {
 
         {/* ── Back navigation ── */}
         <button
-          onClick={() => navigate(`/tecCommunityDetails/${communityId}?tab=discussions`)}
+          onClick={() => navigate(`/techCommunityDetails/${communityId}?tab=discussions`)}
           className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-200 mb-5 transition-colors"
         >
           <TbChevronLeft className="text-sm" />
