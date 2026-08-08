@@ -336,7 +336,7 @@ function EditCommunity() {
 
   useEffect(() => {
     if (!membersLoading && !hasEditAccess && communityId) {
-      navigate(`/tecCommunityDetails/${communityId}`);
+      navigate(`/techCommunityDetails/${communityId}`);
     }
   }, [communityId, hasEditAccess, isLoadingAccessData, navigate]);
 
@@ -413,7 +413,7 @@ function EditCommunity() {
         setSaved(true);
         toast.success('Updated Successfully', 'Community updated successfully !')
         setTimeout(() => setSaved(false), 2500);
-        navigate(`/tecCommunityDetails/${communityId}`);
+        navigate(`/techCommunityDetails/${communityId}`);
       }
 
       
@@ -513,7 +513,7 @@ function EditCommunity() {
         <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
           <div className="flex items-center gap-1 md:gap-3">
             <Link
-              to={`/tecCommunityDetails/${communityId}`}
+              to={`/techCommunityDetails/${communityId}`}
               className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-200 transition-colors"
             >
               <TbArrowLeft className="text-sm" />
