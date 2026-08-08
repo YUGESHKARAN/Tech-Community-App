@@ -149,7 +149,7 @@ const CommunityBanner = ({ community, style, loader, communityId, canEdit }) => 
       <div className="relative px-5 p-3.5 md:pt-4 md:pb-5">
         {canEdit && communityId && (
           <Link
-            to={`/tecCommunityDetails/${communityId}/edit`}
+            to={`/techCommunityDetails/${communityId}/edit`}
             className="absolute top-2.5 md:top-4 right-20 md:right-24 text-[10px] md:font-semibold px-3 py-1 rounded-full  text-white hover:bg-white/30 transition-colors"
           >
             Edit
