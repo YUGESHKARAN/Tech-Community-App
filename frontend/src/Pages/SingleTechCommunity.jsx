@@ -917,7 +917,7 @@ function SingleTechCommunity() {
         />
 
         {/* ── Tab bar ── */}
-        <div className="mt-1 md:mt-4">
+        <div className="sticky top-0 z-20 mt-1 md:mt-4 bg-[#020617]/90 backdrop-blur-sm">
           <TabBar
             active={activeTab}
             theme={gradient?.from}
