@@ -274,7 +274,7 @@ function TechCommunityLanding() {
         >
           {/* ── colored banner header ── */}
           <div
-            className="px-4 pt-4 pb-3 flex items-center gap-3 relative"
+            className="px-4 pt-4 pb-3 flex items-start justify-start gap-3 relative"
             style={{
               // background: `linear-gradient(135deg, ${style.from}, ${style.to})`,
               background: `${item?.colorTheme ? `linear-gradient(135deg, ${gradient?.from}, ${gradient?.to})` : `linear-gradient(135deg, ${style?.from}, ${style?.to})`}`,
@@ -294,7 +294,7 @@ function TechCommunityLanding() {
             </div>
 
             {item.userRole && (
-              <span className="absolute top-3 right-3 text-[10px] md:font-semibold px-2.5 py-1 rounded-full bg-white/25 text-white">
+              <span className="absolute top-3 right-3 text-[10px] md:text-[11px] md:font-semibold px-2.5 py-1 rounded-full bg-white/25 text-white">
                 {/* Coordinator */}
                 {item?.userRole}
               </span>
