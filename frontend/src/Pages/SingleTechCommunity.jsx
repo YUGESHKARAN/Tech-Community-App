@@ -897,7 +897,7 @@ function SingleTechCommunity() {
 
   const accentColor = community?.colorTheme ?? style.from;
 
-  console.log("community", community);
+  // console.log("community", community);
 
   return (
     <div className="min-h-screen theme text-white flex flex-col">
