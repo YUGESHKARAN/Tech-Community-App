@@ -808,7 +808,7 @@ function CreateDiscussion() {
               <button
                 type="button"
                 onClick={() => setCategoryOpen((v) => !v)}
-                className={`flex items-center justify-between w-full md:w-64 px-4 py-2.5 rounded-xl border text-xs md:text-sm transition-colors ${
+                className={`flex items-center justify-between w-full md:w-64 px-4 py-2.5 rounded-xl border text-xs transition-colors ${
                   CATEGORY_COLORS[category]
                     ? `${CATEGORY_COLORS[category]}`
                     : "border-[#1e293b] text-gray-300"
@@ -841,7 +841,7 @@ function CreateDiscussion() {
                         }`}
                       >
                         <div>
-                          <p className="text-xs md:text-sm text-gray-200 font-medium">
+                          <p className="text-xs text-gray-200 font-medium">
                             {cat.label}
                           </p>
                           <p className="text-[10px] text-gray-500">
