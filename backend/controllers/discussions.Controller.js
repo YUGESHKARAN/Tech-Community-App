@@ -202,6 +202,7 @@ const createTag = async (req, res) => {
  * so they can filter discussions by tag without being a member.
  */
 const getTags = async (req, res) => {
+  // console.log("getTags called");
   const { communityId } = req.params;
   const { tenantId } = req.user;
 
@@ -417,14 +418,14 @@ const getDiscussions = async (req, res) => {
  */
 const getDiscussionById = async (req, res) => {
   const { communityId, discussionId } = req.params;
-  const { tenantId, authorId } = req.user;
+  const { tenantId, _id: authorId } = req.user; // fix: was req.user.authorId
   const { replyPage = 1, replyLimit = 10 } = req.query;
 
   const skip = (Number(replyPage) - 1) * Number(replyLimit);
 
   try {
     // increment view count atomically if this user hasn't viewed before
-    const discussion = await Discussion.findOneAndUpdate(
+    const updated = await Discussion.findOneAndUpdate(
       {
         _id: discussionId,
         tenantId,
@@ -436,21 +437,22 @@ const getDiscussionById = async (req, res) => {
     )
       .populate('authorId', 'authorName profile email badges')
       .populate('tags', 'name color')
+      .populate('linkedPostId', 'image title description')  // thumbnail comes from here
       .populate('solvedReplyId', 'body authorId')
       .lean();
 
-    // if no update (already viewed), just fetch
-    const thread = discussion || await Discussion.findOne(
+    // already viewed — fetch without updating
+    const thread = updated || await Discussion.findOne(
       { _id: discussionId, tenantId, communityId }
     )
       .populate('authorId', 'authorName profile email badges')
       .populate('tags', 'name color')
+      .populate('linkedPostId', 'image title description')
       .populate('solvedReplyId', 'body authorId')
       .lean();
 
     if (!thread) return res.status(404).json({ message: 'Discussion not found' });
 
-    // top-level replies, paginated
     const [topLevelReplies, totalReplies] = await Promise.all([
       DiscussionReply.find(
         { tenantId, discussionId, parentReplyId: null },
@@ -464,14 +466,12 @@ const getDiscussionById = async (req, res) => {
 
     const topLevelIds = topLevelReplies.map((r) => r._id);
 
-    // nested replies for all top-level replies in this page — one query
     const nestedReplies = await DiscussionReply.find(
       { tenantId, parentReplyId: { $in: topLevelIds } }
     )
       .populate('authorId', 'authorName profile email badges')
       .lean();
 
-    // group nested replies by parentReplyId for easy frontend access
     const nestedByParent = {};
     for (const reply of nestedReplies) {
       const key = reply.parentReplyId.toString();
@@ -479,9 +479,8 @@ const getDiscussionById = async (req, res) => {
       nestedByParent[key].push(reply);
     }
 
-    // batch-resolve upvote status for thread + all replies in one query
     const allIds = [thread._id, ...topLevelIds, ...nestedReplies.map((r) => r._id)];
-    const upvotedSet = await getUpvotedSet(allIds, authorId);
+    const upvotedSet = await getUpvotedSet(allIds, authorId); // fix: authorId now correct
 
     const repliesWithMeta = topLevelReplies.map((r) => ({
       ...r,
@@ -492,9 +491,20 @@ const getDiscussionById = async (req, res) => {
       })),
     }));
 
+    // shape linkedPost cleanly — null if no post was linked
+    const linkedPost = thread.linkedPostId
+      ? {
+          _id:         thread.linkedPostId._id,
+          title:       thread.linkedPostId.title,
+          description: thread.linkedPostId.description,
+          thumbnail:   thread.linkedPostId.image || null,
+        }
+      : null;
+
     res.status(200).json({
       discussion: {
         ...thread,
+        linkedPostId: linkedPost,        // replace populated object with clean shape
         hasVoted: upvotedSet.has(thread._id.toString()),
       },
       replies: repliesWithMeta,
@@ -507,7 +517,6 @@ const getDiscussionById = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
-
 /**
  * PATCH /api/communities/:communityId/discussions/:discussionId
  * Update title, body, category, tags, linkedPostId.
@@ -702,64 +711,81 @@ const markSolved = async (req, res) => {
 
 /**
  * POST /api/communities/:communityId/discussions/:discussionId/upvote
- * Upvote a discussion. 11000 duplicate key = already voted.
+ * Toggles the current user's discussion upvote.
+ * If the author has not upvoted, we add the upvote; otherwise we remove it.
  */
-const upvoteDiscussion = async (req, res) => {
+const updateDiscussionUpvote = async (req, res) => {
   const { communityId, discussionId } = req.params;
   const { tenantId, authorId } = req.user;
 
   try {
-    await Upvote.create({
+    const discussion = await Discussion.findOne(
+      { _id: discussionId, tenantId, communityId },
+      '_id upvoteCount'
+    ).lean();
+
+    if (!discussion) {
+      return res.status(404).json({ message: 'Discussion not found' });
+    }
+
+    const existingUpvote = await Upvote.findOne({
       tenantId,
       targetId: discussionId,
       targetType: 'discussion',
       authorId,
+    }).lean();
+
+    let action;
+    let updated;
+
+    if (existingUpvote) {
+      action = 'removed';
+      await Upvote.deleteOne({ _id: existingUpvote._id });
+      updated = await Discussion.findByIdAndUpdate(
+        discussionId,
+        { $inc: { upvoteCount: -1 } },
+        { new: true }
+      ).lean();
+    } else {
+      action = 'upvoted';
+      await Upvote.create({
+        tenantId,
+        targetId: discussionId,
+        targetType: 'discussion',
+        authorId,
+      });
+      updated = await Discussion.findByIdAndUpdate(
+        discussionId,
+        { $inc: { upvoteCount: 1 } },
+        { new: true }
+      ).lean();
+    }
+
+    if (!updated) {
+      return res.status(500).json({ message: 'Failed to update discussion upvote count' });
+    }
+
+    if (updated.upvoteCount < 0) {
+      updated = await Discussion.findByIdAndUpdate(
+        discussionId,
+        { $set: { upvoteCount: 0 } },
+        { new: true }
+      ).lean();
+    }
+
+    return res.status(200).json({
+      action,
+      upvoteCount: Math.max(0, updated.upvoteCount),
     });
-
-    const updated = await Discussion.findByIdAndUpdate(
-      discussionId,
-      { $inc: { upvoteCount: 1 } },
-      { new: true }
-    ).lean();
-
-    res.status(200).json({ upvoteCount: updated.upvoteCount });
   } catch (err) {
     if (err.code === 11000) {
-      return res.status(409).json({ message: 'Already upvoted' });
+      const updated = await Discussion.findById(discussionId, 'upvoteCount').lean();
+      return res.status(200).json({
+        action: 'upvoted',
+        upvoteCount: updated?.upvoteCount ?? 0,
+      });
     }
-    console.error('upvoteDiscussion error:', err.message);
-    res.status(500).json({ message: 'Server error' });
-  }
-};
-
-/**
- * DELETE /api/communities/:communityId/discussions/:discussionId/upvote
- * Remove upvote from a discussion.
- */
-const removeUpvoteDiscussion = async (req, res) => {
-  const { discussionId } = req.params;
-  const { tenantId, authorId } = req.user;
-
-  try {
-    const result = await Upvote.deleteOne({
-      targetId: discussionId,
-      targetType: 'discussion',
-      authorId,
-    });
-
-    if (result.deletedCount === 0) {
-      return res.status(404).json({ message: 'Upvote not found' });
-    }
-
-    const updated = await Discussion.findByIdAndUpdate(
-      discussionId,
-      { $inc: { upvoteCount: -1 } },
-      { new: true }
-    ).lean();
-
-    res.status(200).json({ upvoteCount: Math.max(0, updated.upvoteCount) });
-  } catch (err) {
-    console.error('removeUpvoteDiscussion error:', err.message);
+    console.error('updateDiscussionUpvote error:', err.message);
     res.status(500).json({ message: 'Server error' });
   }
 };
@@ -1226,11 +1252,12 @@ module.exports = {
   getDiscussionById,
   updateDiscussion,
   deleteDiscussion,
+  updateDiscussionUpvote,
   // discussion actions
   pinDiscussion,
   markSolved,
-  upvoteDiscussion,
-  removeUpvoteDiscussion,
+  // upvoteDiscussion,
+  // removeUpvoteDiscussion,
   // replies
   createReply,
   getReplies,

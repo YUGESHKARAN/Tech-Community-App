@@ -19,8 +19,9 @@ const {
   // discussion actions
   pinDiscussion,
   markSolved,
-  upvoteDiscussion,
-  removeUpvoteDiscussion,
+  updateDiscussionUpvote,
+  // upvoteDiscussion,
+  // removeUpvoteDiscussion,
   // replies
   createReply,
   getReplies,
@@ -77,11 +78,7 @@ router.delete("/:communityId/discussions/:discussionId", deleteDiscussion);
 
 router.patch("/:communityId/discussions/:discussionId/pin", pinDiscussion);
 router.patch("/:communityId/discussions/:discussionId/solve", markSolved);
-router.post("/:communityId/discussions/:discussionId/upvote", upvoteDiscussion);
-router.delete(
-  "/:communityId/discussions/:discussionId/upvote",
-  removeUpvoteDiscussion,
-);
+router.post("/:communityId/discussions/:discussionId/upvote", updateDiscussionUpvote);
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  REPLIES
