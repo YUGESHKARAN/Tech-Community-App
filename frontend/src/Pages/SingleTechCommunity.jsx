@@ -51,6 +51,7 @@ import CoordinatorsCard from "../components/authors/CoordinatorsCard";
 import { deriveGradient } from "../utils/bannerTheme";
 import CommunityHeaderSkeleton from "../components/loaders/community/CommunityHeaderSkeleton";
 import toast from "../components/toaster/Toast";
+import DiscussionCardSkeleton from "../components/loaders/community/DiscussionCardSkeleton";
 
 // ── S3 image base ─────────────────────────────────────────────────────────────
 const S3 = "https://open-access-blog-image.s3.us-east-1.amazonaws.com/";
@@ -120,117 +121,120 @@ const timeAgo = (dateStr) => {
 // ─────────────────────────────────────────────────────────────────────────────
 
 // ── Community banner ──────────────────────────────────────────────────────────
-const CommunityBanner = ({ community, style, loader, communityId, canEdit }) => {
+const CommunityBanner = ({
+  community,
+  style,
+  loader,
+  communityId,
+  canEdit,
+}) => {
   const gradient = useMemo(() => {
     const theme = community?.colorTheme;
     return deriveGradient(theme);
   }, [community?.colorTheme]);
 
   const Icon = community.icon ? TbIcons[community.icon] : style.icon;
-  if(!loader && community?.colorTheme){
-     return (
-    <div
-      className="relative rounded-xl md:rounded-2xl md:px-2 overflow-hidden mb-0"
-      style={{
-        // background: `linear-gradient(135deg, ${style.from}, ${style.to})`,
-        background: `${community?.colorTheme ? `linear-gradient(135deg, ${gradient?.from}, ${gradient?.to})` : `linear-gradient(135deg, ${style?.from}, ${style?.to})`}`,
-      }}
-    >
-      {/* subtle texture overlay */}
+  if (!loader && community?.colorTheme) {
+    return (
       <div
-        className="absolute inset-0 opacity-10"
+        className="relative rounded-xl md:rounded-2xl md:px-2 overflow-hidden mb-0"
         style={{
-          backgroundImage:
-            "radial-gradient(circle at 80% 20%, rgba(255,255,255,.4) 0%, transparent 60%)",
+          // background: `linear-gradient(135deg, ${style.from}, ${style.to})`,
+          background: `${community?.colorTheme ? `linear-gradient(135deg, ${gradient?.from}, ${gradient?.to})` : `linear-gradient(135deg, ${style?.from}, ${style?.to})`}`,
         }}
-      />
+      >
+        {/* subtle texture overlay */}
+        <div
+          className="absolute inset-0 opacity-10"
+          style={{
+            backgroundImage:
+              "radial-gradient(circle at 80% 20%, rgba(255,255,255,.4) 0%, transparent 60%)",
+          }}
+        />
 
-      <div className="relative px-5 p-3.5 md:pt-4 md:pb-5">
-        {canEdit && communityId && (
-          <Link
-            to={`/techCommunityDetails/${communityId}/edit`}
-            className="absolute top-2.5 md:top-4 right-20 md:right-24 text-[10px] md:font-semibold px-3 py-1 rounded-full  text-white hover:bg-white/30 transition-colors"
-          >
-            Edit
-          </Link>
-        )}
-        {community.userRole ? (
-          <span className="absolute top-2.5 md:top-4 right-2 text-[10px] md:font-semibold px-2.5 py-0.5 md:py-1 rounded-full bg-white/20 text-white capitalize">
-            {community?.userRole}
-          </span>
-        ) : (
-          <span className="absolute top-2.5 md:top-4 right-2 text-[10px] md:font-semibold px-2.5 py-0.5 md:py-1 rounded-full bg-white/20 text-white capitalize">
-            Member
-          </span>
-        )}
+        <div className="relative px-5 p-3.5 md:pt-4 md:pb-5">
+          {canEdit && communityId && (
+            <Link
+              to={`/techCommunityDetails/${communityId}/edit`}
+              className="absolute top-2.5 md:top-4 right-20 md:right-24 text-[10px] md:font-semibold px-3 py-1 rounded-full  text-white hover:bg-white/30 transition-colors"
+            >
+              Edit
+            </Link>
+          )}
+          {community.userRole ? (
+            <span className="absolute top-2.5 md:top-4 right-2 text-[10px] md:font-semibold px-2.5 py-0.5 md:py-1 rounded-full bg-white/20 text-white capitalize">
+              {community?.userRole}
+            </span>
+          ) : (
+            <span className="absolute top-2.5 md:top-4 right-2 text-[10px] md:font-semibold px-2.5 py-0.5 md:py-1 rounded-full bg-white/20 text-white capitalize">
+              Member
+            </span>
+          )}
 
-        
-
-        <div className="flex items-start justify-start gap-3 mb-0.5 mt-0.5 md:mb-1">
-          <div className="md:w-10 w-9 h-9 md:h-10 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
-            <Icon className="text-white text-lg md:text-xl" />
-          </div>
-          <div>
-            {/* <p className="text-[10px] font-medium tracking-widest uppercase text-white/60 mb-0.5">
+          <div className="flex items-start justify-start gap-3 mb-0.5 mt-0.5 md:mb-1">
+            <div className="md:w-10 w-9 h-9 md:h-10 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
+              <Icon className="text-white text-lg md:text-xl" />
+            </div>
+            <div>
+              {/* <p className="text-[10px] font-medium tracking-widest uppercase text-white/60 mb-0.5">
               Tech Domain · BytesBase
             </p> */}
-            <h1 className="text-lg md:text-2xl font-semibold text-white leading-tight">
-              {community?.name}
-            </h1>
-            {community.tagline ? (
-              <p className="md:text-xs text-[10px] text-white/70 max-w-2xl leading-relaxed md:mb-2 mb-1">
-                {community?.tagline}
-              </p>
-            ) : (
-              <p className="md:text-xs text-[10px] text-white/70 max-w-2xl leading-relaxed md:mb-2 mb-1">
-                No tag line set
-              </p>
-            )}
+              <h1 className="text-lg md:text-2xl font-semibold text-white leading-tight">
+                {community?.name}
+              </h1>
+              {community.tagline ? (
+                <p className="md:text-xs text-[10px] text-white/70 max-w-2xl leading-relaxed md:mb-2 mb-1">
+                  {community?.tagline}
+                </p>
+              ) : (
+                <p className="md:text-xs text-[10px] text-white/70 max-w-2xl leading-relaxed md:mb-2 mb-1">
+                  No tag line set
+                </p>
+              )}
+            </div>
+          </div>
+
+          {community.description ? (
+            <p className="md:text-xs text-[10px] text-white font-semibold max-w-2xl leading-relaxed mb-2 mt-1 md:mb-2.5">
+              {community?.description}
+            </p>
+          ) : (
+            <p className="text-xs text-white/70 max-w-md leading-relaxed mb-2 md:mb-2.5">
+              description not set
+            </p>
+          )}
+
+          <div className="flex flex-wrap gap-2 md:gap-4">
+            {[
+              { icon: TbUsers, val: community.memberCount, label: "members" },
+              { icon: TbFileText, val: community.postCount, label: "posts" },
+              {
+                icon: TbMessageCircle,
+                val: community.discussionCount || 0,
+                label: "discussions",
+              },
+              {
+                icon: TbUserCheck,
+                val: community.coordinatorsCount,
+                label: "coordinators",
+              },
+            ].map(({ icon: StatIcon, val, label }) => (
+              <span
+                key={label}
+                className="flex items-center md:text-xs text-[10px]  gap-1 md:gap-1.5 text-white/80"
+              >
+                <StatIcon className="text-sm text-white/60" />
+                <b className="text-white font-semibold">{formatCount(val)}</b>
+                {label}
+              </span>
+            ))}
           </div>
         </div>
-
-        {community.description ? (
-          <p className="md:text-xs text-[10px] text-white font-semibold max-w-2xl leading-relaxed mb-2 mt-1 md:mb-2.5">
-            {community?.description}
-          </p>
-        ) : (
-          <p className="text-xs text-white/70 max-w-md leading-relaxed mb-2 md:mb-2.5">
-            description not set
-          </p>
-        )}
-
-        <div className="flex flex-wrap gap-2 md:gap-4">
-          {[
-            { icon: TbUsers, val: community.memberCount, label: "members" },
-            { icon: TbFileText, val: community.postCount, label: "posts" },
-            {
-              icon: TbMessageCircle,
-              val: community.discussionCount || 0,
-              label: "discussions",
-            },
-            {
-              icon: TbUserCheck,
-              val: community.coordinatorsCount,
-              label: "coordinators",
-            },
-          ].map(({ icon: StatIcon, val, label }) => (
-            <span
-              key={label}
-              className="flex items-center md:text-xs text-[10px]  gap-1 md:gap-1.5 text-white/80"
-            >
-              <StatIcon className="text-sm text-white/60" />
-              <b className="text-white font-semibold">{formatCount(val)}</b>
-              {label}
-            </span>
-          ))}
-        </div>
       </div>
-    </div>
-  );
-   
+    );
   }
 
-   return <CommunityHeaderSkeleton/>
+  return <CommunityHeaderSkeleton />;
 };
 
 // ── Tab bar ───────────────────────────────────────────────────────────────────
@@ -273,69 +277,69 @@ const DiscussionCard = ({
   accentColor,
 }) => {
   const cat = CATEGORY_COLORS[discussion.category] || CATEGORY_COLORS.qa;
-//  let upvoteCount = discussion?.upvoteCount||0;
-const [upvoteCount, setUpvoteCount] = useState(
-  discussion?.upvoteCount || 0
-);
+  //  let upvoteCount = discussion?.upvoteCount||0;
+  const [upvoteCount, setUpvoteCount] = useState(discussion?.upvoteCount || 0);
 
-const [upvoteStatus, setUpvoteStatus] = useState(discussion?.hasVoted|| false);
+  const [upvoteStatus, setUpvoteStatus] = useState(
+    discussion?.hasVoted || false,
+  );
 
-// const updateUpvoteDiscussion = async (communityId, discussionId) => {
+  // const updateUpvoteDiscussion = async (communityId, discussionId) => {
 
-//   try {
-//     const res = await axiosInstance.post(
-//       `/bytes/discuss/${communityId}/discussions/${discussionId}/upvote`
-//     );
+  //   try {
+  //     const res = await axiosInstance.post(
+  //       `/bytes/discuss/${communityId}/discussions/${discussionId}/upvote`
+  //     );
 
-//     if (res.status === 200) {
-//       const { action } = res.data;
+  //     if (res.status === 200) {
+  //       const { action } = res.data;
 
-//       if (action === 'upvoted') {
-//          upvoteCount = upvoteCount+1
-//         toast.success('Discussion hyped successfully!');
-      
-//       } else if (action === 'removed') {
-//         upvoteCount = upvoteCount-1
-//         toast.info('Discussion upvote removed.');
-        
-//       } else {
-//         toast.success('Discussion upvote updated.');
-//       }
-//     }
-//   } catch (err) {
-//     console.error('updateUpvoteDiscussion error', err?.response?.data || err.message);
-//     toast.error('Unable to update discussion upvote.');
-//   }
-// };
+  //       if (action === 'upvoted') {
+  //          upvoteCount = upvoteCount+1
+  //         toast.success('Discussion hyped successfully!');
 
-const updateUpvoteDiscussion = async (communityId, discussionId) => {
-  try {
-    const res = await axiosInstance.post(
-      `/bytes/discuss/${communityId}/discussions/${discussionId}/upvote`
-    );
+  //       } else if (action === 'removed') {
+  //         upvoteCount = upvoteCount-1
+  //         toast.info('Discussion upvote removed.');
 
-    if (res.status === 200) {
-      const { action } = res.data;
-      setUpvoteStatus((prev)=> !prev)
+  //       } else {
+  //         toast.success('Discussion upvote updated.');
+  //       }
+  //     }
+  //   } catch (err) {
+  //     console.error('updateUpvoteDiscussion error', err?.response?.data || err.message);
+  //     toast.error('Unable to update discussion upvote.');
+  //   }
+  // };
 
-      if (action === "upvoted") {
-        setUpvoteCount((prev) => prev + 1);
-        toast.success("Discussion hyped successfully!");
-      } else if (action === "removed") {
-        setUpvoteCount((prev) => Math.max(0, prev - 1));
-        toast.info("Discussion upvote removed.");
-      } else {
-        toast.success("Discussion upvote updated.");
+  const updateUpvoteDiscussion = async (communityId, discussionId) => {
+    try {
+      const res = await axiosInstance.post(
+        `/bytes/discuss/${communityId}/discussions/${discussionId}/upvote`,
+      );
+
+      if (res.status === 200) {
+        const { action } = res.data;
+        setUpvoteStatus((prev) => !prev);
+
+        if (action === "upvoted") {
+          setUpvoteCount((prev) => prev + 1);
+          toast.success("Discussion hyped successfully!");
+        } else if (action === "removed") {
+          setUpvoteCount((prev) => Math.max(0, prev - 1));
+          toast.info("Discussion upvote removed.");
+        } else {
+          toast.success("Discussion upvote updated.");
+        }
       }
+    } catch (err) {
+      console.error(
+        "updateUpvoteDiscussion error",
+        err?.response?.data || err.message,
+      );
+      toast.error("Unable to update discussion upvote.");
     }
-  } catch (err) {
-    console.error(
-      "updateUpvoteDiscussion error",
-      err?.response?.data || err.message
-    );
-    toast.error("Unable to update discussion upvote.");
-  }
-};
+  };
 
   return (
     <div
@@ -347,13 +351,13 @@ const updateUpvoteDiscussion = async (communityId, discussionId) => {
       <div className="flex gap-3">
         {/* upvote column */}
         <div
-        onClick={(e)=> {
-          e.preventDefault();
-          e.stopPropagation();
-          updateUpvoteDiscussion(communityId, discussion._id);
-
-        }}
-         className="flex flex-col cursor-pointer items-center gap-0.5 pt-0.5 min-w-[28px]">
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            updateUpvoteDiscussion(communityId, discussion._id);
+          }}
+          className="flex flex-col cursor-pointer items-center gap-0.5 pt-0.5 min-w-[28px]"
+        >
           <TbChevronUp
             className={`text-base ${upvoteStatus ? "text-emerald-400" : "text-gray-500"}`}
           />
@@ -434,6 +438,7 @@ const updateUpvoteDiscussion = async (communityId, discussionId) => {
 // ── Discussions tab ───────────────────────────────────────────────────────────
 const DiscussionsTab = ({
   discussions,
+  discussionLoading,
   community,
   accentColor,
   currentUserEmail,
@@ -478,7 +483,7 @@ const DiscussionsTab = ({
         )}
       </div>
 
-      {filtered.length === 0 ? (
+      {filtered.length === 0 && !discussionLoading ? (
         <div className="text-center py-16 text-gray-500 text-sm">
           No discussions yet.{canPost && " Start the first one."}
         </div>
@@ -493,6 +498,14 @@ const DiscussionsTab = ({
               accentColor={accentColor}
             />
           ))}
+        </div>
+      )}
+      {discussionLoading && filtered.length === 0 && (
+        <div className="flex flex-col gap-2">
+          {
+           [...Array(3)].map((_,index)=>
+          <DiscussionCardSkeleton/>)
+          }
         </div>
       )}
     </div>
@@ -931,13 +944,16 @@ function SingleTechCommunity() {
   } = useGetAllMembersByDomain(communityId);
   // const discussions =discussionsSample
 
-  const { discussions } = useGetDiscussions(communityId, { category: "", limit: 20 });
+  const { discussions, loading: discussionLoading } = useGetDiscussions(
+    communityId,
+    { category: "", limit: 20 },
+  );
 
   // console.log("posts", posts);
   // console.log("members", members);
   // console.log("coordinators", coordinators);
   // console.log("communityId", communityId)
-  console.log("discussions", discussions)
+  // console.log("discussions", discussions)
   useEffect(() => {
     fetchAuthors();
   }, [communityId]);
@@ -967,8 +983,8 @@ function SingleTechCommunity() {
     <div className="min-h-screen theme text-white flex flex-col">
       <NavBar />
       <span className="text-[9px] md:pt-2 py-2 md:pb-0  px-4 md:px-20 max-w-[1800px] mx-auto w-full animate-pulse font-semibold ">
-        This site is under construction, still some of the features are
-        under development, feel free to explore the platform 😊.{" "}
+        This site is under construction, still some of the features are under
+        development, feel free to explore the platform 😊.{" "}
       </span>
 
       <div className="flex-grow px-4 md:px-20 max-w-[1800px] mx-auto w-full pb-20 md:pt-4">
@@ -1004,6 +1020,7 @@ function SingleTechCommunity() {
             {activeTab === "discussions" && (
               <DiscussionsTab
                 discussions={discussions}
+                discussionLoading={discussionLoading}
                 community={community}
                 accentColor={accentColor}
                 currentUserEmail={currentUserEmail}
