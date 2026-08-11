@@ -34,15 +34,12 @@ import { getItem } from "../utils/encode";
 import formatCount from "../utils/NumberConversion";
 import BadgeIcons from "../components/achievements/BadgeIcons";
 import {
-  communitySample,
-  discussionsSample,
-  membersSample,
   leaderboardSample,
   trendingTagsSample,
-  feedPostsSample,
 } from "../utils/communitySample";
 import useGetSingleTechCommunity from "../hooks/SingleTechDomain/useGetSingleTechCommunity";
 import useGetPostsByCommunity from "../hooks/useGetPostsByCommunity";
+import useGetDiscussions from "../hooks/useGetDiscussions";
 import axiosInstance from "../instances/Axiosinstances";
 import { IoShareSocial } from "react-icons/io5";
 import { PiBookmarksSimpleFill, PiBookmarksSimpleLight } from "react-icons/pi";
@@ -52,6 +49,7 @@ import useGetAllMembersByDomain from "../hooks/SingleTechDomain/useGetAllMembers
 import CoordinatorsCard from "../components/authors/CoordinatorsCard";
 import { deriveGradient } from "../utils/bannerTheme";
 import CommunityHeaderSkeleton from "../components/loaders/community/CommunityHeaderSkeleton";
+import toast from "../components/toaster/Toast";
 
 // ── S3 image base ─────────────────────────────────────────────────────────────
 const S3 = "https://open-access-blog-image.s3.us-east-1.amazonaws.com/";
@@ -274,6 +272,37 @@ const DiscussionCard = ({
   accentColor,
 }) => {
   const cat = CATEGORY_COLORS[discussion.category] || CATEGORY_COLORS.qa;
+ let upvoteCount = discussion?.upvoteCount||0;
+
+const updateUpvoteDiscussion = async (communityId, discussionId) => {
+
+  try {
+    const res = await axiosInstance.post(
+      `/bytes/discuss/${communityId}/discussions/${discussionId}/upvote`
+    );
+
+    if (res.status === 200) {
+      const { action } = res.data;
+
+      if (action === 'upvoted') {
+         upvoteCount = upvoteCount+1
+        toast.success('Discussion hyped successfully!');
+      
+      } else if (action === 'removed') {
+        upvoteCount = upvoteCount-1
+        toast.info('Discussion upvote removed.');
+        
+      } else {
+        toast.success('Discussion upvote updated.');
+      }
+    }
+  } catch (err) {
+    console.error('updateUpvoteDiscussion error', err?.response?.data || err.message);
+    toast.error('Unable to update discussion upvote.');
+  }
+};
+
+
   return (
     <div
       className={`block theme border rounded-xl px-4 py-3 hover:border-white/10 transition-all duration-200 ${
@@ -283,12 +312,20 @@ const DiscussionCard = ({
     >
       <div className="flex gap-3">
         {/* upvote column */}
-        <div className="flex flex-col items-center gap-0.5 pt-0.5 min-w-[28px]">
+        <div
+        onClick={(e)=> {
+          e.preventDefault();
+          e.stopPropagation();
+          updateUpvoteDiscussion(communityId, discussion._id);
+
+        }}
+         className="flex flex-col cursor-pointer items-center gap-0.5 pt-0.5 min-w-[28px]">
           <TbChevronUp
             className={`text-base ${discussion.hasVoted ? "text-emerald-400" : "text-gray-500"}`}
           />
           <span className="text-xs font-semibold text-gray-200">
-            {formatCount(discussion.upvoteCount)}
+            {/* {formatCount(discussion.upvoteCount)} */}
+            {formatCount(upvoteCount)}
           </span>
         </div>
 
@@ -859,6 +896,8 @@ function SingleTechCommunity() {
     fetchAuthors,
   } = useGetAllMembersByDomain(communityId);
 
+  const { discussions } = useGetDiscussions(communityId, { category: "", limit: 20 });
+
   // console.log("posts", posts);
   // console.log("members", members);
   // console.log("coordinators", coordinators);
@@ -873,20 +912,8 @@ function SingleTechCommunity() {
     community?.userRole === "coordinator" ||
     coordinators.some((coord) => coord.authorId?.email === currentUserEmail);
 
-  // ── Sample data — swap each for its real hook when ready ──────────────────
-  // const { community, loading } = useGetCommunityById(communityId);
-  // const { discussions } = useGetDiscussions(communityId, { category, page });
-  // const { members }     = useGetCommunityMembers(communityId);
-  // const { leaderboard } = useGetCommunityLeaderboard(communityId, period);
-  // const { tags }        = useGetTrendingTags(communityId);
-  // const { posts }       = useGetCommunityFeed(communityId, { page });
-  //   const community   = communitySample;
-
-  const discussions = discussionsSample;
-  // const members = membersSample;
   const leaderboard = leaderboardSample;
   const trendingTags = trendingTagsSample;
-  // const posts       = feedPostsSample;
 
   const style = getDomainStyle(community?.name);
   const gradient = deriveGradient(community?.colorTheme);
@@ -898,6 +925,7 @@ function SingleTechCommunity() {
   const accentColor = community?.colorTheme ?? style.from;
 
   // console.log("community", community);
+  console.log("discussions", discussions);
 
   return (
     <div className="min-h-screen theme text-white flex flex-col">

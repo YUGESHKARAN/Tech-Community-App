@@ -702,64 +702,81 @@ const markSolved = async (req, res) => {
 
 /**
  * POST /api/communities/:communityId/discussions/:discussionId/upvote
- * Upvote a discussion. 11000 duplicate key = already voted.
+ * Toggles the current user's discussion upvote.
+ * If the author has not upvoted, we add the upvote; otherwise we remove it.
  */
-const upvoteDiscussion = async (req, res) => {
+const updateDiscussionUpvote = async (req, res) => {
   const { communityId, discussionId } = req.params;
   const { tenantId, authorId } = req.user;
 
   try {
-    await Upvote.create({
+    const discussion = await Discussion.findOne(
+      { _id: discussionId, tenantId, communityId },
+      '_id upvoteCount'
+    ).lean();
+
+    if (!discussion) {
+      return res.status(404).json({ message: 'Discussion not found' });
+    }
+
+    const existingUpvote = await Upvote.findOne({
       tenantId,
       targetId: discussionId,
       targetType: 'discussion',
       authorId,
+    }).lean();
+
+    let action;
+    let updated;
+
+    if (existingUpvote) {
+      action = 'removed';
+      await Upvote.deleteOne({ _id: existingUpvote._id });
+      updated = await Discussion.findByIdAndUpdate(
+        discussionId,
+        { $inc: { upvoteCount: -1 } },
+        { new: true }
+      ).lean();
+    } else {
+      action = 'upvoted';
+      await Upvote.create({
+        tenantId,
+        targetId: discussionId,
+        targetType: 'discussion',
+        authorId,
+      });
+      updated = await Discussion.findByIdAndUpdate(
+        discussionId,
+        { $inc: { upvoteCount: 1 } },
+        { new: true }
+      ).lean();
+    }
+
+    if (!updated) {
+      return res.status(500).json({ message: 'Failed to update discussion upvote count' });
+    }
+
+    if (updated.upvoteCount < 0) {
+      updated = await Discussion.findByIdAndUpdate(
+        discussionId,
+        { $set: { upvoteCount: 0 } },
+        { new: true }
+      ).lean();
+    }
+
+    return res.status(200).json({
+      action,
+      upvoteCount: Math.max(0, updated.upvoteCount),
     });
-
-    const updated = await Discussion.findByIdAndUpdate(
-      discussionId,
-      { $inc: { upvoteCount: 1 } },
-      { new: true }
-    ).lean();
-
-    res.status(200).json({ upvoteCount: updated.upvoteCount });
   } catch (err) {
     if (err.code === 11000) {
-      return res.status(409).json({ message: 'Already upvoted' });
+      const updated = await Discussion.findById(discussionId, 'upvoteCount').lean();
+      return res.status(200).json({
+        action: 'upvoted',
+        upvoteCount: updated?.upvoteCount ?? 0,
+      });
     }
-    console.error('upvoteDiscussion error:', err.message);
-    res.status(500).json({ message: 'Server error' });
-  }
-};
-
-/**
- * DELETE /api/communities/:communityId/discussions/:discussionId/upvote
- * Remove upvote from a discussion.
- */
-const removeUpvoteDiscussion = async (req, res) => {
-  const { discussionId } = req.params;
-  const { tenantId, authorId } = req.user;
-
-  try {
-    const result = await Upvote.deleteOne({
-      targetId: discussionId,
-      targetType: 'discussion',
-      authorId,
-    });
-
-    if (result.deletedCount === 0) {
-      return res.status(404).json({ message: 'Upvote not found' });
-    }
-
-    const updated = await Discussion.findByIdAndUpdate(
-      discussionId,
-      { $inc: { upvoteCount: -1 } },
-      { new: true }
-    ).lean();
-
-    res.status(200).json({ upvoteCount: Math.max(0, updated.upvoteCount) });
-  } catch (err) {
-    console.error('removeUpvoteDiscussion error:', err.message);
+    console.error('updateDiscussionUpvote error:', err.message);
     res.status(500).json({ message: 'Server error' });
   }
 };
@@ -1226,11 +1243,12 @@ module.exports = {
   getDiscussionById,
   updateDiscussion,
   deleteDiscussion,
+  updateDiscussionUpvote,
   // discussion actions
   pinDiscussion,
   markSolved,
-  upvoteDiscussion,
-  removeUpvoteDiscussion,
+  // upvoteDiscussion,
+  // removeUpvoteDiscussion,
   // replies
   createReply,
   getReplies,
