@@ -34,6 +34,7 @@ import { getItem } from "../utils/encode";
 import formatCount from "../utils/NumberConversion";
 import BadgeIcons from "../components/achievements/BadgeIcons";
 import {
+  discussionsSample,
   leaderboardSample,
   trendingTagsSample,
 } from "../utils/communitySample";
@@ -272,10 +273,40 @@ const DiscussionCard = ({
   accentColor,
 }) => {
   const cat = CATEGORY_COLORS[discussion.category] || CATEGORY_COLORS.qa;
- let upvoteCount = discussion?.upvoteCount||0;
+//  let upvoteCount = discussion?.upvoteCount||0;
+const [upvoteCount, setUpvoteCount] = useState(
+  discussion?.upvoteCount || 0
+);
+
+// const updateUpvoteDiscussion = async (communityId, discussionId) => {
+
+//   try {
+//     const res = await axiosInstance.post(
+//       `/bytes/discuss/${communityId}/discussions/${discussionId}/upvote`
+//     );
+
+//     if (res.status === 200) {
+//       const { action } = res.data;
+
+//       if (action === 'upvoted') {
+//          upvoteCount = upvoteCount+1
+//         toast.success('Discussion hyped successfully!');
+      
+//       } else if (action === 'removed') {
+//         upvoteCount = upvoteCount-1
+//         toast.info('Discussion upvote removed.');
+        
+//       } else {
+//         toast.success('Discussion upvote updated.');
+//       }
+//     }
+//   } catch (err) {
+//     console.error('updateUpvoteDiscussion error', err?.response?.data || err.message);
+//     toast.error('Unable to update discussion upvote.');
+//   }
+// };
 
 const updateUpvoteDiscussion = async (communityId, discussionId) => {
-
   try {
     const res = await axiosInstance.post(
       `/bytes/discuss/${communityId}/discussions/${discussionId}/upvote`
@@ -284,24 +315,24 @@ const updateUpvoteDiscussion = async (communityId, discussionId) => {
     if (res.status === 200) {
       const { action } = res.data;
 
-      if (action === 'upvoted') {
-         upvoteCount = upvoteCount+1
-        toast.success('Discussion hyped successfully!');
-      
-      } else if (action === 'removed') {
-        upvoteCount = upvoteCount-1
-        toast.info('Discussion upvote removed.');
-        
+      if (action === "upvoted") {
+        setUpvoteCount((prev) => prev + 1);
+        toast.success("Discussion hyped successfully!");
+      } else if (action === "removed") {
+        setUpvoteCount((prev) => Math.max(0, prev - 1));
+        toast.info("Discussion upvote removed.");
       } else {
-        toast.success('Discussion upvote updated.');
+        toast.success("Discussion upvote updated.");
       }
     }
   } catch (err) {
-    console.error('updateUpvoteDiscussion error', err?.response?.data || err.message);
-    toast.error('Unable to update discussion upvote.');
+    console.error(
+      "updateUpvoteDiscussion error",
+      err?.response?.data || err.message
+    );
+    toast.error("Unable to update discussion upvote.");
   }
 };
-
 
   return (
     <div
@@ -895,8 +926,9 @@ function SingleTechCommunity() {
     loading,
     fetchAuthors,
   } = useGetAllMembersByDomain(communityId);
+  const discussions =discussionsSample
 
-  const { discussions } = useGetDiscussions(communityId, { category: "", limit: 20 });
+  // const { discussions } = useGetDiscussions(communityId, { category: "", limit: 20 });
 
   // console.log("posts", posts);
   // console.log("members", members);
