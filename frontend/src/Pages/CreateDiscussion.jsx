@@ -345,13 +345,13 @@ const TagSelector = ({
   const filtered = useMemo(() => {
     const q = query.toLowerCase().trim();
     if (!q) return existingTags;
-    return existingTags.filter((t) => t.name.includes(q));
+    return existingTags?.filter((t) => t.name.includes(q));
   }, [existingTags, query]);
 
   const showCreateOption =
     canCreate &&
     query.trim().length > 0 &&
-    !existingTags.some(
+    !existingTags?.some(
       (t) => t.name.toLowerCase() === query.toLowerCase().trim(),
     );
 
@@ -499,7 +499,15 @@ const TagSelector = ({
 // ─────────────────────────────────────────────────────────────────────────────
 //  LINKED POST PANEL
 // ─────────────────────────────────────────────────────────────────────────────
-const LinkedPostPanel = ({ posts, selectedPost, onSelect, onClose, hasMore, isLoading, onLoadMore }) => {
+const LinkedPostPanel = ({
+  posts,
+  selectedPost,
+  onSelect,
+  onClose,
+  hasMore,
+  isLoading,
+  onLoadMore,
+}) => {
   const [query, setQuery] = useState("");
   const listRef = useRef(null);
 
@@ -647,7 +655,23 @@ function CreateDiscussion() {
   // const { tags, refetch: refetchTags } = useGetCommunityTags(communityId);
   // const { posts }                       = useGetCommunityFeed(communityId);
   // const { settings }                    = useGetCommunitySettings(communityId);
-  const [tags, setTags] = useState(SAMPLE_TAGS);
+  const [tags, setTags] = useState([]);
+
+  const getTags = async () => {
+    try {
+      const res = await axiosInstance.get(`/bytes/discuss/${communityId}/tags`);
+      //  console.log("res data", res.data)
+      if (res.status === 200) {
+        setTags(res.data.tags);
+      }
+    } catch (err) {
+      console.log("error", err.message);
+    }
+  };
+
+  useEffect(() => {
+    getTags();
+  }, [communityId]);
   // const posts = SAMPLE_POSTS;
   const whoCanPost = "coordinator"; // swap for settings.whoCanPost
 
@@ -749,9 +773,10 @@ function CreateDiscussion() {
   };
 
   // ── Selected tags display ─────────────────────────────────────────────────
-  const selectedTags = tags.filter((t) => selectedTagIds.includes(t._id));
+  const selectedTags = tags?.filter((t) => selectedTagIds.includes(t._id));
 
   // console.log("posts", posts)
+  console.log("tags", tags);
 
   // ─────────────────────────────────────────────────────────────────────────
   //  RENDER

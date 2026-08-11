@@ -202,6 +202,7 @@ const createTag = async (req, res) => {
  * so they can filter discussions by tag without being a member.
  */
 const getTags = async (req, res) => {
+  // console.log("getTags called");
   const { communityId } = req.params;
   const { tenantId } = req.user;
 
@@ -496,6 +497,7 @@ const getDiscussionById = async (req, res) => {
       discussion: {
         ...thread,
         hasVoted: upvotedSet.has(thread._id.toString()),
+        hasUpvoted: upvotedSet.has(thread._id.toString()),
       },
       replies: repliesWithMeta,
       totalReplies,

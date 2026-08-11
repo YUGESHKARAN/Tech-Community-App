@@ -278,6 +278,8 @@ const [upvoteCount, setUpvoteCount] = useState(
   discussion?.upvoteCount || 0
 );
 
+const [upvoteStatus, setUpvoteStatus] = useState(discussion?.hasVoted|| false);
+
 // const updateUpvoteDiscussion = async (communityId, discussionId) => {
 
 //   try {
@@ -314,6 +316,7 @@ const updateUpvoteDiscussion = async (communityId, discussionId) => {
 
     if (res.status === 200) {
       const { action } = res.data;
+      setUpvoteStatus((prev)=> !prev)
 
       if (action === "upvoted") {
         setUpvoteCount((prev) => prev + 1);
@@ -352,7 +355,7 @@ const updateUpvoteDiscussion = async (communityId, discussionId) => {
         }}
          className="flex flex-col cursor-pointer items-center gap-0.5 pt-0.5 min-w-[28px]">
           <TbChevronUp
-            className={`text-base ${discussion.hasVoted ? "text-emerald-400" : "text-gray-500"}`}
+            className={`text-base ${upvoteStatus ? "text-emerald-400" : "text-gray-500"}`}
           />
           <span className="text-xs font-semibold text-gray-200">
             {/* {formatCount(discussion.upvoteCount)} */}
@@ -926,14 +929,15 @@ function SingleTechCommunity() {
     loading,
     fetchAuthors,
   } = useGetAllMembersByDomain(communityId);
-  const discussions =discussionsSample
+  // const discussions =discussionsSample
 
-  // const { discussions } = useGetDiscussions(communityId, { category: "", limit: 20 });
+  const { discussions } = useGetDiscussions(communityId, { category: "", limit: 20 });
 
   // console.log("posts", posts);
   // console.log("members", members);
   // console.log("coordinators", coordinators);
   // console.log("communityId", communityId)
+  console.log("discussions", discussions)
   useEffect(() => {
     fetchAuthors();
   }, [communityId]);
