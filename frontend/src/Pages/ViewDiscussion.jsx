@@ -13,6 +13,7 @@ import {
   TbArrowBack, TbCheck, TbX, TbSend, TbClock,
   TbBookmark, TbShare,
 } from "react-icons/tb";
+import toast from "../components/toaster/Toast";
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 const S3 = "https://open-access-blog-image.s3.us-east-1.amazonaws.com/";
@@ -156,15 +157,15 @@ The data size is the main constraint here. 4k pairs is enough for task adaptatio
 // ── Author row ────────────────────────────────────────────────────────────────
 const AuthorRow = ({ author, timestamp, label }) => (
   <div className="flex items-center gap-2">
-    <Link to={`/viewProfile/${author.email}`} className="flex-shrink-0 relative">
+    <Link to={`/viewProfile/${author?.email}`} className="flex-shrink-0 relative">
       <img
-        src={av(author.profile)}
+        src={av(author?.profile)}
         className="w-7 h-7 rounded-full object-cover bg-gray-700"
-        alt={author.authorName}
+        alt={author?.authorName}
       />
-      {author.badges?.length > 0 && (
+      {author?.badges?.length > 0 && (
         <BadgeIcons
-          badges={author.badges}
+          badges={author?.badges}
           parentClass="absolute -top-1 -right-1 -space-x-0.5"
           shieldClassName="w-3 h-3"
         />
@@ -173,10 +174,10 @@ const AuthorRow = ({ author, timestamp, label }) => (
     <div className="min-w-0">
       <div className="flex items-center gap-1.5 flex-wrap">
         <Link
-          to={`/viewProfile/${author.email}`}
+          to={`/viewProfile/${author?.email}`}
           className="text-xs font-semibold text-gray-200 hover:text-white transition-colors"
         >
-          {author.authorName}
+          {author?.authorName}
         </Link>
         {label && (
           <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400">
@@ -190,28 +191,69 @@ const AuthorRow = ({ author, timestamp, label }) => (
 );
 
 // ── Upvote button ─────────────────────────────────────────────────────────────
-const UpvoteButton = ({ count, hasVoted, onVote, onUnvote }) => (
+const UpvoteButton = ({ discussion,upvoteCount,setUpvoteCount, upvoteStatus, setUpvoteStatus, communityId}) => 
+ {
+// const [upvoteCount, setUpvoteCount] = useState(discussion?.upvoteCount || 0);
+// const [upvoteStatus, setUpvoteStatus] = useState(
+//      discussion?.hasVoted || false,
+//    );
+
+
+   const updateUpvoteDiscussion = async (communityId, discussionId) => {
+    try {
+      const res = await axiosInstance.post(
+        `/bytes/discuss/${communityId}/discussions/${discussionId}/upvote`,
+      );
+
+      if (res.status === 200) {
+        const { action } = res.data;
+        setUpvoteStatus((prev) => !prev);
+
+        if (action === "upvoted") {
+          setUpvoteCount((prev) => prev + 1);
+          toast.success("Discussion hyped successfully!");
+        } else if (action === "removed") {
+          setUpvoteCount((prev) => Math.max(0, prev - 1));
+          toast.info("Discussion upvote removed.");
+        } else {
+          toast.success("Discussion upvote updated.");
+        }
+      }
+    } catch (err) {
+      console.error(
+        "updateUpvoteDiscussion error",
+        err?.response?.data || err.message,
+      );
+      toast.error("Unable to update discussion upvote.");
+    }
+  };
+  
+  return (
   <button
-    onClick={hasVoted ? onUnvote : onVote}
+    onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            updateUpvoteDiscussion(communityId, discussion._id);
+          }}
     className="flex flex-col items-center gap-0.5 group"
-    title={hasVoted ? "Remove upvote" : "Upvote"}
+    title={upvoteStatus ? "Remove upvote" : "Upvote"}
   >
     <TbChevronUp
       className={`text-base transition-colors ${
-        hasVoted
+        upvoteStatus
           ? "text-emerald-400"
           : "text-gray-500 group-hover:text-gray-300"
       }`}
     />
     <span
       className={`text-[11px] font-semibold ${
-        hasVoted ? "text-emerald-400" : "text-gray-400"
+        upvoteStatus ? "text-emerald-400" : "text-gray-400"
       }`}
     >
-      {formatCount(count)}
+      {formatCount(upvoteCount)}
     </span>
   </button>
-);
+)};
 
 // ── Overflow menu ─────────────────────────────────────────────────────────────
 const OverflowMenu = ({ items }) => {
@@ -383,7 +425,7 @@ const NestedReplyCard = ({
         count={reply.upvoteCount}
         hasVoted={reply.hasVoted}
         onVote={() => onUpvote(reply._id, "reply")}
-        onUnvote={() => onUnvote(reply._id, "reply")}
+        // onUnvote={() => onUnvote(reply._id, "reply")}
       />
       <div className="flex-1 min-w-0">
         <div className="flex items-start justify-between gap-2">
@@ -558,7 +600,8 @@ function ViewDiscussion() {
 
   // ── State ─────────────────────────────────────────────────────────────────
   // Replace with useGetDiscussionById(communityId, discussionId)
-  const [discussion, setDiscussion] = useState({ ...SAMPLE_DISCUSSION });
+  // const [discussion, setDiscussion] = useState({ ...SAMPLE_DISCUSSION });
+  const [discussion, setDiscussion] = useState({});
   const [replies, setReplies] = useState(SAMPLE_REPLIES.map((r) => ({ ...r })));
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(false); // set true when real API returns hasMore
@@ -566,18 +609,44 @@ function ViewDiscussion() {
 
   const [showReplyCompose, setShowReplyCompose] = useState(false);
   const [editingDiscussion, setEditingDiscussion] = useState(false);
-  const [discussionBody, setDiscussionBody] = useState(discussion.body);
+  const [discussionBody, setDiscussionBody] = useState("");
 
-  const isOP = discussion.authorId?.email === currentUserEmail;
+  const isOP = discussion?.authorId?.email === currentUserEmail;
   // Replace with membership check from community context
   const isCoordinator = getItem("role") === "coordinator" || getItem("role") === "admin";
 
-  const cat = CATEGORY_COLORS[discussion.category] || CATEGORY_COLORS.qa;
+  const cat = CATEGORY_COLORS[discussion?.category] || CATEGORY_COLORS.qa;
+const [upvoteCount, setUpvoteCount] = useState(0);
+
+  const [upvoteStatus, setUpvoteStatus] = useState(false);
+
+
+ const getDiscussionsById = async()=> {
+  try{
+    const res = await axiosInstance.get(`/bytes/discuss/${communityId}/discussions/${discussionId}`);
+    if(res.status ===  200)
+    {
+      setDiscussion(res?.data?.discussion)
+      setUpvoteCount(res?.data?.discussion?.upvoteCount)
+      setUpvoteStatus(res?.data?.discussion?.hasVoted)
+      setDiscussionBody(res?.data?.discussion?.body)
+    }
+  }
+  catch(err)
+  {
+    console.log("error getting discussion", err.message)
+  }
+ }
+
+ useEffect(()=> {
+  getDiscussionsById()
+ },[communityId, discussionId])
+
 
   // ── Discussion overflow menu ───────────────────────────────────────────────
   const discussionMenuItems = [
     ...(isCoordinator ? [{
-      label: discussion.isPinned ? "Unpin" : "Pin to top",
+      label: discussion?.isPinned ? "Unpin" : "Pin to top",
       icon: <TbPin className="text-sm" />,
       onClick: () => handlePin(),
     }] : []),
@@ -611,11 +680,11 @@ function ViewDiscussion() {
     try {
       if (targetType === "discussion") {
         await axiosInstance.post(
-          `/bytes/discuss/${communityId}/discussions/${discussion._id}/upvote`
+          `/bytes/discuss/${communityId}/discussions/${discussion?._id}/upvote`
         );
       } else {
         await axiosInstance.post(
-          `/bytes/discuss/${communityId}/discussions/${discussion._id}/replies/${targetId}/upvote`
+          `/bytes/discuss/${communityId}/discussions/${discussion?._id}/replies/${targetId}/upvote`
         );
       }
     } catch (err) {
@@ -645,11 +714,11 @@ function ViewDiscussion() {
     try {
       if (targetType === "discussion") {
         await axiosInstance.delete(
-          `/bytes/discuss/${communityId}/discussions/${discussion._id}/upvote`
+          `/bytes/discuss/${communityId}/discussions/${discussion?._id}/upvote`
         );
       } else {
         await axiosInstance.delete(
-          `/bytes/discuss/${communityId}/discussions/${discussion._id}/replies/${targetId}/upvote`
+          `/bytes/discuss/${communityId}/discussions/${discussion?._id}/replies/${targetId}/upvote`
         );
       }
     } catch (err) {
@@ -666,6 +735,7 @@ function ViewDiscussion() {
   };
 
   // Helper: walks top-level and nested replies to update vote state
+  
   const updateReplyVote = (list, id, delta, voted) =>
     list.map((r) => {
       if (r._id === id) return { ...r, upvoteCount: Math.max(0, r.upvoteCount + delta), hasVoted: voted };
@@ -684,7 +754,7 @@ function ViewDiscussion() {
     const tempId = `temp_${Date.now()}`;
     const optimistic = {
       _id: tempId,
-      discussionId: discussion._id,
+      discussionId: discussion?._id,
       authorId: {
         _id: "me",
         authorName: getItem("username") || "You",
@@ -706,7 +776,7 @@ function ViewDiscussion() {
 
     try {
       const res = await axiosInstance.post(
-        `/bytes/discuss/${communityId}/discussions/${discussion._id}/replies`,
+        `/bytes/discuss/${communityId}/discussions/${discussion?._id}/replies`,
         { body }
       );
       const real = res.data.reply;
@@ -745,7 +815,7 @@ function ViewDiscussion() {
     );
     try {
       const res = await axiosInstance.post(
-        `/bytes/discuss/${communityId}/discussions/${discussion._id}/replies`,
+        `/bytes/discuss/${communityId}/discussions/${discussion?._id}/replies`,
         { body, parentReplyId }
       );
       const real = res.data.reply;
@@ -776,7 +846,7 @@ function ViewDiscussion() {
   const handleEditReply = async (replyId, newBody) => {
     try {
       await axiosInstance.patch(
-        `/bytes/discuss/${communityId}/discussions/${discussion._id}/replies/${replyId}`,
+        `/bytes/discuss/${communityId}/discussions/${discussion?._id}/replies/${replyId}`,
         { body: newBody }
       );
     } catch (err) {
@@ -800,7 +870,7 @@ function ViewDiscussion() {
     }
     try {
       await axiosInstance.delete(
-        `/bytes/discuss/${communityId}/discussions/${discussion._id}/replies/${replyId}`
+        `/bytes/discuss/${communityId}/discussions/${discussion?._id}/replies/${replyId}`
       );
     } catch (err) {
       console.error("Delete reply error:", err);
@@ -823,7 +893,7 @@ function ViewDiscussion() {
     );
     try {
       await axiosInstance.patch(
-        `/bytes/discuss/${communityId}/discussions/${discussion._id}/solve`,
+        `/bytes/discuss/${communityId}/discussions/${discussion?._id}/solve`,
         { solvedReplyId: newSolvedId }
       );
     } catch (err) {
@@ -833,11 +903,11 @@ function ViewDiscussion() {
 
   // ── Pin discussion ────────────────────────────────────────────────────────
   const handlePin = async () => {
-    const next = !discussion.isPinned;
+    const next = !discussion?.isPinned;
     setDiscussion((prev) => ({ ...prev, isPinned: next }));
     try {
       await axiosInstance.patch(
-        `/bytes/discuss/${communityId}/discussions/${discussion._id}/pin`
+        `/bytes/discuss/${communityId}/discussions/${discussion?._id}/pin`
       );
     } catch {
       setDiscussion((prev) => ({ ...prev, isPinned: !next }));
@@ -850,7 +920,7 @@ function ViewDiscussion() {
     setEditingDiscussion(false);
     try {
       await axiosInstance.patch(
-        `/bytes/discuss/${communityId}/discussions/${discussion._id}`,
+        `/bytes/discuss/${communityId}/discussions/${discussion?._id}`,
         { body: newBody }
       );
     } catch (err) {
@@ -862,7 +932,7 @@ function ViewDiscussion() {
   const handleDeleteDiscussion = async () => {
     try {
       await axiosInstance.delete(
-        `/bytes/discuss/${communityId}/discussions/${discussion._id}`
+        `/bytes/discuss/${communityId}/discussions/${discussion?._id}`
       );
       navigate(`/community/${communityId}?tab=discussions`);
     } catch (err) {
@@ -876,7 +946,7 @@ function ViewDiscussion() {
     try {
       const next = replyPage + 1;
       const res = await axiosInstance.get(
-        `/bytes/discuss/${communityId}/discussions/${discussion._id}/replies?page=${next}&limit=10`
+        `/bytes/discuss/${communityId}/discussions/${discussion?._id}/replies?page=${next}&limit=10`
       );
       setReplies((prev) => [...prev, ...res.data.replies]);
       setReplyPage(next);
@@ -887,6 +957,9 @@ function ViewDiscussion() {
       setLoadingMore(false);
     }
   };
+
+
+  // console.log("discussions", discussion)
 
   // ─────────────────────────────────────────────────────────────────────────
   //  RENDER
@@ -910,7 +983,7 @@ function ViewDiscussion() {
         <div className="theme border border-[#1e293b] rounded-2xl overflow-hidden mb-4">
 
           {/* pinned banner */}
-          {discussion.isPinned && (
+          {discussion?.isPinned && (
             <div className="flex items-center gap-2 px-5 py-2 bg-emerald-500/5 border-b border-emerald-500/10">
               <TbPin className="text-emerald-400 text-xs" />
               <span className="text-[10px] font-semibold text-emerald-400">Pinned by coordinator</span>
@@ -923,10 +996,17 @@ function ViewDiscussion() {
               {/* upvote */}
               <div className="flex-shrink-0 pt-1">
                 <UpvoteButton
-                  count={discussion.upvoteCount}
-                  hasVoted={discussion.hasVoted}
-                  onVote={() => handleUpvote(discussion._id, "discussion")}
-                  onUnvote={() => handleUnvote(discussion._id, "discussion")}
+                  discussion={discussion}
+                  upvoteCount={upvoteCount}
+                  setUpvoteCount={setUpvoteCount}
+                  upvoteStatus={upvoteStatus}
+                  setUpvoteStatus = {setUpvoteStatus}
+            
+                  // count={discussion?.upvoteCount}
+                  // hasVoted={discussion?.hasVoted}
+                  communityId={communityId}
+                  // onVote={() => handleUpvote(discussion?._id, "discussion")}
+                  // onUnvote={() => handleUnvote(discussion?._id, "discussion")}
                 />
               </div>
 
@@ -934,7 +1014,7 @@ function ViewDiscussion() {
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-3 mb-2">
                   <h1 className="text-base md:text-lg font-semibold text-gray-100 leading-snug">
-                    {discussion.title}
+                    {discussion?.title}
                   </h1>
                   {discussionMenuItems.length > 0 && (
                     <OverflowMenu items={discussionMenuItems} />
@@ -946,12 +1026,12 @@ function ViewDiscussion() {
                   <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded ${cat.bg} ${cat.text}`}>
                     {cat.label}
                   </span>
-                  {discussion.isSolved && (
+                  {discussion?.isSolved && (
                     <span className="flex items-center gap-0.5 text-[9px] font-semibold px-1.5 py-0.5 rounded bg-green-500/10 text-green-400">
                       <TbCircleCheck className="text-[10px]" /> Solved
                     </span>
                   )}
-                  {discussion.tags?.map((tag) => (
+                  {discussion?.tags?.map((tag) => (
                     <span
                       key={tag._id}
                       className="text-[9px] font-medium px-1.5 py-0.5 rounded"
@@ -965,8 +1045,8 @@ function ViewDiscussion() {
                 {/* author */}
                 <div className="mb-4">
                   <AuthorRow
-                    author={discussion.authorId}
-                    timestamp={discussion.createdAt}
+                    author={discussion?.authorId}
+                    timestamp={discussion?.createdAt}
                     label={isOP ? "OP" : null}
                   />
                 </div>
@@ -974,6 +1054,7 @@ function ViewDiscussion() {
                 {/* body */}
                 {editingDiscussion ? (
                   <InlineEdit
+                    // initialValue={discussionBody}
                     initialValue={discussionBody}
                     onSave={handleEditDiscussion}
                     onCancel={() => setEditingDiscussion(false)}
@@ -988,11 +1069,11 @@ function ViewDiscussion() {
                 <div className="flex items-center gap-4 mt-4 pt-3 border-t border-white/5 text-[10px] text-gray-500">
                   <span className="flex items-center gap-1">
                     <TbMessageCircle className="text-xs" />
-                    {formatCount(discussion.replyCount)} replies
+                    {formatCount(discussion?.replyCount)} replies
                   </span>
                   <span className="flex items-center gap-1">
                     <TbEye className="text-xs" />
-                    {formatCount(discussion.views?.length || 0)} views
+                    {formatCount(discussion?.views?.length || 0)} views
                   </span>
                 </div>
               </div>
@@ -1028,7 +1109,7 @@ function ViewDiscussion() {
         {replies.length > 0 && (
           <div className="flex flex-col gap-3">
             <p className="text-[11px] font-medium uppercase tracking-widest text-gray-500">
-              {discussion.replyCount} {discussion.replyCount === 1 ? "reply" : "replies"}
+              {discussion?.replyCount} {discussion?.replyCount === 1 ? "reply" : "replies"}
             </p>
 
             {replies.map((reply) => (
@@ -1038,8 +1119,8 @@ function ViewDiscussion() {
                 currentUserEmail={currentUserEmail}
                 isCoordinator={isCoordinator}
                 isOP={isOP}
-                discussionAuthorId={discussion.authorId._id}
-                solvedReplyId={discussion.solvedReplyId}
+                discussionAuthorId={discussion?.authorId?._id}
+                solvedReplyId={discussion?.solvedReplyId}
                 onUpvote={handleUpvote}
                 onUnvote={handleUnvote}
                 onEdit={handleEditReply}

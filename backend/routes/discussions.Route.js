@@ -55,9 +55,9 @@ router.patch("/:communityId/settings/whoCanPost", updateWhoCanPost);
 //  Base: /api/communities/:communityId/tags
 // ─────────────────────────────────────────────────────────────────────────────
 
-router.get("/:communityId/tags", getTags);
-router.post("/:communityId/tags", createTag);
-router.patch("/:communityId/tags/:tagId", updateTag);
+router.get("/:communityId/tags", getTags);  // used
+router.post("/:communityId/tags", createTag);  //used
+router.patch("/:communityId/tags/:tagId", updateTag); 
 router.delete("/:communityId/tags/:tagId", deleteTag);
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -65,9 +65,9 @@ router.delete("/:communityId/tags/:tagId", deleteTag);
 //  Base: /api/communities/:communityId/discussions
 // ─────────────────────────────────────────────────────────────────────────────
 
-router.get("/:communityId/discussions", getDiscussions);
-router.post("/:communityId/discussions", createDiscussion);
-router.get("/:communityId/discussions/:discussionId", getDiscussionById);
+router.get("/:communityId/discussions", getDiscussions);  //used
+router.post("/:communityId/discussions", createDiscussion);  //used
+router.get("/:communityId/discussions/:discussionId", getDiscussionById); //used
 router.patch("/:communityId/discussions/:discussionId", updateDiscussion);
 router.delete("/:communityId/discussions/:discussionId", deleteDiscussion);
 
@@ -78,7 +78,7 @@ router.delete("/:communityId/discussions/:discussionId", deleteDiscussion);
 
 router.patch("/:communityId/discussions/:discussionId/pin", pinDiscussion);
 router.patch("/:communityId/discussions/:discussionId/solve", markSolved);
-router.post("/:communityId/discussions/:discussionId/upvote", updateDiscussionUpvote);
+router.post("/:communityId/discussions/:discussionId/upvote", updateDiscussionUpvote); //used
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  REPLIES

@@ -418,10 +418,12 @@ const getDiscussions = async (req, res) => {
  */
 const getDiscussionById = async (req, res) => {
   const { communityId, discussionId } = req.params;
-  const { tenantId, _id: authorId } = req.user; // fix: was req.user.authorId
+  const { tenantId, authorId } = req.user; // fix: was req.user.authorId
   const { replyPage = 1, replyLimit = 10 } = req.query;
 
   const skip = (Number(replyPage) - 1) * Number(replyLimit);
+
+  console.log("get discussions called")
 
   try {
     // increment view count atomically if this user hasn't viewed before
@@ -478,7 +480,7 @@ const getDiscussionById = async (req, res) => {
       nestedByParent[key] = nestedByParent[key] || [];
       nestedByParent[key].push(reply);
     }
-
+    
     const allIds = [thread._id, ...topLevelIds, ...nestedReplies.map((r) => r._id)];
     const upvotedSet = await getUpvotedSet(allIds, authorId); // fix: authorId now correct
 
