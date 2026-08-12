@@ -437,7 +437,7 @@ const getDiscussionById = async (req, res) => {
       { $addToSet: { views: req.user.email } },
       { new: true }
     )
-      .populate('authorId', 'authorName profile email badges')
+      .populate('authorId', 'authorname profile email badges')
       .populate('tags', 'name color')
       .populate('linkedPostId', 'image title description')  // thumbnail comes from here
       .populate('solvedReplyId', 'body authorId')
@@ -447,7 +447,7 @@ const getDiscussionById = async (req, res) => {
     const thread = updated || await Discussion.findOne(
       { _id: discussionId, tenantId, communityId }
     )
-      .populate('authorId', 'authorName profile email badges')
+      .populate('authorId', 'authorname profile email badges')
       .populate('tags', 'name color')
       .populate('linkedPostId', 'image title description')
       .populate('solvedReplyId', 'body authorId')
@@ -461,7 +461,7 @@ const getDiscussionById = async (req, res) => {
         null,
         { skip, limit: Number(replyLimit), sort: { createdAt: 1 } }
       )
-        .populate('authorId', 'authorName profile email badges')
+        .populate('authorId', 'authorname profile email badges')
         .lean(),
       DiscussionReply.countDocuments({ tenantId, discussionId, parentReplyId: null }),
     ]);
@@ -471,7 +471,7 @@ const getDiscussionById = async (req, res) => {
     const nestedReplies = await DiscussionReply.find(
       { tenantId, parentReplyId: { $in: topLevelIds } }
     )
-      .populate('authorId', 'authorName profile email badges')
+      .populate('authorId', 'authorname profile email badges')
       .lean();
 
     const nestedByParent = {};
@@ -882,7 +882,7 @@ const getReplies = async (req, res) => {
         null,
         { skip, limit: Number(limit), sort: { createdAt: 1 } }
       )
-        .populate('authorId', 'authorName profile email badges')
+        .populate('authorId', 'authorname profile email badges')
         .lean(),
       DiscussionReply.countDocuments({ tenantId, discussionId, parentReplyId: null }),
     ]);
@@ -892,7 +892,7 @@ const getReplies = async (req, res) => {
     const nestedReplies = await DiscussionReply.find(
       { tenantId, parentReplyId: { $in: topLevelIds } }
     )
-      .populate('authorId', 'authorName profile email badges')
+      .populate('authorId', 'authorname profile email badges')
       .lean();
 
     const nestedByParent = {};
