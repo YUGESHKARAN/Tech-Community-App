@@ -418,10 +418,12 @@ const getDiscussions = async (req, res) => {
  */
 const getDiscussionById = async (req, res) => {
   const { communityId, discussionId } = req.params;
-  const { tenantId, _id: authorId } = req.user; // fix: was req.user.authorId
+  const { tenantId, authorId } = req.user; // fix: was req.user.authorId
   const { replyPage = 1, replyLimit = 10 } = req.query;
 
   const skip = (Number(replyPage) - 1) * Number(replyLimit);
+
+  console.log("get discussions called")
 
   try {
     // increment view count atomically if this user hasn't viewed before
@@ -435,7 +437,7 @@ const getDiscussionById = async (req, res) => {
       { $addToSet: { views: req.user.email } },
       { new: true }
     )
-      .populate('authorId', 'authorName profile email badges')
+      .populate('authorId', 'authorname profile email badges')
       .populate('tags', 'name color')
       .populate('linkedPostId', 'image title description')  // thumbnail comes from here
       .populate('solvedReplyId', 'body authorId')
@@ -445,7 +447,7 @@ const getDiscussionById = async (req, res) => {
     const thread = updated || await Discussion.findOne(
       { _id: discussionId, tenantId, communityId }
     )
-      .populate('authorId', 'authorName profile email badges')
+      .populate('authorId', 'authorname profile email badges')
       .populate('tags', 'name color')
       .populate('linkedPostId', 'image title description')
       .populate('solvedReplyId', 'body authorId')
@@ -459,7 +461,7 @@ const getDiscussionById = async (req, res) => {
         null,
         { skip, limit: Number(replyLimit), sort: { createdAt: 1 } }
       )
-        .populate('authorId', 'authorName profile email badges')
+        .populate('authorId', 'authorname profile email badges')
         .lean(),
       DiscussionReply.countDocuments({ tenantId, discussionId, parentReplyId: null }),
     ]);
@@ -469,7 +471,7 @@ const getDiscussionById = async (req, res) => {
     const nestedReplies = await DiscussionReply.find(
       { tenantId, parentReplyId: { $in: topLevelIds } }
     )
-      .populate('authorId', 'authorName profile email badges')
+      .populate('authorId', 'authorname profile email badges')
       .lean();
 
     const nestedByParent = {};
@@ -478,7 +480,7 @@ const getDiscussionById = async (req, res) => {
       nestedByParent[key] = nestedByParent[key] || [];
       nestedByParent[key].push(reply);
     }
-
+    
     const allIds = [thread._id, ...topLevelIds, ...nestedReplies.map((r) => r._id)];
     const upvotedSet = await getUpvotedSet(allIds, authorId); // fix: authorId now correct
 
@@ -880,7 +882,7 @@ const getReplies = async (req, res) => {
         null,
         { skip, limit: Number(limit), sort: { createdAt: 1 } }
       )
-        .populate('authorId', 'authorName profile email badges')
+        .populate('authorId', 'authorname profile email badges')
         .lean(),
       DiscussionReply.countDocuments({ tenantId, discussionId, parentReplyId: null }),
     ]);
@@ -890,7 +892,7 @@ const getReplies = async (req, res) => {
     const nestedReplies = await DiscussionReply.find(
       { tenantId, parentReplyId: { $in: topLevelIds } }
     )
-      .populate('authorId', 'authorName profile email badges')
+      .populate('authorId', 'authorname profile email badges')
       .lean();
 
     const nestedByParent = {};

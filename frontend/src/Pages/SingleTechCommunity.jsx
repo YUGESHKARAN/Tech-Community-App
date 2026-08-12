@@ -284,33 +284,6 @@ const DiscussionCard = ({
     discussion?.hasVoted || false,
   );
 
-  // const updateUpvoteDiscussion = async (communityId, discussionId) => {
-
-  //   try {
-  //     const res = await axiosInstance.post(
-  //       `/bytes/discuss/${communityId}/discussions/${discussionId}/upvote`
-  //     );
-
-  //     if (res.status === 200) {
-  //       const { action } = res.data;
-
-  //       if (action === 'upvoted') {
-  //          upvoteCount = upvoteCount+1
-  //         toast.success('Discussion hyped successfully!');
-
-  //       } else if (action === 'removed') {
-  //         upvoteCount = upvoteCount-1
-  //         toast.info('Discussion upvote removed.');
-
-  //       } else {
-  //         toast.success('Discussion upvote updated.');
-  //       }
-  //     }
-  //   } catch (err) {
-  //     console.error('updateUpvoteDiscussion error', err?.response?.data || err.message);
-  //     toast.error('Unable to update discussion upvote.');
-  //   }
-  // };
 
   const updateUpvoteDiscussion = async (communityId, discussionId) => {
     try {
