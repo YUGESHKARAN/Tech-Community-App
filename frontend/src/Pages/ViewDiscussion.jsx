@@ -27,6 +27,9 @@ import {
 } from "react-icons/tb";
 import toast from "../components/toaster/Toast";
 import getTimeAgo from "../components/DateCovertion";
+import RenderTextWithHashtags from "../components/RenderTextWithHashtags";
+import DiscussionDetailSkeleton from "../components/loaders/community/DiscussionDetailSkeleton";
+import ReplyCardSkeleton from "../components/loaders/community/ReplyCardSkeleton";
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 const S3 = "https://open-access-blog-image.s3.us-east-1.amazonaws.com/";
@@ -199,9 +202,10 @@ const AuthorRow = ({ author, timestamp, label }) => (
       <div className="flex items-center gap-1.5 flex-wrap">
         <Link
           to={`/viewProfile/${author?.email}`}
-          className="text-xs font-semibold text-gray-200 hover:text-white transition-colors"
+          className="text-xs font-semibold text-wrap line-clamp-1 truncate text-gray-200 hover:text-white transition-colors"
         >
           {author?.authorname}
+          {/* Lorem, ipsum dolor sit amet consectetur adipisicing elit. Deserunt dolor itaque veniam amet nisi et exercitationem laudantium beatae illo quis iusto, reprehenderit dolorem veritatis. Dicta beatae labore tempore optio corrupti numquam laboriosam enim quae assumenda quis nostrum provident perferendis quisquam porro nobis aperiam itaque ducimus voluptas omnis, esse, magnam aliquam laborum repellendus. Atque veritatis ipsam magnam tenetur placeat! Voluptatibus, dignissimos! Vel, aspernatur ipsum! Eligendi vitae earum amet ipsa magnam consectetur iste quam cumque beatae sed. Obcaecati iste tempora dicta fugiat non veniam nesciunt, provident eius quis possimus veritatis magni voluptatibus maxime voluptate cum eligendi excepturi animi porro accusantium maiores. Aspernatur provident dolorum iusto animi vitae illum delectus corrupti, alias cum praesentium? Sint, pariatur maxime deleniti nihil illo amet dicta voluptatem. */}
         </Link>
         {label && (
           <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400">
@@ -289,7 +293,7 @@ const AuthorRow = ({ author, timestamp, label }) => (
 const UpvoteButton = ({
   communityId,
   discussionId,
-  replyId,        // pass this for reply upvotes, omit for discussion upvotes
+  replyId, // pass this for reply upvotes, omit for discussion upvotes
   upvoteCount,
   setUpvoteCount,
   upvoteStatus,
@@ -479,7 +483,7 @@ const InlineEdit = ({ initialValue, onSave, onCancel }) => {
         value={value}
         onChange={(e) => setValue(e.target.value)}
         rows={4}
-        className="w-full bg-transparent px-4 pt-3 pb-2 text-sm text-gray-200 resize-none focus:outline-none"
+        className="w-full emerald-scrollbar bg-transparent px-4 pt-3 pb-2 text-xs md:text-sm text-gray-200 resize-none focus:outline-none"
       />
       <div className="flex items-center gap-2 px-3 pb-3">
         <button
@@ -527,11 +531,13 @@ const NestedReplyCard = ({
   const overflowItems = canModerate
     ? [
         ...(isMine
-          ? [{
-              label: "Edit",
-              icon: <TbPencil className="text-sm" />,
-              onClick: () => setEditing(true),
-            }]
+          ? [
+              {
+                label: "Edit",
+                icon: <TbPencil className="text-sm" />,
+                onClick: () => setEditing(true),
+              },
+            ]
           : []),
         {
           label: "Delete",
@@ -571,9 +577,27 @@ const NestedReplyCard = ({
             onCancel={() => setEditing(false)}
           />
         ) : (
-          <p className="text-sm text-gray-300 mt-2 leading-relaxed whitespace-pre-wrap">
-            {body}
-          </p>
+          // <p className="text-xs break-all md:text-sm text-gray-300 mt-2 leading-relaxed whitespace-pre-wrap">
+          //   {body}
+          // </p>
+          <p
+           className="
+             prose
+             md:prose-invert
+             md:max-w-none
+        
+             md:prose-p:text-gray-300
+              break-words
+             md:prose-p:md:leading-6
+             md:prose-p:text-sm
+             prose-headings:text-white
+           "
+            >
+              {/* {renderTextWithHashtags(singlePostData.description)} */}
+              <RenderTextWithHashtags
+                text={body}
+              />
+            </p>
         )}
       </div>
     </div>
@@ -610,20 +634,24 @@ const ReplyCard = ({
 
   const overflowItems = [
     ...(canMarkAnswer
-      ? [{
-          label: isAccepted ? "Unmark answer" : "Mark as answer",
-          icon: <TbCircleCheck className="text-sm" />,
-          onClick: () => onMarkAnswer(reply._id, isAccepted),
-        }]
+      ? [
+          {
+            label: isAccepted ? "Unmark answer" : "Mark as answer",
+            icon: <TbCircleCheck className="text-sm" />,
+            onClick: () => onMarkAnswer(reply._id, isAccepted),
+          },
+        ]
       : []),
     ...(canModerate
       ? [
           ...(isMine
-            ? [{
-                label: "Edit",
-                icon: <TbPencil className="text-sm" />,
-                onClick: () => setEditing(true),
-              }]
+            ? [
+                {
+                  label: "Edit",
+                  icon: <TbPencil className="text-sm" />,
+                  onClick: () => setEditing(true),
+                },
+              ]
             : []),
           {
             label: "Delete",
@@ -687,10 +715,27 @@ const ReplyCard = ({
               onCancel={() => setEditing(false)}
             />
           ) : (
-            <div className="text-sm text-gray-300 leading-relaxed whitespace-pre-wrap mt-1">
-              {body}
-            </div>
+          <p
+           className="
+             prose
+             md:prose-invert
+             md:max-w-none
+        
+             md:prose-p:text-gray-300
+              break-words
+             md:prose-p:md:leading-6
+             md:prose-p:text-sm
+             prose-headings:text-white
+           "
+            >
+              {/* {renderTextWithHashtags(singlePostData.description)} */}
+              <RenderTextWithHashtags
+                text={body}
+              />
+            </p>
           )}
+
+          
 
           {!editing && (
             <button
@@ -757,6 +802,8 @@ function ViewDiscussion() {
   const [showReplyCompose, setShowReplyCompose] = useState(false);
   const [editingDiscussion, setEditingDiscussion] = useState(false);
   const [discussionBody, setDiscussionBody] = useState("");
+  const [discussionLoader, setDiscussionLoader] = useState(false);
+  const [repliesLoader, setRepliesLoader] = useState(false);
 
   const isOP = discussion?.authorId?.email === currentUserEmail;
   // Replace with membership check from community context
@@ -770,6 +817,7 @@ function ViewDiscussion() {
 
   const getDiscussionsById = async () => {
     try {
+      setDiscussionLoader(true)
       const res = await axiosInstance.get(
         `/bytes/discuss/${communityId}/discussions/${discussionId}`,
       );
@@ -782,6 +830,9 @@ function ViewDiscussion() {
     } catch (err) {
       console.log("error getting discussion", err.message);
     }
+    finally{
+      setDiscussionLoader(false)
+    }
   };
 
   useEffect(() => {
@@ -790,6 +841,7 @@ function ViewDiscussion() {
 
   const getReplies = async () => {
     try {
+      setRepliesLoader(true)
       const res = await axiosInstance.get(
         `/bytes/discuss/${communityId}/discussions/${discussionId}/replies`,
       );
@@ -799,6 +851,9 @@ function ViewDiscussion() {
       }
     } catch (err) {
       console.log("error", err.message);
+    }
+    finally{
+      setRepliesLoader(false)
     }
   };
 
@@ -1066,13 +1121,12 @@ function ViewDiscussion() {
       }));
     }
     try {
-      const res =   await axiosInstance.delete(
+      const res = await axiosInstance.delete(
         `/bytes/discuss/${communityId}/discussions/${discussion?._id}/replies/${replyId}`,
       );
 
-      if(res.status===200)
-      {
-        toast.success('Reply deleted successfully !')
+      if (res.status === 200) {
+        toast.success("Reply deleted successfully !");
       }
     } catch (err) {
       console.error("Delete reply error:", err);
@@ -1094,21 +1148,21 @@ function ViewDiscussion() {
       })),
     );
     try {
-     const res =   await axiosInstance.patch(
+      const res = await axiosInstance.patch(
         `/bytes/discuss/${communityId}/discussions/${discussion?._id}/solve`,
         { solvedReplyId: newSolvedId },
       );
 
-      if(res.status===200)
-      {
-        getDiscussionsById()
-       isCurrentlyAccepted? toast.success('Reply unmarked as a solution'): toast.success('Reply marked as solution');
+      if (res.status === 200) {
+        getDiscussionsById();
+        isCurrentlyAccepted
+          ? toast.success("Reply unmarked as a solution")
+          : toast.success("Reply marked as solution");
       }
     } catch (err) {
       console.error("Mark answer error:", err);
     }
   };
-
 
   // ── Pin discussion ────────────────────────────────────────────────────────
   const handlePin = async () => {
@@ -1143,7 +1197,7 @@ function ViewDiscussion() {
       await axiosInstance.delete(
         `/bytes/discuss/${communityId}/discussions/${discussion?._id}`,
       );
-      navigate(`/community/${communityId}?tab=discussions`);
+      navigate(`/techCommunityDetails/${communityId}?tab=discussions`);
     } catch (err) {
       console.error("Delete discussion error:", err);
     }
@@ -1190,7 +1244,8 @@ function ViewDiscussion() {
         </button>
 
         {/* ── Discussion thread ── */}
-        <div className="theme border border-[#1e293b] rounded-2xl overflow-hidden mb-4">
+        {!discussionLoader?
+          <div className="theme border border-[#1e293b] rounded-2xl overflow-hidden mb-4">
           {/* pinned banner */}
           {discussion?.isPinned && (
             <div className="flex items-center gap-2 px-5 py-2 bg-emerald-500/5 border-b border-emerald-500/10">
@@ -1251,13 +1306,26 @@ function ViewDiscussion() {
                 </div>
 
                 {/* author */}
-                <div className="mb-4">
+                <div className="mb-4 flex items-center gap-2 justify-between">
                   <AuthorRow
                     author={discussion?.authorId}
                     timestamp={discussion?.createdAt}
                     label={isOP ? "OP" : null}
                   />
+                   {discussion?.linkedPostId && (
+                  <Link 
+
+                  className="bg:red-100">
+                    <img
+                      className="w-12 h-9 rounded-lg border border-emerald-700"
+                      src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${discussion?.linkedPostId?.thumbnail}`}
+                      alt=""
+                    />
+                  </Link>
+                )}
                 </div>
+
+               
 
                 {/* body */}
                 {editingDiscussion ? (
@@ -1268,9 +1336,27 @@ function ViewDiscussion() {
                     onCancel={() => setEditingDiscussion(false)}
                   />
                 ) : (
-                  <div className="text-sm text-gray-300 leading-relaxed whitespace-pre-wrap">
-                    {discussionBody}
-                  </div>
+                  // <div className="text-xs break-all md:text-sm text-gray-300 leading-relaxed whitespace-pre-wrap">
+                  //   {discussionBody}
+                  // </div>
+                  <p
+                  className="
+                    prose
+                    md:prose-invert
+                    md:max-w-none
+                
+                    md:prose-p:text-gray-300
+                      break-words
+                    md:prose-p:md:leading-6
+                    md:prose-p:text-sm
+                    prose-headings:text-white
+                  "
+            >
+              {/* {renderTextWithHashtags(singlePostData.description)} */}
+              <RenderTextWithHashtags
+                text={discussionBody}
+              />
+            </p>
                 )}
 
                 {/* footer stats */}
@@ -1287,7 +1373,9 @@ function ViewDiscussion() {
               </div>
             </div>
           </div>
-        </div>
+        </div>:
+        <DiscussionDetailSkeleton/>
+        }
 
         {/* ── Reply compose toggle ── */}
         {!showReplyCompose ? (
@@ -1314,7 +1402,7 @@ function ViewDiscussion() {
         )}
 
         {/* ── Replies ── */}
-        {replies.length > 0 && (
+        {replies.length > 0 && !repliesLoader && (
           <div className="flex flex-col gap-3">
             <p className="text-[11px] font-medium uppercase tracking-widest text-gray-500">
               {discussion?.replyCount}{" "}
@@ -1351,6 +1439,12 @@ function ViewDiscussion() {
             )}
           </div>
         )}
+
+        {
+          replies.length === 0 && repliesLoader
+          &&
+          <ReplyCardSkeleton/>
+        }
 
         {replies.length === 0 && (
           <div className="text-center py-10 text-gray-600 text-sm">

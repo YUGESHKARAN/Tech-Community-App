@@ -69,7 +69,7 @@ router.delete("/:communityId/tags/:tagId", deleteTag);
 router.get("/:communityId/discussions", getDiscussions);  //used
 router.post("/:communityId/discussions", createDiscussion);  //used
 router.get("/:communityId/discussions/:discussionId", getDiscussionById); //used
-router.patch("/:communityId/discussions/:discussionId", updateDiscussion);
+router.patch("/:communityId/discussions/:discussionId", updateDiscussion); //used
 router.delete("/:communityId/discussions/:discussionId", deleteDiscussion);
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -77,8 +77,8 @@ router.delete("/:communityId/discussions/:discussionId", deleteDiscussion);
 //  Base: /api/communities/:communityId/discussions/:discussionId/...
 // ─────────────────────────────────────────────────────────────────────────────
 
-router.patch("/:communityId/discussions/:discussionId/pin", pinDiscussion);
-router.patch("/:communityId/discussions/:discussionId/solve", markSolved);
+router.patch("/:communityId/discussions/:discussionId/pin", pinDiscussion); //used
+router.patch("/:communityId/discussions/:discussionId/solve", markSolved);  //used
 router.post("/:communityId/discussions/:discussionId/upvote", updateDiscussionUpvote); //used
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -86,16 +86,16 @@ router.post("/:communityId/discussions/:discussionId/upvote", updateDiscussionUp
 //  Base: /api/communities/:communityId/discussions/:discussionId/replies
 // ─────────────────────────────────────────────────────────────────────────────
 
-router.get("/:communityId/discussions/:discussionId/replies", getReplies);
-router.post("/:communityId/discussions/:discussionId/replies", createReply);
+router.get("/:communityId/discussions/:discussionId/replies", getReplies); //used
+router.post("/:communityId/discussions/:discussionId/replies", createReply); //used
 router.patch(
   "/:communityId/discussions/:discussionId/replies/:replyId",
   updateReply,
-);
+); //used
 router.delete(
   "/:communityId/discussions/:discussionId/replies/:replyId",
   deleteReply,
-);
+); //used
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  REPLY ACTIONS
@@ -109,7 +109,7 @@ router.delete(
 router.post(
   "/:communityId/discussions/:discussionId/replies/:replyId/upvote",
   updateUpvoteReply,
-);
+); //used
 // router.delete(
 //   "/:communityId/discussions/:discussionId/replies/:replyId/upvote",
 //   removeUpvoteReply,
@@ -117,7 +117,7 @@ router.post(
 router.patch(
   "/:communityId/discussions/:discussionId/replies/:replyId/answer",
   markAnswer,
-);
+);  //used
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  SIDEBAR
