@@ -1143,7 +1143,7 @@ function ViewDiscussion() {
       await axiosInstance.delete(
         `/bytes/discuss/${communityId}/discussions/${discussion?._id}`,
       );
-      navigate(`/community/${communityId}?tab=discussions`);
+      navigate(`/techCommunityDetails/${communityId}?tab=discussions`);
     } catch (err) {
       console.error("Delete discussion error:", err);
     }
