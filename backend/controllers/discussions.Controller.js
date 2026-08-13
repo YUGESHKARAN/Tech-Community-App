@@ -355,6 +355,60 @@ const createDiscussion = async (req, res) => {
  * within the result set regardless of page number.
  * query: { page?, limit?, category?, isSolved?, tag?, search? }
  */
+
+// const getDiscussions = async (req, res) => {
+//   const { communityId } = req.params;
+//   const { tenantId, authorId } = req.user;
+//   const {
+//     page = 1,
+//     limit = 20,
+//     category,
+//     isSolved,
+//     tag,
+//     search,
+//   } = req.query;
+
+//   const skip = (Number(page) - 1) * Number(limit);
+
+//   try {
+//     const filter = { tenantId, communityId };
+//     if (category) filter.category = category;
+//     if (isSolved !== undefined) filter.isSolved = isSolved === 'true';
+//     if (tag) filter.tags = new mongoose.Types.ObjectId(tag);
+//     if (search) filter.$text = { $search: search };
+
+//     const [discussions, total] = await Promise.all([
+//       Discussion.find(filter)
+//         .sort({ isPinned: -1, createdAt: -1 })
+//         .skip(skip)
+//         .limit(Number(limit))
+//         .populate('authorId', 'authorname profile email')
+//         .populate('tags', 'name color')
+//         .lean(),
+//       Discussion.countDocuments(filter),
+//     ]);
+
+//     // batch-resolve upvote status for current user
+//     const discussionIds = discussions.map((d) => d._id);
+//     const upvotedSet = await getUpvotedSet(discussionIds, authorId);
+
+//     const result = discussions.map((d) => ({
+//       ...d,
+//       hasVoted: upvotedSet.has(d._id.toString()),
+//     }));
+
+//     res.status(200).json({
+//       discussions: result,
+//       total,
+//       page: Number(page),
+//       totalPages: Math.ceil(total / Number(limit)),
+//       hasMore: skip + discussions.length < total,
+//     });
+//   } catch (err) {
+//     console.error('getDiscussions error:', err.message);
+//     res.status(500).json({ message: 'Server error' });
+//   }
+// };
 const getDiscussions = async (req, res) => {
   const { communityId } = req.params;
   const { tenantId, authorId } = req.user;
@@ -381,19 +435,28 @@ const getDiscussions = async (req, res) => {
         .sort({ isPinned: -1, createdAt: -1 })
         .skip(skip)
         .limit(Number(limit))
-        .populate('authorId', 'authorName profile email')
+        .populate('authorId', 'authorname profile email')
         .populate('tags', 'name color')
+        .populate('linkedPostId', 'image title description') // add this
         .lean(),
       Discussion.countDocuments(filter),
     ]);
 
-    // batch-resolve upvote status for current user
     const discussionIds = discussions.map((d) => d._id);
     const upvotedSet = await getUpvotedSet(discussionIds, authorId);
 
     const result = discussions.map((d) => ({
       ...d,
       hasVoted: upvotedSet.has(d._id.toString()),
+      // shape linkedPost the same way getDiscussionById does
+      linkedPostId: d.linkedPostId
+        ? {
+            _id:         d.linkedPostId._id,
+            title:       d.linkedPostId.title,
+            description: d.linkedPostId.description,
+            thumbnail:   d.linkedPostId.image || null,
+          }
+        : null,
     }));
 
     res.status(200).json({
@@ -416,6 +479,7 @@ const getDiscussions = async (req, res) => {
  * to paint the initial thread view in one round-trip.
  * Subsequent reply pages use getReplies (infinite scroll).
  */
+
 const getDiscussionById = async (req, res) => {
   const { communityId, discussionId } = req.params;
   const { tenantId, authorId } = req.user; // fix: was req.user.authorId
@@ -519,6 +583,8 @@ const getDiscussionById = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+
 /**
  * PATCH /api/communities/:communityId/discussions/:discussionId
  * Update title, body, category, tags, linkedPostId.

@@ -374,9 +374,11 @@ const DiscussionCard = ({
             </span>
             <span className="text-[10px] text-gray-600">·</span>
             <span className="text-[10px] text-gray-500">
-              {timeAgo(discussion.createdAt)}
+              {getTimeAgo(discussion.createdAt)}
             </span>
           </div>
+
+          <div className="flex items-center justify-between">
 
           {discussion.tags?.length > 0 && (
             <div className="flex gap-1.5 flex-wrap mb-2">
@@ -391,6 +393,17 @@ const DiscussionCard = ({
               ))}
             </div>
           )}
+
+          {discussion?.linkedPostId &&
+          <div className="bg:red-100">
+
+            <img 
+            className="w-12 h-9 rounded-lg border border-emerald-700"
+            src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${discussion?.linkedPostId?.thumbnail}`} alt="" />
+            
+          </div>
+          }
+          </div>
 
           <div className="flex items-center gap-4 text-[10px] text-gray-500">
             <span className="flex items-center gap-1">

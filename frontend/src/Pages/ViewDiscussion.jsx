@@ -199,9 +199,10 @@ const AuthorRow = ({ author, timestamp, label }) => (
       <div className="flex items-center gap-1.5 flex-wrap">
         <Link
           to={`/viewProfile/${author?.email}`}
-          className="text-xs font-semibold text-gray-200 hover:text-white transition-colors"
+          className="text-xs font-semibold text-wrap line-clamp-1 truncate text-gray-200 hover:text-white transition-colors"
         >
           {author?.authorname}
+          {/* Lorem, ipsum dolor sit amet consectetur adipisicing elit. Deserunt dolor itaque veniam amet nisi et exercitationem laudantium beatae illo quis iusto, reprehenderit dolorem veritatis. Dicta beatae labore tempore optio corrupti numquam laboriosam enim quae assumenda quis nostrum provident perferendis quisquam porro nobis aperiam itaque ducimus voluptas omnis, esse, magnam aliquam laborum repellendus. Atque veritatis ipsam magnam tenetur placeat! Voluptatibus, dignissimos! Vel, aspernatur ipsum! Eligendi vitae earum amet ipsa magnam consectetur iste quam cumque beatae sed. Obcaecati iste tempora dicta fugiat non veniam nesciunt, provident eius quis possimus veritatis magni voluptatibus maxime voluptate cum eligendi excepturi animi porro accusantium maiores. Aspernatur provident dolorum iusto animi vitae illum delectus corrupti, alias cum praesentium? Sint, pariatur maxime deleniti nihil illo amet dicta voluptatem. */}
         </Link>
         {label && (
           <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400">
@@ -289,7 +290,7 @@ const AuthorRow = ({ author, timestamp, label }) => (
 const UpvoteButton = ({
   communityId,
   discussionId,
-  replyId,        // pass this for reply upvotes, omit for discussion upvotes
+  replyId, // pass this for reply upvotes, omit for discussion upvotes
   upvoteCount,
   setUpvoteCount,
   upvoteStatus,
@@ -479,7 +480,7 @@ const InlineEdit = ({ initialValue, onSave, onCancel }) => {
         value={value}
         onChange={(e) => setValue(e.target.value)}
         rows={4}
-        className="w-full bg-transparent px-4 pt-3 pb-2 text-sm text-gray-200 resize-none focus:outline-none"
+        className="w-full emerald-scrollbar bg-transparent px-4 pt-3 pb-2 text-sm text-gray-200 resize-none focus:outline-none"
       />
       <div className="flex items-center gap-2 px-3 pb-3">
         <button
@@ -527,11 +528,13 @@ const NestedReplyCard = ({
   const overflowItems = canModerate
     ? [
         ...(isMine
-          ? [{
-              label: "Edit",
-              icon: <TbPencil className="text-sm" />,
-              onClick: () => setEditing(true),
-            }]
+          ? [
+              {
+                label: "Edit",
+                icon: <TbPencil className="text-sm" />,
+                onClick: () => setEditing(true),
+              },
+            ]
           : []),
         {
           label: "Delete",
@@ -610,20 +613,24 @@ const ReplyCard = ({
 
   const overflowItems = [
     ...(canMarkAnswer
-      ? [{
-          label: isAccepted ? "Unmark answer" : "Mark as answer",
-          icon: <TbCircleCheck className="text-sm" />,
-          onClick: () => onMarkAnswer(reply._id, isAccepted),
-        }]
+      ? [
+          {
+            label: isAccepted ? "Unmark answer" : "Mark as answer",
+            icon: <TbCircleCheck className="text-sm" />,
+            onClick: () => onMarkAnswer(reply._id, isAccepted),
+          },
+        ]
       : []),
     ...(canModerate
       ? [
           ...(isMine
-            ? [{
-                label: "Edit",
-                icon: <TbPencil className="text-sm" />,
-                onClick: () => setEditing(true),
-              }]
+            ? [
+                {
+                  label: "Edit",
+                  icon: <TbPencil className="text-sm" />,
+                  onClick: () => setEditing(true),
+                },
+              ]
             : []),
           {
             label: "Delete",
@@ -1066,13 +1073,12 @@ function ViewDiscussion() {
       }));
     }
     try {
-      const res =   await axiosInstance.delete(
+      const res = await axiosInstance.delete(
         `/bytes/discuss/${communityId}/discussions/${discussion?._id}/replies/${replyId}`,
       );
 
-      if(res.status===200)
-      {
-        toast.success('Reply deleted successfully !')
+      if (res.status === 200) {
+        toast.success("Reply deleted successfully !");
       }
     } catch (err) {
       console.error("Delete reply error:", err);
@@ -1094,21 +1100,21 @@ function ViewDiscussion() {
       })),
     );
     try {
-     const res =   await axiosInstance.patch(
+      const res = await axiosInstance.patch(
         `/bytes/discuss/${communityId}/discussions/${discussion?._id}/solve`,
         { solvedReplyId: newSolvedId },
       );
 
-      if(res.status===200)
-      {
-        getDiscussionsById()
-       isCurrentlyAccepted? toast.success('Reply unmarked as a solution'): toast.success('Reply marked as solution');
+      if (res.status === 200) {
+        getDiscussionsById();
+        isCurrentlyAccepted
+          ? toast.success("Reply unmarked as a solution")
+          : toast.success("Reply marked as solution");
       }
     } catch (err) {
       console.error("Mark answer error:", err);
     }
   };
-
 
   // ── Pin discussion ────────────────────────────────────────────────────────
   const handlePin = async () => {
@@ -1251,13 +1257,26 @@ function ViewDiscussion() {
                 </div>
 
                 {/* author */}
-                <div className="mb-4">
+                <div className="mb-4 flex items-center gap-2 justify-between">
                   <AuthorRow
                     author={discussion?.authorId}
                     timestamp={discussion?.createdAt}
                     label={isOP ? "OP" : null}
                   />
+                   {discussion?.linkedPostId && (
+                  <Link 
+
+                  className="bg:red-100">
+                    <img
+                      className="w-12 h-9 rounded-lg border border-emerald-700"
+                      src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${discussion?.linkedPostId?.thumbnail}`}
+                      alt=""
+                    />
+                  </Link>
+                )}
                 </div>
+
+               
 
                 {/* body */}
                 {editingDiscussion ? (
