@@ -504,76 +504,7 @@ const InlineEdit = ({ initialValue, onSave, onCancel }) => {
 // ─────────────────────────────────────────────────────────────────────────────
 //  NESTED REPLY CARD
 // ─────────────────────────────────────────────────────────────────────────────
-// const NestedReplyCard = ({
-//   reply,
-//   currentUserEmail,
-//   isCoordinator,
-//   isOP,
-//   onUpvote,
-//   onUnvote,
-//   onEdit,
-//   onDelete,
-// }) => {
-//   const [editing, setEditing] = useState(false);
-//   const [body, setBody] = useState(reply.body);
 
-//   const isMine = reply.authorId.email === currentUserEmail;
-//   const canModerate = isMine || isCoordinator;
-
-//   const overflowItems = canModerate
-//     ? [
-//         ...(isMine
-//           ? [
-//               {
-//                 label: "Edit",
-//                 icon: <TbPencil className="text-sm" />,
-//                 onClick: () => setEditing(true),
-//               },
-//             ]
-//           : []),
-//         {
-//           label: "Delete",
-//           icon: <TbTrash className="text-sm" />,
-//           danger: true,
-//           onClick: () => onDelete(reply._id),
-//         },
-//       ]
-//     : [];
-
-//   const handleSave = async (newBody) => {
-//     await onEdit(reply._id, newBody);
-//     setBody(newBody);
-//     setEditing(false);
-//   };
-
-//   return (
-//     <div className="flex gap-3 pl-4 border-l border-white/5 ml-4">
-//       <UpvoteButton
-//         count={reply.upvoteCount}
-//         hasVoted={reply.hasVoted}
-//         onVote={() => onUpvote(reply._id, "reply")}
-//         // onUnvote={() => onUnvote(reply._id, "reply")}
-//       />
-//       <div className="flex-1 min-w-0">
-//         <div className="flex items-start justify-between gap-2">
-//           <AuthorRow author={reply.authorId} timestamp={reply.createdAt} />
-//           {overflowItems.length > 0 && <OverflowMenu items={overflowItems} />}
-//         </div>
-//         {editing ? (
-//           <InlineEdit
-//             initialValue={body}
-//             onSave={handleSave}
-//             onCancel={() => setEditing(false)}
-//           />
-//         ) : (
-//           <p className="text-sm text-gray-300 mt-2 leading-relaxed whitespace-pre-wrap">
-//             {body}
-//           </p>
-//         )}
-//       </div>
-//     </div>
-//   );
-// };
 const NestedReplyCard = ({
   reply,
   communityId,
@@ -590,7 +521,8 @@ const NestedReplyCard = ({
   const [upvoteStatus, setUpvoteStatus] = useState(reply.hasVoted || false);
 
   const isMine = reply.authorId.email === currentUserEmail;
-  const canModerate = isMine || isCoordinator;
+  // const canModerate = isMine || isCoordinator;
+  const canModerate = isMine;
 
   const overflowItems = canModerate
     ? [
@@ -605,7 +537,7 @@ const NestedReplyCard = ({
           label: "Delete",
           icon: <TbTrash className="text-sm" />,
           danger: true,
-          onClick: () => onDelete(reply._id),
+          onClick: () => onDelete(reply._id, true),
         },
       ]
     : [];
@@ -651,165 +583,6 @@ const NestedReplyCard = ({
 // ─────────────────────────────────────────────────────────────────────────────
 //  TOP-LEVEL REPLY CARD
 // ─────────────────────────────────────────────────────────────────────────────
-// const ReplyCard = ({
-//   reply,
-//   currentUserEmail,
-//   discussionId,
-//   communityId,
-//   isCoordinator,
-//   isOP,
-//   solvedReplyId,
-//   onEdit,
-//   onDelete,
-//   onMarkAnswer,
-//   onNestedReply,
-// }) => {
-//   const [editing, setEditing] = useState(false);
-//   const [body, setBody] = useState(reply.body);
-//   const [showNestedCompose, setShowNestedCompose] = useState(false);
-
-//   const isMine = reply.authorId.email === currentUserEmail;
-//   const canModerate = isMine || isCoordinator;
-//   const canMarkAnswer = isOP || isCoordinator;
-//   const isAccepted = reply._id === solvedReplyId;
-
-//   const overflowItems = [
-//     ...(canMarkAnswer
-//       ? [
-//           {
-//             label: isAccepted ? "Unmark answer" : "Mark as answer",
-//             icon: <TbCircleCheck className="text-sm" />,
-//             onClick: () => onMarkAnswer(reply._id, isAccepted),
-//           },
-//         ]
-//       : []),
-//     ...(canModerate
-//       ? [
-//           ...(isMine
-//             ? [
-//                 {
-//                   label: "Edit",
-//                   icon: <TbPencil className="text-sm" />,
-//                   onClick: () => setEditing(true),
-//                 },
-//               ]
-//             : []),
-//           {
-//             label: "Delete",
-//             icon: <TbTrash className="text-sm" />,
-//             danger: true,
-//             onClick: () => onDelete(reply._id, false),
-//           },
-//         ]
-//       : []),
-//   ];
-
-//   const handleSave = async (newBody) => {
-//     await onEdit(reply._id, newBody);
-//     setBody(newBody);
-//     setEditing(false);
-//   };
-
-//   const handleNestedSubmit = async (text) => {
-//     await onNestedReply(reply._id, text);
-//     setShowNestedCompose(false);
-//   };
-
-//   return (
-//     <div
-//       className={`theme border rounded-xl p-4 transition-all ${
-//         isAccepted
-//           ? "border-emerald-500/30 bg-emerald-500/[0.03]"
-//           : "border-[#1e293b]"
-//       }`}
-//     >
-//       <div className="flex gap-3">
-//         {/* Upvote column */}
-//         <div className="flex-shrink-0 pt-1">
-//           <UpvoteButton
-//             upvoteCount={reply.upvoteCount}
-//             hasVoted={reply.hasVoted}
-//             discussionId = {discussionId}
-//             upvoteStatus = {reply.hasVoted}
-//             // onVote={() => onUpvote(reply._id, "reply")}
-//             // onUnvote={() => onUnvote(reply._id, "reply")}
-
-//           />
-//         </div>
-
-//         {/* Content */}
-//         <div className="flex-1 min-w-0">
-//           <div className="flex items-start justify-between gap-2 mb-2">
-//             <div className="flex items-center gap-2 flex-wrap">
-//               <AuthorRow author={reply.authorId} timestamp={reply.createdAt} />
-//               {isAccepted && (
-//                 <span className="flex items-center gap-1 text-[9px] font-semibold px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400">
-//                   <TbCircleCheck className="text-[10px]" /> Answer
-//                 </span>
-//               )}
-//             </div>
-//             {overflowItems.length > 0 && <OverflowMenu items={overflowItems} />}
-//           </div>
-
-//           {editing ? (
-//             <InlineEdit
-//               initialValue={body}
-//               onSave={handleSave}
-//               onCancel={() => setEditing(false)}
-//             />
-//           ) : (
-//             <div className="text-sm text-gray-300 leading-relaxed whitespace-pre-wrap mt-1">
-//               {body}
-//             </div>
-//           )}
-
-//           {/* Reply action */}
-//           {!editing && (
-//             <button
-//               onClick={() => setShowNestedCompose((v) => !v)}
-//               className="flex items-center gap-1 text-[10px] text-gray-500 hover:text-gray-300 mt-3 transition-colors"
-//             >
-//               <TbArrowBack className="text-xs" />
-//               Reply
-//             </button>
-//           )}
-
-//           {/* Nested replies */}
-//           {reply.nestedReplies?.length > 0 && (
-//             <div className="flex flex-col gap-3 mt-4">
-//               {reply.nestedReplies.map((nr) => (
-//                 <NestedReplyCard
-                
-//                   key={nr._id}
-//                   reply={nr}
-//                   currentUserEmail={currentUserEmail}
-//                   isCoordinator={isCoordinator}
-//                   isOP={isOP}
-//                   onUpvote={onUpvote}
-//                   onUnvote={onUnvote}
-//                   onEdit={onEdit}
-//                   onDelete={onDelete}
-//                 />
-//               ))}
-//             </div>
-//           )}
-
-//           {/* Nested compose box */}
-//           {showNestedCompose && (
-//             <div className="mt-3">
-//               <ComposeBox
-//                 placeholder={`Reply to ${reply.authorId.authorName}...`}
-//                 onSubmit={handleNestedSubmit}
-//                 onCancel={() => setShowNestedCompose(false)}
-//                 autoFocus
-//               />
-//             </div>
-//           )}
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
 
 const ReplyCard = ({
   reply,
@@ -830,10 +603,10 @@ const ReplyCard = ({
   const [upvoteCount, setUpvoteCount] = useState(reply.upvoteCount || 0);
   const [upvoteStatus, setUpvoteStatus] = useState(reply.hasVoted || false);
 
-  const isMine = reply.authorId.email === currentUserEmail;
+  const isMine = reply?.authorId?.email === currentUserEmail;
   const canModerate = isMine || isCoordinator;
   const canMarkAnswer = isOP || isCoordinator;
-  const isAccepted = reply._id === solvedReplyId;
+  const isAccepted = reply?._id === solvedReplyId;
 
   const overflowItems = [
     ...(canMarkAnswer
@@ -1293,9 +1066,14 @@ function ViewDiscussion() {
       }));
     }
     try {
-      await axiosInstance.delete(
+      const res =   await axiosInstance.delete(
         `/bytes/discuss/${communityId}/discussions/${discussion?._id}/replies/${replyId}`,
       );
+
+      if(res.status===200)
+      {
+        toast.success('Reply deleted successfully !')
+      }
     } catch (err) {
       console.error("Delete reply error:", err);
     }
@@ -1316,14 +1094,21 @@ function ViewDiscussion() {
       })),
     );
     try {
-      await axiosInstance.patch(
+     const res =   await axiosInstance.patch(
         `/bytes/discuss/${communityId}/discussions/${discussion?._id}/solve`,
         { solvedReplyId: newSolvedId },
       );
+
+      if(res.status===200)
+      {
+        getDiscussionsById()
+       isCurrentlyAccepted? toast.success('Reply unmarked as a solution'): toast.success('Reply marked as solution');
+      }
     } catch (err) {
       console.error("Mark answer error:", err);
     }
   };
+
 
   // ── Pin discussion ────────────────────────────────────────────────────────
   const handlePin = async () => {
@@ -1422,16 +1207,12 @@ function ViewDiscussion() {
               {/* upvote */}
               <div className="flex-shrink-0 pt-1">
                 <UpvoteButton
-                  discussion={discussion}
+                  discussionId={discussionId}
                   upvoteCount={upvoteCount}
                   setUpvoteCount={setUpvoteCount}
                   upvoteStatus={upvoteStatus}
                   setUpvoteStatus={setUpvoteStatus}
-                  // count={discussion?.upvoteCount}
-                  // hasVoted={discussion?.hasVoted}
                   communityId={communityId}
-                  // onVote={() => handleUpvote(discussion?._id, "discussion")}
-                  // onUnvote={() => handleUnvote(discussion?._id, "discussion")}
                 />
               </div>
 
@@ -1549,7 +1330,7 @@ function ViewDiscussion() {
                 isOP={isOP}
                 discussionId={discussionId}
                 communityId={communityId}
-                solvedReplyId={discussion?.solvedReplyId}
+                solvedReplyId={discussion?.solvedReplyId?._id}
                 onUpvote={handleUpvote}
                 onUnvote={handleUnvote}
                 onEdit={handleEditReply}

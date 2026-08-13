@@ -33,6 +33,7 @@ const {
   // sidebar
   getTrendingTags,
   getCommunityLeaderboard,
+  updateUpvoteReply,
 } = require("../controllers/discussions.Controller");
 
 // const { authencateToken, attachTenant } = require('../middleware/tenantMiddleware');
@@ -101,14 +102,18 @@ router.delete(
 //  Base: /api/communities/:communityId/discussions/:discussionId/replies/:replyId/...
 // ─────────────────────────────────────────────────────────────────────────────
 
+// router.post(
+//   "/:communityId/discussions/:discussionId/replies/:replyId/upvote",
+//   upvoteReply,
+// );
 router.post(
   "/:communityId/discussions/:discussionId/replies/:replyId/upvote",
-  upvoteReply,
+  updateUpvoteReply,
 );
-router.delete(
-  "/:communityId/discussions/:discussionId/replies/:replyId/upvote",
-  removeUpvoteReply,
-);
+// router.delete(
+//   "/:communityId/discussions/:discussionId/replies/:replyId/upvote",
+//   removeUpvoteReply,
+// );
 router.patch(
   "/:communityId/discussions/:discussionId/replies/:replyId/answer",
   markAnswer,
