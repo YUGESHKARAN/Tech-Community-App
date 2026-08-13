@@ -28,6 +28,8 @@ import {
 import toast from "../components/toaster/Toast";
 import getTimeAgo from "../components/DateCovertion";
 import RenderTextWithHashtags from "../components/RenderTextWithHashtags";
+import DiscussionDetailSkeleton from "../components/loaders/community/DiscussionDetailSkeleton";
+import ReplyCardSkeleton from "../components/loaders/community/ReplyCardSkeleton";
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 const S3 = "https://open-access-blog-image.s3.us-east-1.amazonaws.com/";
@@ -800,6 +802,8 @@ function ViewDiscussion() {
   const [showReplyCompose, setShowReplyCompose] = useState(false);
   const [editingDiscussion, setEditingDiscussion] = useState(false);
   const [discussionBody, setDiscussionBody] = useState("");
+  const [discussionLoader, setDiscussionLoader] = useState(false);
+  const [repliesLoader, setRepliesLoader] = useState(false);
 
   const isOP = discussion?.authorId?.email === currentUserEmail;
   // Replace with membership check from community context
@@ -813,6 +817,7 @@ function ViewDiscussion() {
 
   const getDiscussionsById = async () => {
     try {
+      setDiscussionLoader(true)
       const res = await axiosInstance.get(
         `/bytes/discuss/${communityId}/discussions/${discussionId}`,
       );
@@ -825,6 +830,9 @@ function ViewDiscussion() {
     } catch (err) {
       console.log("error getting discussion", err.message);
     }
+    finally{
+      setDiscussionLoader(false)
+    }
   };
 
   useEffect(() => {
@@ -833,6 +841,7 @@ function ViewDiscussion() {
 
   const getReplies = async () => {
     try {
+      setRepliesLoader(true)
       const res = await axiosInstance.get(
         `/bytes/discuss/${communityId}/discussions/${discussionId}/replies`,
       );
@@ -842,6 +851,9 @@ function ViewDiscussion() {
       }
     } catch (err) {
       console.log("error", err.message);
+    }
+    finally{
+      setRepliesLoader(false)
     }
   };
 
@@ -1232,7 +1244,8 @@ function ViewDiscussion() {
         </button>
 
         {/* ── Discussion thread ── */}
-        <div className="theme border border-[#1e293b] rounded-2xl overflow-hidden mb-4">
+        {!discussionLoader?
+          <div className="theme border border-[#1e293b] rounded-2xl overflow-hidden mb-4">
           {/* pinned banner */}
           {discussion?.isPinned && (
             <div className="flex items-center gap-2 px-5 py-2 bg-emerald-500/5 border-b border-emerald-500/10">
@@ -1327,17 +1340,17 @@ function ViewDiscussion() {
                   //   {discussionBody}
                   // </div>
                   <p
-           className="
-             prose
-             md:prose-invert
-             md:max-w-none
-        
-             md:prose-p:text-gray-300
-              break-words
-             md:prose-p:md:leading-6
-             md:prose-p:text-sm
-             prose-headings:text-white
-           "
+                  className="
+                    prose
+                    md:prose-invert
+                    md:max-w-none
+                
+                    md:prose-p:text-gray-300
+                      break-words
+                    md:prose-p:md:leading-6
+                    md:prose-p:text-sm
+                    prose-headings:text-white
+                  "
             >
               {/* {renderTextWithHashtags(singlePostData.description)} */}
               <RenderTextWithHashtags
@@ -1360,7 +1373,9 @@ function ViewDiscussion() {
               </div>
             </div>
           </div>
-        </div>
+        </div>:
+        <DiscussionDetailSkeleton/>
+        }
 
         {/* ── Reply compose toggle ── */}
         {!showReplyCompose ? (
@@ -1387,7 +1402,7 @@ function ViewDiscussion() {
         )}
 
         {/* ── Replies ── */}
-        {replies.length > 0 && (
+        {replies.length > 0 && !repliesLoader && (
           <div className="flex flex-col gap-3">
             <p className="text-[11px] font-medium uppercase tracking-widest text-gray-500">
               {discussion?.replyCount}{" "}
@@ -1424,6 +1439,12 @@ function ViewDiscussion() {
             )}
           </div>
         )}
+
+        {
+          replies.length === 0 && repliesLoader
+          &&
+          <ReplyCardSkeleton/>
+        }
 
         {replies.length === 0 && (
           <div className="text-center py-10 text-gray-600 text-sm">
