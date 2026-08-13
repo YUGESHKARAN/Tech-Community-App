@@ -27,6 +27,7 @@ import {
 } from "react-icons/tb";
 import toast from "../components/toaster/Toast";
 import getTimeAgo from "../components/DateCovertion";
+import RenderTextWithHashtags from "../components/RenderTextWithHashtags";
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 const S3 = "https://open-access-blog-image.s3.us-east-1.amazonaws.com/";
@@ -480,7 +481,7 @@ const InlineEdit = ({ initialValue, onSave, onCancel }) => {
         value={value}
         onChange={(e) => setValue(e.target.value)}
         rows={4}
-        className="w-full emerald-scrollbar bg-transparent px-4 pt-3 pb-2 text-sm text-gray-200 resize-none focus:outline-none"
+        className="w-full emerald-scrollbar bg-transparent px-4 pt-3 pb-2 text-xs md:text-sm text-gray-200 resize-none focus:outline-none"
       />
       <div className="flex items-center gap-2 px-3 pb-3">
         <button
@@ -574,9 +575,27 @@ const NestedReplyCard = ({
             onCancel={() => setEditing(false)}
           />
         ) : (
-          <p className="text-sm text-gray-300 mt-2 leading-relaxed whitespace-pre-wrap">
-            {body}
-          </p>
+          // <p className="text-xs break-all md:text-sm text-gray-300 mt-2 leading-relaxed whitespace-pre-wrap">
+          //   {body}
+          // </p>
+          <p
+           className="
+             prose
+             md:prose-invert
+             md:max-w-none
+        
+             md:prose-p:text-gray-300
+              break-words
+             md:prose-p:md:leading-6
+             md:prose-p:text-sm
+             prose-headings:text-white
+           "
+            >
+              {/* {renderTextWithHashtags(singlePostData.description)} */}
+              <RenderTextWithHashtags
+                text={body}
+              />
+            </p>
         )}
       </div>
     </div>
@@ -694,10 +713,27 @@ const ReplyCard = ({
               onCancel={() => setEditing(false)}
             />
           ) : (
-            <div className="text-sm text-gray-300 leading-relaxed whitespace-pre-wrap mt-1">
-              {body}
-            </div>
+          <p
+           className="
+             prose
+             md:prose-invert
+             md:max-w-none
+        
+             md:prose-p:text-gray-300
+              break-words
+             md:prose-p:md:leading-6
+             md:prose-p:text-sm
+             prose-headings:text-white
+           "
+            >
+              {/* {renderTextWithHashtags(singlePostData.description)} */}
+              <RenderTextWithHashtags
+                text={body}
+              />
+            </p>
           )}
+
+          
 
           {!editing && (
             <button
@@ -1287,9 +1323,27 @@ function ViewDiscussion() {
                     onCancel={() => setEditingDiscussion(false)}
                   />
                 ) : (
-                  <div className="text-sm text-gray-300 leading-relaxed whitespace-pre-wrap">
-                    {discussionBody}
-                  </div>
+                  // <div className="text-xs break-all md:text-sm text-gray-300 leading-relaxed whitespace-pre-wrap">
+                  //   {discussionBody}
+                  // </div>
+                  <p
+           className="
+             prose
+             md:prose-invert
+             md:max-w-none
+        
+             md:prose-p:text-gray-300
+              break-words
+             md:prose-p:md:leading-6
+             md:prose-p:text-sm
+             prose-headings:text-white
+           "
+            >
+              {/* {renderTextWithHashtags(singlePostData.description)} */}
+              <RenderTextWithHashtags
+                text={discussionBody}
+              />
+            </p>
                 )}
 
                 {/* footer stats */}
