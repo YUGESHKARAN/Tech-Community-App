@@ -6,7 +6,7 @@ const TechCommunityTopContributorsSkeleton = ()=> {
       {/* Header */}
       <div className="flex items-center justify-between md:mb-2">
         <div className="h-5 w-36 rounded bg-gray-700/60" />
-        <div className="h-8 w-28 rounded-md bg-gray-700/60" />
+        <div className="h-6 w-28 rounded-md bg-gray-700/60" />
       </div>
 
       {/* Contributors */}
