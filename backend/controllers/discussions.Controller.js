@@ -1269,7 +1269,7 @@ const markAnswer = async (req, res) => {
 const getTrendingTags = async (req, res) => {
   const { communityId } = req.params;
   const { tenantId } = req.user;
-
+ console.log("tags called");
   const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
   try {
@@ -1327,6 +1327,8 @@ const getCommunityLeaderboard = async (req, res) => {
   const { communityId } = req.params;
   const { tenantId } = req.user;
   const { period = 'weekly' } = req.query;
+
+  // console.log("getCommunityLeaderboard called", communityId, period)
 
   const now = new Date();
   const periodStart = {
@@ -1387,7 +1389,7 @@ const getCommunityLeaderboard = async (req, res) => {
     const authorIds = sorted.map(([id]) => new mongoose.Types.ObjectId(id));
     const authors = await Author.find(
       { _id: { $in: authorIds } },
-      'authorName profile email badges'
+      'authorname profile email badges'
     ).lean();
 
     const authorMap = Object.fromEntries(authors.map((a) => [a._id.toString(), a]));
