@@ -581,7 +581,7 @@ const NestedReplyCard = ({
           //   {body}
           // </p>
           <p
-           className="
+            className="
              prose
              md:prose-invert
              md:max-w-none
@@ -592,12 +592,10 @@ const NestedReplyCard = ({
              md:prose-p:text-sm
              prose-headings:text-white
            "
-            >
-              {/* {renderTextWithHashtags(singlePostData.description)} */}
-              <RenderTextWithHashtags
-                text={body}
-              />
-            </p>
+          >
+            {/* {renderTextWithHashtags(singlePostData.description)} */}
+            <RenderTextWithHashtags text={body} />
+          </p>
         )}
       </div>
     </div>
@@ -715,8 +713,8 @@ const ReplyCard = ({
               onCancel={() => setEditing(false)}
             />
           ) : (
-          <p
-           className="
+            <p
+              className="
              prose
              md:prose-invert
              md:max-w-none
@@ -729,13 +727,9 @@ const ReplyCard = ({
            "
             >
               {/* {renderTextWithHashtags(singlePostData.description)} */}
-              <RenderTextWithHashtags
-                text={body}
-              />
+              <RenderTextWithHashtags text={body} />
             </p>
           )}
-
-          
 
           {!editing && (
             <button
@@ -804,6 +798,7 @@ function ViewDiscussion() {
   const [discussionBody, setDiscussionBody] = useState("");
   const [discussionLoader, setDiscussionLoader] = useState(false);
   const [repliesLoader, setRepliesLoader] = useState(false);
+  const profile = localStorage.getItem("profile");
 
   const isOP = discussion?.authorId?.email === currentUserEmail;
   // Replace with membership check from community context
@@ -817,7 +812,7 @@ function ViewDiscussion() {
 
   const getDiscussionsById = async () => {
     try {
-      setDiscussionLoader(true)
+      setDiscussionLoader(true);
       const res = await axiosInstance.get(
         `/bytes/discuss/${communityId}/discussions/${discussionId}`,
       );
@@ -829,9 +824,8 @@ function ViewDiscussion() {
       }
     } catch (err) {
       console.log("error getting discussion", err.message);
-    }
-    finally{
-      setDiscussionLoader(false)
+    } finally {
+      setDiscussionLoader(false);
     }
   };
 
@@ -841,7 +835,7 @@ function ViewDiscussion() {
 
   const getReplies = async () => {
     try {
-      setRepliesLoader(true)
+      setRepliesLoader(true);
       const res = await axiosInstance.get(
         `/bytes/discuss/${communityId}/discussions/${discussionId}/replies`,
       );
@@ -851,9 +845,8 @@ function ViewDiscussion() {
       }
     } catch (err) {
       console.log("error", err.message);
-    }
-    finally{
-      setRepliesLoader(false)
+    } finally {
+      setRepliesLoader(false);
     }
   };
 
@@ -1223,6 +1216,7 @@ function ViewDiscussion() {
 
   console.log("discussions", discussion);
   console.log("replies", replies);
+  console.log("profile", profile);
 
   // ─────────────────────────────────────────────────────────────────────────
   //  RENDER
@@ -1244,103 +1238,105 @@ function ViewDiscussion() {
         </button>
 
         {/* ── Discussion thread ── */}
-        {!discussionLoader?
+        {!discussionLoader ? (
           <div className="theme border border-[#1e293b] rounded-2xl overflow-hidden mb-4">
-          {/* pinned banner */}
-          {discussion?.isPinned && (
-            <div className="flex items-center gap-2 px-5 py-2 bg-emerald-500/5 border-b border-emerald-500/10">
-              <TbPin className="text-emerald-400 text-xs" />
-              <span className="text-[10px] font-semibold text-emerald-400">
-                Pinned by coordinator
-              </span>
-            </div>
-          )}
-
-          <div className="p-5">
-            {/* header row */}
-            <div className="flex items-start gap-3">
-              {/* upvote */}
-              <div className="flex-shrink-0 pt-1">
-                <UpvoteButton
-                  discussionId={discussionId}
-                  upvoteCount={upvoteCount}
-                  setUpvoteCount={setUpvoteCount}
-                  upvoteStatus={upvoteStatus}
-                  setUpvoteStatus={setUpvoteStatus}
-                  communityId={communityId}
-                />
+            {/* pinned banner */}
+            {discussion?.isPinned && (
+              <div className="flex items-center gap-2 px-5 py-2 bg-emerald-500/5 border-b border-emerald-500/10">
+                <TbPin className="text-emerald-400 text-xs" />
+                <span className="text-[10px] font-semibold text-emerald-400">
+                  Pinned by coordinator
+                </span>
               </div>
+            )}
 
-              {/* content */}
-              <div className="flex-1 min-w-0">
-                <div className="flex items-start justify-between gap-3 mb-2">
-                  <h1 className="text-base md:text-lg font-semibold text-gray-100 leading-snug">
-                    {discussion?.title}
-                  </h1>
-                  {discussionMenuItems.length > 0 && (
-                    <OverflowMenu items={discussionMenuItems} />
-                  )}
+            <div className="p-5">
+              {/* header row */}
+              <div className="flex items-start gap-3">
+                {/* upvote */}
+                <div className="flex-shrink-0 pt-1">
+                  <UpvoteButton
+                    discussionId={discussionId}
+                    upvoteCount={upvoteCount}
+                    setUpvoteCount={setUpvoteCount}
+                    upvoteStatus={upvoteStatus}
+                    setUpvoteStatus={setUpvoteStatus}
+                    communityId={communityId}
+                  />
                 </div>
 
-                {/* meta row */}
-                <div className="flex items-center gap-2 flex-wrap mb-3">
-                  <span
-                    className={`text-[9px] font-semibold px-1.5 py-0.5 rounded ${cat.bg} ${cat.text}`}
-                  >
-                    {cat.label}
-                  </span>
-                  {discussion?.isSolved && (
-                    <span className="flex items-center gap-0.5 text-[9px] font-semibold px-1.5 py-0.5 rounded bg-green-500/10 text-green-400">
-                      <TbCircleCheck className="text-[10px]" /> Solved
-                    </span>
-                  )}
-                  {discussion?.tags?.map((tag) => (
+                {/* content */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-start justify-between gap-3 mb-2">
+                    <h1 className="text-base md:text-lg font-semibold text-gray-100 leading-snug">
+                      {discussion?.title}
+                    </h1>
+                    {discussionMenuItems.length > 0 && (
+                      <OverflowMenu items={discussionMenuItems} />
+                    )}
+                  </div>
+
+                  {/* meta row */}
+                  <div className="flex items-center gap-2 flex-wrap mb-3">
                     <span
-                      key={tag._id}
-                      className="text-[9px] font-medium px-1.5 py-0.5 rounded"
-                      style={{ background: `${tag.color}18`, color: tag.color }}
+                      className={`text-[9px] font-semibold px-1.5 py-0.5 rounded ${cat.bg} ${cat.text}`}
                     >
-                      {tag.name}
+                      {cat.label}
                     </span>
-                  ))}
-                </div>
+                    {discussion?.isSolved && (
+                      <span className="flex items-center gap-0.5 text-[9px] font-semibold px-1.5 py-0.5 rounded bg-green-500/10 text-green-400">
+                        <TbCircleCheck className="text-[10px]" /> Solved
+                      </span>
+                    )}
+                    {discussion?.tags?.map((tag) => (
+                      <span
+                        key={tag._id}
+                        className="text-[9px] font-medium px-1.5 py-0.5 rounded"
+                        style={{
+                          background: `${tag.color}18`,
+                          color: tag.color,
+                        }}
+                      >
+                        {tag.name}
+                      </span>
+                    ))}
+                  </div>
 
-                {/* author */}
-                <div className="mb-4 flex items-center gap-2 justify-between">
-                  <AuthorRow
-                    author={discussion?.authorId}
-                    timestamp={discussion?.createdAt}
-                    label={isOP ? "OP" : null}
-                  />
-                   {discussion?.linkedPostId && (
-                  <Link 
-                    to={`/viewpage/${discussion?.linkedPostId?.author?.email}/${discussion?.linkedPostId?._id}`}
-                  className="bg:red-100">
-                    <img
-                      className="w-12 h-9 rounded-lg border border-emerald-700"
-                      src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${discussion?.linkedPostId?.thumbnail}`}
-                      alt=""
+                  {/* author */}
+                  <div className="mb-4 flex items-center gap-2 justify-between">
+                    <AuthorRow
+                      author={discussion?.authorId}
+                      timestamp={discussion?.createdAt}
+                      label={isOP ? "OP" : null}
                     />
-                  </Link>
-                )}
-                </div>
+                    {discussion?.linkedPostId && (
+                      <Link
+                        to={`/viewpage/${discussion?.linkedPostId?.author?.email}/${discussion?.linkedPostId?._id}`}
+                        className="bg:red-100"
+                      >
+                        <img
+                          className="w-12 h-9 rounded-lg border border-emerald-700"
+                          src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${discussion?.linkedPostId?.thumbnail}`}
+                          alt=""
+                        />
+                      </Link>
+                    )}
+                  </div>
 
-               
-
-                {/* body */}
-                {editingDiscussion ? (
-                  <InlineEdit
-                    // initialValue={discussionBody}
-                    initialValue={discussionBody}
-                    onSave={handleEditDiscussion}
-                    onCancel={() => setEditingDiscussion(false)}
-                  />
-                ) : (
-                  // <div className="text-xs break-all md:text-sm text-gray-300 leading-relaxed whitespace-pre-wrap">
-                  //   {discussionBody}
-                  // </div>
-                  <p
-                  className="
+                  {/* body */}
+                  {editingDiscussion ? (
+                    <InlineEdit
+                      // initialValue={discussionBody}
+                      initialValue={discussionBody}
+                      onSave={handleEditDiscussion}
+                      onCancel={() => setEditingDiscussion(false)}
+                    />
+                  ) : (
+                    // <div className="text-xs break-all md:text-sm text-gray-300 leading-relaxed whitespace-pre-wrap">
+                    //   {discussionBody}
+                    // </div>
+                    <p
+                      className="
                     prose
                     md:prose-invert
                     md:max-w-none
@@ -1351,31 +1347,30 @@ function ViewDiscussion() {
                     md:prose-p:text-sm
                     prose-headings:text-white
                   "
-            >
-              {/* {renderTextWithHashtags(singlePostData.description)} */}
-              <RenderTextWithHashtags
-                text={discussionBody}
-              />
-            </p>
-                )}
+                    >
+                      {/* {renderTextWithHashtags(singlePostData.description)} */}
+                      <RenderTextWithHashtags text={discussionBody} />
+                    </p>
+                  )}
 
-                {/* footer stats */}
-                <div className="flex items-center gap-4 mt-4 pt-3 border-t border-white/5 text-[10px] text-gray-500">
-                  <span className="flex items-center gap-1">
-                    <TbMessageCircle className="text-xs" />
-                    {formatCount(discussion?.replyCount)} replies
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <TbEye className="text-xs" />
-                    {formatCount(discussion?.views?.length || 0)} views
-                  </span>
+                  {/* footer stats */}
+                  <div className="flex items-center gap-4 mt-4 pt-3 border-t border-white/5 text-[10px] text-gray-500">
+                    <span className="flex items-center gap-1">
+                      <TbMessageCircle className="text-xs" />
+                      {formatCount(discussion?.replyCount)} replies
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <TbEye className="text-xs" />
+                      {formatCount(discussion?.views?.length || 0)} views
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>:
-        <DiscussionDetailSkeleton/>
-        }
+        ) : (
+          <DiscussionDetailSkeleton />
+        )}
 
         {/* ── Reply compose toggle ── */}
         {!showReplyCompose ? (
@@ -1383,11 +1378,19 @@ function ViewDiscussion() {
             onClick={() => setShowReplyCompose(true)}
             className="flex items-center gap-2 w-full text-left px-4 py-3 theme border border-[#1e293b] rounded-xl text-sm text-gray-500 hover:text-gray-300 hover:border-white/10 transition-all duration-200 mb-4"
           >
-            <img
-              src={av(null)}
-              className="w-6 h-6 rounded-full object-cover bg-gray-700"
-              alt=""
-            />
+            { profile !== 'undefined' && profile !== 'null' && profile !== "" ? (
+              <img
+                src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`}
+                className="w-6 h-6 rounded-full object-cover bg-gray-700"
+                alt=""
+              />
+            ) : (
+              <img
+                src={av(null)}
+                className="w-6 h-6 rounded-full object-cover bg-gray-700"
+                alt=""
+              />
+            )}
             Write a reply...
           </button>
         ) : (
@@ -1440,11 +1443,7 @@ function ViewDiscussion() {
           </div>
         )}
 
-        {
-          replies.length === 0 && repliesLoader
-          &&
-          <ReplyCardSkeleton/>
-        }
+        {replies.length === 0 && repliesLoader && <ReplyCardSkeleton />}
 
         {replies.length === 0 && (
           <div className="text-center py-10 text-gray-600 text-sm">
