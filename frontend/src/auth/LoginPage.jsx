@@ -62,7 +62,7 @@ function LoginPage() {
         // localStorage.setItem("message",response.data.message); 
         // localStorage.setItem("role",response.data.author.role); 
         storeItem("role",response.data.author.role);
-        localStorage.setItem("profile",response.data.author.profile); 
+        localStorage.setItem("profile",response.data?.author?.profile); 
         setLoader(true);
          // Delay navigation by 2 seconds
         setTimeout(() => {
