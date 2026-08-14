@@ -52,6 +52,8 @@ import { deriveGradient } from "../utils/bannerTheme";
 import CommunityHeaderSkeleton from "../components/loaders/community/CommunityHeaderSkeleton";
 import toast from "../components/toaster/Toast";
 import DiscussionCardSkeleton from "../components/loaders/community/DiscussionCardSkeleton";
+import { TopContributorsSkeleton } from "../components/loaders/community/TopContributorsSkeleton";
+import { TrendingTagsSkeleton } from "../components/loaders/community/TrendingTagsSkeleton";
 
 // ── S3 image base ─────────────────────────────────────────────────────────────
 const S3 = "https://open-access-blog-image.s3.us-east-1.amazonaws.com/";
@@ -284,7 +286,6 @@ const DiscussionCard = ({
     discussion?.hasVoted || false,
   );
 
-
   const updateUpvoteDiscussion = async (communityId, discussionId) => {
     try {
       const res = await axiosInstance.post(
@@ -379,32 +380,32 @@ const DiscussionCard = ({
           </div>
 
           <div className="flex items-center justify-between">
+            {discussion.tags?.length > 0 && (
+              <div className="flex gap-1.5 flex-wrap mb-2">
+                {discussion.tags.map((tag) => (
+                  <span
+                    key={tag._id}
+                    className="text-[9px] font-medium px-1.5 py-0.5 rounded-md"
+                    style={{ background: `${tag.color}18`, color: tag.color }}
+                  >
+                    {tag.name}
+                  </span>
+                ))}
+              </div>
+            )}
 
-          {discussion.tags?.length > 0 && (
-            <div className="flex gap-1.5 flex-wrap mb-2">
-              {discussion.tags.map((tag) => (
-                <span
-                  key={tag._id}
-                  className="text-[9px] font-medium px-1.5 py-0.5 rounded-md"
-                  style={{ background: `${tag.color}18`, color: tag.color }}
-                >
-                  {tag.name}
-                </span>
-              ))}
-            </div>
-          )}
-
-          {discussion?.linkedPostId &&
-          <Link 
-          to={`/viewpage/${discussion?.linkedPostId?.author?.email}/${discussion?.linkedPostId?._id}`}
-          className="bg:red-100">
-
-            <img 
-            className="w-12 h-9 rounded-lg border border-emerald-700"
-            src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${discussion?.linkedPostId?.thumbnail}`} alt="" />
-            
-          </Link>
-          }
+            {discussion?.linkedPostId && (
+              <Link
+                to={`/viewpage/${discussion?.linkedPostId?.author?.email}/${discussion?.linkedPostId?._id}`}
+                className="bg:red-100"
+              >
+                <img
+                  className="w-12 h-9 rounded-lg border border-emerald-700"
+                  src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${discussion?.linkedPostId?.thumbnail}`}
+                  alt=""
+                />
+              </Link>
+            )}
           </div>
 
           <div className="flex items-center gap-4 text-[10px] text-gray-500">
@@ -490,10 +491,9 @@ const DiscussionsTab = ({
       )}
       {discussionLoading && filtered.length === 0 && (
         <div className="flex flex-col gap-2">
-          {
-           [...Array(3)].map((_,index)=>
-          <DiscussionCardSkeleton/>)
-          }
+          {[...Array(3)].map((_, index) => (
+            <DiscussionCardSkeleton />
+          ))}
         </div>
       )}
     </div>
@@ -797,8 +797,8 @@ const MembersTab = ({ members, coordinators }) => (
 );
 
 // ── Leaderboard sidebar card ──────────────────────────────────────────────────
-const LeaderboardCard = ({ data }) => {
-  const [period, setPeriod] = useState("weekly");
+const LeaderboardCard = ({ data, period, setPeriod }) => {
+  // const [period, setPeriod] = useState("weekly");
   const medalColors = ["#f2994a", "#8f9296", "#cd7f32"];
 
   return (
@@ -824,9 +824,13 @@ const LeaderboardCard = ({ data }) => {
         </div>
       </div>
 
-      <div className="flex flex-col gap-2">
-        {data.leaderboard.map((entry, i) => (
-          <div key={entry.email} className="flex items-center gap-2">
+      <div className="flex flex-col h-40 emerald-scrollbar overflow-x-hidden overflow-y-auto gap-2">
+        {data?.leaderboard?.map((entry, i) => (
+          <Link
+            to={`/viewProfile/${entry.email}`}
+            key={entry.email}
+            className="flex items-center gap-2"
+          >
             {i < 3 ? (
               <div
                 className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
@@ -845,15 +849,15 @@ const LeaderboardCard = ({ data }) => {
             <img
               src={avatar(entry.profile)}
               className="w-6 h-6 rounded-full object-cover bg-gray-700 flex-shrink-0"
-              alt={entry.authorName}
+              alt={entry.authorname}
             />
             <span className="text-[11px] text-gray-200 flex-1 truncate">
-              {entry.authorName}
+              {entry.authorname}
             </span>
             <span className="text-[10px] text-gray-500 whitespace-nowrap">
               {entry.points} pts
             </span>
-          </div>
+          </Link>
         ))}
       </div>
     </div>
@@ -862,14 +866,15 @@ const LeaderboardCard = ({ data }) => {
 
 // ── Trending tags sidebar card ────────────────────────────────────────────────
 const TrendingTagsCard = ({ data }) => {
-  const max = Math.max(...data.tags.map((t) => t.count), 1);
+  const max = Math.max(...data?.map((t) => t.count), 1);
   return (
+  
     <div className="theme border border-[#1e293b] rounded-xl p-4">
       <span className="text-xs font-semibold text-gray-200 flex items-center gap-1.5 mb-3">
         <TbHash className="text-emerald-400 text-sm" /> Trending tags
       </span>
-      <div className="flex flex-col gap-2.5">
-        {data.tags.map((tag) => (
+      <div className="flex flex-col h-40 scrollbar-hide overflow-y-auto overflow-x-hidden gap-2.5">
+        {data?.map((tag) => (
           <div key={tag._id} className="flex items-center gap-2">
             <span
               className="text-[10px] font-medium w-24 truncate"
@@ -891,6 +896,7 @@ const TrendingTagsCard = ({ data }) => {
             </span>
           </div>
         ))}
+        
       </div>
     </div>
   );
@@ -906,6 +912,59 @@ function SingleTechCommunity() {
     commLoading,
     getCommunitDetails,
   } = useGetSingleTechCommunity(communityId);
+
+  // const lb = leaderboardSample;
+  const [leaderboardData, setLeaderboardData] = useState([]);
+  const [period, setPeriod] = useState("weekly");
+  const [leaderboardLoader, setLeaderBoardLoader] = useState(false);
+
+  const getLeaderBoardByCommunity = async () => {
+    try {
+      setLeaderBoardLoader(true);
+      const res = await axiosInstance.get(
+        `/bytes/discuss/${communityId}/leaderboard?period=${period}`,
+      );
+
+      if (res.status === 200) {
+        setLeaderboardData(res.data);
+      }
+    } catch (err) {
+      console.log("error", err.message);
+    } finally {
+      setLeaderBoardLoader(false);
+    }
+  };
+
+  useEffect(() => {
+    getLeaderBoardByCommunity();
+  }, [communityId, period]);
+
+  //  const Tags = trendingTagsSample;
+  const [trendingTags, setTrendingTags] = useState([]);
+  const[trendingTagLoader, setTrendingTagLoader] = useState(false)
+
+  const getTrendingTagsByCommunity = async () => {
+    try {
+      setTrendingTagLoader(true)
+      const res = await axiosInstance.get(
+        `/bytes/discuss/${communityId}/trending-tags`,
+      );
+      console.log("res data", res.data)
+      if (res.status === 200) {
+        
+        setTrendingTags(res.data.tags);
+      }
+    } catch (err) {
+      console.log("error", err.message);
+    }
+    finally{
+      setTrendingTagLoader(false)
+    }
+  };
+
+  useEffect(() => {
+    getTrendingTagsByCommunity();
+  }, [communityId]);
 
   const [searchParams, setSearchParams] = useSearchParams();
   const activeTab = searchParams.get("tab") || "discussions";
@@ -937,11 +996,7 @@ function SingleTechCommunity() {
     { category: "", limit: 20 },
   );
 
-  // console.log("posts", posts);
-  // console.log("members", members);
-  // console.log("coordinators", coordinators);
-  // console.log("communityId", communityId)
-  // console.log("discussions", discussions)
+  
   useEffect(() => {
     fetchAuthors();
   }, [communityId]);
@@ -952,8 +1007,7 @@ function SingleTechCommunity() {
     community?.userRole === "coordinator" ||
     coordinators.some((coord) => coord.authorId?.email === currentUserEmail);
 
-  const leaderboard = leaderboardSample;
-  const trendingTags = trendingTagsSample;
+ 
 
   const style = getDomainStyle(community?.name);
   const gradient = deriveGradient(community?.colorTheme);
@@ -964,8 +1018,16 @@ function SingleTechCommunity() {
 
   const accentColor = community?.colorTheme ?? style.from;
 
+  // console.log("posts", posts);
+  // console.log("members", members);
+  // console.log("coordinators", coordinators);
+  // console.log("communityId", communityId)
+  // console.log("lb", lb);
+  // console.log("leaderboardData", leaderboardData);
+
   // console.log("community", community);
-  console.log("discussions", discussions);
+  // console.log("discussions", discussions);
+  // console.log("Tags", Tags);
 
   return (
     <div className="min-h-screen theme text-white flex flex-col">
@@ -1022,8 +1084,17 @@ function SingleTechCommunity() {
 
           {/* ── Sidebar — sticky, always visible regardless of tab ── */}
           <div className="flex flex-col gap-4 lg:sticky lg:top-4">
-            <LeaderboardCard data={leaderboard} />
-            <TrendingTagsCard data={trendingTags} />
+            {!leaderboardLoader ? (
+              <LeaderboardCard
+                data={leaderboardData}
+                period={period}
+                setPeriod={setPeriod}
+              />
+            ) : (
+              <TopContributorsSkeleton />
+            )}
+            {!trendingTagLoader? <TrendingTagsCard data={trendingTags} />:
+            <TrendingTagsSkeleton/>}
           </div>
         </div>
       </div>
