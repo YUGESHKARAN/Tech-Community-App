@@ -53,6 +53,7 @@ import CommunityHeaderSkeleton from "../components/loaders/community/CommunityHe
 import toast from "../components/toaster/Toast";
 import DiscussionCardSkeleton from "../components/loaders/community/DiscussionCardSkeleton";
 import { TopContributorsSkeleton } from "../components/loaders/community/TopContributorsSkeleton";
+import { TrendingTagsSkeleton } from "../components/loaders/community/TrendingTagsSkeleton";
 
 // ── S3 image base ─────────────────────────────────────────────────────────────
 const S3 = "https://open-access-blog-image.s3.us-east-1.amazonaws.com/";
@@ -938,11 +939,13 @@ function SingleTechCommunity() {
     getLeaderBoardByCommunity();
   }, [communityId, period]);
 
-   const Tags = trendingTagsSample;
+  //  const Tags = trendingTagsSample;
   const [trendingTags, setTrendingTags] = useState([]);
+  const[trendingTagLoader, setTrendingTagLoader] = useState(false)
 
   const getTrendingTagsByCommunity = async () => {
     try {
+      setTrendingTagLoader(true)
       const res = await axiosInstance.get(
         `/bytes/discuss/${communityId}/trending-tags`,
       );
@@ -953,6 +956,9 @@ function SingleTechCommunity() {
       }
     } catch (err) {
       console.log("error", err.message);
+    }
+    finally{
+      setTrendingTagLoader(false)
     }
   };
 
@@ -990,14 +996,7 @@ function SingleTechCommunity() {
     { category: "", limit: 20 },
   );
 
-  // console.log("posts", posts);
-  // console.log("members", members);
-  // console.log("coordinators", coordinators);
-  // console.log("communityId", communityId)
-  // console.log("discussions", discussions)
-  // console.log("lb", lb);
-  // console.log("leaderboardData", leaderboardData);
-
+  
   useEffect(() => {
     fetchAuthors();
   }, [communityId]);
@@ -1018,6 +1017,13 @@ function SingleTechCommunity() {
   };
 
   const accentColor = community?.colorTheme ?? style.from;
+
+  // console.log("posts", posts);
+  // console.log("members", members);
+  // console.log("coordinators", coordinators);
+  // console.log("communityId", communityId)
+  // console.log("lb", lb);
+  // console.log("leaderboardData", leaderboardData);
 
   // console.log("community", community);
   // console.log("discussions", discussions);
@@ -1087,7 +1093,8 @@ function SingleTechCommunity() {
             ) : (
               <TopContributorsSkeleton />
             )}
-            <TrendingTagsCard data={trendingTags} />
+            {!trendingTagLoader? <TrendingTagsCard data={trendingTags} />:
+            <TrendingTagsSkeleton/>}
           </div>
         </div>
       </div>

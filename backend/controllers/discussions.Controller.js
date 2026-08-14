@@ -1269,7 +1269,7 @@ const markAnswer = async (req, res) => {
 const getTrendingTags = async (req, res) => {
   const { communityId } = req.params;
   const { tenantId } = req.user;
- console.log("tags called");
+//  console.log("tags called");
   const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
   try {
