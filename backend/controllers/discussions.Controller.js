@@ -437,7 +437,15 @@ const getDiscussions = async (req, res) => {
         .limit(Number(limit))
         .populate('authorId', 'authorname profile email')
         .populate('tags', 'name color')
-        .populate('linkedPostId', 'image title description') // add this
+        // .populate('linkedPostId', 'image title description') // add this
+        .populate({
+          path: 'linkedPostId',
+          select: 'image title description authorId',
+          populate: {
+            path: 'authorId',
+            select: 'email authorname',
+          },
+        })
         .lean(),
       Discussion.countDocuments(filter),
     ]);
@@ -449,14 +457,26 @@ const getDiscussions = async (req, res) => {
       ...d,
       hasVoted: upvotedSet.has(d._id.toString()),
       // shape linkedPost the same way getDiscussionById does
+      // linkedPostId: d.linkedPostId
+      //   ? {
+      //       _id:         d.linkedPostId._id,
+      //       title:       d.linkedPostId.title,
+      //       description: d.linkedPostId.description,
+      //       thumbnail:   d.linkedPostId.image || null,
+      //     }
+      //   : null,
       linkedPostId: d.linkedPostId
-        ? {
-            _id:         d.linkedPostId._id,
-            title:       d.linkedPostId.title,
-            description: d.linkedPostId.description,
-            thumbnail:   d.linkedPostId.image || null,
-          }
-        : null,
+  ? {
+      _id:         d.linkedPostId._id,
+      title:       d.linkedPostId.title,
+      description: d.linkedPostId.description,
+      thumbnail:   d.linkedPostId.image || null,
+      author: {
+        email:      d.linkedPostId.authorId?.email || null,
+        authorname: d.linkedPostId.authorId?.authorname || null,
+      },
+    }
+  : null,
     }));
 
     res.status(200).json({
@@ -487,7 +507,7 @@ const getDiscussionById = async (req, res) => {
 
   const skip = (Number(replyPage) - 1) * Number(replyLimit);
 
-  console.log("get discussions called")
+  // console.log("get discussions called")
 
   try {
     // increment view count atomically if this user hasn't viewed before
@@ -503,7 +523,15 @@ const getDiscussionById = async (req, res) => {
     )
       .populate('authorId', 'authorname profile email badges')
       .populate('tags', 'name color')
-      .populate('linkedPostId', 'image title description')  // thumbnail comes from here
+      // .populate('linkedPostId', 'image title description')  // thumbnail comes from here
+      .populate({
+          path: 'linkedPostId',
+          select: 'image title description authorId',
+          populate: {
+            path: 'authorId',
+            select: 'email authorname',
+          },
+      })
       .populate('solvedReplyId', 'body authorId')
       .lean();
 
@@ -513,7 +541,15 @@ const getDiscussionById = async (req, res) => {
     )
       .populate('authorId', 'authorname profile email badges')
       .populate('tags', 'name color')
-      .populate('linkedPostId', 'image title description')
+      // .populate('linkedPostId', 'image title description')
+        .populate({
+          path: 'linkedPostId',
+          select: 'image title description authorId',
+          populate: {
+            path: 'authorId',
+            select: 'email authorname',
+          },
+      })
       .populate('solvedReplyId', 'body authorId')
       .lean();
 
@@ -558,14 +594,27 @@ const getDiscussionById = async (req, res) => {
     }));
 
     // shape linkedPost cleanly — null if no post was linked
+    // const linkedPost = thread.linkedPostId
+    //   ? {
+    //       _id:         thread.linkedPostId._id,
+    //       title:       thread.linkedPostId.title,
+    //       description: thread.linkedPostId.description,
+    //       thumbnail:   thread.linkedPostId.image || null,
+    //     }
+    //   : null;
+
     const linkedPost = thread.linkedPostId
-      ? {
-          _id:         thread.linkedPostId._id,
-          title:       thread.linkedPostId.title,
-          description: thread.linkedPostId.description,
-          thumbnail:   thread.linkedPostId.image || null,
-        }
-      : null;
+  ? {
+      _id:         thread.linkedPostId._id,
+      title:       thread.linkedPostId.title,
+      description: thread.linkedPostId.description,
+      thumbnail:   thread.linkedPostId.image || null,
+      author: {
+        email:      thread.linkedPostId.authorId?.email || null,
+        authorname: thread.linkedPostId.authorId?.authorname || null,
+      },
+    }
+  : null;
 
     res.status(200).json({
       discussion: {
