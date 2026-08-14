@@ -395,13 +395,15 @@ const DiscussionCard = ({
           )}
 
           {discussion?.linkedPostId &&
-          <div className="bg:red-100">
+          <Link 
+          to={`/viewpage/${discussion?.linkedPostId?.author?.email}/${discussion?.linkedPostId?._id}`}
+          className="bg:red-100">
 
             <img 
             className="w-12 h-9 rounded-lg border border-emerald-700"
             src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${discussion?.linkedPostId?.thumbnail}`} alt="" />
             
-          </div>
+          </Link>
           }
           </div>
 

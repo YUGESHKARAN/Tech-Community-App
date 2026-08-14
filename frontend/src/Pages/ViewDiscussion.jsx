@@ -1314,7 +1314,7 @@ function ViewDiscussion() {
                   />
                    {discussion?.linkedPostId && (
                   <Link 
-
+                    to={`/viewpage/${discussion?.linkedPostId?.author?.email}/${discussion?.linkedPostId?._id}`}
                   className="bg:red-100">
                     <img
                       className="w-12 h-9 rounded-lg border border-emerald-700"

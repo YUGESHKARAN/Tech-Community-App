@@ -70,7 +70,7 @@ router.get("/:communityId/discussions", getDiscussions);  //used
 router.post("/:communityId/discussions", createDiscussion);  //used
 router.get("/:communityId/discussions/:discussionId", getDiscussionById); //used
 router.patch("/:communityId/discussions/:discussionId", updateDiscussion); //used
-router.delete("/:communityId/discussions/:discussionId", deleteDiscussion);
+router.delete("/:communityId/discussions/:discussionId", deleteDiscussion); //used
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  DISCUSSION ACTIONS
