@@ -9,52 +9,44 @@
 </div>
 
 
+<div align="center">
+
 [![License: MIT](https://img.shields.io/github/license/YUGESHKARAN/Tech-Community-App)](./LICENSE)
-[![Node.js Version](https://img.shields.io/badge/node-%3E%3D17.9.1-brightgreen.svg)](https://nodejs.org/)
-[![Last Commit](https://img.shields.io/github/last-commit/YUGESHKARAN/Node-Blog-App)](https://github.com/YUGESHKARAN/Node-Blog-App/commits/main)
-[![Contributors](https://img.shields.io/github/contributors/YUGESHKARAN/Tech-Community-App)](https://github.com/YUGESHKARAN/Tech-Community-App/graphs/contributors)
-[![Issues](https://img.shields.io/github/issues/YUGESHKARAN/Tech-Community-App)](https://github.com/YUGESHKARAN/Tech-Community-App/issues)
-[![Closed Issues](https://img.shields.io/github/issues-closed/YUGESHKARAN/Tech-Community-App)](https://github.com/YUGESHKARAN/Tech-Community-App/issues?q=is%3Aissue+is%3Aclosed)
-[![Pull Requests](https://img.shields.io/github/issues-pr/YUGESHKARAN/Node-Blog-App)](https://github.com/YUGESHKARAN/Node-Blog-App/pulls)
-[![Closed PRs](https://img.shields.io/github/issues-pr-closed/YUGESHKARAN/Tech-Community-App)](https://github.com/YUGESHKARAN/Tech-Community-App/pulls?q=is%3Apr+is%3Aclosed)
+<a href="https://github.com/YUGESHKARAN/Tech-Community-App/stargazers">
+  <img src="https://img.shields.io/github/stars/YUGESHKARAN/Tech-Community-App?style=social" alt="GitHub stars" />
+</a>
+<a href="https://www.bytesbase.me">
+  <img src="https://img.shields.io/badge/bytesbase.me-000000?logo=google-chrome&logoColor=white" alt="Website" />
+</a>
+<a href="https://www.linkedin.com/company/bytes-base">
+  <img src="https://img.shields.io/badge/Follow%20on-LinkedIn-black?style=flat&logo=linkedin&logoColor=white&labelColor=white" alt="LinkedIn" />
+</a>
 
+</div>
 
+---
 **Welcome to Bytes Base**
 
-Developer's collaborative & learning  platform designed for universities and colleges, focusing on knowledge sharing and community building. The platform enables student developers to connect, collaborate, and engage through sharing their tech works, knowledge and findings, all within their institution. Developers can interact, clarify doubts via discussion section. The platform includes role-based interfaces for Students, Coordinators, and Admins to manage content, moderation, and community participation.
+Bytes Base is an AI assisted developer community platform built for universities and colleges, empowering students, alumni and faculty to collaborate and grow together. The platform enables users to showcase projects, share technical knowledge, engage in discussions, discover opportunities and cultivate a vibrant developer ecosystem within their academic community.
 
----
-<div align="center">
-  <h4>Home Screen (Coordinator Interface)</h4>
-</div>
+**How It Works?**
 
-![Tech-Comm-App](/assets/bytesbase_app.png)
+Each institution receives its own dedicated community space where contributors can publish content across organized domains, members can explore content with AI assisted support,  join communities, engage in discussions, collaborate with peers, receive announcements and discover fellow developers across campus. Administrators gain visibility into platform insights, community engagement and contributor activity while maintaining a secure, well-managed and organized environment.
 
----
+**The Problem**
 
-<div align="center">
-  <h4>Playlist Screen (Student Interface)</h4>
-</div>
+Many institutions have talented student developers, but meaningful interaction and collaboration often remain limited to classrooms, clubs, or short-term events. As a result, valuable knowledge, projects and opportunities stay disconnected, making it difficult to build a strong and sustainable developer culture.
 
-![Tech-Comm-App](/assets/bytesbase_playlist.png)
+**Why Bytes Base?**
 
----
+Bytes Base helps institutions cultivate an active technical community by encouraging students to share knowledge, collaborate on ideas, engage with peers and learn from one another. The platform transforms isolated contributors into a connected ecosystem where innovation, participation and community-driven learning can thrive.
 
-<div align="center">
-  <h4>Home Search Engine (Student Interface)</h4>
-</div>
+**How to Launch?**
 
-![Tech-Comm-App](/assets/bytesbase_home_feed_search.png)
+Visit https://www.bytesbase.me book a demo session. Our team will schedule a personalized walkthrough to showcase the platform and its features. Institutions will receive one month of complimentary access to explore the platform within their campus environment. Upon confirmation, We provide onboarding and launch support.
 
 ---
 
-<div align="center">
-  <h4>Tech Community Screen (Student Interface)</h4>
-</div>
-
-![Tech-Comm-App](/assets/bytesbase_tech_community.png)
-
----
 ## Key Features
 
 * **User Authentication** –Secure registration and login with role-based access using JWT.
