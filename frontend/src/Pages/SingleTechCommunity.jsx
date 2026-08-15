@@ -54,6 +54,7 @@ import toast from "../components/toaster/Toast";
 import DiscussionCardSkeleton from "../components/loaders/community/DiscussionCardSkeleton";
 import { TopContributorsSkeleton } from "../components/loaders/community/TopContributorsSkeleton";
 import { TrendingTagsSkeleton } from "../components/loaders/community/TrendingTagsSkeleton";
+import { getLast3MonthsName } from "../utils/dateFunction";
 
 // ── S3 image base ─────────────────────────────────────────────────────────────
 const S3 = "https://open-access-blog-image.s3.us-east-1.amazonaws.com/";
@@ -797,8 +798,9 @@ const MembersTab = ({ members, coordinators }) => (
 );
 
 // ── Leaderboard sidebar card ──────────────────────────────────────────────────
-const LeaderboardCard = ({ data, period, setPeriod }) => {
+const LeaderboardCard = ({ data, period, setPeriod, leaderboardLoader }) => {
   // const [period, setPeriod] = useState("weekly");
+  const months = getLast3MonthsName();
   const medalColors = ["#f2994a", "#8f9296", "#cd7f32"];
 
   return (
@@ -808,19 +810,32 @@ const LeaderboardCard = ({ data, period, setPeriod }) => {
           <TbTrophy className="text-amber-400 text-sm" /> Top contributors
         </span>
         <div className="flex gap-1">
-          {LEADERBOARD_PERIODS.map((p) => (
+          {/* {Object.keys(months).map((key) => (
             <button
-              key={p.value}
-              onClick={() => setPeriod(p.value)}
+              key={key}
+              onClick={() => setPeriod(key)}
               className={`text-[9px] px-2 py-0.5 rounded-full border transition-colors ${
-                period === p.value
+                period === key
                   ? "bg-white/5 text-gray-200 border-white/20"
                   : "bg-transparent text-gray-500 border-white/5 hover:text-gray-300"
               }`}
             >
-              {p.label}
+              {months[key]}
             </button>
-          ))}
+          ))} */}
+
+          <select
+            value={period}
+            onChange={(e) => setPeriod(e.target.value)}
+            className="theme text-gray-200 cursor-pointer text-xs rounded px-2 py-1 border border-[#334155]"
+          >
+            <option value="overall">Overall</option>
+            {Object.keys(months).map((key) => (
+              <option key={key} value={key}>
+                {months[key]}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 
@@ -859,16 +874,23 @@ const LeaderboardCard = ({ data, period, setPeriod }) => {
             </span>
           </Link>
         ))}
+
+        {
+          !leaderboardLoader && data?.leaderboard?.length ===0 &&
+          <p className="h-full text-xs flex flex-col justify-center items-center">
+            No record found !
+          </p>
+        }
+        
       </div>
     </div>
   );
 };
 
 // ── Trending tags sidebar card ────────────────────────────────────────────────
-const TrendingTagsCard = ({ data }) => {
+const TrendingTagsCard = ({ data, trendingTagLoader }) => {
   const max = Math.max(...data?.map((t) => t.count), 1);
   return (
-  
     <div className="theme border border-[#1e293b] rounded-xl p-4">
       <span className="text-xs font-semibold text-gray-200 flex items-center gap-1.5 mb-3">
         <TbHash className="text-emerald-400 text-sm" /> Trending tags
@@ -896,7 +918,13 @@ const TrendingTagsCard = ({ data }) => {
             </span>
           </div>
         ))}
-        
+
+         {
+          !trendingTagLoader && data?.length ===0 &&
+          <p className="h-full  text-xs flex flex-col justify-center items-center">
+            No tags found !
+          </p>
+        }
       </div>
     </div>
   );
@@ -915,14 +943,14 @@ function SingleTechCommunity() {
 
   // const lb = leaderboardSample;
   const [leaderboardData, setLeaderboardData] = useState([]);
-  const [period, setPeriod] = useState("weekly");
+  const [period, setPeriod] = useState("overall");
   const [leaderboardLoader, setLeaderBoardLoader] = useState(false);
 
   const getLeaderBoardByCommunity = async () => {
     try {
       setLeaderBoardLoader(true);
       const res = await axiosInstance.get(
-        `/bytes/discuss/${communityId}/leaderboard?period=${period}`,
+        `/bytes/discuss/${communityId}/leaderboard?filter=${period}`,
       );
 
       if (res.status === 200) {
@@ -941,24 +969,22 @@ function SingleTechCommunity() {
 
   //  const Tags = trendingTagsSample;
   const [trendingTags, setTrendingTags] = useState([]);
-  const[trendingTagLoader, setTrendingTagLoader] = useState(false)
+  const [trendingTagLoader, setTrendingTagLoader] = useState(false);
 
   const getTrendingTagsByCommunity = async () => {
     try {
-      setTrendingTagLoader(true)
+      setTrendingTagLoader(true);
       const res = await axiosInstance.get(
         `/bytes/discuss/${communityId}/trending-tags`,
       );
-      console.log("res data", res.data)
+      console.log("res data", res.data);
       if (res.status === 200) {
-        
         setTrendingTags(res.data.tags);
       }
     } catch (err) {
       console.log("error", err.message);
-    }
-    finally{
-      setTrendingTagLoader(false)
+    } finally {
+      setTrendingTagLoader(false);
     }
   };
 
@@ -996,7 +1022,6 @@ function SingleTechCommunity() {
     { category: "", limit: 20 },
   );
 
-  
   useEffect(() => {
     fetchAuthors();
   }, [communityId]);
@@ -1006,8 +1031,6 @@ function SingleTechCommunity() {
     currentUserRole === "director" ||
     community?.userRole === "coordinator" ||
     coordinators.some((coord) => coord.authorId?.email === currentUserEmail);
-
- 
 
   const style = getDomainStyle(community?.name);
   const gradient = deriveGradient(community?.colorTheme);
@@ -1089,12 +1112,16 @@ function SingleTechCommunity() {
                 data={leaderboardData}
                 period={period}
                 setPeriod={setPeriod}
+                leaderboardLoader={leaderboardLoader}
               />
             ) : (
               <TopContributorsSkeleton />
             )}
-            {!trendingTagLoader? <TrendingTagsCard data={trendingTags} />:
-            <TrendingTagsSkeleton/>}
+            {!trendingTagLoader ? (
+              <TrendingTagsCard data={trendingTags} trendingTagLoader={trendingTagLoader} />
+            ) : (
+              <TrendingTagsSkeleton />
+            )}
           </div>
         </div>
       </div>

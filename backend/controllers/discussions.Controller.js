@@ -5,6 +5,8 @@ const Upvote = require('../models/communityDiscussions/upvoteSchema');
 const { CommunityTag, CommunitySettings } = require('../models/communityDiscussions/communityTagAndSettingsSchema');
 const CommunityMembership = require('../models/communityMembershipSchema');
 const { Author } = require('../models/blogAuthorSchema');
+const Community = require('../models/communitySchema');
+const {Post} = require("../models/blogAuthorSchema")
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  HELPERS
@@ -1323,61 +1325,202 @@ const getTrendingTags = async (req, res) => {
  * LeaderboardSnapshot read once you move to EC2 and add the
  * scheduled worker.
  */
+
+// const getCommunityLeaderboard = async (req, res) => {
+//   const { communityId } = req.params;
+//   const { tenantId } = req.user;
+//   const { period = 'weekly' } = req.query;
+
+//   // console.log("getCommunityLeaderboard called", communityId, period)
+
+//   const now = new Date();
+//   const periodStart = {
+//     weekly: new Date(now - 7 * 24 * 60 * 60 * 1000),
+//     monthly: new Date(now - 30 * 24 * 60 * 60 * 1000),
+//     allTime: new Date(0),
+//   }[period] || new Date(now - 7 * 24 * 60 * 60 * 1000);
+
+//   const communityObjectId = new mongoose.Types.ObjectId(communityId);
+
+//   try {
+//     const [discussionScores, replyScores] = await Promise.all([
+//       Discussion.aggregate([
+//         {
+//           $match: {
+//             tenantId,
+//             communityId: communityObjectId,
+//             createdAt: { $gte: periodStart },
+//           },
+//         },
+//         {
+//           $group: {
+//             _id: '$authorId',
+//             // 3 pts per discussion created + 2 pts per upvote received
+//             points: { $sum: { $add: [3, { $multiply: ['$upvoteCount', 2] }] } },
+//           },
+//         },
+//       ]),
+//       DiscussionReply.aggregate([
+//         {
+//           $match: {
+//             tenantId,
+//             communityId: communityObjectId,
+//             createdAt: { $gte: periodStart },
+//           },
+//         },
+//         {
+//           $group: {
+//             _id: '$authorId',
+//             // 1 pt per reply created + 1 pt per upvote received
+//             points: { $sum: { $add: [1, '$upvoteCount'] } },
+//           },
+//         },
+//       ]),
+//     ]);
+
+//     // merge scores from both aggregations
+//     const scoreMap = {};
+//     for (const { _id, points } of [...discussionScores, ...replyScores]) {
+//       const key = _id.toString();
+//       scoreMap[key] = (scoreMap[key] || 0) + points;
+//     }
+
+//     const sorted = Object.entries(scoreMap)
+//       .sort(([, a], [, b]) => b - a)
+//       .slice(0, 10);
+
+//     const authorIds = sorted.map(([id]) => new mongoose.Types.ObjectId(id));
+//     const authors = await Author.find(
+//       { _id: { $in: authorIds } },
+//       'authorname profile email badges'
+//     ).lean();
+
+//     const authorMap = Object.fromEntries(authors.map((a) => [a._id.toString(), a]));
+
+//     const leaderboard = sorted.map(([id, points], index) => ({
+//       rank: index + 1,
+//       points,
+//       ...authorMap[id],
+//     }));
+
+//     res.status(200).json({ leaderboard, period });
+//   } catch (err) {
+//     console.error('getCommunityLeaderboard error:', err.message);
+//     res.status(500).json({ message: 'Server error' });
+//   }
+// };
+
 const getCommunityLeaderboard = async (req, res) => {
   const { communityId } = req.params;
   const { tenantId } = req.user;
-  const { period = 'weekly' } = req.query;
-
-  // console.log("getCommunityLeaderboard called", communityId, period)
-
-  const now = new Date();
-  const periodStart = {
-    weekly: new Date(now - 7 * 24 * 60 * 60 * 1000),
-    monthly: new Date(now - 30 * 24 * 60 * 60 * 1000),
-    allTime: new Date(0),
-  }[period] || new Date(now - 7 * 24 * 60 * 60 * 1000);
+  const filter = req.query.filter || 'overall';
 
   const communityObjectId = new mongoose.Types.ObjectId(communityId);
 
   try {
-    const [discussionScores, replyScores] = await Promise.all([
+    // ── build date range — same logic as getTopContributors ──
+    let dateRange = null;
+
+    if (filter !== 'overall') {
+      const now   = new Date();
+      const year  = now.getFullYear();
+      const month = now.getMonth(); // 0-indexed
+
+      const ranges = {
+        current_month: {
+          start: new Date(year, month,     1),
+          end:   new Date(year, month + 1, 1),
+        },
+        previous_month: {
+          start: new Date(year, month - 1, 1),
+          end:   new Date(year, month,     1),
+        },
+        two_months_ago: {
+          start: new Date(year, month - 2, 1),
+          end:   new Date(year, month - 1, 1),
+        },
+      };
+
+      dateRange = ranges[filter] || null;
+
+      if (!dateRange) {
+        return res.status(400).json({
+          message: 'Invalid filter. Use: overall | current_month | previous_month | two_months_ago',
+        });
+      }
+    }
+
+    const dateFilter = dateRange
+      ? { $gte: dateRange.start, $lt: dateRange.end }
+      : null;
+
+    // resolve community name for Post.category match
+    const community = await Community.findOne(
+      { _id: communityObjectId, tenantId },
+      'name'
+    ).lean();
+
+    if (!community) {
+      return res.status(404).json({ message: 'Community not found' });
+    }
+
+    const [discussionScores, replyScores, postScores] = await Promise.all([
       Discussion.aggregate([
         {
           $match: {
             tenantId,
             communityId: communityObjectId,
-            createdAt: { $gte: periodStart },
+            ...(dateFilter && { createdAt: dateFilter }),
           },
         },
         {
           $group: {
             _id: '$authorId',
-            // 3 pts per discussion created + 2 pts per upvote received
             points: { $sum: { $add: [3, { $multiply: ['$upvoteCount', 2] }] } },
           },
         },
       ]),
+
       DiscussionReply.aggregate([
         {
           $match: {
             tenantId,
             communityId: communityObjectId,
-            createdAt: { $gte: periodStart },
+            ...(dateFilter && { createdAt: dateFilter }),
           },
         },
         {
           $group: {
             _id: '$authorId',
-            // 1 pt per reply created + 1 pt per upvote received
             points: { $sum: { $add: [1, '$upvoteCount'] } },
+          },
+        },
+      ]),
+
+      Post.aggregate([
+        {
+          $match: {
+            tenantId,
+            category: community.name,
+            ...(dateFilter && { timestamp: dateFilter }),
+          },
+        },
+        {
+          $group: {
+            _id: '$authorId',
+            points: { $sum: 5 },
           },
         },
       ]),
     ]);
 
-    // merge scores from both aggregations
+    // merge all three score sources
     const scoreMap = {};
-    for (const { _id, points } of [...discussionScores, ...replyScores]) {
+    for (const { _id, points } of [
+      ...discussionScores,
+      ...replyScores,
+      ...postScores,
+    ]) {
       const key = _id.toString();
       scoreMap[key] = (scoreMap[key] || 0) + points;
     }
@@ -1392,15 +1535,26 @@ const getCommunityLeaderboard = async (req, res) => {
       'authorname profile email badges'
     ).lean();
 
-    const authorMap = Object.fromEntries(authors.map((a) => [a._id.toString(), a]));
+    const authorMap = Object.fromEntries(
+      authors.map((a) => [a._id.toString(), a])
+    );
 
     const leaderboard = sorted.map(([id, points], index) => ({
-      rank: index + 1,
+      rank:   index + 1,
       points,
       ...authorMap[id],
     }));
 
-    res.status(200).json({ leaderboard, period });
+    return res.status(200).json({
+      leaderboard,
+      filter,
+      period: dateRange
+        ? {
+            start: dateRange.start.toISOString().slice(0, 10),
+            end:   new Date(dateRange.end.getTime() - 1).toISOString().slice(0, 10),
+          }
+        : null,
+    });
   } catch (err) {
     console.error('getCommunityLeaderboard error:', err.message);
     res.status(500).json({ message: 'Server error' });
