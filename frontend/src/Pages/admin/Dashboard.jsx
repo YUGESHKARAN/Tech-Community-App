@@ -439,7 +439,7 @@ function Dashboard() {
                         to={`/viewProfile/${u.email}`}
                         key={i}
                         // className="flex cursor-pointer md:p-2 md:hover:bg-gray-800/50 rounded-lg items-center gap-3"
-                         className={`flex items-center gap-2 px-1 rounded-lg ${
+                         className={`flex items-center gap-2 px-1 py-1 md:py-0 rounded-lg ${
                         isYou ? "bg-emerald-500/10" : ""
                       }`}
                       >
