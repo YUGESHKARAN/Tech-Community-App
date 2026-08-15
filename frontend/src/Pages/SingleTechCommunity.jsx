@@ -855,7 +855,7 @@ const LeaderboardCard = ({ data, period, setPeriod }) => {
               {entry.authorname}
             </span>
             <span className="text-[10px] text-gray-500 whitespace-nowrap">
-              {entry.points} pts
+              {formatCount(entry.points)} pts
             </span>
           </Link>
         ))}

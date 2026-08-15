@@ -5,7 +5,7 @@ const PillLoader = () => {
       {[...Array(6)].map((_, index) => (
         <div
           key={index}
-          className="h-5 md:h-7 w-20 md:w-24 rounded-md bg-gray-700"
+          className="h-5 md:h-6 w-20 md:w-24 rounded-md bg-gray-700"
         />
       ))}
     </div>

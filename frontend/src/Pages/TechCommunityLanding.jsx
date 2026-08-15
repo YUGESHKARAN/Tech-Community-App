@@ -133,7 +133,7 @@ function TechCommunityLanding() {
   //   }
   // };
 
-  console.log("communityStats", communityStats);
+  // console.log("communityStats", communityStats);
   const updateCommunity = async (email, techCommunity) => {
     if (loadingDomains.has(techCommunity)) return;
 
@@ -420,6 +420,9 @@ function TechCommunityLanding() {
     );
   };
 
+
+  console.log("topContributors",topContributors)
+
   return (
     <div className="min-h-screen theme text-white flex flex-col">
       <NavBar />
@@ -566,7 +569,8 @@ function TechCommunityLanding() {
                             isYou ? "text-emerald-400" : "text-gray-400"
                           }`}
                         >
-                          {c.postsCount} Posts
+                          {/* {c.postsCount} Posts */}
+                          {formatCount(c.totalPoints)} pts
                         </span>
                       </Link>
                     );
