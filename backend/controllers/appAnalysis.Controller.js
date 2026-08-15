@@ -306,6 +306,180 @@ const getMonthlyPostCounts = async (req, res) => {
   }
 };
 
+// const getTopContributors = async (req, res) => {
+//   const requestEmail = req.params.email;
+//   const limitFromClient = Number(req.query.limit);
+//   const limit =
+//     Number.isInteger(limitFromClient) && limitFromClient > 0
+//       ? limitFromClient
+//       : 10;
+
+//   // filter: 'overall' | 'current_month' | 'previous_month' | 'two_months_ago'
+//   const filter = req.query.filter || "overall";
+
+//   if (!requestEmail) {
+//     return res
+//       .status(400)
+//       .json({ message: "Email is required as path param." });
+//   }
+
+//   try {
+//     const admin = await Author.findOne({ email: { $eq: requestEmail } }).select(
+//       "role",
+//     );
+//     if (!admin) return res.status(404).json({ message: "Author not found" });
+//     // if (admin.role !== "admin")
+//     //   return res.status(403).json({ message: "Access denied" });
+
+//     // ── build date range from filter ──────────────────────────
+//     let dateRange = null; // null = no filter = overall
+
+//     if (filter !== "overall") {
+//       const now = new Date();
+//       const year = now.getFullYear();
+//       const month = now.getMonth(); // 0-indexed
+
+//       const ranges = {
+//         current_month: {
+//           start: new Date(year, month, 1),
+//           end: new Date(year, month + 1, 1),
+//         },
+//         previous_month: {
+//           start: new Date(year, month - 1, 1),
+//           end: new Date(year, month, 1),
+//         },
+//         two_months_ago: {
+//           start: new Date(year, month - 2, 1),
+//           end: new Date(year, month - 1, 1),
+//         },
+//       };
+
+//       dateRange = ranges[filter] || null;
+
+//       if (!dateRange) {
+//         return res.status(400).json({
+//           message:
+//             "Invalid filter. Use: overall | current_month | previous_month | two_months_ago",
+//         });
+//       }
+//     }
+
+//     // ── build post match pipeline based on date range ─────────
+//     const postMatchPipeline = dateRange
+//       ? [
+//           {
+//             $match: {
+//               $expr: { $eq: ["$authorId", "$$authorId"] },
+//               timestamp: { $gte: dateRange.start, $lt: dateRange.end },
+//             },
+//           },
+//           { $count: "count" },
+//         ]
+//       : [
+//           { $match: { $expr: { $eq: ["$authorId", "$$authorId"] } } },
+//           { $count: "count" },
+//         ];
+
+//     // ── build playlist match pipeline based on date range ─────
+//     // TutorPlayList uses ObjectId timestamp — extract via $toDate on _id
+//     const playlistMatchPipeline = dateRange
+//       ? [
+//           {
+//             $match: {
+//               $expr: {
+//                 $and: [
+//                   { $eq: ["$email", "$$authorEmail"] },
+//                   { $gte: [{ $toDate: "$_id" }, dateRange.start] },
+//                   { $lt: [{ $toDate: "$_id" }, dateRange.end] },
+//                 ],
+//               },
+//             },
+//           },
+//           { $count: "count" },
+//         ]
+//       : [
+//           { $match: { $expr: { $eq: ["$email", "$$authorEmail"] } } },
+//           { $count: "count" },
+//         ];
+
+//     const contributors = await Author.aggregate([
+//       {
+//         $match: { role: { $in: ["admin", "coordinator"] } },
+//       },
+//       {
+//         $addFields: {
+//           followerscount: { $size: { $ifNull: ["$followers", []] } },
+//           followingcount: { $size: { $ifNull: ["$following", []] } },
+//         },
+//       },
+//       {
+//         $lookup: {
+//           from: "posts",
+//           let: { authorId: "$_id" },
+//           pipeline: postMatchPipeline,
+//           as: "postAgg",
+//         },
+//       },
+//       {
+//         $addFields: {
+//           postsCount: {
+//             $ifNull: [{ $arrayElemAt: ["$postAgg.count", 0] }, 0],
+//           },
+//         },
+//       },
+//       {
+//         $lookup: {
+//           from: "tutorplaylists",
+//           let: { authorEmail: "$email" },
+//           pipeline: playlistMatchPipeline,
+//           as: "playlistAgg",
+//         },
+//       },
+//       {
+//         $addFields: {
+//           playlistCount: {
+//             $ifNull: [{ $arrayElemAt: ["$playlistAgg.count", 0] }, 0],
+//           },
+//         },
+//       },
+//       {
+//         $project: {
+//           _id: 0,
+//           name: "$authorname",
+//           email: 1,
+//           profile: 1,
+//           community: 1,
+//           personalLinks: 1,
+//           postsCount: 1,
+//           playlistCount: 1,
+//           followerscount: 1,
+//           followingcount: 1,
+//           badges: 1,
+//         },
+//       },
+//       { $sort: { postsCount: -1, followerscount: -1, followingcount: -1 } },
+//       { $limit: limit },
+//     ]);
+
+//     return res.status(200).json({
+//       contributors,
+//       filter,
+//       // include period metadata so frontend can display the label
+//       period: dateRange
+//         ? {
+//             start: dateRange.start.toISOString().slice(0, 10),
+//             end: new Date(dateRange.end.getTime() - 1)
+//               .toISOString()
+//               .slice(0, 10),
+//           }
+//         : null,
+//     });
+//   } catch (err) {
+//     console.error("getTopContributors error:", err.message);
+//     res.status(500).json({ message: err.message });
+//   }
+// };
+
 const getTopContributors = async (req, res) => {
   const requestEmail = req.params.email;
   const limitFromClient = Number(req.query.limit);
@@ -314,43 +488,37 @@ const getTopContributors = async (req, res) => {
       ? limitFromClient
       : 10;
 
-  // filter: 'overall' | 'current_month' | 'previous_month' | 'two_months_ago'
   const filter = req.query.filter || "overall";
+  const { tenantId } = req.user;
 
   if (!requestEmail) {
-    return res
-      .status(400)
-      .json({ message: "Email is required as path param." });
+    return res.status(400).json({ message: "Email is required as path param." });
   }
 
   try {
-    const admin = await Author.findOne({ email: { $eq: requestEmail } }).select(
-      "role",
-    );
+    const admin = await Author.findOne({ email: { $eq: requestEmail } }).select("role");
     if (!admin) return res.status(404).json({ message: "Author not found" });
-    // if (admin.role !== "admin")
-    //   return res.status(403).json({ message: "Access denied" });
 
-    // ── build date range from filter ──────────────────────────
-    let dateRange = null; // null = no filter = overall
+    // ── build date range ──────────────────────────────────────
+    let dateRange = null;
 
     if (filter !== "overall") {
       const now = new Date();
       const year = now.getFullYear();
-      const month = now.getMonth(); // 0-indexed
+      const month = now.getMonth();
 
       const ranges = {
         current_month: {
           start: new Date(year, month, 1),
-          end: new Date(year, month + 1, 1),
+          end:   new Date(year, month + 1, 1),
         },
         previous_month: {
           start: new Date(year, month - 1, 1),
-          end: new Date(year, month, 1),
+          end:   new Date(year, month, 1),
         },
         two_months_ago: {
           start: new Date(year, month - 2, 1),
-          end: new Date(year, month - 1, 1),
+          end:   new Date(year, month - 1, 1),
         },
       };
 
@@ -358,79 +526,131 @@ const getTopContributors = async (req, res) => {
 
       if (!dateRange) {
         return res.status(400).json({
-          message:
-            "Invalid filter. Use: overall | current_month | previous_month | two_months_ago",
+          message: "Invalid filter. Use: overall | current_month | previous_month | two_months_ago",
         });
       }
     }
 
-    // ── build post match pipeline based on date range ─────────
-    const postMatchPipeline = dateRange
-      ? [
-          {
-            $match: {
-              $expr: { $eq: ["$authorId", "$$authorId"] },
-              timestamp: { $gte: dateRange.start, $lt: dateRange.end },
-            },
-          },
-          { $count: "count" },
-        ]
-      : [
-          { $match: { $expr: { $eq: ["$authorId", "$$authorId"] } } },
-          { $count: "count" },
-        ];
+    // ── point weights (mirrors getCommunityLeaderboard) ───────
+    // post published:               5 pts
+    // playlist created:             2 pts
+    // discussion created:           3 pts
+    // upvote received on discussion: 2 pts
+    // reply created:                1 pt
+    // upvote received on reply:     1 pt
 
-    // ── build playlist match pipeline based on date range ─────
-    // TutorPlayList uses ObjectId timestamp — extract via $toDate on _id
-    const playlistMatchPipeline = dateRange
-      ? [
-          {
-            $match: {
-              $expr: {
-                $and: [
-                  { $eq: ["$email", "$$authorEmail"] },
-                  { $gte: [{ $toDate: "$_id" }, dateRange.start] },
-                  { $lt: [{ $toDate: "$_id" }, dateRange.end] },
-                ],
-              },
-            },
-          },
-          { $count: "count" },
-        ]
-      : [
-          { $match: { $expr: { $eq: ["$email", "$$authorEmail"] } } },
-          { $count: "count" },
-        ];
+    const dateFilter = dateRange
+      ? { $gte: dateRange.start, $lt: dateRange.end }
+      : null;
 
-    const contributors = await Author.aggregate([
+    // ── post match pipeline ───────────────────────────────────
+    const postMatchPipeline = [
       {
-        $match: { role: { $in: ["admin", "coordinator"] } },
-      },
-      {
-        $addFields: {
-          followerscount: { $size: { $ifNull: ["$followers", []] } },
-          followingcount: { $size: { $ifNull: ["$following", []] } },
+        $match: {
+          $expr: { $eq: ["$authorId", "$$authorId"] },
+          ...(dateFilter && { timestamp: dateFilter }),
         },
       },
       {
+        $group: {
+          _id: null,
+          count:      { $sum: 1 },
+          // likes array length = upvotes received on posts (reuse for bonus pts)
+          totalLikes: { $sum: { $size: { $ifNull: ["$likes", []] } } },
+        },
+      },
+    ];
+
+    // ── playlist match pipeline ───────────────────────────────
+    const playlistMatchPipeline = [
+      {
+        $match: {
+          $expr: {
+            $and: [
+              { $eq: ["$email", "$$authorEmail"] },
+              ...(dateFilter
+                ? [
+                    { $gte: [{ $toDate: "$_id" }, dateRange.start] },
+                    { $lt:  [{ $toDate: "$_id" }, dateRange.end]   },
+                  ]
+                : []),
+            ],
+          },
+        },
+      },
+      { $count: "count" },
+    ];
+
+    // ── discussion match pipeline ─────────────────────────────
+    const discussionMatchPipeline = [
+      {
+        $match: {
+          $expr: { $eq: ["$authorId", "$$authorId"] },
+          tenantId,
+          ...(dateFilter && { createdAt: dateFilter }),
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          count:        { $sum: 1 },
+          totalUpvotes: { $sum: "$upvoteCount" },
+        },
+      },
+    ];
+
+    // ── reply match pipeline ──────────────────────────────────
+    const replyMatchPipeline = [
+      {
+        $match: {
+          $expr: { $eq: ["$authorId", "$$authorId"] },
+          tenantId,
+          ...(dateFilter && { createdAt: dateFilter }),
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          count:        { $sum: 1 },
+          totalUpvotes: { $sum: "$upvoteCount" },
+        },
+      },
+    ];
+
+    const contributors = await Author.aggregate([
+      {
+        $match: {
+          role: { $in: ["admin", "coordinator", "student"] },
+          tenantId,
+        },
+      },
+
+      // ── posts ─────────────────────────────────────────────
+      {
         $lookup: {
           from: "posts",
-          let: { authorId: "$_id" },
+          let:  { authorId: "$_id" },
           pipeline: postMatchPipeline,
           as: "postAgg",
         },
       },
       {
         $addFields: {
-          postsCount: {
-            $ifNull: [{ $arrayElemAt: ["$postAgg.count", 0] }, 0],
-          },
+          _postData: { $arrayElemAt: ["$postAgg", 0] },
         },
       },
       {
+        $addFields: {
+          postsCount:     { $ifNull: ["$_postData.count",      0] },
+          postLikesTotal: { $ifNull: ["$_postData.totalLikes", 0] },
+        },
+      },
+
+      // ── playlists ─────────────────────────────────────────
+      {
         $lookup: {
           from: "tutorplaylists",
-          let: { authorEmail: "$email" },
+          let:  { authorEmail: "$email" },
           pipeline: playlistMatchPipeline,
           as: "playlistAgg",
         },
@@ -442,35 +662,104 @@ const getTopContributors = async (req, res) => {
           },
         },
       },
+
+      // ── discussions ───────────────────────────────────────
       {
-        $project: {
-          _id: 0,
-          name: "$authorname",
-          email: 1,
-          profile: 1,
-          community: 1,
-          personalLinks: 1,
-          postsCount: 1,
-          playlistCount: 1,
-          followerscount: 1,
-          followingcount: 1,
-          badges: 1,
+        $lookup: {
+          from: "discussions",
+          let:  { authorId: "$_id" },
+          pipeline: discussionMatchPipeline,
+          as: "discussionAgg",
         },
       },
-      { $sort: { postsCount: -1, followerscount: -1, followingcount: -1 } },
+      {
+        $addFields: {
+          _discussionData: { $arrayElemAt: ["$discussionAgg", 0] },
+        },
+      },
+      {
+        $addFields: {
+          discussionsCount:        { $ifNull: ["$_discussionData.count",        0] },
+          discussionUpvotesTotal:  { $ifNull: ["$_discussionData.totalUpvotes", 0] },
+        },
+      },
+
+      // ── replies ───────────────────────────────────────────
+      {
+        $lookup: {
+          from: "discussionreplies",
+          let:  { authorId: "$_id" },
+          pipeline: replyMatchPipeline,
+          as: "replyAgg",
+        },
+      },
+      {
+        $addFields: {
+          _replyData: { $arrayElemAt: ["$replyAgg", 0] },
+        },
+      },
+      {
+        $addFields: {
+          repliesCount:       { $ifNull: ["$_replyData.count",        0] },
+          replyUpvotesTotal:  { $ifNull: ["$_replyData.totalUpvotes", 0] },
+        },
+      },
+
+      // ── compute total points ──────────────────────────────
+      // post:        5 pts each
+      // playlist:    2 pts each
+      // discussion:  3 pts each + 2 pts per upvote received
+      // reply:       1 pt each  + 1 pt per upvote received
+      {
+        $addFields: {
+          totalPoints: {
+            $add: [
+              { $multiply: ["$postsCount",            5] },
+              { $multiply: ["$playlistCount",         2] },
+              { $multiply: ["$discussionsCount",      3] },
+              { $multiply: ["$discussionUpvotesTotal",2] },
+              { $multiply: ["$repliesCount",          1] },
+              { $multiply: ["$replyUpvotesTotal",     1] },
+            ],
+          },
+          followerscount: { $size: { $ifNull: ["$followers", []] } },
+          followingcount: { $size: { $ifNull: ["$following", []] } },
+        },
+      },
+
+      // ── project ───────────────────────────────────────────
+      {
+        $project: {
+          _id:                    0,
+          name:                   "$authorname",
+          email:                  1,
+          profile:                1,
+          community:              1,
+          personalLinks:          1,
+          badges:                 1,
+          followerscount:         1,
+          followingcount:         1,
+          postsCount:             1,
+          playlistCount:          1,
+          discussionsCount:       1,
+          repliesCount:           1,
+          discussionUpvotesTotal: 1,
+          replyUpvotesTotal:      1,
+          totalPoints:            1,
+        },
+      },
+
+      { $sort: { totalPoints: -1, followerscount: -1 } },
       { $limit: limit },
     ]);
 
     return res.status(200).json({
       contributors,
       filter,
-      // include period metadata so frontend can display the label
       period: dateRange
         ? {
             start: dateRange.start.toISOString().slice(0, 10),
-            end: new Date(dateRange.end.getTime() - 1)
-              .toISOString()
-              .slice(0, 10),
+            end:   new Date(dateRange.end.getTime() - 1).toISOString().slice(0, 10),
           }
         : null,
     });

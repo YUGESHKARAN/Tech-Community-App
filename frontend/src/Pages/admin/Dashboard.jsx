@@ -416,7 +416,7 @@ function Dashboard() {
                     <select
                       value={filter}
                       onChange={(e) => setFilter(e.target.value)}
-                      className="bg-[#1e293b] text-gray-200 cursor-pointer text-xs rounded px-2 py-1 border border-[#334155]"
+                      className="theme text-gray-200 cursor-pointer text-xs rounded px-2 py-1 border border-[#334155]"
                     >
                       <option value="overall">Overall</option>
                       {Object.keys(months).map((key) => (
@@ -439,7 +439,7 @@ function Dashboard() {
                         to={`/viewProfile/${u.email}`}
                         key={i}
                         // className="flex cursor-pointer md:p-2 md:hover:bg-gray-800/50 rounded-lg items-center gap-3"
-                         className={`flex items-center gap-2 py-1.5 px-1 rounded-lg ${
+                         className={`flex items-center gap-2 px-1 rounded-lg ${
                         isYou ? "bg-emerald-500/10" : ""
                       }`}
                       >
@@ -471,7 +471,7 @@ function Dashboard() {
                         )}
                         {!u.profile ? (
                           <div
-                            className="md:w-8 md:h-8 w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold text-white shrink-0"
+                            className=" w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold text-white shrink-0"
                             style={{ backgroundColor: avatarColor(u.name) }}
                           >
                             {initials(u.name)}
@@ -480,7 +480,7 @@ function Dashboard() {
                           <img
                             src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${u.profile}`}
                             alt=""
-                            className="md:w-8 md:h-8 w-6 h-6 border border-green-500/70 rounded-full object-cover"
+                            className=" w-6 h-6 border border-green-500/70 rounded-full object-cover"
                           />
                         )}
 
@@ -506,7 +506,8 @@ function Dashboard() {
                         />
                         <span className="text-[10px] text-emerald-400 font-medium">
                           {/* {u.postsCount} posts */}
-                          {formatCount(u.postsCount)} posts
+                          {/* {formatCount(u.postsCount)} posts */}
+                          {formatCount(u.totalPoints)} pts
                         </span>
                       </Link>
                     
