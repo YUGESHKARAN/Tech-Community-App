@@ -3,7 +3,7 @@ import highlightText from "../../hooks/highlightText";
 import axiosInstance from "../../instances/Axiosinstances";
 import formatCount from "../../utils/NumberConversion";
 import BadgeIcons from "../achievements/BadgeIcons";
-import { TbBrain, TbBulb, TbChartDots, TbShieldLock, TbSparkles, TbWorldWww } from "react-icons/tb";
+import { TbBrain, TbBulb, TbChartDots, TbClock, TbShieldLock, TbSparkles, TbWorldWww } from "react-icons/tb";
 import { Link } from "react-router-dom";
 import user from "../../images/user.png";
 
@@ -97,8 +97,10 @@ const CoordinatorsCard = ({ author }) => {
           {/* <div className="mb-3">
             <DomainTags communities={author.communities} />
           </div> */}
+          <div className="flex flex-col gap-1 mb-3 items-center">
 
-          <div className="flex justify-center gap-4 text-[10px] text-gray-400 pt-2 border-t border-white/5 mb-3">
+          
+          <div className="flex justify-center gap-4 text-[10px] text-gray-400 pt-1 border-t border-white/5 ">
             {author?.postCount > 0 && (
               <span>
                 <b className="text-white">{formatCount(author.postCount)}</b>{" "}
@@ -106,7 +108,7 @@ const CoordinatorsCard = ({ author }) => {
               </span>
             )}
             <span>
-              <b className="text-white">
+              <b className={`${author?.followersCount>0?'text-white':'text-gray-400'} `}>
                 {formatCount(
                   author.followersCount ?? author.followers?.length ?? 0,
                 )}
@@ -114,6 +116,15 @@ const CoordinatorsCard = ({ author }) => {
               followers
             </span>
           </div>
+              <span className="text-[9px] text-gray-600 flex items-center gap-1">
+                  <TbClock className="text-[10px]" /> Joined{" "}
+                  {new Date(author?.joinedAt).toLocaleDateString("en-IN", {
+                    month: "short",
+                    year: "numeric",
+                  })}
+                </span>
+                </div>
+       
         </Link>
 
        
