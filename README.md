@@ -10,7 +10,7 @@
 
 <div align="center">
 
-[![GitHub license](https://img.shields.io/github/license/YUGESHKARAN/Tech-Community-App)](./LICENSE)
+[![License: AGPL v3](https://img.shields.io/github/license/YUGESHKARAN/Tech-Community-App)](./LICENSE)
 <a href="https://github.com/YUGESHKARAN/Tech-Community-App/stargazers">
   <img src="https://img.shields.io/github/stars/YUGESHKARAN/Tech-Community-App?style=social" alt="GitHub stars" />
 </a>
@@ -88,7 +88,7 @@ Refere [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ### License & Copyright
 
-This software is Copyright (c) 2026 [Your Full Name or Company Name]. All rights reserved. 
+This software is Copyright (c) 2026 BytesBase.tech. All rights reserved. 
 
 The open-source version of this application is licensed under the GNU Affero General Public License v3 (AGPLv3). See the [LICENSE](LICENSE) file for the full legal text. 
 

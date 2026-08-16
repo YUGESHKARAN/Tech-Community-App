@@ -493,7 +493,7 @@ const DiscussionsTab = ({
       {discussionLoading && filtered.length === 0 && (
         <div className="flex flex-col gap-2">
           {[...Array(3)].map((_, index) => (
-            <DiscussionCardSkeleton />
+            <DiscussionCardSkeleton key={index}/>
           ))}
         </div>
       )}
@@ -977,7 +977,7 @@ function SingleTechCommunity() {
       const res = await axiosInstance.get(
         `/bytes/discuss/${communityId}/trending-tags`,
       );
-      console.log("res data", res.data);
+      // console.log("res data", res.data);
       if (res.status === 200) {
         setTrendingTags(res.data.tags);
       }
