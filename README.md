@@ -1,7 +1,7 @@
 
 <div
   align="center">
-  <img src="assets/bytes_base_logo_icon.png" width="100" height="100" alt="Cute Llama"> 
+  <img src="assets/bytes_base_logo_icon.png" width="100" height="100" alt="Bytes Base Logo"> 
 </div>
 
 <div align="center">
@@ -22,43 +22,31 @@
 
   </div>
 
+</div>
 
+---
 **Welcome to Bytes Base**
 
-Developer's collaborative & learning  platform designed for universities and colleges, focusing on knowledge sharing and community building. The platform enables student developers to connect, collaborate, and engage through sharing their tech works, knowledge and findings, all within their institution. Developers can interact, clarify doubts via discussion section. The platform includes role-based interfaces for Students, Coordinators, and Admins to manage content, moderation, and community participation.
+Bytes Base is an AI assisted developer community platform built for universities and colleges, empowering students, alumni and faculty to collaborate and grow together. The platform enables users to showcase projects, share technical knowledge, engage in discussions, discover opportunities and cultivate a vibrant developer ecosystem within their academic community.
 
----
-<div align="center">
-  <h4>Home Screen (Coordinator Interface)</h4>
-</div>
+**How It Works?**
 
-![Tech-Comm-App](/assets/bytesbase_app.png)
+Each institution receives its own dedicated community space where contributors can publish content across organized domains, members can explore content with AI assisted support,  join communities, engage in discussions, collaborate with peers, receive announcements and discover fellow developers across campus. Administrators gain visibility into platform insights, community engagement and contributor activity while maintaining a secure, well-managed and organized environment.
 
----
+**The Problem**
 
-<div align="center">
-  <h4>Playlist Screen (Student Interface)</h4>
-</div>
+Many institutions have talented student developers, but meaningful interaction and collaboration often remain limited to classrooms, clubs, or short-term events. As a result, valuable knowledge, projects and opportunities stay disconnected, making it difficult to build a strong and sustainable developer culture.
 
-![Tech-Comm-App](/assets/bytesbase_playlist.png)
+**Why Bytes Base?**
 
----
+Bytes Base helps institutions cultivate an active technical community by encouraging students to share knowledge, collaborate on ideas, engage with peers and learn from one another. The platform transforms isolated contributors into a connected ecosystem where innovation, participation and community-driven learning can thrive.
 
-<div align="center">
-  <h4>Home Search Engine (Student Interface)</h4>
-</div>
+**How to Launch?**
 
-![Tech-Comm-App](/assets/bytesbase_home_feed_search.png)
+Visit https://www.bytesbase.me book a demo session. Our team will schedule a personalized walkthrough to showcase the platform and its features. Institutions will receive one month of complimentary access to explore the platform within their campus environment. Upon confirmation, We provide onboarding and launch support.
 
 ---
 
-<div align="center">
-  <h4>Tech Community Screen (Student Interface)</h4>
-</div>
-
-![Tech-Comm-App](/assets/bytesbase_tech_community.png)
-
----
 ## Key Features
 
 * **User Authentication** –Secure registration and login with role-based access using JWT.
