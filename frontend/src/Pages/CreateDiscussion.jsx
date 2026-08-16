@@ -403,7 +403,7 @@ const TagSelector = ({
       </div>
 
       {/* tag list */}
-      <div className="max-h-40 overflow-y-auto emerald-scrollbar p-2">
+      <div className="max-h-40 overflow-y-auto overflow-x-hidden emerald-scrollbar p-2">
         {filtered.length === 0 && !showCreateOption && (
           <p className="text-[10px] text-gray-600 text-center py-4">
             {canCreate
@@ -776,7 +776,7 @@ function CreateDiscussion() {
   const selectedTags = tags?.filter((t) => selectedTagIds.includes(t._id));
 
   // console.log("posts", posts)
-  console.log("tags", tags);
+  // console.log("tags", tags);
 
   // ─────────────────────────────────────────────────────────────────────────
   //  RENDER

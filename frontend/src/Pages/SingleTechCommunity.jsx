@@ -159,9 +159,10 @@ const CommunityBanner = ({
           {canEdit && communityId && (
             <Link
               to={`/techCommunityDetails/${communityId}/edit`}
-              className="absolute top-2.5 md:top-4 right-20 md:right-24 text-[10px] md:font-semibold px-3 py-1 rounded-full  text-white hover:bg-white/30 transition-colors"
+              className="absolute top-2.5 md:top-4 right-20  text-[10px] md:font-semibold px-2 md:px-3 py-1 rounded-full  text-white md:hover:text-gray-300 transition-all duration-200 transition-colors"
             >
-              Edit
+              {/* Edit */}
+              <TbIcons.TbSettings className="text-sm md:text-lg" />
             </Link>
           )}
           {community.userRole ? (
@@ -1055,10 +1056,10 @@ function SingleTechCommunity() {
   return (
     <div className="min-h-screen theme text-white flex flex-col">
       <NavBar />
-      <span className="text-[9px] md:pt-2 py-2 md:pb-0  px-4 md:px-20 max-w-[1800px] mx-auto w-full animate-pulse font-semibold ">
+      {/* <span className="text-[9px] md:pt-2 py-2 md:pb-0  px-4 md:px-20 max-w-[1800px] mx-auto w-full animate-pulse font-semibold ">
         This site is under construction, still some of the features are under
         development, feel free to explore the platform 😊.{" "}
-      </span>
+      </span> */}
 
       <div className="flex-grow px-4 md:px-20 max-w-[1800px] mx-auto w-full pb-20 md:pt-4">
         <CommunityBanner
