@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 const { Author, Post } = require("../models/blogAuthorSchema");
 const Community = require('../models/communitySchema');
 const CommunityMembership = require('../models/communityMembershipSchema');
-
+const Discussion = require("../models/communityDiscussions/discussionsSchema")
+const { CommunitySettings } = require('../models/communityDiscussions/communityTagAndSettingsSchema');
 
 // const getCommunityLandingPage = async (req, res) => {
 //   const { tenantId } = req.user;
@@ -140,7 +141,46 @@ const getCommunityLandingPage = async (req, res) => {
   }
 };
 
+// const getCommunityById = async (req, res) => {
+//   const { tenantId, authorId } = req.user;
+//   const { communityId } = req.params;
 
+//   if (!communityId) {
+//     return res.status(400).json({ message: 'communityId required' });
+//   }
+
+//   if (!mongoose.Types.ObjectId.isValid(communityId)) {
+//     return res.status(400).json({ message: 'Invalid communityId' });
+//   }
+
+//   try {
+//     const community = await Community.findOne({ _id: communityId, tenantId }).lean();
+
+//     if (!community) {
+//       return res.status(404).json({ message: 'Community not found' });
+//     }
+
+//     const membership = await CommunityMembership.findOne(
+//       { tenantId, communityId, authorId },
+//       'role'
+//     ).lean();
+
+//     community.userRole = membership?.role || null;
+
+//     const coordinatorsCount = await CommunityMembership.countDocuments({
+//       tenantId,
+//       communityId,
+//       role: 'coordinator',
+//     });
+
+//     community.coordinatorsCount = coordinatorsCount || 0;
+
+//     return res.status(200).json({ community });
+//   } catch (err) {
+//     console.error('getCommunityById error:', err.message);
+//     return res.status(500).json({ message: 'Server error' });
+//   }
+// };
 
 const getCommunityById = async (req, res) => {
   const { tenantId, authorId } = req.user;
@@ -161,24 +201,113 @@ const getCommunityById = async (req, res) => {
       return res.status(404).json({ message: 'Community not found' });
     }
 
-    const membership = await CommunityMembership.findOne(
-      { tenantId, communityId, authorId },
-      'role'
-    ).lean();
+    const [membership, coordinatorsCount, discussionCount] = await Promise.all([
+      CommunityMembership.findOne(
+        { tenantId, communityId, authorId },
+        'role'
+      ).lean(),
+      CommunityMembership.countDocuments({ tenantId, communityId, role: 'coordinator' }),
+      Discussion.countDocuments({ tenantId, communityId }),
+    ]);
 
-    community.userRole = membership?.role || null;
-
-    const coordinatorsCount = await CommunityMembership.countDocuments({
-      tenantId,
-      communityId,
-      role: 'coordinator',
-    });
-
+    community.userRole         = membership?.role || null;
     community.coordinatorsCount = coordinatorsCount || 0;
+    community.discussionCount   = discussionCount  || 0;
 
     return res.status(200).json({ community });
   } catch (err) {
     console.error('getCommunityById error:', err.message);
+    return res.status(500).json({ message: 'Server error' });
+  }
+};
+
+
+// Create new Community by Admins
+const createCommunity = async (req, res) => {
+  const { tenantId, authorId } = req.user;
+  const { name, tagline, description, icon, colorTheme } = req.body;
+
+  try {
+    // ── permission: admin or director only ──
+    const requestingAuthor = await Author.findOne(
+      { _id: authorId },
+      'role'
+    ).lean();
+
+    if (!requestingAuthor) {
+      return res.status(404).json({ message: 'Author not found' });
+    }
+
+    if (!['admin', 'director'].includes(requestingAuthor.role)) {
+      return res.status(403).json({ message: 'Only admins can create communities' });
+    }
+
+    // ── validation ──
+    if (!name?.trim()) {
+      return res.status(400).json({ message: 'Community name is required' });
+    }
+
+    const slug = name
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '');
+
+    // ── duplicate check — unique per tenant ──
+    const existing = await Community.findOne({ tenantId, slug }).lean();
+    if (existing) {
+      return res.status(409).json({
+        message: `A community named "${name.trim()}" already exists in this institution`,
+      });
+    }
+
+    // ── create community ──
+    const community = await Community.create({
+      tenantId,
+      name:        name.trim(),
+      slug,
+      tagline:     tagline?.trim()     || '',
+      description: description?.trim() || '',
+      icon:        icon                || 'TbBulb',
+      colorTheme:  colorTheme          || '#0d9488',
+      memberCount: 0,
+      postCount:   0,
+    });
+
+    // ── create default settings doc so the community is
+    //    immediately usable without a separate settings call ──
+    await CommunitySettings.findOneAndUpdate(
+      { tenantId, communityId: community._id },
+      { $setOnInsert: { tenantId, communityId: community._id, whoCanPost: 'coordinator' } },
+      { upsert: true, new: true, runValidators: false }
+    );
+
+    // ── auto-enroll the creating admin as a coordinator ──
+    await Promise.all([
+      CommunityMembership.findOneAndUpdate(
+        { tenantId, communityId: community._id, authorId },
+        {
+          $setOnInsert: {
+            tenantId,
+            communityId: community._id,
+            authorId,
+            role: 'coordinator',
+          },
+        },
+        { upsert: true, new: true, runValidators: false }
+      ),
+      Community.updateOne(
+        { _id: community._id },
+        { $inc: { memberCount: 1 } }
+      ),
+    ]);
+
+    return res.status(201).json({
+      message: 'Community created successfully',
+      community,
+    });
+  } catch (err) {
+    console.error('createCommunity error:', err.message);
     return res.status(500).json({ message: 'Server error' });
   }
 };
