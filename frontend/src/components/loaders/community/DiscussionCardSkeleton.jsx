@@ -1,8 +1,10 @@
 import React from "react";
 
-const DiscussionCardSkeleton = () => {
+const DiscussionCardSkeleton = ({key}) => {
   return (
-    <div className="relative theme border border-[#1e293b] rounded-xl px-4 py-3 overflow-hidden">
+    <div
+    key={key}
+     className="relative theme border border-[#1e293b] rounded-xl px-4 py-3 overflow-hidden">
       {/* Shimmer */}
       <div className="absolute inset-0 -translate-x-full animate-[discussionShimmer_1.8s_infinite] bg-gradient-to-r from-transparent via-white/[0.035] to-transparent pointer-events-none" />
 

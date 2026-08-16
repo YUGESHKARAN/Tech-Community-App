@@ -16,6 +16,9 @@ import useGetAllMembersByDomain from "../hooks/SingleTechDomain/useGetAllMembers
 import toast from "../components/toaster/Toast";
 import { deriveGradient } from "../utils/bannerTheme";
 import CommunityHeaderSkeleton from "../components/loaders/community/CommunityHeaderSkeleton";
+import useGetDiscussions from "../hooks/useGetDiscussions";
+import { DiscussionsTab } from "../components/community/DiscussionTab";
+import { getDomainStyle } from "../utils/domainStyle";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -301,7 +304,7 @@ function EditCommunity() {
     communityDetails: community,
     commLoading,
   } = useGetSingleTechCommunity(communityId);
-
+ 
   const [loading, setLoading] = useState(false);
   const [saveError, setSaveError] = useState("");
   const [saved, setSaved] = useState(false);
@@ -343,7 +346,12 @@ function EditCommunity() {
   const [hexInput, setHexInput] = useState("#0d9488");
   const [hexError, setHexError] = useState("");
 
-  const gradient = useMemo(() => deriveGradient(form.colorTheme), [form.colorTheme]);
+     const style = getDomainStyle(community?.name);
+    // const gradient = deriveGradient(community?.colorTheme);
+  
+      const gradient = useMemo(() => deriveGradient(form.colorTheme), [form.colorTheme, community?.colorTheme]);
+  
+    const accentColor = form.colorTheme?? style.from;
 
   // Escape key closes preview
   useEffect(() => {
@@ -425,6 +433,10 @@ function EditCommunity() {
     }
   };
 
+  const { discussions, loading: discussionLoading } = useGetDiscussions(
+    communityId,
+    { category: "", limit: 5 },
+  );
   
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -465,7 +477,7 @@ function EditCommunity() {
           />
 
           {/* Tab bar preview */}
-          {/* <div className="flex border-b border-white/5 mt-4 mb-6">
+          <div className="flex border-b border-white/5 mt-4 mb-6">
             {["Feed", "Discussions", "Members"].map((tab, i) => (
               <div
                 key={tab}
@@ -478,7 +490,7 @@ function EditCommunity() {
                 {tab}
               </div>
             ))}
-          </div> */}
+          </div>
 
           {/* placeholder content */}
           {/* <div className="grid grid-cols-1 lg:grid-cols-[1fr_260px] gap-6">
@@ -492,6 +504,14 @@ function EditCommunity() {
               <div className="h-32 bg-white/[0.02] rounded-xl border border-[#1e293b] animate-pulse" />
             </div>
           </div> */}
+           <DiscussionsTab
+                discussions={discussions}
+                discussionLoading={discussionLoading}
+                community={community}
+                accentColor={accentColor}
+                currentUserEmail={currentUserEmail}
+                userRole={community.userRole}
+              />
 
           {/* description card */}
         
