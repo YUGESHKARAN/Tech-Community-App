@@ -9,7 +9,7 @@
 </div>
 
 
-[![License: MIT](https://img.shields.io/github/license/YUGESHKARAN/Tech-Community-App)](./LICENSE)
+[![License: AGPL v3](https://img.shields.io/github/license/YUGESHKARAN/Tech-Community-App)](./LICENSE)
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D17.9.1-brightgreen.svg)](https://nodejs.org/)
 [![Last Commit](https://img.shields.io/github/last-commit/YUGESHKARAN/Node-Blog-App)](https://github.com/YUGESHKARAN/Node-Blog-App/commits/main)
 [![Contributors](https://img.shields.io/github/contributors/YUGESHKARAN/Tech-Community-App)](https://github.com/YUGESHKARAN/Tech-Community-App/graphs/contributors)
