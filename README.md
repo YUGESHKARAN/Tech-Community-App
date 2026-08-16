@@ -85,8 +85,17 @@ Visit https://www.bytesbase.me book a demo session. Our team will schedule a per
 
 Contributions are welcome!  
 Refere [CONTRIBUTING.md](CONTRIBUTING.md)
-## License
 
-This project is licensed under the [MIT](LICENSE) License.
+### License & Copyright
+
+This software is Copyright (c) 2026 [Your Full Name or Company Name]. All rights reserved. 
+
+The open-source version of this application is licensed under the GNU Affero General Public License v3 (AGPLv3). See the [LICENSE](LICENSE) file for the full legal text. 
+
+### B2B Commercial Licensing & Procurement
+
+The AGPLv3 license ensures that modifications made to this software by the community are shared back openly. If your academic institution or university IT compliance team requires proprietary deployment, custom closed-source integrations, or terms that conflict with the AGPLv3 copyleft requirements, standard commercial B2B licenses are available. 
+
+For enterprise procurement, custom service-level agreements (SLAs), or commercial licensing inquiries, please contact: **yugeshkaran01@gmail.com**.
 
 ---
