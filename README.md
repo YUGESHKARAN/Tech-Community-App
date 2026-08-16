@@ -11,7 +11,6 @@
 <div align="center">
 
 [![GitHub license](https://img.shields.io/github/license/YUGESHKARAN/Tech-Community-App)](./LICENSE)
-
 <a href="https://github.com/YUGESHKARAN/Tech-Community-App/stargazers">
   <img src="https://img.shields.io/github/stars/YUGESHKARAN/Tech-Community-App?style=social" alt="GitHub stars" />
 </a>
