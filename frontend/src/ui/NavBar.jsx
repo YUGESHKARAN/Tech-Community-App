@@ -824,7 +824,7 @@ function NavBar() {
                 className="flex gap-3  items-start"
               >
                 {/* Avatar */}
-                <Link to={data.url} className="relative flex-shrink-0">
+                {/* <Link to={data.url} className="relative flex-shrink-0">
                   {data.profile ? (
                     <img
                       src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.profile}`}
@@ -837,9 +837,8 @@ function NavBar() {
                     </div>
                   )}
 
-                  {/* Activity indicator */}
                   <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 rounded-full border border-gray-900"></span>
-                </Link>
+                </Link> */}
 
                 {/* Content */}
                 <div className="flex relative  flex-col flex-1 min-w-0">
@@ -858,7 +857,7 @@ function NavBar() {
                   </Link>
 
                   <span className="text-[10px] text-gray-500 mt-1">
-                    {getTimeAgo(data.timestamp)}
+                    {getTimeAgo(data?.timestamp)}
                   </span>
                 </div>
               </div>
