@@ -254,7 +254,7 @@ export const DiscussionsTab = ({
       {discussionLoading && filtered.length === 0 && (
         <div className="flex flex-col gap-2">
           {[...Array(3)].map((_, index) => (
-            <DiscussionCardSkeleton />
+            <DiscussionCardSkeleton key={index}/>
           ))}
         </div>
       )}
