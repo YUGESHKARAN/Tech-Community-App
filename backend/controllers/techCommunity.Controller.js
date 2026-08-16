@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 const { Author, Post } = require("../models/blogAuthorSchema");
 const Community = require('../models/communitySchema');
 const CommunityMembership = require('../models/communityMembershipSchema');
-
+const Discussion = require("../models/communityDiscussions/discussionsSchema")
+const { CommunitySettings } = require('../models/communityDiscussions/communityTagAndSettingsSchema');
 
 // const getCommunityLandingPage = async (req, res) => {
 //   const { tenantId } = req.user;
@@ -140,7 +141,46 @@ const getCommunityLandingPage = async (req, res) => {
   }
 };
 
+// const getCommunityById = async (req, res) => {
+//   const { tenantId, authorId } = req.user;
+//   const { communityId } = req.params;
 
+//   if (!communityId) {
+//     return res.status(400).json({ message: 'communityId required' });
+//   }
+
+//   if (!mongoose.Types.ObjectId.isValid(communityId)) {
+//     return res.status(400).json({ message: 'Invalid communityId' });
+//   }
+
+//   try {
+//     const community = await Community.findOne({ _id: communityId, tenantId }).lean();
+
+//     if (!community) {
+//       return res.status(404).json({ message: 'Community not found' });
+//     }
+
+//     const membership = await CommunityMembership.findOne(
+//       { tenantId, communityId, authorId },
+//       'role'
+//     ).lean();
+
+//     community.userRole = membership?.role || null;
+
+//     const coordinatorsCount = await CommunityMembership.countDocuments({
+//       tenantId,
+//       communityId,
+//       role: 'coordinator',
+//     });
+
+//     community.coordinatorsCount = coordinatorsCount || 0;
+
+//     return res.status(200).json({ community });
+//   } catch (err) {
+//     console.error('getCommunityById error:', err.message);
+//     return res.status(500).json({ message: 'Server error' });
+//   }
+// };
 
 const getCommunityById = async (req, res) => {
   const { tenantId, authorId } = req.user;
@@ -161,20 +201,18 @@ const getCommunityById = async (req, res) => {
       return res.status(404).json({ message: 'Community not found' });
     }
 
-    const membership = await CommunityMembership.findOne(
-      { tenantId, communityId, authorId },
-      'role'
-    ).lean();
+    const [membership, coordinatorsCount, discussionCount] = await Promise.all([
+      CommunityMembership.findOne(
+        { tenantId, communityId, authorId },
+        'role'
+      ).lean(),
+      CommunityMembership.countDocuments({ tenantId, communityId, role: 'coordinator' }),
+      Discussion.countDocuments({ tenantId, communityId }),
+    ]);
 
-    community.userRole = membership?.role || null;
-
-    const coordinatorsCount = await CommunityMembership.countDocuments({
-      tenantId,
-      communityId,
-      role: 'coordinator',
-    });
-
+    community.userRole         = membership?.role || null;
     community.coordinatorsCount = coordinatorsCount || 0;
+    community.discussionCount   = discussionCount  || 0;
 
     return res.status(200).json({ community });
   } catch (err) {
@@ -182,6 +220,9 @@ const getCommunityById = async (req, res) => {
     return res.status(500).json({ message: 'Server error' });
   }
 };
+
+
+
 
 const getCommunityMembersById = async (req, res) => {
   const { tenantId } = req.user;

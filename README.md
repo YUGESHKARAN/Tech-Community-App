@@ -27,15 +27,16 @@
 ---
 **Welcome to Bytes Base**
 
-Bytes Base is an AI assisted developer community platform built for universities and colleges, empowering students, alumni and faculty to collaborate and grow together. The platform enables users to showcase projects, share technical knowledge, engage in discussions, discover opportunities and cultivate a vibrant developer ecosystem within their academic community.
+Bytes Base is an AI assisted developer community platform built for universities and colleges, empowering students, alumni and faculty to collaborate and grow together. The platform enables users to showcase builds, share technical knowledge/resources , explore content, connect with fellow contributors, participate in Q&A. The goal is to make everyone in the community learn, understand, and grow together.
+
+
+**The Problem**
+
+Many institutions have talented student developers, but meaningful interaction and collaboration often remain limited to classrooms, clubs, or short-term events. Being good academically is important for every individual, but industry expectations around skills and practical knowledge are different. This gap still needs to be addressed at the institutional level.
 
 **How It Works?**
 
 Each institution receives its own dedicated community space where contributors can publish content across organized domains, members can explore content with AI assisted support,  join communities, engage in discussions, collaborate with peers, receive announcements and discover fellow developers across campus. Administrators gain visibility into platform insights, community engagement and contributor activity while maintaining a secure, well-managed and organized environment.
-
-**The Problem**
-
-Many institutions have talented student developers, but meaningful interaction and collaboration often remain limited to classrooms, clubs, or short-term events. As a result, valuable knowledge, projects and opportunities stay disconnected, making it difficult to build a strong and sustainable developer culture.
 
 **Why Bytes Base?**
 
