@@ -211,7 +211,7 @@ function TechCommunityLanding() {
   const yourCommunities = communityStats.filter((c) => c.userRole !== null);
   const exploreCommunities = communityStats.filter((c) => c.userRole === null);
 
-  console.log("communityStats", communityStats);
+  // console.log("communityStats", communityStats);
   // console.log("statsLoader", statsLoader);
   // console.log("topContributors", topContributors);
 
@@ -421,7 +421,7 @@ function TechCommunityLanding() {
   };
 
 
-  console.log("topContributors",topContributors)
+  // console.log("topContributors",topContributors)
 
   return (
     <div className="min-h-screen theme text-white flex flex-col">

@@ -658,7 +658,7 @@ const FeedTab = ({ posts, setPosts, feedLoad, feedHashMore }) => {
       };
 
       const response = await navigator.share(postData);
-      console.log("response", response);
+      // console.log("response", response);
     } catch (err) {
       console.log("error sharing post", err);
     }

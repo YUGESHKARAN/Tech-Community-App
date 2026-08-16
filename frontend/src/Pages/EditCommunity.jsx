@@ -478,7 +478,7 @@ function EditCommunity() {
 
           {/* Tab bar preview */}
           <div className="flex border-b border-white/5 mt-4 mb-6">
-            {["Feed", "Discussions", "Members"].map((tab, i) => (
+            {[ "Discussions", "Feed", "Members"].map((tab, i) => (
               <div
                 key={tab}
                 className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${
@@ -486,6 +486,11 @@ function EditCommunity() {
                     ? "border-white text-white"
                     : "border-transparent text-gray-500"
                 }`}
+
+                 style={i ===0  && gradient?.from
+              ? { borderBottomColor: gradient?.from } // Applies your custom hex string directly
+              : {} // Empty object when tab is inactive (falls back to border-transparent)}
+          }
               >
                 {tab}
               </div>

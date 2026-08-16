@@ -1214,9 +1214,9 @@ function ViewDiscussion() {
     }
   };
 
-  console.log("discussions", discussion);
-  console.log("replies", replies);
-  console.log("profile", profile);
+  // console.log("discussions", discussion);
+  // console.log("replies", replies);
+  // console.log("profile", profile);
 
   // ─────────────────────────────────────────────────────────────────────────
   //  RENDER
