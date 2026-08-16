@@ -37,7 +37,7 @@ import SingleTechCommunity from "./Pages/SingleTechCommunity.jsx";
 import ViewDiscussion from "./Pages/ViewDiscussion.jsx";
 import EditCommunity from "./Pages/EditCommunity.jsx";
 import CreateDiscussion from "./Pages/CreateDiscussion.jsx";
-import CreateCommunity from "./Pages/CreateCommunity.JSX";
+import CreateCommunity from "./Pages/CreateCommunity.jsx";
 function App() {
   return (
     // <AuthProvider>
