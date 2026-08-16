@@ -1061,7 +1061,7 @@ function SingleTechCommunity() {
         development, feel free to explore the platform 😊.{" "}
       </span> */}
 
-      <div className="flex-grow px-4 md:px-20 max-w-[1800px] mx-auto w-full pb-20 md:pt-4">
+      <div className="flex-grow px-4 md:px-20 max-w-[1800px] mx-auto w-full pb-20 pt-2 md:pt-4">
         <CommunityBanner
           community={community}
           style={style}
