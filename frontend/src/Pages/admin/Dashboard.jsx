@@ -334,7 +334,7 @@ function Dashboard() {
                       <div className="flex items-center gap-1.5">
                         <div className="w-2 h-2 rounded-full bg-blue-500" />
                         <span className="text-[10px] text-gray-400 font-semibold">
-                          Students
+                          Members
                         </span>
                       </div>
                     </div>
@@ -342,7 +342,7 @@ function Dashboard() {
 
                   <div className="flex flex-col w-full h-52 emerald-scrollbar pr-4 overflow-y-auto gap-2">
                     {communities.map((c) => {
-                      const total = c.authorcount + c.followerscount;
+                      const total = c.followerscount;
                       return (
                         <div
                           key={c.categoryname}
@@ -373,16 +373,16 @@ function Dashboard() {
                             <div
                               className="h-full cursor-pointer bg-blue-500/50 flex items-center justify-center transition-all duration-300 group relative"
                               style={{
-                                width: `${(c.followerscount / (total || 1)) * 100}%`,
+                                width: `${((c.followerscount- c.authorcount) / (total || 1)) * 100}%`,
                               }}
                             >
                               <span className="opacity-0 group-hover:opacity-100 transition-all duration-200 text-[9px] text-gray-200 md:font-bold  whitespace-nowrap">
                                 {(
-                                  (c.followerscount / (total || 1)) *
+                                  ((c.followerscount- c.authorcount) / (total || 1)) *
                                   100
                                 ).toFixed(0)}
-                                {/* % · {c.followerscount} */}
-                                % · {formatCount(c.followerscount)}
+                                {/* % · {(c.followerscount- c.authorcount)} */}
+                                % · {formatCount((c.followerscount- c.authorcount))}
                               </span>
                             </div>
                           </div>

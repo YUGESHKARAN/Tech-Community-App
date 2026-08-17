@@ -8,68 +8,56 @@ const mongoose = require("mongoose");
 dotenv = require("dotenv");
 dotenv.config();
 
+
 // const getCategoryAnalytics = async (req, res) => {
 //   try {
-//     const [authors, postCounts] = await Promise.all([
-//       Author.find({}, { role: 1, community: 1, followers: 1 }),
-//       Post.aggregate([{ $group: { _id: "$category", count: { $sum: 1 } } }]),
+//     // console.log("req.user",req.user)
+//     // fallback: if token predates tenantId inclusion, look it up from DB
+//     let tenantId = req.user.tenantId;
+//     if (!tenantId) {
+//       const author = await Author.findOne(
+//         { email: req.user.email },
+//         'tenantId'
+//       );
+//       tenantId = author?.tenantId || 'dsu';
+//     }
+
+//     const [communities, memberships, postCounts] = await Promise.all([
+//       Community.find({ tenantId }),
+//       CommunityMembership.aggregate([
+//         { $match: { tenantId, role: 'coordinator' } },
+//         { $group: { _id: '$communityId', coordinatorCount: { $sum: 1 } } },
+//       ]),
+//       Post.aggregate([
+//         { $match: { tenantId } },
+//         { $group: { _id: '$category', count: { $sum: 1 } } },
+//       ]),
 //     ]);
 
-//     const analyticsMap = {};
+//     const coordinatorMap = Object.fromEntries(
+//       memberships.map((m) => [m._id.toString(), m.coordinatorCount])
+//     );
+//     const postCountMap = Object.fromEntries(
+//       postCounts.map((p) => [p._id, p.count])
+//     );
 
-//     // postscount from Post collection — not from author.posts
-//     for (const { _id: category, count } of postCounts) {
-//       if (!category) continue;
-//       analyticsMap[category] = {
-//         categoryname: category,
-//         followerscount: 0,
-//         authorcount: 0,
-//         postscount: count,
-//       };
-//     }
+//     const analytics = communities.map((c) => ({
+//       categoryname:     c.name,
+//       followerscount:   c.memberCount,
+//       authorcount: coordinatorMap[c._id.toString()] || 0,
+//       postscount:       postCountMap[c.name] || 0,
+//     }));
 
-//     // authorcount and followerscount from Author collection — unchanged
-//     for (const author of authors) {
-//       if (author.role === "coordinator") {
-//         for (const domain of author.community) {
-//           if (!analyticsMap[domain]) {
-//             analyticsMap[domain] = {
-//               categoryname: domain,
-//               followerscount: 0,
-//               authorcount: 0,
-//               postscount: 0,
-//             };
-//           }
-//           analyticsMap[domain].authorcount += 1;
-//         }
-//       }
-
-//       if (author.role === "student") {
-//         for (const domain of author.community) {
-//           if (!analyticsMap[domain]) {
-//             analyticsMap[domain] = {
-//               categoryname: domain,
-//               followerscount: 0,
-//               authorcount: 0,
-//               postscount: 0,
-//             };
-//           }
-//           analyticsMap[domain].followerscount += 1;
-//         }
-//       }
-//     }
-
-//     res.status(200).json({ analytics: Object.values(analyticsMap) });
+//     res.status(200).json({ analytics });
 //   } catch (err) {
-//     console.error("getCategoryAnalytics error:", err.message);
+//     console.error('getCategoryAnalytics error:', err.message);
 //     res.status(500).json({ message: err.message });
 //   }
 // };
 
+
 const getCategoryAnalytics = async (req, res) => {
   try {
-    // console.log("req.user",req.user)
-    // fallback: if token predates tenantId inclusion, look it up from DB
     let tenantId = req.user.tenantId;
     if (!tenantId) {
       const author = await Author.findOne(
@@ -79,31 +67,56 @@ const getCategoryAnalytics = async (req, res) => {
       tenantId = author?.tenantId || 'dsu';
     }
 
-    const [communities, memberships, postCounts] = await Promise.all([
+    const [communities, membershipStats, postCounts] = await Promise.all([
       Community.find({ tenantId }),
+
+      // single aggregation — counts both total members and coordinators
+      // per community from the authoritative CommunityMembership collection
       CommunityMembership.aggregate([
-        { $match: { tenantId, role: 'coordinator' } },
-        { $group: { _id: '$communityId', coordinatorCount: { $sum: 1 } } },
+        { $match: { tenantId } },
+        {
+          $group: {
+            _id: '$communityId',
+            totalCount: { $sum: 1 },
+            coordinatorCount: {
+              $sum: { $cond: [{ $eq: ['$role', 'coordinator'] }, 1, 0] },
+            },
+          },
+        },
       ]),
+
       Post.aggregate([
         { $match: { tenantId } },
         { $group: { _id: '$category', count: { $sum: 1 } } },
       ]),
     ]);
 
-    const coordinatorMap = Object.fromEntries(
-      memberships.map((m) => [m._id.toString(), m.coordinatorCount])
+    const membershipMap = Object.fromEntries(
+      membershipStats.map((m) => [
+        m._id.toString(),
+        {
+          totalCount:       m.totalCount,
+          coordinatorCount: m.coordinatorCount,
+        },
+      ])
     );
+
     const postCountMap = Object.fromEntries(
       postCounts.map((p) => [p._id, p.count])
     );
 
-    const analytics = communities.map((c) => ({
-      categoryname:     c.name,
-      followerscount:   c.memberCount,
-      authorcount: coordinatorMap[c._id.toString()] || 0,
-      postscount:       postCountMap[c.name] || 0,
-    }));
+    const analytics = communities.map((c) => {
+      const stats = membershipMap[c._id.toString()] || {
+        totalCount: 0,
+        coordinatorCount: 0,
+      };
+      return {
+        categoryname:   c.name,
+        followerscount: stats.totalCount,       // all members (coord + member)
+        authorcount:    stats.coordinatorCount, // coordinators only
+        postscount:     postCountMap[c.name] || 0,
+      };
+    });
 
     res.status(200).json({ analytics });
   } catch (err) {
