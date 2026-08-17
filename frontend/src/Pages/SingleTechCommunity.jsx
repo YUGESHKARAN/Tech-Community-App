@@ -130,6 +130,7 @@ const CommunityBanner = ({
   loader,
   communityId,
   canEdit,
+  role
 }) => {
   const gradient = useMemo(() => {
     const theme = community?.colorTheme;
@@ -171,7 +172,7 @@ const CommunityBanner = ({
             </span>
           ) : (
             <span className="absolute top-2.5 md:top-4 right-2 text-[10px] md:font-semibold px-2.5 py-0.5 md:py-1 rounded-full bg-white/20 text-white capitalize">
-              Member
+              {role=='admin'? 'Maintainer':'Viewer'}
             </span>
           )}
 
@@ -799,10 +800,11 @@ const MembersTab = ({ members, coordinators }) => (
 );
 
 // ── Leaderboard sidebar card ──────────────────────────────────────────────────
-const LeaderboardCard = ({ data, period, setPeriod, leaderboardLoader }) => {
+const LeaderboardCard = ({ data, period, currentUserEmail, setPeriod, leaderboardLoader }) => {
   // const [period, setPeriod] = useState("weekly");
   const months = getLast3MonthsName();
   const medalColors = ["#f2994a", "#8f9296", "#cd7f32"];
+  
 
   return (
     <div className="theme border border-[#1e293b] rounded-xl p-4">
@@ -841,11 +843,16 @@ const LeaderboardCard = ({ data, period, setPeriod, leaderboardLoader }) => {
       </div>
 
       <div className="flex flex-col h-40 emerald-scrollbar overflow-x-hidden overflow-y-auto gap-2">
-        {data?.leaderboard?.map((entry, i) => (
+        {data?.leaderboard?.map((entry, i) => {
+          const isYou = entry.email === currentUserEmail;
+          return(
           <Link
             to={`/viewProfile/${entry.email}`}
             key={entry.email}
-            className="flex items-center gap-2"
+            // className="flex items-center gap-2"
+             className={`flex items-center gap-2 py-1.5 px-1 rounded-lg ${
+                          isYou ? "bg-emerald-500/10" : ""
+                        }`}
           >
             {i < 3 ? (
               <div
@@ -867,14 +874,26 @@ const LeaderboardCard = ({ data, period, setPeriod, leaderboardLoader }) => {
               className="w-6 h-6 rounded-full object-cover bg-gray-700 flex-shrink-0"
               alt={entry.authorname}
             />
-            <span className="text-[11px] text-gray-200 flex-1 truncate">
+            {/* <span className="text-[11px] text-gray-200 flex-1 truncate">
               {entry.authorname}
-            </span>
+            </span> */}
+             <span
+                          className={`text-[11px]  font-medium truncate flex-1 ${
+                            isYou ? "text-emerald-400" : "text-gray-200"
+                          }`}
+                        >
+                          {entry.authorname}
+                          {isYou && (
+                            <span className="ml-1.5 text-[9px] font-semibold px-1.5 py-0.5 rounded-full bg-emerald-500 text-black">
+                              You
+                            </span>
+                          )}
+                        </span>
             <span className="text-[10px] text-gray-500 whitespace-nowrap">
               {formatCount(entry.points)} pts
             </span>
           </Link>
-        ))}
+        )})}
 
         {
           !leaderboardLoader && data?.leaderboard?.length ===0 &&
@@ -1065,6 +1084,7 @@ function SingleTechCommunity() {
         <CommunityBanner
           community={community}
           style={style}
+          role={currentUserRole}
           loader={commLoading}
           communityId={communityId}
           canEdit={canEditCommunity}
@@ -1113,6 +1133,7 @@ function SingleTechCommunity() {
                 data={leaderboardData}
                 period={period}
                 setPeriod={setPeriod}
+                currentUserEmail={currentUserEmail}
                 leaderboardLoader={leaderboardLoader}
               />
             ) : (
