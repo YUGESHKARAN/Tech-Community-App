@@ -4,17 +4,17 @@ const TechCommunityTopContributorsSkeleton = ()=> {
   return (
     <div className="theme border border-[#1e293b] rounded-2xl p-4 animate-pulse">
       {/* Header */}
-      <div className="flex items-center justify-between md:mb-2">
+      <div className="flex items-center justify-between mb-1.5 md:mb-2">
         <div className="h-5 w-36 rounded bg-gray-700/60" />
         <div className="h-6 w-28 rounded-md bg-gray-700/60" />
       </div>
 
       {/* Contributors */}
-      <div className="flex max-h-52 md:max-h-96 overflow-y-auto srollbar-hide flex-col gap-2">
+      <div className="flex max-h-52 md:max-h-96 overflow-y-auto srollbar-hide flex-col gap-1 md:gap-2">
         {[...Array(4)].map((_, i) => (
           <div
             key={i}
-            className="flex items-center gap-3 px-1 py-1.5 rounded-lg"
+            className="flex items-center gap-3 px-1 py-1 rounded-lg"
           >
             {/* Rank */}
             <div className="w-5 h-5 rounded-full bg-gray-700/60 flex-shrink-0" />
