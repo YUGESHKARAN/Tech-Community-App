@@ -10,6 +10,7 @@ import {
   TbAlertCircle, TbBrain, TbUsers, TbFileText,
   TbUserCheck, TbMessageCircle, TbPlus,
 } from "react-icons/tb";
+import toast from "../components/toaster/Toast";
 
 // ── Helpers (same as EditCommunity) ───────────────────────────────────────────
 const hexToHsl = (hex) => {
@@ -78,6 +79,7 @@ const PRESET_COLORS = [
 const IconPicker = ({ value, onChange, accentColor }) => {
   const [search, setSearch]         = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
+  
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase().trim();
@@ -86,7 +88,7 @@ const IconPicker = ({ value, onChange, accentColor }) => {
       const matchesCat     = activeCategory === "All" || icon.category === activeCategory;
       return matchesSearch && matchesCat;
     });
-  }, [search, activeCategory]);
+  }, [search, activeCategory,]);
 
   return (
     <div className="theme border border-[#1e293b] rounded-xl overflow-hidden">
@@ -125,7 +127,7 @@ const IconPicker = ({ value, onChange, accentColor }) => {
         ))}
       </div>
 
-      <div className="grid grid-cols-8 gap-1 p-3 max-h-52 overflow-y-auto">
+      <div className="grid grid-cols-8 gap-1 p-3 max-h-52 emerald-scrollbar overflow-x-hidden overflow-y-auto">
         {filtered.length === 0 ? (
           <div className="col-span-8 text-center text-xs text-gray-500 py-6">
             No icons found for "{search}"
@@ -170,51 +172,102 @@ const IconPicker = ({ value, onChange, accentColor }) => {
 };
 
 // ── Banner preview ────────────────────────────────────────────────────────────
-const BannerPreview = ({ form, gradient }) => {
+const BannerPreview = ({ form, gradient, userRole="" }) => {
   const Icon = TbIcons[form.icon] || TbBrain;
   return (
+    // <div
+    //   className="relative rounded-2xl overflow-hidden"
+    //   style={{ background: `linear-gradient(135deg, ${gradient.from}, ${gradient.to})` }}
+    // >
+    //   <div
+    //     className="absolute inset-0 opacity-10"
+    //     style={{ backgroundImage: "radial-gradient(circle at 80% 20%, rgba(255,255,255,.4) 0%, transparent 60%)" }}
+    //   />
+    //   <div className="relative px-5 pt-6 pb-5">
+    //     <div className="flex items-center gap-3 mb-3">
+    //       <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
+    //         <Icon className="text-white text-xl" />
+    //       </div>
+    //       <div>
+    //         <p className="text-[10px] font-medium tracking-widest uppercase text-white/60 mb-0.5">
+    //           Tech Domain · BytesBase
+    //         </p>
+    //         <h1 className="text-xl md:text-2xl font-semibold text-white leading-tight">
+    //           {form.name || "Community name"}
+    //         </h1>
+    //       </div>
+    //     </div>
+    //     {form.tagline && (
+    //       <p className="text-xs text-white/70 max-w-md leading-relaxed mb-4">
+    //         {form.tagline}
+    //       </p>
+    //     )}
+    //     <div className="flex flex-wrap gap-4">
+    //       {[
+    //         { Icon: TbUsers,         val: 0, label: "members" },
+    //         { Icon: TbFileText,      val: 0, label: "posts" },
+    //         { Icon: TbMessageCircle, val: 0, label: "discussions" },
+    //         { Icon: TbUserCheck,     val: 0, label: "coordinators" },
+    //       ].map(({ Icon: Si, val, label }) => (
+    //         <span key={label} className="flex items-center gap-1.5 text-xs text-white/80">
+    //           <Si className="text-sm text-white/60" />
+    //           <b className="text-white font-semibold">{val}</b> {label}
+    //         </span>
+    //       ))}
+    //     </div>
+    //   </div>
+    // </div>
     <div
-      className="relative rounded-2xl overflow-hidden"
-      style={{ background: `linear-gradient(135deg, ${gradient.from}, ${gradient.to})` }}
-    >
-      <div
-        className="absolute inset-0 opacity-10"
-        style={{ backgroundImage: "radial-gradient(circle at 80% 20%, rgba(255,255,255,.4) 0%, transparent 60%)" }}
-      />
-      <div className="relative px-5 pt-6 pb-5">
-        <div className="flex items-center gap-3 mb-3">
-          <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
-            <Icon className="text-white text-xl" />
-          </div>
-          <div>
-            <p className="text-[10px] font-medium tracking-widest uppercase text-white/60 mb-0.5">
-              Tech Domain · BytesBase
-            </p>
-            <h1 className="text-xl md:text-2xl font-semibold text-white leading-tight">
-              {form.name || "Community name"}
-            </h1>
-          </div>
-        </div>
-        {form.tagline && (
-          <p className="text-xs text-white/70 max-w-md leading-relaxed mb-4">
-            {form.tagline}
-          </p>
-        )}
-        <div className="flex flex-wrap gap-4">
+          className="relative rounded-xl md:rounded-2xl overflow-hidden"
+          style={{ background: `linear-gradient(135deg, ${gradient.from}, ${gradient.to})` }}
+        >
+          <div className="absolute inset-0 opacity-10"
+            style={{ backgroundImage: "radial-gradient(circle at 80% 20%, rgba(255,255,255,.4) 0%, transparent 60%)" }}
+          />
+          <div className="relative px-5 p-3.5 md:pt-4 md:pb-5">
+            {userRole && (
+              <span className="absolute top-4 right-4 text-[10px] font-semibold px-2.5 py-1 rounded-full bg-white/20 text-white capitalize">
+                {userRole}
+              </span>
+            )}
+            <div className="flex items-center mb-0.5 md:mb-1  gap-3">
+              <div className="md:w-10 w-9 h-9 md:h-10 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
+                <Icon className="text-white text-lg md:text-xl" />
+              </div>
+              <div>
+                {/* <p className="text-[10px] font-medium tracking-widest uppercase text-white/60 mb-0.5">
+                  Tech Domain · BytesBase
+                </p> */}
+                <h1 className="text-lg md:text-2xl font-semibold text-white leading-tight">
+                  {form.name || "Community name"}
+                </h1>
+                {form.tagline && (
+              <p className="md:text-xs text-[10px] text-white/70 max-w-md leading-relaxed md:mb-2 mb-1">
+                {form.tagline}
+              </p>
+            )}
+              </div>
+            </div>
+    
+            <p className="md:text-xs text-[10px] text-white font-semibold line-clamp-2 max-w-2xl leading-relaxed mb-2 md:mb-2.5">
+                {form.description}
+              </p>
+            
+            <div className="flex flex-wrap gap-2 md:gap-3">
           {[
             { Icon: TbUsers,         val: 0, label: "members" },
             { Icon: TbFileText,      val: 0, label: "posts" },
             { Icon: TbMessageCircle, val: 0, label: "discussions" },
             { Icon: TbUserCheck,     val: 0, label: "coordinators" },
           ].map(({ Icon: Si, val, label }) => (
-            <span key={label} className="flex items-center gap-1.5 text-xs text-white/80">
-              <Si className="text-sm text-white/60" />
-              <b className="text-white font-semibold">{val}</b> {label}
-            </span>
-          ))}
+                <span key={label} className="flex items-center gap-1 md:gap-1.5  md:text-xs text-[10px] text-white/80">
+                  <Si className="text-sm text-white/60" />
+                  <b className="text-white font-semibold">{val}</b> {label}
+                </span>
+              ))}
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
   );
 };
 
@@ -284,7 +337,7 @@ function CreateCommunity() {
     setSubmitting(true);
 
     try {
-      const res = await axiosInstance.post("/api/communities", {
+      const res = await axiosInstance.post(`/blog/techCommunity`, {
         name:        form.name.trim(),
         tagline:     form.tagline.trim(),
         description: form.description.trim(),
@@ -293,11 +346,12 @@ function CreateCommunity() {
       });
 
       const newCommunityId = res.data.community._id;
-      navigate(`/community/${newCommunityId}`);
+      navigate(`/techCommunityDetails/${newCommunityId}`);
     } catch (err) {
       const msg = err?.response?.data?.message || "Failed to create community. Try again.";
       // 409 = duplicate name
       if (err?.response?.status === 409) {
+        toast.error('Error creating community',err?.response?.data?.message)
         setErrors({ name: msg });
       } else {
         setErrors({ submit: msg });
@@ -324,7 +378,7 @@ function CreateCommunity() {
             <TbArrowLeft className="text-sm" /> Back to communities
           </Link>
           <div className="w-px h-4 bg-white/10" />
-          <h1 className="text-base font-semibold text-gray-200">
+          <h1 className="md:text-sm text-xs font-semibold text-gray-200">
             Create new community
           </h1>
         </div>
@@ -563,7 +617,7 @@ function CreateCommunity() {
               </div>
 
               {/* how it looks on the landing card */}
-              <div className="theme border border-[#1e293b] rounded-xl overflow-hidden">
+              {/* <div className="theme border border-[#1e293b] rounded-xl overflow-hidden">
                 <div
                   className="px-4 pt-4 pb-3 flex items-center gap-3 relative"
                   style={{
@@ -592,7 +646,7 @@ function CreateCommunity() {
                     How it appears on the landing page
                   </p>
                 </div>
-              </div>
+              </div> */}
             </div>
 
           </div>

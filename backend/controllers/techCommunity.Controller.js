@@ -283,24 +283,51 @@ const createCommunity = async (req, res) => {
     );
 
     // ── auto-enroll the creating admin as a coordinator ──
-    await Promise.all([
-      CommunityMembership.findOneAndUpdate(
-        { tenantId, communityId: community._id, authorId },
-        {
-          $setOnInsert: {
-            tenantId,
-            communityId: community._id,
-            authorId,
-            role: 'coordinator',
-          },
-        },
-        { upsert: true, new: true, runValidators: false }
-      ),
-      Community.updateOne(
-        { _id: community._id },
-        { $inc: { memberCount: 1 } }
-      ),
-    ]);
+    // await Promise.all([
+    //   CommunityMembership.findOneAndUpdate(
+    //     { tenantId, communityId: community._id, authorId },
+    //     {
+    //       $setOnInsert: {
+    //         tenantId,
+    //         communityId: community._id,
+    //         authorId,
+    //         role: 'coordinator',
+    //       },
+    //     },
+    //     { upsert: true, new: true, runValidators: false }
+    //   ),
+    //   Community.updateOne(
+    //     { _id: community._id },
+    //     { $inc: { memberCount: 1 } }
+    //   ),
+    // ]);
+
+    // ── auto-enroll the creating admin as a coordinator ──
+await Promise.all([
+  CommunityMembership.findOneAndUpdate(
+    { tenantId, communityId: community._id, authorId },
+    {
+      $setOnInsert: {
+        tenantId,
+        communityId: community._id,
+        authorId,
+        role: 'coordinator',
+      },
+    },
+    { upsert: true, new: true, runValidators: false }
+  ),
+  Community.updateOne(
+    { _id: community._id },
+    { $inc: { memberCount: 1 } }
+  ),
+  // dual-write — keep Author.community in sync with CommunityMembership
+  // during the transition period (mirrors updateTechCommunity pattern)
+  Author.findOneAndUpdate(
+    { _id: authorId },
+    { $addToSet: { community: name.trim() } }, // addToSet prevents duplicates
+    { runValidators: false }
+  ),
+]);
 
     return res.status(201).json({
       message: 'Community created successfully',
@@ -573,4 +600,4 @@ const editTechCommunity = async (req, res) => {
   }
 };
 
-module.exports = { getCommunityLandingPage, getCommunityById, getCommunityMembersById, getCommunityPostsByCommunityId, editTechCommunity }
+module.exports = { getCommunityLandingPage, getCommunityById, getCommunityMembersById, createCommunity, getCommunityPostsByCommunityId, editTechCommunity }

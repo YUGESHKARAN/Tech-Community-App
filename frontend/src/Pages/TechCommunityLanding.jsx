@@ -25,6 +25,7 @@ import {
   TbClockHour4,
   TbSparkles as TbSparklesFilter,
 } from "react-icons/tb";
+import { AiOutlineUsergroupAdd } from "react-icons/ai";
 
 import { initials, avatarColor } from "../utils/ProfileAvatar";
 import useGetCommunityStats from "../hooks/techCommunity/useGetCommunityStats";
@@ -469,8 +470,12 @@ function TechCommunityLanding() {
                 </button>
               );
             })}
+
+          
           </div>
         </div>
+
+        
 
         {/* ── Main layout: communities left, leaderboard + streak right ── */}
         <div className="grid grid-cols-1 md:gird-cols-2 lg:grid-cols-4 gap-6 items-start">

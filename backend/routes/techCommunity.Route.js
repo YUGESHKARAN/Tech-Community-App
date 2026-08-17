@@ -9,12 +9,14 @@ const {
   getCommunityLandingPage,
   getCommunityById,
   getCommunityMembersById,
+  createCommunity,
   getCommunityPostsByCommunityId,
   editTechCommunity,
 } = require("../controllers/techCommunity.Controller");
 
 
 router.get("/", readLimiter, authenticateToken, getCommunityLandingPage);
+router.post("/", limiter, authenticateToken, createCommunity);
 router.put("/:communityId", limiter, authenticateToken, editTechCommunity);
 router.get("/:communityId", readLimiter, authenticateToken, getCommunityById);
 router.get("/:communityId/members", readLimiter, authenticateToken, getCommunityMembersById);
