@@ -372,7 +372,7 @@ function CreateCommunity() {
         {/* ── Header ── */}
         <div className="flex items-center gap-3 mb-6">
           <Link
-            to="/techCommunityDetails"
+            to="/community"
             className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-200 transition-colors"
           >
             <TbArrowLeft className="text-sm" /> Back to communities

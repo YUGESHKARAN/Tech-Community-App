@@ -941,6 +941,8 @@ function NavBar() {
             </button>
           </Link>
 
+          
+
           <Link
             onClick={() => {
               setShowAddContent(false);
@@ -961,6 +963,29 @@ function NavBar() {
               <span className="text-[13px]">Create New Campaign</span>
             </button>
           </Link>
+
+
+            <p className="text-gray-400 pl-2 text-xs font-semibold border-t border-gray-700 mt-1 pt-1">Admin Only</p>
+          {(role==='admin' || role==='director') && <Link
+            onClick={() => {
+              setShowAddContent(false);
+            }}
+            to="/community/new"
+          >
+            <button
+              className="
+                w-full flex items-center gap-2
+                pl-2 py-1.5
+                text-sm text-gray-100
+                hover:bg-gray-800/70
+                transition-all duration-200
+                rounded-lg
+              "
+            >
+              <AiOutlineUsergroupAdd className="text-[17px] text-gray-400" />
+              <span className="text-[13px]"> Add New Community</span>
+            </button>
+          </Link>}
         </div>
       </div>
 
@@ -1047,6 +1072,7 @@ import { useLocation } from "react-router-dom";
 import { House } from "lucide-react";
 import formatCount from "../utils/NumberConversion";
 import RecentVisit from "../components/RecentVisit";
+import { AiOutlineUsergroupAdd } from "react-icons/ai";
 
 function NavIconDesktop({ to, icon, label }) {
   const location = useLocation();
