@@ -25,6 +25,7 @@ import {
   TbClockHour4,
   TbSparkles as TbSparklesFilter,
 } from "react-icons/tb";
+import { AiOutlineUsergroupAdd } from "react-icons/ai";
 
 import { initials, avatarColor } from "../utils/ProfileAvatar";
 import useGetCommunityStats from "../hooks/techCommunity/useGetCommunityStats";
@@ -420,8 +421,8 @@ function TechCommunityLanding() {
     );
   };
 
-
   // console.log("topContributors",topContributors)
+  // console.log("role", role)
 
   return (
     <div className="min-h-screen theme text-white flex flex-col">
@@ -469,6 +470,52 @@ function TechCommunityLanding() {
                 </button>
               );
             })}
+
+            {(role==='admin' || role==='director') && <Link to={"/community/new"}>
+              <motion.button
+                initial={{
+                  opacity: 0,
+                  y: -8,
+                  scale: 0.86,
+                  filter: "blur(4px)",
+                }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                  scale: 1,
+                  filter: "blur(0px)",
+                }}
+                whileHover={{
+                  y: -1,
+                  scale: 1.02,
+                }}
+                whileTap={{
+                  scale: 0.96,
+                }}
+                transition={{
+                  duration: 1.0,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+                className="
+     absolute right-16 top-4 z-40
+    rounded-lg items-center gap-1.5
+    text-xs
+    border border-neutral-700
+    px-2 py-1
+    text-gray-300
+    hover:text-gray-200
+    
+    hover:border-white/30
+    hover:bg-emerald-500/5
+    hidden xl:flex
+    font-semibold
+  "
+              >
+                <AiOutlineUsergroupAdd
+                 className="text-lg" />
+                Add New Community
+              </motion.button>
+            </Link>}
           </div>
         </div>
 
