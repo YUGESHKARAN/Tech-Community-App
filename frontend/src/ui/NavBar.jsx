@@ -737,9 +737,12 @@ function NavBar() {
         <div
           className={`flex flex-col max-h-68    border-t border-neutral-700 px-6 pt-3 pb-3  ${role === "student" && "hidden"}`}
         >
-          {role !== "student" && (
-            <p className="text-gray-400 font-medium text-xs mb-3">Controls</p>
+
+          {role === "admin" && (
+            <p className="text-gray-400 font-medium text-xs mb-3"> Admin Controls</p>
           )}
+
+         
 
           <div className="flex flex-col space-y-4  pb-3 pr-1">
             {/* ------------------------------------------- */}
@@ -761,6 +764,10 @@ function NavBar() {
                 close={setIsSidebarOpen}
               />
             )}
+
+             {role !== "student" && (
+            <p className="text-gray-400 font-medium text-xs ">Workspace</p>
+          )}
 
     
 
@@ -965,7 +972,9 @@ function NavBar() {
           </Link>
 
 
-            <p className="text-gray-400 pl-2 text-xs font-semibold border-t border-gray-700 mt-1 pt-1">Admin Only</p>
+            {(role==='admin' || role==='director') && 
+            <p className="text-gray-400 pl-2 text-xs font-semibold border-t border-gray-700 mt-1 pt-1">Admin Access</p>
+            }
           {(role==='admin' || role==='director') && <Link
             onClick={() => {
               setShowAddContent(false);
