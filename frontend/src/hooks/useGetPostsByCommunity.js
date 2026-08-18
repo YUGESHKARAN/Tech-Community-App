@@ -9,7 +9,7 @@ const useGetPostsByCommunity = (domain) => {
 //   const [limit] = useState(10);
   const limit = 30
   const [hasMore, setHasMore] = useState(true);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const encodedCategory = encodeURIComponent(domain);
 
   const isFetching = useRef(false);

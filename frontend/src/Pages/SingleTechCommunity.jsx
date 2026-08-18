@@ -55,6 +55,8 @@ import DiscussionCardSkeleton from "../components/loaders/community/DiscussionCa
 import { TopContributorsSkeleton } from "../components/loaders/community/TopContributorsSkeleton";
 import { TrendingTagsSkeleton } from "../components/loaders/community/TrendingTagsSkeleton";
 import { getLast3MonthsName } from "../utils/dateFunction";
+import { PostCardSkeleton } from "../components/loaders/community/PostCardSkeleton";
+import { CoordinatorsCardSkeleton } from "../components/loaders/community/CoordinatorsCardSkeleton";
 
 // ── S3 image base ─────────────────────────────────────────────────────────────
 const S3 = "https://open-access-blog-image.s3.us-east-1.amazonaws.com/";
@@ -130,7 +132,7 @@ const CommunityBanner = ({
   loader,
   communityId,
   canEdit,
-  role
+  role,
 }) => {
   const gradient = useMemo(() => {
     const theme = community?.colorTheme;
@@ -172,7 +174,7 @@ const CommunityBanner = ({
             </span>
           ) : (
             <span className="absolute top-2.5 md:top-4 right-2 text-[10px] md:font-semibold px-2.5 py-0.5 md:py-1 rounded-full bg-white/20 text-white capitalize">
-              {role=='admin'? 'Maintainer':'Viewer'}
+              {role == "admin" ? "Maintainer" : "Viewer"}
             </span>
           )}
 
@@ -495,7 +497,7 @@ const DiscussionsTab = ({
       {discussionLoading && filtered.length === 0 && (
         <div className="flex flex-col gap-2">
           {[...Array(3)].map((_, index) => (
-            <DiscussionCardSkeleton key={index}/>
+            <DiscussionCardSkeleton key={index} />
           ))}
         </div>
       )}
@@ -665,28 +667,41 @@ const FeedTab = ({ posts, setPosts, feedLoad, feedHashMore }) => {
       console.log("error sharing post", err);
     }
   };
-  if (posts.length === 0 && !feedLoad) {
+
+  if (feedLoad && posts?.length === 0) {
     return (
-      <div className="flex h-[70vh] col-span-full md:h-[55vh] flex-col justify-center items-center ">
-        <img className="w-48 md:w-60 " src={empty_state_post} alt="" />
-        <p className="text-center text-gray-500 text-sm">
-          No posts available !
-        </p>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 col-span-full">
+        {[...Array(6)].map((_, index) => (
+          <PostCardSkeleton key={index} />
+        ))}
+      </div>
+    );
+  }
+
+  if (!feedLoad && posts?.length === 0) {
+    return (
+      <div className="flex h-[70vh] col-span-full md:h-[55vh] flex-col justify-center items-center">
+        <img className="w-48 md:w-60" src={empty_state_post} alt="" />
+
+        <p className="text-center text-gray-500 text-sm">No posts available!</p>
       </div>
     );
   }
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-      {posts.map((post) => {
-        return (
-          <FeedCard
-            key={post._id}
-            post={post}
-            setPosts={setPosts}
-            email={email}
-          />
-        );
-      })}
+      {!feedLoad &&
+        posts?.length > 0 &&
+        posts.map((post) => {
+          return (
+            <FeedCard
+              key={post._id}
+              post={post}
+              setPosts={setPosts}
+              email={email}
+            />
+          );
+        })}
+
       {posts?.length > 0 && feedLoad && (
         <div className="col-span-full flex justify-center">
           <div className="relative flex items-center justify-center">
@@ -764,7 +779,7 @@ const MemberCard = ({ author }) => {
 };
 
 // ── Members tab ───────────────────────────────────────────────────────────────
-const MembersTab = ({ members, coordinators }) => (
+const MembersTab = ({ members, coordinators, memberLoad }) => (
   <div>
     {coordinators?.length > 0 && (
       <>
@@ -800,11 +815,16 @@ const MembersTab = ({ members, coordinators }) => (
 );
 
 // ── Leaderboard sidebar card ──────────────────────────────────────────────────
-const LeaderboardCard = ({ data, period, currentUserEmail, setPeriod, leaderboardLoader }) => {
+const LeaderboardCard = ({
+  data,
+  period,
+  currentUserEmail,
+  setPeriod,
+  leaderboardLoader,
+}) => {
   // const [period, setPeriod] = useState("weekly");
   const months = getLast3MonthsName();
   const medalColors = ["#f2994a", "#8f9296", "#cd7f32"];
-  
 
   return (
     <div className="theme border border-[#1e293b] rounded-xl p-4">
@@ -845,63 +865,62 @@ const LeaderboardCard = ({ data, period, currentUserEmail, setPeriod, leaderboar
       <div className="flex flex-col h-40 emerald-scrollbar overflow-x-hidden overflow-y-auto gap-2">
         {data?.leaderboard?.map((entry, i) => {
           const isYou = entry.email === currentUserEmail;
-          return(
-          <Link
-            to={`/viewProfile/${entry.email}`}
-            key={entry.email}
-            // className="flex items-center gap-2"
-             className={`flex items-center gap-2 py-1.5 px-1 rounded-lg ${
-                          isYou ? "bg-emerald-500/10" : ""
-                        }`}
-          >
-            {i < 3 ? (
-              <div
-                className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
-                style={{ background: `${medalColors[i]}22` }}
-              >
-                <TbTrophy
-                  className="text-[10px]"
-                  style={{ color: medalColors[i] }}
-                />
-              </div>
-            ) : (
-              <span className="w-5 text-center text-[10px] text-gray-500 flex-shrink-0">
-                {entry.rank}
-              </span>
-            )}
-            <img
-              src={avatar(entry.profile)}
-              className="w-6 h-6 rounded-full object-cover bg-gray-700 flex-shrink-0"
-              alt={entry.authorname}
-            />
-            {/* <span className="text-[11px] text-gray-200 flex-1 truncate">
+          return (
+            <Link
+              to={`/viewProfile/${entry.email}`}
+              key={entry.email}
+              // className="flex items-center gap-2"
+              className={`flex items-center gap-2 py-1.5 px-1 rounded-lg ${
+                isYou ? "bg-emerald-500/10" : ""
+              }`}
+            >
+              {i < 3 ? (
+                <div
+                  className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
+                  style={{ background: `${medalColors[i]}22` }}
+                >
+                  <TbTrophy
+                    className="text-[10px]"
+                    style={{ color: medalColors[i] }}
+                  />
+                </div>
+              ) : (
+                <span className="w-5 text-center text-[10px] text-gray-500 flex-shrink-0">
+                  {entry.rank}
+                </span>
+              )}
+              <img
+                src={avatar(entry.profile)}
+                className="w-6 h-6 rounded-full object-cover bg-gray-700 flex-shrink-0"
+                alt={entry.authorname}
+              />
+              {/* <span className="text-[11px] text-gray-200 flex-1 truncate">
               {entry.authorname}
             </span> */}
-             <span
-                          className={`text-[11px]  font-medium truncate flex-1 ${
-                            isYou ? "text-emerald-400" : "text-gray-200"
-                          }`}
-                        >
-                          {entry.authorname}
-                          {isYou && (
-                            <span className="ml-1.5 text-[9px] font-semibold px-1.5 py-0.5 rounded-full bg-emerald-500 text-black">
-                              You
-                            </span>
-                          )}
-                        </span>
-            <span className="text-[10px] text-gray-500 whitespace-nowrap">
-              {formatCount(entry.points)} pts
-            </span>
-          </Link>
-        )})}
+              <span
+                className={`text-[11px]  font-medium truncate flex-1 ${
+                  isYou ? "text-emerald-400" : "text-gray-200"
+                }`}
+              >
+                {entry.authorname}
+                {isYou && (
+                  <span className="ml-1.5 text-[9px] font-semibold px-1.5 py-0.5 rounded-full bg-emerald-500 text-black">
+                    You
+                  </span>
+                )}
+              </span>
+              <span className="text-[10px] text-gray-500 whitespace-nowrap">
+                {formatCount(entry.points)} pts
+              </span>
+            </Link>
+          );
+        })}
 
-        {
-          !leaderboardLoader && data?.leaderboard?.length ===0 &&
+        {!leaderboardLoader && data?.leaderboard?.length === 0 && (
           <p className="h-full text-xs flex flex-col justify-center items-center">
             No record found !
           </p>
-        }
-        
+        )}
       </div>
     </div>
   );
@@ -939,12 +958,11 @@ const TrendingTagsCard = ({ data, trendingTagLoader }) => {
           </div>
         ))}
 
-         {
-          !trendingTagLoader && data?.length ===0 &&
+        {!trendingTagLoader && data?.length === 0 && (
           <p className="h-full  text-xs flex flex-col justify-center items-center">
             No tags found !
           </p>
-        }
+        )}
       </div>
     </div>
   );
@@ -1032,7 +1050,7 @@ function SingleTechCommunity() {
     page,
     setPage,
     hasMore,
-    loading,
+    loading: memberLoad,
     fetchAuthors,
   } = useGetAllMembersByDomain(communityId);
   // const discussions =discussionsSample
@@ -1122,7 +1140,25 @@ function SingleTechCommunity() {
               />
             )}
             {activeTab === "members" && (
-              <MembersTab members={members} coordinators={coordinators} />
+              <>
+                {(!memberLoad && coordinators?.length > 0) && 
+                  <MembersTab
+                    members={members}
+                    coordinators={coordinators}
+                    memberLoad={memberLoad}
+                  />
+                }
+
+
+
+                {(memberLoad && coordinators?.length === 0 )&& 
+                   <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3">
+                  {[...Array(8)].map((_,index)=> (
+                    <CoordinatorsCardSkeleton key={index}/>
+                  ))}
+                
+                </div>}
+              </>
             )}
           </div>
 
@@ -1140,7 +1176,10 @@ function SingleTechCommunity() {
               <TopContributorsSkeleton />
             )}
             {!trendingTagLoader ? (
-              <TrendingTagsCard data={trendingTags} trendingTagLoader={trendingTagLoader} />
+              <TrendingTagsCard
+                data={trendingTags}
+                trendingTagLoader={trendingTagLoader}
+              />
             ) : (
               <TrendingTagsSkeleton />
             )}
