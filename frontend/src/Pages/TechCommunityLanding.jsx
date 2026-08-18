@@ -38,6 +38,7 @@ import BadgeIcons from "../components/achievements/BadgeIcons";
 import RecentVisit from "../components/RecentVisit";
 import * as TbIcons from "react-icons/tb";
 import { deriveGradient } from "../utils/bannerTheme";
+import PerformanceTracker from "../components/performancetracker/PerformanceTracker";
 
 const streakSample = {
   currentStreak: 4,
@@ -648,6 +649,7 @@ function TechCommunityLanding() {
               </p>
             </div>
           </div> */}
+          {/* <PerformanceTracker/> */}
           </div>
 
 

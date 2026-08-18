@@ -15,10 +15,10 @@
   <img src="https://img.shields.io/github/stars/YUGESHKARAN/Tech-Community-App?style=social" alt="GitHub stars" />
 </a>
 <a href="https://www.bytesbase.me">
-  <img src="https://img.shields.io/badge/bytesbase.me-000000?logo=google-chrome&logoColor=white" alt="Website" />
+  <img src="https://img.shields.io/badge/Launch%20Bytes%20Base-000000?logo=rocket&logoColor=white" alt="Launch Bytes Base" />
 </a>
 <a href="https://www.linkedin.com/company/bytes-base">
-  <img src="https://img.shields.io/badge/Follow%20on-LinkedIn-black?style=flat&logo=linkedin&logoColor=white&labelColor=white" alt="LinkedIn" />
+  <img src="https://img.shields.io/badge/Follow%20us%20on-LinkedIn-black?style=flat&logo=linkedin&logoColor=white&labelColor=white" alt="LinkedIn" />
 
   </div>
 
