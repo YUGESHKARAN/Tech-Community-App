@@ -76,7 +76,7 @@ const DiscussionCard = ({
 
   return (
     <div
-      className={`block theme border rounded-xl px-4 py-3 hover:border-white/10 transition-all duration-200 ${
+      className={`block theme border rounded-xl px-4 py-3 transition-all duration-200 ${
         discussion.isPinned ? "border-l-2" : "border-[#1e293b]"
       }`}
       style={discussion.isPinned ? { borderLeftColor: accentColor } : {}}

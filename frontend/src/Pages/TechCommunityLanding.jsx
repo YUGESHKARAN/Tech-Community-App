@@ -550,7 +550,7 @@ function TechCommunityLanding() {
                   </select>
                 </div>
 
-                <div className="flex flex-col overflow-y-auto overflow-x-hidden scrollbar-hide max-h-52 md:max-h-96  gap-1">
+                <div className="flex flex-col overflow-y-auto overflow-x-hidden scrollbar-hide max-h-52 md:max-h-96 ">
                   {topContributors?.map((c, i) => {
                     const rank = i + 1;
                     const isYou = c.email === email;
