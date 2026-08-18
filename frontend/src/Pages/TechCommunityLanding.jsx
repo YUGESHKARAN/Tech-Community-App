@@ -497,19 +497,19 @@ function TechCommunityLanding() {
                   ease: [0.22, 1, 0.36, 1],
                 }}
                 className="
-     absolute right-16 top-4 z-40
-    rounded-lg items-center gap-1.5
-    text-xs
-    border border-neutral-700
-    px-2 py-1
-    text-gray-300
-    hover:text-gray-200
-    
-    hover:border-white/30
-    hover:bg-emerald-500/5
-    hidden xl:flex
-    font-semibold
-  "
+                absolute right-16 top-4 z-40
+                rounded-lg items-center gap-1.5
+                text-xs
+                border border-neutral-700
+                px-2 py-1
+                text-gray-300
+                hover:text-gray-200
+                
+                hover:border-white/30
+                hover:bg-emerald-500/5
+                hidden xl:flex
+                font-semibold
+              "
               >
                 <AiOutlineUsergroupAdd
                  className="text-lg" />
@@ -549,7 +549,7 @@ function TechCommunityLanding() {
                   </select>
                 </div>
 
-                <div className="flex flex-col overflow-y-auto overflow-x-hidden scrollbar-hide max-h-52 md:max-h-96 gap-1">
+                <div className="flex flex-col overflow-y-auto overflow-x-hidden scrollbar-hide max-h-52  gap-1">
                   {topContributors?.map((c, i) => {
                     const rank = i + 1;
                     const isYou = c.email === email;
@@ -627,7 +627,29 @@ function TechCommunityLanding() {
             ) : (
               <TechCommunityTopContributorsSkeleton />
             )}
+            <div className="flex col-span-1 w-full  lg:order-3 order-2 md:col-span-2 lg:col-span-1 flex-col gap-2 lg:sticky lg:top-16">
+            <h3 className="text-sm md:ml-2 font-semibold text-gray-300 ">
+              Performance Tracker
+            </h3>
+            <div className="w-full theme border   border-[#1e293b] rounded-2xl p-4">
+              <div className="flex items-center gap-2 text-sm font-semibold text-gray-200 mb-2">
+                <TbFlame className="text-amber-400" />
+                Your streak
+              </div>
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-2xl font-bold text-gray-100">
+                  {streakSample.currentStreak}
+                </span>
+                <span className="text-xs text-gray-400">days</span>
+              </div>
+              <p className="text-[11px] text-gray-500 mt-1">
+                Post today to keep it going · Longest:{" "}
+                {streakSample.longestStreak} days
+              </p>
+            </div>
           </div>
+          </div>
+
 
           {/* ── Main column ── */}
           {
@@ -764,27 +786,7 @@ function TechCommunityLanding() {
             childClass="theme border border-[#1e293b] rounded-2xl p-1 mt-2"
           />
 
-          {/* <div className="flex col-span-1 w-full  lg:order-3 order-2 md:col-span-2 lg:col-span-1 flex-col gap-2 lg:sticky lg:top-16">
-            <h3 className="text-sm md:ml-2 font-semibold text-gray-300 ">
-              Performance Tracker
-            </h3>
-            <div className="w-full theme border   border-[#1e293b] rounded-2xl p-4">
-              <div className="flex items-center gap-2 text-sm font-semibold text-gray-200 mb-2">
-                <TbFlame className="text-amber-400" />
-                Your streak
-              </div>
-              <div className="flex items-baseline gap-1.5">
-                <span className="text-2xl font-bold text-gray-100">
-                  {streakSample.currentStreak}
-                </span>
-                <span className="text-xs text-gray-400">days</span>
-              </div>
-              <p className="text-[11px] text-gray-500 mt-1">
-                Post today to keep it going · Longest:{" "}
-                {streakSample.longestStreak} days
-              </p>
-            </div>
-          </div> */}
+          
         </div>
       </div>
 
