@@ -26,7 +26,7 @@ export const TopContributorsSkeleton = () => {
       </div>
 
       {/* Leaderboard */}
-      <div className="flex flex-col h-40 emerald-scrollbar overflow-hidden gap-2">
+      <div className="flex flex-col h-40 emerald-scrollbar overflow-hidden gap-1">
         {[...Array(6)].map((_, i) => (
           <div
             key={i}

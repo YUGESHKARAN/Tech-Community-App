@@ -322,7 +322,7 @@ const DiscussionCard = ({
 
   return (
     <div
-      className={`block theme border rounded-xl px-4 py-3 md:hover:border-white/10 transition-all duration-200 ${
+      className={`block theme border rounded-xl px-4 py-3  transition-all duration-200 ${
         discussion.isPinned ? "border-l-2" : "border-[#1e293b]"
       }`}
       style={discussion.isPinned ? { borderLeftColor: accentColor } : {}}
@@ -862,7 +862,7 @@ const LeaderboardCard = ({
         </div>
       </div>
 
-      <div className="flex flex-col h-40 emerald-scrollbar overflow-x-hidden overflow-y-auto gap-2">
+      <div className="flex flex-col h-40 emerald-scrollbar overflow-x-hidden overflow-y-auto gap-1">
         {data?.leaderboard?.map((entry, i) => {
           const isYou = entry.email === currentUserEmail;
           return (
