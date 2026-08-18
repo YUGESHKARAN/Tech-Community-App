@@ -549,7 +549,7 @@ function TechCommunityLanding() {
                   </select>
                 </div>
 
-                <div className="flex flex-col overflow-y-auto overflow-x-hidden scrollbar-hide max-h-52  gap-1">
+                <div className="flex flex-col overflow-y-auto overflow-x-hidden scrollbar-hide max-h-52 md:max-h-96  gap-1">
                   {topContributors?.map((c, i) => {
                     const rank = i + 1;
                     const isYou = c.email === email;
@@ -627,7 +627,7 @@ function TechCommunityLanding() {
             ) : (
               <TechCommunityTopContributorsSkeleton />
             )}
-            <div className="flex col-span-1 w-full  lg:order-3 order-2 md:col-span-2 lg:col-span-1 flex-col gap-2 lg:sticky lg:top-16">
+            {/* <div className="flex col-span-1 w-full  lg:order-3 order-2 md:col-span-2 lg:col-span-1 flex-col gap-2 lg:sticky lg:top-16">
             <h3 className="text-sm md:ml-2 font-semibold text-gray-300 ">
               Performance Tracker
             </h3>
@@ -647,7 +647,7 @@ function TechCommunityLanding() {
                 {streakSample.longestStreak} days
               </p>
             </div>
-          </div>
+          </div> */}
           </div>
 
 
