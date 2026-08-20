@@ -1409,12 +1409,15 @@ const updateRole = async (req, res) => {
           ? adminMsg
           : studentMsg;
 
+    const now = new Date();
+
     const newAnnouncement = {
       user: adminUser,
       title: roleTitle,
       message: roleMessage,
       authorEmail: adminEmail,
       deliveredTo: "all",
+      timestamp: now,
     };
 
     const newNotification = {
@@ -1422,6 +1425,7 @@ const updateRole = async (req, res) => {
       authorEmail: adminEmail,
       message: `Hi ${author.authorname}, Your role has been updated to ${role}.`,
       url,
+      timestamp: now,
     };
 
     author.role = role;

@@ -662,6 +662,8 @@ const rollbackDeletion = async (req, res) => {
       Welcome back to the **Bytes Base** platform.
     `;
 
+    const now = new Date();
+
     const newAnnouncement = {
       _id: new mongoose.Types.ObjectId(),
       user: restorerName,
@@ -669,6 +671,7 @@ const rollbackDeletion = async (req, res) => {
       message: recoveryMessage,
       authorEmail: restorerEmail,
       deliveredTo: "all",
+      timestamp: now,
     };
 
     const newNotification = {
@@ -677,6 +680,7 @@ const rollbackDeletion = async (req, res) => {
       authorEmail: restorerEmail,
       message: `Welcome back, Your account has been successfully recovered !`,
       url,
+      timestamp: now,
     };
 
     const rawAuthor = authorSnap.toObject
