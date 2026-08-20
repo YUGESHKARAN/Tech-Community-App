@@ -59,26 +59,34 @@ Visit https://www.bytesbase.me book a demo session. Our team will schedule a per
 * **Announcements** – Coordinators and admins can publish institutional or community updates.
 * **Notifications** – Real-time alerts for recommended feeds and comments.
 * [**Network Recommendation**](https://github.com/YUGESHKARAN/recommendation-system) – A graph structured author recommendation system to build connections.
+
 ---
 
-## Student Interface
+## Student / Developer Interface
 
-- **Explore Technical Content**: Browse, learn, and engage with posts across tech communities.
-- **Interactive Discussions**: Comment on posts and join lively discussions.
-- **Personalized Experience**: Follow favorite communities and authors, and receive tailored notifications.
-- **Stay Informed**: Get real-time announcements about events and sessions.
+- **Explore Technical Content**: Discover, learn, and engage with technical posts across different technology communities.
+- **Build & Share**: Publish projects, technical findings, resources, and ideas with the developer community.
+- **Interactive Discussions**: Participate in discussions, Q&A, and knowledge-sharing with fellow developers.
+- **Personalized Experience**: Follow communities and contributors, receive relevant notifications, and discover content based on interests.
+- **Track Contributions**: Monitor personal contributions, community engagement, achievements, and leaderboard progress.
+- **Discover Opportunities**: Stay informed about technical events, sessions, projects, and community activities.
 
-## Coordinator Interface
+## Community / Organization Interface
 
-- **Content Creation & Management**: Publish, edit, or delete technical posts.
-- **AI-Powered Grammar Checker**: Ensure content quality using integrated AI tools.
-- **Event Management**: Plan and schedule announcements for meetings and events.
+- **Content Management**: Create, publish, edit, and manage technical content across communities.
+- **Community Management**: Create and manage technology-focused communities, members, discussions, and activities.
+- **AI-Assisted Content Creation**: Improve and structure technical content using integrated AI-powered tools.
+- **Event Management**: Create, schedule, and manage technical events, sessions, and announcements.
+- **Community Insights**: Monitor engagement, contributions, participation, and community growth.
+- **Contributor Recognition**: Recognize active contributors through achievements, rankings, and community-level leaderboards.
 
-## Admin Interface
+## Platform Administration
 
-- **Platform Oversight**: Manage users, roles, and permissions.
-- **Activity Monitoring**: Verify and monitor student and coordinator activities.
-- **Comprehensive Control**: Oversee and configure all aspects of the platform.
+- **Platform Oversight**: Manage organizations, communities, users, roles, and permissions.
+- **Activity Monitoring**: Monitor platform activity, content, engagement, and community participation.
+- **Analytics & Insights**: Access platform-level insights to understand user engagement, content activity, and community growth.
+- **Security & Governance**: Manage access controls, moderation, platform policies, and security configurations.
+- **Platform Configuration**: Configure and oversee core platform functionality, integrations, and system-wide settings.
 
 ---
 
