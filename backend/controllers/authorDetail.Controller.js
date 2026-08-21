@@ -142,6 +142,10 @@ const addAuthor = async (req, res) => {
   //   });
   // }
 
+  if (!authorname || !password || !email || !otp){
+    return res.status(400).json({message:'Author name, email, passowrd and OTP are required'})
+  }
+
   const { valid, reason } = await verifyOTP(email, otp);
   if (!valid) {
     return res.status(400).json({ message: reason });
