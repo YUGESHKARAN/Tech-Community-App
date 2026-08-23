@@ -348,7 +348,7 @@ const DiscussionCard = ({
 
         {/* content */}
         <Link
-          to={`/discussion/${discussion._id}/${communityId}`}
+          to={`/discussion/${communityId}/${discussion._id}`}
           className="flex-1 min-w-0"
         >
           <div className="flex items-start gap-2 mb-1 flex-wrap">

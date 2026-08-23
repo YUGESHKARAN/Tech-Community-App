@@ -428,6 +428,9 @@ function TechCommunityLanding() {
   return (
     <div className="min-h-screen theme text-white flex flex-col">
       <NavBar />
+       <span className="text-[9px] md:pt-2 py-2 pb-0  px-4 md:px-20 max-w-[1800px] mx-auto w-full animate-pulse font-semibold ">
+        Performance tracker feature is under development, feel free to explore the platform.
+      </span>
 
       <div className="flex-grow px-4   relative max-w-[1800px] mx-auto w-full pb-20">
         {/* ── Hero header ── */}
@@ -472,32 +475,33 @@ function TechCommunityLanding() {
               );
             })}
 
-            {(role==='admin' || role==='director') && <Link to={"/community/new"}>
-              <motion.button
-                initial={{
-                  opacity: 0,
-                  y: -8,
-                  scale: 0.86,
-                  filter: "blur(4px)",
-                }}
-                animate={{
-                  opacity: 1,
-                  y: 0,
-                  scale: 1,
-                  filter: "blur(0px)",
-                }}
-                whileHover={{
-                  y: -1,
-                  scale: 1.02,
-                }}
-                whileTap={{
-                  scale: 0.96,
-                }}
-                transition={{
-                  duration: 1.0,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-                className="
+            {(role === "admin" || role === "director") && (
+              <Link to={"/community/new"}>
+                <motion.button
+                  initial={{
+                    opacity: 0,
+                    y: -8,
+                    scale: 0.86,
+                    filter: "blur(4px)",
+                  }}
+                  animate={{
+                    opacity: 1,
+                    y: 0,
+                    scale: 1,
+                    filter: "blur(0px)",
+                  }}
+                  whileHover={{
+                    y: -1,
+                    scale: 1.02,
+                  }}
+                  whileTap={{
+                    scale: 0.96,
+                  }}
+                  transition={{
+                    duration: 1.0,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
+                  className="
                 absolute right-16 top-4 z-40
                 rounded-lg items-center gap-1.5
                 text-xs
@@ -511,151 +515,28 @@ function TechCommunityLanding() {
                 hidden xl:flex
                 font-semibold
               "
-              >
-                <AiOutlineUsergroupAdd
-                 className="text-lg" />
-                Add New Community
-              </motion.button>
-            </Link>}
+                >
+                  <AiOutlineUsergroupAdd className="text-lg" />
+                  Add New Community
+                </motion.button>
+              </Link>
+            )}
           </div>
         </div>
 
         {/* ── Main layout: communities left, leaderboard + streak right ── */}
         <div className="grid grid-cols-1 md:gird-cols-2 lg:grid-cols-4 gap-6 items-start">
           {/* ── Sidebar ── */}
-          <div className="flex col-span-1  md:col-span-2 lg:col-span-1 flex-col gap-3 lg:sticky lg:top-16">
-            {/* Top contributors */}
-            <h3 className="text-sm md:ml-2 font-semibold text-gray-300 ">
-              Overall Leaderboard
-            </h3>
-            {!topContributorsLoading ? (
-              <div className="theme border border-[#1e293b] rounded-2xl p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-2 text-sm font-semibold text-gray-200">
-                    <TbTrophy className="text-amber-400" />
-                    Top contributors
-                  </div>
 
-                  <select
-                    value={filter}
-                    onChange={(e) => setFilter(e.target.value)}
-                    className="theme outline-none text-gray-200 cursor-pointer text-xs rounded px-2 py-1 border border-[#334155]"
-                  >
-                    <option value="overall">Overall</option>
-                    {Object.keys(months).map((key) => (
-                      <option key={key} value={key}>
-                        {key === "current_month" ? "This Month" : months[key]}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="flex flex-col overflow-y-auto overflow-x-hidden scrollbar-hide max-h-52 md:max-h-96 ">
-                  {topContributors?.map((c, i) => {
-                    const rank = i + 1;
-                    const isYou = c.email === email;
-                    const medalColors = ["#00f01c", "#cd7f32", "#8f9296"];
-
-                    return (
-                      <Link
-                        to={`/viewProfile/${c.email}`}
-                        key={c.email}
-                        className={`flex items-center gap-2 py-1.5 px-1 rounded-lg ${
-                          isYou ? "bg-emerald-500/10" : ""
-                        }`}
-                      >
-                        {rank <= 3 ? (
-                          <div
-                            className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
-                            style={{ background: `${medalColors[rank - 1]}33` }}
-                          >
-                            <TbCrown
-                              className="text-[11px]"
-                              style={{ color: medalColors[rank - 1] }}
-                            />
-                          </div>
-                        ) : (
-                          <span className="w-5 text-center text-[11px] text-gray-500 font-medium flex-shrink-0">
-                            {rank}
-                          </span>
-                        )}
-
-                        {c.profile ? (
-                          <img
-                            key={c.email}
-                            src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${c.profile}`}
-                            alt={c.name}
-                            className="h-6 w-6 rounded-full border border-teal-600 bg-gray-400"
-                          />
-                        ) : (
-                          <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-[9px] font-semibold text-gray-200 flex-shrink-0">
-                            {initials(c.name)}
-                          </div>
-                        )}
-
-                        <span
-                          className={`text-[11px]  font-medium truncate flex-1 ${
-                            isYou ? "text-emerald-400" : "text-gray-200"
-                          }`}
-                        >
-                          {c.name}
-                          {isYou && (
-                            <span className="ml-1.5 text-[9px] font-semibold px-1.5 py-0.5 rounded-full bg-emerald-500 text-black">
-                              You
-                            </span>
-                          )}
-                        </span>
-
-                        <BadgeIcons
-                          badges={c?.badges}
-                          parentClass="static  -space-x-2"
-                          shieldClassName="w-4 h-4 md:h-4 md:w-4"
-                        />
-
-                        <span
-                          className={`text-[11px] whitespace-nowrap ${
-                            isYou ? "text-emerald-400" : "text-gray-400"
-                          }`}
-                        >
-                          {/* {c.postsCount} Posts */}
-                          {formatCount(c.totalPoints)} pts
-                        </span>
-                      </Link>
-                    );
-                  })}
-                </div>
-              </div>
-            ) : (
-              <TechCommunityTopContributorsSkeleton />
-            )}
-            {/* <div className="flex col-span-1 w-full  lg:order-3 order-2 md:col-span-2 lg:col-span-1 flex-col gap-2 lg:sticky lg:top-16">
-            <h3 className="text-sm md:ml-2 font-semibold text-gray-300 ">
-              Performance Tracker
-            </h3>
-            <div className="w-full theme border   border-[#1e293b] rounded-2xl p-4">
-              <div className="flex items-center gap-2 text-sm font-semibold text-gray-200 mb-2">
-                <TbFlame className="text-amber-400" />
-                Your streak
-              </div>
-              <div className="flex items-baseline gap-1.5">
-                <span className="text-2xl font-bold text-gray-100">
-                  {streakSample.currentStreak}
-                </span>
-                <span className="text-xs text-gray-400">days</span>
-              </div>
-              <p className="text-[11px] text-gray-500 mt-1">
-                Post today to keep it going · Longest:{" "}
-                {streakSample.longestStreak} days
-              </p>
-            </div>
-          </div> */}
-          {/* <PerformanceTracker/> */}
-          </div>
-
+          <RecentVisit
+            parentClass="flex col-span-1 order-1 border-none md:col-span-2 lg:col-span-1 flex-col hidden lg:block gap-3 pt-0 lg:sticky lg:top-16"
+            titleClass="text-sm  font-semibold text-gray-300 "
+            childClass="theme border border-[#1e293b] rounded-2xl p-1 mt-2"
+          />
 
           {/* ── Main column ── */}
           {
-            <div className="md:col-span-2 col-span-1 ">
+            <div className="md:col-span-2 order-3 xl:order-2 col-span-1 ">
               {statsLoader ? (
                 <div className="grid grid-cols-1   gap-5">
                   <h3 className="text-sm col-span-full font-semibold text-gray-300 ">
@@ -782,13 +663,134 @@ function TechCommunityLanding() {
               )}
             </div>
           }
-          <RecentVisit
-            parentClass="flex col-span-1 order-3 lg:order-1 border-none md:col-span-2 lg:col-span-1 flex-col hidden lg:block gap-3 pt-0 lg:sticky lg:top-16"
-            titleClass="text-sm  font-semibold text-gray-300 "
-            childClass="theme border border-[#1e293b] rounded-2xl p-1 mt-2"
-          />
+          <div className="flex col-span-1 order-2 xl:order-3  md:col-span-2 lg:col-span-1 flex-col gap-3 lg:sticky lg:top-16">
+            <PerformanceTracker />
+            {/* Top contributors */}
+            <h3 className="text-sm md:ml-2 font-semibold text-gray-300 ">
+              Overall Leaderboard
+            </h3>
+            {!topContributorsLoading ? (
+              <div className="theme border border-[#1e293b] rounded-2xl p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-gray-200">
+                    <TbTrophy className="text-amber-400" />
+                    Top contributors
+                  </div>
 
-          
+                  <select
+                    value={filter}
+                    onChange={(e) => setFilter(e.target.value)}
+                    className="theme outline-none text-gray-200 cursor-pointer text-xs rounded px-2 py-1 border border-[#334155]"
+                  >
+                    <option value="overall">Overall</option>
+                    {Object.keys(months).map((key) => (
+                      <option key={key} value={key}>
+                        {key === "current_month" ? "This Month" : months[key]}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="flex flex-col overflow-y-auto overflow-x-hidden scrollbar-hide max-h-52 md:max-h-80 ">
+                  {topContributors?.map((c, i) => {
+                    const rank = i + 1;
+                    const isYou = c.email === email;
+                    const medalColors = ["#00f01c", "#cd7f32", "#8f9296"];
+
+                    return (
+                      <Link
+                        to={`/viewProfile/${c.email}`}
+                        key={c.email}
+                        className={`flex items-center gap-2 py-1.5 px-1 rounded-lg ${
+                          isYou ? "bg-emerald-500/10" : ""
+                        }`}
+                      >
+                        {rank <= 3 ? (
+                          <div
+                            className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
+                            style={{ background: `${medalColors[rank - 1]}33` }}
+                          >
+                            <TbCrown
+                              className="text-[11px]"
+                              style={{ color: medalColors[rank - 1] }}
+                            />
+                          </div>
+                        ) : (
+                          <span className="w-5 text-center text-[11px] text-gray-500 font-medium flex-shrink-0">
+                            {rank}
+                          </span>
+                        )}
+
+                        {c.profile ? (
+                          <img
+                            key={c.email}
+                            src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${c.profile}`}
+                            alt={c.name}
+                            className="h-6 w-6 rounded-full border border-teal-600 bg-gray-400"
+                          />
+                        ) : (
+                          <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-[9px] font-semibold text-gray-200 flex-shrink-0">
+                            {initials(c.name)}
+                          </div>
+                        )}
+
+                        <span
+                          className={`text-[11px]  font-medium truncate flex-1 ${
+                            isYou ? "text-emerald-400" : "text-gray-200"
+                          }`}
+                        >
+                          {c.name}
+                          {isYou && (
+                            <span className="ml-1.5 text-[9px] font-semibold px-1.5 py-0.5 rounded-full bg-emerald-500 text-black">
+                              You
+                            </span>
+                          )}
+                        </span>
+
+                        <BadgeIcons
+                          badges={c?.badges}
+                          parentClass="static  -space-x-2"
+                          shieldClassName="w-4 h-4 md:h-4 md:w-4"
+                        />
+
+                        <span
+                          className={`text-[11px] whitespace-nowrap ${
+                            isYou ? "text-emerald-400" : "text-gray-400"
+                          }`}
+                        >
+                          {/* {c.postsCount} Posts */}
+                          {formatCount(c.totalPoints)} pts
+                        </span>
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : (
+              <TechCommunityTopContributorsSkeleton />
+            )}
+            {/* <div className="flex col-span-1 w-full  lg:order-3 order-2 md:col-span-2 lg:col-span-1 flex-col gap-2 lg:sticky lg:top-16">
+            <h3 className="text-sm md:ml-2 font-semibold text-gray-300 ">
+              Performance Tracker
+            </h3>
+            <div className="w-full theme border   border-[#1e293b] rounded-2xl p-4">
+              <div className="flex items-center gap-2 text-sm font-semibold text-gray-200 mb-2">
+                <TbFlame className="text-amber-400" />
+                Your streak
+              </div>
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-2xl font-bold text-gray-100">
+                  {streakSample.currentStreak}
+                </span>
+                <span className="text-xs text-gray-400">days</span>
+              </div>
+              <p className="text-[11px] text-gray-500 mt-1">
+                Post today to keep it going · Longest:{" "}
+                {streakSample.longestStreak} days
+              </p>
+            </div>
+          </div> */}
+          </div>
         </div>
       </div>
 

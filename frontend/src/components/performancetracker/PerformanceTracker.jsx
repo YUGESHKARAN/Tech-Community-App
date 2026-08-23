@@ -1,114 +1,126 @@
-import React, { useMemo } from "react";
-import { TbFlame, TbTrophy, TbCalendar, TbBolt } from "react-icons/tb";
+import React, { useMemo, useState, useEffect } from "react";
+import {
+  TbFlame, TbTrophy, TbCalendar, TbBolt,
+  TbChevronLeft, TbChevronRight,
+} from "react-icons/tb";
 
 // ─────────────────────────────────────────────────────────────────────────────
-//  SAMPLE DATA
-//  Replace with real data from useGetPerformanceTracker(email) hook.
+//  SAMPLE DATA — imported from the fixed deterministic file
 //
-//  API response shape:
-//  {
-//    currentStreak:  number,           // consecutive active days up to today
-//    longestStreak:  number,           // all-time highest streak
-//    lastActiveDate: "YYYY-MM-DD",     // Asia/Kolkata date string
-//    contributions: {                  // UserContributions.days map
-//      "YYYY-MM-DD": number,           // total weighted points for that day
-//    }
-//  }
+//  When you wire up the real API, replace the two sample imports below with:
+//
+//  Streak:
+//    const { data: streakData } = useGetStreakData(email);
+//    GET /api/authors/:email/streak
+//    → { currentStreak, longestStreak, lastActiveDate, joinedYear }
+//
+//  Contributions (fetched per year on year change):
+//    const { data: yearData } = useGetContributions(email, selectedYear);
+//    GET /api/authors/:email/contributions?year=2025
+//    → { year, contributions: { "YYYY-MM-DD": number } }
+//
+//  Then pass them as props:
+//    <PerformanceTracker
+//      streakData={streakData}
+//      contributionsByYear={null}        ← null = use onFetchYear instead
+//      onFetchYear={(year) =>
+//        axiosInstance.get(`/api/authors/${email}/contributions?year=${year}`)
+//          .then(r => r.data.contributions)
+//      }
+//      isOwn={currentUserEmail === profileEmail}
+//    />
 // ─────────────────────────────────────────────────────────────────────────────
-const generateSampleContributions = () => {
-  const today    = new Date();
-  const data     = {};
-  const patterns = [5, 0, 3, 8, 0, 1, 6, 0, 0, 3, 15, 0, 5, 1];
-
-  for (let i = 90; i >= 0; i--) {
-    const d = new Date(today);
-    d.setDate(d.getDate() - i);
-    const key = d.toISOString().slice(0, 10);
-    // realistic sparse pattern
-    const weight = patterns[i % patterns.length];
-    if (weight > 0 && Math.random() > 0.3) {
-      data[key] = weight + Math.floor(Math.random() * 4);
-    }
-  }
-  // recent active streak — last 6 days always active
-  for (let i = 0; i < 6; i++) {
-    const d = new Date(today);
-    d.setDate(d.getDate() - i);
-    data[d.toISOString().slice(0, 10)] = 3 + Math.floor(Math.random() * 10);
-  }
-  return data;
-};
-
-export const SAMPLE_PERFORMANCE = {
-  currentStreak:  6,
-  longestStreak:  14,
-  lastActiveDate: new Date().toISOString().slice(0, 10),
-  contributions:  generateSampleContributions(),
-};
+import {
+  SAMPLE_STREAK,
+  SAMPLE_CONTRIBUTIONS_BY_YEAR,
+} from "./performanceSampleData";
 
 // ─────────────────────────────────────────────────────────────────────────────
-//  HELPERS
+//  CONSTANTS
+// ─────────────────────────────────────────────────────────────────────────────
+const CELL_SIZE = 11;
+const GAP       = 3;
+const STEP      = CELL_SIZE + GAP;
+const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+// intensity level → background color
+const LEVEL_COLORS = {
+  "-1": "transparent",
+  "0":  "rgba(255,255,255,0.04)",
+  "1":  "rgba(13,148,136,0.20)",
+  "2":  "rgba(13,148,136,0.45)",
+  "3":  "rgba(13,148,136,0.72)",
+  "4":  "rgba(13,148,136,1.00)",
+};
+
+// intensity level → border color
+const LEVEL_BORDER = {
+  "-1": "transparent",
+  "0":  "rgba(255,255,255,0.05)",
+  "1":  "rgba(13,148,136,0.28)",
+  "2":  "rgba(13,148,136,0.52)",
+  "3":  "rgba(13,148,136,0.78)",
+  "4":  "rgba(13,148,136,1.00)",
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  PURE HELPERS
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
- * Derive the effective streak to display.
- * If lastActiveDate is neither today nor yesterday, the streak has
- * lapsed — show 0 rather than the stored (stale) currentStreak.
- * This is the "derive at read time" pattern from the production plan.
+ * Derive the display streak at read time — if lastActiveDate is
+ * neither today nor yesterday the streak has lapsed; show 0
+ * without needing a DB write (production plan: derive at read time).
  */
 const effectiveStreak = (currentStreak, lastActiveDate) => {
-  if (!lastActiveDate) return 0;
-  const today     = new Date();
-  const yesterday = new Date(today);
-  yesterday.setDate(yesterday.getDate() - 1);
-
-  const todayStr     = today.toISOString().slice(0, 10);
-  const yesterdayStr = yesterday.toISOString().slice(0, 10);
-
-  if (lastActiveDate === todayStr || lastActiveDate === yesterdayStr) {
-    return currentStreak;
-  }
-  return 0; // streak lapsed — correct on read, no write needed
+  if (!lastActiveDate || !currentStreak) return 0;
+  const today     = new Date().toISOString().slice(0, 10);
+  const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+  return lastActiveDate === today || lastActiveDate === yesterday
+    ? currentStreak
+    : 0;
 };
 
-/**
- * Map a daily point total to an intensity level 0–4.
- * Mirrors the leaderboard point weights.
- */
+/** Daily point total → heatmap intensity level 0–4 */
 const pointsToLevel = (pts) => {
-  if (!pts || pts === 0) return 0;
-  if (pts <= 4)          return 1;
-  if (pts <= 9)          return 2;
-  if (pts <= 14)         return 3;
+  if (!pts || pts <= 0) return 0;
+  if (pts <= 4)         return 1;
+  if (pts <= 9)         return 2;
+  if (pts <= 14)        return 3;
   return 4;
 };
 
 /**
- * Build a 13-week × 7-day grid (91 days) ending today.
- * Returns an array of week arrays, each containing 7 day objects.
+ * Build the 52-week × 7-day grid for a given year.
+ * Weeks start on Sunday, matching GitHub's layout.
+ * Out-of-year padding cells (from the Sunday alignment) get level -1.
  */
-const buildGrid = (contributions) => {
-  const today = new Date();
-  // start from the Sunday 12 weeks ago so weeks align cleanly
-  const gridStart = new Date(today);
-  gridStart.setDate(gridStart.getDate() - 90);
-  // rewind to the nearest Sunday
+const buildGrid = (contributions, year) => {
+  const today   = new Date();
+  const yearEnd = year === today.getFullYear() ? today : new Date(year, 11, 31);
+
+  const gridStart = new Date(year, 0, 1);
   gridStart.setDate(gridStart.getDate() - gridStart.getDay());
 
-  const weeks = [];
-  let current = new Date(gridStart);
+  const gridEnd = new Date(yearEnd);
+  gridEnd.setDate(gridEnd.getDate() + (6 - gridEnd.getDay()));
 
-  while (current <= today) {
+  const weeks   = [];
+  let current   = new Date(gridStart);
+
+  while (current <= gridEnd) {
     const week = [];
     for (let d = 0; d < 7; d++) {
-      const key      = current.toISOString().slice(0, 10);
-      const points   = contributions?.[key] || 0;
-      const isFuture = current > today;
+      const key        = current.toISOString().slice(0, 10);
+      const points     = contributions?.[key] || 0;
+      const isFuture   = current > today;
+      const outOfYear  = current.getFullYear() !== year;
       week.push({
-        date:   key,
+        date:     key,
         points,
-        level:  isFuture ? -1 : pointsToLevel(points),
-        future: isFuture,
+        level:    isFuture || outOfYear ? -1 : pointsToLevel(points),
+        future:   isFuture,
+        outOfYear,
       });
       current = new Date(current);
       current.setDate(current.getDate() + 1);
@@ -118,138 +130,105 @@ const buildGrid = (contributions) => {
   return weeks;
 };
 
-/** Month labels positioned over the grid */
+/**
+ * Build month label positions for the column headers.
+ * Only emits a label when the month changes within the visible grid.
+ */
 const buildMonthLabels = (weeks) => {
-  const labels = [];
+  const labels  = [];
   let lastMonth = null;
   weeks.forEach((week, wi) => {
-    const firstDay   = week.find((d) => !d.future);
-    if (!firstDay) return;
-    const month      = new Date(firstDay.date).getMonth();
-    const monthName  = new Date(firstDay.date).toLocaleString("default", { month: "short" });
+    const first = week.find((d) => !d.future && !d.outOfYear);
+    if (!first) return;
+    const month = new Date(first.date).getMonth();
     if (month !== lastMonth) {
-      labels.push({ index: wi, label: monthName });
+      labels.push({
+        index: wi,
+        label: new Date(first.date).toLocaleString("default", { month: "short" }),
+      });
       lastMonth = month;
     }
   });
   return labels;
 };
 
-/** Total qualifying activity days in the grid */
-const countActiveDays = (contributions) =>
-  Object.values(contributions || {}).filter((v) => v > 0).length;
-
-/** Total points across all days */
-const totalPoints = (contributions) =>
-  Object.values(contributions || {}).reduce((sum, v) => sum + v, 0);
-
-// ── Level → color (using inline styles so it works without Tailwind JIT) ──────
-const LEVEL_COLORS = {
-  "-1": "transparent",                           // future
-  "0":  "rgba(255,255,255,0.04)",               // no activity
-  "1":  "rgba(13,148,136,0.25)",                // light  (#0d9488 at 25%)
-  "2":  "rgba(13,148,136,0.50)",                // medium
-  "3":  "rgba(13,148,136,0.75)",                // strong
-  "4":  "rgba(13,148,136,1.00)",                // peak
-};
-
-const LEVEL_BORDER = {
-  "-1": "transparent",
-  "0":  "rgba(255,255,255,0.04)",
-  "1":  "rgba(13,148,136,0.30)",
-  "2":  "rgba(13,148,136,0.55)",
-  "3":  "rgba(13,148,136,0.80)",
-  "4":  "rgba(13,148,136,1.00)",
-};
-
-const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
-// ─────────────────────────────────────────────────────────────────────────────
-//  STREAK WIDGET
-// ─────────────────────────────────────────────────────────────────────────────
-const StreakWidget = ({ currentStreak, longestStreak, lastActiveDate }) => {
-  const displayStreak = effectiveStreak(currentStreak, lastActiveDate);
-  const streakLapsed  = displayStreak === 0 && currentStreak > 0;
-
-  return (
-    <div className="grid grid-cols-2 gap-3">
-      {/* current streak */}
-      <div className="theme border border-[#1e293b] rounded-xl p-4 flex flex-col gap-1">
-        <div className="flex items-center gap-1.5 mb-1">
-          <TbFlame
-            className={`text-base ${
-              displayStreak > 0 ? "text-amber-400" : "text-gray-600"
-            }`}
-          />
-          <span className="text-[10px] font-medium text-gray-500 uppercase tracking-wide">
-            Current streak
-          </span>
-        </div>
-        <div className="flex items-baseline gap-1.5">
-          <span
-            className={`text-2xl font-bold ${
-              displayStreak > 0 ? "text-gray-100" : "text-gray-600"
-            }`}
-          >
-            {displayStreak}
-          </span>
-          <span className="text-xs text-gray-500">days</span>
-        </div>
-        {streakLapsed ? (
-          <p className="text-[10px] text-amber-500/70 mt-0.5">
-            Streak ended — post today to start again
-          </p>
-        ) : displayStreak > 0 ? (
-          <p className="text-[10px] text-emerald-500/70 mt-0.5">
-            Keep it going!
-          </p>
-        ) : (
-          <p className="text-[10px] text-gray-600 mt-0.5">
-            Post today to start a streak
-          </p>
-        )}
-      </div>
-
-      {/* longest streak */}
-      <div className="theme border border-[#1e293b] rounded-xl p-4 flex flex-col gap-1">
-        <div className="flex items-center gap-1.5 mb-1">
-          <TbTrophy className="text-base text-amber-400/60" />
-          <span className="text-[10px] font-medium text-gray-500 uppercase tracking-wide">
-            Longest streak
-          </span>
-        </div>
-        <div className="flex items-baseline gap-1.5">
-          <span className="text-2xl font-bold text-gray-100">
-            {longestStreak}
-          </span>
-          <span className="text-xs text-gray-500">days</span>
-        </div>
-        <p className="text-[10px] text-gray-600 mt-0.5">All-time personal best</p>
-      </div>
-    </div>
-  );
-};
+const countActiveDays  = (c) => Object.values(c || {}).filter((v) => v > 0).length;
+const sumTotalPoints   = (c) => Object.values(c || {}).reduce((s, v) => s + v, 0);
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  TOOLTIP
 // ─────────────────────────────────────────────────────────────────────────────
 const Tooltip = ({ day }) => {
-  const date   = new Date(day.date);
-  const label  = date.toLocaleDateString("en-IN", {
+  const label = new Date(day.date).toLocaleDateString("en-IN", {
     weekday: "short", month: "short", day: "numeric",
   });
   return (
-    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 z-50
-                    pointer-events-none whitespace-nowrap
-                    bg-[#0f172a] border border-white/10 rounded-lg px-2.5 py-1.5
-                    shadow-xl text-[10px] text-gray-200">
+    <div
+      style={{ transform: "translateX(-50%)" }}
+      className="absolute bottom-full left-1/2 mb-2 z-50 pointer-events-none
+                 whitespace-nowrap bg-[#0f172a] border border-white/10
+                 rounded-lg px-2.5 py-1.5 shadow-2xl text-[10px] text-gray-200"
+    >
       {day.points > 0
         ? <><b className="text-emerald-400">{day.points} pts</b> · {label}</>
         : <>No activity · {label}</>
       }
-      {/* arrow */}
-      <div className="absolute top-full left-1/2 -translate-x-1/2 border-4
-                      border-transparent border-t-white/10" />
+      <div className="absolute top-full left-1/2 -translate-x-1/2
+                      border-4 border-transparent border-t-[#0f172a]" />
+    </div>
+  );
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  STREAK WIDGET
+// ─────────────────────────────────────────────────────────────────────────────
+const StreakWidget = ({ currentStreak, longestStreak, lastActiveDate }) => {
+  const display     = effectiveStreak(currentStreak, lastActiveDate);
+  const lapsed      = display === 0 && currentStreak > 0;
+  const active      = display > 0;
+
+  return (
+    <div className="grid grid-cols-2 gap-3">
+
+      {/* current streak */}
+      <div className="theme border flex flex-col justify-between border-[#1e293b] rounded-xl p-4">
+        <div className="flex items-center gap-1.5 mb-2">
+          <TbFlame className={`text-base ${active ? "text-amber-400" : "text-gray-600"}`} />
+          <span className="text-[10px] font-medium text-gray-500 uppercase tracking-wide">
+            Current streak
+          </span>
+        </div>
+        <div className="flex justify-center items-baseline gap-1.5">
+          <span className={`text-2xl font-bold ${active ? "text-gray-100" : "text-gray-600"}`}>
+            {display}
+          </span>
+          <span className="text-xs text-gray-500">days</span>
+        </div>
+        <p className="text-[10px] text-center mt-1">
+          {lapsed
+            ? <span className=" text-amber-500/70">Streak ended - post today to restart</span>
+            : active
+            ? <span className="text-emerald-500/70">Keep it going!</span>
+            : <span className="text-gray-600 ">Post today to start a streak</span>
+          }
+        </p>
+      </div>
+
+      {/* longest streak */}
+      <div className="theme border border-[#1e293b] flex flex-col justify-between rounded-xl p-4">
+        <div className="flex items-center gap-1.5 mb-2">
+          <TbTrophy className="text-base text-amber-400/60" />
+          <span className="text-[10px] font-medium text-gray-500 uppercase tracking-wide">
+            Longest streak
+          </span>
+        </div>
+        <div className="flex justify-center items-baseline gap-1.5">
+          <span className="text-2xl font-bold text-gray-100">{longestStreak}</span>
+          <span className="text-xs text-gray-500">days</span>
+        </div>
+        <p className="text-[10px] text-center text-gray-600 mt-1">All-time personal best</p>
+      </div>
+
     </div>
   );
 };
@@ -257,53 +236,137 @@ const Tooltip = ({ day }) => {
 // ─────────────────────────────────────────────────────────────────────────────
 //  ACTIVITY GRAPH
 // ─────────────────────────────────────────────────────────────────────────────
-const ActivityGraph = ({ contributions, isOwn }) => {
-  const weeks        = useMemo(() => buildGrid(contributions), [contributions]);
-  const monthLabels  = useMemo(() => buildMonthLabels(weeks), [weeks]);
-  const activeDays   = countActiveDays(contributions);
-  const pts          = totalPoints(contributions);
+const ActivityGraph = ({
+  joinedYear,
+  isOwn,
+  // ── sample data path ──────────────────────────────────────────────────────
+  // Remove contributionsByYear and use onFetchYear when wiring real API.
+  contributionsByYear,   // { [year]: { contributions: {...} } }
+  // ── real API path (swap in when ready) ────────────────────────────────────
+  // onFetchYear: async (year) => contributions object for that year
+  onFetchYear,
+}) => {
+  const currentYear  = new Date().getFullYear();
+  const [selectedYear, setSelectedYear] = useState(currentYear);
+  const [contributions, setContributions] = useState(
+    contributionsByYear?.[currentYear]?.contributions || {}
+  );
+  const [loading, setLoading] = useState(false);
 
-  const [hoveredDay, setHoveredDay] = React.useState(null);
+  // all available years from joinedYear → currentYear
+  const yearOptions = useMemo(() => {
+    const from  = joinedYear || currentYear;
+    const years = [];
+    for (let y = currentYear; y >= from; y--) years.push(y);
+    return years;
+  }, [joinedYear, currentYear]);
 
-  const CELL_SIZE = 11; // px
-  const GAP       = 3;  // px
-  const STEP      = CELL_SIZE + GAP;
+  // ── data fetch on year change ──────────────────────────────────────────────
+  // SAMPLE path: reads from the contributionsByYear map with a fake 250ms delay.
+  // REAL path: call onFetchYear(year) which hits the backend.
+  //
+  // To swap: remove the if/else and just call onFetchYear(year).
+  useEffect(() => {
+    setLoading(true);
+
+    if (onFetchYear) {
+      // ── REAL API path ──
+      onFetchYear(selectedYear)
+        .then((data) => setContributions(data || {}))
+        .catch(() => setContributions({}))
+        .finally(() => setLoading(false));
+    } else {
+      // ── SAMPLE data path ──
+      const timer = setTimeout(() => {
+        setContributions(
+          contributionsByYear?.[selectedYear]?.contributions || {}
+        );
+        setLoading(false);
+      }, 220);
+      return () => clearTimeout(timer);
+    }
+  }, [selectedYear, onFetchYear]);
+
+  const weeks       = useMemo(() => buildGrid(contributions, selectedYear), [contributions, selectedYear]);
+  const monthLabels = useMemo(() => buildMonthLabels(weeks), [weeks]);
+  const activeDays  = countActiveDays(contributions);
+  const totalPts    = sumTotalPoints(contributions);
+
+  const [hoveredDay, setHoveredDay] = useState(null);
+
+  const canGoPrev = selectedYear < currentYear;
+  const canGoNext = selectedYear > (yearOptions[yearOptions.length - 1] ?? currentYear);
 
   return (
     <div className="theme border border-[#1e293b] rounded-xl p-4">
-      {/* header */}
-      <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+
+      {/* ── header ── */}
+      <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
         <div className="flex items-center gap-2">
           <TbCalendar className="text-sm text-gray-500" />
-          <span className="text-xs font-semibold text-gray-300">
-            Activity — last 3 months
+          <span className="text-xs font-semibold text-gray-300">Activity</span>
+          <span className="text-[10px] text-gray-600">
+            · <b className="text-gray-400">{activeDays}</b> active days
+            · <b className="text-gray-400">{totalPts}</b> pts
           </span>
         </div>
-        <div className="flex items-center gap-3 text-[10px] text-gray-500">
-          <span>
-            <b className="text-gray-300">{activeDays}</b> active days
-          </span>
-          <span>
-            <b className="text-gray-300">{pts}</b> total pts
-          </span>
+
+        {/* year selector */}
+        <div className="flex items-center gap-1">
+          <button
+            type="button"
+            onClick={() => canGoNext && setSelectedYear((y) => y - 1)}
+            disabled={!canGoNext}
+            className="p-1 rounded text-gray-500 hover:text-gray-300 disabled:opacity-25 transition-colors"
+          >
+            <TbChevronLeft className="text-sm" />
+          </button>
+
+          <div className="flex gap-1 flex-wrap">
+            {yearOptions.map((y) => (
+              <button
+                key={y}
+                type="button"
+                onClick={() => setSelectedYear(y)}
+                className={`text-[10px] font-semibold px-2.5 py-0.5 rounded-full border transition-colors ${
+                  selectedYear === y
+                    ? "bg-white/5 text-white border-white/20"
+                    : "text-gray-500 border-transparent hover:text-gray-300 hover:border-white/10"
+                }`}
+              >
+                {y}
+              </button>
+            ))}
+          </div>
+
+          <button
+            type="button"
+            onClick={() => canGoPrev && setSelectedYear((y) => y + 1)}
+            disabled={!canGoPrev}
+            className="p-1 rounded text-gray-500 hover:text-gray-300 disabled:opacity-25 transition-colors"
+          >
+            <TbChevronRight className="text-sm" />
+          </button>
         </div>
       </div>
 
-      {/* graph */}
-      <div className="overflow-x-auto">
-        <div style={{ minWidth: weeks.length * STEP + 24 }}>
-          {/* month labels */}
-          <div
-            className="flex mb-1"
-            style={{ paddingLeft: 24 }}
-          >
+      {/* ── heatmap ── */}
+      <div
+        className={`overflow-x-auto scrollbar-hide transition-opacity duration-200 ${
+          loading ? "opacity-30 pointer-events-none" : "opacity-100"
+        }`}
+      >
+        <div style={{ minWidth: weeks.length * STEP + 32 }}>
+
+          {/* month labels row */}
+          <div className="flex mb-1" style={{ paddingLeft: 28 }}>
             {weeks.map((_, wi) => {
               const ml = monthLabels.find((m) => m.index === wi);
               return (
                 <div
                   key={wi}
                   style={{ width: STEP, flexShrink: 0 }}
-                  className="text-[9px] text-gray-600"
+                  className="text-[9px] text-gray-600 select-none"
                 >
                   {ml ? ml.label : ""}
                 </div>
@@ -311,27 +374,22 @@ const ActivityGraph = ({ contributions, isOwn }) => {
             })}
           </div>
 
-          {/* day rows */}
-          <div className="flex gap-0">
-            {/* day-of-week labels */}
-            <div
-              className="flex flex-col"
-              style={{ gap: GAP, marginRight: 4 }}
-            >
+          {/* day-of-week labels + week columns */}
+          <div className="flex">
+
+            {/* day labels */}
+            <div className="flex flex-col flex-shrink-0" style={{ gap: GAP, marginRight: 4, width: 24 }}>
               {DAY_NAMES.map((d, i) => (
                 <div
                   key={d}
                   style={{
-                    height:     CELL_SIZE,
-                    lineHeight: `${CELL_SIZE}px`,
-                    fontSize:   9,
-                    color:      "rgba(156,163,175,0.6)",
-                    // only show Mon, Wed, Fri to reduce clutter
-                    visibility: [1, 3, 5].includes(i) ? "visible" : "hidden",
-                    width:      20,
-                    textAlign:  "right",
+                    height:       CELL_SIZE,
+                    lineHeight:   `${CELL_SIZE}px`,
+                    fontSize:     9,
+                    color:        "rgba(156,163,175,0.45)",
+                    textAlign:    "right",
                     paddingRight: 4,
-                    flexShrink: 0,
+                    visibility:   [1, 3, 5].includes(i) ? "visible" : "hidden",
                   }}
                 >
                   {d}
@@ -343,15 +401,17 @@ const ActivityGraph = ({ contributions, isOwn }) => {
             {weeks.map((week, wi) => (
               <div
                 key={wi}
-                className="flex flex-col"
+                className="flex flex-col flex-shrink-0"
                 style={{ gap: GAP, marginRight: GAP }}
               >
                 {week.map((day) => (
                   <div
                     key={day.date}
                     className="relative"
-                    style={{ width: CELL_SIZE, height: CELL_SIZE, flexShrink: 0 }}
-                    onMouseEnter={() => !day.future && setHoveredDay(day.date)}
+                    style={{ width: CELL_SIZE, height: CELL_SIZE }}
+                    onMouseEnter={() =>
+                      !day.future && !day.outOfYear && setHoveredDay(day.date)
+                    }
                     onMouseLeave={() => setHoveredDay(null)}
                   >
                     <div
@@ -359,30 +419,31 @@ const ActivityGraph = ({ contributions, isOwn }) => {
                         width:        CELL_SIZE,
                         height:       CELL_SIZE,
                         borderRadius: 2,
-                        background:   day.future
-                          ? "transparent"
-                          : LEVEL_COLORS[String(day.level)],
-                        border:       `1px solid ${
-                          day.future
-                            ? "transparent"
-                            : LEVEL_BORDER[String(day.level)]
-                        }`,
-                        cursor:       day.points > 0 ? "pointer" : "default",
+                        background:   LEVEL_COLORS[String(day.level)],
+                        border:       `1px solid ${LEVEL_BORDER[String(day.level)]}`,
+                        cursor:       !day.future && !day.outOfYear && day.points > 0
+                          ? "pointer"
+                          : "default",
+                        transition:   "background 0.1s",
                       }}
                     />
-                    {hoveredDay === day.date && <Tooltip day={day} />}
+                    {hoveredDay === day.date && !day.outOfYear && (
+                      <Tooltip day={day} />
+                    )}
                   </div>
                 ))}
               </div>
             ))}
+
           </div>
 
-          {/* legend */}
-          <div
-            className="flex items-center gap-1.5 mt-3 justify-end"
-            style={{ paddingRight: 0 }}
-          >
-            <span className="text-[9px] text-gray-600">Less</span>
+          
+
+        </div>
+      </div>
+      {/* legend */}
+          <div className="flex items-center gap-1.5 mt-3 justify-end">
+            <span className="text-[9px] text-gray-600 select-none">Less</span>
             {[0, 1, 2, 3, 4].map((level) => (
               <div
                 key={level}
@@ -396,24 +457,24 @@ const ActivityGraph = ({ contributions, isOwn }) => {
                 }}
               />
             ))}
-            <span className="text-[9px] text-gray-600">More</span>
+            <span className="text-[9px] text-gray-600 select-none">More</span>
           </div>
-        </div>
-      </div>
 
-      {/* point scale note */}
-      <div className="flex gap-3 mt-3 pt-3 border-t border-white/5 flex-wrap">
+      {/* ── point scale legend ── */}
+      <div className="flex gap-4 mt-3 pt-3 border-t border-white/5 flex-wrap">
         {[
-          { label: "Post", pts: "5 pts", color: "#0d9488" },
-          { label: "Discussion", pts: "3 pts", color: "#0d9488" },
-          { label: "Reply", pts: "1 pt",  color: "#0d9488" },
+          { label: "Post",       pts: "5 pts" },
+          { label: "Discussion", pts: "3 pts" },
+          { label: "Reply",      pts: "1 pt"  },
         ].map(({ label, pts }) => (
           <span key={label} className="flex items-center gap-1 text-[9px] text-gray-500">
-            <TbBolt className="text-[10px] text-emerald-500/60" />
-            <b className="text-gray-400">{label}</b> = {pts}
+            <TbBolt className="text-[10px] text-emerald-500/50" />
+            <b className="text-gray-400">{label}</b>
+            <span className="text-gray-600">= {pts}</span>
           </span>
         ))}
       </div>
+
     </div>
   );
 };
@@ -425,36 +486,51 @@ const ActivityGraph = ({ contributions, isOwn }) => {
  * PerformanceTracker
  *
  * Props:
- *   data    — shaped like SAMPLE_PERFORMANCE above.
- *             Replace with real API data when hook is ready.
- *   isOwn   — true when viewing your own profile (shows private streak info).
- *             false when viewing another user's profile (shows public view only).
+ *   streakData           — { currentStreak, longestStreak, lastActiveDate, joinedYear }
+ *   contributionsByYear  — { [year]: { contributions: { "YYYY-MM-DD": number } } }
+ *                          Pass null and use onFetchYear for the real API.
+ *   onFetchYear          — async (year: number) => { "YYYY-MM-DD": number }
+ *                          Called on year change. Ignored when contributionsByYear is set.
+ *   isOwn                — true = own profile (shows streak widgets + heatmap)
+ *                          false = another user's profile (heatmap only, no streak numbers)
  *
- * Usage:
- *   import PerformanceTracker, { SAMPLE_PERFORMANCE } from "./PerformanceTracker";
+ * ── Usage with sample data (current) ────────────────────────────────────────
+ *   import PerformanceTracker from "./PerformanceTracker";
+ *   <PerformanceTracker isOwn={true} />
+ *   // streakData and contributionsByYear default to sample data when omitted
  *
- *   // with sample data:
- *   <PerformanceTracker data={SAMPLE_PERFORMANCE} isOwn={true} />
- *
- *   // with real data (once hook exists):
- *   const { data } = useGetPerformanceTracker(email);
- *   <PerformanceTracker data={data} isOwn={currentUserEmail === profileEmail} />
+ * ── Usage with real API (swap in when hooks are ready) ──────────────────────
+ *   const { data: streak } = useGetStreakData(email);
+ *   <PerformanceTracker
+ *     streakData={streak}
+ *     contributionsByYear={null}
+ *     onFetchYear={(year) =>
+ *       axiosInstance
+ *         .get(`/api/authors/${email}/contributions?year=${year}`)
+ *         .then((r) => r.data.contributions)
+ *     }
+ *     isOwn={currentUserEmail === profileEmail}
+ *   />
  */
-const PerformanceTracker = ({ data = SAMPLE_PERFORMANCE, isOwn = true }) => {
-  if (!data) return null;
+const PerformanceTracker = ({
+  streakData           = SAMPLE_STREAK,
+  contributionsByYear  = SAMPLE_CONTRIBUTIONS_BY_YEAR,
+  onFetchYear          = null,
+  isOwn                = true,
+}) => {
+  if (!streakData) return null;
 
-  const { currentStreak, longestStreak, lastActiveDate, contributions } = data;
+  const { currentStreak, longestStreak, lastActiveDate, joinedYear } = streakData;
 
   return (
     <div className="flex flex-col gap-4">
-      {/* section label */}
-      <div className="flex items-center gap-2">
-        <span className="text-xs font-semibold text-gray-400 uppercase tracking-widest">
-          {isOwn ? "Your performance" : "Contribution activity"}
-        </span>
-      </div>
 
-      {/* streaks — only shown on own profile */}
+      {/* section label */}
+      <span className="text-sm font-semibold text-gray-300  ">
+        {isOwn ? "Your Performance" : "Contribution Activity"}
+      </span>
+
+      {/* streak cards — own profile only */}
       {isOwn && (
         <StreakWidget
           currentStreak={currentStreak}
@@ -463,8 +539,14 @@ const PerformanceTracker = ({ data = SAMPLE_PERFORMANCE, isOwn = true }) => {
         />
       )}
 
-      {/* activity heatmap — public */}
-      <ActivityGraph contributions={contributions} isOwn={isOwn} />
+      {/* activity heatmap — always shown */}
+      {/* <ActivityGraph
+        joinedYear={joinedYear}
+        isOwn={isOwn}
+        contributionsByYear={onFetchYear ? null : contributionsByYear}
+        onFetchYear={onFetchYear}
+      /> */}
+
     </div>
   );
 };
