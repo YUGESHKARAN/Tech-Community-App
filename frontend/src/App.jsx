@@ -245,7 +245,7 @@ function App() {
               />
 
               <Route
-                path="/discussion/:discussionId/:communityId"
+                path="/discussion/:communityId/:discussionId"
                 element={<ProtectedRoute element={<ViewDiscussion />} />}
               />
 
