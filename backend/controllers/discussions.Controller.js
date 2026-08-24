@@ -1,18 +1,21 @@
-const mongoose = require('mongoose');
-const Discussion = require('../models/communityDiscussions/discussionsSchema');
-const DiscussionReply = require('../models/communityDiscussions/discussionsReplySchema');
-const Upvote = require('../models/communityDiscussions/upvoteSchema');
-const { CommunityTag, CommunitySettings } = require('../models/communityDiscussions/communityTagAndSettingsSchema');
-const CommunityMembership = require('../models/communityMembershipSchema');
-const { Author } = require('../models/blogAuthorSchema');
-const Community = require('../models/communitySchema');
-const {Post} = require("../models/blogAuthorSchema")
-
+const mongoose = require("mongoose");
+const Discussion = require("../models/communityDiscussions/discussionsSchema");
+const DiscussionReply = require("../models/communityDiscussions/discussionsReplySchema");
+const Upvote = require("../models/communityDiscussions/upvoteSchema");
+const {
+  CommunityTag,
+  CommunitySettings,
+} = require("../models/communityDiscussions/communityTagAndSettingsSchema");
+const CommunityMembership = require("../models/communityMembershipSchema");
+const { Author } = require("../models/blogAuthorSchema");
+const Community = require("../models/communitySchema");
+const { Post } = require("../models/blogAuthorSchema");
+const { trackActivity, getTodayIST } = require("../services/trackActivity");
 // ─────────────────────────────────────────────────────────────────────────────
 //  HELPERS
 // ─────────────────────────────────────────────────────────────────────────────
 
-const COORDINATOR_ROLES = ['coordinator', 'admin', 'director'];
+const COORDINATOR_ROLES = ["coordinator", "admin", "director"];
 
 /**
  * Resolves the current user's role within a specific community.
@@ -21,7 +24,7 @@ const COORDINATOR_ROLES = ['coordinator', 'admin', 'director'];
 const getUserCommunityRole = async (tenantId, communityId, authorId) => {
   const membership = await CommunityMembership.findOne(
     { tenantId, communityId, authorId },
-    'role'
+    "role",
   ).lean();
   return membership?.role || null;
 };
@@ -31,7 +34,7 @@ const getUserCommunityRole = async (tenantId, communityId, authorId) => {
  * privileges override community-level checks.
  */
 const getGlobalRole = async (authorId) => {
-  const author = await Author.findById(authorId, 'role').lean();
+  const author = await Author.findById(authorId, "role").lean();
   return author?.role || null;
 };
 
@@ -42,7 +45,7 @@ const getGlobalRole = async (authorId) => {
 const getUpvotedSet = async (targetIds, authorId) => {
   const votes = await Upvote.find(
     { targetId: { $in: targetIds }, authorId },
-    'targetId'
+    "targetId",
   ).lean();
   return new Set(votes.map((v) => v.targetId.toString()));
 };
@@ -103,14 +106,14 @@ const getSettings = async (req, res) => {
   try {
     const settings = await CommunitySettings.findOneAndUpdate(
       { tenantId, communityId },
-      { $setOnInsert: { tenantId, communityId, whoCanPost: 'coordinator' } },
-      { upsert: true, new: true, runValidators: false }
+      { $setOnInsert: { tenantId, communityId, whoCanPost: "coordinator" } },
+      { upsert: true, new: true, runValidators: false },
     ).lean();
 
     res.status(200).json({ settings });
   } catch (err) {
-    console.error('getSettings error:', err.message);
-    res.status(500).json({ message: 'Server error' });
+    console.error("getSettings error:", err.message);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -125,31 +128,39 @@ const updateWhoCanPost = async (req, res) => {
   const { whoCanPost } = req.body;
 
   try {
-    if (!['coordinator', 'member'].includes(whoCanPost)) {
-      return res.status(400).json({ message: "whoCanPost must be 'coordinator' or 'member'" });
+    if (!["coordinator", "member"].includes(whoCanPost)) {
+      return res
+        .status(400)
+        .json({ message: "whoCanPost must be 'coordinator' or 'member'" });
     }
 
     const globalRole = await getGlobalRole(authorId);
-    const communityRole = await getUserCommunityRole(tenantId, communityId, authorId);
+    const communityRole = await getUserCommunityRole(
+      tenantId,
+      communityId,
+      authorId,
+    );
 
     const canModify =
-      ['admin', 'director'].includes(globalRole) ||
-      communityRole === 'coordinator';
+      ["admin", "director"].includes(globalRole) ||
+      communityRole === "coordinator";
 
     if (!canModify) {
-      return res.status(403).json({ message: 'Only coordinators or admins can change this setting' });
+      return res.status(403).json({
+        message: "Only coordinators or admins can change this setting",
+      });
     }
 
     const settings = await CommunitySettings.findOneAndUpdate(
       { tenantId, communityId },
       { $set: { whoCanPost } },
-      { upsert: true, new: true, runValidators: false }
+      { upsert: true, new: true, runValidators: false },
     ).lean();
 
-    res.status(200).json({ message: 'Setting updated', settings });
+    res.status(200).json({ message: "Setting updated", settings });
   } catch (err) {
-    console.error('updateWhoCanPost error:', err.message);
-    res.status(500).json({ message: 'Server error' });
+    console.error("updateWhoCanPost error:", err.message);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -170,13 +181,19 @@ const createTag = async (req, res) => {
 
   try {
     if (!name || !color) {
-      return res.status(400).json({ message: 'name and color are required' });
+      return res.status(400).json({ message: "name and color are required" });
     }
 
-    const communityRole = await getUserCommunityRole(tenantId, communityId, authorId);
+    const communityRole = await getUserCommunityRole(
+      tenantId,
+      communityId,
+      authorId,
+    );
     // console.log("communityRole", communityRole)
-    if (communityRole !== 'coordinator') {
-      return res.status(403).json({ message: 'Only coordinators can create tags' });
+    if (communityRole !== "coordinator") {
+      return res
+        .status(403)
+        .json({ message: "Only coordinators can create tags" });
     }
 
     const tag = await CommunityTag.create({
@@ -187,14 +204,16 @@ const createTag = async (req, res) => {
       createdBy: authorId,
     });
 
-    res.status(201).json({ message: 'Tag created', tag });
+    res.status(201).json({ message: "Tag created", tag });
   } catch (err) {
     if (err.code === 11000) {
-      return res.status(409).json({ message: 'A tag with this name already exists in this community' });
+      return res.status(409).json({
+        message: "A tag with this name already exists in this community",
+      });
     }
-    console.error('createTag error:', err.message);
+    console.error("createTag error:", err.message);
     // console.log('createTag error:', err.message);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -215,8 +234,8 @@ const getTags = async (req, res) => {
 
     res.status(200).json({ tags });
   } catch (err) {
-    console.error('getTags error:', err.message);
-    res.status(500).json({ message: 'Server error' });
+    console.error("getTags error:", err.message);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -231,9 +250,15 @@ const updateTag = async (req, res) => {
   const { name, color } = req.body;
 
   try {
-    const communityRole = await getUserCommunityRole(tenantId, communityId, authorId);
-    if (communityRole !== 'coordinator') {
-      return res.status(403).json({ message: 'Only coordinators can update tags' });
+    const communityRole = await getUserCommunityRole(
+      tenantId,
+      communityId,
+      authorId,
+    );
+    if (communityRole !== "coordinator") {
+      return res
+        .status(403)
+        .json({ message: "Only coordinators can update tags" });
     }
 
     const update = {};
@@ -243,18 +268,20 @@ const updateTag = async (req, res) => {
     const tag = await CommunityTag.findOneAndUpdate(
       { _id: tagId, tenantId, communityId },
       { $set: update },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     ).lean();
 
-    if (!tag) return res.status(404).json({ message: 'Tag not found' });
+    if (!tag) return res.status(404).json({ message: "Tag not found" });
 
-    res.status(200).json({ message: 'Tag updated', tag });
+    res.status(200).json({ message: "Tag updated", tag });
   } catch (err) {
     if (err.code === 11000) {
-      return res.status(409).json({ message: 'A tag with this name already exists' });
+      return res
+        .status(409)
+        .json({ message: "A tag with this name already exists" });
     }
-    console.error('updateTag error:', err.message);
-    res.status(500).json({ message: 'Server error' });
+    console.error("updateTag error:", err.message);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -268,24 +295,34 @@ const deleteTag = async (req, res) => {
   const { tenantId, authorId } = req.user;
 
   try {
-    const communityRole = await getUserCommunityRole(tenantId, communityId, authorId);
-    if (communityRole !== 'coordinator') {
-      return res.status(403).json({ message: 'Only coordinators can delete tags' });
+    const communityRole = await getUserCommunityRole(
+      tenantId,
+      communityId,
+      authorId,
+    );
+    if (communityRole !== "coordinator") {
+      return res
+        .status(403)
+        .json({ message: "Only coordinators can delete tags" });
     }
 
-    const tag = await CommunityTag.findOneAndDelete({ _id: tagId, tenantId, communityId });
-    if (!tag) return res.status(404).json({ message: 'Tag not found' });
+    const tag = await CommunityTag.findOneAndDelete({
+      _id: tagId,
+      tenantId,
+      communityId,
+    });
+    if (!tag) return res.status(404).json({ message: "Tag not found" });
 
     // remove this tag from all discussions that referenced it
     await Discussion.updateMany(
       { tenantId, communityId, tags: tagId },
-      { $pull: { tags: tagId } }
+      { $pull: { tags: tagId } },
     );
 
-    res.status(200).json({ message: 'Tag deleted' });
+    res.status(200).json({ message: "Tag deleted" });
   } catch (err) {
-    console.error('deleteTag error:', err.message);
-    res.status(500).json({ message: 'Server error' });
+    console.error("deleteTag error:", err.message);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -308,30 +345,37 @@ const createDiscussion = async (req, res) => {
   //  console.log("req.body", req.body)
   try {
     if (!category || !title || !body) {
-      return res.status(400).json({ message: 'category, title, and body are required' });
+      return res
+        .status(400)
+        .json({ message: "category, title, and body are required" });
     }
 
     // resolve permission from settings
     const [settings, communityRole] = await Promise.all([
-      CommunitySettings.findOne({ tenantId, communityId }, 'whoCanPost').lean(),
+      CommunitySettings.findOne({ tenantId, communityId }, "whoCanPost").lean(),
       getUserCommunityRole(tenantId, communityId, authorId),
     ]);
 
-    const requiredRole = settings?.whoCanPost || 'coordinator';
+    const requiredRole = settings?.whoCanPost || "coordinator";
 
     const canPost =
-      communityRole === 'coordinator' ||
-      (requiredRole === 'member' && communityRole === 'member');
+      communityRole === "coordinator" ||
+      (requiredRole === "member" && communityRole === "member");
 
     if (!canPost) {
       return res.status(403).json({
-        message: requiredRole === 'coordinator'
-          ? 'Only coordinators can start discussions in this community'
-          : 'You must be a member of this community to start a discussion',
+        message:
+          requiredRole === "coordinator"
+            ? "Only coordinators can start discussions in this community"
+            : "You must be a member of this community to start a discussion",
       });
     }
 
-    const normalizedTags = await normalizeDiscussionTags(tenantId, communityId, tags);
+    const normalizedTags = await normalizeDiscussionTags(
+      tenantId,
+      communityId,
+      tags,
+    );
 
     const discussion = await Discussion.create({
       tenantId,
@@ -344,10 +388,30 @@ const createDiscussion = async (req, res) => {
       tags: normalizedTags,
     });
 
-    res.status(201).json({ message: 'Discussion created', discussion });
+    res.status(201).json({ message: "Discussion created", discussion });
+
+    // ----------------- performance tracker (create discussion) ------------------------------
+    trackActivity({
+      authorId: authorId, // from req.user
+      tenantId: tenantId,
+      date: getTodayIST(),
+      event: {
+        type: "discussion",
+        targetId: discussion._id,
+        communityId: discussion.communityId,
+        discussionId: null, // discussion IS the top-level — no parent
+        title: discussion.title,
+        communityName: settings?.communityName || null, // or fetch community.name
+        pts: 3,
+      },
+    }).catch((err) =>
+      console.error("trackActivity (discussion) error:", err.message),
+    );
+
+    // -----------------------------------------------------------------------------------------
   } catch (err) {
-    console.error('createDiscussion error:', err.message);
-    res.status(500).json({ message: 'Server error' });
+    console.error("createDiscussion error:", err.message);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -414,21 +478,14 @@ const createDiscussion = async (req, res) => {
 const getDiscussions = async (req, res) => {
   const { communityId } = req.params;
   const { tenantId, authorId } = req.user;
-  const {
-    page = 1,
-    limit = 20,
-    category,
-    isSolved,
-    tag,
-    search,
-  } = req.query;
+  const { page = 1, limit = 20, category, isSolved, tag, search } = req.query;
 
   const skip = (Number(page) - 1) * Number(limit);
 
   try {
     const filter = { tenantId, communityId };
     if (category) filter.category = category;
-    if (isSolved !== undefined) filter.isSolved = isSolved === 'true';
+    if (isSolved !== undefined) filter.isSolved = isSolved === "true";
     if (tag) filter.tags = new mongoose.Types.ObjectId(tag);
     if (search) filter.$text = { $search: search };
 
@@ -437,15 +494,15 @@ const getDiscussions = async (req, res) => {
         .sort({ isPinned: -1, createdAt: -1 })
         .skip(skip)
         .limit(Number(limit))
-        .populate('authorId', 'authorname profile email')
-        .populate('tags', 'name color')
+        .populate("authorId", "authorname profile email")
+        .populate("tags", "name color")
         // .populate('linkedPostId', 'image title description') // add this
         .populate({
-          path: 'linkedPostId',
-          select: 'image title description authorId',
+          path: "linkedPostId",
+          select: "image title description authorId",
           populate: {
-            path: 'authorId',
-            select: 'email authorname',
+            path: "authorId",
+            select: "email authorname",
           },
         })
         .lean(),
@@ -468,17 +525,17 @@ const getDiscussions = async (req, res) => {
       //     }
       //   : null,
       linkedPostId: d.linkedPostId
-  ? {
-      _id:         d.linkedPostId._id,
-      title:       d.linkedPostId.title,
-      description: d.linkedPostId.description,
-      thumbnail:   d.linkedPostId.image || null,
-      author: {
-        email:      d.linkedPostId.authorId?.email || null,
-        authorname: d.linkedPostId.authorId?.authorname || null,
-      },
-    }
-  : null,
+        ? {
+            _id: d.linkedPostId._id,
+            title: d.linkedPostId.title,
+            description: d.linkedPostId.description,
+            thumbnail: d.linkedPostId.image || null,
+            author: {
+              email: d.linkedPostId.authorId?.email || null,
+              authorname: d.linkedPostId.authorId?.authorname || null,
+            },
+          }
+        : null,
     }));
 
     res.status(200).json({
@@ -489,8 +546,8 @@ const getDiscussions = async (req, res) => {
       hasMore: skip + discussions.length < total,
     });
   } catch (err) {
-    console.error('getDiscussions error:', err.message);
-    res.status(500).json({ message: 'Server error' });
+    console.error("getDiscussions error:", err.message);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -521,59 +578,65 @@ const getDiscussionById = async (req, res) => {
         views: { $ne: req.user.email },
       },
       { $addToSet: { views: req.user.email } },
-      { new: true }
+      { new: true },
     )
-      .populate('authorId', 'authorname profile email badges')
-      .populate('tags', 'name color')
+      .populate("authorId", "authorname profile email badges")
+      .populate("tags", "name color")
       // .populate('linkedPostId', 'image title description')  // thumbnail comes from here
       .populate({
-          path: 'linkedPostId',
-          select: 'image title description authorId',
-          populate: {
-            path: 'authorId',
-            select: 'email authorname',
-          },
+        path: "linkedPostId",
+        select: "image title description authorId",
+        populate: {
+          path: "authorId",
+          select: "email authorname",
+        },
       })
-      .populate('solvedReplyId', 'body authorId')
+      .populate("solvedReplyId", "body authorId")
       .lean();
 
     // already viewed — fetch without updating
-    const thread = updated || await Discussion.findOne(
-      { _id: discussionId, tenantId, communityId }
-    )
-      .populate('authorId', 'authorname profile email badges')
-      .populate('tags', 'name color')
-      // .populate('linkedPostId', 'image title description')
+    const thread =
+      updated ||
+      (await Discussion.findOne({ _id: discussionId, tenantId, communityId })
+        .populate("authorId", "authorname profile email badges")
+        .populate("tags", "name color")
+        // .populate('linkedPostId', 'image title description')
         .populate({
-          path: 'linkedPostId',
-          select: 'image title description authorId',
+          path: "linkedPostId",
+          select: "image title description authorId",
           populate: {
-            path: 'authorId',
-            select: 'email authorname',
+            path: "authorId",
+            select: "email authorname",
           },
-      })
-      .populate('solvedReplyId', 'body authorId')
-      .lean();
+        })
+        .populate("solvedReplyId", "body authorId")
+        .lean());
 
-    if (!thread) return res.status(404).json({ message: 'Discussion not found' });
+    if (!thread)
+      return res.status(404).json({ message: "Discussion not found" });
 
     const [topLevelReplies, totalReplies] = await Promise.all([
       DiscussionReply.find(
         { tenantId, discussionId, parentReplyId: null },
         null,
-        { skip, limit: Number(replyLimit), sort: { createdAt: 1 } }
+        { skip, limit: Number(replyLimit), sort: { createdAt: 1 } },
       )
-        .populate('authorId', 'authorname profile email badges')
+        .populate("authorId", "authorname profile email badges")
         .lean(),
-      DiscussionReply.countDocuments({ tenantId, discussionId, parentReplyId: null }),
+      DiscussionReply.countDocuments({
+        tenantId,
+        discussionId,
+        parentReplyId: null,
+      }),
     ]);
 
     const topLevelIds = topLevelReplies.map((r) => r._id);
 
-    const nestedReplies = await DiscussionReply.find(
-      { tenantId, parentReplyId: { $in: topLevelIds } }
-    )
-      .populate('authorId', 'authorname profile email badges')
+    const nestedReplies = await DiscussionReply.find({
+      tenantId,
+      parentReplyId: { $in: topLevelIds },
+    })
+      .populate("authorId", "authorname profile email badges")
       .lean();
 
     const nestedByParent = {};
@@ -582,8 +645,12 @@ const getDiscussionById = async (req, res) => {
       nestedByParent[key] = nestedByParent[key] || [];
       nestedByParent[key].push(reply);
     }
-    
-    const allIds = [thread._id, ...topLevelIds, ...nestedReplies.map((r) => r._id)];
+
+    const allIds = [
+      thread._id,
+      ...topLevelIds,
+      ...nestedReplies.map((r) => r._id),
+    ];
     const upvotedSet = await getUpvotedSet(allIds, authorId); // fix: authorId now correct
 
     const repliesWithMeta = topLevelReplies.map((r) => ({
@@ -606,22 +673,22 @@ const getDiscussionById = async (req, res) => {
     //   : null;
 
     const linkedPost = thread.linkedPostId
-  ? {
-      _id:         thread.linkedPostId._id,
-      title:       thread.linkedPostId.title,
-      description: thread.linkedPostId.description,
-      thumbnail:   thread.linkedPostId.image || null,
-      author: {
-        email:      thread.linkedPostId.authorId?.email || null,
-        authorname: thread.linkedPostId.authorId?.authorname || null,
-      },
-    }
-  : null;
+      ? {
+          _id: thread.linkedPostId._id,
+          title: thread.linkedPostId.title,
+          description: thread.linkedPostId.description,
+          thumbnail: thread.linkedPostId.image || null,
+          author: {
+            email: thread.linkedPostId.authorId?.email || null,
+            authorname: thread.linkedPostId.authorId?.authorname || null,
+          },
+        }
+      : null;
 
     res.status(200).json({
       discussion: {
         ...thread,
-        linkedPostId: linkedPost,        // replace populated object with clean shape
+        linkedPostId: linkedPost, // replace populated object with clean shape
         hasVoted: upvotedSet.has(thread._id.toString()),
       },
       replies: repliesWithMeta,
@@ -630,11 +697,10 @@ const getDiscussionById = async (req, res) => {
       replyHasMore: skip + topLevelReplies.length < totalReplies,
     });
   } catch (err) {
-    console.error('getDiscussionById error:', err.message);
-    res.status(500).json({ message: 'Server error' });
+    console.error("getDiscussionById error:", err.message);
+    res.status(500).json({ message: "Server error" });
   }
 };
-
 
 /**
  * PATCH /api/communities/:communityId/discussions/:discussionId
@@ -652,32 +718,37 @@ const updateDiscussion = async (req, res) => {
       getUserCommunityRole(tenantId, communityId, authorId),
     ]);
 
-    if (!discussion) return res.status(404).json({ message: 'Discussion not found' });
+    if (!discussion)
+      return res.status(404).json({ message: "Discussion not found" });
 
     const isAuthor = discussion.authorId.toString() === authorId.toString();
-    const isCoordinator = communityRole === 'coordinator';
+    const isCoordinator = communityRole === "coordinator";
 
     if (!isAuthor && !isCoordinator) {
-      return res.status(403).json({ message: 'Not authorised to edit this discussion' });
+      return res
+        .status(403)
+        .json({ message: "Not authorised to edit this discussion" });
     }
 
     const update = {};
-    if (title)       update.title = title.trim();
-    if (body)        update.body = body.trim();
-    if (category)    update.category = category;
-    if (tags)        update.tags = tags;
+    if (title) update.title = title.trim();
+    if (body) update.body = body.trim();
+    if (category) update.category = category;
+    if (tags) update.tags = tags;
     if (linkedPostId !== undefined) update.linkedPostId = linkedPostId || null;
 
     const updated = await Discussion.findByIdAndUpdate(
       discussionId,
       { $set: update },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     ).lean();
 
-    res.status(200).json({ message: 'Discussion updated', discussion: updated });
+    res
+      .status(200)
+      .json({ message: "Discussion updated", discussion: updated });
   } catch (err) {
-    console.error('updateDiscussion error:', err.message);
-    res.status(500).json({ message: 'Server error' });
+    console.error("updateDiscussion error:", err.message);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -695,19 +766,24 @@ const deleteDiscussion = async (req, res) => {
       getUserCommunityRole(tenantId, communityId, authorId),
     ]);
 
-    if (!discussion) return res.status(404).json({ message: 'Discussion not found' });
+    if (!discussion)
+      return res.status(404).json({ message: "Discussion not found" });
 
     const isAuthor = discussion.authorId.toString() === authorId.toString();
-    const isCoordinator = communityRole === 'coordinator';
+    const isCoordinator = communityRole === "coordinator";
 
     if (!isAuthor && !isCoordinator) {
-      return res.status(403).json({ message: 'Not authorised to delete this discussion' });
+      return res
+        .status(403)
+        .json({ message: "Not authorised to delete this discussion" });
     }
 
     const replyIds = await DiscussionReply.find(
       { tenantId, discussionId },
-      '_id'
-    ).lean().then((docs) => docs.map((d) => d._id));
+      "_id",
+    )
+      .lean()
+      .then((docs) => docs.map((d) => d._id));
 
     await Promise.all([
       Discussion.deleteOne({ _id: discussionId }),
@@ -717,10 +793,10 @@ const deleteDiscussion = async (req, res) => {
       }),
     ]);
 
-    res.status(200).json({ message: 'Discussion deleted' });
+    res.status(200).json({ message: "Discussion deleted" });
   } catch (err) {
-    console.error('deleteDiscussion error:', err.message);
-    res.status(500).json({ message: 'Server error' });
+    console.error("deleteDiscussion error:", err.message);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -737,27 +813,38 @@ const pinDiscussion = async (req, res) => {
   const { tenantId, authorId } = req.user;
 
   try {
-    const communityRole = await getUserCommunityRole(tenantId, communityId, authorId);
-    if (communityRole !== 'coordinator') {
-      return res.status(403).json({ message: 'Only coordinators can pin discussions' });
+    const communityRole = await getUserCommunityRole(
+      tenantId,
+      communityId,
+      authorId,
+    );
+    if (communityRole !== "coordinator") {
+      return res
+        .status(403)
+        .json({ message: "Only coordinators can pin discussions" });
     }
 
-    const discussion = await Discussion.findOne({ _id: discussionId, tenantId, communityId });
-    if (!discussion) return res.status(404).json({ message: 'Discussion not found' });
+    const discussion = await Discussion.findOne({
+      _id: discussionId,
+      tenantId,
+      communityId,
+    });
+    if (!discussion)
+      return res.status(404).json({ message: "Discussion not found" });
 
     const updated = await Discussion.findByIdAndUpdate(
       discussionId,
       { $set: { isPinned: !discussion.isPinned } },
-      { new: true }
+      { new: true },
     ).lean();
 
     res.status(200).json({
-      message: updated.isPinned ? 'Discussion pinned' : 'Discussion unpinned',
+      message: updated.isPinned ? "Discussion pinned" : "Discussion unpinned",
       isPinned: updated.isPinned,
     });
   } catch (err) {
-    console.error('pinDiscussion error:', err.message);
-    res.status(500).json({ message: 'Server error' });
+    console.error("pinDiscussion error:", err.message);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -773,7 +860,7 @@ const markSolved = async (req, res) => {
   const { solvedReplyId } = req.body;
 
   console.log("\n communityid, discussionId", communityId, discussionId);
-  console.log("solved ID", solvedReplyId)
+  console.log("solved ID", solvedReplyId);
 
   try {
     const [discussion, communityRole] = await Promise.all([
@@ -781,13 +868,16 @@ const markSolved = async (req, res) => {
       getUserCommunityRole(tenantId, communityId, authorId),
     ]);
 
-    if (!discussion) return res.status(404).json({ message: 'Discussion not found' });
+    if (!discussion)
+      return res.status(404).json({ message: "Discussion not found" });
 
     const isAuthor = discussion.authorId.toString() === authorId.toString();
-    const isCoordinator = communityRole === 'coordinator';
+    const isCoordinator = communityRole === "coordinator";
 
     if (!isAuthor && !isCoordinator) {
-      return res.status(403).json({ message: 'Only the author or a coordinator can mark this as solved' });
+      return res.status(403).json({
+        message: "Only the author or a coordinator can mark this as solved",
+      });
     }
 
     const isSolving = Boolean(solvedReplyId);
@@ -801,33 +891,33 @@ const markSolved = async (req, res) => {
             solvedReplyId: solvedReplyId || null,
           },
         },
-        { new: true }
+        { new: true },
       ).lean(),
 
       isSolving
         ? DiscussionReply.findByIdAndUpdate(
             solvedReplyId,
             { $set: { isAnswer: true } },
-            { runValidators: false }
+            { runValidators: false },
           )
         : // unmark: clear the previous answer flag if there was one
           discussion.solvedReplyId
           ? DiscussionReply.findByIdAndUpdate(
               discussion.solvedReplyId,
               { $set: { isAnswer: false } },
-              { runValidators: false }
+              { runValidators: false },
             )
           : Promise.resolve(),
     ]);
 
     res.status(200).json({
-      message: isSolving ? 'Marked as solved' : 'Marked as unsolved',
+      message: isSolving ? "Marked as solved" : "Marked as unsolved",
       isSolved: updated.isSolved,
       solvedReplyId: updated.solvedReplyId,
     });
   } catch (err) {
-    console.error('markSolved error:', err.message);
-    res.status(500).json({ message: 'Server error' });
+    console.error("markSolved error:", err.message);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -843,17 +933,17 @@ const updateDiscussionUpvote = async (req, res) => {
   try {
     const discussion = await Discussion.findOne(
       { _id: discussionId, tenantId, communityId },
-      '_id upvoteCount'
+      "_id upvoteCount",
     ).lean();
 
     if (!discussion) {
-      return res.status(404).json({ message: 'Discussion not found' });
+      return res.status(404).json({ message: "Discussion not found" });
     }
 
     const existingUpvote = await Upvote.findOne({
       tenantId,
       targetId: discussionId,
-      targetType: 'discussion',
+      targetType: "discussion",
       authorId,
     }).lean();
 
@@ -861,37 +951,39 @@ const updateDiscussionUpvote = async (req, res) => {
     let updated;
 
     if (existingUpvote) {
-      action = 'removed';
+      action = "removed";
       await Upvote.deleteOne({ _id: existingUpvote._id });
       updated = await Discussion.findByIdAndUpdate(
         discussionId,
         { $inc: { upvoteCount: -1 } },
-        { new: true }
+        { new: true },
       ).lean();
     } else {
-      action = 'upvoted';
+      action = "upvoted";
       await Upvote.create({
         tenantId,
         targetId: discussionId,
-        targetType: 'discussion',
+        targetType: "discussion",
         authorId,
       });
       updated = await Discussion.findByIdAndUpdate(
         discussionId,
         { $inc: { upvoteCount: 1 } },
-        { new: true }
+        { new: true },
       ).lean();
     }
 
     if (!updated) {
-      return res.status(500).json({ message: 'Failed to update discussion upvote count' });
+      return res
+        .status(500)
+        .json({ message: "Failed to update discussion upvote count" });
     }
 
     if (updated.upvoteCount < 0) {
       updated = await Discussion.findByIdAndUpdate(
         discussionId,
         { $set: { upvoteCount: 0 } },
-        { new: true }
+        { new: true },
       ).lean();
     }
 
@@ -901,14 +993,17 @@ const updateDiscussionUpvote = async (req, res) => {
     });
   } catch (err) {
     if (err.code === 11000) {
-      const updated = await Discussion.findById(discussionId, 'upvoteCount').lean();
+      const updated = await Discussion.findById(
+        discussionId,
+        "upvoteCount",
+      ).lean();
       return res.status(200).json({
-        action: 'upvoted',
+        action: "upvoted",
         upvoteCount: updated?.upvoteCount ?? 0,
       });
     }
-    console.error('updateDiscussionUpvote error:', err.message);
-    res.status(500).json({ message: 'Server error' });
+    console.error("updateDiscussionUpvote error:", err.message);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -932,26 +1027,29 @@ const createReply = async (req, res) => {
 
   try {
     if (!body?.trim()) {
-      return res.status(400).json({ message: 'Reply body is required' });
+      return res.status(400).json({ message: "Reply body is required" });
     }
 
     // confirm discussion exists
     const discussion = await Discussion.findOne(
       { _id: discussionId, tenantId, communityId },
-      '_id'
+      "_id",
     ).lean();
-    if (!discussion) return res.status(404).json({ message: 'Discussion not found' });
+    if (!discussion)
+      return res.status(404).json({ message: "Discussion not found" });
 
     // enforce one-level nesting
     if (parentReplyId) {
       const parent = await DiscussionReply.findOne(
         { _id: parentReplyId, tenantId, discussionId },
-        'parentReplyId'
+        "parentReplyId",
       ).lean();
-      if (!parent) return res.status(404).json({ message: 'Parent reply not found' });
+      if (!parent)
+        return res.status(404).json({ message: "Parent reply not found" });
       if (parent.parentReplyId !== null) {
         return res.status(400).json({
-          message: 'Only one level of nesting is supported — cannot reply to a nested reply',
+          message:
+            "Only one level of nesting is supported — cannot reply to a nested reply",
         });
       }
     }
@@ -967,18 +1065,40 @@ const createReply = async (req, res) => {
       }),
       // increment replyCount only for top-level replies
       !parentReplyId
-        ? Discussion.findByIdAndUpdate(discussionId, { $inc: { replyCount: 1 } })
+        ? Discussion.findByIdAndUpdate(discussionId, {
+            $inc: { replyCount: 1 },
+          })
         : Promise.resolve(),
     ]);
 
     const populated = await DiscussionReply.findById(reply._id)
-      .populate('authorId', 'authorName profile email badges')
+      .populate("authorId", "authorName profile email badges")
       .lean();
 
-    res.status(201).json({ message: 'Reply created', reply: populated });
+    res.status(201).json({ message: "Reply created", reply: populated });
+
+    // ---------------performance tracker-------------------------------------
+    trackActivity({
+      authorId: authorId,
+      tenantId: tenantId,
+      date: getTodayIST(),
+      event: {
+        type: "reply",
+        targetId: reply._id,
+        communityId: reply.communityId, // already on DiscussionReply
+        discussionId: reply.discussionId, // already on DiscussionReply
+        title: `Replied to: ${discussion.title}`,
+        communityName: null, // optional — add if available
+        pts: 1,
+      },
+    }).catch((err) =>
+      console.error("trackActivity (reply) error:", err.message),
+    );
+
+    // -----------------------------------------------------------------------------
   } catch (err) {
-    console.error('createReply error:', err.message);
-    res.status(500).json({ message: 'Server error' });
+    console.error("createReply error:", err.message);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -1000,19 +1120,24 @@ const getReplies = async (req, res) => {
       DiscussionReply.find(
         { tenantId, discussionId, parentReplyId: null },
         null,
-        { skip, limit: Number(limit), sort: { createdAt: 1 } }
+        { skip, limit: Number(limit), sort: { createdAt: 1 } },
       )
-        .populate('authorId', 'authorname profile email badges')
+        .populate("authorId", "authorname profile email badges")
         .lean(),
-      DiscussionReply.countDocuments({ tenantId, discussionId, parentReplyId: null }),
+      DiscussionReply.countDocuments({
+        tenantId,
+        discussionId,
+        parentReplyId: null,
+      }),
     ]);
 
     const topLevelIds = topLevelReplies.map((r) => r._id);
 
-    const nestedReplies = await DiscussionReply.find(
-      { tenantId, parentReplyId: { $in: topLevelIds } }
-    )
-      .populate('authorId', 'authorname profile email badges')
+    const nestedReplies = await DiscussionReply.find({
+      tenantId,
+      parentReplyId: { $in: topLevelIds },
+    })
+      .populate("authorId", "authorname profile email badges")
       .lean();
 
     const nestedByParent = {};
@@ -1041,8 +1166,8 @@ const getReplies = async (req, res) => {
       hasMore: skip + topLevelReplies.length < total,
     });
   } catch (err) {
-    console.error('getReplies error:', err.message);
-    res.status(500).json({ message: 'Server error' });
+    console.error("getReplies error:", err.message);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -1057,23 +1182,25 @@ const updateReply = async (req, res) => {
 
   try {
     if (!body?.trim()) {
-      return res.status(400).json({ message: 'Reply body is required' });
+      return res.status(400).json({ message: "Reply body is required" });
     }
 
     const reply = await DiscussionReply.findOneAndUpdate(
       { _id: replyId, tenantId, authorId },
       { $set: { body: body.trim() } },
-      { new: true, runValidators: false }
+      { new: true, runValidators: false },
     ).lean();
 
     if (!reply) {
-      return res.status(404).json({ message: 'Reply not found or not authorised' });
+      return res
+        .status(404)
+        .json({ message: "Reply not found or not authorised" });
     }
 
-    res.status(200).json({ message: 'Reply updated', reply });
+    res.status(200).json({ message: "Reply updated", reply });
   } catch (err) {
-    console.error('updateReply error:', err.message);
-    res.status(500).json({ message: 'Server error' });
+    console.error("updateReply error:", err.message);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -1091,31 +1218,37 @@ const deleteReply = async (req, res) => {
       getUserCommunityRole(tenantId, communityId, authorId),
     ]);
 
-    if (!reply) return res.status(404).json({ message: 'Reply not found' });
+    if (!reply) return res.status(404).json({ message: "Reply not found" });
 
     const isAuthor = reply.authorId.toString() === authorId.toString();
-    const isCoordinator = communityRole === 'coordinator';
+    const isCoordinator = communityRole === "coordinator";
 
     if (!isAuthor && !isCoordinator) {
-      return res.status(403).json({ message: 'Not authorised to delete this reply' });
+      return res
+        .status(403)
+        .json({ message: "Not authorised to delete this reply" });
     }
 
     const isTopLevel = reply.parentReplyId === null;
 
     // find nested replies if this is a top-level reply
     const nestedIds = isTopLevel
-      ? await DiscussionReply.find({ tenantId, parentReplyId: replyId }, '_id')
+      ? await DiscussionReply.find({ tenantId, parentReplyId: replyId }, "_id")
           .lean()
           .then((docs) => docs.map((d) => d._id))
       : [];
 
     await Promise.all([
       DiscussionReply.deleteOne({ _id: replyId }),
-      nestedIds.length ? DiscussionReply.deleteMany({ _id: { $in: nestedIds } }) : Promise.resolve(),
+      nestedIds.length
+        ? DiscussionReply.deleteMany({ _id: { $in: nestedIds } })
+        : Promise.resolve(),
       Upvote.deleteMany({ targetId: { $in: [replyId, ...nestedIds] } }),
       // decrement replyCount only for top-level deletions
       isTopLevel
-        ? Discussion.findByIdAndUpdate(discussionId, { $inc: { replyCount: -1 } })
+        ? Discussion.findByIdAndUpdate(discussionId, {
+            $inc: { replyCount: -1 },
+          })
         : Promise.resolve(),
     ]);
 
@@ -1126,10 +1259,10 @@ const deleteReply = async (req, res) => {
       });
     }
 
-    res.status(200).json({ message: 'Reply deleted' });
+    res.status(200).json({ message: "Reply deleted" });
   } catch (err) {
-    console.error('deleteReply error:', err.message);
-    res.status(500).json({ message: 'Server error' });
+    console.error("deleteReply error:", err.message);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -1202,7 +1335,7 @@ const updateUpvoteReply = async (req, res) => {
   try {
     const existing = await Upvote.findOne({
       targetId: replyId,
-      targetType: 'reply',
+      targetType: "reply",
       authorId,
     });
 
@@ -1213,12 +1346,12 @@ const updateUpvoteReply = async (req, res) => {
       const updated = await DiscussionReply.findByIdAndUpdate(
         replyId,
         { $inc: { upvoteCount: -1 } },
-        { new: true }
+        { new: true },
       ).lean();
 
       return res.status(200).json({
         upvoteCount: Math.max(0, updated.upvoteCount),
-        action: 'removed',
+        action: "removed",
       });
     }
 
@@ -1226,26 +1359,25 @@ const updateUpvoteReply = async (req, res) => {
     await Upvote.create({
       tenantId,
       targetId: replyId,
-      targetType: 'reply',
+      targetType: "reply",
       authorId,
     });
 
     const updated = await DiscussionReply.findByIdAndUpdate(
       replyId,
       { $inc: { upvoteCount: 1 } },
-      { new: true }
+      { new: true },
     ).lean();
 
     res.status(200).json({
       upvoteCount: updated.upvoteCount,
-      action: 'upvoted',
+      action: "upvoted",
     });
   } catch (err) {
-    console.error('toggleUpvoteReply error:', err.message);
-    res.status(500).json({ message: 'Server error' });
+    console.error("toggleUpvoteReply error:", err.message);
+    res.status(500).json({ message: "Server error" });
   }
 };
-
 
 /**
  * PATCH /api/communities/:communityId/discussions/:discussionId/replies/:replyId/answer
@@ -1271,7 +1403,7 @@ const markAnswer = async (req, res) => {
 const getTrendingTags = async (req, res) => {
   const { communityId } = req.params;
   const { tenantId } = req.user;
-//  console.log("tags called");
+  //  console.log("tags called");
   const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
   try {
@@ -1284,24 +1416,24 @@ const getTrendingTags = async (req, res) => {
           tags: { $exists: true, $not: { $size: 0 } },
         },
       },
-      { $unwind: '$tags' },
-      { $group: { _id: '$tags', count: { $sum: 1 } } },
+      { $unwind: "$tags" },
+      { $group: { _id: "$tags", count: { $sum: 1 } } },
       { $sort: { count: -1 } },
       { $limit: 10 },
       {
         $lookup: {
           from: CommunityTag.collection.name,
-          localField: '_id',
-          foreignField: '_id',
-          as: 'tag',
+          localField: "_id",
+          foreignField: "_id",
+          as: "tag",
         },
       },
-      { $unwind: '$tag' },
+      { $unwind: "$tag" },
       {
         $project: {
-          _id: '$tag._id',
-          name: '$tag.name',
-          color: '$tag.color',
+          _id: "$tag._id",
+          name: "$tag.name",
+          color: "$tag.color",
           count: 1,
         },
       },
@@ -1309,8 +1441,8 @@ const getTrendingTags = async (req, res) => {
 
     res.status(200).json({ tags: trending });
   } catch (err) {
-    console.error('getTrendingTags error:', err.message);
-    res.status(500).json({ message: 'Server error' });
+    console.error("getTrendingTags error:", err.message);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -1413,7 +1545,7 @@ const getTrendingTags = async (req, res) => {
 const getCommunityLeaderboard = async (req, res) => {
   const { communityId } = req.params;
   const { tenantId } = req.user;
-  const filter = req.query.filter || 'overall';
+  const filter = req.query.filter || "overall";
 
   const communityObjectId = new mongoose.Types.ObjectId(communityId);
 
@@ -1421,23 +1553,23 @@ const getCommunityLeaderboard = async (req, res) => {
     // ── build date range — same logic as getTopContributors ──
     let dateRange = null;
 
-    if (filter !== 'overall') {
-      const now   = new Date();
-      const year  = now.getFullYear();
+    if (filter !== "overall") {
+      const now = new Date();
+      const year = now.getFullYear();
       const month = now.getMonth(); // 0-indexed
 
       const ranges = {
         current_month: {
-          start: new Date(year, month,     1),
-          end:   new Date(year, month + 1, 1),
+          start: new Date(year, month, 1),
+          end: new Date(year, month + 1, 1),
         },
         previous_month: {
           start: new Date(year, month - 1, 1),
-          end:   new Date(year, month,     1),
+          end: new Date(year, month, 1),
         },
         two_months_ago: {
           start: new Date(year, month - 2, 1),
-          end:   new Date(year, month - 1, 1),
+          end: new Date(year, month - 1, 1),
         },
       };
 
@@ -1445,7 +1577,8 @@ const getCommunityLeaderboard = async (req, res) => {
 
       if (!dateRange) {
         return res.status(400).json({
-          message: 'Invalid filter. Use: overall | current_month | previous_month | two_months_ago',
+          message:
+            "Invalid filter. Use: overall | current_month | previous_month | two_months_ago",
         });
       }
     }
@@ -1457,11 +1590,11 @@ const getCommunityLeaderboard = async (req, res) => {
     // resolve community name for Post.category match
     const community = await Community.findOne(
       { _id: communityObjectId, tenantId },
-      'name'
+      "name",
     ).lean();
 
     if (!community) {
-      return res.status(404).json({ message: 'Community not found' });
+      return res.status(404).json({ message: "Community not found" });
     }
 
     const [discussionScores, replyScores, postScores] = await Promise.all([
@@ -1475,8 +1608,8 @@ const getCommunityLeaderboard = async (req, res) => {
         },
         {
           $group: {
-            _id: '$authorId',
-            points: { $sum: { $add: [3, { $multiply: ['$upvoteCount', 2] }] } },
+            _id: "$authorId",
+            points: { $sum: { $add: [3, { $multiply: ["$upvoteCount", 2] }] } },
           },
         },
       ]),
@@ -1491,8 +1624,8 @@ const getCommunityLeaderboard = async (req, res) => {
         },
         {
           $group: {
-            _id: '$authorId',
-            points: { $sum: { $add: [1, '$upvoteCount'] } },
+            _id: "$authorId",
+            points: { $sum: { $add: [1, "$upvoteCount"] } },
           },
         },
       ]),
@@ -1507,7 +1640,7 @@ const getCommunityLeaderboard = async (req, res) => {
         },
         {
           $group: {
-            _id: '$authorId',
+            _id: "$authorId",
             points: { $sum: 5 },
           },
         },
@@ -1532,15 +1665,15 @@ const getCommunityLeaderboard = async (req, res) => {
     const authorIds = sorted.map(([id]) => new mongoose.Types.ObjectId(id));
     const authors = await Author.find(
       { _id: { $in: authorIds } },
-      'authorname profile email badges'
+      "authorname profile email badges",
     ).lean();
 
     const authorMap = Object.fromEntries(
-      authors.map((a) => [a._id.toString(), a])
+      authors.map((a) => [a._id.toString(), a]),
     );
 
     const leaderboard = sorted.map(([id, points], index) => ({
-      rank:   index + 1,
+      rank: index + 1,
       points,
       ...authorMap[id],
     }));
@@ -1551,13 +1684,15 @@ const getCommunityLeaderboard = async (req, res) => {
       period: dateRange
         ? {
             start: dateRange.start.toISOString().slice(0, 10),
-            end:   new Date(dateRange.end.getTime() - 1).toISOString().slice(0, 10),
+            end: new Date(dateRange.end.getTime() - 1)
+              .toISOString()
+              .slice(0, 10),
           }
         : null,
     });
   } catch (err) {
-    console.error('getCommunityLeaderboard error:', err.message);
-    res.status(500).json({ message: 'Server error' });
+    console.error("getCommunityLeaderboard error:", err.message);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
