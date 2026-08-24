@@ -1,4 +1,5 @@
 const {Author, Post} = require("../models/blogAuthorSchema");
+const { trackActivity, getTodayIST } = require('../services/trackActivity');
 
 const path = require('path');
 
@@ -602,6 +603,24 @@ const addPosts = async (req, res) => {
 
     // Respond immediately
     res.status(201).json({ message: "Post added successfully", data: safeAuthor });
+
+    //------------------------Performance Tracker-------------------------------------------------------------------
+    trackActivity({
+    authorId: savedPost.authorId,       // ObjectId — already on the saved post
+    tenantId: savedPost.tenantId,       // String
+    date:     getTodayIST(),       // "YYYY-MM-DD" in Asia/Kolkata
+    event: {
+      type:          'post',
+      targetId:      savedPost._id,
+      communityId:   null,         // posts navigate by targetId alone
+      discussionId:  null,
+      title:         savedPost.title,
+      communityName: savedPost.category,
+      pts:           5,
+    },
+  }).catch((err) => console.error('trackActivity (post) error:', err.message));
+
+// -------------------------------------------------------------------------------------------------------------------
 
 
     // ------------------------Achievements Badge Configuration-------------------------------------------------------
