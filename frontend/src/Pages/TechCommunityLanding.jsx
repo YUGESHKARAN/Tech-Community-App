@@ -60,6 +60,7 @@ const getDomainStyle = (name) => domainStyle[name] || defaultStyle;
 function TechCommunityLanding() {
   const email = getItem("email");
   const role = getItem("role");
+  const authorId = getItem("authorId")
   const [filter, setFilter] = useState("current_month");
   const [limit, setLimit] = useState(10);
   const months = getLast3MonthsName();
@@ -664,7 +665,7 @@ function TechCommunityLanding() {
             </div>
           }
           <div className="flex col-span-1 order-2 xl:order-3  md:col-span-2 lg:col-span-1 flex-col gap-3 lg:sticky lg:top-16">
-            <PerformanceTracker />
+            <PerformanceTracker authorId={authorId} />
             {/* Top contributors */}
             <h3 className="text-sm md:ml-2 font-semibold text-gray-300 ">
               Overall Leaderboard
