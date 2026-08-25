@@ -93,7 +93,17 @@ Visit https://www.bytesbase.me book a demo session. Our team will schedule a per
 ## Contributing
 
 Contributions are welcome!  
-Refere [CONTRIBUTING.md](CONTRIBUTING.md)
+
+Before contributing, please review:
+
+- [Contributing Guide](./CONTRIBUTING.md)
+- [Contributor License Agreement](./CLA.md)
+- [Code of Conduct](./CODE_OF_CONDUCT.md)
+
+> **CLA requirement:** Contributors must agree to the
+> [Bytes Base CLA](./CLA.md) before their pull request can be merged.
+> CLA Assistant automatically handles CLA verification on pull requests.
+
 
 ### License & Copyright
 
