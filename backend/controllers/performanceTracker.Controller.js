@@ -60,9 +60,9 @@ const { tenantId, authorId } = req.user;
  * Others see the heatmap but not streak numbers.
  */
 const getStreakData = async (req, res) => {
-//   const { authorId } = req.params;
-const { tenantId, authorId } = req.user;
-  const { _id: requestingId } = req.user;
+  const { authorId } = req.query;
+// const { tenantId, authorId } = req.user;
+  const { authorId: requestingId } = req.user;
 
   if (!mongoose.Types.ObjectId.isValid(authorId)) {
     return res.status(400).json({ message: 'Invalid authorId' });
@@ -86,11 +86,11 @@ const { tenantId, authorId } = req.user;
       .getFullYear();
 
     return res.status(200).json({
-      joinedYear,
+      streak:{joinedYear,
       // streak fields — only returned for own profile
       currentStreak:  isOwn ? (author.currentStreak  || 0) : null,
       longestStreak:  isOwn ? (author.longestStreak   || 0) : null,
-      lastActiveDate: isOwn ? (author.lastActiveDate  || null) : null,
+      lastActiveDate: isOwn ? (author.lastActiveDate  || null) : null,}
     });
   } catch (err) {
     console.error('getStreakData error:', err.message);
