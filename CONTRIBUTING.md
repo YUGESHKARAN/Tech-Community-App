@@ -1,49 +1,25 @@
-# Contribution Guidelines
+# Contributing to Bytes Base
 
-Welcome to the Tech Community App! We appreciate your interest in contributing to our project. Please follow the guidelines below to help us maintain consistency and quality.
+Thank you for your interest in contributing to Bytes Base.
 
-## Issue Reporting
-If you find a bug or have suggestions for improvement, please open an issue in the repository with the following information:
-- Description of the bug or suggestion with targetted labels.
+Before submitting a pull request, please review the following:
 
-## Pull Request Requirement
+- [Contributor License Agreement](./CLA.md)
+- [Code of Conduct](./CODE_OF_CONDUCT.md)
+- [License](./LICENSE)
 
-> **All pull requests must link to an issue or discussion where a solution has been approved by a maintainer.** PRs without prior approval will be closed.
+## Contributor License Agreement
 
-## Getting Started
-1. **Fork the Repository:** To contribute, you need to create a personal copy of the repository. Click on the 'Fork' button at the top-right corner of the page.
-2. **Clone the Forked Repository:** Use the following command to clone it to your local machine:
-   ```
-   git clone https://github.com/YUGESHKARAN/Tech-Community-App.git
-   ```
-3. **Navigate into the Project Directory:**
-   ```
-   cd Tech-Community-App
-   ```
+All contributors are required to agree to the
+[Bytes Base Contributor License Agreement](./CLA.md)
+before their contribution can be merged.
 
-## Development Setup
-Follow the instructions in the [README.md](README.md) file to setting up the development environment
+When you open a pull request, CLA Assistant will automatically
+check whether you have signed the CLA.
 
-## Code of Conduct
-Please adhere to the [Code of Conduct](CODE_OF_CONDUCT.md).
+If you have not signed it, the pull request will contain a
+CLA signing request.
 
-## Code Standards
-- Follow standard coding conventions and style guides.
-- Use meaningful variable and function names.
-- Maintain consistent indentation and spacing throughout your code.
-
-## Git Workflow
-1. **Create a New Branch:** Use meaningful branch names based on the feature or issue you are addressing:
-   ```
-   git checkout -b feature/my-new-feature
-   ```
-2. **Commit Your Changes:** Make small commits with clear messages. Use:
-   ```
-   git commit -m "Add new feature"
-   ```
-3. **Push Branch:** Push your changes to the forked repository:
-   ```
-   git push origin feature/my-new-feature
-   ```
-
-Thank you for considering contributing to the Tech Community App! We look forward to your contributions!
+Your pull request can be reviewed while the CLA is pending,
+but the contribution cannot be merged until the required CLA
+status has been satisfied.
