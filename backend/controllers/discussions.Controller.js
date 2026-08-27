@@ -1020,6 +1020,88 @@ const updateDiscussionUpvote = async (req, res) => {
  * the parent must have parentReplyId === null. If the parent
  * itself is a nested reply, we reject with 400.
  */
+
+// const createReply = async (req, res) => {
+//   const { communityId, discussionId } = req.params;
+//   const { tenantId, authorId } = req.user;
+//   const { body, parentReplyId } = req.body;
+
+//   try {
+//     if (!body?.trim()) {
+//       return res.status(400).json({ message: "Reply body is required" });
+//     }
+
+//     // confirm discussion exists
+//     const discussion = await Discussion.findOne(
+//       { _id: discussionId, tenantId, communityId },
+//       "_id",
+//     ).lean();
+//     if (!discussion)
+//       return res.status(404).json({ message: "Discussion not found" });
+
+//     // enforce one-level nesting
+//     if (parentReplyId) {
+//       const parent = await DiscussionReply.findOne(
+//         { _id: parentReplyId, tenantId, discussionId },
+//         "parentReplyId",
+//       ).lean();
+//       if (!parent)
+//         return res.status(404).json({ message: "Parent reply not found" });
+//       if (parent.parentReplyId !== null) {
+//         return res.status(400).json({
+//           message:
+//             "Only one level of nesting is supported — cannot reply to a nested reply",
+//         });
+//       }
+//     }
+
+//     const [reply] = await Promise.all([
+//       DiscussionReply.create({
+//         tenantId,
+//         communityId,
+//         discussionId,
+//         authorId,
+//         body: body.trim(),
+//         parentReplyId: parentReplyId || null,
+//       }),
+//       // increment replyCount only for top-level replies
+//       !parentReplyId
+//         ? Discussion.findByIdAndUpdate(discussionId, {
+//             $inc: { replyCount: 1 },
+//           })
+//         : Promise.resolve(),
+//     ]);
+
+//     const populated = await DiscussionReply.findById(reply._id)
+//       .populate("authorId", "authorName profile email badges")
+//       .lean();
+
+//     res.status(201).json({ message: "Reply created", reply: populated });
+
+//     // ---------------performance tracker-------------------------------------
+//     trackActivity({
+//       authorId: authorId,
+//       tenantId: tenantId,
+//       date: getTodayIST(),
+//       event: {
+//         type: "reply",
+//         targetId: reply._id,
+//         communityId: reply.communityId, // already on DiscussionReply
+//         discussionId: reply.discussionId, // already on DiscussionReply
+//         title: `Replied to: ${discussion.title}`,
+//         communityName: null, // optional — add if available
+//         pts: 1,
+//       },
+//     }).catch((err) =>
+//       console.error("trackActivity (reply) error:", err.message),
+//     );
+
+//     // -----------------------------------------------------------------------------
+//   } catch (err) {
+//     console.error("createReply error:", err.message);
+//     res.status(500).json({ message: "Server error" });
+//   }
+// };
 const createReply = async (req, res) => {
   const { communityId, discussionId } = req.params;
   const { tenantId, authorId } = req.user;
@@ -1030,10 +1112,10 @@ const createReply = async (req, res) => {
       return res.status(400).json({ message: "Reply body is required" });
     }
 
-    // confirm discussion exists
+    // fix: also fetch title + communityId for trackActivity
     const discussion = await Discussion.findOne(
       { _id: discussionId, tenantId, communityId },
-      "_id",
+      "_id title communityId"
     ).lean();
     if (!discussion)
       return res.status(404).json({ message: "Discussion not found" });
@@ -1042,19 +1124,19 @@ const createReply = async (req, res) => {
     if (parentReplyId) {
       const parent = await DiscussionReply.findOne(
         { _id: parentReplyId, tenantId, discussionId },
-        "parentReplyId",
+        "parentReplyId"
       ).lean();
       if (!parent)
         return res.status(404).json({ message: "Parent reply not found" });
       if (parent.parentReplyId !== null) {
         return res.status(400).json({
-          message:
-            "Only one level of nesting is supported — cannot reply to a nested reply",
+          message: "Only one level of nesting is supported — cannot reply to a nested reply",
         });
       }
     }
 
-    const [reply] = await Promise.all([
+    // fix: fetch community name for trackActivity in parallel with reply creation
+    const [reply, community] = await Promise.all([
       DiscussionReply.create({
         tenantId,
         communityId,
@@ -1063,39 +1145,35 @@ const createReply = async (req, res) => {
         body: body.trim(),
         parentReplyId: parentReplyId || null,
       }),
-      // increment replyCount only for top-level replies
+      Community.findOne({ _id: communityId, tenantId }, "name").lean(),
       !parentReplyId
-        ? Discussion.findByIdAndUpdate(discussionId, {
-            $inc: { replyCount: 1 },
-          })
+        ? Discussion.findByIdAndUpdate(discussionId, { $inc: { replyCount: 1 } })
         : Promise.resolve(),
     ]);
 
     const populated = await DiscussionReply.findById(reply._id)
-      .populate("authorId", "authorName profile email badges")
+      .populate("authorId", "authorname profile email badges")
       .lean();
 
     res.status(201).json({ message: "Reply created", reply: populated });
 
-    // ---------------performance tracker-------------------------------------
     trackActivity({
-      authorId: authorId,
-      tenantId: tenantId,
+      authorId,
+      tenantId,
       date: getTodayIST(),
       event: {
-        type: "reply",
-        targetId: reply._id,
-        communityId: reply.communityId, // already on DiscussionReply
-        discussionId: reply.discussionId, // already on DiscussionReply
-        title: `Replied to: ${discussion.title}`,
-        communityName: null, // optional — add if available
-        pts: 1,
+        type:          "reply",
+        targetId:      reply._id,
+        communityId:   reply.communityId,
+        discussionId:  reply.discussionId,
+        title:         `Replied to: ${discussion.title}`,  // fix: title now available
+        communityName: community?.name || null,            // fix: name now fetched
+        pts:           1,
       },
     }).catch((err) =>
-      console.error("trackActivity (reply) error:", err.message),
+      console.error("trackActivity (reply) error:", err.message)
     );
 
-    // -----------------------------------------------------------------------------
   } catch (err) {
     console.error("createReply error:", err.message);
     res.status(500).json({ message: "Server error" });
