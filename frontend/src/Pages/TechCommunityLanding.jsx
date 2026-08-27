@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import NavBar from "../ui/NavBar";
 import Footer from "../ui/Footer";
 import axiosInstance from "../instances/Axiosinstances";
@@ -39,6 +39,7 @@ import RecentVisit from "../components/RecentVisit";
 import * as TbIcons from "react-icons/tb";
 import { deriveGradient } from "../utils/bannerTheme";
 import PerformanceTracker from "../components/performancetracker/PerformanceTracker";
+import useStreak from "../hooks/performanceTracker/useStreak";
 
 const streakSample = {
   currentStreak: 4,
@@ -79,6 +80,11 @@ function TechCommunityLanding() {
 
   const [loadingDomains, setLoadingDomains] = useState(new Set());
   const [activeFilter, setActiveFilter] = useState("all");
+  const {streakData, streakLoader, getStreakDetails} = useStreak(authorId)
+
+  useEffect(()=>{
+    getStreakDetails()
+  },[authorId])
 
   // const updateCommunity = async (techCommunityName, communityId) => {
   //   if (loadingDomains.has(techCommunityName)) return;
@@ -217,6 +223,7 @@ function TechCommunityLanding() {
   // console.log("communityStats", communityStats);
   // console.log("statsLoader", statsLoader);
   // console.log("topContributors", topContributors);
+  console.log("streakData", streakData);
 
   const containerVariants = {
     hidden: {
@@ -665,7 +672,7 @@ function TechCommunityLanding() {
             </div>
           }
           <div className="flex col-span-1 order-2 xl:order-3  md:col-span-2 lg:col-span-1 flex-col gap-3 lg:sticky lg:top-16">
-            <PerformanceTracker authorId={authorId} />
+            <PerformanceTracker streakData={streakData}/>
             {/* Top contributors */}
             <h3 className="text-sm md:ml-2 font-semibold text-gray-300 ">
               Overall Leaderboard

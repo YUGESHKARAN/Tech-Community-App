@@ -177,6 +177,11 @@ const authorSchema = new mongoose.Schema({
     default: [],
   },
 },
+
+// so effectiveStreak() on the frontend computes correctly against IST midnight.
+currentStreak:  { type: Number, default: 0 },
+longestStreak:  { type: Number, default: 0 },
+lastActiveDate: { type: String, default: null }, // "YYYY-MM-DD" IST
   
   otp:          { type: String },
   otpExpiresAt: { type: Date   },
