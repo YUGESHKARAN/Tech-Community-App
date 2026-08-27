@@ -36,6 +36,7 @@
  */
 
 const { DailyEventLog, UserContributions } = require('../models/performanceTracker/performanceTrackerSchema');
+const { checkAndUpdateStreak } = require('./checkAndUpdateStreak');
 
 /**
  * Returns today's date string in "YYYY-MM-DD" format using Asia/Kolkata timezone.
@@ -95,6 +96,9 @@ const trackActivity = async ({ authorId, tenantId, date, event }) => {
       { upsert: true, new: false, runValidators: false }
     ),
   ]);
+
+  checkAndUpdateStreak(authorId)
+    .catch((err) => console.error('checkAndUpdateStreak error:', err.message));
 };
 
 module.exports = { trackActivity, getTodayIST };
