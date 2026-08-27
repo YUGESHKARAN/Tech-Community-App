@@ -436,9 +436,9 @@ function TechCommunityLanding() {
   return (
     <div className="min-h-screen theme text-white flex flex-col">
       <NavBar />
-       <span className="text-[9px] md:pt-2 py-2 pb-0 mx-auto xl:text-right px-4 md:px-20 max-w-[1800px] mx-auto w-full animate-pulse font-semibold ">
+       {/* <span className="text-[9px] md:pt-2 py-2 pb-0 mx-auto xl:text-right px-4 md:px-20 max-w-[1800px] mx-auto w-full animate-pulse font-semibold ">
         Performance tracker feature is under development, feel free to explore the platform.
-      </span>
+      </span> */}
 
       <div className="flex-grow px-4   relative max-w-[1800px] mx-auto w-full pb-20">
         {/* ── Hero header ── */}
