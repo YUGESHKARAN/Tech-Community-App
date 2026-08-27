@@ -97,6 +97,10 @@ const snapshotAuthorSchema = new mongoose.Schema({
   }],
   notification:  [mongoose.Schema.Types.Mixed],
   announcement:  [mongoose.Schema.Types.Mixed],
+  // in snapshotAuthorSchema
+currentStreak:  { type: Number, default: 0 },
+longestStreak:  { type: Number, default: 0 },
+lastActiveDate: { type: String, default: null },
   otp:          { type: String },
   otpExpiresAt: { type: Date   },
 
