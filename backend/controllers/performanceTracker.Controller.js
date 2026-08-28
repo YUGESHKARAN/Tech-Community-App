@@ -8,9 +8,56 @@ const { Author } = require('../models/blogAuthorSchema');
  * Used by the heatmap — no event detail, just day → points.
  * Public: any authenticated user can view any author's heatmap.
  */
-const getContributions = async (req, res) => {
+
+// const getContributions = async (req, res) => {
 //   const { authorId } = req.params;
-const { tenantId, authorId } = req.user;
+// console.log("getContributions called")
+// // const { authorId } = req.user;
+//   const year = Number(req.query.year) || new Date().getFullYear();
+
+//   if (!mongoose.Types.ObjectId.isValid(authorId)) {
+//     return res.status(400).json({ message: 'Invalid authorId' });
+//   }
+
+//   try {
+//     const doc = await UserContributions.findOne(
+//       { authorId, year },
+//       'days totalCount year'
+//     ).lean();
+
+//     if (!doc) {
+//       // no activity yet for this year — return empty map
+//       return res.status(200).json({
+//         year,
+//         contributions: {},
+//         totalCount: 0,
+//       });
+//     }
+
+//     // convert Map → plain object for JSON serialisation
+//     const contributions = Object.fromEntries(
+//       Object.entries(doc.days).map(([monthDay, pts]) => [
+//         `${year}-${monthDay}`, // "MM-DD" → "YYYY-MM-DD" for frontend
+//         pts,
+//       ])
+//     );
+
+    
+
+//     return res.status(200).json({
+//       year,
+//       contributions,
+//       totalCount: doc.totalCount,
+//     });
+//   } catch (err) {
+//     console.error('getContributions error:', err.message);
+//     return res.status(500).json({ message: 'Server error' });
+//   }
+// };
+
+// ── GET /api/authors/:authorId/streak ─────────────────────────────────────────
+const getContributions = async (req, res) => {
+  const { authorId } = req.params;
   const year = Number(req.query.year) || new Date().getFullYear();
 
   if (!mongoose.Types.ObjectId.isValid(authorId)) {
@@ -18,13 +65,13 @@ const { tenantId, authorId } = req.user;
   }
 
   try {
+    // remove .lean() so Mongoose Map methods are available
     const doc = await UserContributions.findOne(
       { authorId, year },
       'days totalCount year'
-    ).lean();
+    );
 
     if (!doc) {
-      // no activity yet for this year — return empty map
       return res.status(200).json({
         year,
         contributions: {},
@@ -32,13 +79,13 @@ const { tenantId, authorId } = req.user;
       });
     }
 
-    // convert Map → plain object for JSON serialisation
-    const contributions = Object.fromEntries(
-      Object.entries(doc.days).map(([monthDay, pts]) => [
-        `${year}-${monthDay}`, // "MM-DD" → "YYYY-MM-DD" for frontend
-        pts,
-      ])
-    );
+    // doc.days is a Mongoose Map — use .entries() iterator, not Object.entries()
+    // Object.entries() on a Mongoose Map only picks up own enumerable props
+    // which is why you only see 2 entries despite 3 existing in the DB
+    const contributions = {};
+    for (const [monthDay, pts] of doc.days) {
+      contributions[`${year}-${monthDay}`] = pts; // "MM-DD" → "YYYY-MM-DD"
+    }
 
     return res.status(200).json({
       year,
@@ -50,8 +97,6 @@ const { tenantId, authorId } = req.user;
     return res.status(500).json({ message: 'Server error' });
   }
 };
-
-// ── GET /api/authors/:authorId/streak ─────────────────────────────────────────
 /**
  * Returns streak fields from the Author document.
  * Also returns joinedYear (derived from _id ObjectId timestamp)
@@ -62,7 +107,7 @@ const { tenantId, authorId } = req.user;
 const getStreakData = async (req, res) => {
   const { authorId } = req.query;
 // const { tenantId, authorId } = req.user;
-  const { authorId: requestingId } = req.user;
+  const { authorId:requestingId } = req.user;
 
   if (!mongoose.Types.ObjectId.isValid(authorId)) {
     return res.status(400).json({ message: 'Invalid authorId' });

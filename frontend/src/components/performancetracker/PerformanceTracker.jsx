@@ -1,4 +1,5 @@
-import React, { useMemo, useState, useEffect, useRef } from "react";
+import React, { useMemo, useState, useEffect, useRef, useCallback } from "react";
+import axiosInstance from "../../instances/Axiosinstances";
 import { Link } from "react-router-dom";
 import {
   TbFlame, TbTrophy, TbCalendar, TbBolt,
@@ -16,33 +17,159 @@ import {
   SAMPLE_STREAK,
   SAMPLE_CONTRIBUTIONS_BY_YEAR,
 } from "./performanceSampleData";
-import formatCount from "../../utils/NumberConversion";
+import { getItem } from "../../utils/encode";
 
 // ── Sample day events ─────────────────────────────────────────────────────────
+// Each key MUST match a date that has points in SAMPLE_CONTRIBUTIONS_BY_YEAR
+// so the cell is rendered as active and clickable on the heatmap.
 // Swap with real API: GET /api/authors/:authorId/events?date=YYYY-MM-DD&page=1&limit=10
 const SAMPLE_DAY_EVENTS = {
-  "2026-08-18": {
-    totalPts: 13, total: 3, page: 1, hasMore: false,
+
+  // ── Aug 2026 (streak period — recent, high activity) ─────────────────────
+
+  "2026-08-19": {
+    totalPts: 9, total: 3, page: 1, hasMore: false,
     events: [
-      { _id: "evt001", type: "post",       targetId: "post001", communityId: null,                       discussionId: null,    title: "Evaluating LLMs using LangSmith",                              communityName: "AI/ML", pts: 5, createdAt: "2026-08-19T09:14:00.000Z" },
-      { _id: "evt002", type: "discussion", targetId: "disc001", communityId: "66f1a2b3c4d5e6f7a8b9c0d1", discussionId: null,    title: "Why does my LoRA fine-tune overfit after 3 epochs?",            communityName: "AI/ML", pts: 3, createdAt: "2026-08-19T11:32:00.000Z" },
-      { _id: "evt003", type: "reply",      targetId: "reply001",communityId: "66f1a2b3c4d5e6f7a8b9c0d1", discussionId: "disc001",title: "Replied to: Why does my LoRA fine-tune overfit after 3 epochs?", communityName: "AI/ML", pts: 1, createdAt: "2026-08-19T14:05:00.000Z" },
+      { _id: "e001", type: "post",       targetId: "post001", communityId: null,                       discussionId: null,     title: "Evaluating LLMs using LangSmith",                                      communityName: "AI/ML",  pts: 5, createdAt: "2026-08-19T09:14:00.000Z" },
+      { _id: "e002", type: "discussion", targetId: "disc001", communityId: "66f1a2b3c4d5e6f7a8b9c0d1", discussionId: null,     title: "Why does my LoRA fine-tune overfit after 3 epochs?",                    communityName: "AI/ML",  pts: 3, createdAt: "2026-08-19T11:32:00.000Z" },
+      { _id: "e003", type: "reply",      targetId: "rply001", communityId: "66f1a2b3c4d5e6f7a8b9c0d1", discussionId: "disc001",title: "Replied to: Why does my LoRA fine-tune overfit after 3 epochs?",        communityName: "AI/ML",  pts: 1, createdAt: "2026-08-19T14:05:00.000Z" },
     ],
   },
-  "2026-08-17": {
+
+  "2026-08-18": {
     totalPts: 8, total: 2, page: 1, hasMore: false,
     events: [
-      { _id: "evt004", type: "post",       targetId: "post002", communityId: null,                       discussionId: null,  title: "Multi-Agent System using LangGraph",                  communityName: "GenAI", pts: 5, createdAt: "2026-08-17T10:00:00.000Z" },
-      { _id: "evt005", type: "discussion", targetId: "disc002", communityId: "66f1a2b3c4d5e6f7a8b9c0d4", discussionId: null,  title: "Idea: a shared prompt-eval leaderboard for this community", communityName: "GenAI", pts: 3, createdAt: "2026-08-17T15:20:00.000Z" },
+      { _id: "e004", type: "post",       targetId: "post002", communityId: null,                       discussionId: null,     title: "Multi-Agent System using LangGraph",                                    communityName: "GenAI",  pts: 5, createdAt: "2026-08-18T10:00:00.000Z" },
+      { _id: "e005", type: "discussion", targetId: "disc002", communityId: "66f1a2b3c4d5e6f7a8b9c0d4", discussionId: null,     title: "Idea: shared prompt-eval leaderboard for this community",              communityName: "GenAI",  pts: 3, createdAt: "2026-08-18T15:20:00.000Z" },
     ],
   },
+
+  "2026-08-17": {
+    totalPts: 12, total: 3, page: 1, hasMore: false,
+    events: [
+      { _id: "e006", type: "post",       targetId: "post003", communityId: null,                       discussionId: null,     title: "Clash of Clans Mini Language Model",                                   communityName: "AI/ML",  pts: 5, createdAt: "2026-08-17T08:30:00.000Z" },
+      { _id: "e007", type: "discussion", targetId: "disc003", communityId: "66f1a2b3c4d5e6f7a8b9c0d1", discussionId: null,     title: "Best resources for learning transformer architecture in 2025?",        communityName: "AI/ML",  pts: 3, createdAt: "2026-08-17T11:00:00.000Z" },
+      { _id: "e008", type: "reply",      targetId: "rply002", communityId: "66f1a2b3c4d5e6f7a8b9c0d1", discussionId: "disc003",title: "Replied to: Best resources for learning transformer architecture?",    communityName: "AI/ML",  pts: 1, createdAt: "2026-08-17T13:45:00.000Z" },
+    ],
+  },
+
+  "2026-08-16": {
+    totalPts: 5, total: 1, page: 1, hasMore: false,
+    events: [
+      { _id: "e009", type: "post",       targetId: "post004", communityId: null,                       discussionId: null,     title: "Design and Development of Attendance Tracker",                         communityName: "Web Development", pts: 5, createdAt: "2026-08-16T09:00:00.000Z" },
+    ],
+  },
+
+  "2026-08-15": {
+    totalPts: 8, total: 2, page: 1, hasMore: false,
+    events: [
+      { _id: "e010", type: "post",       targetId: "post005", communityId: null,                       discussionId: null,     title: "Cybersecurity Roadmap 2026",                                           communityName: "Cyber Security", pts: 5, createdAt: "2026-08-15T10:30:00.000Z" },
+      { _id: "e011", type: "reply",      targetId: "rply003", communityId: "66f1a2b3c4d5e6f7a8b9c0d2", discussionId: "disc004",title: "Replied to: What is the best open-source WAF in 2025?",               communityName: "Cyber Security", pts: 1, createdAt: "2026-08-15T15:00:00.000Z" },
+    ],
+  },
+
+  "2026-08-14": {
+    totalPts: 3, total: 1, page: 1, hasMore: false,
+    events: [
+      { _id: "e012", type: "discussion", targetId: "disc005", communityId: "66f1a2b3c4d5e6f7a8b9c0d1", discussionId: null,     title: "Show and tell: built a reinforcement learning gridworld from scratch", communityName: "AI/ML",  pts: 3, createdAt: "2026-08-14T14:00:00.000Z" },
+    ],
+  },
+
+  // ── July 2026 (peak month) ───────────────────────────────────────────────
+
+  "2026-07-28": {
+    totalPts: 12, total: 3, page: 1, hasMore: false,
+    events: [
+      { _id: "e013", type: "post",       targetId: "post006", communityId: null,                       discussionId: null,     title: "Supervised Machine Learning deep dive",                                communityName: "AI/ML",  pts: 5, createdAt: "2026-07-28T08:00:00.000Z" },
+      { _id: "e014", type: "post",       targetId: "post007", communityId: null,                       discussionId: null,     title: "Unsupervised Learning with scikit-learn",                              communityName: "Data Science", pts: 5, createdAt: "2026-07-28T10:30:00.000Z" },
+      { _id: "e015", type: "reply",      targetId: "rply004", communityId: "66f1a2b3c4d5e6f7a8b9c0d1", discussionId: "disc005",title: "Replied to: Show and tell: RL gridworld from scratch",               communityName: "AI/ML",  pts: 1, createdAt: "2026-07-28T16:45:00.000Z" },
+    ],
+  },
+
   "2026-07-14": {
     totalPts: 15, total: 4, page: 1, hasMore: true,
     events: [
-      { _id: "evt006", type: "post",       targetId: "post003", communityId: null,                       discussionId: null,     title: "Supervised Machine Learning",              communityName: "AI/ML",  pts: 5, createdAt: "2026-07-14T08:00:00.000Z" },
-      { _id: "evt007", type: "post",       targetId: "post004", communityId: null,                       discussionId: null,     title: "Unsupervised Learning techniques",         communityName: "AI/ML",  pts: 5, createdAt: "2026-07-14T10:30:00.000Z" },
-      { _id: "evt008", type: "discussion", targetId: "disc003", communityId: "66f1a2b3c4d5e6f7a8b9c0d1", discussionId: null,     title: "Show and tell: RL gridworld from scratch", communityName: "AI/ML",  pts: 3, createdAt: "2026-07-14T14:10:00.000Z" },
-      { _id: "evt009", type: "reply",      targetId: "reply002",communityId: "66f1a2b3c4d5e6f7a8b9c0d1", discussionId: "disc003",title: "Replied to: Show and tell: RL gridworld from scratch", communityName: "AI/ML", pts: 1, createdAt: "2026-07-14T16:45:00.000Z" },
+      { _id: "e016", type: "post",       targetId: "post008", communityId: null,                       discussionId: null,     title: "Computer Vision with PyTorch — end to end guide",                     communityName: "AI/ML",  pts: 5, createdAt: "2026-07-14T08:00:00.000Z" },
+      { _id: "e017", type: "post",       targetId: "post009", communityId: null,                       discussionId: null,     title: "Attention is All You Need — annotated walkthrough",                    communityName: "AI/ML",  pts: 5, createdAt: "2026-07-14T10:00:00.000Z" },
+      { _id: "e018", type: "discussion", targetId: "disc006", communityId: "66f1a2b3c4d5e6f7a8b9c0d4", discussionId: null,     title: "Idea: weekly paper reading club for this community",                   communityName: "GenAI",  pts: 3, createdAt: "2026-07-14T13:00:00.000Z" },
+      { _id: "e019", type: "reply",      targetId: "rply005", communityId: "66f1a2b3c4d5e6f7a8b9c0d4", discussionId: "disc006",title: "Replied to: Idea: weekly paper reading club",                          communityName: "GenAI",  pts: 1, createdAt: "2026-07-14T16:00:00.000Z" },
+    ],
+  },
+
+  "2026-07-03": {
+    totalPts: 15, total: 3, page: 1, hasMore: false,
+    events: [
+      { _id: "e020", type: "post",       targetId: "post010", communityId: null,                       discussionId: null,     title: "Building a RAG pipeline with LangChain and Pinecone",                  communityName: "GenAI",  pts: 5, createdAt: "2026-07-03T09:00:00.000Z" },
+      { _id: "e021", type: "post",       targetId: "post011", communityId: null,                       discussionId: null,     title: "Vector databases compared: Pinecone vs Weaviate vs Qdrant",           communityName: "GenAI",  pts: 5, createdAt: "2026-07-03T11:00:00.000Z" },
+      { _id: "e022", type: "discussion", targetId: "disc007", communityId: "66f1a2b3c4d5e6f7a8b9c0d4", discussionId: null,     title: "Q&A: when to use HyDE vs standard retrieval in RAG?",                 communityName: "GenAI",  pts: 3, createdAt: "2026-07-03T14:30:00.000Z" },
+    ],
+  },
+
+  // ── June 2026 ────────────────────────────────────────────────────────────
+
+  "2026-06-17": {
+    totalPts: 12, total: 3, page: 1, hasMore: false,
+    events: [
+      { _id: "e023", type: "post",       targetId: "post012", communityId: null,                       discussionId: null,     title: "Deploying FastAPI on EC2 with Nginx and PM2",                          communityName: "Web Development", pts: 5, createdAt: "2026-06-17T09:00:00.000Z" },
+      { _id: "e024", type: "discussion", targetId: "disc008", communityId: "66f1a2b3c4d5e6f7a8b9c0d5", discussionId: null,     title: "Q&A: React Query vs SWR for data fetching in 2025",                   communityName: "Web Development", pts: 3, createdAt: "2026-06-17T12:00:00.000Z" },
+      { _id: "e025", type: "reply",      targetId: "rply006", communityId: "66f1a2b3c4d5e6f7a8b9c0d5", discussionId: "disc008",title: "Replied to: React Query vs SWR for data fetching",                    communityName: "Web Development", pts: 1, createdAt: "2026-06-17T15:00:00.000Z" },
+    ],
+  },
+
+  "2026-06-09": {
+    totalPts: 12, total: 2, page: 1, hasMore: false,
+    events: [
+      { _id: "e026", type: "post",       targetId: "post013", communityId: null,                       discussionId: null,     title: "MySQL RAG System with LangChain",                                      communityName: "Data Science", pts: 5, createdAt: "2026-06-09T10:00:00.000Z" },
+      { _id: "e027", type: "discussion", targetId: "disc009", communityId: "66f1a2b3c4d5e6f7a8b9c0d3", discussionId: null,     title: "Show and tell: built a full EDA pipeline from scratch",                communityName: "Data Science", pts: 3, createdAt: "2026-06-09T14:00:00.000Z" },
+    ],
+  },
+
+  // ── March 2026 (peak month) ───────────────────────────────────────────────
+
+  "2026-03-24": {
+    totalPts: 15, total: 4, page: 1, hasMore: false,
+    events: [
+      { _id: "e028", type: "post",       targetId: "post014", communityId: null,                       discussionId: null,     title: "Sarvam AI — Indic LLMs for real-world applications",                  communityName: "GenAI",  pts: 5, createdAt: "2026-03-24T08:00:00.000Z" },
+      { _id: "e029", type: "post",       targetId: "post015", communityId: null,                       discussionId: null,     title: "Building a Multilingual RAG with Sarvam Translate",                    communityName: "GenAI",  pts: 5, createdAt: "2026-03-24T10:00:00.000Z" },
+      { _id: "e030", type: "discussion", targetId: "disc010", communityId: "66f1a2b3c4d5e6f7a8b9c0d4", discussionId: null,     title: "Q&A: best chunking strategy for long PDF documents in RAG?",          communityName: "GenAI",  pts: 3, createdAt: "2026-03-24T13:00:00.000Z" },
+      { _id: "e031", type: "reply",      targetId: "rply007", communityId: "66f1a2b3c4d5e6f7a8b9c0d4", discussionId: "disc010",title: "Replied to: best chunking strategy for long PDF documents in RAG?",  communityName: "GenAI",  pts: 1, createdAt: "2026-03-24T16:00:00.000Z" },
+    ],
+  },
+
+  "2026-03-12": {
+    totalPts: 15, total: 3, page: 1, hasMore: false,
+    events: [
+      { _id: "e032", type: "post",       targetId: "post016", communityId: null,                       discussionId: null,     title: "Zero-shot vs Few-shot prompting — a practical comparison",            communityName: "GenAI",  pts: 5, createdAt: "2026-03-12T09:00:00.000Z" },
+      { _id: "e033", type: "post",       targetId: "post017", communityId: null,                       discussionId: null,     title: "Chain-of-thought prompting with GPT-4o",                               communityName: "GenAI",  pts: 5, createdAt: "2026-03-12T11:00:00.000Z" },
+      { _id: "e034", type: "discussion", targetId: "disc011", communityId: "66f1a2b3c4d5e6f7a8b9c0d1", discussionId: null,     title: "Announcement: weekly knowledge drop #1 — attention mechanisms",       communityName: "AI/ML",  pts: 3, createdAt: "2026-03-12T15:00:00.000Z" },
+    ],
+  },
+
+  // ── Feb 2026 ─────────────────────────────────────────────────────────────
+
+  "2026-02-09": {
+    totalPts: 15, total: 3, page: 1, hasMore: false,
+    events: [
+      { _id: "e035", type: "post",       targetId: "post018", communityId: null,                       discussionId: null,     title: "Penetration Testing with Kali Linux — beginner guide",                 communityName: "Cyber Security", pts: 5, createdAt: "2026-02-09T09:00:00.000Z" },
+      { _id: "e036", type: "discussion", targetId: "disc012", communityId: "66f1a2b3c4d5e6f7a8b9c0d2", discussionId: null,     title: "Q&A: OWASP Top 10 — which vulnerabilities matter most in 2025?",     communityName: "Cyber Security", pts: 3, createdAt: "2026-02-09T12:00:00.000Z" },
+      { _id: "e037", type: "reply",      targetId: "rply008", communityId: "66f1a2b3c4d5e6f7a8b9c0d2", discussionId: "disc012",title: "Replied to: OWASP Top 10 — which vulnerabilities matter most?",       communityName: "Cyber Security", pts: 1, createdAt: "2026-02-09T15:30:00.000Z" },
+    ],
+  },
+
+  // ── Jan 2026 ─────────────────────────────────────────────────────────────
+
+  "2026-01-07": {
+    totalPts: 8, total: 2, page: 1, hasMore: false,
+    events: [
+      { _id: "e038", type: "post",       targetId: "post019", communityId: null,                       discussionId: null,     title: "2026 AI roadmap — what to learn and in what order",                    communityName: "AI/ML",  pts: 5, createdAt: "2026-01-07T09:00:00.000Z" },
+      { _id: "e039", type: "discussion", targetId: "disc013", communityId: "66f1a2b3c4d5e6f7a8b9c0d1", discussionId: null,     title: "Announcement: welcome to the AI/ML community 2026",                   communityName: "AI/ML",  pts: 3, createdAt: "2026-01-07T14:00:00.000Z" },
+    ],
+  },
+
+  "2026-01-03": {
+    totalPts: 5, total: 1, page: 1, hasMore: false,
+    events: [
+      { _id: "e040", type: "post",       targetId: "post020", communityId: null,                       discussionId: null,     title: "My 2025 in review — 18 posts, 3 projects, 1 buildathon",              communityName: "AI/ML",  pts: 5, createdAt: "2026-01-03T10:00:00.000Z" },
     ],
   },
 };
@@ -125,8 +252,8 @@ const timeAgo = (d) => {
 const eventUrl = (event) => {
   switch (event.type) {
     case "post":       return `/post/${event.targetId}`;
-    case "discussion": return `/community/${event.communityId}?tab=discussions&open=${event.targetId}`;
-    case "reply":      return `/community/${event.communityId}?tab=discussions&open=${event.discussionId}#${event.targetId}`;
+    case "discussion": return `/discussion/${event.communityId}/${event.targetId}`;
+    case "reply":      return `/discussion/${event.communityId}/${event.discussionId}#${event.targetId}`;
     default:           return "#";
   }
 };
@@ -174,7 +301,7 @@ const StreakWidget = ({ currentStreak, longestStreak, lastActiveDate }) => {
         </div>
         <div className="flex items-baseline gap-1.5">
           <span className={`text-2xl font-bold ${display > 0 ? "text-gray-100" : "text-gray-600"}`}>
-            {formatCount(display)}
+            {display}
           </span>
           <span className="text-xs text-gray-500">days</span>
         </div>
@@ -197,7 +324,7 @@ const StreakWidget = ({ currentStreak, longestStreak, lastActiveDate }) => {
           </span>
         </div>
         <div className="flex items-baseline gap-1.5">
-          <span className="text-2xl font-bold text-gray-100">{formatCount(longestStreak)}</span>
+          <span className="text-2xl font-bold text-gray-100">{longestStreak}</span>
           <span className="text-xs text-gray-500">days</span>
         </div>
         <p className="text-[10px] text-gray-600 mt-1">All-time personal best</p>
@@ -209,15 +336,19 @@ const StreakWidget = ({ currentStreak, longestStreak, lastActiveDate }) => {
 // ─────────────────────────────────────────────────────────────────────────────
 //  DAY EVENT DRAWER
 // ─────────────────────────────────────────────────────────────────────────────
-const DayEventDrawer = ({ date, onClose, sampleDayEvents = {} }) => {
-  const [events,      setEvents]      = useState([]);
-  const [totalPts,    setTotalPts]    = useState(0);
-  const [total,       setTotal]       = useState(0);
-  const [page,        setPage]        = useState(1);
-  const [hasMore,     setHasMore]     = useState(false);
-  const [loading,     setLoading]     = useState(true);
-  const [loadingMore, setLoadingMore] = useState(false);
-
+// DayEventDrawer — receives all state from parent (useDayEvents hook)
+// No internal data fetching — pure display + pagination trigger
+const DayEventDrawer = ({
+  date,
+  onClose,
+  events       = [],
+  totalPts     = 0,
+  total        = 0,
+  hasMore      = false,
+  loading      = false,
+  loadingMore  = false,
+  onLoadMore,
+}) => {
   const formattedDate = new Date(date).toLocaleDateString("en-IN", {
     weekday: "long", day: "numeric", month: "long", year: "numeric",
   });
@@ -228,28 +359,7 @@ const DayEventDrawer = ({ date, onClose, sampleDayEvents = {} }) => {
     return () => document.removeEventListener("keydown", onKey);
   }, [onClose]);
 
-  useEffect(() => {
-    setLoading(true);
-    // swap for: axiosInstance.get(`/api/authors/${authorId}/events?date=${date}&page=1&limit=10`)
-    const t = setTimeout(() => {
-      const data = sampleDayEvents[date] || { events: [], totalPts: 0, total: 0, hasMore: false, page: 1 };
-      setEvents(data.events || []);
-      setTotalPts(data.totalPts || 0);
-      setTotal(data.total || 0);
-      setHasMore(data.hasMore || false);
-      setPage(data.page || 1);
-      setLoading(false);
-    }, 280);
-    return () => clearTimeout(t);
-  }, [date]);
-
-  const loadMore = async () => {
-    setLoadingMore(true);
-    // swap for: const data = await axiosInstance.get(`/api/authors/${authorId}/events?date=${date}&page=${page + 1}&limit=10`);
-    // setEvents((prev) => [...prev, ...data.events]);
-    // setPage(data.page); setHasMore(data.hasMore);
-    setLoadingMore(false);
-  };
+  const loadMore = () => { if (onLoadMore) onLoadMore(); };
 
   return (
     <>
@@ -370,21 +480,32 @@ const DayEventDrawer = ({ date, onClose, sampleDayEvents = {} }) => {
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
-//  ACTIVITY GRAPH
+//  ACTIVITY GRAPH  — pure display component, no data fetching
+//  All state owned by PerformanceTracker and passed down as props
+//  so it maps 1:1 with what useYearContributions + useDayEvents return.
 // ─────────────────────────────────────────────────────────────────────────────
 const ActivityGraph = ({
+  // year / contributions
   joinedYear,
-  sampleContributionsByYear = {},
-  sampleDayEvents 
+  contributions        = {},
+  contributionsLoading = false,
+  selectedYear,
+  onYearChange,
+  // day click → opens drawer
+  onDayClick,
+  // drawer state (driven by useDayEvents in parent)
+  activeDay,
+  drawerEvents       = [],
+  drawerTotalPts     = 0,
+  drawerTotal        = 0,
+  drawerHasMore      = false,
+  drawerLoading      = false,
+  drawerLoadingMore  = false,
+  onDrawerClose,
+  onLoadMore,
 }) => {
-  const currentYear = new Date().getFullYear();
-  const [selectedYear,  setSelectedYear]  = useState(currentYear);
-  const [contributions, setContributions] = useState(
-    sampleContributionsByYear[currentYear]?.contributions || {}
-  );
-  const [loading,       setLoading]       = useState(false);
-  const [hoveredDay,    setHoveredDay]    = useState(null);
-  const [activeDay,     setActiveDay]     = useState(null);
+  const currentYear  = new Date().getFullYear();
+  const [hoveredDay, setHoveredDay] = useState(null);
 
   const yearOptions = useMemo(() => {
     const start = joinedYear || currentYear;
@@ -392,16 +513,6 @@ const ActivityGraph = ({
     for (let y = currentYear; y >= start; y--) years.push(y);
     return years;
   }, [joinedYear, currentYear]);
-
-  useEffect(() => {
-    setLoading(true);
-    // swap for: onFetchYear(selectedYear).then(data => setContributions(data.contributions))
-    const t = setTimeout(() => {
-      setContributions(sampleContributionsByYear[selectedYear]?.contributions || {});
-      setLoading(false);
-    }, 250);
-    return () => clearTimeout(t);
-  }, [selectedYear]);
 
   const weeks       = useMemo(() => buildGrid(contributions, selectedYear), [contributions, selectedYear]);
   const monthLabels = useMemo(() => buildMonthLabels(weeks), [weeks]);
@@ -414,7 +525,7 @@ const ActivityGraph = ({
 
   const handleCellClick = (day) => {
     if (day.future || day.outOfYear || day.points === 0) return;
-    setActiveDay(day.date);
+    onDayClick(day.date);
   };
 
   return (
@@ -435,7 +546,7 @@ const ActivityGraph = ({
           <div className="flex items-center gap-1">
             <button
               type="button"
-              onClick={() => { const i = yearOptions.indexOf(selectedYear); if (i < yearOptions.length - 1) setSelectedYear(yearOptions[i + 1]); }}
+              onClick={() => { const i = yearOptions.indexOf(selectedYear); if (i < yearOptions.length - 1) onYearChange(yearOptions[i + 1]); }}
               disabled={selectedYear === yearOptions[yearOptions.length - 1]}
               className="p-0.5 rounded text-gray-500 hover:text-gray-300 disabled:opacity-30 transition-colors"
             >
@@ -446,7 +557,7 @@ const ActivityGraph = ({
                 <button
                   key={y}
                   type="button"
-                  onClick={() => setSelectedYear(y)}
+                  onClick={() => onYearChange(y)}
                   className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border transition-colors ${
                     selectedYear === y
                       ? "bg-white/5 text-white border-white/20"
@@ -459,7 +570,7 @@ const ActivityGraph = ({
             </div>
             <button
               type="button"
-              onClick={() => { const i = yearOptions.indexOf(selectedYear); if (i > 0) setSelectedYear(yearOptions[i - 1]); }}
+              onClick={() => { const i = yearOptions.indexOf(selectedYear); if (i > 0) onYearChange(yearOptions[i - 1]); }}
               disabled={selectedYear === currentYear}
               className="p-0.5 rounded text-gray-500 hover:text-gray-300 disabled:opacity-30 transition-colors"
             >
@@ -469,7 +580,7 @@ const ActivityGraph = ({
         </div>
 
         {/* graph */}
-        <div className={`overflow-x-auto transition-opacity duration-200 ${loading ? "opacity-40 pointer-events-none" : ""}`}>
+        <div className={`overflow-x-auto transition-opacity duration-200 ${contributionsLoading ? "opacity-40 pointer-events-none" : ""}`}>
           <div style={{ minWidth: weeks.length * STEP + 28 }}>
             {/* month labels */}
             <div className="flex mb-1" style={{ paddingLeft: 28 }}>
@@ -600,8 +711,14 @@ const ActivityGraph = ({
       {activeDay && (
         <DayEventDrawer
           date={activeDay}
-          onClose={() => setActiveDay(null)}
-          sampleDayEvents={sampleDayEvents}
+          onClose={onDrawerClose}
+          events={drawerEvents}
+          totalPts={drawerTotalPts}
+          total={drawerTotal}
+          hasMore={drawerHasMore}
+          loading={drawerLoading}
+          loadingMore={drawerLoadingMore}
+          onLoadMore={onLoadMore}
         />
       )}
     </>
@@ -615,28 +732,171 @@ const ActivityGraph = ({
  * PerformanceTracker
  *
  * Props:
- *   streakData            — { currentStreak, longestStreak, lastActiveDate, joinedYear }
- *   contributionsByYear   — { [year]: { contributions: { "YYYY-MM-DD": pts } } }
- *   dayEvents             — { "YYYY-MM-DD": { events, totalPts, total, hasMore, page } }
- *   isOwn                 — true = own profile (streak + heatmap)
- *                           false = other's profile (heatmap only)
+ *   authorId  — the author whose performance to display
+ *   isOwn     — true = own profile (streak + heatmap), false = heatmap only
  *
- * With sample data (now):
+ * Data flow:
+ *   PerformanceTracker owns all state via three hooks:
+ *     useStreakData         → streak numbers + joinedYear
+ *     useYearContributions  → heatmap { "YYYY-MM-DD": pts } per selected year
+ *     useDayEvents          → paginated events for a clicked day
+ *
+ *   All state is passed down as flat props to ActivityGraph and DayEventDrawer.
+ *   Neither child fetches data — they only display and trigger callbacks.
+ *
+ * Usage:
+ *   <PerformanceTracker authorId={author._id} isOwn={true} />
+ *
+ * Sample data mode (no authorId — for UI testing):
  *   <PerformanceTracker isOwn={true} />
- *
- * With real API (swap):
- *   const { data: streak } = useGetStreakData(authorId);
- *   <PerformanceTracker
- *     streakData={streak}
- *     isOwn={currentUserEmail === profileEmail}
- *   />
  */
-const PerformanceTracker = ({
-  streakData          = SAMPLE_STREAK,
-  contributionsByYear = SAMPLE_CONTRIBUTIONS_BY_YEAR,
-  dayEvents           = SAMPLE_DAY_EVENTS,
-  isOwn               = true,
-}) => {
+const PerformanceTracker = ({ streakData,streakLoading, isOwn = true }) => {
+  const currentYear = new Date().getFullYear();
+  const authorId = getItem("authorId")
+
+  // ── Streak ────────────────────────────────────────────────────────────────
+  // When no authorId, fall back to sample streak for UI testing
+  // const [streakData, setStreakData] = useState(authorId ? null : SAMPLE_STREAK);
+  // const [streakLoading, setStreakLoading] = useState(!!authorId);
+
+  // useEffect(() => {
+  //   if (!authorId) return;
+  //   setStreakLoading(true);
+  //   axiosInstance.get(`/bytes//${authorId}/streak`)
+  //     .then((r) => setStreakData(r.data))
+  //     .catch(() => setStreakData(SAMPLE_STREAK)) // fallback on error
+  //     .finally(() => setStreakLoading(false));
+  // }, [authorId]);
+
+  // ── Year contributions ────────────────────────────────────────────────────
+  const [selectedYear,      setSelectedYear]      = useState(currentYear);
+  const [contributions,     setContributions]     = useState(
+    authorId ? {} : (SAMPLE_CONTRIBUTIONS_BY_YEAR[currentYear]?.contributions || {})
+  );
+  const [contributionsLoading, setContributionsLoading] = useState(!!authorId);
+  // cache: { [year]: contributions } — avoids re-fetching on year toggle
+  const [contribCache, setContribCache] = useState(
+    authorId ? {} : SAMPLE_CONTRIBUTIONS_BY_YEAR
+  );
+
+  const fetchYear = useCallback(async (year) => {
+    if (!authorId) {
+      // sample mode — instant swap from local cache
+      setSelectedYear(year);
+      setContributions(SAMPLE_CONTRIBUTIONS_BY_YEAR[year]?.contributions || {});
+      return;
+    }
+    setSelectedYear(year);
+    if (contribCache[year]) {
+      setContributions(contribCache[year]);
+      return;
+    }
+    setContributionsLoading(true);
+    try {
+      const r = await axiosInstance.get(`/bytes/performanceTrack/contributions/${authorId}?year=${year}`);
+      const data = r.data.contributions || {};
+      setContributions(data);
+      setContribCache((prev) => ({ ...prev, [year]: data }));
+    } catch {
+      setContributions({});
+    } finally {
+      setContributionsLoading(false);
+    }
+  }, [authorId, contribCache]);
+
+  // auto-fetch current year on mount (real API only)
+  useEffect(() => {
+    if (!authorId) return;
+    fetchYear(currentYear);
+  }, [authorId]);
+
+  // ── Day events ────────────────────────────────────────────────────────────
+  const [activeDay,        setActiveDay]        = useState(null);
+  const [drawerEvents,     setDrawerEvents]     = useState([]);
+  const [drawerTotalPts,   setDrawerTotalPts]   = useState(0);
+  const [drawerTotal,      setDrawerTotal]      = useState(0);
+  const [drawerHasMore,    setDrawerHasMore]    = useState(false);
+  const [drawerLoading,    setDrawerLoading]    = useState(false);
+  const [drawerLoadingMore,setDrawerLoadingMore]= useState(false);
+  const [drawerPage,       setDrawerPage]       = useState(1);
+
+  const handleDayClick = useCallback(async (date) => {
+    setActiveDay(date);
+    setDrawerEvents([]);
+    setDrawerPage(1);
+    setDrawerHasMore(false);
+    setDrawerLoading(true);
+
+    if (!authorId) {
+      // sample mode
+      const data = SAMPLE_DAY_EVENTS[date] || { events: [], totalPts: 0, total: 0, hasMore: false };
+      setTimeout(() => {
+        setDrawerEvents(data.events || []);
+        setDrawerTotalPts(data.totalPts || 0);
+        setDrawerTotal(data.total || 0);
+        setDrawerHasMore(data.hasMore || false);
+        setDrawerLoading(false);
+      }, 280);
+      return;
+    }
+
+    try {
+      const r = await axiosInstance.get(
+        `/bytes/performanceTrack/events/${authorId}?date=${date}&page=1&limit=10`
+      );
+      setDrawerEvents(r.data.events || []);
+      setDrawerTotalPts(r.data.totalPts || 0);
+      setDrawerTotal(r.data.total || 0);
+      setDrawerHasMore(r.data.hasMore || false);
+      setDrawerPage(1);
+    } catch {
+      setDrawerEvents([]);
+    } finally {
+      setDrawerLoading(false);
+    }
+  }, [authorId]);
+
+  const handleLoadMore = useCallback(async () => {
+    if (!drawerHasMore || drawerLoadingMore || !activeDay) return;
+    const nextPage = drawerPage + 1;
+    setDrawerLoadingMore(true);
+
+    if (!authorId) { setDrawerLoadingMore(false); return; }
+
+    try {
+      const r = await axiosInstance.get(
+        `/bytes/performanceTrack/events/${authorId}?date=${activeDay}&page=${nextPage}&limit=10`
+      );
+      setDrawerEvents((prev) => [...prev, ...(r.data.events || [])]);
+      setDrawerHasMore(r.data.hasMore || false);
+      setDrawerPage(nextPage);
+    } catch {
+      // silent — don't clear existing events on load-more failure
+    } finally {
+      setDrawerLoadingMore(false);
+    }
+  }, [authorId, activeDay, drawerHasMore, drawerLoadingMore, drawerPage]);
+
+  const handleDrawerClose = useCallback(() => {
+    setActiveDay(null);
+    setDrawerEvents([]);
+    setDrawerTotalPts(0);
+    setDrawerTotal(0);
+    setDrawerHasMore(false);
+    setDrawerPage(1);
+  }, []);
+
+  // console.log("contributions", contributions)
+
+  // ── Render ────────────────────────────────────────────────────────────────
+  if (streakLoading) {
+    return (
+      <div className="flex items-center justify-center py-10">
+        <TbLoader2 className="text-xl text-emerald-400 animate-spin" />
+      </div>
+    );
+  }
+
   if (!streakData) return null;
 
   const { currentStreak, longestStreak, lastActiveDate, joinedYear } = streakData;
@@ -644,7 +904,7 @@ const PerformanceTracker = ({
   return (
     <div className="flex flex-col gap-4">
       <span className="text-sm md:ml-2 font-semibold text-gray-300">
-        {isOwn ? "Your Performance" : "Contribution Activity"}
+        {isOwn ? "Your performance" : "Contribution activity"}
       </span>
 
       {isOwn && (
@@ -657,8 +917,20 @@ const PerformanceTracker = ({
 
       {/* <ActivityGraph
         joinedYear={joinedYear}
-        sampleContributionsByYear={contributionsByYear}
-        sampleDayEvents={dayEvents}
+        contributions={contributions}
+        contributionsLoading={contributionsLoading}
+        selectedYear={selectedYear}
+        onYearChange={fetchYear}
+        onDayClick={handleDayClick}
+        activeDay={activeDay}
+        drawerEvents={drawerEvents}
+        drawerTotalPts={drawerTotalPts}
+        drawerTotal={drawerTotal}
+        drawerHasMore={drawerHasMore}
+        drawerLoading={drawerLoading}
+        drawerLoadingMore={drawerLoadingMore}
+        onDrawerClose={handleDrawerClose}
+        onLoadMore={handleLoadMore}
       /> */}
     </div>
   );
