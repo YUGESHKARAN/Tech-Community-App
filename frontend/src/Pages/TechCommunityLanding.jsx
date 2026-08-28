@@ -672,7 +672,7 @@ function TechCommunityLanding() {
             </div>
           }
           <div className="flex col-span-1 order-2 xl:order-3  md:col-span-2 lg:col-span-1 flex-col gap-3 lg:sticky lg:top-16">
-            <PerformanceTracker streakData={streakData} streakLoading={streakLoader}/>
+            <PerformanceTracker streakData={streakData} authorId={authorId} streakLoading={streakLoader} showStreak={true}/>
             {/* Top contributors */}
             <h3 className="text-sm md:ml-2 font-semibold text-gray-300">
               Overall Leaderboard

@@ -292,7 +292,7 @@ const StreakWidget = ({ currentStreak, longestStreak, lastActiveDate }) => {
 
   return (
     <div className="grid grid-cols-2 gap-3">
-      <div className="theme border border-[#1e293b] rounded-xl p-4">
+      <div className="theme flex flex-col justify-between border border-[#1e293b] rounded-xl p-4">
         <div className="flex items-center gap-1.5 mb-2">
           <TbFlame className={`text-base ${display > 0 ? "text-amber-400" : "text-gray-600"}`} />
           <span className="text-[10px] font-medium text-gray-500 uppercase tracking-wide">
@@ -316,7 +316,7 @@ const StreakWidget = ({ currentStreak, longestStreak, lastActiveDate }) => {
         </p>
       </div>
 
-      <div className="theme border border-[#1e293b] rounded-xl p-4">
+      <div className="theme flex flex-col justify-between border border-[#1e293b] rounded-xl p-4">
         <div className="flex items-center gap-1.5 mb-2">
           <TbTrophy className="text-base text-amber-400/60" />
           <span className="text-[10px] font-medium text-gray-500 uppercase tracking-wide">
@@ -360,7 +360,7 @@ const DayEventDrawer = ({
   }, [onClose]);
 
   const loadMore = () => { if (onLoadMore) onLoadMore(); };
-
+//  console.log("events", events)
   return (
     <>
       <div className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm" onClick={onClose} />
@@ -396,7 +396,7 @@ const DayEventDrawer = ({
         </div>
 
         {/* event list */}
-        <div className="overflow-y-auto flex-1 px-5 py-3">
+        <div className="overflow-y-auto overflow-y-hidden scrollbar-hide flex-1 px-5 py-3">
           {loading ? (
             <div className="flex items-center justify-center py-12">
               <TbLoader2 className="text-2xl text-emerald-400 animate-spin" />
@@ -580,7 +580,7 @@ const ActivityGraph = ({
         </div>
 
         {/* graph */}
-        <div className={`overflow-x-auto transition-opacity duration-200 ${contributionsLoading ? "opacity-40 pointer-events-none" : ""}`}>
+        <div className={`overflow-x-auto scrollbar-hide transition-opacity duration-200 ${contributionsLoading ? "opacity-40 pointer-events-none" : ""}`}>
           <div style={{ minWidth: weeks.length * STEP + 28 }}>
             {/* month labels */}
             <div className="flex mb-1" style={{ paddingLeft: 28 }}>
@@ -670,7 +670,11 @@ const ActivityGraph = ({
               ))}
             </div>
 
-            {/* legend */}
+            
+          </div>
+          
+        </div>
+        {/* legend */}
             <div className="flex items-center gap-1.5 mt-3 justify-end">
               <span className="text-[9px] text-gray-600">Less</span>
               {[0, 1, 2, 3, 4].map((level) => (
@@ -686,8 +690,6 @@ const ActivityGraph = ({
               ))}
               <span className="text-[9px] text-gray-600">More</span>
             </div>
-          </div>
-        </div>
 
         {/* point scale */}
         <div className="flex gap-3 mt-3 pt-3 border-t border-white/5 flex-wrap">
@@ -750,7 +752,7 @@ const ActivityGraph = ({
  * Sample data mode (no authorId — for UI testing):
  *   <PerformanceTracker isOwn={true} />
  */
-const PerformanceTracker = ({ streakData,streakLoading, isOwn = true }) => {
+const PerformanceTracker = ({ streakData,streakLoading, showStreak=false, showActivityGraph=false,  isOwn = true }) => {
   const currentYear = new Date().getFullYear();
   const authorId = getItem("authorId")
 
@@ -904,10 +906,10 @@ const PerformanceTracker = ({ streakData,streakLoading, isOwn = true }) => {
   return (
     <div className="flex flex-col gap-4">
       <span className="text-sm md:ml-2 font-semibold text-gray-300">
-        {isOwn ? "Your performance" : "Contribution activity"}
+        {isOwn ? "Your Contribution Activity" : "Contribution Activity"}
       </span>
 
-      {isOwn && (
+      {isOwn && showStreak && (
         <StreakWidget
           currentStreak={currentStreak}
           longestStreak={longestStreak}
@@ -915,7 +917,7 @@ const PerformanceTracker = ({ streakData,streakLoading, isOwn = true }) => {
         />
       )}
 
-      {/* <ActivityGraph
+     {showActivityGraph && <ActivityGraph
         joinedYear={joinedYear}
         contributions={contributions}
         contributionsLoading={contributionsLoading}
@@ -931,7 +933,7 @@ const PerformanceTracker = ({ streakData,streakLoading, isOwn = true }) => {
         drawerLoadingMore={drawerLoadingMore}
         onDrawerClose={handleDrawerClose}
         onLoadMore={handleLoadMore}
-      /> */}
+      />}
     </div>
   );
 };
