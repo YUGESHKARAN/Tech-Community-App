@@ -24,6 +24,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import formatCount from "../utils/NumberConversion";
 import { IoClose } from "react-icons/io5";
 import useGetFollowersDetails from "../hooks/useGetFollowersDetails";
+import useStreak from "../hooks/performanceTracker/useStreak";
+import PerformanceTracker from "../components/performancetracker/PerformanceTracker";
 
 function ProfilePage() {
   const { logout } = useAuth();
@@ -43,6 +45,7 @@ function ProfilePage() {
   const [previewImage, setPreviewImage] = useState(null);
   const [bioDescription, setBioDescription] = useState("");
   const [editProfile, setEditProfile] = useState(false);
+  const authorId = getItem("authorId");
 
   const sanitizeUrl = (rawUrl) => {
     try {
@@ -55,6 +58,7 @@ function ProfilePage() {
       return null;
     }
   };
+    const {streakData, streakLoader, getStreakDetails} = useStreak(authorId)
 
   const [links, setLinks] = useState([]);
   const [currentLinkTitle, setCurrentLinkTitle] = useState("");
@@ -940,6 +944,8 @@ function ProfilePage() {
                 )}
               </form>
             </div>
+
+             <PerformanceTracker streakData={streakData} authorId={authorId} streakLoading={streakLoader} showActivityGraph={true}/>
 
             {author?.role !== "student" && !editProfile && (
               <motion.div
