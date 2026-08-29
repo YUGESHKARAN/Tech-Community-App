@@ -198,24 +198,91 @@ const pointsToLevel = (pts) => {
   return 4;
 };
 
+// const buildGrid = (contributions, year) => {
+//   const today     = new Date();
+//   const yearEnd   = year === today.getFullYear() ? today : new Date(year, 11, 31);
+//   const gridStart = new Date(year, 0, 1);
+//   gridStart.setDate(gridStart.getDate() - gridStart.getDay());
+//   const gridEnd   = new Date(yearEnd);
+//   gridEnd.setDate(gridEnd.getDate() + (6 - gridEnd.getDay()));
+
+//   const weeks   = [];
+//   let current   = new Date(gridStart);
+//   while (current <= gridEnd) {
+//     const week = [];
+//     for (let d = 0; d < 7; d++) {
+//       const key         = current.toISOString().slice(0, 10);
+//       const points      = contributions?.[key] || 0;
+//       const isFuture    = current > today;
+//       const isOutOfYear = current.getFullYear() !== year;
+//       week.push({ date: key, points, level: isFuture || isOutOfYear ? -1 : pointsToLevel(points), future: isFuture, outOfYear: isOutOfYear });
+//       current = new Date(current);
+//       current.setDate(current.getDate() + 1);
+//     }
+//     weeks.push(week);
+//   }
+//   return weeks;
+// };
+
+// const buildMonthLabels = (weeks) => {
+//   const labels  = [];
+//   let lastMonth = null;
+//   weeks.forEach((week, wi) => {
+//     const firstDay = week.find((d) => !d.future && !d.outOfYear);
+//     if (!firstDay) return;
+//     const month = new Date(firstDay.date).getMonth();
+//     const label = new Date(firstDay.date).toLocaleString("default", { month: "short" });
+//     if (month !== lastMonth) { labels.push({ index: wi, label }); lastMonth = month; }
+//   });
+//   return labels;
+// };
+
+// add this helper above buildGrid
+const localDateStr = (d) => {
+  const yyyy = d.getFullYear();
+  const mm   = String(d.getMonth() + 1).padStart(2, '0');
+  const dd   = String(d.getDate()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd}`;
+};
+
 const buildGrid = (contributions, year) => {
-  const today     = new Date();
-  const yearEnd   = year === today.getFullYear() ? today : new Date(year, 11, 31);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
+  const yearEnd =
+    year === today.getFullYear()
+      ? (() => {
+          const d = new Date(today);
+          d.setDate(d.getDate() + (6 - d.getDay()));
+          return d;
+        })()
+      : new Date(year, 11, 31);
+
   const gridStart = new Date(year, 0, 1);
   gridStart.setDate(gridStart.getDate() - gridStart.getDay());
-  const gridEnd   = new Date(yearEnd);
+
+  const gridEnd = new Date(yearEnd);
   gridEnd.setDate(gridEnd.getDate() + (6 - gridEnd.getDay()));
 
-  const weeks   = [];
-  let current   = new Date(gridStart);
+  const weeks = [];
+  let current = new Date(gridStart);
+
   while (current <= gridEnd) {
     const week = [];
     for (let d = 0; d < 7; d++) {
-      const key         = current.toISOString().slice(0, 10);
+      const key         = localDateStr(current); // ← fix: local date not UTC
       const points      = contributions?.[key] || 0;
-      const isFuture    = current > today;
+      const isFuture    = current >= tomorrow;
       const isOutOfYear = current.getFullYear() !== year;
-      week.push({ date: key, points, level: isFuture || isOutOfYear ? -1 : pointsToLevel(points), future: isFuture, outOfYear: isOutOfYear });
+      week.push({
+        date: key, points,
+        level: isFuture || isOutOfYear ? -1 : pointsToLevel(points),
+        future: isFuture,
+        outOfYear: isOutOfYear,
+      });
       current = new Date(current);
       current.setDate(current.getDate() + 1);
     }
@@ -230,13 +297,14 @@ const buildMonthLabels = (weeks) => {
   weeks.forEach((week, wi) => {
     const firstDay = week.find((d) => !d.future && !d.outOfYear);
     if (!firstDay) return;
-    const month = new Date(firstDay.date).getMonth();
-    const label = new Date(firstDay.date).toLocaleString("default", { month: "short" });
+    // parse as local date — append T00:00 to force local timezone interpretation
+    const date  = new Date(firstDay.date + 'T00:00');
+    const month = date.getMonth();
+    const label = date.toLocaleString("default", { month: "short" });
     if (month !== lastMonth) { labels.push({ index: wi, label }); lastMonth = month; }
   });
   return labels;
 };
-
 const countActiveDays = (c) => Object.values(c || {}).filter((v) => v > 0).length;
 const totalPoints     = (c) => Object.values(c || {}).reduce((s, v) => s + v, 0);
 
@@ -654,11 +722,12 @@ const ActivityGraph = ({
                               <>
                                 <b className="text-emerald-400">{day.points} pts</b>
                                 {" · "}
-                                {new Date(day.date).toLocaleDateString("en-IN", { month: "short", day: "numeric" })}
+                                {/* {new Date(day.date).toLocaleDateString("en-IN", { month: "short", day: "numeric" })} */}
+                                {new Date(day.date + 'T00:00').toLocaleDateString("en-IN", { month: "short", day: "numeric" })}
                                 {isClickable && <span className="text-gray-500 ml-1">— click to view</span>}
                               </>
                             ) : (
-                              <>No activity · {new Date(day.date).toLocaleDateString("en-IN", { month: "short", day: "numeric" })}</>
+                              <>No activity · {new Date(day.date + 'T00:00').toLocaleDateString("en-IN", { month: "short", day: "numeric" })}</>
                             )}
                             <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-white/10" />
                           </div>
