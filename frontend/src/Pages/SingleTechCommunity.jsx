@@ -434,18 +434,21 @@ const DiscussionsTab = ({
   discussions,
   discussionLoading,
   community,
+  whoCanPost,
   accentColor,
   currentUserEmail,
   userRole,
 }) => {
   const [activeCategory, setActiveCategory] = useState("");
   const canPost =
-    userRole === "coordinator" || community?.settings?.whoCanPost === "member";
+    userRole === "coordinator" || whoCanPost === "member";
 
   const filtered = useMemo(() => {
     if (!activeCategory) return discussions;
     return discussions.filter((d) => d.category === activeCategory);
   }, [discussions, activeCategory]);
+
+  console.log("comm sett", community)
 
   return (
     <div>
@@ -475,6 +478,28 @@ const DiscussionsTab = ({
             New discussion
           </Link>
         )}
+
+        {/* {canPost ?(
+          <Link
+            to={`/techCommunityDetails/${community._id}/discussions/new`}
+            className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full text-white"
+            style={{ background: community?.colorTheme || accentColor }}
+          >
+            <TbPlus className="text-sm" />
+            New discussion
+          </Link>
+         
+        )
+       :
+           <button
+        disabled={true}
+         className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full text-white disabled:opacity-60 cursor-not-allowed"
+            style={{ background: community?.colorTheme || accentColor }}
+            >
+              <TbPlus className="text-sm" />
+            New discussion
+
+        </button>} */}
       </div>
 
       {filtered.length === 0 && !discussionLoading ? (
@@ -1079,6 +1104,29 @@ function SingleTechCommunity() {
 
   const accentColor = community?.colorTheme ?? style.from;
 
+   const [whoCanPost, setWhoCanPost] = useState("");
+  
+  const getWhoCanPost = async () => {
+    try {
+      const res = await axiosInstance.get(
+        `/bytes/discuss/${communityId}/settings`,
+      );
+  
+      if (res.status === 200) {
+        const value = res.data?.settings?.whoCanPost || "coordinator";
+  
+        setWhoCanPost(value);
+  
+      }
+    } catch (err) {
+      console.log("error", err.message);
+    }
+  };
+  
+  useEffect(() => {
+    getWhoCanPost();
+  }, [communityId]);
+
   // console.log("posts", posts);
   // console.log("members", members);
   // console.log("coordinators", coordinators);
@@ -1134,6 +1182,7 @@ function SingleTechCommunity() {
                 discussions={discussions}
                 discussionLoading={discussionLoading}
                 community={community}
+                whoCanPost={whoCanPost}
                 accentColor={accentColor}
                 currentUserEmail={currentUserEmail}
                 userRole={community.userRole}

@@ -239,3 +239,69 @@
 //   console.error('Migration failed:', err);
 //   process.exit(1);
 // });
+
+// ------------------------------------------------------------------------------------------------
+
+// migrateCommunitySettings.js
+// Run: node migrateCommunitySettings.js
+// Safe to re-run — uses upsert so existing docs are never overwritten
+
+// require('dotenv').config();
+// const mongoose = require('mongoose');
+
+// const Community = require('./models/communitySchema');
+// const { CommunitySettings } = require('./models/communityDiscussions/communityTagAndSettingsSchema');
+
+// const dns = require("dns");
+
+// if (process.env.NODE_ENV === "development") {
+//   dns.setServers(["8.8.8.8", "8.8.4.4"]);
+// }
+
+// const DRY_RUN = false;
+// const run = async () => {
+//   await mongoose.connect(process.env.MONGODB_URL);
+//   console.log('Connected to MongoDB');
+
+//   const communities = await Community.find({}, '_id tenantId name').lean();
+//   console.log(`Found ${communities.length} communities`);
+
+//   let created = 0;
+//   let skipped = 0;
+
+//   for (const community of communities) {
+//     const existing = await CommunitySettings.findOne({
+//       tenantId:    community.tenantId,
+//       communityId: community._id,
+//     }).lean();
+
+//     if (existing) {
+//       console.log(`  SKIP  ${community.name} — settings already exist`);
+//       skipped++;
+//       continue;
+//     }
+
+//     if (DRY_RUN) {
+//       console.log(`  DRY   ${community.name} — would create settings`);
+//       created++;
+//       continue;
+//     }
+
+//     await CommunitySettings.create({
+//       tenantId:    community.tenantId,
+//       communityId: community._id,
+//       whoCanPost:  'coordinator', // safe default
+//     });
+
+//     console.log(`  CREATE ${community.name} — settings created`);
+//     created++;
+//   }
+
+//   console.log(`\nDone. Created: ${created}, Skipped: ${skipped}`);
+//   await mongoose.disconnect();
+// };
+
+// run().catch((err) => {
+//   console.error('Migration failed:', err.message);
+//   process.exit(1);
+// });
