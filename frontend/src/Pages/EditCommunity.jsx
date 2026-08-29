@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useMemo, useCallback, useRef } from "react";
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+  useRef,
+} from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import * as TbIcons from "react-icons/tb";
 import NavBar from "../ui/NavBar";
@@ -6,11 +12,24 @@ import axiosInstance from "../instances/Axiosinstances";
 import { getItem } from "../utils/encode";
 import { ICON_SUBSET, ICON_CATEGORIES } from "../utils/tablerIconSubset";
 import {
-  TbArrowLeft, TbEye, TbEyeOff, TbCheck, TbX,
-  TbSearch, TbPalette, TbChevronDown, TbUsers,
-  TbFileText, TbUserCheck, TbMessageCircle,
-  TbBrain, TbInfoCircle, TbAlertCircle,
+  TbArrowLeft,
+  TbEye,
+  TbEyeOff,
+  TbCheck,
+  TbX,
+  TbSearch,
+  TbPalette,
+  TbChevronDown,
+  TbUsers,
+  TbShieldCheck,
+  TbFileText,
+  TbUserCheck,
+  TbMessageCircle,
+  TbBrain,
+  TbInfoCircle,
+  TbAlertCircle,
 } from "react-icons/tb";
+import { motion } from "framer-motion";
 import useGetSingleTechCommunity from "../hooks/SingleTechDomain/useGetSingleTechCommunity";
 import useGetAllMembersByDomain from "../hooks/SingleTechDomain/useGetAllMembersByDomain";
 import toast from "../components/toaster/Toast";
@@ -92,16 +111,16 @@ const isValidHex = (v) => /^#[0-9A-Fa-f]{6}$/.test(v);
 
 // ── Preset palette ────────────────────────────────────────────────────────────
 const PRESET_COLORS = [
-  { label: "Teal",    hex: "#0d9488" },
+  { label: "Teal", hex: "#0d9488" },
   { label: "Emerald", hex: "#059669" },
-  { label: "Blue",    hex: "#2563eb" },
-  { label: "Violet",  hex: "#7c3aed" },
-  { label: "Orange",  hex: "#ea580c" },
-  { label: "Rose",    hex: "#e11d48" },
-  { label: "Sky",     hex: "#0284c7" },
-  { label: "Amber",   hex: "#d97706" },
+  { label: "Blue", hex: "#2563eb" },
+  { label: "Violet", hex: "#7c3aed" },
+  { label: "Orange", hex: "#ea580c" },
+  { label: "Rose", hex: "#e11d48" },
+  { label: "Sky", hex: "#0284c7" },
+  { label: "Amber", hex: "#d97706" },
   { label: "Fuchsia", hex: "#a21caf" },
-  { label: "Lime",    hex: "#65a30d" },
+  { label: "Lime", hex: "#65a30d" },
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -114,8 +133,10 @@ const IconPicker = ({ value, onChange, accentColor }) => {
   const filtered = useMemo(() => {
     const q = search.toLowerCase().trim();
     return ICON_SUBSET.filter((icon) => {
-      const matchesSearch = !q || icon.label.includes(q) || icon.key.toLowerCase().includes(q);
-      const matchesCat = activeCategory === "All" || icon.category === activeCategory;
+      const matchesSearch =
+        !q || icon.label.includes(q) || icon.key.toLowerCase().includes(q);
+      const matchesCat =
+        activeCategory === "All" || icon.category === activeCategory;
       return matchesSearch && matchesCat;
     });
   }, [search, activeCategory]);
@@ -134,7 +155,10 @@ const IconPicker = ({ value, onChange, accentColor }) => {
             className="bg-transparent text-xs text-gray-200 placeholder-gray-500 focus:outline-none w-full"
           />
           {search && (
-            <button onClick={() => setSearch("")} className="text-gray-500 hover:text-gray-300">
+            <button
+              onClick={() => setSearch("")}
+              className="text-gray-500 hover:text-gray-300"
+            >
               <TbX className="text-xs" />
             </button>
           )}
@@ -175,11 +199,13 @@ const IconPicker = ({ value, onChange, accentColor }) => {
                 onClick={() => onChange(key)}
                 title={label}
                 className={`flex items-center justify-center w-8 h-8 rounded-lg transition-all ${
-                  isSelected
-                    ? "ring-2 scale-110"
-                    : "hover:bg-white/5"
+                  isSelected ? "ring-2 scale-110" : "hover:bg-white/5"
                 }`}
-                style={isSelected ? { ringColor: accentColor, background: `${accentColor}22` } : {}}
+                style={
+                  isSelected
+                    ? { ringColor: accentColor, background: `${accentColor}22` }
+                    : {}
+                }
               >
                 <Icon
                   className="text-base"
@@ -214,62 +240,75 @@ const IconPicker = ({ value, onChange, accentColor }) => {
 const BannerPreview = ({ form, gradient, loader, userRole, community }) => {
   const Icon = TbIcons[form.icon] || TbBrain;
 
-  if(!loader && community?.colorTheme){
-  return (
-    <div
-      className="relative rounded-xl md:rounded-2xl overflow-hidden"
-      style={{ background: `linear-gradient(135deg, ${gradient.from}, ${gradient.to})` }}
-    >
-      <div className="absolute inset-0 opacity-10"
-        style={{ backgroundImage: "radial-gradient(circle at 80% 20%, rgba(255,255,255,.4) 0%, transparent 60%)" }}
-      />
-      <div className="relative px-5 p-3.5 md:pt-4 md:pb-5">
-        {userRole && (
-          <span className="absolute top-4 right-4 text-[10px] font-semibold px-2.5 py-1 rounded-full bg-white/20 text-white capitalize">
-            {userRole}
-          </span>
-        )}
-        <div className="flex items-center mb-0.5 md:mb-1  gap-3">
-          <div className="md:w-10 w-9 h-9 md:h-10 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
-            <Icon className="text-white text-lg md:text-xl" />
-          </div>
-          <div>
-            {/* <p className="text-[10px] font-medium tracking-widest uppercase text-white/60 mb-0.5">
+  if (!loader && community?.colorTheme) {
+    return (
+      <div
+        className="relative rounded-xl md:rounded-2xl overflow-hidden"
+        style={{
+          background: `linear-gradient(135deg, ${gradient.from}, ${gradient.to})`,
+        }}
+      >
+        <div
+          className="absolute inset-0 opacity-10"
+          style={{
+            backgroundImage:
+              "radial-gradient(circle at 80% 20%, rgba(255,255,255,.4) 0%, transparent 60%)",
+          }}
+        />
+        <div className="relative px-5 p-3.5 md:pt-4 md:pb-5">
+          {userRole && (
+            <span className="absolute top-4 right-4 text-[10px] font-semibold px-2.5 py-1 rounded-full bg-white/20 text-white capitalize">
+              {userRole}
+            </span>
+          )}
+          <div className="flex items-center mb-0.5 md:mb-1  gap-3">
+            <div className="md:w-10 w-9 h-9 md:h-10 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
+              <Icon className="text-white text-lg md:text-xl" />
+            </div>
+            <div>
+              {/* <p className="text-[10px] font-medium tracking-widest uppercase text-white/60 mb-0.5">
               Tech Domain · BytesBase
             </p> */}
-            <h1 className="text-lg md:text-2xl font-semibold text-white leading-tight">
-              {form.name || "Community name"}
-            </h1>
-            {form.tagline && (
-          <p className="md:text-xs text-[10px] text-white/70 max-w-md leading-relaxed md:mb-2 mb-1">
-            {form.tagline}
-          </p>
-        )}
+              <h1 className="text-lg md:text-2xl font-semibold text-white leading-tight">
+                {form.name || "Community name"}
+              </h1>
+              {form.tagline && (
+                <p className="md:text-xs text-[10px] text-white/70 max-w-md leading-relaxed md:mb-2 mb-1">
+                  {form.tagline}
+                </p>
+              )}
+            </div>
           </div>
-        </div>
 
-        <p className="md:text-xs text-[10px] text-white font-semibold line-clamp-2 max-w-2xl leading-relaxed mb-2 md:mb-2.5">
+          <p className="md:text-xs text-[10px] text-white font-semibold line-clamp-2 max-w-2xl leading-relaxed mb-2 md:mb-2.5">
             {form.description}
           </p>
-        
-        <div className="flex flex-wrap gap-2 md:gap-3">
-          {[
-            { Icon: TbUsers,          val: community.memberCount,      label: "members" },
-            { Icon: TbFileText,       val: community.postCount,        label: "posts" },
-            { Icon: TbMessageCircle,  val: 0,                          label: "discussions" },
-            { Icon: TbUserCheck,      val: community.coordinatorsCount,label: "coordinators" },
-          ].map(({ Icon: Si, val, label }) => (
-            <span key={label} className="flex items-center gap-1 md:gap-1.5  md:text-xs text-[10px] text-white/80">
-              <Si className="text-sm text-white/60" />
-              <b className="text-white font-semibold">{val}</b> {label}
-            </span>
-          ))}
+
+          <div className="flex flex-wrap gap-2 md:gap-3">
+            {[
+              { Icon: TbUsers, val: community.memberCount, label: "members" },
+              { Icon: TbFileText, val: community.postCount, label: "posts" },
+              { Icon: TbMessageCircle, val: 0, label: "discussions" },
+              {
+                Icon: TbUserCheck,
+                val: community.coordinatorsCount,
+                label: "coordinators",
+              },
+            ].map(({ Icon: Si, val, label }) => (
+              <span
+                key={label}
+                className="flex items-center gap-1 md:gap-1.5  md:text-xs text-[10px] text-white/80"
+              >
+                <Si className="text-sm text-white/60" />
+                <b className="text-white font-semibold">{val}</b> {label}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
   }
-  return <CommunityHeaderSkeleton/>
+  return <CommunityHeaderSkeleton />;
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -289,7 +328,9 @@ function EditCommunity() {
   const currentUserEmail = getItem("email");
   const currentUserRole = getItem("role");
   const isAdmin = currentUserRole === "admin" || currentUserRole === "director";
-  const isCoordinator = coordinators.some((coord) => coord?.email === currentUserEmail);
+  const isCoordinator = coordinators.some(
+    (coord) => coord?.email === currentUserEmail,
+  );
   // const hasEditAccess = isAdmin || isCoordinator;
   const hasEditAccess = true;
   const isLoadingAccessData = membersLoading && !coordinatorsLoaded;
@@ -300,11 +341,9 @@ function EditCommunity() {
   // ── State ─────────────────────────────────────────────────────────────────
   // Replace with useGetCommunityById(communityId)
   // const [community] = useState(INITIAL_COMMUNITY);
-  const {
-    communityDetails: community,
-    commLoading,
-  } = useGetSingleTechCommunity(communityId);
- 
+  const { communityDetails: community, commLoading } =
+    useGetSingleTechCommunity(communityId);
+
   const [loading, setLoading] = useState(false);
   const [saveError, setSaveError] = useState("");
   const [saved, setSaved] = useState(false);
@@ -346,26 +385,36 @@ function EditCommunity() {
   const [hexInput, setHexInput] = useState("#0d9488");
   const [hexError, setHexError] = useState("");
 
-     const style = getDomainStyle(community?.name);
-    // const gradient = deriveGradient(community?.colorTheme);
-  
-      const gradient = useMemo(() => deriveGradient(form.colorTheme), [form.colorTheme, community?.colorTheme]);
-  
-    const accentColor = form.colorTheme?? style.from;
+  const style = getDomainStyle(community?.name);
+  // const gradient = deriveGradient(community?.colorTheme);
+
+  const gradient = useMemo(
+    () => deriveGradient(form.colorTheme),
+    [form.colorTheme, community?.colorTheme],
+  );
+
+  const accentColor = form.colorTheme ?? style.from;
 
   // Escape key closes preview
   useEffect(() => {
-    const handler = (e) => { if (e.key === "Escape" && preview) setPreview(false); };
+    const handler = (e) => {
+      if (e.key === "Escape" && preview) setPreview(false);
+    };
     document.addEventListener("keydown", handler);
     return () => document.removeEventListener("keydown", handler);
   }, [preview]);
 
   // Sync hex input with color picker
-  useEffect(() => { setHexInput(form.colorTheme); }, [form.colorTheme]);
+  useEffect(() => {
+    setHexInput(form.colorTheme);
+  }, [form.colorTheme]);
 
-  const set = useCallback((field) => (val) => {
-    setForm((prev) => ({ ...prev, [field]: val }));
-  }, []);
+  const set = useCallback(
+    (field) => (val) => {
+      setForm((prev) => ({ ...prev, [field]: val }));
+    },
+    [],
+  );
 
   const handleColorSelect = (hex) => {
     set("colorTheme")(hex);
@@ -383,19 +432,66 @@ function EditCommunity() {
     }
   };
 
-  const isDirty = useMemo(() => {
-    return (
-      form.name        !== community?.name        ||
-      form.tagline     !== (community?.tagline     || "") ||
-      form.description !== (community?.description || "") ||
-      form.icon        !== (community?.icon        || "TbBrain") ||
-      form.colorTheme  !== (community?.colorTheme  || "#0d9488")
+  const [whoCanPost, setWhoCanPost] = useState("");
+const [initialWhoCanPost, setInitialWhoCanPost] = useState("");
+
+const getWhoCanPost = async () => {
+  try {
+    const res = await axiosInstance.get(
+      `/bytes/discuss/${communityId}/settings`,
     );
-  }, [form, community, communityId]);
+
+    if (res.status === 200) {
+      const value = res.data?.settings?.whoCanPost || "coordinator";
+
+      setWhoCanPost(value);
+      setInitialWhoCanPost(value);
+    }
+  } catch (err) {
+    console.log("error", err.message);
+  }
+};
+
+useEffect(() => {
+  getWhoCanPost();
+}, [communityId]);
+
+const updateWhoCanPost = async () => {
+  try {
+    const res = await axiosInstance.patch(
+      `/bytes/discuss/${communityId}/settings/whoCanPost`,
+      {whoCanPost
+      },
+    );
+
+    if (res.status === 200) {
+      setInitialWhoCanPost(whoCanPost);
+
+      toast.success("Create discussion authorization updated");
+    }
+  } catch (err) {
+    console.log("error", err.message);
+    throw err;
+  }
+};
+
+const isDirty = useMemo(() => {
+  return (
+    form.name !== community?.name ||
+    form.tagline !== (community?.tagline || "") ||
+    form.description !== (community?.description || "") ||
+    form.icon !== (community?.icon || "TbBrain") ||
+    form.colorTheme !== (community?.colorTheme || "#0d9488") ||
+    whoCanPost !== initialWhoCanPost
+  );
+}, [form, community, whoCanPost, initialWhoCanPost]);
 
   const handleSave = async () => {
     if (!hasEditAccess) {
-      toast.error("Access denied", "You are not allowed to edit this community.");
+      toast.error(
+        "Access denied",
+        "You are not allowed to edit this community.",
+      );
       return;
     }
 
@@ -408,25 +504,32 @@ function EditCommunity() {
     try {
       // Replace with your real endpoint once wired:
       // PATCH /api/communities/:communityId
-      const res = await axiosInstance.put(`/blog/techCommunity/${communityId}`, {
-        name:        isAdmin ? form.name.trim() : undefined,
-        tagline:     form.tagline.trim(),
-        description: form.description.trim(),
-        icon:        form.icon,
-        colorTheme:  form.colorTheme,
-      });
+      const res = await axiosInstance.put(
+        `/blog/techCommunity/${communityId}`,
+        {
+          name: isAdmin ? form.name.trim() : undefined,
+          tagline: form.tagline.trim(),
+          description: form.description.trim(),
+          icon: form.icon,
+          colorTheme: form.colorTheme,
+        },
+      );
 
-      if (res.status===200)
-      {
+          // Update who can create discussions
+    if (whoCanPost !== initialWhoCanPost) {
+      await updateWhoCanPost();
+    }
+
+      if (res.status === 200) {
         setSaved(true);
-        toast.success('Updated Successfully', 'Community updated successfully !')
+        toast.success(
+          "Updated Successfully",
+          "Community updated successfully !",
+        );
         setTimeout(() => setSaved(false), 2500);
         navigate(`/techCommunityDetails/${communityId}`);
       }
-
-      
     } catch (err) {
-      
       setSaveError(err?.response?.data?.message || "Save failed. Try again.");
     } finally {
       setLoading(false);
@@ -437,7 +540,10 @@ function EditCommunity() {
     communityId,
     { category: "", limit: 5 },
   );
-  
+
+
+
+  console.log("whoCreateDiscuttion", whoCanPost);
 
   // ─────────────────────────────────────────────────────────────────────────
   //  FULL-SCREEN PREVIEW MODE
@@ -478,7 +584,7 @@ function EditCommunity() {
 
           {/* Tab bar preview */}
           <div className="flex border-b border-white/5 mt-4 mb-6">
-            {[ "Discussions", "Feed", "Members"].map((tab, i) => (
+            {["Discussions", "Feed", "Members"].map((tab, i) => (
               <div
                 key={tab}
                 className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${
@@ -486,11 +592,11 @@ function EditCommunity() {
                     ? "border-white text-white"
                     : "border-transparent text-gray-500"
                 }`}
-
-                 style={i ===0  && gradient?.from
-              ? { borderBottomColor: gradient?.from } // Applies your custom hex string directly
-              : {} // Empty object when tab is inactive (falls back to border-transparent)}
-          }
+                style={
+                  i === 0 && gradient?.from
+                    ? { borderBottomColor: gradient?.from } // Applies your custom hex string directly
+                    : {} // Empty object when tab is inactive (falls back to border-transparent)}
+                }
               >
                 {tab}
               </div>
@@ -509,17 +615,16 @@ function EditCommunity() {
               <div className="h-32 bg-white/[0.02] rounded-xl border border-[#1e293b] animate-pulse" />
             </div>
           </div> */}
-           <DiscussionsTab
-                discussions={discussions}
-                discussionLoading={discussionLoading}
-                community={community}
-                accentColor={accentColor}
-                currentUserEmail={currentUserEmail}
-                userRole={community.userRole}
-              />
+          <DiscussionsTab
+            discussions={discussions}
+            discussionLoading={discussionLoading}
+            community={community}
+            accentColor={accentColor}
+            currentUserEmail={currentUserEmail}
+            userRole={community.userRole}
+          />
 
           {/* description card */}
-        
         </div>
       </div>
     );
@@ -533,7 +638,6 @@ function EditCommunity() {
       <NavBar />
 
       <div className="flex-grow px-4 md:px-8 max-w-[1200px] mx-auto w-full pb-20 pt-4">
-
         {/* ── Header ── */}
         <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
           <div className="flex items-center gap-1 md:gap-3">
@@ -556,28 +660,33 @@ function EditCommunity() {
             >
               <TbEye className="text-sm" /> Preview
             </button>
-            {!commLoading && community?.colorTheme ?<button
-              onClick={handleSave}
-              disabled={!isDirty || loading}
-              className="flex items-center gap-1.5 text-[10px] md:text-xs  font-semibold px-3.5 py-1 md:py-2 rounded-lg md:rounded-xl text-white disabled:opacity-40 disabled:cursor-not-allowed transition-all"
-              style={{ background: isDirty && !loading ? gradient.from : undefined }}
-            >
-              {loading ? (
-                <>
-                  <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  Saving...
-                </>
-              ) : saved ? (
-                <><TbCheck className="text-sm" /> Saved</>
-              ) : (
-                "Save changes"
-              )}
-            </button>:<>
-            <button className="w-24 h-6 md:h-7 bg-gray-800 animate-pulse rounded-lg"/>
-          
-            </>
-            }
-            
+            {!commLoading && community?.colorTheme ? (
+              <button
+                onClick={handleSave}
+                disabled={!isDirty || loading}
+                className="flex items-center gap-1.5 text-[10px] md:text-xs  font-semibold px-3.5 py-1 md:py-2 rounded-lg md:rounded-xl text-white disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                style={{
+                  background: isDirty && !loading ? gradient.from : undefined,
+                }}
+              >
+                {loading ? (
+                  <>
+                    <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Saving...
+                  </>
+                ) : saved ? (
+                  <>
+                    <TbCheck className="text-sm" /> Saved
+                  </>
+                ) : (
+                  "Save changes"
+                )}
+              </button>
+            ) : (
+              <>
+                <button className="w-24 h-6 md:h-7 bg-gray-800 animate-pulse rounded-lg" />
+              </>
+            )}
           </div>
         </div>
 
@@ -590,10 +699,8 @@ function EditCommunity() {
 
         {/* ── Two-column layout ── */}
         <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_340px] gap-8 items-start">
-
           {/* ── Left: form fields ── */}
           <div className="flex flex-col gap-6">
-
             {/* Community name */}
             <div>
               <div className="flex items-center justify-between mb-1.5">
@@ -621,7 +728,9 @@ function EditCommunity() {
             <div>
               <label className="block text-xs font-semibold text-gray-300 mb-1.5">
                 Tagline
-                <span className="text-gray-600 font-normal ml-1">— short descriptor under the title</span>
+                <span className="text-gray-600 font-normal ml-1">
+                  — short descriptor under the title
+                </span>
               </label>
               <input
                 type="text"
@@ -640,7 +749,9 @@ function EditCommunity() {
             <div>
               <label className="block text-xs font-semibold text-gray-300 mb-1.5">
                 Description
-                <span className="text-gray-600 font-normal ml-1">— shown in the About section</span>
+                <span className="text-gray-600 font-normal ml-1">
+                  — shown in the About section
+                </span>
               </label>
               <textarea
                 value={form.description}
@@ -653,6 +764,77 @@ function EditCommunity() {
               <p className="text-[10px] text-gray-600 mt-1 text-right">
                 {form.description.length}/500
               </p>
+            </div>
+
+            {/* Who can post */}
+            <div>
+              <div className="flex items-center justify-between">
+                <div>
+                  <label className="block text-xs font-semibold text-gray-300">
+                    Who can create discussions?
+                  </label>
+                  <p className="text-[10px] text-gray-600 mt-0.5">
+                    {whoCanPost === "coordinator"
+                      ? "Only coordinators"
+                      : "All members"}
+                  </p>
+                </div>
+
+                {/* Bytes Base compact toggle */}
+                <div className="relative flex items-center gap-0.5 p-1 rounded-xl bg-[#0b1120] border border-[#1e293b] shadow-inner">
+                  <motion.div
+                    layout
+                    transition={{
+                      type: "spring",
+                      stiffness: 500,
+                      damping: 32,
+                    }}
+                    className="absolute top-1 bottom-1 rounded-lg"
+                    style={{
+                      width: "calc(50% - 2px)",
+                      left:
+                        whoCanPost === "coordinator" ? "4px" : "50%",
+                      background: `linear-gradient(
+            135deg,
+            ${gradient.from}20,
+            ${gradient.from}10
+          )`,
+                      border: `1px solid ${gradient.from}45`,
+                      boxShadow: `0 0 12px ${gradient.from}15`,
+                    }}
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => setWhoCanPost("coordinator")}
+                    className="relative z-10 flex items-center gap-1.5 min-w-[82px] justify-center px-3 py-1.5 rounded-lg text-[10px] font-medium transition-colors"
+                    style={{
+                      color:
+                        whoCanPost === "coordinator"
+                          ? gradient.from
+                          : "#64748b",
+                    }}
+                  >
+                    <TbShieldCheck className="text-xs" />
+                    Coordinator
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setWhoCanPost("member")}
+                    className="relative z-10 flex items-center gap-1.5 min-w-[62px] justify-center px-3 py-1.5 rounded-lg text-[10px] font-medium transition-colors"
+                    style={{
+                      color:
+                        whoCanPost === "member"
+                          ? gradient.from
+                          : "#64748b",
+                    }}
+                  >
+                    <TbUsers className="text-xs" />
+                    Members
+                  </button>
+                </div>
+              </div>
             </div>
 
             {/* Icon picker */}
@@ -670,7 +852,10 @@ function EditCommunity() {
             {/* Color theme */}
             <div>
               <label className="flex items-center gap-1.5 text-xs font-semibold text-gray-300 mb-3">
-                <TbPalette className="text-sm" style={{ color: gradient.from }} />
+                <TbPalette
+                  className="text-sm"
+                  style={{ color: gradient.from }}
+                />
                 Color theme
               </label>
 
@@ -698,7 +883,9 @@ function EditCommunity() {
                 <div className="flex items-center gap-2 bg-white/[0.03] border border-[#1e293b] rounded-xl px-3 py-2 flex-1 focus-within:border-white/20 transition-colors">
                   <div
                     className="w-4 h-4 rounded-full flex-shrink-0"
-                    style={{ background: isValidHex(hexInput) ? hexInput : "#444" }}
+                    style={{
+                      background: isValidHex(hexInput) ? hexInput : "#444",
+                    }}
                   />
                   <input
                     type="text"
@@ -732,13 +919,14 @@ function EditCommunity() {
               {/* Gradient preview strip */}
               <div
                 className="mt-3 h-2 rounded-full"
-                style={{ background: `linear-gradient(to right, ${gradient.from}, ${gradient.to})` }}
+                style={{
+                  background: `linear-gradient(to right, ${gradient.from}, ${gradient.to})`,
+                }}
               />
               <p className="text-[10px] text-gray-600 mt-1">
                 Auto-derived gradient: {gradient.from} → {gradient.to}
               </p>
             </div>
-
           </div>
 
           {/* ── Right: live banner preview ── */}
@@ -762,7 +950,12 @@ function EditCommunity() {
               >
                 {(() => {
                   const Icon = TbIcons[form.icon] || TbBrain;
-                  return <Icon className="text-xl" style={{ color: gradient.from }} />;
+                  return (
+                    <Icon
+                      className="text-xl"
+                      style={{ color: gradient.from }}
+                    />
+                  );
                 })()}
               </div>
               <div className="min-w-0">
@@ -789,7 +982,6 @@ function EditCommunity() {
               </p>
             )}
           </div>
-
         </div>
       </div>
     </div>
