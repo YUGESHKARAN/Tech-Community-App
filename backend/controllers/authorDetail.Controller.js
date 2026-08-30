@@ -259,7 +259,7 @@ const sendRegistrationOTP = async (req, res) => {
     await saveOTP(email, otp);
     await sendOTPEmail(email, otp);
 
-    res.status(200).json({ message: "OTP sent to your university email" });
+    res.status(200).json({ message: "You may receive OTP, if this Email-ID exists." });
   } catch (err) {
     console.error("sendRegistrationOTP error:", err.message);
     res.status(500).json({ message: "Failed to send OTP", error: err.message });
@@ -1081,10 +1081,19 @@ const sendOtp = async (req, res) => {
     });
     const otpExpiresAt = new Date(Date.now() + 15 * 60 * 1000); // OTP expires in 15 minutes
 
-    user.otp = otp;
-    user.otpExpiresAt = otpExpiresAt;
-    await user.save();
+    // user.otp = otp;
+    // user.otpExpiresAt = otpExpiresAt;
+    // await user.save();
 
+    await Author.updateOne(
+  { _id: user._id },
+  {
+    $set: {
+      otp,
+      otpExpiresAt,
+    },
+  }
+);
     // Send OTP via email
     const transporter = nodemailer.createTransport({
       service: process.env.EMAIL_PROVIDER,
@@ -1103,7 +1112,7 @@ const sendOtp = async (req, res) => {
 
     await transporter.sendMail(mailOptions);
 
-    res.status(200).json({ message: "OTP sent successfully" });
+    res.status(200).json({ message: "if this account exists, you may receive OTP." });
   } catch (error) {
     console.error("Error in sendOtp:", error); // log it to the backend console
 
@@ -1135,9 +1144,11 @@ const resetPassword = async (req, res) => {
     user.otp = null; // Clear OTP
     user.otpExpiresAt = null;
     await user.save();
+  
 
     res.status(200).json({ message: "Password reset successfully" });
   } catch (error) {
+     console.error("Error in resetting password:", error); // log it to the backend console
     res
       .status(500)
       .json({ message: "Error resetting password", error: error.message });
