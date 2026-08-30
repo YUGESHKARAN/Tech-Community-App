@@ -52,15 +52,188 @@ const { checkAndAwardBadges } = require("../services/badgeService");
 
 // ─── Step 1: Validate form data & send OTP ───────────────────────────────────
 // reviewed----------------------------------------------
+// const sendRegistrationOTP = async (req, res) => {
+//   const { authorname, email, password } = req.body;
+//   // console.log("email", email);
+//   const user = await Author.findOne({ email: { $eq: email } }).select(
+//     "password authorname email role profile",
+//   );
+
+//   if (!user) {
+//     // fix: check deletion log before returning generic "Invalid Email"
+//     const deletionRecord = await DeletionLog.findOne({
+//       "snapshot.author.email": { $eq: email },
+//       status: "deleted",
+//     })
+//       .select("_id deletionType")
+//       .lean();
+
+//     // console.log("deletionRecord:", deletionRecord);
+
+//     if (deletionRecord) {
+//       let message =
+//         "This account has already been deleted. Contact admin to restore your account";
+
+//       if (deletionRecord.deletionType === "admin_action") {
+//         message =
+//           "This account has been already deleted by admin. Contact admin to restore your account.";
+//       } else {
+//         message =
+//           "This account has already been self deleted. Contact admin to restore your account.";
+//       }
+
+//       return res.status(403).json({
+//         message: message,
+//         canRestore: true,
+//         deletionType: deletionRecord.deletionType,
+//       });
+//     }
+//   }
+
+//   let tenant;
+//   try {
+//     tenant = await resolveTenantFromEmail(email);
+//   } catch (err) {
+//     return res.status(400).json({
+//       message: "Your institution is not registered on BytesBase.",
+//     });
+//   }
+
+//   if (!authorname || !password) {
+//     return res.status(400).json({ message: "All fields are required" });
+//   }
+
+//   try {
+//     const authorExist = await Author.findOne({ email: { $eq: email } });
+//     if (authorExist) {
+//       return res.status(400).json({ message: "Author already exists" });
+//     }
+
+//     const otp = Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit OTP
+//     await saveOTP(email, otp);
+//     await sendOTPEmail(email, otp);
+
+//     res.status(200).json({ message: "OTP sent to your university email" });
+//   } catch (err) {
+//     res.status(500).json({ message: "Failed to send OTP", error: err.message });
+//     console.log("registration error", err.message);
+//   }
+// };
+
+// // ─── Step 2: Verify OTP & create account ─────────────────────────────────────
+
+// // reviewed----------------------------------------------
+// const addAuthor = async (req, res) => {
+//   const { authorname, password, email, otp } = req.body;
+
+//   // if (!email.endsWith("@dsuniversity.ac.in")) {
+//   //   return res.status(400).json({ message: "Use University Email" });
+//   // }
+//    let tenant;
+//   try {
+//     tenant = await resolveTenantFromEmail(email);
+//   } catch (err) {
+//     return res.status(400).json({
+//       message: "Your institution is not registered on BytesBase.",
+//     });
+//   }
+
+//   if (!authorname || !password || !email || !otp){
+//     return res.status(400).json({message:'Author name, email, passowrd and OTP are required'})
+//   }
+
+//   const { valid, reason } = await verifyOTP(email, otp);
+//   if (!valid) {
+//     return res.status(400).json({ message: reason });
+//   }
+
+//   // ── welcome content ───────────────────────────────────────
+//   const adminUser = "Admin";
+//   const adminEmail = "21aid145@dsuniversity.ac.in";
+//   const welcomeTitle = "Welcome to Bytes Base - Tech Community Platform 🎉";
+//   const welcomeMsg = `Hi ${authorname}, Welcome on-board! Your account has been successfully created, and you are now ready to explore the platform.\n
+//         Get started by setting up your profile, joining tech communities that match your interests, and connecting with fellow contributors. You can explore recommended content on your home feed, participate in post's discussions, and stay updated through notifications and announcements.\n
+//         We're glad to have you here and look forward to your active participation.`;
+
+//   // If you need assistance at any point, refer to the user guide available within the platform. \n
+
+//   const url = `${notificationUrl}/announcement`;
+
+//   const newAnnouncement = {
+//     user: adminUser,
+//     title: welcomeTitle,
+//     message: welcomeMsg,
+//     authorEmail: adminEmail,
+//     deliveredTo: "all",
+//   };
+
+//   const newNotification = {
+//     user: adminUser,
+//     authorEmail: adminEmail,
+//     message: `Hi ${authorname}, Welcome to the Tech Community platform 🎉! Your account is ready now.`,
+//     url,
+//   };
+
+//   try {
+//     const authorExist = await Author.findOne({ email: { $eq: email } });
+//     if (authorExist) {
+//       return res.status(400).json({ message: "Author already exists" });
+//     }
+
+//     const newAuthor = new Author({
+//       authorname,
+//       password,
+//       email,
+//       announcement: [newAnnouncement],
+//       notification: [newNotification],
+//     });
+//     await newAuthor.save();
+
+//     res.status(201).json({ message: "Author created successfully", newAuthor });
+//   } catch (err) {
+//     res
+//       .status(500)
+//       .json({ message: "Error creating author", error: err.message });
+//   }
+// };
+
+// ── Step 1: Send OTP ──────────────────────────────────────────────────────────
 const sendRegistrationOTP = async (req, res) => {
   const { authorname, email, password } = req.body;
-  // console.log("email", email);
-  const user = await Author.findOne({ email: { $eq: email } }).select(
-    "password authorname email role profile",
-  );
 
-  if (!user) {
-    // fix: check deletion log before returning generic "Invalid Email"
+  // ── 1. validate inputs first — no DB hit needed ──
+  if (!authorname?.trim() || !email?.trim() || !password?.trim()) {
+    return res.status(400).json({ message: "All fields are required" });
+  }
+
+  // ── 2. resolve + validate tenant before anything else ──
+  let tenant;
+  try {
+    tenant = await resolveTenantFromEmail(email);
+  } catch (err) {
+    return res.status(400).json({
+      message: "Your institution is not registered on BytesBase.",
+    });
+  }
+
+  if (!tenant.active) {
+    return res.status(403).json({
+      message: "Your institution's access to BytesBase has been suspended. Contact your administrator.",
+    });
+  }
+
+  try {
+    // ── 3. check if already registered (tenant-scoped) ──
+    const authorExist = await Author.findOne({
+      email:    { $eq: email },
+      tenantId: tenant.tenantId,
+    });
+
+    if (authorExist) {
+      return res.status(400).json({ message: "Author already exists" });
+    }
+
+    // ── 4. check deletion log ──
     const deletionRecord = await DeletionLog.findOne({
       "snapshot.author.email": { $eq: email },
       status: "deleted",
@@ -68,136 +241,121 @@ const sendRegistrationOTP = async (req, res) => {
       .select("_id deletionType")
       .lean();
 
-    // console.log("deletionRecord:", deletionRecord);
-
     if (deletionRecord) {
-      let message =
-        "This account has already been deleted. Contact admin to restore your account";
-
-      if (deletionRecord.deletionType === "admin_action") {
-        message =
-          "This account has been already deleted by admin. Contact admin to restore your account.";
-      } else {
-        message =
-          "This account has already been self deleted. Contact admin to restore your account.";
-      }
+      const message =
+        deletionRecord.deletionType === "admin_action"
+          ? "This account has been deleted by admin. Contact admin to restore your account."
+          : "This account has been self deleted. Contact admin to restore your account.";
 
       return res.status(403).json({
-        message: message,
-        canRestore: true,
+        message,
+        canRestore:   true,
         deletionType: deletionRecord.deletionType,
       });
     }
-  }
 
-  if (!email.endsWith("@dsuniversity.ac.in")) {
-    return res.status(400).json({ message: "Use University Email" });
-  }
-
-  //   let tenant;
-  // try {
-  //   tenant = await resolveTenantFromEmail(email);
-  // } catch (err) {
-  //   return res.status(400).json({
-  //     message: "Your institution is not registered on BytesBase.",
-  //   });
-  // }
-
-  if (!authorname || !password) {
-    return res.status(400).json({ message: "All fields are required" });
-  }
-
-  try {
-    const authorExist = await Author.findOne({ email: { $eq: email } });
-    if (authorExist) {
-      return res.status(400).json({ message: "Author already exists" });
-    }
-
-    const otp = Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit OTP
+    // ── 5. send OTP ──
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
     await saveOTP(email, otp);
     await sendOTPEmail(email, otp);
 
     res.status(200).json({ message: "OTP sent to your university email" });
   } catch (err) {
+    console.error("sendRegistrationOTP error:", err.message);
     res.status(500).json({ message: "Failed to send OTP", error: err.message });
-    console.log("registration error", err.message);
   }
 };
 
-// ─── Step 2: Verify OTP & create account ─────────────────────────────────────
-
-// reviewed----------------------------------------------
+// ── Step 2: Verify OTP & create account ──────────────────────────────────────
 const addAuthor = async (req, res) => {
   const { authorname, password, email, otp } = req.body;
 
-  if (!email.endsWith("@dsuniversity.ac.in")) {
-    return res.status(400).json({ message: "Use University Email" });
-  }
-  //  let tenant;
-  // try {
-  //   tenant = await resolveTenantFromEmail(email);
-  // } catch (err) {
-  //   return res.status(400).json({
-  //     message: "Your institution is not registered on BytesBase.",
-  //   });
-  // }
-
-  if (!authorname || !password || !email || !otp){
-    return res.status(400).json({message:'Author name, email, passowrd and OTP are required'})
+  // ── 1. validate inputs first ──
+  if (!authorname?.trim() || !password?.trim() || !email?.trim() || !otp?.trim()) {
+    return res.status(400).json({
+      message: "Author name, email, password and OTP are required",
+    });
   }
 
+  // ── 2. resolve + validate tenant ──
+  let tenant;
+  try {
+    tenant = await resolveTenantFromEmail(email);
+  } catch (err) {
+    return res.status(400).json({
+      message: "Your institution is not registered on BytesBase.",
+    });
+  }
+
+  if (!tenant.active) {
+    return res.status(403).json({
+      message: "Your institution's access to BytesBase has been suspended.",
+    });
+  }
+
+  // ── 3. verify OTP ──
   const { valid, reason } = await verifyOTP(email, otp);
   if (!valid) {
     return res.status(400).json({ message: reason });
   }
 
-  // ── welcome content ───────────────────────────────────────
-  const adminUser = "Admin";
-  const adminEmail = "21aid145@dsuniversity.ac.in";
-  const welcomeTitle = "Welcome to Bytes Base - Tech Community Platform 🎉";
-  const welcomeMsg = `Hi ${authorname}, Welcome on-board! Your account has been successfully created, and you are now ready to explore the platform.\n
-        Get started by setting up your profile, joining tech communities that match your interests, and connecting with fellow contributors. You can explore recommended content on your home feed, participate in post's discussions, and stay updated through notifications and announcements.\n
-        We're glad to have you here and look forward to your active participation.`;
-
-  // If you need assistance at any point, refer to the user guide available within the platform. \n
-
-  const url = `${notificationUrl}/announcement`;
-
-  const newAnnouncement = {
-    user: adminUser,
-    title: welcomeTitle,
-    message: welcomeMsg,
-    authorEmail: adminEmail,
-    deliveredTo: "all",
-  };
-
-  const newNotification = {
-    user: adminUser,
-    authorEmail: adminEmail,
-    message: `Hi ${authorname}, Welcome to the Tech Community platform 🎉! Your account is ready now.`,
-    url,
-  };
-
   try {
-    const authorExist = await Author.findOne({ email: { $eq: email } });
+    // ── 4. duplicate check (tenant-scoped) ──
+    const authorExist = await Author.findOne({
+      email:    { $eq: email },
+      tenantId: tenant.tenantId,
+    });
+
     if (authorExist) {
       return res.status(400).json({ message: "Author already exists" });
     }
 
+    // ── 5. welcome content ──
+    const adminUser  = "Admin";
+    const adminEmail = "21aid145@dsuniversity.ac.in";
+
+    const welcomeTitle = "Welcome to Bytes Base - Tech Community Platform 🎉";
+    const welcomeMsg   = `Hi ${authorname}, Welcome on-board! Your account has been successfully created, and you are now ready to explore the platform.\n\nGet started by setting up your profile, joining tech communities that match your interests, and connecting with fellow contributors.\n\nWe're glad to have you here and look forward to your active participation.`;
+
+    const newAnnouncement = {
+      user:        adminUser,
+      title:       welcomeTitle,
+      message:     welcomeMsg,
+      authorEmail: adminEmail,
+      deliveredTo: "all",
+    };
+
+    const newNotification = {
+      user:        "Account Created Successfully 🎉✅",
+      authorEmail: adminEmail,
+      message:     `Hi ${authorname}, Welcome to the Tech Community platform ! Your account is ready now.`,
+      url:         `${notificationUrl}/announcement`,
+    };
+
+    // ── 6. create author — tenantId written here ──
     const newAuthor = new Author({
-      authorname,
+      authorname:   authorname.trim(),
       password,
       email,
+      tenantId:     tenant.tenantId, // fix: was never set before
       announcement: [newAnnouncement],
       notification: [newNotification],
     });
+
     await newAuthor.save();
 
-    res.status(201).json({ message: "Author created successfully", newAuthor });
+    res.status(201).json({
+      message:   "Author created successfully",
+      newAuthor: {
+        authorname: newAuthor.authorname,
+        email:      newAuthor.email,
+        tenantId:   newAuthor.tenantId,
+        role:       newAuthor.role,
+      },
+    });
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Error creating author", error: err.message });
+    console.error("addAuthor error:", err.message);
+    res.status(500).json({ message: "Error creating author", error: err.message });
   }
 };
 
