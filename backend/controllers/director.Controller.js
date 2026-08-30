@@ -6,7 +6,7 @@ const ensureDirector = (req, res) => {
     return false;
   }
 
-  if (req.user.role !== "director") {
+  if (req.user.role !== "admin") {
     res.status(403).json({ message: "Access denied" });
     return false;
   }

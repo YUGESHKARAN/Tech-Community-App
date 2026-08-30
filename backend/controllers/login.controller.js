@@ -40,12 +40,12 @@ const verifyUser = async (req, res) => {
         });
       }
 
-      return res.status(400).json({ message: "Invalid Email" });
+      return res.status(400).json({ message: "Invalid Email or Password" });
     }
 
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
-      return res.status(400).json({ message: "Invalid Password" });
+      return res.status(400).json({ message: "Invalid Email or Password" });
     }
 
     const payload = {

@@ -169,8 +169,8 @@ const authorSchema = new mongoose.Schema({
   playlists: {
    
     type: [{
-      authorEmail:{type: String, required: true},
-      authorName:{type: String, required: true},
+      authorEmail:{type: String},
+      authorName:{type: String},
       playlistId: { type: mongoose.Schema.Types.ObjectId, ref: 'TutorPlayList', required: true },
       viewedAt:   { type: Date, default: Date.now },
     }],
