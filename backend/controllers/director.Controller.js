@@ -46,11 +46,13 @@ const getTenantById = async (req, res) => {
 
 const addTenant = async (req, res) => {
   if (!ensureDirector(req, res)) return;
-
+  
   const { tenantId, name, emailDomain, subdomain, active, config } = req.body;
   if (!tenantId || !name || !emailDomain) {
     return res.status(400).json({ message: "tenantId, name, and emailDomain are required" });
   }
+
+  console.log("add tenant called", req.body);
 
   const normalizedTenantId = tenantId.trim().toLowerCase();
   const normalizedEmailDomain = emailDomain.trim().toLowerCase();

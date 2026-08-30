@@ -71,12 +71,13 @@ app.use("/blog/posts", postRouter);
 app.use("/blog/playlist", tutorPlaylist);
 app.use("/blog/analytics", appAnalysisRouter);
 app.use("/blog/admin", adminRouter);
-app.use("/blog/director", directorRouter);
 app.use("/blog/search", searchRouter);
 app.use("/blog/techCommunity", techCommunityRouter);
 app.use("/blog/recentHistory", recentHistroyRouter);
+app.use("/bytes/director", directorRouter);
 app.use("/bytes/discuss",discussionsRouter);
-app.use("/bytes/performanceTrack", performanceTrackerRouter)
+app.use("/bytes/performanceTrack", performanceTrackerRouter);
+
 
 app.get("/blog/notifications/stream/:email", async (req, res) => {
   try {
