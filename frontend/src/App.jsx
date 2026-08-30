@@ -38,6 +38,7 @@ import ViewDiscussion from "./Pages/ViewDiscussion.jsx";
 import EditCommunity from "./Pages/EditCommunity.jsx";
 import CreateDiscussion from "./Pages/CreateDiscussion.jsx";
 import CreateCommunity from "./Pages/CreateCommunity.jsx";
+import DirectorTenantsPage from "./Pages/director/DirectorTenantsPage.jsx";
 function App() {
   return (
     // <AuthProvider>
@@ -266,6 +267,8 @@ function App() {
                 element={<ProtectedRoute element={<YourPlaylist />} />}
               />
 
+             
+
               <Route
                 path="/editPlaylist/:id"
                 element={<ProtectedRoute element={<EditTutorPlaylist />} />}
@@ -314,6 +317,11 @@ function App() {
                 path="/community/new"
                 // element={<ProtectedRoute element={<TechCommunity />} />}
                 element={<ProtectedRoute element={<CreateCommunity />} />}
+              />
+              
+               <Route
+                path="/director"
+                element={<ProtectedRoute element={<DirectorTenantsPage />} />}
               />
             </Routes>
             
