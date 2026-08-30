@@ -11,6 +11,7 @@ const { Author } = require("../models/blogAuthorSchema");
 const Community = require("../models/communitySchema");
 const { Post } = require("../models/blogAuthorSchema");
 const { trackActivity, getTodayIST } = require("../services/trackActivity");
+const { DeletionLog } = require("../models/deletionLogSchema");
 // ─────────────────────────────────────────────────────────────────────────────
 //  HELPERS
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1740,21 +1741,56 @@ const getCommunityLeaderboard = async (req, res) => {
       .sort(([, a], [, b]) => b - a)
       .slice(0, 10);
 
+    // const authorIds = sorted.map(([id]) => new mongoose.Types.ObjectId(id));
+    // const authors = await Author.find(
+    //   { _id: { $in: authorIds } },
+    //   "authorname profile email badges",
+    // ).lean();
+
+    // const authorMap = Object.fromEntries(
+    //   authors.map((a) => [a._id.toString(), a]),
+    // );
+
+    // const leaderboard = sorted.map(([id, points], index) => ({
+    //   rank: index + 1,
+    //   points,
+    //   ...authorMap[id],
+    // }));
+
     const authorIds = sorted.map(([id]) => new mongoose.Types.ObjectId(id));
-    const authors = await Author.find(
-      { _id: { $in: authorIds } },
-      "authorname profile email badges",
-    ).lean();
 
-    const authorMap = Object.fromEntries(
-      authors.map((a) => [a._id.toString(), a]),
-    );
+// fetch deleted author IDs in this tenant to exclude from leaderboard
+const deletedRecords = await DeletionLog.find(
+  {
+    'snapshot.author._id': { $in: authorIds },
+    status: 'deleted',
+  },
+  'snapshot.author._id'
+).lean();
 
-    const leaderboard = sorted.map(([id, points], index) => ({
-      rank: index + 1,
-      points,
-      ...authorMap[id],
-    }));
+const deletedIdSet = new Set(
+  deletedRecords.map((r) => r.snapshot?.author?._id?.toString())
+);
+
+const authors = await Author.find(
+  {
+    _id:      { $in: authorIds },
+    tenantId: tenantId, // tenant-scoped
+  },
+  'authorname profile email badges'
+).lean();
+
+const authorMap = Object.fromEntries(
+  authors.map((a) => [a._id.toString(), a])
+);
+
+const leaderboard = sorted
+  .filter(([id]) => !deletedIdSet.has(id) && authorMap[id]) // exclude deleted + missing
+  .map(([id, points], index) => ({
+    rank:   index + 1,
+    points,
+    ...authorMap[id],
+  }));
 
     return res.status(200).json({
       leaderboard,
