@@ -8,6 +8,8 @@ import {
   TbMessage, TbLoader2,
 } from "react-icons/tb";
 
+import { createPortal } from "react-dom";
+
 // ── Sample data imports ───────────────────────────────────────────────────────
 // Swap these for real hooks when ready:
 //   const { data: streakData } = useGetStreakData(authorId);
@@ -596,6 +598,48 @@ const ActivityGraph = ({
     onDayClick(day.date);
   };
 
+  // ── Portal tooltip — rendered at document body level ──────────────────────
+// Avoids overflow clipping from the scroll container
+
+
+const CellTooltip = ({ day, anchorRect }) => {
+  if (!anchorRect) return null;
+
+  // position above the cell center
+  const top  = anchorRect.top  + window.scrollY - 8;   // 8px gap above cell
+  const left = anchorRect.left + window.scrollX + anchorRect.width / 2;
+
+  return createPortal(
+    <div
+      className=" pointer-events-none whitespace-nowrap absolute z-[9999]
+                 bg-[#0f172a] border border-white/10 rounded-lg
+                 px-2.5 py-1.5 shadow-xl text-[10px] text-gray-200"
+      style={{
+        top:       top,
+        left:      left,
+        transform: "translate(-50%, -100%)",
+      }}
+    >
+      {day.points > 0 ? (
+        <>
+          <b className="text-emerald-400">{day.points} pts</b>
+          {" · "}
+          {new Date(day.date + "T00:00").toLocaleDateString("en-IN", {
+            month: "short", day: "numeric",
+          })}
+          {!day.future && day.points > 0 && (
+            <span className="text-gray-500 ml-1">— click to view</span>
+          )}
+        </>
+      ) : (
+        <>No activity · {new Date(day.date + "T00:00").toLocaleDateString("en-IN", { month: "short", day: "numeric" })}</>
+      )}
+      <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-white/10" />
+    </div>,
+    document.body
+  );
+};
+
   return (
     <>
       <div className="theme border border-[#1e293b] rounded-xl p-4">
@@ -683,7 +727,7 @@ const ActivityGraph = ({
               {/* week columns */}
               {weeks.map((week, wi) => (
                 <div key={wi} className="flex flex-col" style={{ gap: GAP, marginRight: GAP }}>
-                  {week.map((day) => {
+                  {/* {week.map((day) => {
                     const isClickable = !day.future && !day.outOfYear && day.points > 0;
                     const isHovered   = hoveredDay === day.date;
                     const isActive    = activeDay  === day.date;
@@ -710,10 +754,9 @@ const ActivityGraph = ({
                           }}
                         />
 
-                        {/* hover tooltip */}
                         {isHovered && !day.outOfYear && (
                           <div
-                            className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 z-30
+                            className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 z-40
                                        pointer-events-none whitespace-nowrap
                                        bg-[#0f172a] border border-white/10 rounded-lg
                                        px-2.5 py-1.5 shadow-xl text-[10px] text-gray-200"
@@ -722,7 +765,6 @@ const ActivityGraph = ({
                               <>
                                 <b className="text-emerald-400">{day.points} pts</b>
                                 {" · "}
-                                {/* {new Date(day.date).toLocaleDateString("en-IN", { month: "short", day: "numeric" })} */}
                                 {new Date(day.date + 'T00:00').toLocaleDateString("en-IN", { month: "short", day: "numeric" })}
                                 {isClickable && <span className="text-gray-500 ml-1">— click to view</span>}
                               </>
@@ -734,9 +776,53 @@ const ActivityGraph = ({
                         )}
                       </div>
                     );
-                  })}
+                  })} */}
+{week.map((day) => {
+  const isClickable = !day.future && !day.outOfYear && day.points > 0;
+  const isHovered   = hoveredDay?.date === day.date;
+  const isActive    = activeDay === day.date;
+
+  return (
+    <div
+      key={day.date}
+      className="relative"
+      style={{ width: CELL, height: CELL, flexShrink: 0 }}
+      onMouseEnter={(e) => {
+        if (!day.future && !day.outOfYear) {
+          setHoveredDay({
+            date: day.date,
+            rect: e.currentTarget.getBoundingClientRect(),
+          });
+        }
+      }}
+      onMouseLeave={() => setHoveredDay(null)}
+      onClick={() => handleCellClick(day)}
+    >
+      <div
+        style={{
+          width: CELL, height: CELL,
+          borderRadius: 2,
+          background:   LEVEL_COLORS[String(day.level)],
+          border:       `1px solid ${LEVEL_BORDER[String(day.level)]}`,
+          cursor:       isClickable ? "pointer" : "default",
+          transform:    isActive ? "scale(1.25)" : isHovered && isClickable ? "scale(1.15)" : "scale(1)",
+          transition:   "transform 0.1s ease",
+          outline:      isActive ? "2px solid rgba(52,211,153,0.6)" : "none",
+          outlineOffset: 1,
+        }}
+      />
+
+      {/* tooltip rendered via portal — no overflow clipping */}
+      {isHovered && !day.outOfYear && (
+        <CellTooltip day={day} anchorRect={hoveredDay?.rect} />
+      )}
+    </div>
+  );
+})}
                 </div>
               ))}
+              {/* // updated cell render: */}
+
             </div>
 
             
