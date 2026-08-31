@@ -1,4 +1,5 @@
 const { Tenant } = require("../models/tenantSchema");
+const { writeAuditLog } = require("./directorAdvanced.Controller");
 
 const ensureDirector = (req, res) => {
   if (!req.user) {
@@ -89,6 +90,21 @@ const addTenant = async (req, res) => {
     });
 
     await tenant.save();
+    //----director audit log------------------------
+    writeAuditLog({
+  action:          'tenant.create',
+  targetTenantId:  tenant.tenantId,
+  performedBy:     { authorId: req.user.authorId, email: req.user.email, role: req.user.role },
+  before:          null,
+  after: {
+    tenantId:    tenant.tenantId,
+    name:        tenant.name,
+    emailDomain: tenant.emailDomain,
+    active:      tenant.active,
+    config:      tenant.config,
+  },
+});
+// ------------------------------------------------------------------
     return res.status(201).json({ message: "Tenant created successfully", tenant });
   } catch (err) {
     if (err.code === 11000) {
@@ -141,6 +157,18 @@ const updateTenant = async (req, res) => {
       }
     }
 
+    //------------- director audit log----------------------------------------------
+    // Before: Object.keys(updates).forEach(...)
+  // Capture before state:
+  const beforeSnapshot = {
+    name:        tenant.name,
+    emailDomain: tenant.emailDomain,
+    subdomain:   tenant.subdomain,
+    active:      tenant.active,
+    config:      tenant.config?.toObject?.() || tenant.config,
+  };
+  // ---------------------------------------------------------------------------------- 
+
     Object.keys(updates).forEach((key) => {
       if (updates[key] !== undefined) {
         if (key === "config") {
@@ -152,6 +180,16 @@ const updateTenant = async (req, res) => {
     });
 
     await tenant.save();
+
+    // ---------------- director audit log------------------------------------------
+    writeAuditLog({
+  action:          'tenant.update',
+  targetTenantId:  tenantId,
+  performedBy:     { authorId: req.user.authorId, email: req.user.email, role: req.user.role },
+  before:          beforeSnapshot,
+  after:           updates,
+});
+// ----------------------------------------------------------------------------------
 
     return res.status(200).json({ message: "Tenant updated successfully", tenant });
   } catch (err) {
@@ -173,6 +211,23 @@ const deleteTenant = async (req, res) => {
 
   try {
     const tenant = await Tenant.findOneAndDelete({ tenantId });
+
+    //----------------------director audit log--------------------
+    // After: const tenant = await Tenant.findOneAndDelete({ tenantId });
+    writeAuditLog({
+      action:          'tenant.delete',
+      targetTenantId:  tenantId,
+      performedBy:     { authorId: req.user.authorId, email: req.user.email, role: req.user.role },
+      before: {
+        tenantId:    tenant.tenantId,
+        name:        tenant.name,
+        emailDomain: tenant.emailDomain,
+        active:      tenant.active,
+      },
+      after:           null,
+    });
+    // -----------------------------------------------------------------
+
     if (!tenant) {
       return res.status(404).json({ message: "Tenant not found" });
     }
