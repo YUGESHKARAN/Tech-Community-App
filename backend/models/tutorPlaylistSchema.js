@@ -50,7 +50,8 @@ const tutorPlaylist = new mongoose.Schema({
   collaborators:{ 
     type:[collaborators],
     default:[]
-  }
+  },
+  tenantId: { type: String, required: true },
 })
 tutorPlaylist.index({ email: 1 });
 tutorPlaylist.index({ domain: 1 });

@@ -37,7 +37,7 @@ const {AuditLog} = require("../models/director/auditLogSchema");
 
 const ensureDirector = (req, res) => {
   if (!req.user)                       { res.status(401).json({ message: 'Unauthorized' });    return false; }
-  if (req.user.role !== 'director')    { res.status(403).json({ message: 'Access denied' });   return false; }
+  if (req.user.role !== 'admin')    { res.status(403).json({ message: 'Access denied' });   return false; }
   return true;
 };
 
@@ -91,6 +91,7 @@ const getTenantHealth = async (req, res) => {
 
   try {
     const tenant = await Tenant.findOne({ tenantId }, '_id tenantId name').lean();
+    console.log("getTenantHealth called")
     if (!tenant) return res.status(404).json({ message: 'Tenant not found' });
 
     const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);

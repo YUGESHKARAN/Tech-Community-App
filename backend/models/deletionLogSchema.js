@@ -70,6 +70,7 @@ const snapshotPlaylistSchema = new mongoose.Schema({
   thumbnail:    { type: String },
   email:        { type: String },  // creator email
   profile:      { type: String },
+  tenantId:       { type: String },
   collaborators: [snapshotPlaylistCollaboratorSchema],
   createdAt:    { type: Date },
   updatedAt:    { type: Date },
