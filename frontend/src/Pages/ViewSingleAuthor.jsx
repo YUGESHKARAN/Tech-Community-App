@@ -20,6 +20,8 @@ import formatCount from "../utils/NumberConversion";
 import useGetFollowersDetails from "../hooks/useGetFollowersDetails";
 import { IoClose } from "react-icons/io5";
 import ProfilePageSkeleton from "../components/loaders/ProfilePageSkeleton";
+import PerformanceTracker from "../components/performancetracker/PerformanceTracker";
+import useStreak from "../hooks/performanceTracker/useStreak";
 
 function ViewSingleAuthor() {
   const { email } = useParams();
@@ -39,6 +41,7 @@ function ViewSingleAuthor() {
   const [followAuthorLoaderId, setFollowAuthorLoaderId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [bioDescription, setBioDescription] = useState("");
+  const [userId, setUserId] = useState(null);
 
   const fetchAuthor = async () => {
     try {
@@ -55,6 +58,7 @@ function ViewSingleAuthor() {
       setProfileLinks(authorData.personalLinks);
       setPosts(authorData.posts);
       setBioDescription(authorData.bio);
+      setUserId(authorData._id)
       }
     } catch (err) {
       console.log(err);
@@ -66,6 +70,9 @@ function ViewSingleAuthor() {
     setAuthorName("");
     fetchAuthor();
   }, [email]);
+
+  const {streakData, streakLoader, getStreakDetails} = useStreak(userId);
+
 
   const addFollower = async (email) => {
     // console.log("useremail", userEmail);
@@ -437,7 +444,7 @@ function ViewSingleAuthor() {
                         ))}
                       </div>
                     ) : (
-                      <div className="px-4 py-8 bg-white/[0.015] flex items-center justify-center border border-dashed border-white/[0.08] md:h-[260px] rounded-xl text-center">
+                      <div className="px-4 py-8 bg-white/[0.015] flex items-center justify-center border border-dashed border-white/[0.08] md:h-[250px] rounded-xl text-center">
                         <div>
                         <PiLinkSimpleFill className="text-2xl text-gray-600 mx-auto mb-2" />
                         <p className="text-xs text-gray-500 leading-relaxed">
@@ -451,6 +458,9 @@ function ViewSingleAuthor() {
                 </div>
               </div>
             </div>
+            
+            <PerformanceTracker streakData={streakData} userId={userId} streakLoading={streakLoader} showActivityGraph={true} isOwn={false}/>
+
             {author?.role !== "student" && (
               <motion.div
                 ref={achievementRef}
