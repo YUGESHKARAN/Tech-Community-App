@@ -303,7 +303,7 @@ const DiscussionCard = ({
 
         if (action === "upvoted") {
           setUpvoteCount((prev) => prev + 1);
-          toast.success("Discussion hyped successfully!");
+          toast.success("Discussion Upvoted successfully!");
         } else if (action === "removed") {
           setUpvoteCount((prev) => Math.max(0, prev - 1));
           toast.info("Discussion upvote removed.");
@@ -448,7 +448,7 @@ const DiscussionsTab = ({
     return discussions.filter((d) => d.category === activeCategory);
   }, [discussions, activeCategory]);
 
-  console.log("comm sett", community)
+  // console.log("comm sett", community)
 
   return (
     <div>
