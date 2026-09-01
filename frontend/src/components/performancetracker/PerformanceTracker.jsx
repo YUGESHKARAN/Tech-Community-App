@@ -907,9 +907,13 @@ const CellTooltip = ({ day, anchorRect }) => {
  * Sample data mode (no authorId — for UI testing):
  *   <PerformanceTracker isOwn={true} />
  */
-const PerformanceTracker = ({ streakData,streakLoading, showStreak=false, showActivityGraph=false,  isOwn = true }) => {
+const PerformanceTracker = ({userId=null, streakData,streakLoading, showStreak=false, showActivityGraph=false,  isOwn = true }) => {
   const currentYear = new Date().getFullYear();
-  const authorId = getItem("authorId")
+  let authorId = getItem("authorId");
+  if(!isOwn)
+  {
+    authorId = userId
+  }
 
   // ── Streak ────────────────────────────────────────────────────────────────
   // When no authorId, fall back to sample streak for UI testing
