@@ -37,7 +37,7 @@ import clsx from "clsx";
 import formatCount from "../utils/NumberConversion";
 
 function Announcement() {
-  const username = localStorage.getItem("username");
+  const username = getItem("username");
   // const email = localStorage.getItem("email");
   const email = getItem("email");
   const profile = localStorage.getItem("profile");
@@ -115,6 +115,7 @@ function Announcement() {
     );
   };
 
+  console.log("username", username)
   const handleSubmit = async (e) => {
     e.preventDefault();
     let errors = {};
