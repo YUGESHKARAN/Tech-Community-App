@@ -64,6 +64,7 @@ const techCommunityRouter = require("./routes/techCommunity.Route");
 const recentHistroyRouter = require("./routes/recentHistory.Route");
 const discussionsRouter = require("./routes/discussions.Route");
 const performanceTrackerRouter = require("./routes/performanceTracker.Route");
+const directorAdvancedRouter = require("./routes/DirectorAdvanced.routes")
 
 app.use("/blog/login", loginRouter);
 app.use("/blog/author", authorRouter);
@@ -75,6 +76,7 @@ app.use("/blog/search", searchRouter);
 app.use("/blog/techCommunity", techCommunityRouter);
 app.use("/blog/recentHistory", recentHistroyRouter);
 app.use("/bytes/director", directorRouter);
+app.use("/bytes/directorAdvanced", directorAdvancedRouter);
 app.use("/bytes/discuss",discussionsRouter);
 app.use("/bytes/performanceTrack", performanceTrackerRouter);
 

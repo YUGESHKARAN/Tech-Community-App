@@ -108,13 +108,18 @@ const resolvePlaylistAuthorProfiles = async (playlists = []) => {
 
 const getAllTutorPlaylist = async (req, res) => {
   try {
+    const tenantId = req?.user?.tenantId;
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
+
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
-    const tutorPlaylist = await TutorPlayList.find({}).skip(skip).limit(limit);
+    const tutorPlaylist = await TutorPlayList.find({ tenantId }).skip(skip).limit(limit);
 
-    const count = await TutorPlayList.countDocuments();
+    const count = await TutorPlayList.countDocuments({ tenantId });
     const normalizedPlaylists = await resolvePlaylistAuthorProfiles(tutorPlaylist);
 
     // console.log(`playlist page ${page} limit ${limit}`);
@@ -146,12 +151,17 @@ const scorePlaylists = (playlist) => {
 
 const getRecommendedTutorPlaylist = async (req, res) => {
   try {
+    const tenantId = req?.user?.tenantId;
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
+
     const { email } = req.params;
     const page  = parseInt(req.query.page) || 1;
     const limit = Math.min(parseInt(req.query.limit) || 10, 30);
 
-    const feedCacheKey  = `playlistHomeFeed:${email}:ids`;
-    const freshCacheKey = `playlistHomeFeed:fresh:ids`;
+    const feedCacheKey  = `playlistHomeFeed:${tenantId}:${email}:ids`;
+    const freshCacheKey = `playlistHomeFeed:${tenantId}:fresh:ids`;
 
     // ── 1. FRESH PLAYLISTS — shared 60s cache with mutex ─────
     let freshIds = [];
@@ -171,7 +181,7 @@ const getRecommendedTutorPlaylist = async (req, res) => {
         // acquire lock — expires in 5s
         await redisClient.setEx(PLAYLIST_FRESH_LOCK_KEY, 5, '1');
         try {
-          const freshDocs = await TutorPlayList.find({})
+          const freshDocs = await TutorPlayList.find({ tenantId })
             .select("_id")
             .sort({ _id: -1 })
             .limit(20)
@@ -200,7 +210,7 @@ const getRecommendedTutorPlaylist = async (req, res) => {
     if (cachedIds) {
       feedIds = JSON.parse(cachedIds);
     } else {
-      const currentAuthor = await Author.findOne({ email: { $eq: email } })
+      const currentAuthor = await Author.findOne({ email: { $eq: email }, tenantId })
         .select("community following");
 
       if (!currentAuthor) {
@@ -214,6 +224,7 @@ const getRecommendedTutorPlaylist = async (req, res) => {
         TutorPlayList.aggregate([
           {
             $match: {
+              tenantId,
               $or: [
                 { email:  { $in: authorFollowing  } },
                 { domain: { $in: authorCommunity  } },
@@ -233,6 +244,7 @@ const getRecommendedTutorPlaylist = async (req, res) => {
         ]),
 
         TutorPlayList.aggregate([
+          { $match: { tenantId } },
           { $sort:  { _id: -1 } },
           { $limit: PLAYLIST_OTHER_LIMIT * 2 },
           {
@@ -304,7 +316,7 @@ const getRecommendedTutorPlaylist = async (req, res) => {
     const pageIds    = finalIds.slice(startIndex, endIndex);
 
     const pagePlaylists = pageIds.length > 0
-      ? await TutorPlayList.find({ _id: { $in: pageIds } }).lean()
+      ? await TutorPlayList.find({ _id: { $in: pageIds }, tenantId }).lean()
       : [];
 
     const normalizedPagePlaylists = await resolvePlaylistAuthorProfiles(pagePlaylists);
@@ -329,6 +341,11 @@ const getRecommendedTutorPlaylist = async (req, res) => {
 // reviewed-----------------------------------------------------------
 const getPlaylistByEmail = async (req, res) => {
   try {
+    const tenantId = req?.user?.tenantId;
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
+
     const { email } = req.params;
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
@@ -336,7 +353,7 @@ const getPlaylistByEmail = async (req, res) => {
     // console.log(`playlist page ${page} limit ${limit}`);
     if (!email) return res.status(400).json({ message: "email required" });
 
-    const tutorPlayList = await TutorPlayList.find({ email: { $eq: email } })
+    const tutorPlayList = await TutorPlayList.find({ email: { $eq: email }, tenantId })
       .lean()
       .skip(skip)
       .limit(limit);
@@ -361,6 +378,11 @@ const getPlaylistByEmail = async (req, res) => {
 // reviewed
 const getPlaylistById = async (req, res) => {
   try {
+    const tenantId = req?.user?.tenantId;
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
+
     const { playlistId } = req.params;
 
     if (!playlistId) {
@@ -372,7 +394,7 @@ const getPlaylistById = async (req, res) => {
       : null;
 
     const playList = objectId
-      ? await TutorPlayList.findOne({ _id: objectId }).lean()
+      ? await TutorPlayList.findOne({ _id: objectId, tenantId }).lean()
       : null;
 
     if (!playList) {
@@ -426,18 +448,23 @@ const addTutorPlayList = async (req, res) => {
   let uniqueFilename = "";
 
   try {
+    const tenantId = req?.user?.tenantId;
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
+
     let { postIds, title, domain, email, collaboratorsEmail } = req.body;
 
     if (!postIds || postIds.length < 1 || !title || !domain || !email) {
       return res.status(400).json({ message: "playlist data required" });
     }
 
-    const existingCount = await Post.countDocuments({ _id: { $in: postIds } });
+    const existingCount = await Post.countDocuments({ _id: { $in: postIds }, tenantId });
     if (existingCount !== postIds.length) {
       return res.status(400).json({ message: "One or more post IDs are invalid" });
     }
 
-    const user = await Author.findOne({ email: { $eq: email } });
+    const user = await Author.findOne({ email: { $eq: email }, tenantId });
     if (!user) {
       return res.status(404).json({ message: "user not found!" });
     }
@@ -497,6 +524,7 @@ const addTutorPlayList = async (req, res) => {
         email,
         profile,
         collaborators,
+        tenantId,
       });
       await tutorPlaylist.save();
     } catch (dbErr) {
@@ -565,10 +593,15 @@ const updateTutorPlayList = async (req, res) => {
   let uniqueFilename = "";
 
   try {
+    const tenantId = req?.user?.tenantId;
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
+
     const { id } = req.params;
     const { postIds, title, domain, collaboratorsEmail } = req.body;
 
-    const playList = await TutorPlayList.findById(id);
+    const playList = await TutorPlayList.findOne({ _id: id, tenantId });
     if (!playList) {
       return res.status(404).json({ message: "Playlist not found" });
     }
@@ -609,6 +642,7 @@ const updateTutorPlayList = async (req, res) => {
     if (postIds !== undefined) {
       const existingCount = await Post.countDocuments({
         _id: { $in: postIds },
+        tenantId,
       });
       if (existingCount !== postIds.length) {
         // fix: clean up newly uploaded thumbnail if validation fails
@@ -676,8 +710,13 @@ const updateTutorPlayList = async (req, res) => {
 // reviewed-------------------------------------------------------------
 const deleteTutorPlayList = async (req, res) => {
   try {
+    const tenantId = req?.user?.tenantId;
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
+
     const { id } = req.params;
-    const tutorPlayListData = await TutorPlayList.findById(id);
+    const tutorPlayListData = await TutorPlayList.findOne({ _id: id, tenantId });
 
     if (!tutorPlayListData) {
       return res.status(404).json({ message: "Playlist not found" });
@@ -695,7 +734,7 @@ const deleteTutorPlayList = async (req, res) => {
         console.log("Error deleting thumbnail from S3:", err);
       }
     }
-    const tutorPlayList = await TutorPlayList.findByIdAndDelete(id);
+    const tutorPlayList = await TutorPlayList.findOneAndDelete({ _id: id, tenantId });
     if (!tutorPlayList) {
       return res.status(404).json({ message: "Playlist not found" });
     }
@@ -708,6 +747,11 @@ const deleteTutorPlayList = async (req, res) => {
 // reviewed-------------------------------------------------------------
 const getBookmarkedPlaylists = async (req, res) => {
   try {
+    const tenantId = req?.user?.tenantId;
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
+
     const { email } = req.params;
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
@@ -716,7 +760,7 @@ const getBookmarkedPlaylists = async (req, res) => {
     if (!email) return res.status(400).json({ message: "email required" });
 
     // adjust "postBookmark" to the actual field name on your Author schema if different
-    const author = await Author.findOne({ email: { $eq: email } }).select(
+    const author = await Author.findOne({ email: { $eq: email }, tenantId }).select(
       "postBookmark",
     );
     if (!author) return res.status(404).json({ message: "author not found" });
@@ -731,6 +775,7 @@ const getBookmarkedPlaylists = async (req, res) => {
 
     const playlists = await TutorPlayList.find({
       _id: { $in: playlistIds },
+      tenantId,
     }).lean();
 
     const normalizedPlaylists = await resolvePlaylistAuthorProfiles(playlists);

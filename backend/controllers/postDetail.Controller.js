@@ -143,12 +143,17 @@ const scorePost = (post) => {
 
 const getRecommendedPosts = async (req, res) => {
   try {
+    const tenantId = req?.user?.tenantId;
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
+
     const { email } = req.params;
     const page  = parseInt(req.query.page) || 1;
     const limit = Math.min(parseInt(req.query.limit) || 20, 50);
 
-    const feedCacheKey  = `postHomeFeed:${email}:ids`;
-    const freshCacheKey = `postHomeFeed:fresh:ids`;
+    const feedCacheKey  = `postHomeFeed:${tenantId}:${email}:ids`;
+    const freshCacheKey = `postHomeFeed:${tenantId}:fresh:ids`;
 
     // ── 1. FRESH POSTS — shared 60s cache with mutex ──────────
     let freshIds = [];
@@ -168,7 +173,7 @@ const getRecommendedPosts = async (req, res) => {
         // acquire lock — expires in 5s (longer than the query takes)
         await redisClient.setEx(FRESH_LOCK_KEY, 5, '1');
         try {
-          const freshDocs = await Post.find({})
+          const freshDocs = await Post.find({ tenantId })
             .select("_id")
             .sort({ timestamp: -1 })
             .limit(50)
@@ -197,13 +202,14 @@ const getRecommendedPosts = async (req, res) => {
     if (cachedIds) {
       feedIds = JSON.parse(cachedIds);
     } else {
-      const currentAuthor = await Author.findOne({ email: { $eq: email } })
+      const currentAuthor = await Author.findOne({ email: { $eq: email }, tenantId })
         .select("following community");
 
       const followedEmails    = currentAuthor?.following    || [];
       const authorCommunities = currentAuthor?.community    || [];
 
       const priorityAuthors = await Author.find({
+        tenantId,
         $or: [
           { email:     { $in: followedEmails    } },
           { community: { $in: authorCommunities } },
@@ -219,7 +225,7 @@ const getRecommendedPosts = async (req, res) => {
 
       const [priorityDocs, recentPostDocs] = await Promise.all([
         Post.aggregate([
-          { $match: { authorId: { $in: priorityAuthorIds } } },
+          { $match: { tenantId, authorId: { $in: priorityAuthorIds } } },
           { $sort:  { timestamp: -1 } },
           { $limit: FEED_PRIORITY_LIMIT },
           { $project: {
@@ -232,6 +238,7 @@ const getRecommendedPosts = async (req, res) => {
         ]),
 
         Post.aggregate([
+          { $match: { tenantId } },
           { $sort:  { timestamp: -1 } },
           { $limit: FEED_OTHER_LIMIT * 2 },
           { $project: {
@@ -296,7 +303,7 @@ const getRecommendedPosts = async (req, res) => {
     const pageIds    = finalIds.slice(startIndex, endIndex);
 
     const pagePosts = pageIds.length > 0
-      ? await Post.find({ _id: { $in: pageIds } })
+      ? await Post.find({ _id: { $in: pageIds }, tenantId })
           .populate("authorId", "authorname email profile role community")
           .lean()
       : [];
@@ -334,12 +341,17 @@ const getRecommendedPosts = async (req, res) => {
 
 const getSingleAuthorPosts = async (req, res) => {
   try {
+    const tenantId = req?.user?.tenantId;
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
+
     const { email } = req.params;
     let { page = 1, limit = 10 } = req.query;
     page  = parseInt(page);
     limit = parseInt(limit);
 
-    const author = await Author.findOne({ email: { $eq: email } })
+    const author = await Author.findOne({ email: { $eq: email }, tenantId })
       .select("authorname email profile role community badges");
 
     if (!author) {
@@ -347,7 +359,7 @@ const getSingleAuthorPosts = async (req, res) => {
     }
 
     // query Post collection directly
-    const allPosts = await Post.find({ authorId: author._id }).lean();
+    const allPosts = await Post.find({ authorId: author._id, tenantId }).lean();
 
     const authorPosts = allPosts
       .map((post) => ({
@@ -381,10 +393,15 @@ const getSingleAuthorPosts = async (req, res) => {
 
 const getCategoryPosts = async (req, res) => {
   try {
+    const tenantId = req?.user?.tenantId;
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
+
     const { category } = req.params;
 
     // fix: query Post collection directly by category — 'posts.category' on Author no longer works
-    const posts = await Post.find({ category: { $eq: category } })
+    const posts = await Post.find({ category: { $eq: category }, tenantId })
       .populate("authorId", "authorname email profile")
       .lean();
 
@@ -464,8 +481,13 @@ const addPosts = async (req, res) => {
   const documentUrls = [];
 
   try {
+    const tenantId = req?.user?.tenantId;
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
+
     // fix: added $eq operator — consistent with all other controllers
-    const author = await Author.findOne({ email: { $eq: req.params.email } });
+    const author = await Author.findOne({ email: { $eq: req.params.email }, tenantId });
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
     }
@@ -542,6 +564,7 @@ const addPosts = async (req, res) => {
 
     // -----------OLD MESSAGE LOGIC- ------------------
       const communityAuthors = await Author.find({
+      tenantId,
       community: { $in: [category] },
       email: { $ne: author.email },
     }).select('email');
@@ -687,13 +710,18 @@ const updatePost = async (req, res) => {
   let newDocumentUrls  = []; // only NEW uploads — for S3 cleanup on DB fail
 
   try {
-    const author = await Author.findOne({ email: { $eq: email } })
+    const tenantId = req?.user?.tenantId;
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
+
+    const author = await Author.findOne({ email: { $eq: email }, tenantId })
       .select('authorname email profile posts');
     if (!author) {
       return res.status(404).json({ message: "author not found" });
     }
 
-    const post = await Post.findOne({ _id: postId, authorId: author._id });
+    const post = await Post.findOne({ _id: postId, authorId: author._id, tenantId });
     if (!post) {
       return res.status(404).json({ message: "post not found" });
     }
@@ -819,13 +847,18 @@ const removePostsLinks = async (req, res) => {
       return res.status(400).json({ message: "Author email, postId and link Id are required" });
     }
 
-    const author = await Author.findOne({ email: { $eq: email } }).select('_id');
+    const tenantId = req?.user?.tenantId;
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
+
+    const author = await Author.findOne({ email: { $eq: email }, tenantId }).select('_id');
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
     }
 
     // fix: query Post collection directly with ownership check — author.posts.id() broken after normalization
-    const post = await Post.findOne({ _id: postId, authorId: author._id });
+    const post = await Post.findOne({ _id: postId, authorId: author._id, tenantId });
     if (!post) {
       return res.status(404).json({ message: "post not found" });
     }
@@ -866,12 +899,17 @@ const removePostDocument = async (req, res) => {
       });
     }
 
-    const author = await Author.findOne({ email: { $eq: email } }).select('_id');
+    const tenantId = req?.user?.tenantId;
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
+
+    const author = await Author.findOne({ email: { $eq: email }, tenantId }).select('_id');
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
     }
 
-    const post = await Post.findOne({ _id: postId, authorId: author._id });
+    const post = await Post.findOne({ _id: postId, authorId: author._id, tenantId });
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }
@@ -911,13 +949,18 @@ const deletePost = async (req, res) => {
   try {
     const { email, postId } = req.params;
 
-    const author = await Author.findOne({ email: { $eq: email } }).select('_id authorname');
+    const tenantId = req?.user?.tenantId;
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
+
+    const author = await Author.findOne({ email: { $eq: email }, tenantId }).select('_id authorname');
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
     }
 
     // fix: fetch Post document directly — author.posts is [ObjectId], findIndex always returned -1
-    const postToDelete = await Post.findOne({ _id: postId, authorId: author._id });
+    const postToDelete = await Post.findOne({ _id: postId, authorId: author._id, tenantId });
     if (!postToDelete) {
       return res.status(404).json({ message: "Post not found" });
     }
@@ -944,7 +987,7 @@ const deletePost = async (req, res) => {
     }
 
     // fix: delete from Post collection and pull ref from author.posts
-    await Post.deleteOne({ _id: postId });
+    await Post.deleteOne({ _id: postId, tenantId });
     await Author.updateOne(
       { _id: author._id },
       { $pull: { posts: postToDelete._id } }
@@ -973,7 +1016,12 @@ const getSinglePost = async (req, res) => {
     const { email, postId } = req.params;
 
     // fix: only fetch fields needed for the response shape
-    const author = await Author.findOne({ email: { $eq: email } })
+    const tenantId = req?.user?.tenantId;
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
+
+    const author = await Author.findOne({ email: { $eq: email }, tenantId })
       .select('_id authorname email profile');
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
@@ -981,7 +1029,7 @@ const getSinglePost = async (req, res) => {
 
     // fix: query Post collection directly with ownership check
     // author.posts.id() is a subdoc method — broken after normalization
-    const post = await Post.findOne({ _id: postId, authorId: author._id }).lean();
+    const post = await Post.findOne({ _id: postId, authorId: author._id, tenantId }).lean();
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }
@@ -1012,14 +1060,19 @@ const postView = async (req, res) => {
     const { email, id } = req.params;
     const { emailAuthor } = req.body;
 
+    const tenantId = req?.user?.tenantId;
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
+
     // fix: select email too — author.email was undefined, causing badge check to silently fail
-    const author = await Author.findOne({ email: { $eq: email } }).select('_id email');
+    const author = await Author.findOne({ email: { $eq: email }, tenantId }).select('_id email');
     if (!author) {
       return res.status(404).json({ message: 'Author not found' });
     }
 
     // fix: select title too — needed for eventContext in badge check
-    const post = await Post.findOne({ _id: id, authorId: author._id }).select('_id views title');
+    const post = await Post.findOne({ _id: id, authorId: author._id, tenantId }).select('_id views title');
     if (!post) {
       return res.status(404).json({ message: 'Post not found' });
     }
@@ -1029,7 +1082,7 @@ const postView = async (req, res) => {
     }
 
     await Post.updateOne(
-      { _id: id },
+      { _id: id, tenantId },
       { $addToSet: { views: emailAuthor } }
     );
 
@@ -1059,14 +1112,19 @@ const postLikes = async (req, res) => {
     const { email, id } = req.params;
     const { emailAuthor } = req.body;
 
+    const tenantId = req?.user?.tenantId;
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
+
     // verify author exists — ownership check
-    const author = await Author.findOne({ email: { $eq: email } }).select('_id email');
+    const author = await Author.findOne({ email: { $eq: email }, tenantId }).select('_id email');
     if (!author) {
       return res.status(404).json({ message: 'Author not found' });
     }
 
     // fix: find post in Post collection — author.posts.find() on ObjectIds always returned undefined
-    const post = await Post.findOne({ _id: id, authorId: author._id }).select('likes');
+    const post = await Post.findOne({ _id: id, authorId: author._id, tenantId }).select('likes');
     if (!post) {
       return res.status(404).json({ message: 'Post not found' });
     }
@@ -1074,7 +1132,7 @@ const postLikes = async (req, res) => {
     // Unlike
     if (post.likes.includes(emailAuthor)) {
       await Post.updateOne(
-        { _id: id },
+        { _id: id, tenantId },
         { $pull: { likes: emailAuthor } }
       );
       return res.status(200).json({
@@ -1085,7 +1143,7 @@ const postLikes = async (req, res) => {
 
     // Like
     await Post.updateOne(
-      { _id: id },
+      { _id: id, tenantId },
       { $addToSet: { likes: emailAuthor } }
     );
 
@@ -1111,6 +1169,11 @@ checkAndAwardBadges(author.email, ['impact_creator'], {
 // reviewed--------------------------------------------------
 const addPostBookmark = async(req,res)=>{
   try{
+    const tenantId = req?.user?.tenantId;
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
+
     const {email} = req.params;
     const {postId} = req.body;
       // console.log("email",email)
@@ -1122,7 +1185,7 @@ const addPostBookmark = async(req,res)=>{
     }
 
   
-    const author = await Author.findOne({ email: { $eq: email }});
+    const author = await Author.findOne({ email: { $eq: email }, tenantId });
   
     if(!author){
       return res.status(404).json({message:"author not found"})
@@ -1153,6 +1216,11 @@ const addPostBookmark = async(req,res)=>{
 
 const getBookmarkedPosts = async (req, res) => {
   try {
+    const tenantId = req?.user?.tenantId;
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
+
     const { email } = req.params;
     const page  = parseInt(req.query.page)  || 1;
     const limit = parseInt(req.query.limit) || 10;
@@ -1161,7 +1229,7 @@ const getBookmarkedPosts = async (req, res) => {
 
     if (!email) return res.status(400).json({ message: "email required" });
 
-    const author = await Author.findOne({ email: { $eq: email } }).select("postBookmark");
+    const author = await Author.findOne({ email: { $eq: email }, tenantId }).select("postBookmark");
     if (!author) return res.status(404).json({ message: "author not found" });
 
     const postIds = (author.postBookmark || [])
@@ -1173,7 +1241,7 @@ const getBookmarkedPosts = async (req, res) => {
     }
 
     // fix: query Post collection directly with $in — was scanning all authors and looping a.posts (ObjectIds)
-    const postDocs = await Post.find({ _id: { $in: postIds } })
+    const postDocs = await Post.find({ _id: { $in: postIds }, tenantId })
       .populate("authorId", "authorname email profile role community")
       .lean();
 
@@ -1212,9 +1280,14 @@ const getBookmarkedPosts = async (req, res) => {
 //reviewed-----------------------------------------------------
 const getAllBookmarkIds = async (req, res) => {
   try {
+    const tenantId = req?.user?.tenantId;
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
+
     const { email } = req.params;
 
-    const author = await Author.findOne({ email: { $eq: email }}).select("postBookmark");
+    const author = await Author.findOne({ email: { $eq: email }, tenantId }).select("postBookmark");
 
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
@@ -1231,6 +1304,11 @@ const getAllBookmarkIds = async (req, res) => {
 
 const getParticipants = async (req, res) => {
   try {
+    const tenantId = req?.user?.tenantId;
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
+
     const { postId } = req.params;
     // console.log("post called");
 
@@ -1242,7 +1320,7 @@ const getParticipants = async (req, res) => {
       return res.status(400).json({ message: "Invalid postId" });
     }
 
-    const post = await Post.findById(postId).select("messages").lean();
+    const post = await Post.findOne({ _id: postId, tenantId }).select("messages").lean();
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }
@@ -1273,7 +1351,7 @@ const getParticipants = async (req, res) => {
       return res.status(200).json({ message: "No participants found", count: 0, participants: [] });
     }
 
-    const authors = await Author.find({ email: { $in: participantEmails } })
+    const authors = await Author.find({ tenantId, email: { $in: participantEmails } })
       .select("email profile authorname role badges")
       .lean();
 
