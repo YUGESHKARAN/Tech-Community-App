@@ -59,6 +59,11 @@ const { Author } = require('../models/blogAuthorSchema');
 const getContributions = async (req, res) => {
   const { authorId } = req.params;
   const year = Number(req.query.year) || new Date().getFullYear();
+  const tenantId = req?.user?.tenantId;
+
+  if (!tenantId) {
+    return res.status(401).json({ message: 'tenantId required' });
+  }
 
   if (!mongoose.Types.ObjectId.isValid(authorId)) {
     return res.status(400).json({ message: 'Invalid authorId' });
@@ -67,7 +72,7 @@ const getContributions = async (req, res) => {
   try {
     // remove .lean() so Mongoose Map methods are available
     const doc = await UserContributions.findOne(
-      { authorId, year },
+      { authorId, tenantId, year },
       'days totalCount year'
     );
 
@@ -106,17 +111,20 @@ const getContributions = async (req, res) => {
  */
 const getStreakData = async (req, res) => {
   const { authorId } = req.query;
-// const { tenantId, authorId } = req.user;
-  const { authorId:requestingId } = req.user;
+  const { authorId: requestingId, tenantId: requestTenantId } = req.user || {};
+
+  if (!requestTenantId) {
+    return res.status(401).json({ message: 'tenantId required' });
+  }
 
   if (!mongoose.Types.ObjectId.isValid(authorId)) {
     return res.status(400).json({ message: 'Invalid authorId' });
   }
 
   try {
-    const author = await Author.findById(
-      authorId,
-      'currentStreak longestStreak lastActiveDate _id'
+    const author = await Author.findOne(
+      { _id: authorId, tenantId: requestTenantId },
+      'currentStreak longestStreak lastActiveDate _id tenantId'
     ).lean();
 
     if (!author) {
@@ -153,8 +161,13 @@ const getStreakData = async (req, res) => {
  *   { date, totalPts, events: [...], total, page, hasMore }
  */
 const getDailyEvents = async (req, res) => {
-  const { authorId }       = req.params;
+  const { authorId } = req.params;
   const { date, page = 1, limit = 10 } = req.query;
+  const tenantId = req?.user?.tenantId;
+
+  if (!tenantId) {
+    return res.status(401).json({ message: 'tenantId required' });
+  }
 
   if (!mongoose.Types.ObjectId.isValid(authorId)) {
     return res.status(400).json({ message: 'Invalid authorId' });
@@ -169,7 +182,7 @@ const getDailyEvents = async (req, res) => {
   try {
     // use aggregation to paginate the events sub-array efficiently
     const [result] = await DailyEventLog.aggregate([
-      { $match: { authorId: new mongoose.Types.ObjectId(authorId), date } },
+      { $match: { authorId: new mongoose.Types.ObjectId(authorId), tenantId, date } },
       {
         $project: {
           date:     1,
