@@ -895,7 +895,8 @@ const LeaderboardCard = ({
             <option value="overall">Overall</option>
             {Object.keys(months).map((key) => (
               <option key={key} value={key}>
-                {months[key]}
+                {/* {months[key]} */}
+                {key === "current_month" ? "This Month" : months[key]}
               </option>
             ))}
           </select>
