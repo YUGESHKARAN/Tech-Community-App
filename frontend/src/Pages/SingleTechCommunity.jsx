@@ -213,7 +213,7 @@ const CommunityBanner = ({
 
           <div className="flex flex-wrap gap-2 md:gap-4">
             {[
-              { icon: TbUsers, val: (community?.memberCount-undefined) || 0, label: "members" },
+              { icon: TbUsers, val: (community?.memberCount-community.coordinatorsCount) || 0, label: "members" },
               { icon: TbFileText, val: community.postCount, label: "posts" },
               {
                 icon: TbMessageCircle,
@@ -272,6 +272,21 @@ const TabBar = ({ active, theme, onChange }) => {
           {tab}
         </button>
       ))}
+      <button
+        onClick={() => onChange("leaderboard & trends")}
+        className={`lg:hidden px-4 py-2 text-xs font-medium border-b-2 transition-colors ${
+          active === "leaderboard & trends"
+            ? "text-white"
+            : "border-transparent text-gray-400 hover:text-gray-200"
+        }`}
+        style={
+          active === "leaderboard & trends"
+            ? { borderBottomColor: theme || "#34d399" }
+            : {}
+        }
+      >
+        Leaderboard
+      </button>
     </div>
   );
 };
@@ -852,7 +867,7 @@ const LeaderboardCard = ({
   const medalColors = ["#f2994a", "#8f9296", "#cd7f32"];
 
   return (
-    <div className="theme border border-[#1e293b] rounded-xl p-4">
+    <div className="theme w-full border border-[#1e293b] rounded-xl p-4">
       <div className="flex items-center justify-between mb-3">
         <span className="text-xs font-semibold text-gray-200 flex items-center gap-1.5">
           <TbTrophy className="text-amber-400 text-sm" /> Top contributors
@@ -880,7 +895,8 @@ const LeaderboardCard = ({
             <option value="overall">Overall</option>
             {Object.keys(months).map((key) => (
               <option key={key} value={key}>
-                {months[key]}
+                {/* {months[key]} */}
+                {key === "current_month" ? "This Month" : months[key]}
               </option>
             ))}
           </select>
@@ -993,6 +1009,38 @@ const TrendingTagsCard = ({ data, trendingTagLoader }) => {
   );
 };
 
+const CommunityInsights = ({
+  leaderboardData,
+  period,
+  setPeriod,
+  currentUserEmail,
+  leaderboardLoader,
+  trendingTags,
+  trendingTagLoader,
+}) => (
+  <div className="flex flex-col gap-4">
+    {!leaderboardLoader ? (
+      <LeaderboardCard
+        data={leaderboardData}
+        period={period}
+        setPeriod={setPeriod}
+        currentUserEmail={currentUserEmail}
+        leaderboardLoader={leaderboardLoader}
+      />
+    ) : (
+      <TopContributorsSkeleton />
+    )}
+    {!trendingTagLoader ? (
+      <TrendingTagsCard
+        data={trendingTags}
+        trendingTagLoader={trendingTagLoader}
+      />
+    ) : (
+      <TrendingTagsSkeleton />
+    )}
+  </div>
+);
+
 // ─────────────────────────────────────────────────────────────────────────────
 //  PAGE
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1086,7 +1134,7 @@ function SingleTechCommunity() {
   );
 
   useEffect(() => {
-    fetchAuthors();
+    fetchAuthors(communityId);
   }, [communityId]);
 
   const canEditCommunity =
@@ -1209,10 +1257,33 @@ function SingleTechCommunity() {
                 </div>}
               </>
             )}
+            {activeTab === "leaderboard & trends" && (
+              <CommunityInsights
+                leaderboardData={leaderboardData}
+                period={period}
+                setPeriod={setPeriod}
+                currentUserEmail={currentUserEmail}
+                leaderboardLoader={leaderboardLoader}
+                trendingTags={trendingTags}
+                trendingTagLoader={trendingTagLoader}
+              />
+            )}
           </div>
 
+          {/* ── Sidebar — visible on large screens ── */}
+          <div className="hidden lg:block lg:sticky lg:top-4">
+            <CommunityInsights
+              leaderboardData={leaderboardData}
+              period={period}
+              setPeriod={setPeriod}
+              currentUserEmail={currentUserEmail}
+              leaderboardLoader={leaderboardLoader}
+              trendingTags={trendingTags}
+              trendingTagLoader={trendingTagLoader}
+            />
+          </div>
           {/* ── Sidebar — sticky, always visible regardless of tab ── */}
-          <div className="flex flex-col gap-4 lg:sticky lg:top-4">
+          {/* <div className="lg:flex hidden flex-col gap-4 lg:sticky lg:top-4">
             {!leaderboardLoader ? (
               <LeaderboardCard
                 data={leaderboardData}
@@ -1232,7 +1303,7 @@ function SingleTechCommunity() {
             ) : (
               <TrendingTagsSkeleton />
             )}
-          </div>
+          </div> */}
         </div>
       </div>
 
