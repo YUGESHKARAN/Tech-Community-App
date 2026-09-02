@@ -392,7 +392,7 @@ const AuditLogPanel = () => {
           onChange={(e) => setFilter((p) => ({ ...p, tenantId: e.target.value }))}
           className="bg-white/[0.03] border border-[#1e293b] rounded-lg px-3 py-1.5 text-xs text-gray-200 placeholder-gray-600 focus:outline-none focus:border-white/15 w-44" />
         <select value={filter.action} onChange={(e) => setFilter((p) => ({ ...p, action: e.target.value }))}
-          className="bg-white/[0.03] border border-[#1e293b] rounded-lg px-3 py-1.5 text-xs text-gray-200 focus:outline-none focus:border-white/15">
+          className="theme border border-[#1e293b] rounded-lg px-3 py-1.5 text-xs text-gray-200 focus:outline-none focus:border-white/15">
           <option value="">All actions</option>
           {Object.entries(AUDIT_ACTION_LABELS).map(([k, v]) => (
             <option key={k} value={k}>{v}</option>
@@ -567,7 +567,7 @@ const TenantCard = ({ tenant, selected, onSelect, onEdit, onDelete, onToggleActi
       selected ? "border-emerald-500/40 bg-emerald-500/[0.03]" : "border-[#1e293b] hover:border-white/10"
     }`}>
       <div className="flex items-start justify-between gap-2">
-        <div className="flex items-center gap-2">
+        <div className="flex items-start gap-2">
           {/* bulk select checkbox */}
           <button onClick={(e) => { e.stopPropagation(); onSelect(tenant.tenantId); }}
             className="text-gray-600 hover:text-gray-300 transition-colors flex-shrink-0">
@@ -577,7 +577,7 @@ const TenantCard = ({ tenant, selected, onSelect, onEdit, onDelete, onToggleActi
             <TbBuildingSkyscraper className="text-emerald-400 text-base" />
           </div>
           <div className="min-w-0">
-            <h3 className="text-sm font-semibold text-gray-200 truncate">{tenant.name}</h3>
+            <h3 className="text-xs md:text-sm font-semibold text-gray-200 w-11/12 text-wrap truncate">{tenant.name}</h3>
             <code className="text-[10px] text-emerald-400/70">{tenant.tenantId}</code>
           </div>
         </div>
@@ -595,7 +595,7 @@ const TenantCard = ({ tenant, selected, onSelect, onEdit, onDelete, onToggleActi
         {tenant.subdomain && (
           <div className="flex items-center gap-1.5 text-[10px] text-gray-500">
             <TbWorld className="text-xs text-gray-600 flex-shrink-0" />
-            <span>{tenant.subdomain}.bytesbase.me</span>
+            <span>{tenant.subdomain}</span>
             <TbExternalLink className="text-[10px] text-gray-600" />
           </div>
         )}
@@ -640,10 +640,10 @@ const StatsBar = ({ tenants }) => {
         { label: "Active",        value: active,   icon: TbToggleRight,  color: "text-emerald-400" },
         { label: "Inactive",      value: inactive, icon: TbToggleLeft,   color: "text-red-400"    },
       ].map(({ label, value, icon: Icon, color }) => (
-        <div key={label} className="bg-[#0a0f1a] border border-[#1e293b] rounded-xl px-4 py-3 flex items-center gap-3">
+        <div key={label} className="bg-[#0a0f1a] border border-[#1e293b] rounded-xl px-2 md:px-4 md:py-3 py-1 flex items-start md:items-center gap-3">
           <Icon className={`text-xl ${color}`} />
-          <div>
-            <p className="text-lg font-bold text-gray-200">{value}</p>
+          <div className="flex flex-col items-center md:block">
+            <p className="md:text-lg text-xs font-semibold md:font-bold text-gray-200">{value}</p>
             <p className="text-[10px] text-gray-500">{label}</p>
           </div>
         </div>
@@ -809,22 +809,22 @@ function DirectorTenantsPage() {
     <div className="min-h-screen bg-[#060b14] text-white">
 
       {/* ── top bar ── */}
-      <div className="sticky top-0 z-30 bg-[#060b14]/90 backdrop-blur border-b border-[#1e293b] px-6 py-3 flex items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
+      <div className="sticky top-0 z-30 bg-[#060b14]/90 backdrop-blur border-b border-[#1e293b] px-2 md:px-6 py-3 flex items-center justify-evenly md:justify-between md:gap-4">
+        <div className="flex  items-center gap-0.5 md:gap-3">
           <div className="w-7 h-7 rounded-lg bg-emerald-500/15 flex items-center justify-center">
             <TbShield className="text-emerald-400 text-sm" />
           </div>
-          <span className="text-sm font-semibold text-gray-200">Director console</span>
+          <span className="md:text-sm text-xs font-semibold text-gray-200">Director console</span>
           <span className="text-[10px] text-gray-600">·</span>
 
           {/* tab switcher */}
-          <div className="flex gap-1">
+          <div className="flex gap-0.5 md:gap-1">
             {[
               { id: "tenants", label: "Tenants",   icon: TbBuilding  },
               { id: "audit",   label: "Audit log",  icon: TbHistory   },
             ].map(({ id, label, icon: Icon }) => (
               <button key={id} onClick={() => setActiveTab(id)}
-                className={`flex items-center gap-1 text-[10px] font-semibold px-2.5 py-1 rounded-lg transition-colors ${
+                className={`flex items-center gap-0.5 md:gap-1 text-[10px] md:font-semibold px-2 md:px-2.5 py-1 rounded-lg transition-colors ${
                   activeTab === id ? "bg-white/5 text-white" : "text-gray-500 hover:text-gray-300"
                 }`}>
                 <Icon className="text-xs" /> {label}
@@ -835,7 +835,7 @@ function DirectorTenantsPage() {
 
         {activeTab === "tenants" && (
           <button onClick={() => setSlideOver("create")}
-            className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-xl bg-emerald-600 text-white hover:bg-emerald-500 transition-colors">
+            className="flex items-center gap-0.5 md:gap-1.5 text-[10px] md:text-xs md:font-semibold md:px-3 px-2 py-1 md:py-1.5 rounded-xl bg-emerald-600 text-white hover:bg-emerald-500 transition-colors">
             <TbPlus className="text-sm" /> Add tenant
           </button>
         )}
