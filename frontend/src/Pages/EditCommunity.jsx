@@ -584,7 +584,7 @@ const isDirty = useMemo(() => {
 
           {/* Tab bar preview */}
           <div className="flex border-b border-white/5 mt-4 mb-6">
-            {["Discussions", "Feed", "Members"].map((tab, i) => (
+            {["Discussions", "Feed", "Members", "Leaderboard"].map((tab, i) => (
               <div
                 key={tab}
                 className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${
