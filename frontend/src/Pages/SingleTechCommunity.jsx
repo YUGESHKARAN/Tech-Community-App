@@ -213,7 +213,7 @@ const CommunityBanner = ({
 
           <div className="flex flex-wrap gap-2 md:gap-4">
             {[
-              { icon: TbUsers, val: (community?.memberCount-undefined) || 0, label: "members" },
+              { icon: TbUsers, val: (community?.memberCount-community.coordinatorsCount) || 0, label: "members" },
               { icon: TbFileText, val: community.postCount, label: "posts" },
               {
                 icon: TbMessageCircle,
