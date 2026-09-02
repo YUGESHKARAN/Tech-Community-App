@@ -611,7 +611,7 @@ const CellTooltip = ({ day, anchorRect }) => {
 
   return createPortal(
     <div
-      className=" pointer-events-none whitespace-nowrap absolute z-[9999]
+      className=" pointer-events-none hidden md:block whitespace-nowrap absolute z-[9999]
                  bg-[#0f172a] border border-white/10 rounded-lg
                  px-2.5 py-1.5 shadow-xl text-[10px] text-gray-200"
       style={{
