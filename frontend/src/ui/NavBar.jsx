@@ -973,7 +973,7 @@ function NavBar() {
 
 
             {(role==='admin' || role==='director') && 
-            <p className="text-gray-400 pl-2 text-xs font-semibold border-t border-gray-700 mt-1 pt-1">Admin Access</p>
+            <p className="text-gray-400 pl-2 text-xs font-semibold border-t border-gray-700 mt-1 pt-2">Admin Access</p>
             }
           {(role==='admin' || role==='director') && <Link
             onClick={() => {
