@@ -58,13 +58,9 @@ dotenv.config();
 
 const getCategoryAnalytics = async (req, res) => {
   try {
-    let tenantId = req.user.tenantId;
+    const { tenantId } = req.user || {};
     if (!tenantId) {
-      const author = await Author.findOne(
-        { email: req.user.email },
-        'tenantId'
-      );
-      tenantId = author?.tenantId || 'dsu';
+      return res.status(401).json({ message: 'tenantId required' });
     }
 
     const [communities, membershipStats, postCounts] = await Promise.all([
@@ -128,7 +124,12 @@ const getCategoryAnalytics = async (req, res) => {
 const getAppSummary = async (req, res) => {
   const { email } = req.params;
   try {
-    const author = await Author.findOne({ email: { $eq: email } }).select(
+    const { tenantId } = req.user || {};
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
+
+    const author = await Author.findOne({ email: { $eq: email }, tenantId }).select(
       "role",
     );
     if (!author) {
@@ -154,18 +155,18 @@ const getAppSummary = async (req, res) => {
       totalPlaylists,
       totalPosts, // fix: Post.countDocuments() is the source of truth
     ] = await Promise.all([
-      Author.countDocuments(),
-      Author.countDocuments({ role: "student" }),
-      Author.countDocuments({ role: "coordinator" }),
-      Author.countDocuments({ role: "admin" }),
-      TutorPlayList.countDocuments(),
-      Post.countDocuments(), // fix: was Author.aggregate $size "$posts" — fragile after normalization
+      Author.countDocuments({ tenantId }),
+      Author.countDocuments({ tenantId, role: "student" }),
+      Author.countDocuments({ tenantId, role: "coordinator" }),
+      Author.countDocuments({ tenantId, role: "admin" }),
+      TutorPlayList.countDocuments({ tenantId }),
+      Post.countDocuments({ tenantId }), // fix: was Author.aggregate $size "$posts" — fragile after normalization
     ]);
 
     // newThisMonth — unchanged, uses ObjectId timestamp trick correctly
     const newThisMonthAgg = await Author.aggregate([
       { $addFields: { createdAt: { $toDate: "$_id" } } },
-      { $match: { createdAt: { $gte: monthStart, $lt: nextMonthStart } } },
+      { $match: { tenantId, createdAt: { $gte: monthStart, $lt: nextMonthStart } } },
       { $count: "count" },
     ]);
     const newThisMonth = newThisMonthAgg.length ? newThisMonthAgg[0].count : 0;
@@ -191,6 +192,11 @@ const getAppSummary = async (req, res) => {
 const getMonthlyPostCounts = async (req, res) => {
   const requestEmail = req.params.email;
   const requestedYear = req.query.year ? Number(req.query.year) : null;
+  const { tenantId } = req.user || {};
+
+  if (!tenantId) {
+    return res.status(401).json({ message: "tenantId required" });
+  }
 
   if (!requestEmail) {
     return res
@@ -213,6 +219,7 @@ const getMonthlyPostCounts = async (req, res) => {
     // fix: .select('role') — only field needed for the admin check
     const author = await Author.findOne({
       email: { $eq: requestEmail },
+      tenantId,
     }).select("role");
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
@@ -245,7 +252,7 @@ const getMonthlyPostCounts = async (req, res) => {
       // fix: aggregate on Post collection directly — $unwind "$posts" on Author
       // produced bare ObjectIds with no timestamp field, every $match returned nothing
       aggregation = await Post.aggregate([
-        { $match: { timestamp: { $gte: yearStart, $lte: yearEnd } } },
+        { $match: { tenantId, timestamp: { $gte: yearStart, $lte: yearEnd } } },
         { $group: { _id: { $month: "$timestamp" }, count: { $sum: 1 } } },
       ]);
     } else {
@@ -263,7 +270,7 @@ const getMonthlyPostCounts = async (req, res) => {
 
       // fix: same — aggregate on Post collection directly
       aggregation = await Post.aggregate([
-        { $match: { timestamp: { $gte: start, $lte: end } } },
+        { $match: { tenantId, timestamp: { $gte: start, $lte: end } } },
         {
           $group: {
             _id: {
@@ -502,14 +509,18 @@ const getTopContributors = async (req, res) => {
       : 10;
 
   const filter = req.query.filter || "overall";
-  const { tenantId } = req.user;
+  const { tenantId } = req.user || {};
+
+  if (!tenantId) {
+    return res.status(401).json({ message: "tenantId required" });
+  }
 
   if (!requestEmail) {
     return res.status(400).json({ message: "Email is required as path param." });
   }
 
   try {
-    const admin = await Author.findOne({ email: { $eq: requestEmail } }).select("role");
+    const admin = await Author.findOne({ email: { $eq: requestEmail }, tenantId }).select("role");
     if (!admin) return res.status(404).json({ message: "Author not found" });
 
     // ── build date range ──────────────────────────────────────
@@ -561,6 +572,7 @@ const getTopContributors = async (req, res) => {
       {
         $match: {
           $expr: { $eq: ["$authorId", "$$authorId"] },
+          tenantId,
           ...(dateFilter && { timestamp: dateFilter }),
         },
       },
@@ -581,6 +593,7 @@ const getTopContributors = async (req, res) => {
           $expr: {
             $and: [
               { $eq: ["$email", "$$authorEmail"] },
+              { $eq: ["$tenantId", tenantId] },
               ...(dateFilter
                 ? [
                     { $gte: [{ $toDate: "$_id" }, dateRange.start] },
@@ -787,6 +800,11 @@ const getContributors = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const skip = (page - 1) * limit;
+  const { tenantId } = req.user || {};
+
+  if (!tenantId) {
+    return res.status(401).json({ message: "tenantId required" });
+  }
 
   if (!requestEmail) {
     return res
@@ -796,7 +814,7 @@ const getContributors = async (req, res) => {
 
   try {
     // fix: added $eq and .select('role')
-    const admin = await Author.findOne({ email: { $eq: requestEmail } }).select(
+    const admin = await Author.findOne({ email: { $eq: requestEmail }, tenantId }).select(
       "role",
     );
     if (!admin) return res.status(404).json({ message: "Author not found" });
@@ -804,6 +822,7 @@ const getContributors = async (req, res) => {
       return res.status(403).json({ message: "Access denied" });
 
     const contributors = await Author.find({
+      tenantId,
       role: { $in: ["admin", "coordinator"] },
     })
       .select("-password -otp -otpExpiresAt")
@@ -818,11 +837,11 @@ const getContributors = async (req, res) => {
     // counted ObjectId refs which can be stale after failed deletes
     const [playlistCountsByEmail, postCountsByAuthor] = await Promise.all([
       TutorPlayList.aggregate([
-        { $match: { email: { $in: contributorEmails } } },
+        { $match: { tenantId, email: { $in: contributorEmails } } },
         { $group: { _id: "$email", count: { $sum: 1 } } },
       ]),
       Post.aggregate([
-        { $match: { authorId: { $in: contributorIds } } },
+        { $match: { tenantId, authorId: { $in: contributorIds } } },
         { $group: { _id: "$authorId", count: { $sum: 1 } } },
       ]),
     ]);
@@ -852,6 +871,7 @@ const getContributors = async (req, res) => {
     }));
 
     const totalContributors = await Author.countDocuments({
+      tenantId,
       role: { $in: ["admin", "coordinator"] },
     });
 
@@ -874,13 +894,18 @@ const getStudents = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const skip = (page - 1) * limit;
+  const { tenantId } = req.user || {};
+
+  if (!tenantId) {
+    return res.status(401).json({ message: "tenantId required" });
+  }
   if (!requestEmail) {
     return res
       .status(400)
       .json({ message: "Email is required as path param." });
   }
   try {
-    const admin = await Author.findOne({ email: requestEmail });
+    const admin = await Author.findOne({ email: requestEmail, tenantId });
     if (!admin) {
       return res.status(404).json({ message: "Author not found" });
     }
@@ -891,6 +916,7 @@ const getStudents = async (req, res) => {
     // console.log(`getContributors called by ${requestEmail} with page ${page} and limit ${limit}`);
     // Fetch contributors with roles 'admin' or 'coordinator'
     const contributors = await Author.find({
+      tenantId,
       role: { $in: ["student"] },
     })
       .skip(skip)
@@ -920,6 +946,7 @@ const getStudents = async (req, res) => {
 
     // Count total contributors
     const totalStudents = await Author.countDocuments({
+      tenantId,
       role: { $in: ["student"] },
     });
 
@@ -941,6 +968,11 @@ const getCoordinators = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const skip = (page - 1) * limit;
+  const { tenantId } = req.user || {};
+
+  if (!tenantId) {
+    return res.status(401).json({ message: "tenantId required" });
+  }
 
   if (!requestEmail) {
     return res
@@ -950,14 +982,14 @@ const getCoordinators = async (req, res) => {
 
   try {
     // fix: added $eq and .select('role')
-    const admin = await Author.findOne({ email: { $eq: requestEmail } }).select(
+    const admin = await Author.findOne({ email: { $eq: requestEmail }, tenantId }).select(
       "role",
     );
     if (!admin) return res.status(404).json({ message: "Author not found" });
     if (admin.role !== "admin")
       return res.status(403).json({ message: "Access denied" });
 
-    const contributors = await Author.find({ role: { $in: ["coordinator"] } })
+    const contributors = await Author.find({ tenantId, role: { $in: ["coordinator"] } })
       .skip(skip)
       .limit(limit)
       .lean();
@@ -968,12 +1000,12 @@ const getCoordinators = async (req, res) => {
     // fix: run both aggregations in parallel
     const [playlistCountsByEmail, postCountsByAuthor] = await Promise.all([
       TutorPlayList.aggregate([
-        { $match: { email: { $in: contributorEmails } } },
+        { $match: { tenantId, email: { $in: contributorEmails } } },
         { $group: { _id: "$email", count: { $sum: 1 } } },
       ]),
       // fix: true post count from Post collection — contributor.posts.length counted ObjectId refs
       Post.aggregate([
-        { $match: { authorId: { $in: contributorIds } } },
+        { $match: { tenantId, authorId: { $in: contributorIds } } },
         { $group: { _id: "$authorId", count: { $sum: 1 } } },
       ]),
     ]);
@@ -1003,6 +1035,7 @@ const getCoordinators = async (req, res) => {
     }));
 
     const totalCoordinators = await Author.countDocuments({
+      tenantId,
       role: { $in: ["coordinator"] },
     });
 
@@ -1024,6 +1057,11 @@ const getAdmins = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const skip = (page - 1) * limit;
+  const { tenantId } = req.user || {};
+
+  if (!tenantId) {
+    return res.status(401).json({ message: "tenantId required" });
+  }
 
   if (!requestEmail) {
     return res
@@ -1033,14 +1071,14 @@ const getAdmins = async (req, res) => {
 
   try {
     // fix: added $eq and .select('role')
-    const admin = await Author.findOne({ email: { $eq: requestEmail } }).select(
+    const admin = await Author.findOne({ email: { $eq: requestEmail }, tenantId }).select(
       "role",
     );
     if (!admin) return res.status(404).json({ message: "Author not found" });
     if (admin.role !== "admin")
       return res.status(403).json({ message: "Access denied" });
 
-    const contributors = await Author.find({ role: { $in: ["admin"] } })
+    const contributors = await Author.find({ tenantId, role: { $in: ["admin"] } })
       .skip(skip)
       .limit(limit)
       .lean();
@@ -1051,11 +1089,11 @@ const getAdmins = async (req, res) => {
     // fix: run both in parallel + true post count from Post collection
     const [playlistCountsByEmail, postCountsByAuthor] = await Promise.all([
       TutorPlayList.aggregate([
-        { $match: { email: { $in: contributorEmails } } },
+        { $match: { tenantId, email: { $in: contributorEmails } } },
         { $group: { _id: "$email", count: { $sum: 1 } } },
       ]),
       Post.aggregate([
-        { $match: { authorId: { $in: contributorIds } } },
+        { $match: { tenantId, authorId: { $in: contributorIds } } },
         { $group: { _id: "$authorId", count: { $sum: 1 } } },
       ]),
     ]);
@@ -1085,6 +1123,7 @@ const getAdmins = async (req, res) => {
     }));
 
     const totalAdmins = await Author.countDocuments({
+      tenantId,
       role: { $in: ["admin"] },
     });
 
