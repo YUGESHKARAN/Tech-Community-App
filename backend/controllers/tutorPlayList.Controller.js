@@ -31,7 +31,7 @@ const s3 = new S3Client({
 
 const notificationUrl = process.env.NOTIFICATION_URL || "http://localhost:5173";
 
-const resolvePlaylistAuthorProfiles = async (playlists = []) => {
+const resolvePlaylistAuthorProfiles = async (playlists = [], tenantId) => {
   const items = Array.isArray(playlists) ? playlists : [];
   if (items.length === 0) return [];
 
@@ -54,6 +54,7 @@ const resolvePlaylistAuthorProfiles = async (playlists = []) => {
   if (emailSet.size > 0) {
     authorQueries.push(
       Author.find({ email: { $in: Array.from(emailSet) } })
+        .where({ tenantId })
         .select("email profile authorname role badges")
         .lean()
     );
@@ -62,6 +63,7 @@ const resolvePlaylistAuthorProfiles = async (playlists = []) => {
   if (authorIdSet.size > 0) {
     authorQueries.push(
       Author.find({ _id: { $in: Array.from(authorIdSet) } })
+        .where({ tenantId })
         .select("email profile authorname role badges")
         .lean()
     );
@@ -120,7 +122,7 @@ const getAllTutorPlaylist = async (req, res) => {
     const tutorPlaylist = await TutorPlayList.find({ tenantId }).skip(skip).limit(limit);
 
     const count = await TutorPlayList.countDocuments({ tenantId });
-    const normalizedPlaylists = await resolvePlaylistAuthorProfiles(tutorPlaylist);
+    const normalizedPlaylists = await resolvePlaylistAuthorProfiles(tutorPlaylist, tenantId);
 
     // console.log(`playlist page ${page} limit ${limit}`);
 
@@ -319,7 +321,7 @@ const getRecommendedTutorPlaylist = async (req, res) => {
       ? await TutorPlayList.find({ _id: { $in: pageIds }, tenantId }).lean()
       : [];
 
-    const normalizedPagePlaylists = await resolvePlaylistAuthorProfiles(pagePlaylists);
+    const normalizedPagePlaylists = await resolvePlaylistAuthorProfiles(pagePlaylists, tenantId);
     const playlistMap      = new Map(normalizedPagePlaylists.map(p => [p._id.toString(), p]));
     const orderedPlaylists = pageIds.map(id => playlistMap.get(id)).filter(Boolean);
 
@@ -357,7 +359,7 @@ const getPlaylistByEmail = async (req, res) => {
       .lean()
       .skip(skip)
       .limit(limit);
-    const normalizedPlaylists = await resolvePlaylistAuthorProfiles(tutorPlayList);
+    const normalizedPlaylists = await resolvePlaylistAuthorProfiles(tutorPlayList, tenantId);
 
     // if (!tutorPlayList || tutorPlayList.length == 0) {
     //   return res.status(204).json({ message: "Playlist is empty" });
@@ -401,7 +403,7 @@ const getPlaylistById = async (req, res) => {
       return res.status(404).json({ message: "Playlist not found" });
     }
 
-    const normalizedPlayListList = await resolvePlaylistAuthorProfiles([playList]);
+    const normalizedPlayListList = await resolvePlaylistAuthorProfiles([playList], tenantId);
     const normalizedPlayList = normalizedPlayListList[0] || {
       ...playList,
       authorId: playList.authorId || null,
@@ -427,6 +429,7 @@ const getPlaylistById = async (req, res) => {
 
     const postDocs = await Post.find({
       _id: { $in: playlistPostIds },
+      tenantId,
     }).lean();
 
     const postsById = {};
@@ -488,6 +491,7 @@ const addTutorPlayList = async (req, res) => {
 
       collabUsers = await Author.find({
         email: { $in: normalizedEmails },
+        tenantId,
       }).select("authorname email profile");
 
       for (const collabUser of collabUsers) {
@@ -540,7 +544,7 @@ const addTutorPlayList = async (req, res) => {
 
     const playlistId = tutorPlaylist._id;
     const url        = `${notificationUrl}/viewplaylist/${playlistId}`;
-    const [normalizedPlaylist] = await resolvePlaylistAuthorProfiles([tutorPlaylist]);
+    const [normalizedPlaylist] = await resolvePlaylistAuthorProfiles([tutorPlaylist], tenantId);
 
     // respond immediately before sending notifications
     res.status(201).json({ message: "Playlist created successfully", data: normalizedPlaylist });
@@ -559,7 +563,7 @@ const addTutorPlayList = async (req, res) => {
 
       const bulkOps = collabUsers.map(collabUser => ({
         updateOne: {
-          filter: { email: collabUser.email },
+          filter: { email: collabUser.email, tenantId },
           update: {
             $push: {
               notification: {
@@ -682,6 +686,7 @@ const updateTutorPlayList = async (req, res) => {
       // fix: one DB query, $eq-safe $in, missing collaborators silently skipped
       const collabUsers = await Author.find({
         email: { $in: normalizedEmails },
+        tenantId,
       }).select("authorname email profile");
 
       for (const collabUser of collabUsers) {
@@ -698,7 +703,7 @@ const updateTutorPlayList = async (req, res) => {
     playList.collaborators = collaborators;
 
     await playList.save();
-    const [normalizedPlaylist] = await resolvePlaylistAuthorProfiles([playList]);
+    const [normalizedPlaylist] = await resolvePlaylistAuthorProfiles([playList], tenantId);
     res
       .status(200)
       .json({ message: "Playlist updated successfully", data: normalizedPlaylist });
@@ -778,7 +783,7 @@ const getBookmarkedPlaylists = async (req, res) => {
       tenantId,
     }).lean();
 
-    const normalizedPlaylists = await resolvePlaylistAuthorProfiles(playlists);
+    const normalizedPlaylists = await resolvePlaylistAuthorProfiles(playlists, tenantId);
     const map = new Map(normalizedPlaylists.map((p) => [p._id.toString(), p]));
     const orderedPlaylists = playlistIds
       .map((id) => map.get(id))
@@ -803,6 +808,10 @@ const getBookmarkedPlaylists = async (req, res) => {
 const getPostsByAuthorsCategory = async (req, res) => {
   try {
     const { email } = req.params;
+    const { tenantId } = req.user || {};
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
     const category  = decodeURIComponent(req.params.category);
     let { page = 1, limit = 10 } = req.query;
 
@@ -810,7 +819,7 @@ const getPostsByAuthorsCategory = async (req, res) => {
     limit = parseInt(limit);
     const skip = (page - 1) * limit;
 
-    const author = await Author.findOne({ email: { $eq: email } }).select("_id");
+    const author = await Author.findOne({ email: { $eq: email }, tenantId }).select("_id");
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
     }
@@ -818,8 +827,8 @@ const getPostsByAuthorsCategory = async (req, res) => {
     // fix: when category is "all" omit the category filter entirely
     const isAll   = !category || category === "All";
     const filter  = isAll
-      ? { authorId: author._id }
-      : { authorId: author._id, category: { $eq: category } };
+      ? { authorId: author._id, tenantId }
+      : { authorId: author._id, tenantId, category: { $eq: category } };
 
     const [filteredPosts, totalPosts] = await Promise.all([
       Post.find(filter).sort({ timestamp: -1 }).skip(skip).limit(limit).lean(),
@@ -842,9 +851,13 @@ const getPostsByAuthorsCategory = async (req, res) => {
 const getUniqueCategoriesByAuthor = async (req, res) => {
   try {
     const { email } = req.params;
+    const { tenantId } = req.user || {};
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
 
     // only _id needed for the Post query
-    const author = await Author.findOne({ email: { $eq: email } }).select(
+    const author = await Author.findOne({ email: { $eq: email }, tenantId }).select(
       "_id",
     );
     if (!author) {
@@ -855,6 +868,7 @@ const getUniqueCategoriesByAuthor = async (req, res) => {
     // distinct() returns unique values in one query, no in-memory Set needed
     const categories = await Post.distinct("category", {
       authorId: author._id,
+      tenantId,
     });
 
     return res.status(200).json({ categories });
@@ -867,6 +881,10 @@ const getUniqueCategoriesByAuthor = async (req, res) => {
 const getPostsByDomain = async (req, res) => {
   try {
     const { domain } = req.params;
+    const { tenantId } = req.user || {};
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
     const decodedDomain = decodeURIComponent(domain);
     let { page = 1, limit = 10 } = req.query;
 
@@ -877,12 +895,16 @@ const getPostsByDomain = async (req, res) => {
     // fix: query Post collection directly by category — was Author.find({}) full scan
     // populate only the author fields needed for the response shape
     const [posts, totalPosts] = await Promise.all([
-      Post.find({ category: { $eq: decodedDomain } })
-        .populate("authorId", "authorname email profile")
+      Post.find({ tenantId, category: { $eq: decodedDomain } })
+        .populate({
+          path: "authorId",
+          select: "authorname email profile tenantId",
+          match: { tenantId },
+        })
         .skip(skip)
         .limit(limit)
         .lean(),
-      Post.countDocuments({ category: { $eq: decodedDomain } }),
+      Post.countDocuments({ tenantId, category: { $eq: decodedDomain } }),
     ]);
 
     // shape each post to match original response exactly

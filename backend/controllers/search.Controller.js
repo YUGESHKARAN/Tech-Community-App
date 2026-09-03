@@ -12,6 +12,11 @@ dotenv.config();
 
 const getSearchSuggestions = async (req, res) => {
   try {
+    const { tenantId } = req.user || {};
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
+
     const { query } = req.query;
 
     if (!query || query.trim().length === 0) {
@@ -34,26 +39,34 @@ const getSearchSuggestions = async (req, res) => {
     ] = await Promise.all([
       // text index search — relevance ranked
       Post.find(
-        { $text: { $search: trimmedQuery } },
+        { tenantId, $text: { $search: trimmedQuery } },
         { score: { $meta: "textScore" } }
       )
         .select("_id title category image authorId timestamp")
         .sort({ score: { $meta: "textScore" } })
         .limit(5)
-        .populate("authorId", "authorname email profile")
+        .populate({
+          path: "authorId",
+          select: "authorname email profile tenantId",
+          match: { tenantId },
+        })
         .lean(),
 
       // regex search — partial prefix match
-      Post.find({ title: { $regex: searchRegex } })
+      Post.find({ tenantId, title: { $regex: searchRegex } })
         .select("_id title category image authorId timestamp")
         .sort({ timestamp: -1 })
         .limit(5)
-        .populate("authorId", "authorname email profile")
+        .populate({
+          path: "authorId",
+          select: "authorname email profile tenantId",
+          match: { tenantId },
+        })
         .lean(),
 
       // text index search for playlists
       TutorPlayList.find(
-        { $text: { $search: trimmedQuery } },
+        { tenantId, $text: { $search: trimmedQuery } },
         { score: { $meta: "textScore" } }
       )
         .select("_id title domain thumbnail email name")
@@ -62,7 +75,7 @@ const getSearchSuggestions = async (req, res) => {
         .lean(),
 
       // regex search for playlists
-      TutorPlayList.find({ title: { $regex: searchRegex } })
+      TutorPlayList.find({ tenantId, title: { $regex: searchRegex } })
         .select("_id title domain thumbnail email name")
         .sort({ _id: -1 })
         .limit(5)

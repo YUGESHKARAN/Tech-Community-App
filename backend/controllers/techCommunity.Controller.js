@@ -95,6 +95,7 @@ const getCommunityLandingPage = async (req, res) => {
               from: Author.collection.name,
               localField: 'authorId',
               foreignField: '_id',
+              pipeline: [{ $match: { tenantId } }],
               as: 'author',
             },
           },
@@ -230,7 +231,7 @@ const createCommunity = async (req, res) => {
   try {
     // ── permission: admin or director only ──
     const requestingAuthor = await Author.findOne(
-      { _id: authorId },
+      { _id: authorId, tenantId },
       'role'
     ).lean();
 
@@ -317,13 +318,13 @@ await Promise.all([
     { upsert: true, new: true, runValidators: false }
   ),
   Community.updateOne(
-    { _id: community._id },
+    { _id: community._id, tenantId },
     { $inc: { memberCount: 1 } }
   ),
   // dual-write — keep Author.community in sync with CommunityMembership
   // during the transition period (mirrors updateTechCommunity pattern)
   Author.findOneAndUpdate(
-    { _id: authorId },
+    { _id: authorId, tenantId },
     { $addToSet: { community: name.trim() } }, // addToSet prevents duplicates
     { runValidators: false }
   ),
@@ -372,6 +373,7 @@ const getCommunityMembersById = async (req, res) => {
           from: Author.collection.name,
           localField: 'authorId',
           foreignField: '_id',
+          pipeline: [{ $match: { tenantId } }],
           as: 'author',
         },
       },
@@ -517,6 +519,7 @@ const getCommunityPostsByCommunityId = async (req, res) => {
             from: Author.collection.name,
             localField: 'authorId',
             foreignField: '_id',
+            pipeline: [{ $match: { tenantId } }],
             as: 'author',
           },
         },
