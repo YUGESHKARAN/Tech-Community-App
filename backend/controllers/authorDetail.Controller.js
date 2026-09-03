@@ -413,7 +413,10 @@ const addAuthor = async (req, res) => {
 
 const getProfile = async (req, res) => {
   const { page = 1, limit = 20 } = req.query;
-  const { tenantId } = req.user;
+  const { tenantId } = req.user || {};
+  if (!tenantId) {
+    return res.status(401).json({ message: "tenantId required" });
+  }
   const skip = (page - 1) * limit;
 
   try {
@@ -498,10 +501,14 @@ const getProfile = async (req, res) => {
 const getSingleAuthor = async (req, res) => {
   try {
     const { email } = req.params;
+    const { tenantId } = req.user || {};
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
 
-    const author = await Author.findOne({ email: { $eq: email } })
+    const author = await Author.findOne({ email: { $eq: email }, tenantId })
       .select("-password -otp -otpExpiresAt")
-      .populate("posts"); // returns full post documents, not raw IDs
+      .populate({ path: "posts", match: { tenantId } }); // returns tenant-scoped post documents
 
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
@@ -519,12 +526,16 @@ const getSingleAuthor = async (req, res) => {
 const getFollowersFollowing = async (req, res) => {
   try {
     const { email } = req.params;
+    const { tenantId } = req.user || {};
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
     console.log("getFollowersFollowing triggered!");
     if (!email) {
       return res.status(400).json({ message: "Author email required" });
     }
 
-    const author = await Author.findOne({ email: { $eq: email } })
+    const author = await Author.findOne({ email: { $eq: email }, tenantId })
       .select("followers following")
       .lean();
     if (!author) {
@@ -548,7 +559,7 @@ const getFollowersFollowing = async (req, res) => {
 
     const authors =
       uniqueEmails.length > 0
-        ? await Author.find({ email: { $in: uniqueEmails } })
+        ? await Author.find({ email: { $in: uniqueEmails }, tenantId })
             .select("email profile authorname role badges")
             .lean()
         : [];
@@ -587,6 +598,11 @@ const getFollowersFollowing = async (req, res) => {
 // reviewed----------------------------------------------
 const getAuthorsByDomain = async (req, res) => {
   try {
+    const { tenantId } = req.user || {};
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
+
     let { category } = req.params;
     let { page = 1, limit = 20 } = req.query; // ← NEW
     //  console.log("domain page", page, "limit", limit);
@@ -597,6 +613,7 @@ const getAuthorsByDomain = async (req, res) => {
 
     // Filter directly in MongoDB (more efficient)
     const filteredAuthors = await Author.find({
+      tenantId,
       community: { $in: [category] },
     })
       .skip((page - 1) * limit)
@@ -626,6 +643,7 @@ const getAuthorsByDomain = async (req, res) => {
     }));
 
     const total = await Author.countDocuments({
+      tenantId,
       community: { $in: [category] },
     });
 
@@ -643,6 +661,11 @@ const getAuthorsByDomain = async (req, res) => {
 
 const getAllAuthorsByDomain = async (req, res) => {
   try {
+    const { tenantId } = req.user || {};
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
+
     let { category } = req.params;
     category = decodeURIComponent(category);
 
@@ -655,15 +678,16 @@ const getAllAuthorsByDomain = async (req, res) => {
     const isAll = !category || category === "All";
 
     const filter = isAll
-      ? { role: { $in: ["admin", "coordinator"] } }
+      ? { tenantId, role: { $in: ["admin", "coordinator"] } }
       : {
+          tenantId,
           community: { $in: [category] },
           role: { $in: ["admin", "coordinator"] },
         };
 
     const countFilter = isAll
-      ? { role: { $in: ["admin", "coordinator"] } }
-      : { community: { $in: [category] } };
+      ? { tenantId, role: { $in: ["admin", "coordinator"] } }
+      : { tenantId, community: { $in: [category] } };
 
     const [filteredAuthors, total] = await Promise.all([
       Author.find(filter, "authorname email profile")
@@ -693,7 +717,12 @@ const updateAuthor = async (req, res) => {
 
   const isNewProfile = req.file ? `${uuidv4()}-${req.file.originalname}` : null;
   try {
-    const author = await Author.findOne({ email: { $eq: req.params.email } });
+    const { tenantId } = req.user || {};
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
+
+    const author = await Author.findOne({ email: { $eq: req.params.email }, tenantId });
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
     }
@@ -793,7 +822,12 @@ const removePersonalLinks = async (req, res) => {
         .json({ message: "Author email and link Id are required" });
     }
 
-    const author = await Author.findOne({ email: { $eq: authorEmail } });
+    const { tenantId } = req.user || {};
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
+
+    const author = await Author.findOne({ email: { $eq: authorEmail }, tenantId });
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
     }
@@ -822,12 +856,17 @@ const deleteAuthor = async (req, res) => {
   const { password } = req.body;
 
   try {
+    const { tenantId } = req.user || {};
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
+
     if (!email)
       return res.status(400).json({ message: "Author email required" });
     if (!password)
       return res.status(400).json({ message: "Password required" });
 
-    const author = await Author.findOne({ email: { $eq: email } });
+    const author = await Author.findOne({ email: { $eq: email }, tenantId });
     if (!author) return res.status(404).json({ message: "Author not found" });
 
     const isMatch = await author.comparePassword(password);
@@ -845,9 +884,9 @@ const deleteAuthor = async (req, res) => {
     }
 
     // fix: delete all posts belonging to this author (were orphaned before)
-    await Post.deleteMany({ authorId: author._id });
+    await Post.deleteMany({ authorId: author._id, tenantId });
 
-    await Author.deleteOne({ email: author.email });
+    await Author.deleteOne({ email: author.email, tenantId });
 
     // fix: strip sensitive fields before responding
     const { password: _, otp, otpExpiresAt, ...safeAuthor } = author.toObject();
@@ -868,6 +907,10 @@ const deleteAuthorByAdmin = async (req, res) => {
   try {
     const { authorEmail } = req.params;
     const { email, password } = req.body;
+    const { tenantId } = req.user || {};
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
 
     if (!authorEmail)
       return res.status(400).json({ message: "Admin email required" });
@@ -876,7 +919,7 @@ const deleteAuthorByAdmin = async (req, res) => {
     if (!password)
       return res.status(400).json({ message: "Password required" });
 
-    const admin = await Author.findOne({ email: { $eq: authorEmail } });
+    const admin = await Author.findOne({ email: { $eq: authorEmail }, tenantId });
     if (!admin) return res.status(404).json({ message: "Admin not found" });
 
     if (admin.role !== "admin") {
@@ -889,11 +932,11 @@ const deleteAuthorByAdmin = async (req, res) => {
     if (!isMatch)
       return res.status(401).json({ message: "Invalid admin password" });
 
-    const author = await Author.findOneAndDelete({ email: { $eq: email } });
+    const author = await Author.findOneAndDelete({ email: { $eq: email }, tenantId });
     if (!author) return res.status(404).json({ message: "Author not found" });
 
     // fix: delete all posts belonging to this author (were orphaned before)
-    await Post.deleteMany({ authorId: author._id });
+    await Post.deleteMany({ authorId: author._id, tenantId });
 
     // fix: S3 now wrapped in try/catch — author is already deleted, don't crash on S3 failure
     if (author.profile) {
@@ -996,6 +1039,11 @@ const updateFollowers = async (req, res) => {
   try {
     const { email } = req.params; // target being followed
     const { emailAuthor } = req.body; // current logged-in user
+    const { tenantId } = req.user || {};
+
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
 
     console.log("email", email)
     console.log("emailAuthor", emailAuthor)
@@ -1009,7 +1057,7 @@ const updateFollowers = async (req, res) => {
     }
 
     const author = await Author.findOne(
-      { email: { $eq: email } },
+      { email: { $eq: email }, tenantId },
       "followers"
     );
     if (!author) return res.status(404).json({ message: "Author not found" });
@@ -1026,12 +1074,12 @@ const updateFollowers = async (req, res) => {
 
     const [updatedAuthor, updatedFollower] = await Promise.all([
       Author.findOneAndUpdate(
-        { email: { $eq: email } },
+        { email: { $eq: email }, tenantId },
         targetUpdateOp,
         { new: true, runValidators: false }
       ),
       Author.findOneAndUpdate(
-        { email: { $eq: emailAuthor } },
+        { email: { $eq: emailAuthor }, tenantId },
         followerUpdateOp,
         { new: true, runValidators: false }
       ),
@@ -1067,7 +1115,8 @@ const sendOtp = async (req, res) => {
   const { email } = req.body;
 
   try {
-    const user = await Author.findOne({ email: { $eq: email } });
+    const tenant = await resolveTenantFromEmail(email);
+    const user = await Author.findOne({ email: { $eq: email }, tenantId: tenant.tenantId });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -1129,7 +1178,8 @@ const resetPassword = async (req, res) => {
   const { email, otp, newPassword } = req.body;
 
   try {
-    const user = await Author.findOne({ email: { $eq: email } });
+    const tenant = await resolveTenantFromEmail(email);
+    const user = await Author.findOne({ email: { $eq: email }, tenantId: tenant.tenantId });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -1159,7 +1209,12 @@ const resetPassword = async (req, res) => {
 const notificationAuthor = async (req, res) => {
   const { email } = req.params;
   try {
-    const author = await Author.findOne({ email: { $eq: email } });
+    const { tenantId } = req.user || {};
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
+
+    const author = await Author.findOne({ email: { $eq: email }, tenantId });
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
     }
@@ -1182,6 +1237,11 @@ const notificationAuthorDelete = async (req, res) => {
   // console.log("data", req.query);
 
   try {
+    const { tenantId } = req.user || {};
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
+
     if (!email || !notificationId) {
       return res.status(400).json({ message: "email and notificationId are required" });
     }
@@ -1189,6 +1249,7 @@ const notificationAuthorDelete = async (req, res) => {
     const result = await Author.findOneAndUpdate(
       {
         email: { $eq: email },
+        tenantId,
         "notification._id": new mongoose.Types.ObjectId(notificationId),
       },
       {
@@ -1216,12 +1277,17 @@ const notificationAuthorDeleteAll = async (req, res) => {
   const { email } = req.query;
 
   try {
+    const { tenantId } = req.user || {};
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
+
     if (!email) {
       return res.status(400).json({ message: "email is required" });
     }
 
     const result = await Author.findOneAndUpdate(
-      { email: { $eq: email } },
+      { email: { $eq: email }, tenantId },
       { $set: { notification: [] } },
       { new: true, runValidators: false }
     );
@@ -1255,7 +1321,12 @@ const addAnnouncement = async (req, res) => {
   } = req.body;
   // const poster = req.file ? req.file.originalname : "";
   try {
-    const author = await Author.findOne({ email: { $eq: email } });
+    const { tenantId } = req.user || {};
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
+
+    const author = await Author.findOne({ email: { $eq: email }, tenantId });
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
     }
@@ -1335,7 +1406,7 @@ const addAnnouncement = async (req, res) => {
     //   filter.community = { $in: selectedCommunities };
     // }
 
-    let filter = {};
+    let filter = { tenantId };
     if (deliveredTo === "coordinators") {
       // send to coordinators AND admins
       filter.role = { $in: ["coordinator", "admin"] };
@@ -1364,7 +1435,7 @@ const addAnnouncement = async (req, res) => {
     if (recipients.length > 0) {
       const bulkOps = recipients.map((r) => ({
         updateOne: {
-          filter: { email: r.email },
+          filter: { email: r.email, tenantId },
           update: { $push: { announcement: newAnnouncement } },
         },
       }));
@@ -1375,7 +1446,7 @@ const addAnnouncement = async (req, res) => {
     if (recipientEmails.length > 0) {
       const bulkOps = recipientEmails.map((email) => ({
         updateOne: {
-          filter: { email },
+          filter: { email, tenantId },
           update: {
             $push: { notification: newNotification },
           },
@@ -1495,9 +1566,14 @@ const deleteAnnouncement = async (req, res) => {
   const { announcementId } = req.params;
 
   try {
+    const { tenantId } = req.user || {};
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
+
     // Find the author who has the announcement and remove it
     const result = await Author.updateOne(
-      { "announcement._id": announcementId },
+      { tenantId, "announcement._id": announcementId },
       { $pull: { announcement: { _id: announcementId } } },
     );
 
@@ -1521,9 +1597,14 @@ const updateRole = async (req, res) => {
   // console.log("Update role request received:", req.body);
 
   try {
+    const { tenantId } = req.user || {};
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
+
     // console.log("logged");
 
-    const admin = await Author.findOne({ email: { $eq: email } });
+    const admin = await Author.findOne({ email: { $eq: email }, tenantId });
 
     if (!admin) {
       return res.status(404).json({ message: "Admin not found" });
@@ -1535,7 +1616,7 @@ const updateRole = async (req, res) => {
         .json({ message: "You are not allowed to perform this action" });
     }
 
-    const author = await Author.findOne({ email: { $eq: userEmail } });
+    const author = await Author.findOne({ email: { $eq: userEmail }, tenantId });
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
     }
@@ -1743,10 +1824,14 @@ const updateTechCommunity = async (req, res) => {
   const { email, techcommunity } = req.body;
 
   try {
-    const author = await Author.findOne({ email: { $eq: email } });
+    const { tenantId } = req.user || {};
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
+
+    const author = await Author.findOne({ email: { $eq: email }, tenantId });
     if (!author) return res.status(404).json({ message: 'Author not found' });
 
-    const tenantId = author.tenantId;
     const role = GLOBAL_COORDINATOR_ROLES.includes(author.role)
       ? 'coordinator'
       : 'member';
@@ -1787,7 +1872,7 @@ const updateTechCommunity = async (req, res) => {
         Community.updateOne({ _id: community._id }, { $inc: { memberCount: 1 } }),
         // dual-write — addToSet is safe even if already present
         Author.findOneAndUpdate(
-          { email: { $eq: email } },
+          { email: { $eq: email }, tenantId },
           { $addToSet: { community: techcommunity } },
           { runValidators: false }
         ),
@@ -1803,7 +1888,7 @@ const updateTechCommunity = async (req, res) => {
         Community.updateOne({ _id: community._id }, { $inc: { memberCount: -1 } }),
         // dual-write — pull the name from the legacy array
         Author.findOneAndUpdate(
-          { email: { $eq: email } },
+          { email: { $eq: email }, tenantId },
           { $pull: { community: techcommunity } },
           { runValidators: false }
         ),
@@ -1812,7 +1897,7 @@ const updateTechCommunity = async (req, res) => {
 
     // fetch the updated author to return to frontend
     const data = await Author.findOne(
-      { email: { $eq: email } },
+      { email: { $eq: email }, tenantId },
       { password: 0, otp: 0, otpExpiresAt: 0 }
     ).lean();
 
@@ -1834,10 +1919,14 @@ const updateTechCommunityCoordinator = async (req, res) => {
   console.log('communities called', email);
 
   try {
-    const author = await Author.findOne({ email: { $eq: email } });
+    const { tenantId } = req.user || {};
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
+
+    const author = await Author.findOne({ email: { $eq: email }, tenantId });
     if (!author) return res.status(404).json({ message: 'Author not found' });
 
-    const tenantId = author.tenantId;
     const role = GLOBAL_COORDINATOR_ROLES.includes(author.role) ? 'coordinator' : 'member';
 
     if (Array.isArray(techCommunities)) {
@@ -1899,12 +1988,17 @@ const updateTechCommunityCoordinator = async (req, res) => {
 const deleteAllAnnouncements = async (req, res) => {
   try {
     const { email } = req.params;
+    const { tenantId } = req.user || {};
+
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
 
     if (!email) {
       return res.status(400).json({ message: "author email required" });
     }
 
-    const author = await Author.findOne({ email: { $eq: email } });
+    const author = await Author.findOne({ email: { $eq: email }, tenantId });
 
     if (!author) {
       return res.status(404).json({ message: "author not found!" });
@@ -1924,12 +2018,17 @@ const deleteAllAnnouncementByAdmin = async (req, res) => {
   try {
     const { email } = req.params;
     const { password } = req.body;
+    const { tenantId } = req.user || {};
+
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
 
     if (!email) {
       return res.status(400).json({ message: "author email required" });
     }
 
-    const admin = await Author.findOne({ email: { $eq: email } });
+    const admin = await Author.findOne({ email: { $eq: email }, tenantId });
     if (!admin) {
       return res.status(404).json({ message: "Author not found" });
     }
@@ -1946,6 +2045,7 @@ const deleteAllAnnouncementByAdmin = async (req, res) => {
 
     // Collect all poster keys from announcements
     const authorsWithAnnouncements = await Author.find({
+      tenantId,
       "announcement.0": { $exists: true },
     }).select("announcement");
 
@@ -1983,7 +2083,7 @@ const deleteAllAnnouncementByAdmin = async (req, res) => {
 
     // Clear all announcements from DB (remove announcements array for authors who have it)
     await Author.updateMany(
-      { "announcement.0": { $exists: true } },
+      { tenantId, "announcement.0": { $exists: true } },
       { $set: { announcement: [] } },
     );
 
