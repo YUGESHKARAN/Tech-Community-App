@@ -430,7 +430,7 @@ const getCommunityMembersById = async (req, res) => {
 };
 
 const getCommunityPostsByCommunityId = async (req, res) => {
-  const { tenantId, authorId, role: userRole } = req.user;
+  const { tenantId, email, authorId: tokenAuthorId } = req.user || {};
   const { communityId } = req.params;
   let page = parseInt(req.query.page, 10) || 1;
   let limit = parseInt(req.query.limit, 10) || 20;
@@ -446,16 +446,55 @@ const getCommunityPostsByCommunityId = async (req, res) => {
   }
 
   try {
+    if (!tenantId || (!email && !tokenAuthorId)) {
+      return res.status(401).json({ message: 'Authenticated tenant and author are required' });
+    }
+
     const community = await Community.findOne({ _id: communityId, tenantId }).lean();
 
     if (!community) {
       return res.status(404).json({ message: 'Community not found' });
     }
 
-    const membership = await CommunityMembership.findOne({ tenantId, communityId, authorId }).lean();
-    const isAdmin = ['admin', 'director'].includes(userRole);
+    const currentAuthor = await Author.findOne({
+      tenantId,
+      ...(email ? { email } : { _id: tokenAuthorId }),
+    }).select('_id role community').lean();
 
-    if (!membership && !isAdmin) {
+    if (!currentAuthor) {
+      return res.status(404).json({ message: 'Author not found' });
+    }
+
+    const [membership, settings] = await Promise.all([
+      CommunityMembership.findOne({
+        tenantId,
+        communityId,
+        authorId: currentAuthor._id,
+      }).lean(),
+      CommunitySettings.findOne({ tenantId, communityId }, 'whoCanPost').lean(),
+    ]);
+
+    const isAdmin = ['admin', 'director'].includes(currentAuthor.role);
+    const isGlobalCoordinator = currentAuthor.role === 'coordinator';
+    const requiredRole = settings?.whoCanPost || 'coordinator';
+    let canAccess = isAdmin || ['member', 'coordinator'].includes(membership?.role);
+
+    // When discussion creation is open to members, tenant coordinators may
+    // also access posts from communities where they are not enrolled.
+    if (!canAccess && requiredRole === 'member' && isGlobalCoordinator) {
+      canAccess = true;
+    }
+
+    // Support legacy users whose community membership exists only in Author.community.
+    if (!canAccess) {
+      canAccess = Boolean(await Author.exists({
+        _id: currentAuthor._id,
+        tenantId,
+        community: { $in: [community.name, community.slug] },
+      }));
+    }
+
+    if (!canAccess) {
       return res.status(403).json({ message: 'Access denied to community posts' });
     }
 
