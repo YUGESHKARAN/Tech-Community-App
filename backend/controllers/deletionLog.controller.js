@@ -399,7 +399,8 @@ const getDeletionLogs = async (req, res) => {
     }
 
     const [logs, total] = await Promise.all([
-      DeletionLog.find({ tenantId, status })
+      // DeletionLog.find({ tenantId, status })
+      DeletionLog.find({ tenantId })
         .select(
           "-snapshot.author.password -snapshot.author.otp -snapshot.author.otpExpiresAt",
         )
