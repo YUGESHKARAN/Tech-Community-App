@@ -355,7 +355,8 @@ function LogMonitoringPage() {
       </div>
 
       {/* TABLE */}
-    {!loading && logDetails.length>0 ?  <div className="md:mt-4 mt-1 md:border  border-white/10 rounded-2xl overflow-hidden pb-2">
+    {!loading && logDetails.length>0 &&
+    <div className="md:mt-4 mt-1 md:border  border-white/10 rounded-2xl overflow-hidden pb-2">
         {/* HEADER */}
         <div className="hidden lg:grid  grid-cols-[2fr_1fr_1fr_2fr_1.2fr_1.2fr_1.2fr_1.5fr_1fr] px-4 py-3 text-[11px] uppercase tracking-wider text-gray-400 bg-white/[0.03] border-b border-white/10">
           <span>User</span>
@@ -630,7 +631,7 @@ function LogMonitoringPage() {
           })}
         </div>
 
-         {!loading && filteredData.length === 0 && (
+        {!loading && filteredData.length === 0 && (
           <div className="flex  items-center h-64 justify-center">
             <div className="flex flex-col ">
               <img src={logNotFound} alt="" className=" object-cover mx-auto  w-32 h-32" />
@@ -638,6 +639,8 @@ function LogMonitoringPage() {
             </div>
           </div>
         )}
+
+         
 
         {!hasMore && filteredData.length > 0 && (
           <div className="text-center text-[10px] text-gray-400 py-4 col-span-full">
@@ -662,8 +665,16 @@ function LogMonitoringPage() {
             No logs found.
           </div>
         )}
-      </div>: 
-      <LogTableSkeleton /> }
+      </div>}
+    {loading && logDetails.length>0 &&  <LogTableSkeleton /> }
+      {!loading && logDetails.length === 0 && (
+          <div className="flex  items-center h-64 justify-center">
+            <div className="flex flex-col ">
+              <img src={logNotFound} alt="" className=" object-cover mx-auto  w-32 h-32" />
+              <p className="text-center text-gray-500 md:text-gray-400  text-sm mt-0"> No log records !</p>
+            </div>
+          </div>
+        )}
     </div>
   );
 }
