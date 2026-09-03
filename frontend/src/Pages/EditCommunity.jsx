@@ -467,7 +467,7 @@ const updateWhoCanPost = async () => {
     if (res.status === 200) {
       setInitialWhoCanPost(whoCanPost);
 
-      toast.success("Create discussion authorization updated");
+      // toast.success("Create discussion authorization updated");
     }
   } catch (err) {
     console.log("error", err.message);
@@ -523,7 +523,7 @@ const isDirty = useMemo(() => {
       if (res.status === 200) {
         setSaved(true);
         toast.success(
-          "Updated Successfully",
+          "Community Updated",
           "Community updated successfully !",
         );
         setTimeout(() => setSaved(false), 2500);

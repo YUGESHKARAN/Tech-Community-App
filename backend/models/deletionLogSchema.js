@@ -79,7 +79,6 @@ const snapshotPlaylistSchema = new mongoose.Schema({
 const snapshotAuthorSchema = new mongoose.Schema({
   _id:          { type: mongoose.Schema.Types.ObjectId }, // fix: was missing — caused id mismatch on restore
   authorname:   { type: String },
-  tenantId:   { type: String },
   bio:   { type: String },
   email:        { type: String },
   password:     { type: String },
@@ -128,6 +127,12 @@ lastActiveDate: { type: String, default: null },
 
 // ── Main deletion log schema ──────────────────────────────────
 const deletionLogSchema = new mongoose.Schema({
+
+  tenantId: {
+    type:     String,
+    required: true,
+    index:    true,
+  },
 
   // ── who / when / why ────────────────────────────────────────
   deletedAt: {

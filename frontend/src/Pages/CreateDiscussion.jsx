@@ -649,6 +649,28 @@ function CreateDiscussion() {
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+    const [whoCanPost, setWhoCanPost] = useState("");
+
+    const getCommunitySettings = async() => {
+      try{
+
+        const res = await axiosInstance.get(`/bytes/discuss/${communityId}/settings`);
+        if (res.status===200)
+        {
+                  // console.log("res settings data", res.data)
+          setWhoCanPost(res.data.settings?.whoCanPost)
+        }
+
+      }
+      catch(err)
+      {
+        console.log("error fetching community settings", err.message)
+      }
+    }
+
+    useEffect(()=> {
+      getCommunitySettings()
+    },[communityId])
 
   // ── Data state ────────────────────────────────────────────────────────────
   // Replace with real hooks:
@@ -662,6 +684,7 @@ function CreateDiscussion() {
       const res = await axiosInstance.get(`/bytes/discuss/${communityId}/tags`);
       //  console.log("res data", res.data)
       if (res.status === 200) {
+
         setTags(res.data.tags);
       }
     } catch (err) {
@@ -673,7 +696,7 @@ function CreateDiscussion() {
     getTags();
   }, [communityId]);
   // const posts = SAMPLE_POSTS;
-  const whoCanPost = "coordinator"; // swap for settings.whoCanPost
+ // swap for settings.whoCanPost
 
   // ── UI state ──────────────────────────────────────────────────────────────
   const [showPostPanel, setShowPostPanel] = useState(false);
@@ -689,6 +712,7 @@ function CreateDiscussion() {
     fetchCommunityPosts,
     loadMorePosts,
   } = useCommunityPosts(communityId);
+
 
   // close category dropdown on outside click
   useEffect(() => {
@@ -706,6 +730,8 @@ function CreateDiscussion() {
       navigate(`/techCommunityDetails/${communityId}?tab=discussions`);
     }
   }, [isCoordinator, whoCanPost, communityId, navigate]);
+
+  // console.log("whoCanPost", whoCanPost)
 
   // can user create tags?
   const canCreateTag = isCoordinator || whoCanPost === "member";

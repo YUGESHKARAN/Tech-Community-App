@@ -10,12 +10,14 @@ const getYesterdayIST = () => {
   return d.toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
 };
 
-const checkAndUpdateStreak = async (authorId) => {
+const checkAndUpdateStreak = async (authorId, tenantId) => {
+  if (!authorId || !tenantId) return;
+
   const today     = getTodayIST();
   const yesterday = getYesterdayIST();
 
-  const author = await Author.findById(
-    authorId,
+  const author = await Author.findOne(
+    { _id: authorId, tenantId },
     'currentStreak longestStreak lastActiveDate'
   );
   if (!author) return;
@@ -28,7 +30,7 @@ const checkAndUpdateStreak = async (authorId) => {
   const newLongest    = Math.max(newStreak, author.longestStreak || 0);
 
   await Author.updateOne(
-    { _id: authorId },
+    { _id: authorId, tenantId },
     {
       $set: {
         currentStreak:  newStreak,

@@ -46,11 +46,14 @@ const normalizeSnapshotPosts = (posts = []) =>
 
 const buildSnapshot = async (author) => {
   const posts = normalizeSnapshotPosts(
-    await Post.find({ authorId: author._id }).lean()
+    await Post.find({ authorId: author._id, tenantId: author.tenantId }).lean()
   );
 
   // NEW: fetch playlists created by this author (email match)
-  const playlists = await TutorPlayList.find({ email: author.email }).lean();
+  const playlists = await TutorPlayList.find({
+    email: author.email,
+    tenantId: author.tenantId,
+  }).lean();
 
   const authorObj = author.toObject ? author.toObject() : { ...author };
 
@@ -79,6 +82,7 @@ const createDeletionLog = async ({
   const snapshot = await buildSnapshot(authorToDelete);
 
   const log = new DeletionLog({
+    tenantId: authorToDelete.tenantId,
     deletionType,
     deletedBy,
     snapshot,
@@ -154,12 +158,17 @@ const deleteAuthor = async (req, res) => {
   console.log("deleteAuthor called");
 
   try {
+    const { tenantId } = req.user || {};
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
+
     if (!email)
       return res.status(400).json({ message: "Author email required" });
     if (!password)
       return res.status(400).json({ message: "Password required" });
 
-    const author = await Author.findOne({ email: { $eq: email } });
+    const author = await Author.findOne({ email: { $eq: email }, tenantId });
     if (!author) return res.status(404).json({ message: "Author not found" });
 
     const isMatch = await author.comparePassword(password);
@@ -177,10 +186,10 @@ const deleteAuthor = async (req, res) => {
     });
 
     // 2. delete posts
-    await Post.deleteMany({ authorId: author._id });
+    await Post.deleteMany({ authorId: author._id, tenantId });
 
     // 2.5 delete playlists
-    await TutorPlayList.deleteMany({ email: author.email });
+    await TutorPlayList.deleteMany({ email: author.email, tenantId });
 
     // 2.6 sync Community memberCount and remove memberships
     const memberships = await CommunityMembership.find({
@@ -203,7 +212,7 @@ const deleteAuthor = async (req, res) => {
     }
 
     // 3. delete author
-    await Author.deleteOne({ email: author.email });
+    await Author.deleteOne({ email: author.email, tenantId });
 
     const { password: _, otp, otpExpiresAt, ...safeAuthor } = author.toObject();
 
@@ -289,6 +298,11 @@ const deleteAuthorByAdmin = async (req, res) => {
   try {
     const { authorEmail } = req.params;
     const { email, password } = req.body;
+    const { tenantId } = req.user || {};
+
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
 
     if (!authorEmail)
       return res.status(400).json({ message: "Admin email required" });
@@ -297,7 +311,7 @@ const deleteAuthorByAdmin = async (req, res) => {
     if (!password)
       return res.status(400).json({ message: "Password required" });
 
-    const admin = await Author.findOne({ email: { $eq: authorEmail } });
+    const admin = await Author.findOne({ email: { $eq: authorEmail }, tenantId });
     if (!admin) return res.status(404).json({ message: "Admin not found" });
     if (admin.role !== "admin")
       return res.status(403).json({ message: "Access denied" });
@@ -306,7 +320,7 @@ const deleteAuthorByAdmin = async (req, res) => {
     if (!isMatch)
       return res.status(401).json({ message: "Invalid admin password" });
 
-    const author = await Author.findOne({ email: { $eq: email } });
+    const author = await Author.findOne({ email: { $eq: email }, tenantId });
     if (!author) return res.status(404).json({ message: "Author not found" });
 
     // 1. snapshot + log BEFORE deletion
@@ -321,10 +335,10 @@ const deleteAuthorByAdmin = async (req, res) => {
     });
 
     // 2. delete posts
-    await Post.deleteMany({ authorId: author._id });
+    await Post.deleteMany({ authorId: author._id, tenantId });
 
     // 2.5 delete playlists
-    await TutorPlayList.deleteMany({ email: author.email });
+    await TutorPlayList.deleteMany({ email: author.email, tenantId });
 
     // 2.6 sync Community memberCount and remove memberships
     const memberships = await CommunityMembership.find({
@@ -347,7 +361,7 @@ const deleteAuthorByAdmin = async (req, res) => {
     }
 
     // 3. delete author
-    await Author.deleteOne({ email: author.email });
+    await Author.deleteOne({ email: author.email, tenantId });
 
     const { password: _, otp, otpExpiresAt, ...safeAuthor } = author.toObject();
 
@@ -368,12 +382,16 @@ const deleteAuthorByAdmin = async (req, res) => {
 const getDeletionLogs = async (req, res) => {
   try {
     const { adminEmail } = req.params;
+    const { tenantId } = req.user || {};
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 20;
     const status = req.query.status || "deleted"; // filter by status
     const skip = (page - 1) * limit;
 
-    const admin = await Author.findOne({ email: { $eq: adminEmail } }).select(
+    const admin = await Author.findOne({ email: { $eq: adminEmail }, tenantId }).select(
       "role",
     );
     if (!admin || admin.role !== "admin") {
@@ -381,7 +399,7 @@ const getDeletionLogs = async (req, res) => {
     }
 
     const [logs, total] = await Promise.all([
-      DeletionLog.find({})
+      DeletionLog.find({ tenantId, status })
         .select(
           "-snapshot.author.password -snapshot.author.otp -snapshot.author.otpExpiresAt",
         )
@@ -389,7 +407,7 @@ const getDeletionLogs = async (req, res) => {
         .skip(skip)
         .limit(limit)
         .lean(),
-      DeletionLog.countDocuments({}),
+      DeletionLog.countDocuments({ tenantId, status }),
     ]);
 
     // shape for admin view — summary only, not full snapshot
@@ -431,15 +449,22 @@ const getDeletionLogs = async (req, res) => {
 const getDeletionLogById = async (req, res) => {
   try {
     const { adminEmail, logId } = req.params;
+    const { tenantId } = req.user || {};
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
 
-    const admin = await Author.findOne({ email: { $eq: adminEmail } }).select(
+    const admin = await Author.findOne({ email: { $eq: adminEmail }, tenantId }).select(
       "role",
     );
     if (!admin || admin.role !== "admin") {
       return res.status(403).json({ message: "Access denied" });
     }
 
-    const log = await DeletionLog.findById(logId)
+    const log = await DeletionLog.findOne({
+      _id: logId,
+      tenantId,
+    })
       .select(
         "-snapshot.author.password -snapshot.author.otp -snapshot.author.otpExpiresAt",
       )
@@ -613,17 +638,26 @@ const rollbackDeletion = async (req, res) => {
   try {
     const { logId } = req.params;
     const { restoredBy } = req.body;
+    const { tenantId } = req.user || {};
+
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
 
     if (!restoredBy)
       return res.status(400).json({ message: "restoredBy email required" });
 
     const restorer = await Author.findOne({
       email: { $eq: restoredBy },
+      tenantId,
     }).select("role authorname email");
     if (!restorer)
       return res.status(404).json({ message: "Restorer account not found" });
 
-    const log = await DeletionLog.findById(logId);
+    const log = await DeletionLog.findOne({
+      _id: logId,
+      tenantId,
+    });
     if (!log)
       return res.status(404).json({ message: "Deletion log not found" });
 
@@ -690,6 +724,7 @@ const rollbackDeletion = async (req, res) => {
     const authorToInsert = {
       ...rawAuthor,
       _id: authorSnap._id,
+      tenantId,
       notification: [...(rawAuthor.notification || []), newNotification],
       announcement: [...(rawAuthor.announcement || []), newAnnouncement],
     };
@@ -702,7 +737,7 @@ const rollbackDeletion = async (req, res) => {
     if (postsSnap.length > 0) {
       const postDocs = postsSnap.map((p) => {
         const raw = p.toObject ? p.toObject() : { ...p };
-        return { ...raw, _id: p._id, authorId: authorSnap._id };
+        return { ...raw, _id: p._id, authorId: authorSnap._id, tenantId };
       });
       await Post.insertMany(postDocs, { ordered: false });
       await Author.updateOne(
@@ -720,6 +755,7 @@ const rollbackDeletion = async (req, res) => {
           _id: pl._id,
           email: authorSnap.email,
           name: authorSnap.authorname,
+          tenantId,
         };
       });
       await TutorPlayList.insertMany(playlistDocs, { ordered: false });
@@ -728,7 +764,6 @@ const rollbackDeletion = async (req, res) => {
     // restore CommunityMembership from author's community array
     // uses the same role rule: coordinator/admin/director = coordinator, else member
     const GLOBAL_COORDINATOR_ROLES = ['coordinator', 'admin', 'director'];
-    const tenantId = rawAuthor.tenantId;
     const role = GLOBAL_COORDINATOR_ROLES.includes(rawAuthor.role)
       ? 'coordinator'
       : 'member';
@@ -782,16 +817,24 @@ const rollbackDeletion = async (req, res) => {
 const deleteDeletionLog = async (req, res) => {
   try {
     const { adminEmail, logId } = req.params;
+    const { tenantId } = req.user || {};
     console.log("deleteDeletionLog called with:", { adminEmail, logId });
 
-    const admin = await Author.findOne({ email: { $eq: adminEmail } }).select(
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
+
+    const admin = await Author.findOne({ email: { $eq: adminEmail }, tenantId }).select(
       "role",
     );
     if (!admin || admin.role !== "admin") {
       return res.status(403).json({ message: "Access denied" });
     }
 
-    const log = await DeletionLog.findById(logId);
+    const log = await DeletionLog.findOne({
+      _id: logId,
+      tenantId,
+    });
     if (!log)
       return res.status(404).json({ message: "Deletion log not found" });
 
@@ -802,7 +845,10 @@ const deleteDeletionLog = async (req, res) => {
       });
     }
 
-    await DeletionLog.deleteOne({ _id: logId });
+    await DeletionLog.deleteOne({
+      _id: logId,
+      tenantId,
+    });
 
     return res.status(200).json({
       message: "Deletion log permanently removed",
@@ -824,9 +870,15 @@ const deleteDeletionLog = async (req, res) => {
 const getMyDeletionLog = async (req, res) => {
   try {
     const { email } = req.params;
+    const { tenantId } = req.user || {};
+
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
 
     const log = await DeletionLog.findOne({
       "snapshot.author.email": { $eq: email },
+      tenantId,
       status: "deleted",
     })
       .select(
@@ -865,15 +917,23 @@ const getMyDeletionLog = async (req, res) => {
 const expireDeletionLog = async (req, res) => {
   try {
     const { adminEmail, logId } = req.params;
+    const { tenantId } = req.user || {};
 
-    const admin = await Author.findOne({ email: { $eq: adminEmail } }).select(
+    if (!tenantId) {
+      return res.status(401).json({ message: "tenantId required" });
+    }
+
+    const admin = await Author.findOne({ email: { $eq: adminEmail }, tenantId }).select(
       "role",
     );
     if (!admin || admin.role !== "admin") {
       return res.status(403).json({ message: "Access denied" });
     }
 
-    const log = await DeletionLog.findById(logId);
+    const log = await DeletionLog.findOne({
+      _id: logId,
+      tenantId,
+    });
     if (!log) return res.status(404).json({ message: "Log not found" });
 
     if (log.status === "restored") {

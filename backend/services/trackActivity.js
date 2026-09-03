@@ -97,7 +97,7 @@ const trackActivity = async ({ authorId, tenantId, date, event }) => {
     ),
   ]);
 
-  checkAndUpdateStreak(authorId)
+  checkAndUpdateStreak(authorId, tenantId)
     .catch((err) => console.error('checkAndUpdateStreak error:', err.message));
 };
 

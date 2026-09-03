@@ -30,8 +30,11 @@ const useCommunityPosts = (communityId, initialPage = 1, limit = 5, enabled = tr
       setTotalPages(data.totalPages || 1);
       setHasMore(Boolean(data.hasMore));
     } catch (err) {
+        console.log("post fetcing error", err.message)
       if (err.name !== 'AbortError') {
         setError(err);
+
+      
       }
     } finally {
       setIsLoading(false);

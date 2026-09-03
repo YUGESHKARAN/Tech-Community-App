@@ -34,8 +34,8 @@ const getUserCommunityRole = async (tenantId, communityId, authorId) => {
  * Resolves the global Author role for cases where admin/director
  * privileges override community-level checks.
  */
-const getGlobalRole = async (authorId) => {
-  const author = await Author.findById(authorId, "role").lean();
+const getGlobalRole = async (tenantId, authorId) => {
+  const author = await Author.findOne({ _id: authorId, tenantId }, "role").lean();
   return author?.role || null;
 };
 
@@ -43,9 +43,9 @@ const getGlobalRole = async (authorId) => {
  * Batch-resolves which discussion/reply IDs the current user has upvoted.
  * Returns a Set of targetId strings.
  */
-const getUpvotedSet = async (targetIds, authorId) => {
+const getUpvotedSet = async (targetIds, authorId, tenantId) => {
   const votes = await Upvote.find(
-    { targetId: { $in: targetIds }, authorId },
+    { tenantId, targetId: { $in: targetIds }, authorId },
     "targetId",
   ).lean();
   return new Set(votes.map((v) => v.targetId.toString()));
@@ -135,7 +135,7 @@ const updateWhoCanPost = async (req, res) => {
         .json({ message: "whoCanPost must be 'coordinator' or 'member'" });
     }
 
-    const globalRole = await getGlobalRole(authorId);
+    const globalRole = await getGlobalRole(tenantId, authorId);
     const communityRole = await getUserCommunityRole(
       tenantId,
       communityId,
@@ -351,17 +351,32 @@ const createDiscussion = async (req, res) => {
         .json({ message: "category, title, and body are required" });
     }
 
-    // resolve permission from settings
-    const [settings, communityRole] = await Promise.all([
+    // resolve permission from settings and the authoritative membership record
+    const [settings, communityRole, community, globalRole] = await Promise.all([
       CommunitySettings.findOne({ tenantId, communityId }, "whoCanPost").lean(),
       getUserCommunityRole(tenantId, communityId, authorId),
+      Community.findOne({ _id: communityId, tenantId }, "name slug").lean(),
+      getGlobalRole(tenantId, authorId),
     ]);
 
     const requiredRole = settings?.whoCanPost || "coordinator";
+    let isCommunityMember = ["member", "coordinator"].includes(communityRole);
+
+    // Existing accounts may still have membership only in the legacy
+    // Author.community array until their CommunityMembership row is created.
+    if (!isCommunityMember && requiredRole === "member" && community) {
+      const legacyMember = await Author.exists({
+        _id: authorId,
+        tenantId,
+        community: { $in: [community.name, community.slug] },
+      });
+      isCommunityMember = Boolean(legacyMember);
+    }
 
     const canPost =
       communityRole === "coordinator" ||
-      (requiredRole === "member" && communityRole === "member");
+      (requiredRole === "member" &&
+        (isCommunityMember || COORDINATOR_ROLES.includes(globalRole)));
 
     if (!canPost) {
       return res.status(403).json({
@@ -503,7 +518,8 @@ const getDiscussions = async (req, res) => {
           select: "image title description authorId",
           populate: {
             path: "authorId",
-            select: "email authorname",
+            select: "email authorname tenantId",
+            match: { tenantId },
           },
         })
         .lean(),
@@ -511,7 +527,7 @@ const getDiscussions = async (req, res) => {
     ]);
 
     const discussionIds = discussions.map((d) => d._id);
-    const upvotedSet = await getUpvotedSet(discussionIds, authorId);
+    const upvotedSet = await getUpvotedSet(discussionIds, authorId, tenantId);
 
     const result = discussions.map((d) => ({
       ...d,
@@ -607,7 +623,8 @@ const getDiscussionById = async (req, res) => {
           select: "image title description authorId",
           populate: {
             path: "authorId",
-            select: "email authorname",
+            select: "email authorname tenantId",
+            match: { tenantId },
           },
         })
         .populate("solvedReplyId", "body authorId")
@@ -652,7 +669,7 @@ const getDiscussionById = async (req, res) => {
       ...topLevelIds,
       ...nestedReplies.map((r) => r._id),
     ];
-    const upvotedSet = await getUpvotedSet(allIds, authorId); // fix: authorId now correct
+    const upvotedSet = await getUpvotedSet(allIds, authorId, tenantId); // fix: authorId now correct
 
     const repliesWithMeta = topLevelReplies.map((r) => ({
       ...r,
@@ -739,7 +756,7 @@ const updateDiscussion = async (req, res) => {
     if (linkedPostId !== undefined) update.linkedPostId = linkedPostId || null;
 
     const updated = await Discussion.findByIdAndUpdate(
-      discussionId,
+      { _id: discussionId, tenantId, communityId },
       { $set: update },
       { new: true, runValidators: true },
     ).lean();
@@ -787,9 +804,10 @@ const deleteDiscussion = async (req, res) => {
       .then((docs) => docs.map((d) => d._id));
 
     await Promise.all([
-      Discussion.deleteOne({ _id: discussionId }),
+      Discussion.deleteOne({ _id: discussionId, tenantId, communityId }),
       DiscussionReply.deleteMany({ tenantId, discussionId }),
       Upvote.deleteMany({
+        tenantId,
         targetId: { $in: [discussionId, ...replyIds] },
       }),
     ]);
@@ -834,7 +852,7 @@ const pinDiscussion = async (req, res) => {
       return res.status(404).json({ message: "Discussion not found" });
 
     const updated = await Discussion.findByIdAndUpdate(
-      discussionId,
+      { _id: discussionId, tenantId, communityId },
       { $set: { isPinned: !discussion.isPinned } },
       { new: true },
     ).lean();
@@ -885,7 +903,7 @@ const markSolved = async (req, res) => {
 
     const [updated] = await Promise.all([
       Discussion.findByIdAndUpdate(
-        discussionId,
+        { _id: discussionId, tenantId, communityId },
         {
           $set: {
             isSolved: isSolving,
@@ -897,14 +915,14 @@ const markSolved = async (req, res) => {
 
       isSolving
         ? DiscussionReply.findByIdAndUpdate(
-            solvedReplyId,
+          { _id: solvedReplyId, tenantId, discussionId },
             { $set: { isAnswer: true } },
             { runValidators: false },
           )
         : // unmark: clear the previous answer flag if there was one
           discussion.solvedReplyId
           ? DiscussionReply.findByIdAndUpdate(
-              discussion.solvedReplyId,
+              { _id: discussion.solvedReplyId, tenantId, discussionId },
               { $set: { isAnswer: false } },
               { runValidators: false },
             )
@@ -953,9 +971,9 @@ const updateDiscussionUpvote = async (req, res) => {
 
     if (existingUpvote) {
       action = "removed";
-      await Upvote.deleteOne({ _id: existingUpvote._id });
+      await Upvote.deleteOne({ _id: existingUpvote._id, tenantId });
       updated = await Discussion.findByIdAndUpdate(
-        discussionId,
+        { _id: discussionId, tenantId, communityId },
         { $inc: { upvoteCount: -1 } },
         { new: true },
       ).lean();
@@ -968,7 +986,7 @@ const updateDiscussionUpvote = async (req, res) => {
         authorId,
       });
       updated = await Discussion.findByIdAndUpdate(
-        discussionId,
+        { _id: discussionId, tenantId, communityId },
         { $inc: { upvoteCount: 1 } },
         { new: true },
       ).lean();
@@ -982,7 +1000,7 @@ const updateDiscussionUpvote = async (req, res) => {
 
     if (updated.upvoteCount < 0) {
       updated = await Discussion.findByIdAndUpdate(
-        discussionId,
+        { _id: discussionId, tenantId, communityId },
         { $set: { upvoteCount: 0 } },
         { new: true },
       ).lean();
@@ -995,7 +1013,7 @@ const updateDiscussionUpvote = async (req, res) => {
   } catch (err) {
     if (err.code === 11000) {
       const updated = await Discussion.findById(
-        discussionId,
+        { _id: discussionId, tenantId, communityId },
         "upvoteCount",
       ).lean();
       return res.status(200).json({
@@ -1148,11 +1166,11 @@ const createReply = async (req, res) => {
       }),
       Community.findOne({ _id: communityId, tenantId }, "name").lean(),
       !parentReplyId
-        ? Discussion.findByIdAndUpdate(discussionId, { $inc: { replyCount: 1 } })
+        ? Discussion.findOneAndUpdate({ _id: discussionId, tenantId, communityId }, { $inc: { replyCount: 1 } })
         : Promise.resolve(),
     ]);
 
-    const populated = await DiscussionReply.findById(reply._id)
+    const populated = await DiscussionReply.findOne({ _id: reply._id, tenantId })
       .populate("authorId", "authorname profile email badges")
       .lean();
 
@@ -1227,7 +1245,7 @@ const getReplies = async (req, res) => {
     }
 
     const allIds = [...topLevelIds, ...nestedReplies.map((r) => r._id)];
-    const upvotedSet = await getUpvotedSet(allIds, authorId);
+    const upvotedSet = await getUpvotedSet(allIds, authorId, tenantId);
 
     const result = topLevelReplies.map((r) => ({
       ...r,
@@ -1318,14 +1336,14 @@ const deleteReply = async (req, res) => {
       : [];
 
     await Promise.all([
-      DiscussionReply.deleteOne({ _id: replyId }),
+      DiscussionReply.deleteOne({ _id: replyId, tenantId, discussionId }),
       nestedIds.length
-        ? DiscussionReply.deleteMany({ _id: { $in: nestedIds } })
+        ? DiscussionReply.deleteMany({ _id: { $in: nestedIds }, tenantId, discussionId })
         : Promise.resolve(),
-      Upvote.deleteMany({ targetId: { $in: [replyId, ...nestedIds] } }),
+      Upvote.deleteMany({ tenantId, targetId: { $in: [replyId, ...nestedIds] } }),
       // decrement replyCount only for top-level deletions
       isTopLevel
-        ? Discussion.findByIdAndUpdate(discussionId, {
+        ? Discussion.findOneAndUpdate({ _id: discussionId, tenantId, communityId }, {
             $inc: { replyCount: -1 },
           })
         : Promise.resolve(),
@@ -1333,7 +1351,7 @@ const deleteReply = async (req, res) => {
 
     // if this was the accepted answer, unmark the discussion as solved
     if (reply.isAnswer) {
-      await Discussion.findByIdAndUpdate(discussionId, {
+      await Discussion.findOneAndUpdate({ _id: discussionId, tenantId, communityId }, {
         $set: { isSolved: false, solvedReplyId: null },
       });
     }
@@ -1408,11 +1426,22 @@ const deleteReply = async (req, res) => {
 // };
 
 const updateUpvoteReply = async (req, res) => {
-  const { replyId } = req.params;
+  const { communityId, discussionId, replyId } = req.params;
   const { tenantId, authorId } = req.user;
 
   try {
+    const reply = await DiscussionReply.findOne({
+      _id: replyId,
+      tenantId,
+      communityId,
+      discussionId,
+    }).select("_id upvoteCount");
+    if (!reply) {
+      return res.status(404).json({ message: "Reply not found" });
+    }
+
     const existing = await Upvote.findOne({
+      tenantId,
       targetId: replyId,
       targetType: "reply",
       authorId,
@@ -1420,10 +1449,10 @@ const updateUpvoteReply = async (req, res) => {
 
     if (existing) {
       // already upvoted — remove it
-      await Upvote.deleteOne({ _id: existing._id });
+      await Upvote.deleteOne({ _id: existing._id, tenantId });
 
-      const updated = await DiscussionReply.findByIdAndUpdate(
-        replyId,
+      const updated = await DiscussionReply.findOneAndUpdate(
+        { _id: replyId, tenantId, communityId, discussionId },
         { $inc: { upvoteCount: -1 } },
         { new: true },
       ).lean();
@@ -1442,8 +1471,8 @@ const updateUpvoteReply = async (req, res) => {
       authorId,
     });
 
-    const updated = await DiscussionReply.findByIdAndUpdate(
-      replyId,
+    const updated = await DiscussionReply.findOneAndUpdate(
+      { _id: replyId, tenantId, communityId, discussionId },
       { $inc: { upvoteCount: 1 } },
       { new: true },
     ).lean();
