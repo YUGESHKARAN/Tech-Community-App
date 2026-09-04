@@ -867,7 +867,7 @@ const LeaderboardCard = ({
   const medalColors = ["#f2994a", "#8f9296", "#cd7f32"];
 
   return (
-    <div className="theme w-full border border-[#1e293b] rounded-xl p-4">
+    <div className="theme  w-full border border-[#1e293b] rounded-xl p-4">
       <div className="flex items-center justify-between mb-3">
         <span className="text-xs font-semibold text-gray-200 flex items-center gap-1.5">
           <TbTrophy className="text-amber-400 text-sm" /> Top contributors
@@ -1018,7 +1018,7 @@ const CommunityInsights = ({
   trendingTags,
   trendingTagLoader,
 }) => (
-  <div className="flex flex-col gap-4">
+  <div className="flex flex-col mx-2.5 gap-4">
     {!leaderboardLoader ? (
       <LeaderboardCard
         data={leaderboardData}
