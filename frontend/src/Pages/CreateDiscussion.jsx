@@ -39,6 +39,7 @@ import userPlaceholder from "../images/user.png";
 import toast from "../components/toaster/Toast";
 import useCommunityPosts from "../hooks/SingleTechDomain/useCommunityPosts";
 import getTimeAgo from "../components/DateCovertion";
+import RenderTextWithHashtags from "../components/RenderTextWithHashtags";
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 const S3 = "https://open-access-blog-image.s3.us-east-1.amazonaws.com/";
@@ -293,17 +294,36 @@ const MarkdownEditor = ({ value, onChange }) => {
           onChange={(e) => onChange(e.target.value)}
           placeholder={`Write your discussion body here...\n\nSupports **bold**, *italic*, \`code\`, headings, lists, and code blocks.`}
           rows={14}
-          className="w-full bg-transparent px-4 py-3 text-sm text-gray-200 placeholder-gray-600 resize-y focus:outline-none font-mono leading-relaxed"
+          className="w-full bg-transparent px-4 py-3 emerald-scrollbar text-sm text-gray-200 placeholder-gray-600 resize-y focus:outline-none font-mono leading-relaxed"
         />
       ) : (
-        <div
-          className="px-4 py-3 min-h-[200px] prose-discussion"
-          dangerouslySetInnerHTML={{
-            __html: value.trim()
-              ? renderMarkdown(value)
-              : '<p class="md-p text-gray-600">Nothing to preview yet.</p>',
-          }}
-        />
+        // <div
+        //   className="px-4 py-3 min-h-[200px] prose-discussion"
+        //   dangerouslySetInnerHTML={{
+        //     __html: value.trim()
+        //       ? renderMarkdown(value)
+        //       : '<p class="md-p text-gray-600">Nothing to preview yet.</p>',
+        //   }}
+        // />
+
+         <p
+                      className="
+                        prose
+                        md:prose-invert
+                        md:max-w-none
+                        px-4 py-3 min-h-[200px]  prose-discussion
+                        md:prose-p:text-gray-300
+                         break-words
+                        md:prose-p:md:leading-6
+                        md:prose-p:text-sm
+                        prose-headings:text-white
+                      "
+                    >
+                      {/* {renderTextWithHashtags(singlePostData.description)} */}
+                      <RenderTextWithHashtags
+                        text={value}
+                      />
+                    </p>
       )}
 
       <div className="flex items-center justify-between px-4 py-2 border-t border-[#1e293b]">
