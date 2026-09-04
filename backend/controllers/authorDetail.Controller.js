@@ -1115,8 +1115,9 @@ const sendOtp = async (req, res) => {
   const { email } = req.body;
 
   try {
-    const tenant = await resolveTenantFromEmail(email);
-    const user = await Author.findOne({ email: { $eq: email }, tenantId: tenant.tenantId });
+    // const tenant = await resolveTenantFromEmail(email);
+    // const user = await Author.findOne({ email: { $eq: email }, tenantId: tenant.tenantId });
+    const user = await Author.findOne({ email: { $eq: email }});
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -1178,8 +1179,9 @@ const resetPassword = async (req, res) => {
   const { email, otp, newPassword } = req.body;
 
   try {
-    const tenant = await resolveTenantFromEmail(email);
-    const user = await Author.findOne({ email: { $eq: email }, tenantId: tenant.tenantId });
+    // const tenant = await resolveTenantFromEmail(email);
+    // const user = await Author.findOne({ email: { $eq: email }, tenantId: tenant.tenantId });
+    const user = await Author.findOne({ email: { $eq: email }});
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
