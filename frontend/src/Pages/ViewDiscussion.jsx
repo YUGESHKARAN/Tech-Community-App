@@ -50,129 +50,8 @@ const CATEGORY_COLORS = {
   },
 };
 
-const timeAgo = (d) => {
-  const diff = Date.now() - new Date(d).getTime();
-  const m = Math.floor(diff / 60000);
-  if (m < 60) return `${m}m ago`;
-  const h = Math.floor(m / 60);
-  if (h < 24) return `${h}h ago`;
-  return `${Math.floor(h / 24)}d ago`;
-};
 
-// ── Sample data (replace with useGetDiscussionById hook) ──────────────────────
-const SAMPLE_DISCUSSION = {
-  _id: "disc001",
-  communityId: "66f1a2b3c4d5e6f7a8b9c0d1",
-  category: "qa",
-  title: "Why does my LoRA fine-tune overfit after 3 epochs?",
-  body: `I've been fine-tuning a 7B model using LoRA with r=16, alpha=32. After epoch 3 the validation loss starts climbing but training loss keeps dropping.
 
-My current setup:
-- Dataset: ~4,000 instruction pairs
-- Learning rate: 2e-4 with cosine schedule
-- Batch size: 4 with gradient accumulation of 8
-
-Has anyone dealt with this? Is it a data quality issue or is my r value too high?`,
-  authorId: {
-    _id: "auth002",
-    authorName: "haricharan_1133",
-    profile: "",
-    email: "haricharanuggirala1133@gmail.com",
-    badges: [{ badgeId: "b1" }],
-  },
-  tags: [
-    { _id: "tag001", name: "fine-tuning", color: "#0d9488" },
-    { _id: "tag002", name: "lora", color: "#7c3aed" },
-  ],
-  isPinned: true,
-  isSolved: true,
-  solvedReplyId: "reply003",
-  upvoteCount: 24,
-  replyCount: 3,
-  views: Array(48).fill(""),
-  hasVoted: false,
-  createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-};
-
-const SAMPLE_REPLIES = [
-  {
-    _id: "reply001",
-    discussionId: "disc001",
-    authorId: {
-      _id: "auth001",
-      authorName: "Yugesh Karan",
-      profile: "",
-      email: "yugeshkaran01@gmail.com",
-      badges: [{ badgeId: "b1" }, { badgeId: "b2" }],
-    },
-    body: `Classic overfitting signal. A few things to try:
-
-1. **Lower your rank** — r=16 is on the higher side for 4k samples. Try r=4 or r=8.
-2. **Add dropout** — set \`lora_dropout=0.05\` in your LoraConfig.
-3. **Early stopping** — if you're not already using it, stop at validation loss minimum.
-
-The data size is the main constraint here. 4k pairs is enough for task adaptation but leaves little room for high-rank LoRA without regularisation.`,
-    parentReplyId: null,
-    isAnswer: false,
-    upvoteCount: 12,
-    hasVoted: true,
-    createdAt: new Date(Date.now() - 90 * 60 * 1000).toISOString(),
-    nestedReplies: [
-      {
-        _id: "nested001",
-        authorId: {
-          _id: "auth002",
-          authorName: "haricharan_1133",
-          profile: "",
-          email: "haricharanuggirala1133@gmail.com",
-          badges: [],
-        },
-        body: "Tried r=8 with dropout=0.05 — validation loss is stable now after 5 epochs. Thank you!",
-        parentReplyId: "reply001",
-        isAnswer: false,
-        upvoteCount: 3,
-        hasVoted: false,
-        createdAt: new Date(Date.now() - 60 * 60 * 1000).toISOString(),
-      },
-    ],
-  },
-  {
-    _id: "reply002",
-    discussionId: "disc001",
-    authorId: {
-      _id: "auth003",
-      authorName: "Kumaran",
-      profile: "",
-      email: "kumaranv.set2022@dsuniversity.ac.in",
-      badges: [],
-    },
-    body: "Also worth checking your data quality — duplicate or near-duplicate instruction pairs will cause the model to memorise rather than generalise. Run a dedup pass with MinHash LSH before training.",
-    parentReplyId: null,
-    isAnswer: false,
-    upvoteCount: 8,
-    hasVoted: false,
-    createdAt: new Date(Date.now() - 80 * 60 * 1000).toISOString(),
-    nestedReplies: [],
-  },
-  {
-    _id: "reply003",
-    discussionId: "disc001",
-    authorId: {
-      _id: "auth004",
-      authorName: "ajayvarsanr",
-      profile: "",
-      email: "ajayvarsan2020@gmail.com",
-      badges: [],
-    },
-    body: `The combination of r=8 + dropout + data dedup sorted it for me on a similar setup. One more thing: make sure you're evaluating on a **held-out** set that wasn't seen during any preprocessing step, otherwise validation loss can look artificially good.`,
-    parentReplyId: null,
-    isAnswer: true,
-    upvoteCount: 19,
-    hasVoted: false,
-    createdAt: new Date(Date.now() - 70 * 60 * 1000).toISOString(),
-    nestedReplies: [],
-  },
-];
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  SMALL SHARED COMPONENTS
@@ -674,10 +553,10 @@ const ReplyCard = ({
 
   return (
     <div
-      className={`theme border rounded-xl p-4 transition-all ${
+      className={`border rounded-xl p-4 transition-all ${
         isAccepted
-          ? "border-emerald-500/30 bg-emerald-500/[0.03]"
-          : "border-[#1e293b]"
+          ? "border-2 border-emerald-500/30 bg-emerald-500/[0.03]"
+          : "border-[#1e293b] theme"
       }`}
     >
       <div className="flex gap-3">
