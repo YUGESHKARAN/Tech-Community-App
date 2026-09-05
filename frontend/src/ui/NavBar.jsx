@@ -353,14 +353,16 @@ function NavBar() {
 
   return (
     <div
-      className="
-      flex items-center width-max mx-auto justify-between
+      className={`
+        flex items-center width-max mx-auto justify-between
       w-full h-16 px-3 pl-4 md:px-6
       border-b border-slate-700/50
       shadow-sm
       z-100
 
-      "
+      ${isImpersonating() ? "mt-10" : "mt"}
+      
+      `}
     >
       {/* ================= LEFT (LOGO) ================= */}
       <div className="flex shrink-0 items-center mr-1 md:mr-0 gap-3 w-1/4 md:w-1/5">
@@ -1082,6 +1084,7 @@ import { House } from "lucide-react";
 import formatCount from "../utils/NumberConversion";
 import RecentVisit from "../components/RecentVisit";
 import { AiOutlineUsergroupAdd } from "react-icons/ai";
+import { isImpersonating } from "../hooks/director/Useimpersonation";
 
 function NavIconDesktop({ to, icon, label }) {
   const location = useLocation();
