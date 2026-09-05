@@ -1,6 +1,6 @@
 const { Author, Post } = require("../models/blogAuthorSchema");
-const Community = require('../models/communitySchema');
-const CommunityMembership = require('../models/communityMembershipSchema');
+const Community = require("../models/communitySchema");
+const CommunityMembership = require("../models/communityMembershipSchema");
 
 const mongoose = require("mongoose");
 // s3 integration
@@ -218,14 +218,15 @@ const sendRegistrationOTP = async (req, res) => {
 
   if (!tenant.active) {
     return res.status(403).json({
-      message: "Your institution's access to BytesBase has been suspended. Contact your administrator.",
+      message:
+        "Your institution's access to BytesBase has been suspended. Contact your administrator.",
     });
   }
 
   try {
     // ── 3. check if already registered (tenant-scoped) ──
     const authorExist = await Author.findOne({
-      email:    { $eq: email },
+      email: { $eq: email },
       tenantId: tenant.tenantId,
     });
 
@@ -249,7 +250,7 @@ const sendRegistrationOTP = async (req, res) => {
 
       return res.status(403).json({
         message,
-        canRestore:   true,
+        canRestore: true,
         deletionType: deletionRecord.deletionType,
       });
     }
@@ -259,7 +260,9 @@ const sendRegistrationOTP = async (req, res) => {
     await saveOTP(email, otp);
     await sendOTPEmail(email, otp);
 
-    res.status(200).json({ message: "You may receive OTP, if this Email-ID exists." });
+    res
+      .status(200)
+      .json({ message: "You may receive OTP, if this Email-ID exists." });
   } catch (err) {
     console.error("sendRegistrationOTP error:", err.message);
     res.status(500).json({ message: "Failed to send OTP", error: err.message });
@@ -271,7 +274,12 @@ const addAuthor = async (req, res) => {
   const { authorname, password, email, otp } = req.body;
 
   // ── 1. validate inputs first ──
-  if (!authorname?.trim() || !password?.trim() || !email?.trim() || !otp?.trim()) {
+  if (
+    !authorname?.trim() ||
+    !password?.trim() ||
+    !email?.trim() ||
+    !otp?.trim()
+  ) {
     return res.status(400).json({
       message: "Author name, email, password and OTP are required",
     });
@@ -302,7 +310,7 @@ const addAuthor = async (req, res) => {
   try {
     // ── 4. duplicate check (tenant-scoped) ──
     const authorExist = await Author.findOne({
-      email:    { $eq: email },
+      email: { $eq: email },
       tenantId: tenant.tenantId,
     });
 
@@ -311,33 +319,46 @@ const addAuthor = async (req, res) => {
     }
 
     // ── 5. welcome content ──
-    const adminUser  = "Admin";
+    const adminUser = "Admin";
     const adminEmail = "21aid145@dsuniversity.ac.in";
+    const now = new Date();
 
     const welcomeTitle = "Welcome to Bytes Base - Tech Community Platform 🎉";
-    const welcomeMsg   = `Hi ${authorname}, Welcome on-board! Your account has been successfully created, and you are now ready to explore the platform.\n\nGet started by setting up your profile, joining tech communities that match your interests, and connecting with fellow contributors.\n\nWe're glad to have you here and look forward to your active participation.`;
+    // const welcomeMsg   = `Hi ${authorname}, Welcome on-board ! Your account has been successfully created, and you are now ready to explore the platform.\n\nGet started by setting up your profile, joining tech communities that match your interests, and connecting with fellow contributors.\n\nWe're glad to have you here and look forward to your active participation.`;
+    const welcomeMsg = `
+        Hi ${authorname}, Welcome on-board! Your account has been successfully created, and you're now ready to explore Bytes Base.
+
+    Get started by setting up your profile, joining tech communities that match your interests, exploring technical content and learning resources and connecting with fellow contributors.
+
+    Share your knowledge, publish your projects and findings, participate in Q&A and use our AI powered assistants to learn and create better content.
+
+    We're glad to have you here. Start exploring, contributing and growing with the community!`;
 
     const newAnnouncement = {
-      user:        adminUser,
-      title:       welcomeTitle,
-      message:     welcomeMsg,
+      _id: new mongoose.Types.ObjectId(),
+      user: adminUser,
+      title: welcomeTitle,
+      message: welcomeMsg,
       authorEmail: adminEmail,
       deliveredTo: "all",
+      timestamp: now,
     };
 
     const newNotification = {
-      user:        "Account Created Successfully 🎉✅",
+      _id: new mongoose.Types.ObjectId(),
+      user: "Account Created Successfully 🎉✅",
       authorEmail: adminEmail,
-      message:     `Hi ${authorname}, Welcome to the Tech Community platform ! Your account is ready now.`,
-      url:         `${notificationUrl}/announcement`,
+      message: `Hi ${authorname}, Welcome to Bytes Base ! Your account is ready now.`,
+      url: `${notificationUrl}/announcement`,
+      timestamp: now,
     };
 
     // ── 6. create author — tenantId written here ──
     const newAuthor = new Author({
-      authorname:   authorname.trim(),
+      authorname: authorname.trim(),
       password,
       email,
-      tenantId:     tenant.tenantId, // fix: was never set before
+      tenantId: tenant.tenantId, // fix: was never set before
       announcement: [newAnnouncement],
       notification: [newNotification],
     });
@@ -345,17 +366,19 @@ const addAuthor = async (req, res) => {
     await newAuthor.save();
 
     res.status(201).json({
-      message:   "Author created successfully",
+      message: "Author created successfully",
       newAuthor: {
         authorname: newAuthor.authorname,
-        email:      newAuthor.email,
-        tenantId:   newAuthor.tenantId,
-        role:       newAuthor.role,
+        email: newAuthor.email,
+        tenantId: newAuthor.tenantId,
+        role: newAuthor.role,
       },
     });
   } catch (err) {
     console.error("addAuthor error:", err.message);
-    res.status(500).json({ message: "Error creating author", error: err.message });
+    res
+      .status(500)
+      .json({ message: "Error creating author", error: err.message });
   }
 };
 
@@ -372,14 +395,14 @@ const addAuthor = async (req, res) => {
 //       .limit(limit)
 //       .lean();
 
-    // const shuffleArray = (arr) => {
-    //   const a = arr.slice();
-    //   for (let i = a.length - 1; i > 0; i--) {
-    //     const j = Math.floor(Math.random() * (i + 1));
-    //     [a[i], a[j]] = [a[j], a[i]];
-    //   }
-    //   return a;
-    // };
+// const shuffleArray = (arr) => {
+//   const a = arr.slice();
+//   for (let i = a.length - 1; i > 0; i--) {
+//     const j = Math.floor(Math.random() * (i + 1));
+//     [a[i], a[j]] = [a[j], a[i]];
+//   }
+//   return a;
+// };
 
 //     const shuffledAuthors = shuffleArray(authorsProfile);
 
@@ -410,7 +433,6 @@ const addAuthor = async (req, res) => {
 //   }
 // };
 
-
 const getProfile = async (req, res) => {
   const { page = 1, limit = 20 } = req.query;
   const { tenantId } = req.user || {};
@@ -422,7 +444,7 @@ const getProfile = async (req, res) => {
   try {
     const authors = await Author.find({ tenantId })
       .select(
-        'authorname email profile role posts followers following badges profileLinks'
+        "authorname email profile role posts followers following badges profileLinks",
       )
       .skip(Number(skip))
       .limit(Number(limit))
@@ -434,16 +456,18 @@ const getProfile = async (req, res) => {
     // Author.community string array
     const memberships = await CommunityMembership.find(
       { tenantId, authorId: { $in: authorIds } },
-      'authorId communityId role'
+      "authorId communityId role",
     ).lean();
 
-    const communityIds = [...new Set(memberships.map((m) => m.communityId.toString()))];
+    const communityIds = [
+      ...new Set(memberships.map((m) => m.communityId.toString())),
+    ];
     const communities = await Community.find(
       { _id: { $in: communityIds } },
-      'name'
+      "name",
     ).lean();
     const communityNameMap = Object.fromEntries(
-      communities.map((c) => [c._id.toString(), c.name])
+      communities.map((c) => [c._id.toString(), c.name]),
     );
 
     const membershipsByAuthor = {};
@@ -456,32 +480,32 @@ const getProfile = async (req, res) => {
       });
     }
 
-//      authorName: author.authorname,
-//       email: author.email,
-//       postCount: author.posts?.length || 0,
-//       profile: author.profile,
-//       followers: author.followers,
-//       role: author.role,
-//       profileLinks: author.personalLinks,
-//       community: author.community,
-//       badges: author?.badges || [],
+    //      authorName: author.authorname,
+    //       email: author.email,
+    //       postCount: author.posts?.length || 0,
+    //       profile: author.profile,
+    //       followers: author.followers,
+    //       role: author.role,
+    //       profileLinks: author.personalLinks,
+    //       community: author.community,
+    //       badges: author?.badges || [],
 
     const auhtorDetails = authors.map((a) => ({
       // ...a,
-      authorName:a.authorname,
+      authorName: a.authorname,
       email: a.email,
       profile: a.profile,
       role: a.role,
       profileLinks: a.personalLinks,
       badges: a?.badges || [],
-      postCount:a.posts?.length || 0,
-      followers:a.followers ||[],
+      postCount: a.posts?.length || 0,
+      followers: a.followers || [],
       followersCount: a.followers?.length || 0,
       followingCount: a.following?.length || 0,
       communities: membershipsByAuthor[a._id.toString()] || [],
     }));
 
-     const shuffleArray = (arr) => {
+    const shuffleArray = (arr) => {
       const a = arr.slice();
       for (let i = a.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -490,12 +514,12 @@ const getProfile = async (req, res) => {
       return a;
     };
 
-    const data = shuffleArray(auhtorDetails)
+    const data = shuffleArray(auhtorDetails);
 
     res.status(200).json({ data });
   } catch (err) {
-    console.error('getAuthorProfiles error:', err.message);
-    res.status(500).json({ message: 'Server error' });
+    console.error("getAuthorProfiles error:", err.message);
+    res.status(500).json({ message: "Server error" });
   }
 };
 const getSingleAuthor = async (req, res) => {
@@ -722,7 +746,10 @@ const updateAuthor = async (req, res) => {
       return res.status(401).json({ message: "tenantId required" });
     }
 
-    const author = await Author.findOne({ email: { $eq: req.params.email }, tenantId });
+    const author = await Author.findOne({
+      email: { $eq: req.params.email },
+      tenantId,
+    });
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
     }
@@ -827,7 +854,10 @@ const removePersonalLinks = async (req, res) => {
       return res.status(401).json({ message: "tenantId required" });
     }
 
-    const author = await Author.findOne({ email: { $eq: authorEmail }, tenantId });
+    const author = await Author.findOne({
+      email: { $eq: authorEmail },
+      tenantId,
+    });
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
     }
@@ -919,7 +949,10 @@ const deleteAuthorByAdmin = async (req, res) => {
     if (!password)
       return res.status(400).json({ message: "Password required" });
 
-    const admin = await Author.findOne({ email: { $eq: authorEmail }, tenantId });
+    const admin = await Author.findOne({
+      email: { $eq: authorEmail },
+      tenantId,
+    });
     if (!admin) return res.status(404).json({ message: "Admin not found" });
 
     if (admin.role !== "admin") {
@@ -932,7 +965,10 @@ const deleteAuthorByAdmin = async (req, res) => {
     if (!isMatch)
       return res.status(401).json({ message: "Invalid admin password" });
 
-    const author = await Author.findOneAndDelete({ email: { $eq: email }, tenantId });
+    const author = await Author.findOneAndDelete({
+      email: { $eq: email },
+      tenantId,
+    });
     if (!author) return res.status(404).json({ message: "Author not found" });
 
     // fix: delete all posts belonging to this author (were orphaned before)
@@ -1045,8 +1081,8 @@ const updateFollowers = async (req, res) => {
       return res.status(401).json({ message: "tenantId required" });
     }
 
-    console.log("email", email)
-    console.log("emailAuthor", emailAuthor)
+    console.log("email", email);
+    console.log("emailAuthor", emailAuthor);
 
     if (!email || !emailAuthor) {
       return res.status(400).json({ message: "Both emails are required" });
@@ -1058,7 +1094,7 @@ const updateFollowers = async (req, res) => {
 
     const author = await Author.findOne(
       { email: { $eq: email }, tenantId },
-      "followers"
+      "followers",
     );
     if (!author) return res.status(404).json({ message: "Author not found" });
 
@@ -1076,12 +1112,12 @@ const updateFollowers = async (req, res) => {
       Author.findOneAndUpdate(
         { email: { $eq: email }, tenantId },
         targetUpdateOp,
-        { new: true, runValidators: false }
+        { new: true, runValidators: false },
       ),
       Author.findOneAndUpdate(
         { email: { $eq: emailAuthor }, tenantId },
         followerUpdateOp,
-        { new: true, runValidators: false }
+        { new: true, runValidators: false },
       ),
     ]);
 
@@ -1117,7 +1153,7 @@ const sendOtp = async (req, res) => {
   try {
     // const tenant = await resolveTenantFromEmail(email);
     // const user = await Author.findOne({ email: { $eq: email }, tenantId: tenant.tenantId });
-    const user = await Author.findOne({ email: { $eq: email }});
+    const user = await Author.findOne({ email: { $eq: email } });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -1136,14 +1172,14 @@ const sendOtp = async (req, res) => {
     // await user.save();
 
     await Author.updateOne(
-  { _id: user._id },
-  {
-    $set: {
-      otp,
-      otpExpiresAt,
-    },
-  }
-);
+      { _id: user._id },
+      {
+        $set: {
+          otp,
+          otpExpiresAt,
+        },
+      },
+    );
     // Send OTP via email
     const transporter = nodemailer.createTransport({
       service: process.env.EMAIL_PROVIDER,
@@ -1162,7 +1198,9 @@ const sendOtp = async (req, res) => {
 
     await transporter.sendMail(mailOptions);
 
-    res.status(200).json({ message: "if this account exists, you may receive OTP." });
+    res
+      .status(200)
+      .json({ message: "if this account exists, you may receive OTP." });
   } catch (error) {
     console.error("Error in sendOtp:", error); // log it to the backend console
 
@@ -1181,7 +1219,7 @@ const resetPassword = async (req, res) => {
   try {
     // const tenant = await resolveTenantFromEmail(email);
     // const user = await Author.findOne({ email: { $eq: email }, tenantId: tenant.tenantId });
-    const user = await Author.findOne({ email: { $eq: email }});
+    const user = await Author.findOne({ email: { $eq: email } });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -1196,11 +1234,10 @@ const resetPassword = async (req, res) => {
     user.otp = null; // Clear OTP
     user.otpExpiresAt = null;
     await user.save();
-  
 
     res.status(200).json({ message: "Password reset successfully" });
   } catch (error) {
-     console.error("Error in resetting password:", error); // log it to the backend console
+    console.error("Error in resetting password:", error); // log it to the backend console
     res
       .status(500)
       .json({ message: "Error resetting password", error: error.message });
@@ -1245,7 +1282,9 @@ const notificationAuthorDelete = async (req, res) => {
     }
 
     if (!email || !notificationId) {
-      return res.status(400).json({ message: "email and notificationId are required" });
+      return res
+        .status(400)
+        .json({ message: "email and notificationId are required" });
     }
 
     const result = await Author.findOneAndUpdate(
@@ -1255,13 +1294,17 @@ const notificationAuthorDelete = async (req, res) => {
         "notification._id": new mongoose.Types.ObjectId(notificationId),
       },
       {
-        $pull: { notification: { _id: new mongoose.Types.ObjectId(notificationId) } },
+        $pull: {
+          notification: { _id: new mongoose.Types.ObjectId(notificationId) },
+        },
       },
-      { new: true, runValidators: false }
+      { new: true, runValidators: false },
     );
 
     if (!result) {
-      return res.status(404).json({ message: "Author or notification not found" });
+      return res
+        .status(404)
+        .json({ message: "Author or notification not found" });
     }
 
     res.status(200).json({
@@ -1291,7 +1334,7 @@ const notificationAuthorDeleteAll = async (req, res) => {
     const result = await Author.findOneAndUpdate(
       { email: { $eq: email }, tenantId },
       { $set: { notification: [] } },
-      { new: true, runValidators: false }
+      { new: true, runValidators: false },
     );
 
     if (!result) {
@@ -1618,7 +1661,10 @@ const updateRole = async (req, res) => {
         .json({ message: "You are not allowed to perform this action" });
     }
 
-    const author = await Author.findOne({ email: { $eq: userEmail }, tenantId });
+    const author = await Author.findOne({
+      email: { $eq: userEmail },
+      tenantId,
+    });
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
     }
@@ -1752,15 +1798,14 @@ const updateRole = async (req, res) => {
 //   }
 // };
 
-
-const GLOBAL_COORDINATOR_ROLES = ['coordinator', 'admin', 'director'];
+const GLOBAL_COORDINATOR_ROLES = ["coordinator", "admin", "director"];
 
 function slugify(name) {
   return name
     .trim()
     .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '');
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
 }
 
 //reviewed
@@ -1832,14 +1877,14 @@ const updateTechCommunity = async (req, res) => {
     }
 
     const author = await Author.findOne({ email: { $eq: email }, tenantId });
-    if (!author) return res.status(404).json({ message: 'Author not found' });
+    if (!author) return res.status(404).json({ message: "Author not found" });
 
     const role = GLOBAL_COORDINATOR_ROLES.includes(author.role)
-      ? 'coordinator'
-      : 'member';
+      ? "coordinator"
+      : "member";
 
     if (!techcommunity) {
-      return res.status(400).json({ message: 'Community name required' });
+      return res.status(400).json({ message: "Community name required" });
     }
 
     const community = await Community.findOne({
@@ -1848,7 +1893,7 @@ const updateTechCommunity = async (req, res) => {
     });
 
     if (!community) {
-      return res.status(404).json({ message: 'Community not found' });
+      return res.status(404).json({ message: "Community not found" });
     }
 
     // ── source of truth: check CommunityMembership, not Author.community ──
@@ -1871,12 +1916,15 @@ const updateTechCommunity = async (req, res) => {
           authorId: author._id,
           role,
         }),
-        Community.updateOne({ _id: community._id }, { $inc: { memberCount: 1 } }),
+        Community.updateOne(
+          { _id: community._id },
+          { $inc: { memberCount: 1 } },
+        ),
         // dual-write — addToSet is safe even if already present
         Author.findOneAndUpdate(
           { email: { $eq: email }, tenantId },
           { $addToSet: { community: techcommunity } },
-          { runValidators: false }
+          { runValidators: false },
         ),
       ]);
     } else {
@@ -1887,12 +1935,15 @@ const updateTechCommunity = async (req, res) => {
           communityId: community._id,
           authorId: author._id,
         }),
-        Community.updateOne({ _id: community._id }, { $inc: { memberCount: -1 } }),
+        Community.updateOne(
+          { _id: community._id },
+          { $inc: { memberCount: -1 } },
+        ),
         // dual-write — pull the name from the legacy array
         Author.findOneAndUpdate(
           { email: { $eq: email }, tenantId },
           { $pull: { community: techcommunity } },
-          { runValidators: false }
+          { runValidators: false },
         ),
       ]);
     }
@@ -1900,25 +1951,29 @@ const updateTechCommunity = async (req, res) => {
     // fetch the updated author to return to frontend
     const data = await Author.findOne(
       { email: { $eq: email }, tenantId },
-      { password: 0, otp: 0, otpExpiresAt: 0 }
+      { password: 0, otp: 0, otpExpiresAt: 0 },
     ).lean();
 
-    return res.status(201).json({ message: 'Author updated successfully', data });
+    return res
+      .status(201)
+      .json({ message: "Author updated successfully", data });
   } catch (err) {
     // handle duplicate key on CommunityMembership.create
     // (race condition: two simultaneous join requests)
     if (err.code === 11000) {
-      return res.status(409).json({ message: 'Already a member of this community' });
+      return res
+        .status(409)
+        .json({ message: "Already a member of this community" });
     }
-    console.error('updateTechCommunity error:', err);
-    res.status(500).json({ message: 'Server error' });
+    console.error("updateTechCommunity error:", err);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
 // reviewed-----------------------------------------------------------------------
 const updateTechCommunityCoordinator = async (req, res) => {
   const { email, techCommunities } = req.body;
-  console.log('communities called', email);
+  console.log("communities called", email);
 
   try {
     const { tenantId } = req.user || {};
@@ -1927,9 +1982,11 @@ const updateTechCommunityCoordinator = async (req, res) => {
     }
 
     const author = await Author.findOne({ email: { $eq: email }, tenantId });
-    if (!author) return res.status(404).json({ message: 'Author not found' });
+    if (!author) return res.status(404).json({ message: "Author not found" });
 
-    const role = GLOBAL_COORDINATOR_ROLES.includes(author.role) ? 'coordinator' : 'member';
+    const role = GLOBAL_COORDINATOR_ROLES.includes(author.role)
+      ? "coordinator"
+      : "member";
 
     if (Array.isArray(techCommunities)) {
       const previous = new Set(author.community);
@@ -1950,12 +2007,19 @@ const updateTechCommunityCoordinator = async (req, res) => {
           ...joiningDocs.map((c) =>
             CommunityMembership.findOneAndUpdate(
               { tenantId, communityId: c._id, authorId: author._id },
-              { $setOnInsert: { tenantId, communityId: c._id, authorId: author._id, role } },
-              { upsert: true }
-            )
+              {
+                $setOnInsert: {
+                  tenantId,
+                  communityId: c._id,
+                  authorId: author._id,
+                  role,
+                },
+              },
+              { upsert: true },
+            ),
           ),
           ...joiningDocs.map((c) =>
-            Community.updateOne({ _id: c._id }, { $inc: { memberCount: 1 } })
+            Community.updateOne({ _id: c._id }, { $inc: { memberCount: 1 } }),
           ),
         ]);
       }
@@ -1970,7 +2034,7 @@ const updateTechCommunityCoordinator = async (req, res) => {
             authorId: author._id,
           }),
           ...leavingDocs.map((c) =>
-            Community.updateOne({ _id: c._id }, { $inc: { memberCount: -1 } })
+            Community.updateOne({ _id: c._id }, { $inc: { memberCount: -1 } }),
           ),
         ]);
       }
@@ -1980,10 +2044,10 @@ const updateTechCommunityCoordinator = async (req, res) => {
     }
 
     const data = await author.save({ validateBeforeSave: false });
-    res.status(201).json({ message: 'Author updated successfully', data });
+    res.status(201).json({ message: "Author updated successfully", data });
   } catch (err) {
-    console.error('updateTechCommunityCoordinator error:', err);
-    res.status(500).json({ message: 'Server error' });
+    console.error("updateTechCommunityCoordinator error:", err);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
