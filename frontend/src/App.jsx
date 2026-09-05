@@ -39,6 +39,7 @@ import EditCommunity from "./Pages/EditCommunity.jsx";
 import CreateDiscussion from "./Pages/CreateDiscussion.jsx";
 import CreateCommunity from "./Pages/CreateCommunity.jsx";
 import DirectorTenantsPage from "./Pages/director/DirectorTenantsPage.jsx";
+import ImpersonationBanner from "./Pages/director/ImpersonationBanner.jsx";
 function App() {
   return (
     // <AuthProvider>
@@ -175,6 +176,7 @@ function App() {
             <Analytics/>
 
              <ScrollToHash />
+             <ImpersonationBanner />
             <Routes>
               {/* Public Routes for Login & Register */}
               <Route path="/" element={<Login />} />
