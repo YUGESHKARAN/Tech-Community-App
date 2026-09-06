@@ -18,6 +18,7 @@ import toast from "../components/toaster/Toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight } from "lucide-react";
 import { BsInfoSquare } from "react-icons/bs";
+import useCommunities from "../hooks/techCommunity/useCommunities";
 
 function AddPost() {
   const [title, setTitle] = useState("");
@@ -25,6 +26,16 @@ function AddPost() {
   const [category, setCategory] = useState("");
   const [image, setImage] = useState("");
   const [prompt, setPrompt] = useState("");
+  const authorId = getItem("authorId");
+  const { communityNames, communitiesloading, getCommunityNames } =
+    useCommunities(authorId);
+
+  useEffect(() => {
+    getCommunityNames();
+  }, [authorId]);
+
+  //  console.log("communityNames",communityNames)
+
   // const email = localStorage.getItem("email"); // Get email from local storage
   const email = getItem("email"); // Get email from local storage
   // const user = localStorage.getItem("username");
@@ -104,9 +115,8 @@ function AddPost() {
         sender: "bot",
         direction: "incoming",
       };
-      setIsTyping(false)
+      setIsTyping(false);
       setMessages((prev) => [...prev, errorMessage]);
-      
     } finally {
       setDraftMateLoading(false);
     }
@@ -215,7 +225,7 @@ function AddPost() {
       errors.description = "Post description is required.";
     }
 
-    if (description.length >10000 ) {
+    if (description.length > 10000) {
       errors.description = "Post description word limit exceeded.";
     }
     const finalCategory = category === "Others" ? customCategory : category;
@@ -340,7 +350,7 @@ function AddPost() {
     el.style.height = Math.min(el.scrollHeight, 200) + "px";
   }, [prompt]);
 
-    const textareaRef2 = useRef(null);
+  const textareaRef2 = useRef(null);
 
   useEffect(() => {
     const el = textareaRef2.current;
@@ -539,21 +549,23 @@ function AddPost() {
             <div className="md:space-y-4 lg:sticky top-7  self-start md:col-span-1">
               {/* Description / Tips */}
               <div
-                className={`theme-fields-dark lg:w-11/12 border border-emerald-500/20 bg-gradient-to-br from-emerald-500/5 to-transparent rounded-lg md:rounded-xl px-4 ${showPostGuide?'py-6':'py-2'} md:p-6 text-gray-300 ${chatbot ? "hidden lg:block" : "block"}`}
+                className={`theme-fields-dark lg:w-11/12 border border-emerald-500/20 bg-gradient-to-br from-emerald-500/5 to-transparent rounded-lg md:rounded-xl px-4 ${showPostGuide ? "py-6" : "py-2"} md:p-6 text-gray-300 ${chatbot ? "hidden lg:block" : "block"}`}
               >
-                <div className={`flex items-center ${showPostGuide?' mb-3':'mb-0'} md:mb-3  justify-between `}>
-                  <h2 className={`md:text-lg ${showPostGuide?'text-sm':'text-xs'} flex items-center gap-1.5 md:gap-2 font-semibold text-white`}>
-                  <BsInfoSquare className="text-xs md:text-sm text-emerald-400" /> Post Guidelines
-                </h2>
+                <div
+                  className={`flex items-center ${showPostGuide ? " mb-3" : "mb-0"} md:mb-3  justify-between `}
+                >
+                  <h2
+                    className={`md:text-lg ${showPostGuide ? "text-sm" : "text-xs"} flex items-center gap-1.5 md:gap-2 font-semibold text-white`}
+                  >
+                    <BsInfoSquare className="text-xs md:text-sm text-emerald-400" />{" "}
+                    Post Guidelines
+                  </h2>
 
                   <button
-
                     onClick={() => {
                       setShowPostGuide((prev) => !prev);
                     }}
-
-                    className={
-                      `
+                    className={`
                       group
                       flex items-center gap-1
                       md:hidden
@@ -565,8 +577,7 @@ function AddPost() {
                       hover:border-emerald-500/20
                       transition-all duration-300
                     
-                      text-[10px]`
-                    }
+                      text-[10px]`}
                   >
                     <motion.button
                       whileTap={{ scale: 0.96 }}
@@ -586,16 +597,25 @@ function AddPost() {
                     >
                       <ChevronRight size={14} />
                     </motion.div>
-                   </button>
-
+                  </button>
                 </div>
-                
 
-                <ul className={`space-y-2 text-sm list-disc pl-5 hidden md:block`}>
+                <ul
+                  className={`space-y-2 text-sm list-disc pl-5 hidden md:block`}
+                >
                   <li>Use a clear and descriptive title.</li>
-                  <li>Provide a contextual description <span className="bg-gray-600/30 text-xs font-semibold px-2">(eg: Overview, Tech-Stack used, Sample Code Snippet, System Design Followed, Key Features, Contributions and Conclusion)</span> </li>
+                  <li>
+                    Provide a contextual description{" "}
+                    <span className="bg-gray-600/30 text-xs font-semibold px-2">
+                      (eg: Overview, Tech-Stack used, Sample Code Snippet,
+                      System Design Followed, Key Features, Contributions and
+                      Conclusion)
+                    </span>{" "}
+                  </li>
                   <li>Description support upto 10,000 words.</li>
-                  <li>DraftMate Assistant support upto 2500 words per input query.</li>
+                  <li>
+                    DraftMate Assistant support upto 2500 words per input query.
+                  </li>
                   <li>Add reference links and document resources.</li>
                   <li>Include a suitable thumbnail poster (1280 × 720 px).</li>
                   <li>
@@ -605,51 +625,62 @@ function AddPost() {
                   <li>YouTube links support video embedding.</li>
                 </ul>
 
-                 <AnimatePresence mode="wait">
-                          {
-                          showPostGuide &&  
-                                <motion.div
-                                  key="info"
-                                  initial={{
-                                    opacity: 0,
-                                    height: 0,
-                                    y: -20,
-                                    filter: "blur(8px)",
-                                  }}
-                                  animate={{
-                                    opacity: 1,
-                                    height: "auto",
-                                    y: 0,
-                                    filter: "blur(0px)",
-                                  }}
-                                  exit={{
-                                    opacity: 0,
-                                    height: 0,
-                                    y: -10,
-                                    filter: "blur(4px)",
-                                  }}
-                                  transition={{
-                                    duration: 0.4,
-                                    ease: [0.22, 1, 0.36, 1],
-                                  }}
-                                  className="overflow-hidden  md:hidden"
-                                >
-                                   <ul className={`space-y-2 text-sm list-disc pl-5 `}>
-                                      <li>Use a clear and descriptive title.</li>
-                                      <li>Provide a contextual description <span className="bg-gray-600/30 text-xs font-semibold px-2">(eg: Overview, Tech-Stack used, Sample Code Snippet, System Design Followed, Key Features, Contributions and Conclusion)</span> </li>
-                                      <li>Description support upto 10,000 words.</li>
-                                      <li>DraftMate Assistant support upto 2500 words per input query.</li>
-                                      <li>Add reference links and document resources.</li>
-                                      <li>Include a suitable thumbnail poster (1280 × 720 px).</li>
-                                      <li>
-                                        Post description support Markdown features. Use the preview
-                                        option to verify the content format.
-                                      </li>
-                                      <li>YouTube links support video embedding.</li>
-                                    </ul>
-                                </motion.div>}
-                          
-                            </AnimatePresence>
+                <AnimatePresence mode="wait">
+                  {showPostGuide && (
+                    <motion.div
+                      key="info"
+                      initial={{
+                        opacity: 0,
+                        height: 0,
+                        y: -20,
+                        filter: "blur(8px)",
+                      }}
+                      animate={{
+                        opacity: 1,
+                        height: "auto",
+                        y: 0,
+                        filter: "blur(0px)",
+                      }}
+                      exit={{
+                        opacity: 0,
+                        height: 0,
+                        y: -10,
+                        filter: "blur(4px)",
+                      }}
+                      transition={{
+                        duration: 0.4,
+                        ease: [0.22, 1, 0.36, 1],
+                      }}
+                      className="overflow-hidden  md:hidden"
+                    >
+                      <ul className={`space-y-2 text-sm list-disc pl-5 `}>
+                        <li>Use a clear and descriptive title.</li>
+                        <li>
+                          Provide a contextual description{" "}
+                          <span className="bg-gray-600/30 text-xs font-semibold px-2">
+                            (eg: Overview, Tech-Stack used, Sample Code Snippet,
+                            System Design Followed, Key Features, Contributions
+                            and Conclusion)
+                          </span>{" "}
+                        </li>
+                        <li>Description support upto 10,000 words.</li>
+                        <li>
+                          DraftMate Assistant support upto 2500 words per input
+                          query.
+                        </li>
+                        <li>Add reference links and document resources.</li>
+                        <li>
+                          Include a suitable thumbnail poster (1280 × 720 px).
+                        </li>
+                        <li>
+                          Post description support Markdown features. Use the
+                          preview option to verify the content format.
+                        </li>
+                        <li>YouTube links support video embedding.</li>
+                      </ul>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
 
               {/* AI Assistant (Always visible on desktop) */}
@@ -795,7 +826,7 @@ function AddPost() {
 
                       <textarea
                         name="message"
-                         disabled={isTyping}
+                        disabled={isTyping}
                         ref={textareaRef}
                         value={prompt}
                         onFocus={() => {
@@ -1049,7 +1080,7 @@ function AddPost() {
                 </div>
 
                 {/* DESCRIPTION */}
-                         <div>
+                <div>
                   {/* Label */}
                   <div className="flex items-center justify-between mb-2">
                     <label className="text-sm text-gray-300 font-medium tracking-wide">
@@ -1149,7 +1180,7 @@ function AddPost() {
                     onChange={(e) => setCategory(e.target.value)}
                     className="w-full mt-2 px-4 py-2 cursor-pointer focus:border focus:border-emerald-500/40 rounded-md theme border border-gray-700 outline-none text-xs md:text-sm text-white  "
                   >
-                    <option value="">Select Domain</option>
+                    {/* <option value="">Select Domain</option>
                     <option value="GenAI">GenAI</option>
                     <option value="Design Thinking">Design Thinking</option>
                     <option value="Data Science">Data Science</option>
@@ -1161,7 +1192,20 @@ function AddPost() {
                     <option value="Web Development">Web Development</option>
                     <option value="Satellite Space Technology">
                       Satellite Space Technology
+                    </option> */}
+
+                    <option value={""}>
+                      {communitiesloading && communityNames.length == 1
+                        ? "No domain created, contact admin to create domains"
+                        : "Choose Domain"}
                     </option>
+
+                    {communityNames.length > 0 &&
+                      communityNames.map((obj) => (
+                        <option key={obj._id} value={obj.name}>
+                          {obj.name}
+                        </option>
+                      ))}
                     <option value="Others">Others</option>
                   </select>
 
@@ -1269,49 +1313,45 @@ function AddPost() {
                   </div>
 
                   <div className="flex flex-col gap-2 w-full">
+                    <div className="flex flex-col md:flex-row gap-2">
+                      {/* TITLE SELECT */}
+                      {currentLinkTitle !== "Others" && (
+                        <select
+                          value={currentLinkTitle}
+                          onChange={(e) => setCurrentLinkTitle(e.target.value)}
+                          // w-full
+                          className="md:w-1/3 w-full focus:border focus:border-emerald-500/40  px-4 py-2 cursor-pointer rounded-xl theme border border-gray-700 outline-none text-xs md:text-sm text-white"
+                        >
+                          <option value="" disabled>
+                            Select Link
+                          </option>
+                          <option value="GitHub">GitHub</option>
+                          <option value="YouTube">YouTube</option>
+                          <option value="Demo">Demo</option>
+                          <option value="Others">Others</option>
+                        </select>
+                      )}
 
+                      {/* CUSTOM TITLE */}
+                      {currentLinkTitle === "Others" && (
+                        <input
+                          type="text"
+                          placeholder="Enter platform name"
+                          value={customTitle}
+                          onChange={(e) => setCustomTitle(e.target.value)}
+                          className="md:w-1/3 w-full focus:border focus:border-emerald-500/40 px-4 py-2 rounded-md theme border border-gray-700 outline-none  outline-none text-white text-xs md:text-sm"
+                        />
+                      )}
 
-                    <div className="flex flex-col md:flex-row gap-2">             
-                   {/* TITLE SELECT */}
-                    {currentLinkTitle !== "Others" && (
-                      <select
-                        value={currentLinkTitle}
-                        onChange={(e) => setCurrentLinkTitle(e.target.value)}
-                        // w-full
-                        className="md:w-1/3 w-full focus:border focus:border-emerald-500/40  px-4 py-2 cursor-pointer rounded-xl theme border border-gray-700 outline-none text-xs md:text-sm text-white"
-                      >
-                        <option value="" disabled>
-                          Select Link
-                        </option>
-                        <option value="GitHub">GitHub</option>
-                        <option value="YouTube">YouTube</option>
-                        <option value="Demo">Demo</option>
-                        <option value="Others">Others</option>
-                      </select>
-                    )}
-
-                    {/* CUSTOM TITLE */}
-                    {currentLinkTitle === "Others" && (
+                      {/* URL */}
                       <input
-                        type="text"
-                        placeholder="Enter platform name"
-                        value={customTitle}
-                        onChange={(e) => setCustomTitle(e.target.value)}
-                        className="md:w-1/3 w-full focus:border focus:border-emerald-500/40 px-4 py-2 rounded-md theme border border-gray-700 outline-none  outline-none text-white text-xs md:text-sm"
+                        type="url"
+                        value={currentLinkUrl}
+                        onChange={(e) => setCurrentLinkUrl(e.target.value)}
+                        placeholder="Paste URL"
+                        className="md:w-2/3 focus:border focus:border-emerald-500/40 w-full px-4 py-2 rounded-md theme border border-gray-700 outline-none  outline-none text-white text-xs md:text-sm"
                       />
-                    )}
-
-                    {/* URL */}
-                    <input
-                      type="url"
-                      value={currentLinkUrl}
-                      onChange={(e) => setCurrentLinkUrl(e.target.value)}
-                      placeholder="Paste URL"
-                      className="md:w-2/3 focus:border focus:border-emerald-500/40 w-full px-4 py-2 rounded-md theme border border-gray-700 outline-none  outline-none text-white text-xs md:text-sm"
-                    />
-
                     </div>
-
 
                     {/* ADD BUTTON */}
                     <button
@@ -1337,19 +1377,18 @@ function AddPost() {
                             "Invalid URL",
                             "Please enter a valid http(s) URL.",
                           );
-                        }
-                        else if(!titleToUse){
-                           toast.error(
+                        } else if (!titleToUse) {
+                          toast.error(
                             "Invalid URL Title",
                             "Please enter a valid URL Title.",
                           );
                         }
                       }}
-                        className={`md:flex self-start px-5 py-2 items-center justify-center border disabled:border-neutral-700 bg-emerald-500/20 text-emerald-400 text-xs rounded-md hover:bg-emerald-600/20 transition-all duration-300 ${
-                          currentLinkUrl
-                            ? "scale-105 animate-pulse border border-emerald-500"
-                            : ""
-                        } disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed`}
+                      className={`md:flex self-start px-5 py-2 items-center justify-center border disabled:border-neutral-700 bg-emerald-500/20 text-emerald-400 text-xs rounded-md hover:bg-emerald-600/20 transition-all duration-300 ${
+                        currentLinkUrl
+                          ? "scale-105 animate-pulse border border-emerald-500"
+                          : ""
+                      } disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed`}
                       // className={`px-4 bg-emerald-500/20 w-fit py-1 md:py-2   text-black text-emerald-400  text-xs rounded-md hover:bg-emerald-600/20 transition-all duration-600 ${currentLinkUrl && 'scale-105 animate-pulse border border-emerald-400'}`}
                     >
                       Add

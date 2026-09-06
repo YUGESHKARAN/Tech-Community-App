@@ -183,6 +183,22 @@ const getCommunityLandingPage = async (req, res) => {
 //   }
 // };
 
+
+const getAllCommunities = async (req, res) => {
+  try {
+    const { tenantId } = req.user;
+    const communities = await Community.find({ tenantId })
+      .select('_id name')
+      .sort({ name: 1 })
+      .lean();
+
+    return res.status(200).json({ communities });
+  } catch (err) {
+    console.error('getAllCommunities error:', err.message);
+    return res.status(500).json({ message: 'Server error' });
+  }
+};
+
 const getCommunityById = async (req, res) => {
   const { tenantId, authorId } = req.user;
   const { communityId } = req.params;
@@ -642,4 +658,4 @@ const editTechCommunity = async (req, res) => {
   }
 };
 
-module.exports = { getCommunityLandingPage, getCommunityById, getCommunityMembersById, createCommunity, getCommunityPostsByCommunityId, editTechCommunity }
+module.exports = { getCommunityLandingPage, getAllCommunities, getCommunityById, getCommunityMembersById, createCommunity, getCommunityPostsByCommunityId, editTechCommunity }
