@@ -7,6 +7,7 @@ const {limiter, readLimiter} = require("../middleware/rateLimitter");
 const authenticateToken = require('../middleware/authMiddleware');
 const {
   getCommunityLandingPage,
+  getAllCommunities,
   getCommunityById,
   getCommunityMembersById,
   createCommunity,
@@ -16,6 +17,7 @@ const {
 
 
 router.get("/", readLimiter, authenticateToken, getCommunityLandingPage);
+router.get("/all", readLimiter, authenticateToken, getAllCommunities);
 router.post("/", limiter, authenticateToken, createCommunity);
 router.put("/:communityId", limiter, authenticateToken, editTechCommunity);
 router.get("/:communityId", readLimiter, authenticateToken, getCommunityById);
