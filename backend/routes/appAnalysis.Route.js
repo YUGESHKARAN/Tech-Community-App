@@ -12,7 +12,7 @@ router.get("/view/techDomain", readLimiter, authenticateToken, requireAdmin, get
 router.get("/view/summary/:email", readLimiter, authenticateToken, requireAdmin, getAppSummary);
 // year is optional; controller can also read ?year=2026
 router.get("/view/monthly-posts/:email", readLimiter, authenticateToken, requireAdmin, getMonthlyPostCounts);
-router.get("/view/top-contributors/:email", readLimiter, authenticateToken, requireAdmin, getTopContributors);
+router.get("/view/top-contributors/:email", readLimiter, authenticateToken, getTopContributors);
 router.get("/view/contributors/:email", readLimiter, authenticateToken, requireAdmin, getContributors);
 router.get("/view/users/:email", readLimiter, authenticateToken, requireAdmin, getStudents);
 router.get("/view/coordinators/:email", readLimiter, authenticateToken, requireAdmin, getCoordinators);
