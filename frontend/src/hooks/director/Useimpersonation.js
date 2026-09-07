@@ -1,13 +1,149 @@
-import { useState, useEffect, useCallback } from "react";
+// import { useState, useEffect, useCallback } from "react";
+// import Cookies from "js-cookie";
+// import axiosInstance from "../../instances/Axiosinstances";
+
+// // ── storage keys ──────────────────────────────────────────────────────────────
+// const COOKIE_KEY          = "token";                   // js-cookie key — your existing auth token
+// const ORIGINAL_TOKEN_KEY  = "director_original_token"; // sessionStorage — backup during impersonation
+// const IMPERSONATION_META  = "impersonation_meta";       // sessionStorage — impersonation context
+
+// // keys that need to be swapped during impersonation
+// const ORIGINAL_STORAGE_KEY = "director_original_storage";
+// // ── helpers ───────────────────────────────────────────────────────────────────
+
+// export const getImpersonationMeta = () => {
+//   try {
+//     const raw = sessionStorage.getItem(IMPERSONATION_META);
+//     return raw ? JSON.parse(raw) : null;
+//   } catch {
+//     return null;
+//   }
+// };
+
+// export const isImpersonating = () => !!getImpersonationMeta();
+
+// /**
+//  * enterImpersonation
+//  *
+//  * 1. Reads the director's current token from the cookie
+//  * 2. Saves it to sessionStorage as backup
+//  * 3. Overwrites the cookie with the impersonation token
+//  *    (same cookie options as login so axiosInstance picks it up automatically)
+//  * 4. Saves impersonation meta
+//  * 5. Full page reload to "/"
+//  */
+// export const enterImpersonation = (impersonationToken, meta) => {
+//   const original = Cookies.get(COOKIE_KEY);
+
+//   if (!original) {
+//     throw new Error("No active session to impersonate from");
+//   }
+
+//   // preserve director's original token in sessionStorage
+//   sessionStorage.setItem(ORIGINAL_TOKEN_KEY, original);
+//   sessionStorage.setItem(IMPERSONATION_META, JSON.stringify({
+//     tenantId:   meta.tenantId,
+//     tenantName: meta.tenantName,
+//     jti:        meta.jti,
+//     expiresAt:  meta.expiresAt,
+//   }));
+
+//   // swap cookie — expires in 15 min (matches impersonation token TTL)
+//   Cookies.set(COOKIE_KEY, impersonationToken, {
+//     expires: 15 / (24 * 60), // 15 minutes in days
+//     sameSite: "lax",
+//   });
+
+//   // full reload — all React state clears, axiosInstance picks up new cookie
+//   window.location.href = "/dashboard";
+// };
+
+// /**
+//  * exitImpersonation
+//  *
+//  * 1. Revokes the impersonation token (best-effort)
+//  * 2. Restores the director's original token from sessionStorage back to cookie
+//  * 3. Clears sessionStorage impersonation state
+//  * 4. Navigates back to director console
+//  */
+// export const exitImpersonation = async () => {
+//   const meta     = getImpersonationMeta();
+//   const original = sessionStorage.getItem(ORIGINAL_TOKEN_KEY);
+
+//   // best-effort revocation — never block exit on failure
+//   if (meta?.jti) {
+//     try {
+//       await axiosInstance.post("/bytes/directorAdvanced/impersonation/revoke", {
+//         jti: meta.jti,
+//       });
+//     } catch (err) {
+//       console.error("Revoke impersonation token failed:", err.message);
+//     }
+//   }
+
+//   // restore original cookie
+//   if (original) {
+//     Cookies.set(COOKIE_KEY, original, {
+//       expires: 1,        // 1 day — matches your login cookie TTL
+//       sameSite: "lax",
+//     });
+//   } else {
+//     Cookies.remove(COOKIE_KEY);
+//   }
+
+//   // clear impersonation state from sessionStorage
+//   sessionStorage.removeItem(ORIGINAL_TOKEN_KEY);
+//   sessionStorage.removeItem(IMPERSONATION_META);
+
+//   // full reload back to director console
+//   window.location.href = "/director";
+// };
+
+// // ── hook ──────────────────────────────────────────────────────────────────────
+// const useImpersonation = () => {
+//   const meta     = getImpersonationMeta();
+//   const isActive = !!meta;
+
+//   const [timeLeft, setTimeLeft] = useState(() => {
+//     if (!meta?.expiresAt) return 0;
+//     return Math.max(0, Math.floor((new Date(meta.expiresAt) - Date.now()) / 1000));
+//   });
+
+//   useEffect(() => {
+//     if (!isActive) return;
+
+//     const interval = setInterval(() => {
+//       const remaining = Math.max(
+//         0,
+//         Math.floor((new Date(meta.expiresAt) - Date.now()) / 1000)
+//       );
+//       setTimeLeft(remaining);
+
+//       if (remaining <= 0) {
+//         clearInterval(interval);
+//         exitImpersonation();
+//       }
+//     }, 1000);
+
+//     return () => clearInterval(interval);
+//   }, [isActive, meta?.expiresAt]);
+
+//   const exit = useCallback(() => exitImpersonation(), []);
+
+//   return { isActive, meta, timeLeft, exit };
+// };
+
+// export default useImpersonation;
+
 import Cookies from "js-cookie";
+import { storeItem, getItem, removeItem } from "../../utils/encode";
 import axiosInstance from "../../instances/Axiosinstances";
+import { useState, useEffect, useCallback } from "react";
 
-// ── storage keys ──────────────────────────────────────────────────────────────
-const COOKIE_KEY          = "token";                   // js-cookie key — your existing auth token
-const ORIGINAL_TOKEN_KEY  = "director_original_token"; // sessionStorage — backup during impersonation
-const IMPERSONATION_META  = "impersonation_meta";       // sessionStorage — impersonation context
-
-// ── helpers ───────────────────────────────────────────────────────────────────
+const COOKIE_KEY           = "token";
+const ORIGINAL_TOKEN_KEY   = "director_original_token";
+const IMPERSONATION_META   = "impersonation_meta";
+const ORIGINAL_STORAGE_KEY = "director_original_storage";
 
 export const getImpersonationMeta = () => {
   try {
@@ -20,55 +156,68 @@ export const getImpersonationMeta = () => {
 
 export const isImpersonating = () => !!getImpersonationMeta();
 
-/**
- * enterImpersonation
- *
- * 1. Reads the director's current token from the cookie
- * 2. Saves it to sessionStorage as backup
- * 3. Overwrites the cookie with the impersonation token
- *    (same cookie options as login so axiosInstance picks it up automatically)
- * 4. Saves impersonation meta
- * 5. Full page reload to "/"
- */
 export const enterImpersonation = (impersonationToken, meta) => {
   const original = Cookies.get(COOKIE_KEY);
-
   if (!original) {
     throw new Error("No active session to impersonate from");
   }
 
-  // preserve director's original token in sessionStorage
+  // ── backup original cookie ────────────────────────────────────────────────
   sessionStorage.setItem(ORIGINAL_TOKEN_KEY, original);
+
+  // ── backup original encoded localStorage values via getItem ───────────────
+  // getItem decodes them — we store decoded strings in sessionStorage
+  // so restoreItem can re-encode them correctly on exit
+  const originalStorage = {
+    username:   getItem("username"),
+    email:      getItem("email"),
+    role:       getItem("role"),
+    authorId:   getItem("authorId"),
+    profile:    localStorage.getItem("profile"), // profile is stored raw (not encoded)
+    isDirector: getItem("isDirector"),
+  };
+  sessionStorage.setItem(ORIGINAL_STORAGE_KEY, JSON.stringify(originalStorage));
+
+  // ── save impersonation meta ───────────────────────────────────────────────
   sessionStorage.setItem(IMPERSONATION_META, JSON.stringify({
-    tenantId:   meta.tenantId,
-    tenantName: meta.tenantName,
-    jti:        meta.jti,
-    expiresAt:  meta.expiresAt,
+    tenantId:      meta.tenantId,
+    tenantName:    meta.tenantName,
+    jti:           meta.jti,
+    expiresAt:     meta.expiresAt,
+    directorEmail: meta.directorEmail,
   }));
 
-  // swap cookie — expires in 15 min (matches impersonation token TTL)
+  // ── swap cookie ───────────────────────────────────────────────────────────
   Cookies.set(COOKIE_KEY, impersonationToken, {
-    expires: 15 / (24 * 60), // 15 minutes in days
+    expires:  15 / (24 * 60),
     sameSite: "lax",
   });
 
-  // full reload — all React state clears, axiosInstance picks up new cookie
-  window.location.href = "/";
+  // ── overwrite encoded localStorage with impersonated context ─────────────
+  // ProtectedRoute reads role via getItem("role") — must match token payload
+  storeItem("role",     "admin");
+  storeItem("username", `${meta.tenantName}`);
+  storeItem("email",    meta.directorEmail || originalStorage.email);
+  removeItem("isDirector"); // not a director in this context
+
+  // ── full reload to dashboard ──────────────────────────────────────────────
+  window.location.href = "/dashboard";
 };
 
-/**
- * exitImpersonation
- *
- * 1. Revokes the impersonation token (best-effort)
- * 2. Restores the director's original token from sessionStorage back to cookie
- * 3. Clears sessionStorage impersonation state
- * 4. Navigates back to director console
- */
 export const exitImpersonation = async () => {
-  const meta     = getImpersonationMeta();
+  const meta = getImpersonationMeta();
   const original = sessionStorage.getItem(ORIGINAL_TOKEN_KEY);
 
-  // best-effort revocation — never block exit on failure
+  let originalStorage = {};
+  try {
+    originalStorage = JSON.parse(
+      sessionStorage.getItem(ORIGINAL_STORAGE_KEY) || "{}"
+    );
+  } catch {
+    originalStorage = {};
+  }
+
+  // ── best-effort revocation ────────────────────────────────────────────────
   if (meta?.jti) {
     try {
       await axiosInstance.post("/bytes/directorAdvanced/impersonation/revoke", {
@@ -79,25 +228,39 @@ export const exitImpersonation = async () => {
     }
   }
 
-  // restore original cookie
+  // ── restore original cookie ───────────────────────────────────────────────
   if (original) {
-    Cookies.set(COOKIE_KEY, original, {
-      expires: 1,        // 1 day — matches your login cookie TTL
-      sameSite: "lax",
-    });
+    Cookies.set(COOKIE_KEY, original, { expires: 1, sameSite: "lax" });
   } else {
     Cookies.remove(COOKIE_KEY);
   }
 
-  // clear impersonation state from sessionStorage
+  // ── restore original encoded localStorage via storeItem ──────────────────
+  // originalStorage holds decoded values — storeItem re-encodes them
+  if (originalStorage.username)   storeItem("username",   originalStorage.username);
+  if (originalStorage.email)      storeItem("email",      originalStorage.email);
+  if (originalStorage.role)       storeItem("role",       originalStorage.role);
+  if (originalStorage.authorId)   storeItem("authorId",   originalStorage.authorId);
+  if (originalStorage.isDirector) storeItem("isDirector", originalStorage.isDirector);
+  else                           removeItem("isDirector");
+
+  // profile is stored raw
+  if (originalStorage.profile !== undefined && originalStorage.profile !== null) {
+    localStorage.setItem("profile", originalStorage.profile);
+  }
+
+  // ── clear impersonation state ─────────────────────────────────────────────
   sessionStorage.removeItem(ORIGINAL_TOKEN_KEY);
   sessionStorage.removeItem(IMPERSONATION_META);
+  sessionStorage.removeItem(ORIGINAL_STORAGE_KEY);
 
-  // full reload back to director console
+  // ── reload back to director console ──────────────────────────────────────
   window.location.href = "/director";
 };
 
 // ── hook ──────────────────────────────────────────────────────────────────────
+
+
 const useImpersonation = () => {
   const meta     = getImpersonationMeta();
   const isActive = !!meta;
@@ -109,20 +272,17 @@ const useImpersonation = () => {
 
   useEffect(() => {
     if (!isActive) return;
-
     const interval = setInterval(() => {
       const remaining = Math.max(
         0,
         Math.floor((new Date(meta.expiresAt) - Date.now()) / 1000)
       );
       setTimeLeft(remaining);
-
       if (remaining <= 0) {
         clearInterval(interval);
         exitImpersonation();
       }
     }, 1000);
-
     return () => clearInterval(interval);
   }, [isActive, meta?.expiresAt]);
 

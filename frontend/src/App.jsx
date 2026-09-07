@@ -40,7 +40,11 @@ import CreateDiscussion from "./Pages/CreateDiscussion.jsx";
 import CreateCommunity from "./Pages/CreateCommunity.jsx";
 import DirectorTenantsPage from "./Pages/director/DirectorTenantsPage.jsx";
 import ImpersonationBanner from "./Pages/director/ImpersonationBanner.jsx";
+import DirectorTeamPage from "./Pages/director/DirectorTeamPage.jsx";
 function App() {
+  // Updated route definitions
+const DIRECTOR_ROLES = ["super_director", "director", "readonly_director"];
+
   return (
     // <AuthProvider>
     //   <GlobalStateProvider>
@@ -321,10 +325,26 @@ function App() {
                 element={<ProtectedRoute element={<CreateCommunity />} />}
               />
               
-               <Route
+              <Route
                 path="/director"
-                element={<ProtectedRoute element={<DirectorTenantsPage />} />}
+                element={
+                  <ProtectedRoute
+                    element={<DirectorTenantsPage />}
+                    requiredRole={DIRECTOR_ROLES}
+                  />
+                }
               />
+
+              <Route
+                path="/director/team"
+                element={
+                  <ProtectedRoute
+                    element={<DirectorTeamPage />}
+                    requiredRole={["super_director"]}  // team management — super only
+                  />
+                }
+              />
+
             </Routes>
             
     </Router>

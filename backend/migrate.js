@@ -312,52 +312,54 @@ const DRY_RUN = false;
 
 
 
-const run = async () => {
-  await mongoose.connect(process.env.MONGODB_URL);
-  console.log('Connected to MongoDB');
+// const run = async () => {
+//   await mongoose.connect(process.env.MONGODB_URL);
+//   console.log('Connected to MongoDB');
 
-  const db = mongoose.connection.db;
-  const collection = db.collection('tutorplaylists'); // adjust if collection name differs
+//   const db = mongoose.connection.db;
+//   const collection = db.collection('tutorplaylists'); // adjust if collection name differs
 
-  // count affected documents first
-  const affected = await collection.countDocuments({
-    $or: [
-      { tenantId: { $exists: false } },
-      { tenantId: null },
-      { tenantId: "" },
-    ],
-  });
+//   // count affected documents first
+//   const affected = await collection.countDocuments({
+//     $or: [
+//       { tenantId: { $exists: false } },
+//       { tenantId: null },
+//       { tenantId: "" },
+//     ],
+//   });
 
-  console.log(`Found ${affected} playlist(s) missing tenantId`);
+//   console.log(`Found ${affected} playlist(s) missing tenantId`);
 
-  if (affected === 0) {
-    console.log('Nothing to migrate.');
-    await mongoose.disconnect();
-    return;
-  }
+//   if (affected === 0) {
+//     console.log('Nothing to migrate.');
+//     await mongoose.disconnect();
+//     return;
+//   }
 
-  if (DRY_RUN) {
-    console.log(`DRY RUN — would set tenantId: "dsu" on ${affected} playlist(s)`);
-    await mongoose.disconnect();
-    return;
-  }
+//   if (DRY_RUN) {
+//     console.log(`DRY RUN — would set tenantId: "dsu" on ${affected} playlist(s)`);
+//     await mongoose.disconnect();
+//     return;
+//   }
 
-  const result = await collection.updateMany(
-    {
-      $or: [
-        { tenantId: { $exists: false } },
-        { tenantId: null },
-        { tenantId: "" },
-      ],
-    },
-    { $set: { tenantId: 'dsu' } }
-  );
+//   const result = await collection.updateMany(
+//     {
+//       $or: [
+//         { tenantId: { $exists: false } },
+//         { tenantId: null },
+//         { tenantId: "" },
+//       ],
+//     },
+//     { $set: { tenantId: 'dsu' } }
+//   );
 
-  console.log(`Done. Modified: ${result.modifiedCount} / Matched: ${result.matchedCount}`);
-  await mongoose.disconnect();
-};
+//   console.log(`Done. Modified: ${result.modifiedCount} / Matched: ${result.matchedCount}`);
+//   await mongoose.disconnect();
+// };
 
-run().catch((err) => {
-  console.error('Migration failed:', err.message);
-  process.exit(1);
-});
+// run().catch((err) => {
+//   console.error('Migration failed:', err.message);
+//   process.exit(1);
+// });
+
+

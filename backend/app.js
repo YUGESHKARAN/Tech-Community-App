@@ -64,7 +64,10 @@ const techCommunityRouter = require("./routes/techCommunity.Route");
 const recentHistroyRouter = require("./routes/recentHistory.Route");
 const discussionsRouter = require("./routes/discussions.Route");
 const performanceTrackerRouter = require("./routes/performanceTracker.Route");
-const directorAdvancedRouter = require("./routes/DirectorAdvanced.routes")
+const directorAdvancedRouter = require("./routes/DirectorAdvanced.routes");
+
+const directorTeamRoutes = require('./routes/directorTeam.Route');
+
 
 app.use("/blog/login", loginRouter);
 app.use("/blog/author", authorRouter);
@@ -79,6 +82,7 @@ app.use("/bytes/director", directorRouter);
 app.use("/bytes/directorAdvanced", directorAdvancedRouter);
 app.use("/bytes/discuss",discussionsRouter);
 app.use("/bytes/performanceTrack", performanceTrackerRouter);
+app.use('/bytes/directorTeam', directorTeamRoutes);
 
 
 app.get("/blog/notifications/stream/:email", async (req, res) => {
