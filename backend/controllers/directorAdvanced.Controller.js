@@ -35,9 +35,30 @@ const {AuditLog} = require("../models/director/auditLogSchema");
 //  HELPERS
 // ─────────────────────────────────────────────────────────────────────────────
 
+// const ensureDirector = (req, res) => {
+//   if (!req.user)                       { res.status(401).json({ message: 'Unauthorized' });    return false; }
+//   if (req.user.role !== 'director')    { res.status(403).json({ message: 'Access denied' });   return false; }
+//   return true;
+// };
+
+const DIRECTOR_ROLES = ["super_director", "director", "readonly_director"];
+
 const ensureDirector = (req, res) => {
-  if (!req.user)                       { res.status(401).json({ message: 'Unauthorized' });    return false; }
-  if (req.user.role !== 'admin')    { res.status(403).json({ message: 'Access denied' });   return false; }
+  if (!req.user) {
+    res.status(401).json({ message: "Unauthorized" });
+    return false;
+  }
+
+  if (!req.user.isDirector) {
+    res.status(403).json({ message: "Access denied — director token required" });
+    return false;
+  }
+
+  if (!DIRECTOR_ROLES.includes(req.user.role)) {
+    res.status(403).json({ message: "Access denied — unrecognised director role" });
+    return false;
+  }
+
   return true;
 };
 

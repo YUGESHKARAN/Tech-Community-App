@@ -103,7 +103,7 @@ const directorUserSchema = new mongoose.Schema(
 );
 
 // ── Indexes ───────────────────────────────────────────────────────────────────
-directorUserSchema.index({ email: 1 });
+// directorUserSchema.index({ email: 1 });
 directorUserSchema.index({ role: 1 });
 directorUserSchema.index({ active: 1 });
 

@@ -14,6 +14,7 @@ const verifyUser = async (req, res) => {
 
 
       if (isDirectorEmail(email)) {
+        console.log("director login called")
       return handleDirectorLogin(req, res);
     }
 
