@@ -573,7 +573,7 @@ function NavBar() {
                  border border-white/10
                  rounded-full transition-all duration-300 gap-2"
         >
-          {profile !== "undefined" ? (
+          {profile !== "undefined" && profile !== "null" && profile !== "" ? (
             <img
               src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`}
               className="min-w-5 h-5 rounded-full object-cover border border-emerald-400"
@@ -617,7 +617,7 @@ function NavBar() {
             }}
             className="  items-center gap-1"
           >
-            {profile !== "undefined" ? (
+            {profile !== "undefined"  && profile !== "null" && profile !== "" ?  (
               <img
                 src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`}
                 className="min-w-[27px] h-[27px] rounded-full border border-emerald-400 object-cover"

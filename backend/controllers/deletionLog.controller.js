@@ -391,12 +391,12 @@ const getDeletionLogs = async (req, res) => {
     const status = req.query.status || "deleted"; // filter by status
     const skip = (page - 1) * limit;
 
-    const admin = await Author.findOne({ email: { $eq: adminEmail }, tenantId }).select(
-      "role",
-    );
-    if (!admin || admin.role !== "admin") {
-      return res.status(403).json({ message: "Access denied" });
-    }
+    // const admin = await Author.findOne({ email: { $eq: adminEmail }, tenantId }).select(
+    //   "role",
+    // );
+    // if (!admin || admin.role !== "admin") {
+    //   return res.status(403).json({ message: "Access denied" });
+    // }
 
     const [logs, total] = await Promise.all([
       // DeletionLog.find({ tenantId, status })
@@ -455,12 +455,12 @@ const getDeletionLogById = async (req, res) => {
       return res.status(401).json({ message: "tenantId required" });
     }
 
-    const admin = await Author.findOne({ email: { $eq: adminEmail }, tenantId }).select(
-      "role",
-    );
-    if (!admin || admin.role !== "admin") {
-      return res.status(403).json({ message: "Access denied" });
-    }
+    // const admin = await Author.findOne({ email: { $eq: adminEmail }, tenantId }).select(
+    //   "role",
+    // );
+    // if (!admin || admin.role !== "admin") {
+    //   return res.status(403).json({ message: "Access denied" });
+    // }
 
     const log = await DeletionLog.findOne({
       _id: logId,

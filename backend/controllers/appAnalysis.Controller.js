@@ -129,15 +129,15 @@ const getAppSummary = async (req, res) => {
       return res.status(401).json({ message: "tenantId required" });
     }
 
-    const author = await Author.findOne({ email: { $eq: email }, tenantId }).select(
-      "role",
-    );
-    if (!author) {
-      return res.status(404).json({ message: "Author not found" });
-    }
-    if (author.role !== "admin") {
-      return res.status(403).json({ message: "Access denied" });
-    }
+    // const author = await Author.findOne({ email: { $eq: email }, tenantId }).select(
+    //   "role",
+    // );
+    // if (!author) {
+    //   return res.status(404).json({ message: "Author not found" });
+    // }
+    // if (author.role !== "admin") {
+    //   return res.status(403).json({ message: "Access denied" });
+    // }
 
     const today = new Date();
     const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
@@ -217,16 +217,16 @@ const getMonthlyPostCounts = async (req, res) => {
 
   try {
     // fix: .select('role') — only field needed for the admin check
-    const author = await Author.findOne({
-      email: { $eq: requestEmail },
-      tenantId,
-    }).select("role");
-    if (!author) {
-      return res.status(404).json({ message: "Author not found" });
-    }
-    if (author.role !== "admin") {
-      return res.status(403).json({ message: "Access denied" });
-    }
+    // const author = await Author.findOne({
+    //   email: { $eq: requestEmail },
+    //   tenantId,
+    // }).select("role");
+    // if (!author) {
+    //   return res.status(404).json({ message: "Author not found" });
+    // }
+    // if (author.role !== "admin") {
+    //   return res.status(403).json({ message: "Access denied" });
+    // }
 
     const monthNames = [
       "Jan",
@@ -515,13 +515,11 @@ const getTopContributors = async (req, res) => {
     return res.status(401).json({ message: "tenantId required" });
   }
 
-  if (!requestEmail) {
-    return res.status(400).json({ message: "Email is required as path param." });
-  }
+
 
   try {
-    const admin = await Author.findOne({ email: { $eq: requestEmail }, tenantId }).select("role");
-    if (!admin) return res.status(404).json({ message: "Author not found" });
+    // const admin = await Author.findOne({ email: { $eq: requestEmail }, tenantId }).select("role");
+    // if (!admin) return res.status(404).json({ message: "Author not found" });
 
     // ── build date range ──────────────────────────────────────
     let dateRange = null;
@@ -806,20 +804,15 @@ const getContributors = async (req, res) => {
     return res.status(401).json({ message: "tenantId required" });
   }
 
-  if (!requestEmail) {
-    return res
-      .status(400)
-      .json({ message: "Email is required as path param." });
-  }
 
   try {
     // fix: added $eq and .select('role')
-    const admin = await Author.findOne({ email: { $eq: requestEmail }, tenantId }).select(
-      "role",
-    );
-    if (!admin) return res.status(404).json({ message: "Author not found" });
-    if (admin.role !== "admin")
-      return res.status(403).json({ message: "Access denied" });
+    // const admin = await Author.findOne({ email: { $eq: requestEmail }, tenantId }).select(
+    //   "role",
+    // );
+    // if (!admin) return res.status(404).json({ message: "Author not found" });
+    // if (admin.role !== "admin")
+    //   return res.status(403).json({ message: "Access denied" });
 
     const contributors = await Author.find({
       tenantId,
@@ -899,19 +892,19 @@ const getStudents = async (req, res) => {
   if (!tenantId) {
     return res.status(401).json({ message: "tenantId required" });
   }
-  if (!requestEmail) {
-    return res
-      .status(400)
-      .json({ message: "Email is required as path param." });
-  }
+  // if (!requestEmail) {
+  //   return res
+  //     .status(400)
+  //     .json({ message: "Email is required as path param." });
+  // }
   try {
-    const admin = await Author.findOne({ email: requestEmail, tenantId });
-    if (!admin) {
-      return res.status(404).json({ message: "Author not found" });
-    }
-    if (admin.role !== "admin") {
-      return res.status(403).json({ message: "Access denied" });
-    }
+    // const admin = await Author.findOne({ email: requestEmail, tenantId });
+    // if (!admin) {
+    //   return res.status(404).json({ message: "Author not found" });
+    // }
+    // if (admin.role !== "admin") {
+    //   return res.status(403).json({ message: "Access denied" });
+    // }
 
     // console.log(`getContributors called by ${requestEmail} with page ${page} and limit ${limit}`);
     // Fetch contributors with roles 'admin' or 'coordinator'
@@ -974,20 +967,16 @@ const getCoordinators = async (req, res) => {
     return res.status(401).json({ message: "tenantId required" });
   }
 
-  if (!requestEmail) {
-    return res
-      .status(400)
-      .json({ message: "Email is required as path param." });
-  }
+
 
   try {
     // fix: added $eq and .select('role')
-    const admin = await Author.findOne({ email: { $eq: requestEmail }, tenantId }).select(
-      "role",
-    );
-    if (!admin) return res.status(404).json({ message: "Author not found" });
-    if (admin.role !== "admin")
-      return res.status(403).json({ message: "Access denied" });
+    // const admin = await Author.findOne({ email: { $eq: requestEmail }, tenantId }).select(
+    //   "role",
+    // );
+    // if (!admin) return res.status(404).json({ message: "Author not found" });
+    // if (admin.role !== "admin")
+    //   return res.status(403).json({ message: "Access denied" });
 
     const contributors = await Author.find({ tenantId, role: { $in: ["coordinator"] } })
       .skip(skip)
@@ -1063,20 +1052,16 @@ const getAdmins = async (req, res) => {
     return res.status(401).json({ message: "tenantId required" });
   }
 
-  if (!requestEmail) {
-    return res
-      .status(400)
-      .json({ message: "Email is required as path param." });
-  }
+
 
   try {
     // fix: added $eq and .select('role')
-    const admin = await Author.findOne({ email: { $eq: requestEmail }, tenantId }).select(
-      "role",
-    );
-    if (!admin) return res.status(404).json({ message: "Author not found" });
-    if (admin.role !== "admin")
-      return res.status(403).json({ message: "Access denied" });
+    // const admin = await Author.findOne({ email: { $eq: requestEmail }, tenantId }).select(
+    //   "role",
+    // );
+    // if (!admin) return res.status(404).json({ message: "Author not found" });
+    // if (admin.role !== "admin")
+    //   return res.status(403).json({ message: "Access denied" });
 
     const contributors = await Author.find({ tenantId, role: { $in: ["admin"] } })
       .skip(skip)

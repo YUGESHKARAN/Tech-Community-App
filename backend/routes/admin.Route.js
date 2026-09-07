@@ -14,18 +14,19 @@ const {
 
 const {limiter, readLimiter} = require("../middleware/rateLimitter");
 const authenticateToken = require('../middleware/authMiddleware');
-const { default: rateLimit } = require("express-rate-limit");
+
+const requireAdmin = require("../middleware/requireAdmin")
 
 // admin routes
-router.get("/deletionLogs/:adminEmail", readLimiter, authenticateToken, getDeletionLogs);
-router.get("/deletionLogs/:adminEmail/:logId", readLimiter, authenticateToken,  getDeletionLogById);
+router.get("/deletionLogs/:adminEmail", readLimiter, authenticateToken, requireAdmin, getDeletionLogs);
+router.get("/deletionLogs/:adminEmail/:logId", readLimiter, authenticateToken, requireAdmin,  getDeletionLogById);
 router.post("/deletionLogs/:adminEmail/:logId/expire", limiter, authenticateToken, expireDeletionLog);
 
 // restore route — admin or self
 router.post("/rollback/:logId", limiter, authenticateToken, rollbackDeletion);
 
 // user self-service (not in use)
-router.get("/myDeletionLog/:email",  readLimiter, authenticateToken, getMyDeletionLog);
+router.get("/myDeletionLog/:email",  readLimiter, authenticateToken, requireAdmin, getMyDeletionLog);
 
 // replace existing delete routes
 router.delete("/delete/:email", limiter, authenticateToken, deleteAuthor);
