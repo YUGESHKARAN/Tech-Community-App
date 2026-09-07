@@ -515,8 +515,6 @@ const getTopContributors = async (req, res) => {
     return res.status(401).json({ message: "tenantId required" });
   }
 
-
-
   try {
     // const admin = await Author.findOne({ email: { $eq: requestEmail }, tenantId }).select("role");
     // if (!admin) return res.status(404).json({ message: "Author not found" });
