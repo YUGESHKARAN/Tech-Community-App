@@ -635,25 +635,25 @@ const TenantCard = ({ tenant, selected, onSelect, onEdit, onDelete, onToggleActi
   ];
 
   return (
-    <div className={`bg-[#0a0f1a] border rounded-xl p-4 transition-all duration-200 flex flex-col gap-3 ${
+    <div className={`bg-[#0a0f1a] border rounded-xl p-3 md:p-4 transition-all duration-200 flex flex-col gap-3 ${
       selected ? "border-emerald-500/40 bg-emerald-500/[0.03]" : "border-[#1e293b] hover:border-white/10"
     }`}>
-      <div className="flex items-start justify-between gap-2">
-        <div className="flex items-center gap-2">
+      <div className="flex items-start justify-between gap-1 md:gap-2">
+        <div className="flex items-start md:gap-2 gap-1">
           {/* bulk select checkbox */}
           <button onClick={(e) => { e.stopPropagation(); onSelect(tenant.tenantId); }}
             className="text-gray-600 hover:text-gray-300 transition-colors flex-shrink-0">
-            {selected ? <TbCheckbox className="text-emerald-400 text-base" /> : <TbSquare className="text-base" />}
+            {selected ? <TbCheckbox className="text-emerald-400 text-sm md:text-base" /> : <TbSquare className="text-sm md:text-base" />}
           </button>
-          <div className="w-9 h-9 rounded-xl bg-emerald-500/10 flex items-center justify-center flex-shrink-0">
-            <TbBuildingSkyscraper className="text-emerald-400 text-base" />
+          <div className="md:w-9 w-7 h-7 md:h-9 rounded-lg md:rounded-xl bg-emerald-500/10 flex items-center justify-center flex-shrink-0">
+            <TbBuildingSkyscraper className="text-emerald-400 text-sm md:text-base" />
           </div>
           <div className="min-w-0">
-            <h3 className="text-sm font-semibold text-gray-200 truncate">{tenant.name}</h3>
+            <h3 className="md:text-sm text-xs text-wrap font-semibold text-gray-200 truncate">{tenant.name}</h3>
             <code className="text-[10px] text-emerald-400/70">{tenant.tenantId}</code>
           </div>
         </div>
-        <div className="flex items-center gap-2 flex-shrink-0">
+        <div className="flex flex-col  md:flex-row md:items-center items-start md:gap-1 flex-shrink-0">
           <Badge active={tenant.active} />
           <OverflowMenu items={menuItems} />
         </div>
@@ -667,7 +667,7 @@ const TenantCard = ({ tenant, selected, onSelect, onEdit, onDelete, onToggleActi
         {tenant.subdomain && (
           <div className="flex items-center gap-1.5 text-[10px] text-gray-500">
             <TbWorld className="text-xs text-gray-600 flex-shrink-0" />
-            <span>{tenant.subdomain}.bytesbase.me</span>
+            <span>{tenant.subdomain}</span>
             <TbExternalLink className="text-[10px] text-gray-600" />
           </div>
         )}
@@ -712,10 +712,10 @@ const StatsBar = ({ tenants }) => {
         { label: "Active",        value: active,   icon: TbToggleRight,  color: "text-emerald-400" },
         { label: "Inactive",      value: inactive, icon: TbToggleLeft,   color: "text-red-400"    },
       ].map(({ label, value, icon: Icon, color }) => (
-        <div key={label} className="bg-[#0a0f1a] border border-[#1e293b] rounded-xl px-4 py-3 flex items-center gap-3">
-          <Icon className={`text-xl ${color}`} />
-          <div>
-            <p className="text-lg font-bold text-gray-200">{value}</p>
+        <div key={label} className="bg-[#0a0f1a] border border-[#1e293b] rounded-lg md:rounded-xl md:px-4 px-2.5 py-1.5 md:py-3 flex-col  md:flex items-center gap-3">
+          <Icon className={`text-sm  md:text-xl ${color}`} />
+          <div className="text-center md:text-left">
+            <p className="md:text-lg  text-xs font-bold text-gray-200">{value}</p>
             <p className="text-[10px] text-gray-500">{label}</p>
           </div>
         </div>
@@ -894,7 +894,7 @@ const exit = () => {
     <div className="min-h-screen bg-[#060b14] text-white">
 
       {/* ── top bar ── */}
-      <div className="sticky top-0 z-30 bg-[#060b14]/90 backdrop-blur border-b border-[#1e293b] px-6 py-3 flex items-center justify-between gap-4">
+      {/* <div className="sticky top-0 z-30 bg-[#060b14]/90 backdrop-blur border-b border-[#1e293b] px-6 py-3 flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="w-7 h-7 rounded-lg bg-emerald-500/15 flex items-center justify-center">
             <TbShield className="text-emerald-400 text-sm" />
@@ -902,7 +902,7 @@ const exit = () => {
           <span className="text-sm font-semibold text-gray-200">Director console</span>
           <span className="text-[10px] text-gray-600">·</span>
 
-          {/* tab switcher */}
+
           <div className="flex gap-1">
             {[
               { id: "tenants", label: "Tenants",   icon: TbBuilding  },
@@ -918,27 +918,7 @@ const exit = () => {
           </div>
         </div>
 
-        {/* {activeTab === "tenants" && (
-          <button onClick={() => setSlideOver("create")}
-            className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-xl bg-emerald-600 text-white hover:bg-emerald-500 transition-colors">
-            <TbPlus className="text-sm" /> Add tenant
-          </button>
-        )} */}
-
-        {/* <div className="flex items-center gap-2">
-          {role === "super_director" && (
-            <button onClick={() => navigate("/director/team")}
-              className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-xl border border-[#1e293b] text-gray-300 hover:bg-white/5 transition-colors">
-              <TbUserShield className="text-sm" /> Team
-            </button>
-          )}
-          {activeTab === "tenants" && ["super_director", "director"].includes(role) && (
-            <button onClick={() => setSlideOver("create")}
-              className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-xl bg-emerald-600 text-white hover:bg-emerald-500 transition-colors">
-              <TbPlus className="text-sm" /> Add tenant
-            </button>
-          )}
-        </div> */}
+     
 <div className="flex items-center gap-2">
   {role === "super_director" && (
     <button
@@ -958,7 +938,6 @@ const exit = () => {
     </button>
   )}
 
-  {/* logout — always visible */}
   <button
     onClick={exit}
     className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-xl border border-red-500/20 text-red-400 hover:bg-red-500/10 transition-colors"
@@ -966,9 +945,104 @@ const exit = () => {
     <TbLogout className="text-sm" /> Logout
   </button>
 </div>
+      </div> */}
+
+      <div className="sticky top-0 z-30 bg-[#060b14]/95 backdrop-blur-md border-b border-[#1e293b] px-3 md:px-6 py-2.5 md:py-3">
+  <div className="flex items-center justify-between gap-2 max-w-[1400px] mx-auto">
+
+    {/* ── left — brand + tabs ── */}
+    <div className="flex items-center gap-1.5 md:gap-3 min-w-0">
+
+      {/* brand mark */}
+      <div className="w-7 h-7 rounded-lg bg-emerald-500/15 flex items-center justify-center flex-shrink-0">
+        <TbShield className="text-emerald-400 text-sm" />
       </div>
 
-      <div className="px-6 py-6 max-w-[1400px] mx-auto">
+      <span className="text-[10px] sm:hidden font-semibold text-emerald-400 flex-shrink-0">
+        Director Console
+      </span>
+
+      {/* title — hidden on very small screens */}
+      <span className="hidden sm:block text-sm font-semibold text-gray-200 flex-shrink-0">
+        Director console
+      </span>
+      <span className="hidden sm:block text-[10px] text-gray-600">·</span>
+
+      {/* tab switcher */}
+      <div className="flex gap-0.5 md:gap-1 bg-white/[0.03] border border-[#1e293b] rounded-lg p-0.5">
+        {[
+          { id: "tenants", label: "Tenants",   icon: TbBuilding       },
+          { id: "audit",   label: "Audit log",  icon: TbHistoryToggle  },
+        ].map(({ id, label, icon: Icon }) => (
+          <button
+            key={id}
+            onClick={() => setActiveTab(id)}
+            className={`flex items-center gap-1 text-[10px] font-semibold px-2 md:px-2.5 py-1 rounded-md transition-all ${
+              activeTab === id
+                ? "bg-white/8 text-white shadow-sm"
+                : "text-gray-500 hover:text-gray-300"
+            }`}
+          >
+            <Icon className="text-xs flex-shrink-0" />
+            <span className="hidden xs:block">{label}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+
+    {/* ── right — actions ── */}
+    <div className="flex items-center gap-1.5 md:gap-2 flex-shrink-0">
+
+      {/* Team — super director only, icon-only on mobile */}
+      {role === "super_director" && (
+        <button
+          onClick={() => navigate("/director/team")}
+          title="Director team"
+          className="flex items-center gap-1.5 text-xs font-semibold
+                     px-1.5 md:px-3 py-1 md:py-1.5 rounded-lg md:rounded-xl
+                     border border-[#1e293b] text-gray-300
+                     hover:bg-white/5 hover:border-white/15 transition-all"
+        >
+          <TbUserShield className="md:text-sm text-xs flex-shrink-0" />
+          <span className="hidden md:block">Team</span>
+        </button>
+      )}
+
+      {/* Add tenant — write roles + tenants tab only, icon-only on mobile */}
+      {activeTab === "tenants" && ["super_director", "director"].includes(role) && (
+        <button
+          onClick={() => setSlideOver("create")}
+          title="Add tenant"
+          className="flex items-center gap-1.5 text-xs font-semibold
+                     px-1.5 md:px-3 py-1 md:py-1.5 rounded-lg md:rounded-xl
+                     bg-emerald-600 text-white
+                     hover:bg-emerald-500 transition-colors"
+        >
+          <TbPlus className="md:text-sm text-xs flex-shrink-0" />
+          <span className="hidden md:block">Add tenant</span>
+        </button>
+      )}
+
+      {/* divider */}
+      <div className="w-px h-5 bg-white/10 hidden sm:block" />
+
+      {/* Logout — icon-only on mobile */}
+      <button
+        onClick={exit}
+        title="Logout"
+        className="flex items-center gap-1.5 text-xs font-semibold
+                   px-2 md:px-3 py-1.5 rounded-xl
+                   border border-red-500/20 text-red-400
+                   hover:bg-red-500/10 hover:border-red-500/30 transition-all"
+      >
+        <TbLogout className="text-sm flex-shrink-0" />
+        <span className="hidden md:block">Logout</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+      <div className="md:px-6 px-3 py-6 max-w-[1400px] mx-auto">
 
         {activeTab === "audit" ? (
           <AuditLogPanel />
@@ -979,17 +1053,17 @@ const exit = () => {
 
             {/* bulk action bar — appears when items are selected */}
             {selected.size > 0 && ["super_director", "director"].includes(role) && (
-              <div className="flex items-center gap-3 mb-4 px-4 py-3 bg-emerald-500/5 border border-emerald-500/20 rounded-xl">
-                <span className="text-xs font-semibold text-emerald-400">
+              <div className="flex items-center gpa-2 md:gap-3 mb-4 px-2 md:px-4 py-3 bg-emerald-500/5 border border-emerald-500/20 rounded-lg md:rounded-xl">
+                <span className=" text-[10px] md:text-xs font-semibold text-emerald-400">
                   {selected.size} tenant{selected.size > 1 ? "s" : ""} selected
                 </span>
                 <div className="flex gap-2 ml-auto">
                   <button onClick={() => handleBulkAction("activate")} disabled={bulkSubmitting}
-                    className="text-[10px] font-semibold px-3 py-1.5 rounded-lg bg-emerald-600/20 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-600/30 disabled:opacity-40 transition-colors">
+                    className="text-[10px] md:font-semibold md:px-3 px-2 py-1 md:py-1.5 rounded-lg bg-emerald-600/20 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-600/30 disabled:opacity-40 transition-colors">
                     Activate all
                   </button>
                   <button onClick={() => handleBulkAction("deactivate")} disabled={bulkSubmitting}
-                    className="text-[10px] font-semibold px-3 py-1.5 rounded-lg bg-red-600/10 text-red-400 border border-red-500/20 hover:bg-red-600/20 disabled:opacity-40 transition-colors">
+                    className="text-[10px] md:font-semibold md:px-3 px-2 py-1 md:py-1.5 rounded-lg bg-red-600/10 text-red-400 border border-red-500/20 hover:bg-red-600/20 disabled:opacity-40 transition-colors">
                     Deactivate all
                   </button>
                   <button onClick={clearAll}
@@ -1002,7 +1076,7 @@ const exit = () => {
 
             {/* search + filter */}
             <div className="flex items-center gap-3 mb-5 flex-wrap">
-              <div className="flex items-center gap-2 bg-white/[0.03] border border-[#1e293b] rounded-xl px-3 py-2 flex-1 max-w-sm focus-within:border-white/15 transition-colors">
+              <div className="flex items-center gap-2 bg-white/[0.03] border border-[#1e293b] rounded-lg md:rounded-xl px-3 py-1.5 md:py-2 flex-1 max-w-sm focus-within:border-white/15 transition-colors">
                 <TbSearch className="text-gray-500 text-sm flex-shrink-0" />
                 <input type="text" value={search} onChange={(e) => setSearch(e.target.value)}
                   placeholder="Search tenants..."

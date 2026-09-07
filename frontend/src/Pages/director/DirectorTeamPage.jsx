@@ -393,13 +393,13 @@ const DirectorCard = ({ director, currentId, isSuperDirector, onEdit, onDelete, 
       isSelf ? "border-emerald-500/20 bg-emerald-500/[0.02]" : "border-[#1e293b] hover:border-white/10"
     }`}>
       <div className="flex items-start justify-between gap-2">
-        <div className="flex items-center gap-3 min-w-0">
-          <div className="w-9 h-9 rounded-xl bg-white/5 border border-[#1e293b] flex items-center justify-center flex-shrink-0 text-sm font-bold text-gray-400 uppercase">
+        <div className="flex items-start md:items-center gap-3 min-w-0">
+          <div className="md:w-9 md:h-9 w-7 h-7 rounded-lg md:rounded-xl bg-white/5 border border-[#1e293b] flex items-center justify-center flex-shrink-0 text-sm font-bold text-gray-400 uppercase">
             {director.name?.[0] || "?"}
           </div>
           <div className="min-w-0">
             <div className="flex items-center gap-1.5 flex-wrap">
-              <h3 className="text-sm font-semibold text-gray-200 truncate">{director.name}</h3>
+              <h3 className="md:text-sm text-xs font-semibold text-gray-200 truncate">{director.name}</h3>
               {isSelf && <span className="text-[9px] text-emerald-400 font-medium">(you)</span>}
             </div>
             <p className="text-[10px] text-gray-500 truncate">{director.email}</p>
@@ -542,37 +542,37 @@ function DirectorTeamPage() {
     <div className="min-h-screen bg-[#060b14] text-white">
       {/* top bar */}
       <div className="sticky top-0 z-30 bg-[#060b14]/90 backdrop-blur border-b border-[#1e293b] px-6 py-3 flex items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 md:gap-3">
           <button onClick={() => navigate("/director")}
             className="text-gray-500 hover:text-gray-300 p-1.5 rounded-lg hover:bg-white/5 transition-colors">
-            <TbArrowLeft className="text-base" />
+            <TbArrowLeft className="md:text-base text-sm" />
           </button>
           <div className="w-7 h-7 rounded-lg bg-violet-500/15 flex items-center justify-center">
             <TbUserShield className="text-violet-400 text-sm" />
           </div>
-          <span className="text-sm font-semibold text-gray-200">Director team</span>
+          <span className="md:text-sm text-[10px] font-semibold text-gray-200">Director team</span>
           <span className="text-[10px] text-gray-600">·</span>
           <span className="text-[10px] text-gray-500">{directors.length} members</span>
         </div>
         {isSuperDirector && (
           <button onClick={() => setSlideOver("create")}
-            className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-xl bg-violet-600 text-white hover:bg-violet-500 transition-colors">
-            <TbPlus className="text-sm" /> Add director
+            className="flex items-center gap-1.5 text-xs font-semibold px-2 md:px-3 py-1.5 rounded-lg md:rounded-xl bg-violet-600 text-white hover:bg-violet-500 transition-colors">
+            <TbPlus className="md:text-sm text-xs" /> <span className="hidden sm:block">Add director</span>
           </button>
         )}
       </div>
 
-      <div className="px-6 py-6 max-w-[1200px] mx-auto">
+      <div className="md:px-6 px-3 py-6 max-w-[1200px] mx-auto">
         {/* stats */}
         {!loading && !fetchError && (
-          <div className="grid grid-cols-3 gap-3 mb-6">
+          <div className="grid grid-cols-3 gap-2 md:gap-3 mb-6">
             {ROLES.map(({ value, label, icon: Icon, color, bg }) => (
-              <div key={value} className="bg-[#0a0f1a] border border-[#1e293b] rounded-xl px-4 py-3 flex items-center gap-3">
-                <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${bg}`}>
-                  <Icon className={`text-base ${color}`} />
+              <div key={value} className="bg-[#0a0f1a] border border-[#1e293b] rounded-lg md:rounded-xl md:px-4 px-2.5 py-1.5 md:py-3 flex-col md:flex items-center gap-3">
+                <div className={`md:w-8 w-6 h-6 md:h-8 rounded-xl flex items-center justify-center ${bg}`}>
+                  <Icon className={`text-sm md:text-base ${color}`} />
                 </div>
-                <div>
-                  <p className="text-lg font-bold text-gray-200">{roleCounts[value] || 0}</p>
+                <div className="text-center md:text-left">
+                  <p className="text-xs md:text-lg font-bold text-gray-200">{roleCounts[value] || 0}</p>
                   <p className="text-[10px] text-gray-500">{label}</p>
                 </div>
               </div>
