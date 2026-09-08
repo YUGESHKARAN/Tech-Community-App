@@ -21,7 +21,7 @@ const router = express.Router();
 
 const {limiter, readLimiter}  = require("../middleware/rateLimitter")
 // router.get("/all",authenticateToken, getAllTutorPlaylist);  
-router.get("/recommended/:email",readLimiter, authenticateToken, getRecommendedTutorPlaylist);
+router.get("/recommended/:authorId",readLimiter, authenticateToken, getRecommendedTutorPlaylist);
 
 
 
