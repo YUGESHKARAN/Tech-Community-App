@@ -35,6 +35,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { twMerge } from "tailwind-merge";
 import clsx from "clsx";
 import formatCount from "../utils/NumberConversion";
+import RenderTextWithHashtags from "../components/RenderTextWithHashtags";
 
 function Announcement() {
   const username = getItem("username");
@@ -477,7 +478,7 @@ function Announcement() {
         <button
           onClick={() => setShowAnnouncement(!showAnnouncement)}
           className="md:px-4 px-3 py-2 md:py-2 bg-emerald-600/20 hover:bg-emerald-500/20
-                rounded-md text-xs md:text-sm   text-emerald-400 transition "
+                rounded-md text-xs font-semibold   text-emerald-400 transition "
         >
           Create Campaign
         </button>
@@ -835,7 +836,7 @@ function Announcement() {
 
           <aside
             // className={`${!showAnnouncement?'md:sticky top-7 self-start':' md:sticky top-7 self-start'}`}
-            className="lg:sticky lg:overflow-y-scroll lg:h-screen scrollbar-hide top-7 self-start"
+            className="lg:sticky lg:overflow-y-scroll overflow-x-hidden lg:h-screen scrollbar-hide top-7 self-start"
           >
             {role === "student" && (
               <AnnouncementInfo
@@ -1052,20 +1053,20 @@ function Announcement() {
                                 className="
                           w-full   min-h-24 h-[150px]
                           overflow-y-auto
+                          overflow-x-hidden
                           emerald-scrollbar
                           px-4 py-3
                           rounded-md
                           theme
                           border border-gray-700
                           text-white text-xs 
-                          leading-relaxed
-                         break-words
-                         
-                          whitespace-pre-wrap
+                        
+                        
                         "
                               >
                                 {message?.trim()?.length > 0 ? (
-                                  renderTextWithHashtags2(message)
+                                  // renderTextWithHashtags2(message)
+                                  <RenderTextWithHashtags text ={message}/>
                                 ) : (
                                   <span className="text-gray-500">
                                     Preview content will appear here...
@@ -1329,10 +1330,10 @@ function Announcement() {
                         <button
                           type="submit"
                           disabled={loading}
-                          className="w-full py-2.5 bg-emerald-600/20 hover:bg-emerald-500/20
-                          text-emerald-400 text-xs md:text-sm flex items-center justify-center gap-2 rounded-md transition"
+                          className="w-full py-2 bg-emerald-600/20 hover:bg-emerald-500/20
+                          text-emerald-400 text-xs font-semibold flex items-center justify-center gap-2 rounded-md transition"
                         >
-                          <VscGitStashApply className="md:text-base text-sm " />{" "}
+                          <VscGitStashApply className=" text-xs " />{" "}
                           {loading ? "Publishing..." : "Publish"}
                         </button>
                       </form>
@@ -1367,42 +1368,7 @@ function Announcement() {
           <main
             className={`space-y-6 md:space-y-8 md:block ${showGuidelines && "hidden md:block"}`}
           >
-            {/* <div
-              className={`${role !== "student" ? "theme border border-slate-800 rounded-lg p-5" : "theme border border-slate-800 rounded-lg p-5"}`}
-            >
-              <div className="flex items-center justify-between ">
-                <h3 className="text-xs uppercase tracking-wide text-emerald-400 font-semibold mb-4">
-                  Overview
-                </h3>
-
-                {announcement.length > 0 && (
-                  <button
-                    onClick={() => {
-                      clearAllAnnouncements();
-                    }}
-                    className="text-xs md:text-sm text-red-500 md:hover:text-red-600 transition-all duration-300 cursor-poiter"
-                  >
-                    <RiDeleteBin6Line />
-                  </button>
-                )}
-              </div>
-
-              <div className="space-y-3 text-sm">
-                <div className="flex  justify-between">
-                  <span className="text-white/70 font-medium">User Role</span>
-                  <span className="capitalize text-slate-400 ">{role}</span>
-                </div>
-
-                <div className="flex text-sm justify-between">
-                  <span className="text-white/70 font-medium">Inbox</span>
-                  <span className="text-slate-400  ">
-                    {announcement?.length > 0
-                      ? announcement.length
-                      : "Empty"}{" "}
-                  </span>
-                </div>
-              </div>
-            </div> */}
+      
 
             <div
               className="rounded-3xl relative group overflow-hidden rounded-lg
@@ -1467,96 +1433,7 @@ function Announcement() {
 
             {!announceLoading &&
               reversedAnnouncements.map((item) => (
-                // <div
-                //   key={item._id}
-                //   className="theme border border-slate-800 rounded-lg p-4 md:p-7 space-y-6"
-                // >
-                //   <div className="flex justify-between items-start">
-                //     <div>
-                //       <h2 className="md:text-xl text-lg max-w-[360px] md:max-w-full font-semibold text-white">
-                //         {item.title}
-                //       </h2>
-                //       <div className="text-xs text-slate-400 mt-1">
-                //         {/* {item.timestamp?.slice(0, 10)} */}
-                //         {getTimeAgo(item.timestamp)}
-                //       </div>
-                //     </div>
-
-                //     <button
-                //       onClick={() => deleteAnnouncement(item._id)}
-                //       // className="text-slate-500 border border-neutral-700 md:border-neutral-700 md:rounded  md:p-0.5  text-xs md:text-sm hover:text-red-400 transition"
-                //     >
-                //       {/* ✕ */}
-                //       {/* <IoMdClose /> */}
-                //       <AiFillCloseSquare className="text-lg md:text-xl text-gray-700 font-normal  md:hover:text-gray-600 transition-all duration-300" />
-                //     </button>
-                //   </div>
-
-                //   <div className="md:text-sm text-xs leading-relaxed text-slate-300 ">
-                //     {/* {item.message} */}
-                //     {renderTextWithHashtags(item.message)}
-                //   </div>
-
-                //   {item.poster && item.poster !== "undefined" && (
-                //     <div className="rounded-md overflow-hidden border cursor-pointer border-slate-700">
-                //       <img
-                //         src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${item.poster}`}
-                //         alt=""
-                //         className="w-full h-48 md:h-[400px] object-contain bg-black"
-                //         onClick={() =>
-                //           handleImageClick(
-                //             `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${item.poster}`,
-                //           )
-                //         }
-                //       />
-                //     </div>
-                //   )}
-
-                //   {/* LINKS */}
-                //   {item.links?.length > 0 && (
-                //     <div className="flex flex-wrap gap-2">
-                //       {item.links.map((link, i) => (
-                //         <a
-                //           key={i}
-                //           href={link.url}
-                //           target="_blank"
-                //           rel="noopener noreferrer"
-                //           className="px-2 md:px-3 md:py-1 py-1 rounded-2xl
-                //                  border border-slate-700
-                //                  text-xs text-emerald-400
-                //                  hover:bg-emerald-600/10 transition"
-                //         >
-                //           {link.title}
-                //         </a>
-                //       ))}
-                //     </div>
-                //   )}
-
-                //   {/* VIEW POST SECTION RESTORED */}
-                //   <div className="flex justify-between items-center text-xs text-slate-500 pt-2 md:pt-2 md:border-t border-slate-800">
-                //     <div className="flex items-center gap-2 md:gap-3">
-                //       <Link to={`/viewProfile/${item.authorEmail}`}>
-                //         {item?.profile && item.profile !== "undefined" ? (
-                //           <img
-                //             src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${item.profile}`}
-                //             alt="Author"
-                //             className="md:w-9 md:h-9 w-8 h-8 rounded-full object-cover border border-gray-200"
-                //           />
-                //         ) : (
-                //           <div className="md:w-9 md:h-9 w-8 h-8 rounded-full object-cover border border-gray-300">
-                //             <HiOutlineUserCircle className="text-[#786fa6] bg-gray-300 rounded-full w-full h-full " />
-                //           </div>
-                //         )}
-                //       </Link>
-                //       <div className="text-[10px] text-gray-500 md:text-gray-400">
-                //         Posted by{" "}
-                //         <p className="text-gray-200 text-xs font-semibold">
-                //           {item.user}
-                //         </p>
-                //       </div>
-                //     </div>
-                //   </div>
-                // </div>
+      
 
                 <div
                   key={item._id}
@@ -1654,7 +1531,8 @@ function Announcement() {
                         text-slate-300
                       "
                     >
-                      {renderTextWithHashtags(item.message)}
+                      {/* {renderTextWithHashtags(item.message)} */}
+                      <RenderTextWithHashtags text= {item.message}/>
                     </div>
                   </div>
 
@@ -1694,7 +1572,7 @@ function Announcement() {
 
                   {/* Resource Links */}
                   {item.links?.length > 0 && (
-                    <div className="px-5 md:px-7 mt-6">
+                    <div className="px-4  mt-6">
                       <div className="grid  md:grid-cols-4 gap-3">
                         {item.links.map((link, i) => (
                           <a
@@ -1718,7 +1596,7 @@ function Announcement() {
                             "
                           >
                             <div>
-                              <p className="text-sm font-medium text-white">
+                              <p className="md:text-sm text-xs font-medium text-white">
                                 {link.title}
                               </p>
                               <p className="text-xs text-slate-500 truncate max-w-[200px]">
@@ -1753,8 +1631,7 @@ function Announcement() {
                               src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${item.profile}`}
                               alt=""
                               className="
-                                w-11
-                                h-11
+                                md:w-11 w-7 h-7 md:h-11
                                 rounded-full
                                 object-cover
                                 border
@@ -1762,18 +1639,18 @@ function Announcement() {
                               "
                             />
                           ) : (
-                            <div className="w-11 h-11 rounded-full overflow-hidden border border-slate-700">
+                            <div className="md:w-11 w-7 h-7 md:h-11 rounded-full overflow-hidden border border-slate-700">
                               <HiOutlineUserCircle className="w-full h-full text-[#786fa6] bg-slate-300" />
                             </div>
                           )}
                         </Link>
 
                         <div>
-                          <p className="text-[11px] uppercase tracking-wide text-slate-500">
+                          <p className="md:text-[11px] text-[9px] uppercase tracking-wide text-slate-500">
                             Published by
                           </p>
 
-                          <p className="text-sm font-semibold text-white">
+                          <p className="md:text-sm text-xs font-semibold text-white">
                             {item.user}
                           </p>
                         </div>
