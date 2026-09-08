@@ -20,6 +20,7 @@ import {
   SAMPLE_CONTRIBUTIONS_BY_YEAR,
 } from "./performanceSampleData";
 import { getItem } from "../../utils/encode";
+import formatCount from "../../utils/NumberConversion";
 
 // ── Sample day events ─────────────────────────────────────────────────────────
 // Each key MUST match a date that has points in SAMPLE_CONTRIBUTIONS_BY_YEAR
@@ -371,7 +372,7 @@ const StreakWidget = ({ currentStreak, longestStreak, lastActiveDate }) => {
         </div>
         <div className="flex items-baseline gap-1.5">
           <span className={`text-2xl font-bold ${display > 0 ? "text-gray-100" : "text-gray-600"}`}>
-            {display}
+            {formatCount(display)}
           </span>
           <span className="text-xs text-gray-500">days</span>
         </div>
@@ -394,7 +395,7 @@ const StreakWidget = ({ currentStreak, longestStreak, lastActiveDate }) => {
           </span>
         </div>
         <div className="flex items-baseline gap-1.5">
-          <span className="text-2xl font-bold text-gray-100">{longestStreak}</span>
+          <span className="text-2xl font-bold text-gray-100">{formatCount(longestStreak)}</span>
           <span className="text-xs text-gray-500">days</span>
         </div>
         <p className="text-[10px] text-gray-600 mt-1">All-time personal best</p>
