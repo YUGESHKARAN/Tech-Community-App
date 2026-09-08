@@ -66,10 +66,10 @@ function ImpersonationBanner() {
         }`}>
           <TbUserShield className={`text-sm ${isExpiringSoon ? "text-red-300" : "text-violet-300"}`} />
         </div>
-        <span className="font-semibold tracking-tight">Impersonation active</span>
-        <span className={isExpiringSoon ? "text-red-300/70" : "text-violet-300/70"}>·</span>
-        <span className="truncate">
-          Viewing as <b className="text-white">{meta?.tenantName}</b>
+        <span className="font-semibold hidden md:block tracking-tight">Impersonation active</span>
+        <span className={`${isExpiringSoon ? "text-red-300/70" : "text-violet-300/70"} hidden md:block`}>·</span>
+        <span className="truncate text-wrap">
+          <span className="hidden md:block"> Viewing as </span> <b className="text-white text-[10px] md:text-xs">{meta?.tenantName}</b>
           <code className={`ml-1.5 text-[10px] px-1 py-0.5 rounded ${
             isExpiringSoon ? "bg-red-500/20 text-red-200" : "bg-violet-500/20 text-violet-200"
           }`}>
@@ -78,7 +78,7 @@ function ImpersonationBanner() {
         </span>
         {isExpiringSoon && (
           <span className="hidden md:flex items-center gap-1 text-red-300 flex-shrink-0">
-            <TbAlertTriangle className="text-xs" /> Expiring soon
+            <TbAlertTriangle className="text-xs" />  <span className="hidden md:block">Expiring soon</span>
           </span>
         )}
       </div>
@@ -111,9 +111,9 @@ function ImpersonationBanner() {
           }`}
         >
           {exiting ? (
-            <><TbLoader2 className="animate-spin text-xs" /> Exiting...</>
+            <><TbLoader2 className="animate-spin text-xs" />  <span className="hidden md:block">Exiting...</span></>
           ) : (
-            <><TbLogout className="text-xs" /> Exit impersonation</>
+            <><TbLogout className="text-xs" /><span className="hidden md:block"> Exit impersonation</span></>
           )}
         </button>
       </div>

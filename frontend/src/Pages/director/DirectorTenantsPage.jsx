@@ -136,7 +136,7 @@ const SlideOver = ({ open, onClose, title, children, width = "max-w-xl" }) => {
       <div className={`fixed right-0 top-0 bottom-0 z-50 w-full ${width} bg-[#0a0f1a] border-l border-[#1e293b] flex flex-col shadow-2xl`}
         style={{ animation: "slideInRight 0.2s cubic-bezier(0.32,0.72,0,1)" }}>
         <div className="flex items-center justify-between px-6 py-4 border-b border-[#1e293b] flex-shrink-0">
-          <h2 className="text-sm font-semibold text-gray-200">{title}</h2>
+          <h2 className="md:text-sm text-xs font-semibold text-gray-200">{title}</h2>
           <button onClick={onClose} className="text-gray-500 hover:text-gray-300 p-1 rounded-lg hover:bg-white/5 transition-colors">
             <TbX className="text-base" />
           </button>
@@ -224,7 +224,7 @@ const TenantForm = ({ initial, onSubmit, onCancel, submitting, submitLabel }) =>
           <input type="text" value={form.tenantId}
             onChange={(e) => set("tenantId")(e.target.value.toLowerCase().replace(/[^a-z0-9_-]/g, ""))}
             placeholder="e.g. dsu" disabled={!!initial}
-            className={`w-full bg-white/[0.03] border rounded-xl px-3 py-2 text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-white/20 transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${errors.tenantId ? "border-red-500/40" : "border-[#1e293b]"}`} />
+            className={`w-full bg-white/[0.03] border rounded-lg md:rounded-xl px-3 py-1 md:py-2 text-xs md:text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-white/20 transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${errors.tenantId ? "border-red-500/40" : "border-[#1e293b]"}`} />
           {initial && <p className="text-[9px] text-gray-600 mt-1">Tenant ID cannot be changed</p>}
           <FieldError msg={errors.tenantId} />
         </div>
@@ -235,7 +235,7 @@ const TenantForm = ({ initial, onSubmit, onCancel, submitting, submitLabel }) =>
           <input type="text" value={form.name}
             onChange={(e) => set("name")(e.target.value)}
             placeholder="e.g. Dr. Sivanthi Aditanar University"
-            className={`w-full bg-white/[0.03] border rounded-xl px-3 py-2 text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-white/20 transition-colors ${errors.name ? "border-red-500/40" : "border-[#1e293b]"}`} />
+            className={`w-full bg-white/[0.03] border rounded-lg md:rounded-xl px-3 py-1 md:py-2 text-xs md:text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-white/20 transition-colors ${errors.name ? "border-red-500/40" : "border-[#1e293b]"}`} />
           <FieldError msg={errors.name} />
         </div>
       </div>
@@ -245,11 +245,11 @@ const TenantForm = ({ initial, onSubmit, onCancel, submitting, submitLabel }) =>
             Email domain <span className="text-red-400">*</span>
           </label>
           <div className="relative">
-            <TbAt className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm" />
+            <TbAt className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs md:text-sm" />
             <input type="text" value={form.emailDomain}
               onChange={(e) => set("emailDomain")(e.target.value.toLowerCase())}
               placeholder="dsuniversity.ac.in"
-              className={`w-full bg-white/[0.03] border rounded-xl pl-8 pr-3 py-2 text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-white/20 transition-colors ${errors.emailDomain ? "border-red-500/40" : "border-[#1e293b]"}`} />
+              className={`w-full bg-white/[0.03] border rounded-lg md:rounded-xl pl-8 pr-3 py-1 md:py-2 text-xs md:text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-white/20 transition-colors ${errors.emailDomain ? "border-red-500/40" : "border-[#1e293b]"}`} />
           </div>
           <FieldError msg={errors.emailDomain} />
         </div>
@@ -258,16 +258,16 @@ const TenantForm = ({ initial, onSubmit, onCancel, submitting, submitLabel }) =>
             Subdomain <span className="text-gray-600 font-normal normal-case tracking-normal">— optional</span>
           </label>
           <div className="relative">
-            <TbWorld className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm" />
+            <TbWorld className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs md:text-sm" />
             <input type="text" value={form.subdomain}
               onChange={(e) => set("subdomain")(e.target.value.toLowerCase())}
               placeholder="dsu → dsu.bytesbase.me"
-              className="w-full bg-white/[0.03] border border-[#1e293b] rounded-xl pl-8 pr-3 py-2 text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-white/20 transition-colors" />
+              className="w-full bg-white/[0.03] border border-[#1e293b] rounded-lg md:rounded-xl pl-8 pr-3 py-1 md:py-2 text-xs md:text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-white/20 transition-colors" />
           </div>
         </div>
       </div>
       <Toggle checked={form.active} onChange={set("active")} label="Tenant active" />
-      <div className="border border-[#1e293b] rounded-xl p-4 flex flex-col gap-4">
+      <div className="border border-[#1e293b] rounded-lg md:rounded-xl p-4 flex flex-col gap-4">
         <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">Configuration</p>
         <div className="flex flex-col gap-3">
           <Toggle checked={form.config.allowPublicProfiles} onChange={setConfig("allowPublicProfiles")} label="Allow public profiles" />
@@ -277,7 +277,7 @@ const TenantForm = ({ initial, onSubmit, onCancel, submitting, submitLabel }) =>
           <label className="block text-[10px] font-semibold text-gray-400 uppercase tracking-wide mb-1.5">Max users allowed</label>
           <input type="number" min={1} value={form.config.maxUsersAllowed}
             onChange={(e) => setConfig("maxUsersAllowed")(Number(e.target.value))}
-            className={`w-40 bg-white/[0.03] border rounded-xl px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-white/20 transition-colors ${errors.maxUsersAllowed ? "border-red-500/40" : "border-[#1e293b]"}`} />
+            className={`w-40 bg-white/[0.03] border rounded-lg md:rounded-xl px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-white/20 transition-colors ${errors.maxUsersAllowed ? "border-red-500/40" : "border-[#1e293b]"}`} />
           <FieldError msg={errors.maxUsersAllowed} />
         </div>
       </div>
@@ -545,10 +545,10 @@ const ImpersonationPanel = ({ tenant, onClose, showToast }) => {
       {!token ? (
         /* step 1 — issue token */
         <button onClick={handleImpersonate} disabled={loading || !tenant.active}
-          className="flex items-center justify-center gap-2 text-sm font-semibold py-2.5 rounded-xl bg-violet-600 text-white hover:bg-violet-500 transition-colors disabled:opacity-40">
+          className="flex items-center justify-center gap-2 text-xs md:text-sm font-semibold py-2.5 rounded-lg md:rounded-xl bg-violet-600 text-white hover:bg-violet-500 transition-colors disabled:opacity-40">
           {loading
-            ? <><TbLoader2 className="animate-spin text-sm" /> Issuing...</>
-            : <><TbUserShield className="text-sm" /> Issue impersonation token</>}
+            ? <><TbLoader2 className="animate-spin text-xs md:text-sm" /> Issuing...</>
+            : <><TbUserShield className="text-xs md:text-sm" /> Issue impersonation token</>}
         </button>
       ) : (
         /* step 2 — token ready, enter or revoke */
@@ -573,24 +573,24 @@ const ImpersonationPanel = ({ tenant, onClose, showToast }) => {
           <button
             onClick={handleEnter}
             disabled={entering}
-            className="flex items-center justify-center gap-2 text-sm font-semibold py-2.5 rounded-xl bg-violet-600 text-white hover:bg-violet-500 transition-colors disabled:opacity-40"
+            className="flex items-center justify-center gap-2 text-xs md:text-sm font-semibold py-2.5 rounded-lg md:rounded-xl bg-violet-600 text-white hover:bg-violet-500 transition-colors disabled:opacity-40"
           >
             {entering
-              ? <><TbLoader2 className="animate-spin text-sm" /> Entering...</>
-              : <><TbUserShield className="text-sm" /> Enter as {tenant.name} admin</>}
+              ? <><TbLoader2 className="animate-spin text-xs md:text-sm" /> Entering...</>
+              : <><TbUserShield className="text-xs md:text-sm" /> Enter as {tenant.name} admin</>}
           </button>
 
           {/* secondary actions */}
           <div className="flex gap-2">
             <button onClick={handleCopyToken}
               className="flex-1 flex items-center justify-center gap-1.5 text-xs font-medium py-2 rounded-xl bg-white/5 border border-[#1e293b] text-gray-300 hover:bg-white/8 transition-colors">
-              <TbClipboardList className="text-sm" /> Copy token
+              <TbClipboardList className="text-xs md:text-sm" /> Copy token
             </button>
             <button onClick={handleRevoke} disabled={revoking}
               className="flex-1 flex items-center justify-center gap-1.5 text-xs font-semibold py-2 rounded-xl bg-red-600/20 border border-red-500/20 text-red-400 hover:bg-red-600/30 transition-colors disabled:opacity-40">
               {revoking
-                ? <><TbLoader2 className="animate-spin text-sm" /> Revoking...</>
-                : <><TbLogout className="text-sm" /> Revoke</>}
+                ? <><TbLoader2 className="animate-spin text-xs md:text-sm" /> Revoking...</>
+                : <><TbLogout className="text-xs md:text-sm" /> Revoke</>}
             </button>
           </div>
 
@@ -1091,7 +1091,7 @@ const exit = () => {
               <div className="flex gap-1.5">
                 {["all", "active", "inactive"].map((f) => (
                   <button key={f} onClick={() => setFilter(f)}
-                    className={`text-[10px] font-semibold px-2.5 py-1.5 rounded-xl border capitalize transition-colors ${
+                    className={`text-[10px] font-semibold px-2.5 py-1.5 rounded-lg md:rounded-xl border capitalize transition-colors ${
                       filter === f
                         ? "bg-white/5 text-white border-white/15"
                         : "text-gray-500 border-transparent hover:text-gray-300"
