@@ -712,7 +712,7 @@ const StatsBar = ({ tenants }) => {
         { label: "Active",        value: active,   icon: TbToggleRight,  color: "text-emerald-400" },
         { label: "Inactive",      value: inactive, icon: TbToggleLeft,   color: "text-red-400"    },
       ].map(({ label, value, icon: Icon, color }) => (
-        <div key={label} className="bg-[#0a0f1a] border border-[#1e293b] rounded-lg md:rounded-xl md:px-4 px-2.5 py-1.5 md:py-3 flex-col  md:flex items-center gap-3">
+        <div key={label} className="bg-[#0a0f1a] border border-[#1e293b] rounded-lg md:rounded-xl md:px-4 px-2.5 py-1.5 md:py-3 flex-col  md:flex md:flex-row items-center gap-3">
           <Icon className={`text-sm  md:text-xl ${color}`} />
           <div className="text-center md:text-left">
             <p className="md:text-lg  text-xs font-bold text-gray-200">{value}</p>

@@ -541,7 +541,7 @@ function DirectorTeamPage() {
   return (
     <div className="min-h-screen bg-[#060b14] text-white">
       {/* top bar */}
-      <div className="sticky top-0 z-30 bg-[#060b14]/90 backdrop-blur border-b border-[#1e293b] px-6 py-3 flex items-center justify-between gap-4">
+      <div className="sticky top-0 z-30  max-w-[1200px] mx-auto bg-[#060b14]/90 backdrop-blur border-b border-[#1e293b] px-6 py-3 flex items-center justify-between gap-4">
         <div className="flex items-center gap-3 md:gap-3">
           <button onClick={() => navigate("/director")}
             className="text-gray-500 hover:text-gray-300 p-1.5 rounded-lg hover:bg-white/5 transition-colors">
@@ -567,7 +567,7 @@ function DirectorTeamPage() {
         {!loading && !fetchError && (
           <div className="grid grid-cols-3 gap-2 md:gap-3 mb-6">
             {ROLES.map(({ value, label, icon: Icon, color, bg }) => (
-              <div key={value} className="bg-[#0a0f1a] border border-[#1e293b] rounded-lg md:rounded-xl md:px-4 px-2.5 py-1.5 md:py-3 flex-col md:flex items-center gap-3">
+              <div key={value} className="bg-[#0a0f1a] border border-[#1e293b] rounded-lg md:rounded-xl md:px-4 px-2.5 py-1.5 md:py-3 flex-col md:flex md:flex-row items-center gap-3">
                 <div className={`md:w-8 w-6 h-6 md:h-8 rounded-xl flex items-center justify-center ${bg}`}>
                   <Icon className={`text-sm md:text-base ${color}`} />
                 </div>
