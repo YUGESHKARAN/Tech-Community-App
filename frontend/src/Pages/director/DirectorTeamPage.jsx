@@ -167,7 +167,7 @@ const SlideOver = ({ open, onClose, title, children }) => {
       <div className="fixed right-0 top-0 bottom-0 z-50 w-full max-w-xl bg-[#0a0f1a] border-l border-[#1e293b] flex flex-col shadow-2xl"
         style={{ animation: "slideInRight 0.2s cubic-bezier(0.32,0.72,0,1)" }}>
         <div className="flex items-center justify-between px-6 py-4 border-b border-[#1e293b] flex-shrink-0">
-          <h2 className="text-sm font-semibold text-gray-200">{title}</h2>
+          <h2 className="md:text-sm text-xs font-semibold text-gray-200">{title}</h2>
           <button onClick={onClose} className="text-gray-500 hover:text-gray-300 p-1 rounded-lg hover:bg-white/5">
             <TbX className="text-base" />
           </button>
@@ -278,7 +278,7 @@ const DirectorForm = ({ initial, onSubmit, onCancel, submitting, submitLabel, is
         </label>
         <input type="text" value={form.name} onChange={(e) => set("name")(e.target.value)}
           placeholder="e.g. Ravi Kumar"
-          className={`w-full bg-white/[0.03] border rounded-xl px-3 py-2 text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-white/20 transition-colors ${errors.name ? "border-red-500/40" : "border-[#1e293b]"}`} />
+          className={`w-full bg-white/[0.03] border rounded-lg md:rounded-xl px-3 md:py-2 py-1.5 text-xs md:text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-white/20 transition-colors ${errors.name ? "border-red-500/40" : "border-[#1e293b]"}`} />
         <FieldError msg={errors.name} />
       </div>
 
@@ -293,7 +293,7 @@ const DirectorForm = ({ initial, onSubmit, onCancel, submitting, submitLabel, is
             <input type="email" value={form.email}
               onChange={(e) => set("email")(e.target.value.toLowerCase())}
               placeholder="ravi@bytesbase.tech"
-              className={`w-full bg-white/[0.03] border rounded-xl pl-8 pr-3 py-2 text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-white/20 transition-colors ${errors.email ? "border-red-500/40" : "border-[#1e293b]"}`} />
+              className={`w-full bg-white/[0.03] border rounded-lg md:rounded-xl pl-8 pr-3 md:py-2 py-1.5 text-xs md:text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-white/20 transition-colors ${errors.email ? "border-red-500/40" : "border-[#1e293b]"}`} />
           </div>
           <FieldError msg={errors.email} />
         </div>
@@ -307,7 +307,7 @@ const DirectorForm = ({ initial, onSubmit, onCancel, submitting, submitLabel, is
           </label>
           <input type="password" value={form.password} onChange={(e) => set("password")(e.target.value)}
             placeholder="Min 8 characters"
-            className={`w-full bg-white/[0.03] border rounded-xl px-3 py-2 text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-white/20 transition-colors ${errors.password ? "border-red-500/40" : "border-[#1e293b]"}`} />
+            className={`w-full bg-white/[0.03] border rounded-lg md:rounded-xl px-3 md:py-2 py-1.5 text-xs md:text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-white/20 transition-colors ${errors.password ? "border-red-500/40" : "border-[#1e293b]"}`} />
           <FieldError msg={errors.password} />
         </div>
       )}
@@ -318,13 +318,13 @@ const DirectorForm = ({ initial, onSubmit, onCancel, submitting, submitLabel, is
         <div className="flex flex-col gap-2">
           {ROLES.map(({ value, label, icon: Icon, color, bg }) => (
             <label key={value}
-              className={`flex items-center gap-3 px-4 py-2.5 border rounded-xl cursor-pointer transition-colors ${
+              className={`flex items-center gap-3 px-4 py-1.5 md:py-2.5 border rounded-lg md:rounded-xl cursor-pointer transition-colors ${
                 form.role === value ? "border-white/20 bg-white/5" : "border-[#1e293b] hover:border-white/10"
               } ${isSelf ? "opacity-40 cursor-not-allowed" : ""}`}>
               <input type="radio" name="role" value={value} checked={form.role === value}
                 onChange={() => !isSelf && handleRoleChange(value)} className="sr-only" />
-              <div className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 ${bg}`}>
-                <Icon className={`text-sm ${color}`} />
+              <div className={`md:w-7 w-6 h-6 md:h-7 rounded-lg flex items-center justify-center flex-shrink-0 ${bg}`}>
+                <Icon className={`md:text-sm text-xs ${color}`} />
               </div>
               <span className="text-xs font-medium text-gray-200">{label}</span>
               {form.role === value && <TbCheck className="text-emerald-400 text-sm ml-auto" />}
@@ -620,7 +620,7 @@ function DirectorTeamPage() {
 
       {/* edit slide-over */}
       <SlideOver open={typeof slideOver === "object" && slideOver !== null} onClose={() => setSlideOver(null)}
-        title={`Edit — ${slideOver?.name || ""}`}>
+        title={`Edit - ${slideOver?.name || ""}`}>
         {typeof slideOver === "object" && slideOver !== null && (
           <DirectorForm
             initial={slideOver}
