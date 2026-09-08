@@ -151,21 +151,218 @@ const scorePlaylists = (playlist) => {
   return recency * 10 + collabs;
 };
 
+// const getRecommendedTutorPlaylist = async (req, res) => {
+//   try {
+//     const tenantId = req?.user?.tenantId;
+//     if (!tenantId) {
+//       return res.status(401).json({ message: "tenantId required" });
+//     }
+
+//     const { email } = req.params;
+//     const page  = parseInt(req.query.page) || 1;
+//     const limit = Math.min(parseInt(req.query.limit) || 10, 30);
+
+//     const feedCacheKey  = `playlistHomeFeed:${tenantId}:${email}:ids`;
+//     const freshCacheKey = `playlistHomeFeed:${tenantId}:fresh:ids`;
+
+//     // ── 1. FRESH PLAYLISTS — shared 60s cache with mutex ─────
+//     let freshIds = [];
+//     const cachedFresh = await redisClient.get(freshCacheKey);
+
+//     if (cachedFresh) {
+//       freshIds = JSON.parse(cachedFresh);
+//     } else {
+//       const freshLock = await redisClient.get(PLAYLIST_FRESH_LOCK_KEY);
+
+//       if (freshLock) {
+//         // another request is rebuilding — wait briefly then use whatever is ready
+//         await new Promise(r => setTimeout(r, 150));
+//         const retryFresh = await redisClient.get(freshCacheKey);
+//         freshIds = retryFresh ? JSON.parse(retryFresh) : [];
+//       } else {
+//         // acquire lock — expires in 5s
+//         await redisClient.setEx(PLAYLIST_FRESH_LOCK_KEY, 5, '1');
+//         try {
+//           const freshDocs = await TutorPlayList.find({ tenantId })
+//             .select("_id")
+//             .sort({ _id: -1 })
+//             .limit(20)
+//             .lean();
+
+//           freshIds = freshDocs.map(p => p._id.toString());
+
+//           // jitter ±15s — prevents fresh + personal feed expiring simultaneously
+//           const jitter = Math.floor(Math.random() * 30);
+//           await redisClient.setEx(
+//             freshCacheKey,
+//             PLAYLIST_FRESH_TTL + jitter,
+//             JSON.stringify(freshIds)
+//           );
+//         } finally {
+//           // always release lock even if query fails
+//           await redisClient.del(PLAYLIST_FRESH_LOCK_KEY);
+//         }
+//       }
+//     }
+
+//     // ── 2. PERSONALISED FEED IDs ──────────────────────────────
+//     let feedIds = [];
+//     const cachedIds = await redisClient.get(feedCacheKey);
+
+//     if (cachedIds) {
+//       feedIds = JSON.parse(cachedIds);
+//     } else {
+//       const currentAuthor = await Author.findOne({ email: { $eq: email }, tenantId })
+//         .select("community following");
+
+//       if (!currentAuthor) {
+//         return res.status(404).json({ message: "Author not found" });
+//       }
+
+//       const authorCommunity = currentAuthor.community || [];
+//       const authorFollowing  = currentAuthor.following  || [];
+
+//       const [priorityDocs, recentDocs] = await Promise.all([
+//         TutorPlayList.aggregate([
+//           {
+//             $match: {
+//               tenantId,
+//               $or: [
+//                 { email:  { $in: authorFollowing  } },
+//                 { domain: { $in: authorCommunity  } },
+//               ],
+//             },
+//           },
+//           { $sort:  { _id: -1 } },
+//           { $limit: PLAYLIST_PRIORITY_LIMIT },
+//           {
+//             $project: {
+//               _id:               1,
+//               email:             1,
+//               domain:            1,
+//               collaboratorCount: { $size: { $ifNull: ["$collaborators", []] } },
+//             },
+//           },
+//         ]),
+
+//         TutorPlayList.aggregate([
+//           { $match: { tenantId } },
+//           { $sort:  { _id: -1 } },
+//           { $limit: PLAYLIST_OTHER_LIMIT * 2 },
+//           {
+//             $project: {
+//               _id:               1,
+//               email:             1,
+//               domain:            1,
+//               collaboratorCount: { $size: { $ifNull: ["$collaborators", []] } },
+//             },
+//           },
+//         ]),
+//       ]);
+
+//       const priorityEmailSet  = new Set(authorFollowing);
+//       const priorityDomainSet = new Set(authorCommunity);
+//       const priorityIdSet     = new Set(priorityDocs.map(p => p._id.toString()));
+
+//       const otherDocs = recentDocs
+//         .filter(p =>
+//           !priorityIdSet.has(p._id.toString()) &&
+//           !priorityEmailSet.has(p.email) &&
+//           !priorityDomainSet.has(p.domain)
+//         )
+//         .slice(0, PLAYLIST_OTHER_LIMIT);
+
+//       const scoreAndSort = (docs) =>
+//         docs
+//           .map(p => ({ id: p._id.toString(), score: scorePlaylists(p) }))
+//           .sort((a, b) => b.score - a.score)
+//           .map(p => p.id);
+
+//       const rankedPriorityIds = scoreAndSort(priorityDocs);
+//       const rankedOtherIds    = scoreAndSort(otherDocs);
+
+//       const seen = new Set();
+//       feedIds = [...rankedPriorityIds, ...rankedOtherIds]
+//         .filter(id => {
+//           if (seen.has(id)) return false;
+//           seen.add(id);
+//           return true;
+//         });
+
+//       // fix: never cache empty feed — prevents empty window after TTL
+//       if (feedIds.length > 0) {
+//         // jitter ±30s — spreads users across wider expiry window
+//         const jitter = Math.floor(Math.random() * 60);
+//         await redisClient.setEx(
+//           feedCacheKey,
+//           PLAYLIST_FEED_TTL + jitter,
+//           JSON.stringify(feedIds)
+//         );
+//       }
+//     }
+
+//     // ── 3. MERGE FRESH + FEED — page 1 only ──────────────────
+//     const feedIdSet   = new Set(feedIds);
+//     const newFreshIds = freshIds.filter(id => !feedIdSet.has(id));
+
+//     const mergedIds = page === 1
+//       ? [...newFreshIds.slice(0, PLAYLIST_FRESH_COUNT), ...feedIds]
+//       : feedIds;
+
+//     // fix: fallback to freshIds if both caches expired simultaneously
+//     const finalIds = mergedIds.length > 0 ? mergedIds : freshIds;
+
+//     // ── 4. PAGINATE ON IDs THEN HYDRATE ──────────────────────
+//     const startIndex = (page - 1) * limit;
+//     const endIndex   = startIndex + limit;
+//     const pageIds    = finalIds.slice(startIndex, endIndex);
+
+//     const pagePlaylists = pageIds.length > 0
+//       ? await TutorPlayList.find({ _id: { $in: pageIds }, tenantId }).lean()
+//       : [];
+
+//     const normalizedPagePlaylists = await resolvePlaylistAuthorProfiles(pagePlaylists, tenantId);
+//     const playlistMap      = new Map(normalizedPagePlaylists.map(p => [p._id.toString(), p]));
+//     const orderedPlaylists = pageIds.map(id => playlistMap.get(id)).filter(Boolean);
+
+//     res.status(200).json({
+//       message:    "Recommended playlist",
+//       page,
+//       limit,
+//       total:      finalIds.length,
+//       totalPages: Math.ceil(finalIds.length / limit),
+//       hasMore:    endIndex < finalIds.length,
+//       data:       orderedPlaylists,
+//     });
+//   } catch (err) {
+//     console.error("Error in getRecommendedTutorPlaylist:", err);
+//     res.status(500).json({ message: err.message });
+//   }
+// };
+
+// reviewed-----------------------------------------------------------
+
 const getRecommendedTutorPlaylist = async (req, res) => {
   try {
-    const tenantId = req?.user?.tenantId;
+    const { tenantId } = req.user;
     if (!tenantId) {
       return res.status(401).json({ message: "tenantId required" });
     }
 
-    const { email } = req.params;
-    const page  = parseInt(req.query.page) || 1;
+    // ── derive email for cache key and author lookup ───────────────────────
+    // For normal users: use req.params.email (existing behaviour)
+    // For impersonation: use req.user.email BUT since director email won't
+    // exist in Author collection, skip the author lookup and serve tenant feed
+    const paramEmail  = req.params.email;
+    const isImpersonation = req.isImpersonation === true;
+
+    const page  = parseInt(req.query.page)  || 1;
     const limit = Math.min(parseInt(req.query.limit) || 10, 30);
 
-    const feedCacheKey  = `playlistHomeFeed:${tenantId}:${email}:ids`;
+    const feedCacheKey  = `playlistHomeFeed:${tenantId}:${paramEmail}:ids`;
     const freshCacheKey = `playlistHomeFeed:${tenantId}:fresh:ids`;
 
-    // ── 1. FRESH PLAYLISTS — shared 60s cache with mutex ─────
+    // ── 1. FRESH PLAYLISTS — unchanged ────────────────────────────────────
     let freshIds = [];
     const cachedFresh = await redisClient.get(freshCacheKey);
 
@@ -173,25 +370,16 @@ const getRecommendedTutorPlaylist = async (req, res) => {
       freshIds = JSON.parse(cachedFresh);
     } else {
       const freshLock = await redisClient.get(PLAYLIST_FRESH_LOCK_KEY);
-
       if (freshLock) {
-        // another request is rebuilding — wait briefly then use whatever is ready
         await new Promise(r => setTimeout(r, 150));
         const retryFresh = await redisClient.get(freshCacheKey);
         freshIds = retryFresh ? JSON.parse(retryFresh) : [];
       } else {
-        // acquire lock — expires in 5s
         await redisClient.setEx(PLAYLIST_FRESH_LOCK_KEY, 5, '1');
         try {
           const freshDocs = await TutorPlayList.find({ tenantId })
-            .select("_id")
-            .sort({ _id: -1 })
-            .limit(20)
-            .lean();
-
+            .select("_id").sort({ _id: -1 }).limit(20).lean();
           freshIds = freshDocs.map(p => p._id.toString());
-
-          // jitter ±15s — prevents fresh + personal feed expiring simultaneously
           const jitter = Math.floor(Math.random() * 30);
           await redisClient.setEx(
             freshCacheKey,
@@ -199,109 +387,109 @@ const getRecommendedTutorPlaylist = async (req, res) => {
             JSON.stringify(freshIds)
           );
         } finally {
-          // always release lock even if query fails
           await redisClient.del(PLAYLIST_FRESH_LOCK_KEY);
         }
       }
     }
 
-    // ── 2. PERSONALISED FEED IDs ──────────────────────────────
+    // ── 2. PERSONALISED FEED — skip for impersonation ─────────────────────
     let feedIds = [];
-    const cachedIds = await redisClient.get(feedCacheKey);
 
-    if (cachedIds) {
-      feedIds = JSON.parse(cachedIds);
+    if (isImpersonation) {
+      // director has no author profile in this tenant —
+      // serve the full tenant feed sorted by recency (same as fresh feed)
+      feedIds = freshIds;
     } else {
-      const currentAuthor = await Author.findOne({ email: { $eq: email }, tenantId })
-        .select("community following");
+      const cachedIds = await redisClient.get(feedCacheKey);
 
-      if (!currentAuthor) {
-        return res.status(404).json({ message: "Author not found" });
-      }
+      if (cachedIds) {
+        feedIds = JSON.parse(cachedIds);
+      } else {
+        // ── existing personalised feed logic — unchanged ──────────────────
+        const currentAuthor = await Author.findOne(
+          { email: { $eq: paramEmail }, tenantId }
+        ).select("community following");
 
-      const authorCommunity = currentAuthor.community || [];
-      const authorFollowing  = currentAuthor.following  || [];
+        if (!currentAuthor) {
+          return res.status(404).json({ message: "Author not found" });
+        }
 
-      const [priorityDocs, recentDocs] = await Promise.all([
-        TutorPlayList.aggregate([
-          {
-            $match: {
-              tenantId,
-              $or: [
-                { email:  { $in: authorFollowing  } },
-                { domain: { $in: authorCommunity  } },
-              ],
+        const authorCommunity = currentAuthor.community || [];
+        const authorFollowing  = currentAuthor.following  || [];
+
+        const [priorityDocs, recentDocs] = await Promise.all([
+          TutorPlayList.aggregate([
+            {
+              $match: {
+                tenantId,
+                $or: [
+                  { email:  { $in: authorFollowing  } },
+                  { domain: { $in: authorCommunity  } },
+                ],
+              },
             },
-          },
-          { $sort:  { _id: -1 } },
-          { $limit: PLAYLIST_PRIORITY_LIMIT },
-          {
-            $project: {
-              _id:               1,
-              email:             1,
-              domain:            1,
-              collaboratorCount: { $size: { $ifNull: ["$collaborators", []] } },
+            { $sort: { _id: -1 } },
+            { $limit: PLAYLIST_PRIORITY_LIMIT },
+            {
+              $project: {
+                _id: 1, email: 1, domain: 1,
+                collaboratorCount: { $size: { $ifNull: ["$collaborators", []] } },
+              },
             },
-          },
-        ]),
-
-        TutorPlayList.aggregate([
-          { $match: { tenantId } },
-          { $sort:  { _id: -1 } },
-          { $limit: PLAYLIST_OTHER_LIMIT * 2 },
-          {
-            $project: {
-              _id:               1,
-              email:             1,
-              domain:            1,
-              collaboratorCount: { $size: { $ifNull: ["$collaborators", []] } },
+          ]),
+          TutorPlayList.aggregate([
+            { $match: { tenantId } },
+            { $sort: { _id: -1 } },
+            { $limit: PLAYLIST_OTHER_LIMIT * 2 },
+            {
+              $project: {
+                _id: 1, email: 1, domain: 1,
+                collaboratorCount: { $size: { $ifNull: ["$collaborators", []] } },
+              },
             },
-          },
-        ]),
-      ]);
+          ]),
+        ]);
 
-      const priorityEmailSet  = new Set(authorFollowing);
-      const priorityDomainSet = new Set(authorCommunity);
-      const priorityIdSet     = new Set(priorityDocs.map(p => p._id.toString()));
+        const priorityEmailSet  = new Set(authorFollowing);
+        const priorityDomainSet = new Set(authorCommunity);
+        const priorityIdSet     = new Set(priorityDocs.map(p => p._id.toString()));
 
-      const otherDocs = recentDocs
-        .filter(p =>
-          !priorityIdSet.has(p._id.toString()) &&
-          !priorityEmailSet.has(p.email) &&
-          !priorityDomainSet.has(p.domain)
-        )
-        .slice(0, PLAYLIST_OTHER_LIMIT);
+        const otherDocs = recentDocs
+          .filter(p =>
+            !priorityIdSet.has(p._id.toString()) &&
+            !priorityEmailSet.has(p.email) &&
+            !priorityDomainSet.has(p.domain)
+          )
+          .slice(0, PLAYLIST_OTHER_LIMIT);
 
-      const scoreAndSort = (docs) =>
-        docs
-          .map(p => ({ id: p._id.toString(), score: scorePlaylists(p) }))
-          .sort((a, b) => b.score - a.score)
-          .map(p => p.id);
+        const scoreAndSort = (docs) =>
+          docs
+            .map(p => ({ id: p._id.toString(), score: scorePlaylists(p) }))
+            .sort((a, b) => b.score - a.score)
+            .map(p => p.id);
 
-      const rankedPriorityIds = scoreAndSort(priorityDocs);
-      const rankedOtherIds    = scoreAndSort(otherDocs);
+        const rankedPriorityIds = scoreAndSort(priorityDocs);
+        const rankedOtherIds    = scoreAndSort(otherDocs);
 
-      const seen = new Set();
-      feedIds = [...rankedPriorityIds, ...rankedOtherIds]
-        .filter(id => {
+        const seen = new Set();
+        feedIds = [...rankedPriorityIds, ...rankedOtherIds].filter(id => {
           if (seen.has(id)) return false;
           seen.add(id);
           return true;
         });
 
-      // fix: never cache empty feed — prevents empty window after TTL
-      if (feedIds.length > 0) {
-        // jitter ±30s — spreads users across wider expiry window
-        const jitter = Math.floor(Math.random() * 60);
-        await redisClient.setEx(
-          feedCacheKey,
-          PLAYLIST_FEED_TTL + jitter,
-          JSON.stringify(feedIds)
-        );
+        if (feedIds.length > 0) {
+          const jitter = Math.floor(Math.random() * 60);
+          await redisClient.setEx(
+            feedCacheKey,
+            PLAYLIST_FEED_TTL + jitter,
+            JSON.stringify(feedIds)
+          );
+        }
       }
     }
 
-    // ── 3. MERGE FRESH + FEED — page 1 only ──────────────────
+    // ── 3. MERGE + PAGINATE — unchanged ───────────────────────────────────
     const feedIdSet   = new Set(feedIds);
     const newFreshIds = freshIds.filter(id => !feedIdSet.has(id));
 
@@ -309,10 +497,8 @@ const getRecommendedTutorPlaylist = async (req, res) => {
       ? [...newFreshIds.slice(0, PLAYLIST_FRESH_COUNT), ...feedIds]
       : feedIds;
 
-    // fix: fallback to freshIds if both caches expired simultaneously
     const finalIds = mergedIds.length > 0 ? mergedIds : freshIds;
 
-    // ── 4. PAGINATE ON IDs THEN HYDRATE ──────────────────────
     const startIndex = (page - 1) * limit;
     const endIndex   = startIndex + limit;
     const pageIds    = finalIds.slice(startIndex, endIndex);
@@ -325,7 +511,7 @@ const getRecommendedTutorPlaylist = async (req, res) => {
     const playlistMap      = new Map(normalizedPagePlaylists.map(p => [p._id.toString(), p]));
     const orderedPlaylists = pageIds.map(id => playlistMap.get(id)).filter(Boolean);
 
-    res.status(200).json({
+    return res.status(200).json({
       message:    "Recommended playlist",
       page,
       limit,
@@ -336,11 +522,10 @@ const getRecommendedTutorPlaylist = async (req, res) => {
     });
   } catch (err) {
     console.error("Error in getRecommendedTutorPlaylist:", err);
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({ message: err.message });
   }
 };
 
-// reviewed-----------------------------------------------------------
 const getPlaylistByEmail = async (req, res) => {
   try {
     const tenantId = req?.user?.tenantId;
