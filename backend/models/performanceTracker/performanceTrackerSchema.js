@@ -26,6 +26,11 @@ const dailyEventSchema = new mongoose.Schema({
     type:     mongoose.Schema.Types.ObjectId,
     required: true,
   },
+  authorEmail: {
+    // required for post navigation: /:email/:postId
+    type:    String,
+    default: null,
+  },
   communityId: {
     // discussion + reply only — needed for navigation
     type:    mongoose.Schema.Types.ObjectId,

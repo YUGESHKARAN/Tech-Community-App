@@ -414,6 +414,7 @@ const createDiscussion = async (req, res) => {
       event: {
         type: "discussion",
         targetId: discussion._id,
+        authorEmail: null,
         communityId: discussion.communityId,
         discussionId: null, // discussion IS the top-level — no parent
         title: discussion.title,
@@ -1183,6 +1184,7 @@ const createReply = async (req, res) => {
       event: {
         type:          "reply",
         targetId:      reply._id,
+        authorEmail:   null,
         communityId:   reply.communityId,
         discussionId:  reply.discussionId,
         title:         `Replied to: ${discussion.title}`,  // fix: title now available
