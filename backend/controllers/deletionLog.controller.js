@@ -689,13 +689,20 @@ const rollbackDeletion = async (req, res) => {
       ? new Date(log.deletedAt).toDateString()
       : "unknown date";
 
-    const recoveryMessage = `
-      Hi ${restoredName},
+    // const recoveryMessage = 
+    // `Hi ${restoredName},
 
-      Your account was deleted on **${deletedAt}** and has now been fully restored. All your previous data such as ${restoredItems} bookmarks, communities, and profile details are restored successfully.
+    // Your account was deleted on **${deletedAt}** and has now been fully restored. All your previous data such as ${restoredItems} bookmarks, communities, and profile details are restored successfully.
       
-      Welcome back to the **Bytes Base** platform.
-    `;
+    //   Welcome back to the **Bytes Base** platform.`.trim();
+
+    const recoveryMessage = [
+  `Hi ${restoredName},`,
+  "",
+  `Your account was deleted on **${deletedAt}** and has now been fully restored. All your previous data, such as ${restoredItems} bookmarks, communities, and profile details, have been restored successfully.`,
+  "",
+  `Welcome back to the **Bytes Base** platform. We're glad to have you back!`
+].join("\n");
 
     const now = new Date();
 

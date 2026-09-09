@@ -324,15 +324,25 @@ const addAuthor = async (req, res) => {
     const now = new Date();
 
     const welcomeTitle = "Welcome to Bytes Base - Tech Community Platform 🎉";
-    // const welcomeMsg   = `Hi ${authorname}, Welcome on-board ! Your account has been successfully created, and you are now ready to explore the platform.\n\nGet started by setting up your profile, joining tech communities that match your interests, and connecting with fellow contributors.\n\nWe're glad to have you here and look forward to your active participation.`;
-    const welcomeMsg = `
-        Hi ${authorname}, Welcome on-board! Your account has been successfully created, and you're now ready to explore Bytes Base.
+  //   const welcomeMsg = 
+  //  ` Hi ${authorname}, Welcome on-board! Your account has been successfully created, and you're now ready to explore Bytes Base.
 
-    Get started by setting up your profile, joining tech communities that match your interests, exploring technical content and learning resources and connecting with fellow contributors.
+  //   Get started by setting up your profile, joining tech communities that match your interests, exploring technical content and learning resources and connecting with fellow contributors.
 
-    Share your knowledge, publish your projects and findings, participate in Q&A and use our AI powered assistants to learn and create better content.
+  //   Share your knowledge, publish your projects and findings, participate in Q&A and use our AI powered assistants to learn and create better content.
 
-    We're glad to have you here. Start exploring, contributing and growing with the community!`;
+  //   We're glad to have you here. Start exploring, contributing and growing with the community!```
+  //   ;
+
+  const welcomeMsg = [
+  `Hi ${authorname}, welcome on-board! Your account has been successfully created, and you're now ready to explore **Bytes Base**.`,
+  "",
+  `Get started by setting up your profile, joining tech communities that match your interests, exploring technical content and learning resources, and connecting with fellow contributors.`,
+  "",
+  `Share your knowledge, publish your projects and findings, participate in Q&A, and use our **AI-powered assistants** to learn and create better content.`,
+  "",
+  `We're glad to have you here. Start exploring, contributing, and growing with the community!`
+].join("\n");
 
     const newAnnouncement = {
       _id: new mongoose.Types.ObjectId(),
@@ -1674,30 +1684,61 @@ const updateRole = async (req, res) => {
     const adminEmail = admin.email;
     const roleTitle = "🛡️ Author Permissions Updated";
 
-    const coordinatorMsg = `Hi ${author.authorname},
+    // const coordinatorMsg = 
+    //   `Hi ${author.authorname},
 
-        Your role has been updated to **Coordinator**.
+    //     Your role has been updated to **Coordinator**.
 
-        Now you have access to a dedicated workspace where you can create and manage your posts and playlists content. In addition, you have access to publish campaign, event, and community-related announcements through the Announcement section. 
+    //     Now you have access to a dedicated workspace where you can create and manage your posts and playlists content. In addition, you have access to publish campaign, event, and community-related announcements through the Announcement section. 
         
-        One time **Logout** and **Login** is required to access the Coordinator interface.
+    //     One time **Logout** and **Login** is required to access the Coordinator interface.
        
-        We’re excited to have you contribute to building and growing the community.`;
+    //     We’re excited to have you contribute to building and growing the community.`;
 
-    const adminMsg = `Hi ${author.authorname},
+    const coordinatorMsg = [
+  `Hi ${author.authorname},`,
+  "",
+  `Your role has been updated to **Coordinator**.`,
+  "",
+  `You now have access to a dedicated workspace where you can create and manage your posts and playlist content. In addition, you can publish campaign, event, and community-related announcements through the **Announcement** section.`,
+  "",
+  `A one-time **Logout and Login** is required to access the Coordinator interface.`,
+  "",
+  `We’re excited to have you contribute to building and growing the community.`
+].join("\n");
 
-        Your role has been successfully updated to **Admin**.
+    // const adminMsg = `Hi ${author.authorname},
 
-        Now you have full administrative access to manage and oversee the platform, including:
-        - Access to the Admin Dashboard with key platform trends, post insights and contributor performance analytics.
-        - Full user management and control capabilities.
-        - Access to user deletion logs and deleted account rollback controls.
-        - Permission to manage and update user roles and communities.
+    //     Your role has been successfully updated to **Admin**.
 
-        One time **Logout** and **Login** is required to access the Admin interface.
-        `;
+    //     Now you have full administrative access to manage and oversee the platform, including:
+    //     - Access to the Admin Dashboard with key platform trends, post insights and contributor performance analytics.
+    //     - Full user management and control capabilities.
+    //     - Access to user deletion logs and deleted account rollback controls.
+    //     - Permission to manage and update user roles and communities.
 
-    const studentMsg = `
+    //     One time **Logout** and **Login** is required to access the Admin interface.
+    //     `;
+  const adminMsg = [
+  `Hi ${author.authorname},`,
+  "",
+  `Your role has been successfully updated to **Admin**.`,
+  "",
+  `Now you have full administrative access to manage and oversee the platform, including:`,
+  "",
+  `- Access to the **Admin Dashboard** with key platform trends, post insights, and contributor performance analytics.`,
+  `- Full user management and control capabilities.`,
+  `- Access to user deletion logs and deleted account rollback controls.`,
+  `- Permission to manage and update user roles and communities.`,
+  "",
+  `A one-time **Logout and Login** is required to access the Admin interface.`
+].join("\n");
+
+    // const studentMsg = `
+    //     Hi ${author.authorname},
+    //     Your role has been changed to **Student**. For more details contanct admin.
+    //     `;
+      const studentMsg = `
         Hi ${author.authorname},
         Your role has been changed to **Student**. For more details contanct admin.
         `;
