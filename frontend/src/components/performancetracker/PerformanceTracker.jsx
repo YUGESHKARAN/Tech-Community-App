@@ -322,7 +322,7 @@ const timeAgo = (d) => {
 
 const eventUrl = (event) => {
   switch (event.type) {
-    case "post":       return `/post/${event.targetId}`;
+    case "post":       return `/viewpage/${event.authorEmail}/${event.targetId}`;
     case "discussion": return `/discussion/${event.communityId}/${event.targetId}`;
     case "reply":      return `/discussion/${event.communityId}/${event.discussionId}#${event.targetId}`;
     default:           return "#";

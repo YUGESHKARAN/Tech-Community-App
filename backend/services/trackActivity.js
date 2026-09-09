@@ -62,6 +62,7 @@ const toMonthDay = (dateStr) => dateStr.slice(5); // "2026-08-19" → "08-19"
 const trackActivity = async ({ authorId, tenantId, date, event }) => {
   if (!authorId || !tenantId || !date || !event) return;
 
+
   const year     = Number(date.slice(0, 4));
   const monthDay = toMonthDay(date);
 

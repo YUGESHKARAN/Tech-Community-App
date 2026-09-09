@@ -635,7 +635,8 @@ const addPosts = async (req, res) => {
     event: {
       type:          'post',
       targetId:      savedPost._id,
-      communityId:   null,         // posts navigate by targetId alone
+      authorEmail:   author.email, // posts navigate by authorEmail + targetId
+      communityId:   null,         
       discussionId:  null,
       title:         savedPost.title,
       communityName: savedPost.category,
