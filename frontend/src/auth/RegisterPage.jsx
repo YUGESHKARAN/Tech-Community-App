@@ -324,10 +324,19 @@ function RegisterPage() {
                 </button>
               </form>
 
-              <p className="mt-6 text-sm text-slate-400 text-center">
+              <p className="mt-6 text-sm text-slate-400 pb-2 text-center">
                 Already have an account?{' '}
                 <Link to="/" className="text-emerald-400 hover:text-emerald-200">Login here</Link>
               </p>
+               <p className="text-sm text-center text-slate-400">
+                       To know more checkout{" "}
+                        <a href="https://www.bytesbase.me/"
+                        className="text-emerald-400 hover:text-emerald-200"
+                        >
+                          BytesBase.me
+                        </a>
+                       
+                      </p>
             </div>
           </div>
         </div>

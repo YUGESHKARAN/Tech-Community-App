@@ -372,7 +372,7 @@ function LoginPage() {
                       >
                         Forgot Password?
                       </p>
-                      <p>
+                      <p className="pb-5">
                         Don&apos;t have an account?{" "}
                         <Link
                           to="/register"
@@ -381,9 +381,19 @@ function LoginPage() {
                           Register here
                         </Link>
                       </p>
+                      <p className="text-sm ">
+                       To know more checkout{" "}
+                        <a href="https://www.bytesbase.me/"
+                        className="text-emerald-400 hover:text-emerald-200"
+                        >
+                          BytesBase.me
+                        </a>
+                       
+                      </p>
                     </>
                   )}
                 </div>
+                
               </div>
             </div>
           </div>
