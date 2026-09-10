@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useMemo } from "react";
+import React, { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import NavBar from "../ui/NavBar";
 import Footer from "../ui/Footer";
@@ -34,6 +34,7 @@ import ReplyCardSkeleton from "../components/loaders/community/ReplyCardSkeleton
 // ── Constants ─────────────────────────────────────────────────────────────────
 const S3 = "https://open-access-blog-image.s3.us-east-1.amazonaws.com/";
 const av = (p) => (p ? `${S3}${p}` : userPlaceholder);
+const DISCUSSION_POLL_INTERVAL_MS = 30_000;
 
 const CATEGORY_COLORS = {
   qa: { bg: "bg-blue-500/10", text: "text-blue-400", label: "Q&A" },
@@ -97,78 +98,6 @@ const AuthorRow = ({ author, timestamp, label }) => (
   </div>
 );
 
-// ── Upvote button ─────────────────────────────────────────────────────────────
-// const UpvoteButton = ({
-//   discussionId,
-//   upvoteCount,
-//   setUpvoteCount,
-//   upvoteStatus,
-//   setUpvoteStatus,
-//   communityId,
-// }) => {
-//   // const [upvoteCount, setUpvoteCount] = useState(discussion?.upvoteCount || 0);
-//   // const [upvoteStatus, setUpvoteStatus] = useState(
-//   //      discussion?.hasVoted || false,
-//   //    );
-
-//   const updateUpvoteDiscussion = async (communityId, discussionId) => {
-//     try {
-//       const res = await axiosInstance.post(
-//         `/bytes/discuss/${communityId}/discussions/${discussionId}/upvote`,
-//       );
-
-//       if (res.status === 200) {
-//         const { action } = res.data;
-//         setUpvoteStatus((prev) => !prev);
-
-//         if (action === "upvoted") {
-//           setUpvoteCount((prev) => prev + 1);
-//           toast.success("Discussion hyped successfully!");
-//         } else if (action === "removed") {
-//           setUpvoteCount((prev) => Math.max(0, prev - 1));
-//           toast.info("Discussion upvote removed.");
-//         } else {
-//           toast.success("Discussion upvote updated.");
-//         }
-//       }
-//     } catch (err) {
-//       console.error(
-//         "updateUpvoteDiscussion error",
-//         err?.response?.data || err.message,
-//       );
-//       toast.error("Unable to update discussion upvote.");
-//     }
-//   };
-
-//   return (
-//     <button
-//       onClick={(e) => {
-//         e.preventDefault();
-//         e.stopPropagation();
-//         updateUpvoteDiscussion(communityId, discussionId);
-//       }}
-//       className="flex flex-col items-center gap-0.5 group"
-//       title={upvoteStatus ? "Remove upvote" : "Upvote"}
-//     >
-//       <TbChevronUp
-//         className={`text-base transition-colors ${
-//           upvoteStatus
-//             ? "text-emerald-400"
-//             : "text-gray-500 group-hover:text-gray-300"
-//         }`}
-//       />
-//       <span
-//         className={`text-[11px] font-semibold ${
-//           upvoteStatus ? "text-emerald-400" : "text-gray-400"
-//         }`}
-//       >
-//         {formatCount(upvoteCount)}
-//       </span>
-//     </button>
-//   );
-// };
-
-// ── Upvote button — unified for discussions AND replies ───────────────────────
 const UpvoteButton = ({
   communityId,
   discussionId,
@@ -555,7 +484,7 @@ const ReplyCard = ({
     <div
       className={`border rounded-xl p-4 transition-all ${
         isAccepted
-          ? "border-2 border-emerald-500/30 bg-emerald-500/[0.03]"
+          ? "md:border-2 border-emerald-500/30 bg-emerald-500/[0.03]"
           : "border-[#1e293b] theme"
       }`}
     >
@@ -688,10 +617,14 @@ function ViewDiscussion() {
   const [upvoteCount, setUpvoteCount] = useState(0);
 
   const [upvoteStatus, setUpvoteStatus] = useState(false);
+  const discussionRequestInFlight = useRef(false);
 
-  const getDiscussionsById = async () => {
+  const getDiscussionsById = useCallback(async (showLoader = true) => {
+    if (discussionRequestInFlight.current) return;
+
+    discussionRequestInFlight.current = true;
     try {
-      setDiscussionLoader(true);
+      if (showLoader) setDiscussionLoader(true);
       const res = await axiosInstance.get(
         `/bytes/discuss/${communityId}/discussions/${discussionId}`,
       );
@@ -704,13 +637,27 @@ function ViewDiscussion() {
     } catch (err) {
       console.log("error getting discussion", err.message);
     } finally {
-      setDiscussionLoader(false);
+      if (showLoader) setDiscussionLoader(false);
+      discussionRequestInFlight.current = false;
     }
-  };
+  }, [communityId, discussionId]);
 
   useEffect(() => {
     getDiscussionsById();
-  }, [communityId, discussionId]);
+
+    const refreshDiscussion = () => {
+      if (document.visibilityState === "visible") {
+        getDiscussionsById(false);
+      }
+    };
+
+    const pollId = window.setInterval(
+      refreshDiscussion,
+      DISCUSSION_POLL_INTERVAL_MS,
+    );
+
+    return () => window.clearInterval(pollId);
+  }, [getDiscussionsById]);
 
   const getReplies = async () => {
     try {
