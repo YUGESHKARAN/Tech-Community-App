@@ -328,7 +328,7 @@ function RegisterPage() {
                 Already have an account?{' '}
                 <Link to="/" className="text-emerald-400 hover:text-emerald-200">Login here</Link>
               </p>
-               <p className="text-sm text-center text-slate-400">
+               <p className="text-xs text-center text-slate-400">
                        To know more checkout{" "}
                         <a href="https://www.bytesbase.me/"
                         className="text-emerald-400 hover:text-emerald-200"

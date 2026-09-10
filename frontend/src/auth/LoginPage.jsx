@@ -381,7 +381,7 @@ function LoginPage() {
                           Register here
                         </Link>
                       </p>
-                      <p className="text-sm ">
+                      <p className="text-xs ">
                        To know more checkout{" "}
                         <a href="https://www.bytesbase.me/"
                         className="text-emerald-400 hover:text-emerald-200"
