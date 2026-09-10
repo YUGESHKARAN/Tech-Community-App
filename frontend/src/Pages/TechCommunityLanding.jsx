@@ -537,7 +537,7 @@ function TechCommunityLanding() {
           {/* ── Sidebar ── */}
 
           <RecentVisit
-            parentClass="flex col-span-1 order-1 border-none md:col-span-2 lg:col-span-1 flex-col hidden lg:block gap-3 pt-0 lg:sticky lg:top-16"
+            parentClass="flex col-span-1 order-1 border-none md:col-span-2 lg:col-span-1 flex-col hidden xl:block gap-3 pt-0 lg:sticky lg:top-16"
             titleClass="text-sm  font-semibold text-gray-300 "
             childClass="theme border border-[#1e293b] rounded-2xl p-1 mt-2"
           />
@@ -671,7 +671,7 @@ function TechCommunityLanding() {
               )}
             </div>
           }
-          <div className="flex col-span-1 order-2 xl:order-3  md:col-span-2 lg:col-span-1 flex-col gap-3 lg:sticky lg:top-16">
+          <div className="flex col-span-1 order-2 xl:order-3  md:col-span-2 lg:col-span-2 xl:col-span-1 flex-col gap-3 lg:sticky lg:top-16">
             <PerformanceTracker streakData={streakData} authorId={authorId} streakLoading={streakLoader} showStreak={true}/>
             {/* Top contributors */}
             <h3 className="text-sm md:ml-2 font-semibold text-gray-300">
