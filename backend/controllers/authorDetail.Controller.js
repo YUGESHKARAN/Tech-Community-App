@@ -1738,10 +1738,13 @@ const updateRole = async (req, res) => {
     //     Hi ${author.authorname},
     //     Your role has been changed to **Student**. For more details contanct admin.
     //     `;
-      const studentMsg = `
-        Hi ${author.authorname},
-        Your role has been changed to **Student**. For more details contanct admin.
-        `;
+  const studentMsg = [
+  `Hi ${author.authorname},`,
+  "",
+  `Your role has been changed to **Student**.`,
+  "",
+  `For more details, please contact the Admin.`
+].join("\n");
 
     const url = `${notificationUrl}/announcement`;
 
