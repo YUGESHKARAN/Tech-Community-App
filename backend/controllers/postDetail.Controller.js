@@ -5,7 +5,6 @@ const path = require('path');
 
 const { v4: uuidv4 } = require('uuid'); // For generating unique IDs
 const mongoose = require("mongoose");
-const axios = require("axios");
 
 const sharp = require('sharp');
 dotenv = require("dotenv");
@@ -17,7 +16,7 @@ const redisClient = require("../middleware/redis");
 const nodemailer = require('nodemailer');
 
 const {checkAndAwardBadges} = require("../services/badgeService")
-const { enqueuePostNotification } = require("../services/notificationQueue");
+const { enqueuePostNotification, enqueueAISync } = require("../services/notificationQueue");
 
 const escapeHtml = (value) => String(value)
   .replace(/&/g, '&amp;')
@@ -423,57 +422,6 @@ const getCategoryPosts = async (req, res) => {
 };
 
 
-// reviewed------------------------------------------------------
-async function notifyAIIngestion(post, token) {
- try{
-   console.log("post to ingest: ", post._id);
-   console.log("post authorId: ", post.authorId);
-   console.log("post title: ", post.title);
-   console.log("post documents: ", post.documents);
-   console.log("post description: ", post.description);
-   console.log("post category: ", post.category);
-   console.log("post authorName: ", post.authorName);
-   console.log("post authorEmail: ", post.authorEmail);
- const  res = await axios.post(`${process.env.TECH_ASSISTANT_URL}/ingest`,
-   post,
-  {
-    headers:{
-      "Authorization": `Bearer ${token}`
-    }
-  });
-  console.log("AI ingestion notified:", res.data);
- }
- catch(err){
-  console.error("Error notifying AI ingestion:", err.message);
- }
-}
-
-// reviewed-----------------------------------------------------
-async function deleteFromAIIngestion(post_id, token) {
-  try{
-
-   const  res = await axios.delete(`${process.env.TECH_ASSISTANT_URL}/delete/${post_id}`,
-      {
-        headers:{
-          "Authorization": `Bearer ${token}`
-        }
-      }
-
-     );
-      console.log("embedding doc deleted successfully:",post_id, res.data);
-  }
-  // catch(err){
-  //   console.error("Error notifying AI deletion:", err.message); 
-  // }
-    catch (err) {
-    console.error("AI deletion error:", {
-      message: err.message,
-      status: err.response?.status,
-      data: err.response?.data
-    });
-  }
-}
-
 const addPosts = async (req, res) => {
   const { title, description, category, links } = req.body;
 
@@ -624,7 +572,21 @@ const addPosts = async (req, res) => {
     // fix: strip sensitive fields — author.save() returns full doc with password
     const { password, otp, otpExpiresAt, ...safeAuthor } = author.toObject();
 
-    // Respond immediately
+    const postDataForAI = {
+      ...savedPost.toObject(),
+      authorName: author.authorname,
+      profile: author.profile || '',
+      authorEmail: author.email,
+    };
+    enqueueAISync({
+      operation: 'ingest',
+      postId: savedPost._id.toString(),
+      tenantId,
+      token: req.token,
+      post: postDataForAI,
+    }).catch((aiErr) => console.error("AI ingestion failed after post creation:", aiErr.message));
+
+    // Respond independently of AI service availability
     res.status(201).json({ message: "Post added successfully", data: safeAuthor });
 
     //------------------------Performance Tracker-------------------------------------------------------------------
@@ -655,17 +617,6 @@ const addPosts = async (req, res) => {
     }).catch(err => console.error("Badge check error:", err.message));
 
     // ---------------------------------------------------------------------------------------------------------------
-
-    // --- AI ingestion (fire-and-forget after response) ---
-    const postDataForAI = {
-      ...savedPost.toObject(),
-      authorName: author.authorname,
-      profile: author.profile || '',
-      authorEmail: author.email,
-    };
-    notifyAIIngestion(postDataForAI, req.token).catch(err => {
-      console.error("AI ingestion error:", err.message);
-    });
 
      // --- Send emails in background ---
     if (followersSet.length > 0) {
@@ -821,17 +772,21 @@ const updatePost = async (req, res) => {
       throw dbErr;
     }
 
-    res.status(200).json({ message: "Post updated successfully", data: savedPost });
-
     const updatedToAI = {
       ...savedPost.toObject(),
       authorName:  author.authorname,
       profile:     author.profile || '',
       authorEmail: author.email,
     };
-    notifyAIIngestion(updatedToAI, req.token).catch(err => {
-      console.error("AI update ingestion error:", err.message);
-    });
+    enqueueAISync({
+      operation: 'ingest',
+      postId: savedPost._id.toString(),
+      tenantId,
+      token: req.token,
+      post: updatedToAI,
+    }).catch((aiErr) => console.error("AI ingestion failed after post update:", aiErr.message));
+
+    res.status(200).json({ message: "Post updated successfully", data: savedPost });
 
   } catch (err) {
     console.log(err.message);
@@ -994,16 +949,18 @@ const deletePost = async (req, res) => {
       { $pull: { posts: postToDelete._id } }
     );
 
-    // Respond immediately
+    enqueueAISync({
+      operation: 'delete',
+      postId: postId.toString(),
+      tenantId,
+      token: req.token,
+    }).catch((aiErr) => console.error("AI deletion failed after post deletion:", aiErr.message));
+
+    // Respond after the durable AI job has been accepted
     // fix: return deleted post doc instead of full author doc — avoids password leak
     res.status(200).json({
       message: "Post deleted successfully",
       data: postToDelete,
-    });
-
-    // fix: fire-and-forget after response — was blocking before res.json()
-    deleteFromAIIngestion(postId, req.token).catch(err => {
-      console.error("AI deletion error:", err.message);
     });
 
   } catch (err) {

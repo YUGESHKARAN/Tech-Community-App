@@ -2,6 +2,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const { Queue, Worker } = require("bullmq");
+const axios = require("axios");
 const { createClient } = require("redis");
 const nodemailer = require("nodemailer");
 const connectToDatabase = require("../db");
@@ -35,6 +36,7 @@ const sseClients = new Map();
 
 let worker;
 let workerStarted = false;
+const aiRequestChains = new Map();
 
 const transporter = nodemailer.createTransport({
   service: process.env.EMAIL_PROVIDER,
@@ -135,6 +137,99 @@ const enqueuePostNotification = async (payload) => {
     removeOnComplete: { age: 3600, count: 1000 },
     removeOnFail: { age: 86400, count: 1000 },
   });
+};
+
+const wait = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
+const aiDebugEnabled = process.env.AI_SYNC_DEBUG !== "false";
+
+const logAISync = (message, details = {}) => {
+  if (aiDebugEnabled) console.log(`[AI sync] ${message}`, details);
+};
+
+const deliverAISync = async (payload, eventId) => {
+  const endpoint = payload.operation === "delete" ? "delete" : "ingest";
+  const headers = {
+    Authorization: `Bearer ${payload.token}`,
+    "Idempotency-Key": eventId,
+  };
+  const maxAttempts = 4;
+
+  logAISync("request started", {
+    eventId,
+    operation: payload.operation,
+    postId: payload.postId,
+    url: `${process.env.TECH_ASSISTANT_URL}/${endpoint}`,
+  });
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    try {
+      if (payload.operation === "delete") {
+        const response = await axios.delete(
+          `${process.env.TECH_ASSISTANT_URL}/delete/${payload.postId}`,
+          { headers, timeout: 10000 }
+        );
+        logAISync("request succeeded", { eventId, operation: payload.operation, postId: payload.postId, status: response.status });
+        return response.data;
+      }
+
+      if (payload.operation === "ingest") {
+        const response = await axios.post(
+          `${process.env.TECH_ASSISTANT_URL}/ingest`,
+          payload.post,
+          { headers, timeout: 10000 }
+        );
+        logAISync("request succeeded", { eventId, operation: payload.operation, postId: payload.postId, status: response.status });
+        return response.data;
+      }
+
+      throw new Error(`Unsupported AI operation: ${payload.operation}`);
+    } catch (err) {
+      const status = err.response?.status;
+      if (payload.operation === "delete" && status === 404) {
+        logAISync("delete already absent in AI service", { eventId, postId: payload.postId });
+        return { alreadyAbsent: true };
+      }
+      const retryable = !status || status === 408 || status === 429 || status >= 500;
+      logAISync("request failed", {
+        eventId,
+        operation: payload.operation,
+        postId: payload.postId,
+        attempt,
+        status,
+        code: err.code,
+        message: err.message,
+        retryable,
+      });
+      if (!retryable || attempt === maxAttempts) throw err;
+      await wait(500 * (2 ** (attempt - 1)));
+    }
+  }
+};
+
+const enqueueAISync = async (payload) => {
+  if (!payload?.postId || !payload?.operation || !payload?.token) {
+    logAISync("request skipped because required data is missing", {
+      operation: payload?.operation,
+      postId: payload?.postId,
+      hasToken: Boolean(payload?.token),
+    });
+    return null;
+  }
+
+  const eventId = payload.eventId || `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  const chainKey = `${payload.tenantId || "unknown"}:${payload.postId}`;
+  logAISync("request queued", { eventId, chainKey, operation: payload.operation, postId: payload.postId });
+  const previous = aiRequestChains.get(chainKey) || Promise.resolve();
+  const current = previous
+    .catch(() => null)
+    .then(() => deliverAISync(payload, eventId));
+
+  aiRequestChains.set(chainKey, current);
+  current.finally(() => {
+    if (aiRequestChains.get(chainKey) === current) aiRequestChains.delete(chainKey);
+  }).catch(() => null);
+
+  return current;
 };
 
 const startNotificationWorker = async () => {
@@ -267,14 +362,15 @@ const startNotificationWorker = async () => {
 };
 
 const stopNotificationWorker = async () => {
-  if (!worker) return;
-  await worker.close();
+  if (worker) await worker.close();
+  worker = null;
   workerStarted = false;
 };
 
 module.exports = {
   notificationQueue,
   enqueuePostNotification,
+  enqueueAISync,
   addSseClient,
   removeSseClient,
   publishNotificationEvent,
