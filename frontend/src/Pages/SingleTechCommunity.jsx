@@ -628,7 +628,7 @@ const FeedCard = ({ post, email, setPosts }) => {
         )}
       </Link>
 
-      <div className="p-3 flex flex-col gap-2 flex-1">
+      <div className="p-3 bg-gray-950 flex flex-col gap-2 flex-1">
         <h3 className="text-sm font-semibold text-gray-100 leading-snug line-clamp-2">
           {post.title}
         </h3>
