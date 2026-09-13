@@ -57,6 +57,7 @@ import { TrendingTagsSkeleton } from "../components/loaders/community/TrendingTa
 import { getLast3MonthsName } from "../utils/dateFunction";
 import { PostCardSkeleton } from "../components/loaders/community/PostCardSkeleton";
 import { CoordinatorsCardSkeleton } from "../components/loaders/community/CoordinatorsCardSkeleton";
+import RenderTextNoMarkdown from "../components/RenderTextNoMarkdown";
 
 // ── S3 image base ─────────────────────────────────────────────────────────────
 const S3 = "https://open-access-blog-image.s3.us-east-1.amazonaws.com/";
@@ -587,29 +588,29 @@ const FeedCard = ({ post, email, setPosts }) => {
     }
   };
 
-  const addBookMarkPostId = async (postId) => {
-    try {
-      const response = await axiosInstance.post(
-        `/blog/posts/bookmarkPosts/${email}`,
-        { postId },
-      );
+  // const addBookMarkPostId = async (postId) => {
+  //   try {
+  //     const response = await axiosInstance.post(
+  //       `/blog/posts/bookmarkPosts/${email}`,
+  //       { postId },
+  //     );
 
-      if (response.status === 200) {
-        setBookMarkId((prev) => {
-          if (prev.includes(postId)) {
-            // toast.success("bookmark removed successfully");
-            return prev.filter((id) => id !== postId);
-          } else {
-            // toast.success("post bookmarked successfully");
-            return [...prev, postId];
-          }
-        });
-      }
-    } catch (err) {
-      console.log("error", err.message);
-      // toast.error("unable to bookmark");
-    }
-  };
+  //     if (response.status === 200) {
+  //       setBookMarkId((prev) => {
+  //         if (prev.includes(postId)) {
+  //           // toast.success("bookmark removed successfully");
+  //           return prev.filter((id) => id !== postId);
+  //         } else {
+  //           // toast.success("post bookmarked successfully");
+  //           return [...prev, postId];
+  //         }
+  //       });
+  //     }
+  //   } catch (err) {
+  //     console.log("error", err.message);
+  //     // toast.error("unable to bookmark");
+  //   }
+  // };
 
   return (
     <div>
@@ -632,22 +633,21 @@ const FeedCard = ({ post, email, setPosts }) => {
           {post.title}
         </h3>
         <p className="text-[10px] text-gray-400 line-clamp-2 leading-relaxed">
-          {post.description}
+          {/* {post.description} */}
+          <RenderTextNoMarkdown text={post.description} className="text-[10px]" />
         </p>
 
         <div className="flex items-center gap-2 mt-auto pt-2 border-t border-white/5">
           <img
             // src={avatar(post.authorId?.profile)}
             src={
-              post.profile
-                ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${post.profile}`
-                : avatar(post.authorId?.profile)
+             avatar(post?.profile)
             }
             className="w-5 h-5 rounded-full object-cover bg-gray-700"
-            alt={post.authorId?.authorName}
+            alt={post?.authorName}
           />
           <span className="text-[10px] text-gray-400 truncate flex-1">
-            {post.authorId?.authorName}
+            {post?.authorName}
           </span>
           <span className="text-[10px] text-gray-600">
             {getTimeAgo(post.timestamp)}
@@ -1205,7 +1205,7 @@ function SingleTechCommunity() {
         />
 
         {/* ── Tab bar ── */}
-        <div className="sticky top-0 z-20 mt-1 md:mt-4 bg-[#020617]/90 backdrop-blur-sm">
+        <div className="sticky top-0 z-20 mt-1 md:mt-4 theme  backdrop-blur-sm">
           <TabBar
             active={activeTab}
             theme={gradient?.from}
