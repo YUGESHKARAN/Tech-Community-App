@@ -12,6 +12,10 @@ const Community = require("../models/communitySchema");
 const { Post } = require("../models/blogAuthorSchema");
 const { trackActivity, getTodayIST } = require("../services/trackActivity");
 const { DeletionLog } = require("../models/deletionLogSchema");
+const {
+  notifyDiscussionReply,
+  notifyDiscussionAnswer,
+} = require("../services/notificationQueue");
 // ─────────────────────────────────────────────────────────────────────────────
 //  HELPERS
 // ─────────────────────────────────────────────────────────────────────────────
@@ -901,6 +905,23 @@ const markSolved = async (req, res) => {
     }
 
     const isSolving = Boolean(solvedReplyId);
+    let answerReply = null;
+
+    if (isSolving) {
+      answerReply = await DiscussionReply.findOne(
+        {
+          _id: solvedReplyId,
+          tenantId,
+          communityId,
+          discussionId,
+        },
+        "authorId",
+      ).lean();
+
+      if (!answerReply) {
+        return res.status(404).json({ message: "Reply not found" });
+      }
+    }
 
     const [updated] = await Promise.all([
       Discussion.findByIdAndUpdate(
@@ -935,6 +956,22 @@ const markSolved = async (req, res) => {
       isSolved: updated.isSolved,
       solvedReplyId: updated.solvedReplyId,
     });
+
+    if (
+      isSolving &&
+      isAuthor &&
+      String(answerReply.authorId) !== String(authorId)
+    ) {
+      notifyDiscussionAnswer({
+        tenantId,
+        discussionId,
+        communityId,
+        replyAuthorId: answerReply.authorId,
+        discussionTitle: discussion.title,
+      }).catch((err) =>
+        console.error("discussion answer notification error:", err.message),
+      );
+    }
   } catch (err) {
     console.error("markSolved error:", err.message);
     res.status(500).json({ message: "Server error" });
@@ -1122,6 +1159,7 @@ const updateDiscussionUpvote = async (req, res) => {
 //     res.status(500).json({ message: "Server error" });
 //   }
 // };
+
 const createReply = async (req, res) => {
   const { communityId, discussionId } = req.params;
   const { tenantId, authorId } = req.user;
@@ -1135,7 +1173,7 @@ const createReply = async (req, res) => {
     // fix: also fetch title + communityId for trackActivity
     const discussion = await Discussion.findOne(
       { _id: discussionId, tenantId, communityId },
-      "_id title communityId"
+      "_id title communityId authorId"
     ).lean();
     if (!discussion)
       return res.status(404).json({ message: "Discussion not found" });
@@ -1194,6 +1232,22 @@ const createReply = async (req, res) => {
     }).catch((err) =>
       console.error("trackActivity (reply) error:", err.message)
     );
+
+    if (String(discussion.authorId) !== String(authorId)) {
+      const replier = await Author.findOne({ _id: authorId, tenantId })
+        .select("authorname")
+        .lean();
+      notifyDiscussionReply({
+        tenantId,
+        discussionId,
+        communityId,
+        discussionAuthorId: discussion.authorId,
+        replierName: replier?.authorname || "A user",
+        discussionTitle: discussion.title,
+      }).catch((err) =>
+        console.error("discussion reply notification error:", err.message)
+      );
+    }
 
   } catch (err) {
     console.error("createReply error:", err.message);
