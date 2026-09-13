@@ -613,22 +613,24 @@ const FeedCard = ({ post, email, setPosts }) => {
   // };
 
   return (
-    <div>
+    <div
+    className="border border-[#1c2636] rounded-t-xl rounded-b-sm"
+    >
       <Link to={`/viewpage/${post.authorEmail}/${post._id}`}>
         {post.image ? (
           <img
             src={`${S3}${post.image}`}
             alt={post.title}
-            className="w-full h-36 object-cover"
+            className="w-full rounded-t-xl h-36 object-cover"
           />
         ) : (
-          <div className="w-full h-36 bg-white/[0.02] flex items-center justify-center">
+          <div className="w-full rounded-t-xl h-36 bg-white/[0.02] flex items-center justify-center">
             <TbBrain className="text-3xl text-gray-700" />
           </div>
         )}
       </Link>
 
-      <div className="p-3 bg-gray-950 flex flex-col gap-2 flex-1">
+      <div className="p-3 bg-gray-950 rounded-b-sm flex flex-col gap-2 flex-1">
         <h3 className="text-sm font-semibold text-gray-100 leading-snug line-clamp-2">
           {post.title}
         </h3>
