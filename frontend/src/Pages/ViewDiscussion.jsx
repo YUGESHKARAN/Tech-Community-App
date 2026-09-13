@@ -21,10 +21,17 @@ import {
   TbCheck,
   TbX,
   TbSend,
+  TbBold,
+  TbItalic,
   TbClock,
+  TbCode,
+  TbLink,
   TbBookmark,
   TbShare,
+  TbBlockquote,
+  TbList
 } from "react-icons/tb";
+
 import toast from "../components/toaster/Toast";
 import getTimeAgo from "../components/DateCovertion";
 import RenderTextWithHashtags from "../components/RenderTextWithHashtags";
@@ -214,56 +221,351 @@ const OverflowMenu = ({ items }) => {
 };
 
 // ── Compose box ───────────────────────────────────────────────────────────────
+// const ComposeBox = ({
+//   placeholder,
+//   onSubmit,
+//   onCancel,
+//   autoFocus = false,
+//   initialValue = "",
+// }) => {
+//   const [value, setValue] = useState(initialValue);
+//   const [submitting, setSubmitting] = useState(false);
+//   const ref = useRef();
+
+//   useEffect(() => {
+//     if (autoFocus && ref.current) ref.current.focus();
+//   }, [autoFocus]);
+
+//   const handleSubmit = async () => {
+//     if (!value.trim()) return;
+//     setSubmitting(true);
+//     await onSubmit(value.trim());
+//     setValue("");
+//     setSubmitting(false);
+//   };
+
+//   return (
+//     <div className="theme border border-[#1e293b] rounded-xl overflow-hidden focus-within:border-white/20 transition-colors">
+//       <textarea
+//         ref={ref}
+//         value={value}
+//         onChange={(e) => setValue(e.target.value)}
+//         placeholder={placeholder}
+//         rows={3}
+//         className="w-full bg-transparent px-4 pt-3 pb-2 text-sm text-gray-200 placeholder-gray-600 resize-none focus:outline-none"
+//       />
+//       <div className="flex items-center justify-end gap-2 px-3 pb-3">
+//         {onCancel && (
+//           <button
+//             onClick={onCancel}
+//             className="text-xs text-gray-500 hover:text-gray-300 px-3 py-1.5 rounded-lg transition-colors"
+//           >
+//             Cancel
+//           </button>
+//         )}
+//         <button
+//           onClick={handleSubmit}
+//           disabled={!value.trim() || submitting}
+//           className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-emerald-600 text-white disabled:opacity-40 disabled:cursor-not-allowed hover:bg-emerald-500 transition-colors"
+//         >
+//           <TbSend className="text-sm" />
+//           {submitting ? "Posting..." : "Reply"}
+//         </button>
+//       </div>
+//     </div>
+//   );
+// };
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  TOOLBAR ACTIONS
+//  Each action wraps the selection (or inserts at cursor) with markdown syntax.
+// ─────────────────────────────────────────────────────────────────────────────
+const wrapSelection = (textarea, before, after = before, placeholder = "") => {
+  const start = textarea.selectionStart;
+  const end   = textarea.selectionEnd;
+  const selected = textarea.value.slice(start, end) || placeholder;
+  const newValue =
+    textarea.value.slice(0, start) +
+    before + selected + after +
+    textarea.value.slice(end);
+
+  // return new value + new cursor position
+  return {
+    value:       newValue,
+    cursorStart: start + before.length,
+    cursorEnd:   start + before.length + selected.length,
+  };
+};
+
+const insertLine = (textarea, prefix, placeholder = "text") => {
+  const start    = textarea.selectionStart;
+  const lineStart = textarea.value.lastIndexOf("\n", start - 1) + 1;
+  const before   = textarea.value.slice(0, lineStart);
+  const after    = textarea.value.slice(lineStart);
+  const newValue = before + prefix + (after.startsWith(prefix) ? after.slice(prefix.length) : after || placeholder + "\n");
+  return {
+    value:       newValue,
+    cursorStart: lineStart + prefix.length,
+    cursorEnd:   lineStart + prefix.length + (after || placeholder).length,
+  };
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  TOOLBAR BUTTON
+// ─────────────────────────────────────────────────────────────────────────────
+const ToolbarBtn = ({ icon: Icon, title, onClick }) => (
+  <button
+    type="button"
+    title={title}
+    onMouseDown={(e) => {
+      e.preventDefault(); // prevent textarea from losing focus
+      onClick();
+    }}
+    className="p-1.5 rounded-md text-gray-500 hover:text-gray-300 hover:bg-white/5 transition-colors"
+  >
+    <Icon className="text-sm" />
+  </button>
+);
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  COMPOSE BOX
+// ─────────────────────────────────────────────────────────────────────────────
+/**
+ * ComposeBox — drop-in replacement for the plain textarea compose box.
+ *
+ * Props (identical to original):
+ *   placeholder   string
+ *   onSubmit      async (value: string) => void
+ *   onCancel      () => void | undefined
+ *   autoFocus     boolean
+ *   initialValue  string
+ *   submitLabel   string   — default "Reply"
+ *   minRows       number   — default 3
+ */
 const ComposeBox = ({
-  placeholder,
+  placeholder   = "Write a reply…",
   onSubmit,
   onCancel,
-  autoFocus = false,
-  initialValue = "",
+  autoFocus     = false,
+  initialValue  = "",
+  submitLabel   = "Reply",
+  minRows       = 3,
 }) => {
-  const [value, setValue] = useState(initialValue);
+  const [value,      setValue]      = useState(initialValue);
+  const [mode,       setMode]       = useState("write"); // "write" | "preview"
   const [submitting, setSubmitting] = useState(false);
-  const ref = useRef();
+  const textareaRef = useRef(null);
 
+  // auto-focus on mount
   useEffect(() => {
-    if (autoFocus && ref.current) ref.current.focus();
+    if (autoFocus && textareaRef.current) textareaRef.current.focus();
   }, [autoFocus]);
 
-  const handleSubmit = async () => {
-    if (!value.trim()) return;
-    setSubmitting(true);
-    await onSubmit(value.trim());
-    setValue("");
-    setSubmitting(false);
+  // switch back to write mode when value is cleared
+  useEffect(() => {
+    if (!value.trim()) setMode("write");
+  }, [value]);
+
+  // ── apply toolbar action ──────────────────────────────────────────────────
+  const applyAction = useCallback((fn) => {
+    const ta = textareaRef.current;
+    if (!ta) return;
+    const result = fn(ta);
+    setValue(result.value);
+    // restore cursor after state update
+    requestAnimationFrame(() => {
+      ta.focus();
+      ta.setSelectionRange(result.cursorStart, result.cursorEnd);
+    });
+  }, []);
+
+  const toolbar = [
+    { icon: TbBold,       title: "Bold (Ctrl+B)",        action: (ta) => wrapSelection(ta, "**", "**", "bold text") },
+    { icon: TbItalic,     title: "Italic (Ctrl+I)",       action: (ta) => wrapSelection(ta, "_",  "_",  "italic text") },
+    { icon: TbCode,       title: "Inline code",           action: (ta) => wrapSelection(ta, "`",  "`",  "code") },
+    { icon: TbBlockquote, title: "Blockquote",            action: (ta) => insertLine(ta, "> ",  "quote") },
+    { icon: TbList,       title: "Unordered list",        action: (ta) => insertLine(ta, "- ",  "list item") },
+    { icon: TbLink,       title: "Link",                  action: (ta) => wrapSelection(ta, "[", "](url)", "link text") },
+  ];
+
+  // ── keyboard shortcuts ────────────────────────────────────────────────────
+  const handleKeyDown = (e) => {
+    // submit on Ctrl+Enter / Cmd+Enter
+    if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+      e.preventDefault();
+      handleSubmit();
+      return;
+    }
+    // bold
+    if ((e.ctrlKey || e.metaKey) && e.key === "b") {
+      e.preventDefault();
+      applyAction((ta) => wrapSelection(ta, "**", "**", "bold text"));
+    }
+    // italic
+    if ((e.ctrlKey || e.metaKey) && e.key === "i") {
+      e.preventDefault();
+      applyAction((ta) => wrapSelection(ta, "_", "_", "italic text"));
+    }
+    // tab → insert 2 spaces instead of moving focus
+    if (e.key === "Tab") {
+      e.preventDefault();
+      applyAction((ta) => {
+        const start = ta.selectionStart;
+        return {
+          value:       ta.value.slice(0, start) + "  " + ta.value.slice(ta.selectionEnd),
+          cursorStart: start + 2,
+          cursorEnd:   start + 2,
+        };
+      });
+    }
   };
 
+  // ── submit ────────────────────────────────────────────────────────────────
+  const handleSubmit = async () => {
+    if (!value.trim() || submitting) return;
+    setSubmitting(true);
+    try {
+      await onSubmit(value.trim());
+      setValue("");
+      setMode("write");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const isEmpty = !value.trim();
+
   return (
-    <div className="theme border border-[#1e293b] rounded-xl overflow-hidden focus-within:border-white/20 transition-colors">
-      <textarea
-        ref={ref}
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        placeholder={placeholder}
-        rows={3}
-        className="w-full bg-transparent px-4 pt-3 pb-2 text-sm text-gray-200 placeholder-gray-600 resize-none focus:outline-none"
-      />
-      <div className="flex items-center justify-end gap-2 px-3 pb-3">
-        {onCancel && (
-          <button
-            onClick={onCancel}
-            className="text-xs text-gray-500 hover:text-gray-300 px-3 py-1.5 rounded-lg transition-colors"
-          >
-            Cancel
-          </button>
+    <div className="theme border border-[#1e293b] rounded-xl overflow-hidden
+                    focus-within:border-white/15 transition-colors">
+
+      {/* ── tab bar + toolbar ── */}
+      <div className="flex items-center justify-between px-2 pt-2 pb-1
+                      border-b border-[#1e293b]">
+
+        {/* Write / Preview tabs */}
+        <div className="flex gap-0.5 bg-white/[0.03] border border-[#1e293b] rounded-lg p-0.5">
+          {[
+            { id: "write",   label: "Write",   icon: TbPencil },
+            { id: "preview", label: "Preview", icon: TbEye    },
+          ].map(({ id, label, icon: Icon }) => (
+            <button
+              key={id}
+              type="button"
+              onClick={() => setMode(id)}
+              disabled={id === "preview" && isEmpty}
+              className={`flex items-center gap-1 text-[10px] font-semibold
+                          px-2 py-1 rounded-md transition-all
+                          disabled:opacity-30 disabled:cursor-not-allowed ${
+                mode === id
+                  ? "bg-white/8 text-white"
+                  : "text-gray-500 hover:text-gray-300"
+              }`}
+            >
+              <Icon className="text-xs" />
+              {label}
+            </button>
+          ))}
+        </div>
+
+        {/* Toolbar — only in write mode */}
+        {mode === "write" && (
+          <div className="flex items-center gap-0.5">
+            {toolbar.map(({ icon, title, action }) => (
+              <ToolbarBtn
+                key={title}
+                icon={icon}
+                title={title}
+                onClick={() => applyAction(action)}
+              />
+            ))}
+          </div>
         )}
-        <button
-          onClick={handleSubmit}
-          disabled={!value.trim() || submitting}
-          className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-emerald-600 text-white disabled:opacity-40 disabled:cursor-not-allowed hover:bg-emerald-500 transition-colors"
-        >
-          <TbSend className="text-sm" />
-          {submitting ? "Posting..." : "Reply"}
-        </button>
+      </div>
+
+      {/* ── write area ── */}
+      {mode === "write" && (
+        <textarea
+          ref={textareaRef}
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder={placeholder}
+          rows={minRows}
+          className="w-full bg-transparent px-4 pt-3 pb-2 text-sm text-gray-200
+                     placeholder-gray-600 resize-none focus:outline-none
+                     font-mono leading-relaxed"
+        />
+      )}
+
+      {/* ── preview area ── */}
+      {mode === "preview" && (
+        // <div
+        //   className="px-4 pt-3 pb-2 min-h-[80px] prose-discussion"
+        //   dangerouslySetInnerHTML={{ __html: renderMarkdown(value) }}
+        // />
+           <p
+            className="
+              prose
+                        md:prose-invert
+                        md:max-w-none
+                        px-4 py-3 min-h-[200px]  prose-discussion
+                        md:prose-p:text-gray-300
+                         break-words
+                        md:prose-p:md:leading-6
+                        md:prose-p:text-sm
+                        prose-headings:text-white
+           "
+          >
+            {/* {renderTextWithHashtags(singlePostData.description)} */}
+            <RenderTextWithHashtags text={value} />
+          </p>
+          
+      )}
+
+      {/* ── footer: hint + actions ── */}
+      <div className="md:flex-row flex flex-col items-center justify-between px-3 pb-2.5 pt-1">
+        {/* markdown hint */}
+            <div className="flex order-2 md:order-1 w-full items-center gap-2.5 pb-0.5 md:py-2 ">
+        <p className="text-[10px] text-gray-700 md:text-gray-600">
+          Markdown supported ·{" "}
+          <a
+            href="https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:text-gray-400"
+          >
+            syntax guide
+          </a>
+        </p>
+        <p className="text-[10px] text-gray-600">{value.length} chars</p>
+      </div>
+
+        {/* actions */}
+        <div className="flex justify-end items-center gap-2 ml-auto">
+          {onCancel && (
+            <button
+              type="button"
+              onClick={onCancel}
+              className="text-xs text-gray-500 hover:text-gray-300
+                         px-3 py-1.5 rounded-lg transition-colors"
+            >
+              Cancel
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={handleSubmit}
+            disabled={isEmpty || submitting}
+            className="flex items-center gap-1.5 text-xs font-semibold
+                       px-3 py-1.5 rounded-lg bg-emerald-600 text-white
+                       disabled:opacity-40 disabled:cursor-not-allowed
+                       hover:bg-emerald-500 transition-colors"
+          >
+            <TbSend className="text-sm" />
+            {submitting ? "Posting…" : submitLabel}
+          </button>
+        </div>
       </div>
     </div>
   );
