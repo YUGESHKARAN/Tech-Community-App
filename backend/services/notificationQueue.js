@@ -1,6 +1,7 @@
 const dotenv = require("dotenv");
 dotenv.config();
 
+const mongoose = require("mongoose");
 const { Queue, Worker } = require("bullmq");
 const axios = require("axios");
 const { createClient } = require("redis");
@@ -122,6 +123,146 @@ const removeSseClient = (email, res) => {
   if (subscribers.size === 0) {
     sseClients.delete(normalizedEmail);
   }
+};
+
+const isEmailOnline = (email) => {
+  const normalizedEmail = String(email || "").trim().toLowerCase();
+  return Boolean(normalizedEmail && sseClients.get(normalizedEmail)?.size);
+};
+
+const notifyDiscussionReply = async ({
+  tenantId,
+  discussionId,
+  communityId,
+  discussionAuthorId,
+  replierName,
+  discussionTitle,
+}) => {
+  const author = await Author.findOne({ _id: discussionAuthorId, tenantId })
+    .select("email authorname profile")
+    .lean();
+  if (!author || isEmailOnline(author.email)) return null;
+
+  const cutoff = new Date(Date.now() - 24 * 60 * 60 * 1000);
+  const notificationBase = {
+    communityId,
+    discussionId,
+    authorEmail: author.email,
+    profile: author.profile || "",
+    timestamp: new Date(),
+  };
+  const notificationUrl = process.env.NOTIFICATION_URL || 'http://localhost:5173';
+  const url = `${notificationUrl}/discussion/${communityId}/${discussionId}`
+  const firstReply = await Author.findOneAndUpdate(
+    {
+      _id: author._id,
+      tenantId,
+      $nor: [{ notification: { $elemMatch: { discussionId, timestamp: { $gte: cutoff } } } }],
+    },
+    {
+      $push: {
+        notification: {
+          ...notificationBase,
+          type: "discussion-reply",
+          user: "Discussion Reply",
+          message: `${replierName} replied to your discussion: ${discussionTitle}`,
+          // url: `${communityId}/${discussionId}`,
+          url,
+        },
+      },
+    },
+    { new: true, runValidators: true },
+  );
+  if (firstReply) return "discussion-reply";
+
+  const engagedReply = await Author.findOneAndUpdate(
+    {
+      _id: author._id,
+      tenantId,
+      $and: [
+        { notification: { $elemMatch: { discussionId, timestamp: { $gte: cutoff } } } },
+        { notification: { $not: { $elemMatch: { discussionId, type: "discussion-engaged", timestamp: { $gte: cutoff } } } } },
+      ],
+    },
+    {
+      $push: {
+        notification: {
+          ...notificationBase,
+          type: "discussion-engaged",
+          user: "Discussion Reply",
+          message: `Your discussion ${discussionTitle} got engaged by users`,
+          // url: `${communityId}/${discussionId}`,
+          url,
+        },
+      },
+    },
+    { new: true, runValidators: true },
+  );
+
+  return engagedReply ? "discussion-engaged" : null;
+};
+
+const notifyDiscussionAnswer = async ({
+  tenantId,
+  discussionId,
+  communityId,
+  replyAuthorId,
+  discussionTitle,
+}) => {
+  const recipient = await Author.findOne({ _id: replyAuthorId, tenantId })
+    .select("email authorname profile")
+    .lean();
+  if (!recipient) return null;
+
+  const notificationUrl = process.env.NOTIFICATION_URL || "http://localhost:5173";
+  const url = `${notificationUrl}/discussion/${communityId}/${discussionId}`;
+  const notification = {
+    _id: new mongoose.Types.ObjectId(),
+    communityId,
+    discussionId,
+    type: "discussion-answer",
+    user: "Answer Accepted 🎉🎉",
+    message: `Your reply was marked as the accepted answer for: ${discussionTitle}`,
+    authorEmail: recipient.email,
+    profile: recipient.profile || "",
+    url,
+    timestamp: new Date(),
+  };
+
+  const updated = await Author.findOneAndUpdate(
+    {
+      _id: recipient._id,
+      tenantId,
+      notification: {
+        $not: {
+          $elemMatch: {
+            discussionId,
+            type: "discussion-answer",
+          },
+        },
+      },
+    },
+    { $push: { notification } },
+    { new: true, runValidators: true },
+  );
+
+  if (!updated) return null;
+
+  await publishNotificationEvent(recipient.email, {
+    _id: notification._id,
+    type: "discussion-answer",
+    discussionId,
+    communityId,
+    // user: notification.user,
+    user: "Answer Accepted 🎉🎉",
+    message: notification.message,
+    authorEmail: recipient.email,
+    profile: notification.profile,
+    url,
+    timestamp: notification.timestamp.toISOString(),
+  });
+
+  return "discussion-answer";
 };
 
 const publishNotificationEvent = async (email, payload) => {
@@ -373,6 +514,9 @@ module.exports = {
   enqueueAISync,
   addSseClient,
   removeSseClient,
+  isEmailOnline,
+  notifyDiscussionReply,
+  notifyDiscussionAnswer,
   publishNotificationEvent,
   startNotificationWorker,
   stopNotificationWorker,
