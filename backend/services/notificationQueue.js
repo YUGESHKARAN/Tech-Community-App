@@ -8,6 +8,7 @@ const { createClient } = require("redis");
 const nodemailer = require("nodemailer");
 const connectToDatabase = require("../db");
 const { Author } = require("../models/blogAuthorSchema");
+const CommunityMembership = require("../models/communityMembershipSchema");
 
 const redisUrl = process.env.REDIS_URL || "redis://localhost:6379";
 const queueName = process.env.NOTIFICATION_QUEUE_NAME || "notifications";
@@ -34,6 +35,15 @@ const streamSubClient = createClient({
   },
 });
 const sseClients = new Map();
+
+const logNotification = (event, details = {}) => {
+  console.log(JSON.stringify({
+    service: "notification",
+    event,
+    timestamp: new Date().toISOString(),
+    ...details,
+  }));
+};
 
 let worker;
 let workerStarted = false;
@@ -280,6 +290,32 @@ const enqueuePostNotification = async (payload) => {
   });
 };
 
+const enqueueDiscussionNotification = async (payload) => {
+  if (!payload?.tenantId || !payload?.communityId || !payload?.discussionId || !payload?.communityName || !payload?.authorId || !payload?.authorEmail) {
+    // logNotification("discussion_enqueue_skipped", {
+    //   reason: "missing_required_payload",
+    //   hasTenantId: Boolean(payload?.tenantId),
+    //   hasCommunityId: Boolean(payload?.communityId),
+    //   hasDiscussionId: Boolean(payload?.discussionId),
+    //   hasCommunityName: Boolean(payload?.communityName),
+    //   hasAuthorId: Boolean(payload?.authorId),
+    //   hasAuthorEmail: Boolean(payload?.authorEmail),
+    // });
+    return null;
+  }
+  const job = await notificationQueue.add("discussion-created", payload, {
+    removeOnComplete: { age: 3600, count: 1000 },
+    removeOnFail: { age: 86400, count: 1000 },
+  });
+  // logNotification("discussion_enqueued", {
+  //   jobId: job.id,
+  //   tenantId: payload.tenantId,
+  //   communityId: String(payload.communityId),
+  //   discussionId: String(payload.discussionId),
+  // });
+  return job;
+};
+
 const wait = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
 const aiDebugEnabled = process.env.AI_SYNC_DEBUG !== "false";
 
@@ -385,6 +421,14 @@ const startNotificationWorker = async () => {
     async (job) => {
       const payload = job.data || {};
 
+      logNotification("job_started", {
+        jobId: job.id,
+        jobName: job.name,
+        tenantId: payload.tenantId,
+        communityId: payload.communityId ? String(payload.communityId) : undefined,
+        discussionId: payload.discussionId ? String(payload.discussionId) : undefined,
+      });
+
       if (job.name === "post-created") {
         const author = await Author.findOne({ email: { $eq: payload.authorEmail } }).select("authorname email profile followers community");
         if (!author) {
@@ -480,6 +524,93 @@ const startNotificationWorker = async () => {
         return { delivered: combinedRecipients.length };
       }
 
+      if (job.name === "discussion-created") {
+        const memberships = await CommunityMembership.find({
+          tenantId: payload.tenantId,
+          communityId: payload.communityId,
+          authorId: { $ne: payload.authorId },
+        }).select("authorId").lean();
+
+        const authorIds = memberships.map((membership) => membership.authorId);
+        const recipients = await Author.find({
+          tenantId: payload.tenantId,
+          _id: { $in: authorIds },
+        }).select("email profile").lean();
+
+        // logNotification("discussion_recipients_resolved", {
+        //   jobId: job.id,
+        //   membershipCount: memberships.length,
+        //   recipientCount: recipients.length,
+        //   tenantId: payload.tenantId,
+        //   communityId: String(payload.communityId),
+        //   discussionId: String(payload.discussionId),
+        // });
+
+        const notificationUrl = process.env.NOTIFICATION_URL || "http://localhost:5173";
+        const url = `${notificationUrl}/discussion/${payload.communityId}/${payload.discussionId}`;
+        const message = `${payload.authorName} started a new discussion in ${payload.communityName}: ${payload.title}`;
+        const timestamp = new Date();
+
+        const bulkNotifications = recipients.map((recipient) => ({
+          updateOne: {
+            filter: { _id: recipient._id, tenantId: payload.tenantId },
+            update: {
+              $push: {
+                notification: {
+                  communityId: payload.communityId,
+                  discussionId: payload.discussionId,
+                  type: "discussion-created",
+                  // user: payload.authorName,
+                  user: `New discussion from ${payload.communityName} domain`,
+                  message,
+                  authorEmail: payload.authorEmail || "",
+                  profile: recipient.profile || "",
+                  url,
+                  timestamp,
+                },
+              },
+            },
+          },
+        }));
+
+        if (bulkNotifications.length > 0) {
+          await Author.bulkWrite(bulkNotifications);
+        }
+
+        logNotification("discussion_notifications_persisted", {
+          jobId: job.id,
+          recipientCount: recipients.length,
+          tenantId: payload.tenantId,
+          communityId: String(payload.communityId),
+          discussionId: String(payload.discussionId),
+        });
+
+        await Promise.all(recipients.map(async (recipient) => {
+          try {
+            await publishNotificationEvent(recipient.email, {
+              _id: payload.discussionId,
+              type: "discussion-created",
+              communityId: payload.communityId,
+              discussionId: payload.discussionId,
+              user: `New discussion from ${payload.communityName} domain`,
+              message,
+              authorEmail: payload.authorEmail || "",
+              profile: recipient.profile || "",
+              url,
+              timestamp: timestamp.toISOString(),
+            });
+          } catch (err) {
+            logNotification("live_event_failed", {
+              jobId: job.id,
+              email: recipient.email,
+              error: err.message,
+            });
+          }
+        }));
+
+        return { delivered: recipients.length };
+      }
+
       return null;
     },
     {
@@ -491,11 +622,27 @@ const startNotificationWorker = async () => {
   );
 
   worker.on("failed", (job, err) => {
-    console.error(`Notification worker failed for job ${job?.id}:`, err.message);
+    logNotification("job_failed", {
+      jobId: job?.id,
+      jobName: job?.name,
+      error: err.message,
+      stack: err.stack,
+    });
+  });
+
+  worker.on("error", (err) => {
+    logNotification("worker_error", {
+      error: err.message,
+      stack: err.stack,
+    });
   });
 
   worker.on("completed", (job, result) => {
-    console.log(`Notification worker completed ${job.id}:`, result);
+    logNotification("job_completed", {
+      jobId: job.id,
+      jobName: job.name,
+      result,
+    });
   });
 
   workerStarted = true;
@@ -511,6 +658,7 @@ const stopNotificationWorker = async () => {
 module.exports = {
   notificationQueue,
   enqueuePostNotification,
+  enqueueDiscussionNotification,
   enqueueAISync,
   addSseClient,
   removeSseClient,
