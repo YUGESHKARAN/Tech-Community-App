@@ -349,7 +349,7 @@ const ComposeBox = ({
   autoFocus     = false,
   initialValue  = "",
   submitLabel   = "Reply",
-  minRows       = 3,
+  minRows       = 7,
 }) => {
   const [value,      setValue]      = useState(initialValue);
   const [mode,       setMode]       = useState("write"); // "write" | "preview"
@@ -492,7 +492,7 @@ const ComposeBox = ({
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
           rows={minRows}
-          className="w-full bg-transparent px-4 pt-3 pb-2 text-sm text-gray-200
+          className="w-full bg-transparent overflow-x-hidden h-[200px] md:h-[400px] emerald-scrollbar px-4 md:px-6 pt-3 pb-2 text-xs text-gray-200
                      placeholder-gray-600 resize-none focus:outline-none
                      font-mono leading-relaxed"
         />
@@ -509,7 +509,7 @@ const ComposeBox = ({
               prose
                         md:prose-invert
                         md:max-w-none
-                        px-4 py-3 min-h-[200px]  prose-discussion
+                        px-4 md:px-6 h-[200px] md:h-[400px] overflow-x-hidden scrollbar-hide overflow-y-auto  prose-discussion
                         md:prose-p:text-gray-300
                          break-words
                         md:prose-p:md:leading-6
@@ -542,12 +542,12 @@ const ComposeBox = ({
       </div>
 
         {/* actions */}
-        <div className="flex justify-end items-center gap-2 ml-auto">
+        <div className="flex order-1 md:order-2  justify-end items-center gap-2 ml-auto">
           {onCancel && (
             <button
               type="button"
               onClick={onCancel}
-              className="text-xs text-gray-500 hover:text-gray-300
+              className="text-xs text-gray-400 font-semibold hover:text-gray-300
                          px-3 py-1.5 rounded-lg transition-colors"
             >
               Cancel
@@ -558,7 +558,7 @@ const ComposeBox = ({
             onClick={handleSubmit}
             disabled={isEmpty || submitting}
             className="flex items-center gap-1.5 text-xs font-semibold
-                       px-3 py-1.5 rounded-lg bg-emerald-600 text-white
+                       px-3 py-1 py-1.5 rounded-lg bg-emerald-600 text-white
                        disabled:opacity-40 disabled:cursor-not-allowed
                        hover:bg-emerald-500 transition-colors"
           >
