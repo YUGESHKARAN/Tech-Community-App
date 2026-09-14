@@ -4,7 +4,10 @@ const cors = require("cors");
 const serverless = require("serverless-http");
 const connectToDatabase = require("./db");
 const bodyParser = require("body-parser");
-const { addSseClient } = require("./services/notificationQueue");
+const {
+  addSseClient,
+  startNotificationWorker,
+} = require("./services/notificationQueue");
 require("dotenv").config();
 
 const dns = require("dns");
@@ -49,6 +52,12 @@ app.set("trust proxy", 1);
 connectToDatabase().catch(err => {
   console.error("Initial DB connection failed:", err.message);
 });
+
+if (process.env.DISABLE_NOTIFICATION_WORKER !== "true") {
+  startNotificationWorker()
+    .then(() => console.log("Notification worker started with API process"))
+    .catch((err) => console.error("Notification worker startup failed:", err));
+}
 
 // Routes
 const loginRouter = require("./routes/login.Route");

@@ -13,6 +13,7 @@ const { Post } = require("../models/blogAuthorSchema");
 const { trackActivity, getTodayIST } = require("../services/trackActivity");
 const { DeletionLog } = require("../models/deletionLogSchema");
 const {
+  enqueueDiscussionNotification,
   notifyDiscussionReply,
   notifyDiscussionAnswer,
 } = require("../services/notificationQueue");
@@ -356,11 +357,12 @@ const createDiscussion = async (req, res) => {
     }
 
     // resolve permission from settings and the authoritative membership record
-    const [settings, communityRole, community, globalRole] = await Promise.all([
+    const [settings, communityRole, community, globalRole, discussionAuthor] = await Promise.all([
       CommunitySettings.findOne({ tenantId, communityId }, "whoCanPost").lean(),
       getUserCommunityRole(tenantId, communityId, authorId),
       Community.findOne({ _id: communityId, tenantId }, "name slug").lean(),
       getGlobalRole(tenantId, authorId),
+      Author.findOne({ _id: authorId, tenantId }, "authorname email").lean(),
     ]);
 
     const requiredRole = settings?.whoCanPost || "coordinator";
@@ -410,6 +412,19 @@ const createDiscussion = async (req, res) => {
 
     res.status(201).json({ message: "Discussion created", discussion });
 
+    enqueueDiscussionNotification({
+      tenantId,
+      communityId,
+      discussionId: discussion._id,
+      authorId,
+      authorName: discussionAuthor?.authorname || "A community member",
+      authorEmail: discussionAuthor?.email,
+      communityName: community?.name || "your community",
+      title: discussion.title,
+    }).catch((err) =>
+      console.error("enqueueDiscussionNotification error:", err.message),
+    );
+
     // ----------------- performance tracker (create discussion) ------------------------------
     trackActivity({
       authorId: authorId, // from req.user
@@ -422,7 +437,7 @@ const createDiscussion = async (req, res) => {
         communityId: discussion.communityId,
         discussionId: null, // discussion IS the top-level — no parent
         title: discussion.title,
-        communityName: settings?.communityName || null, // or fetch community.name
+        communityName: community?.name || null, // or fetch community.name
         pts: 3,
       },
     }).catch((err) =>
