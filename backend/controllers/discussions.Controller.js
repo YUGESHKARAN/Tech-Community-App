@@ -176,7 +176,8 @@ const updateWhoCanPost = async (req, res) => {
 
 /**
  * POST /api/communities/:communityId/tags
- * Coordinator-only. Creates a new community-scoped tag (label).
+ * Creates a new community-scoped tag (label). When whoCanPost is 'member',
+ * any community member may create a tag; otherwise coordinators only.
  * body: { name, color }
  */
 const createTag = async (req, res) => {
@@ -190,16 +191,43 @@ const createTag = async (req, res) => {
       return res.status(400).json({ message: "name and color are required" });
     }
 
-    const communityRole = await getUserCommunityRole(
-      tenantId,
-      communityId,
-      authorId,
-    );
-    // console.log("communityRole", communityRole)
-    if (communityRole !== "coordinator") {
+    const [settings, membership, community, currentAuthor] = await Promise.all([
+      CommunitySettings.findOne({ tenantId, communityId }, "whoCanPost").lean(),
+      CommunityMembership.findOne({ tenantId, communityId, authorId }).lean(),
+      Community.findOne({ _id: communityId, tenantId }, "name slug").lean(),
+      Author.findOne({ _id: authorId, tenantId }, "role").lean(),
+    ]);
+
+    const isAdmin = ["admin", "director"].includes(currentAuthor?.role);
+    const isGlobalCoordinator = currentAuthor?.role === "coordinator";
+    const requiredRole = settings?.whoCanPost || "coordinator";
+    let canAccess =
+      isAdmin || ["member", "coordinator"].includes(membership?.role);
+
+    // Tenant coordinators may access tag creation without enrollment when
+    // discussion creation is open to members.
+    if (!canAccess && requiredRole === "member" && isGlobalCoordinator) {
+      canAccess = true;
+    }
+
+    // Support legacy users whose membership exists only in Author.community.
+    if (!canAccess && community) {
+      canAccess = Boolean(await Author.exists({
+        _id: authorId,
+        tenantId,
+        community: { $in: [community.name, community.slug] },
+      }));
+    }
+
+    if (!canAccess) {
       return res
         .status(403)
-        .json({ message: "Only coordinators can create tags" });
+        .json({
+          message:
+            requiredRole === "member"
+              ? "You must be a member of this community to create tags"
+              : "Only coordinators can create tags",
+        });
     }
 
     const tag = await CommunityTag.create({
