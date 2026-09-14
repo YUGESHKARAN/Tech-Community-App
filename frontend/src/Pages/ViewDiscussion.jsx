@@ -892,6 +892,8 @@ function ViewDiscussion() {
   const { communityId, discussionId } = useParams();
   const navigate = useNavigate();
   const currentUserEmail = getItem("email");
+  // 1. add state at the top with your other state declarations
+const [notFound, setNotFound] = useState(false);
 
   // ── State ─────────────────────────────────────────────────────────────────
   // Replace with useGetDiscussionById(communityId, discussionId)
@@ -921,28 +923,57 @@ function ViewDiscussion() {
   const [upvoteStatus, setUpvoteStatus] = useState(false);
   const discussionRequestInFlight = useRef(false);
 
-  const getDiscussionsById = useCallback(async (showLoader = true) => {
-    if (discussionRequestInFlight.current) return;
+  // const getDiscussionsById = useCallback(async (showLoader = true) => {
+  //   if (discussionRequestInFlight.current) return;
 
-    discussionRequestInFlight.current = true;
-    try {
-      if (showLoader) setDiscussionLoader(true);
-      const res = await axiosInstance.get(
-        `/bytes/discuss/${communityId}/discussions/${discussionId}`,
-      );
-      if (res.status === 200) {
-        setDiscussion(res?.data?.discussion);
-        setUpvoteCount(res?.data?.discussion?.upvoteCount);
-        setUpvoteStatus(res?.data?.discussion?.hasVoted);
-        setDiscussionBody(res?.data?.discussion?.body);
-      }
-    } catch (err) {
-      console.log("error getting discussion", err.message);
-    } finally {
-      if (showLoader) setDiscussionLoader(false);
-      discussionRequestInFlight.current = false;
+  //   discussionRequestInFlight.current = true;
+  //   try {
+  //     if (showLoader) setDiscussionLoader(true);
+  //     const res = await axiosInstance.get(
+  //       `/bytes/discuss/${communityId}/discussions/${discussionId}`,
+  //     );
+  //     if (res.status === 200) {
+  //       setDiscussion(res?.data?.discussion);
+  //       setUpvoteCount(res?.data?.discussion?.upvoteCount);
+  //       setUpvoteStatus(res?.data?.discussion?.hasVoted);
+  //       setDiscussionBody(res?.data?.discussion?.body);
+  //     }
+  //   } catch (err) {
+  //     console.log("error getting discussion", err.message);
+  //   } finally {
+  //     if (showLoader) setDiscussionLoader(false);
+  //     discussionRequestInFlight.current = false;
+  //   }
+  // }, [communityId, discussionId]);
+
+  // 2. update getDiscussionsById to detect 404
+
+  const getDiscussionsById = useCallback(async (showLoader = true) => {
+  if (discussionRequestInFlight.current) return;
+  discussionRequestInFlight.current = true;
+  try {
+    if (showLoader) setDiscussionLoader(true);
+    const res = await axiosInstance.get(
+      `/bytes/discuss/${communityId}/discussions/${discussionId}`,
+    );
+    if (res.status === 200) {
+      setDiscussion(res?.data?.discussion);
+      setUpvoteCount(res?.data?.discussion?.upvoteCount);
+      setUpvoteStatus(res?.data?.discussion?.hasVoted);
+      setDiscussionBody(res?.data?.discussion?.body);
     }
-  }, [communityId, discussionId]);
+  } catch (err) {
+    // handle 404 — invalid or deleted discussionId
+    if (err?.response?.status === 404 || err?.response?.status === 500  ) {
+      setNotFound(true);
+    } else {
+      console.log("error getting discussion", err.message);
+    }
+  } finally {
+    if (showLoader) setDiscussionLoader(false);
+    discussionRequestInFlight.current = false;
+  }
+}, [communityId, discussionId]);
 
   useEffect(() => {
     getDiscussionsById();
@@ -1349,7 +1380,32 @@ function ViewDiscussion() {
   // ─────────────────────────────────────────────────────────────────────────
   //  RENDER
   // ─────────────────────────────────────────────────────────────────────────
-  return (
+
+ return ( (notFound)? 
+  <div className="flex-grow flex flex-col items-center justify-center px-4 py-20 text-center">
+    <div className="w-14 h-14 rounded-2xl bg-white/[0.03] border border-[#1e293b] flex items-center justify-center mb-5">
+      <TbMessageCircle className="text-2xl text-gray-600" />
+    </div>
+    <h2 className="text-base font-semibold text-gray-300 mb-1">
+      Discussion not found
+    </h2>
+    <p className="text-xs text-gray-500 max-w-xs leading-relaxed mb-6">
+      This discussion may have been deleted or the link is invalid.
+    </p>
+    <button
+      onClick={() =>
+        navigate(`/techCommunityDetails/${communityId}?tab=discussions`)
+      }
+      className="flex items-center gap-1.5 text-xs font-semibold
+                 px-4 py-2 rounded-xl bg-white/5 border border-[#1e293b]
+                 text-gray-300 hover:bg-white/8 hover:border-white/15
+                 transition-all"
+    >
+      <TbChevronLeft className="text-sm" />
+      Back to discussions
+    </button>
+  </div>:
+    (
     <div className="min-h-screen theme text-white flex flex-col">
       <NavBar />
 
@@ -1582,7 +1638,9 @@ function ViewDiscussion() {
 
       <Footer />
     </div>
-  );
+  )
+ 
+ )
 }
 
 export default ViewDiscussion;
