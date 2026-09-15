@@ -1020,22 +1020,24 @@ function NavBar() {
             <button
               className="
                 w-full flex items-center gap-1.5
-                pl-2 py-1.5 pb-1
+                pl-2 py-1 pb-1
                 text-sm text-gray-100
+                bg-gray-800/40
                 hover:bg-gray-800/70
                 transition-all duration-200
                 rounded-lg 
               "
             >
-              <MdManageAccounts className="text-[17px] text-emerald-500" />
+              <MdManageAccounts className="text-[17px] text-emerald-600" />
               <span className="text-[11px]">Profile Settings</span>
             </button>
           </Link>
 
           <div
             className=" w-full flex items-center gap-1.5
-                pl-2 py-1.5 pt-1
+                pl-2 py-1 mt-1 pt-1
                 text-sm text-gray-100
+                bg-gray-800/40
                 hover:bg-gray-800/70
                 transition-all duration-200
                 rounded-lg"
@@ -1191,212 +1193,3 @@ function NavTile({ to, icon, title, subtitle, badge, close }) {
 }
 
 export default NavBar;
-
-//  <div
-//         ref={sidebarRef}
-//         className={`fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-md
-//       bg-[#0b1220]
-//       text-white shadow-2xl z-50
-//       transition-transate duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]
-//       rounded-b-3xl border border-white/10
-
-//       ${
-//         isSidebarOpen
-//           ? "opacity-100 translate-y-0"
-//           : "opacity-0 -translate-y-6 pointer-events-none"
-//       }`}
-//       >
-//         {/* ================= HEADER ================= */}
-//         <div className="flex items-center justify-between px-5 py-4 pb-3">
-//           {role !== "admin" ? (
-//             <Link
-//               to="/home"
-//               onClick={() => setIsSidebarOpen(false)}
-//               className="flex items-center gap-2"
-//             >
-//               <img src={bloglogo} alt="Logo" className="w-7 h-7 rounded-full" />
-//               {/* <span className="text-sm font-semibold tracking-wide">Home</span> */}
-//             </Link>
-//           ) : (
-//             <Link
-//               to="/dashboard"
-//               onClick={() => setIsSidebarOpen(false)}
-//               className="flex items-center gap-2"
-//             >
-//               <img src={bloglogo} alt="Logo" className="w-7 h-7 rounded-full" />
-//               {/* <span className="text-sm font-semibold tracking-wide">Home</span> */}
-//             </Link>
-//           )}
-
-//           <button
-//             onClick={() => setIsSidebarOpen(false)}
-//             className="text-white/50 hover:text-white transition text-sm md:text-lg"
-//           >
-//             ✕
-//           </button>
-//         </div>
-
-//         {/* ================= PRIMARY ICON NAV ================= */}
-//         <div className="flex justify-between px-6 pt-2 pb-3">
-//           {role != "admin" && (
-//             <NavIcon
-//               to="/home"
-//               icon={<GoHome />}
-//               label="Home"
-//               close={setIsSidebarOpen}
-//             />
-//           )}
-
-//           {role == "admin" && (
-//             <NavIcon
-//               to="/home"
-//               icon={<GoHome />}
-//               label="Browse"
-//               close={setIsSidebarOpen}
-//             />
-//           )}
-
-//           <NavIcon
-//             to="/community"
-//             icon={<MdGroups />}
-//             label="Community"
-//             close={setIsSidebarOpen}
-//           />
-
-//           {role !== "student" && (
-//             <NavIcon
-//               to="/authors"
-//               icon={<IoIosGitNetwork />}
-//               label="My Network"
-//               close={setIsSidebarOpen}
-//             />
-//           )}
-//           <NavIcon
-//             // to={`/bookMarkPage/${email}`}
-//             to={`/bookMarkPage`}
-//             icon={<RiBookMarkedFill />}
-//             label="Bookmark"
-//             close={setIsSidebarOpen}
-//           />
-
-//           {role == "student" && (
-//             <NavIcon
-//               to="/profile"
-//               icon={<FaUserAlt />}
-//               label="Profile"
-//               close={setIsSidebarOpen}
-//             />
-//           )}
-
-//           <div
-//             onClick={exit}
-//             className="flex flex-col items-center gap-0
-//                  text-white/70 hover:text-white transition"
-//           >
-//             <span className="text-xl text-red-400">
-//               <IoLogOutOutline />
-//             </span>
-//             <span className="text-[11px]">Logout</span>
-//           </div>
-//         </div>
-
-//         {/* ================= SECONDARY TILES ================= */}
-//         <div className="grid grid-cols-2 gap-3 px-5 pt-2 pb-5">
-//           {role == "admin" && (
-//             <NavTile
-//               to="/dashboard"
-//               icon={<MdDashboard />}
-//               title="Analytics"
-//               subtitle="Dashboard"
-//               close={setIsSidebarOpen}
-//             />
-//           )}
-//           {role === "admin" && (
-//             <NavTile
-//               to="/control"
-//               icon={<MdManageAccounts />}
-//               title="Control Panel"
-//               subtitle="Manage Users"
-//               close={setIsSidebarOpen}
-//             />
-//           )}
-
-//           {role !== "student" && (
-//             <NavTile
-//               to="/workspace"
-//               icon={<BsPersonWorkspace />}
-//               title="Workspace"
-//               subtitle="Manage Content"
-//               close={setIsSidebarOpen}
-//             />
-//           )}
-//           {role === "student" && (
-//             <NavTile
-//               to="/authors"
-//               icon={<IoIosGitNetwork />}
-//               title="Network"
-//               subtitle="Connections"
-//               close={setIsSidebarOpen}
-//             />
-//           )}
-
-//           {/* {role == "coordinator" && (
-//             <NavTile
-//               to="/profile"
-//               icon={<FaUserAlt />}
-//               title="Profile"
-//               subtitle="Account"
-//               close={setIsSidebarOpen}
-//             />
-//           )} */}
-
-//           <NavTile
-//             to="/announcement"
-//             icon={<MdAnnouncement />}
-//             title="Updates"
-//             subtitle="Announcements"
-//             badge={announceCount}
-//             close={setIsSidebarOpen}
-//           />
-//         </div>
-//       </div>
-
-// function NavIcon({ to, icon, label, close }) {
-//   return (
-//     <Link
-//       to={to}
-//       onClick={() => close && close(false)}
-//       className="flex flex-col items-center gap-0
-//                  text-white/70 hover:text-white transition"
-//     >
-//       <span className=" text-xl md:text-lg text-emerald-400">{icon}</span>
-//       <span className="text-[11px]">{label}</span>
-//     </Link>
-//   );
-// }
-
-// function NavTile({ to, icon, title, subtitle, badge, close }) {
-//   return (
-//     <Link
-//       to={to}
-//       onClick={() => close && close(false)}
-//       className="relative rounded-2xl p-4
-//                  bg-white/5 hover:bg-white/10 transition"
-//     >
-//       <span className="text-emerald-400 text-lg">{icon}</span>
-
-//       <p className="mt-2 text-sm font-medium">{title}</p>
-//       <p className="text-xs text-white/40">{subtitle}</p>
-
-//       {badge > 0 && (
-//         <span
-//           className="absolute top-3 right-3
-//                          text-[10px] px-2 py-0.5 rounded-full
-//                          bg-emerald-500/20 text-emerald-300"
-//         >
-//           {badge}
-//         </span>
-//       )}
-//     </Link>
-//   );
-// }
