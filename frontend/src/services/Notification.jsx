@@ -243,8 +243,8 @@ const Notificationpanel = ({
       }`}
     >
       {/* ── header ── */}
-      <div className="flex items-center justify-between px-4 py-3.5 border-b border-gray-700/50 sticky top-0 theme z-40">
-        <div className="flex items-center gap-2">
+      <div className="flex items-center justify-between px-4  py-3.5 border-b border-gray-700/50 sticky top-0 theme z-40">
+        <div className="flex items-center  gap-2">
           <TbBellFilled className="text-[15px] text-emerald-400" />
           <h2 className="text-[13px] font-medium text-white tracking-tight">
             Notifications
@@ -267,7 +267,7 @@ const Notificationpanel = ({
           return (
             <div
               key={data._id}
-              className="group relative px-4 py-3 hover:bg-white/[0.03] transition-colors duration-150"
+              className="group relative px-4 mx-auto px-auto py-3 hover:bg-white/[0.03] transition-colors duration-150"
             >
               <div
                 onClick={() => setShowNotification(false)}
@@ -306,11 +306,11 @@ const Notificationpanel = ({
               {/* delete */}
               <button
                 onClick={() => deleteSigleNotification(userEmail, data._id)}
-                className="absolute top-1 right-1 md:opacity-0 md:group-hover:opacity-70
+                className="absolute top-1 right-2.5 md:right-1 md:opacity-0 md:group-hover:opacity-70
                            md:hover:!opacity-100 md:transition-opacity
-                           text-gray-500 md:text-gray-400 md:group-hover:text-red-400 transition-all duration-300"
+                           text-gray-600 md:text-gray-400 md:group-hover:text-red-400 transition-all duration-300"
               >
-                <IoIosClose size={18} />
+                <IoIosClose size={16} />
               </button>
             </div>
           );
