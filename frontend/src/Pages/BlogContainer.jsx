@@ -305,7 +305,7 @@ function BlogContainer({ activeTab, setActiveTab }) {
             {posts.length > 0 && (
               <div
                 className={`w-full sticky top-0 z-40
-                ${isStickyActive ? "bg-gray-900 " : "bg-transparent"}`}
+                ${isStickyActive ? "theme" : "bg-transparent"}`}
               >
                 <div
                   // className="flex md:max-w-5xl md:w-fit mt-10 scrollbar-hide mx-auto items-center justify-start gap-3 mb-5 overflow-x-auto"
