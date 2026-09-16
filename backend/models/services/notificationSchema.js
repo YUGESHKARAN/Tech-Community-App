@@ -46,7 +46,7 @@ const notificationSchema = new mongoose.Schema({
 // Import alongside NOTIFICATION_TYPES.
 const buildNotificationUrl = {
   discussionCreated:  (communityId)               => `/techCommunityDetails/${communityId}?tab=discussions`,
-  discussionThread:   (communityId, discussionId) => `/discussion/${communityId}/discussion/${discussionId}`,
+  discussionThread:   (communityId, discussionId) => `/discussion/${communityId}/${discussionId}`,
   post:               (authorEmail, postId)       => `/viewpage/${authorEmail}/${postId}`,
   announcement:       ()                          => `/announcement`,
   playlist:           (playlistId)                => `/viewplaylist/${playlistId}`,

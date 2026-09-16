@@ -719,7 +719,7 @@ const rollbackDeletion = async (req, res) => {
 
     const newNotification = {
       _id: new mongoose.Types.ObjectId(),
-      user: "Account Restored!",
+      user: "Account restored!",
       type: NOTIFICATION_TYPES.SYSTEM,
       authorEmail: restorerEmail,
       message: `Welcome back, Your account has been successfully recovered!`,
