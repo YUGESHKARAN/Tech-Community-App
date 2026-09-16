@@ -3,7 +3,7 @@
 const { Author, Post } = require("../models/blogAuthorSchema");
 const TutorPlayList = require("../models/tutorPlaylistSchema");
 const { BADGE_DEFINITIONS, TIER_ORDER } = require('../utils/badgeDefinitions');
-
+const { NOTIFICATION_TYPES, buildNotificationUrl } = require("../models/services/notificationSchema")
 const dotenv = require("dotenv");
 dotenv.config();
 
@@ -154,9 +154,9 @@ const checkAndAwardBadges = async (authorEmail, badgeIds, eventContext = {}) => 
       const newNotification = {
         user:        'Achievements 🎊🎉',
         authorEmail: authorEmail,
+        type: NOTIFICATION_TYPES.ACHIEVEMENT,
         message:     notificationMessage,
-        url,
-        postId:      resolvedContext.eventId || undefined,
+        url: buildNotificationUrl.profile(),
         timestamp:   new Date(),
       };
 

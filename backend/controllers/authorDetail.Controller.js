@@ -1,6 +1,7 @@
 const { Author, Post } = require("../models/blogAuthorSchema");
 const Community = require("../models/communitySchema");
 const CommunityMembership = require("../models/communityMembershipSchema");
+const { NOTIFICATION_TYPES, buildNotificationUrl } = require("../models/services/notificationSchema");
 
 const mongoose = require("mongoose");
 // s3 integration
@@ -356,10 +357,11 @@ const addAuthor = async (req, res) => {
 
     const newNotification = {
       _id: new mongoose.Types.ObjectId(),
-      user: "Account Created Successfully 🎉✅",
+      user: "Account created successfully 🎉✅",
       authorEmail: adminEmail,
+      type: NOTIFICATION_TYPES.SYSTEM,
       message: `Hi ${authorname}, Welcome to Bytes Base ! Your account is ready now.`,
-      url: `${notificationUrl}/announcement`,
+      url: buildNotificationUrl.announcement(),
       timestamp: now,
     };
 
@@ -1446,11 +1448,12 @@ const addAnnouncement = async (req, res) => {
 
     // fix: author.authorname — authorname was undefined before
     const newNotification = {
-      user,
+      user: "New announcement",
       authorEmail: email,
+      type:  NOTIFICATION_TYPES.ANNOUNCEMENT,
       profile: profile || "",
       message: `New announcement: "${title}"`,
-      url,
+      url: buildNotificationUrl.announcement(),
     };
 
     // let filter = {};
@@ -1767,10 +1770,11 @@ const updateRole = async (req, res) => {
     };
 
     const newNotification = {
-      user: adminUser,
+      user: "Role updated",
       authorEmail: adminEmail,
+      type: NOTIFICATION_TYPES.SYSTEM,
       message: `Hi ${author.authorname}, Your role has been updated to ${role}.`,
-      url,
+      url: buildNotificationUrl.announcement(),
       timestamp: now,
     };
 

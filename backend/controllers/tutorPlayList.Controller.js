@@ -15,6 +15,7 @@ require("dotenv").config();
 
 const redisClient = require("../middleware/redis");
 const { checkAndAwardBadges } = require("../services/badgeService");
+const { NOTIFICATION_TYPES, buildNotificationUrl } = require("../models/services/notificationSchema");
 
 const bucketName = process.env.BUCKET_NAME;
 const bucketRegion = process.env.BUCKET_REGION;
@@ -753,11 +754,12 @@ const addTutorPlayList = async (req, res) => {
             $push: {
               notification: {
                 _id:         new mongoose.Types.ObjectId(),
-                user:        name,
+                user:        "Collab",
                 authorEmail: email,
+                type:       NOTIFICATION_TYPES.COLLAB,
                 message:     notificationMessage,
                 profile:     profile || "",
-                url,
+                url:         buildNotificationUrl.playlist(playlistId),
                 postId:      new mongoose.Types.ObjectId(), // placeholder
                 timestamp:   new Date(),
               },

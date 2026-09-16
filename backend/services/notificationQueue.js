@@ -13,6 +13,8 @@ const CommunityMembership = require("../models/communityMembershipSchema");
 const redisUrl = process.env.REDIS_URL || "redis://localhost:6379";
 const queueName = process.env.NOTIFICATION_QUEUE_NAME || "notifications";
 
+const { NOTIFICATION_TYPES, buildNotificationUrl } = require("../models/services/notificationSchema")
+
 const connection = {
   url: redisUrl,
   maxRetriesPerRequest: null,
@@ -173,11 +175,11 @@ const notifyDiscussionReply = async ({
       $push: {
         notification: {
           ...notificationBase,
-          type: "discussion-reply",
-          user: "Discussion Reply",
+          type: NOTIFICATION_TYPES.DISCUSSION_REPLY,
+          user: "Discussion reply",
           message: `${replierName} replied to your discussion: ${discussionTitle}`,
           // url: `${communityId}/${discussionId}`,
-          url,
+          url:buildNotificationUrl.discussionThread(communityId, discussionId),
         },
       },
     },
@@ -198,8 +200,8 @@ const notifyDiscussionReply = async ({
       $push: {
         notification: {
           ...notificationBase,
-          type: "discussion-engaged",
-          user: "Discussion Reply",
+          type: NOTIFICATION_TYPES.DISCUSSION_ENGAGED,
+          user: "Discussion engaged",
           message: `Your discussion ${discussionTitle} got engaged by users`,
           // url: `${communityId}/${discussionId}`,
           url,
@@ -230,12 +232,12 @@ const notifyDiscussionAnswer = async ({
     _id: new mongoose.Types.ObjectId(),
     communityId,
     discussionId,
-    type: "discussion-answer",
+    type: NOTIFICATION_TYPES.DISCUSSION_ANSWER,
     user: "Answer Accepted 🎉🎉",
     message: `Your reply was marked as the accepted answer for: ${discussionTitle}`,
     authorEmail: recipient.email,
     profile: recipient.profile || "",
-    url,
+    url: buildNotificationUrl.discussionThread(communityId, discussionId),
     timestamp: new Date(),
   };
 
@@ -466,10 +468,11 @@ const startNotificationWorker = async () => {
                 $push: {
                   notification: {
                     postId: payload.postId,
-                    user: payload.authorName,
+                    user: "New post",
+                    type: NOTIFICATION_TYPES.POST_CREATED,
                     authorEmail: payload.authorEmail,
                     message,
-                    url: payload.url,
+                    url: buildNotificationUrl.post(payload.authorEmail, payload.postId),
                     profile: payload.authorProfile || "",
                     timestamp: new Date(),
                   },
@@ -491,12 +494,12 @@ const startNotificationWorker = async () => {
 
           const eventPayload = {
             _id: payload.postId,
-            type: "new-post-notification",
+            type: NOTIFICATION_TYPES.POST_CREATED,
             postId: payload.postId,
-            user: payload.authorName,
+            user: "New post",
             authorEmail: payload.authorEmail,
             message,
-            url: payload.url,
+            url: buildNotificationUrl.post(payload.authorEmail, payload.postId),
             profile: payload.authorProfile || "",
             timestamp: new Date().toISOString(),
           };
@@ -547,7 +550,7 @@ const startNotificationWorker = async () => {
         // });
 
         const notificationUrl = process.env.NOTIFICATION_URL || "http://localhost:5173";
-        const url = `${notificationUrl}/discussion/${payload.communityId}/${payload.discussionId}`;
+        // const url = `${notificationUrl}/discussion/${payload.communityId}/${payload.discussionId}`;
         const message = `${payload.authorName} started a new discussion in ${payload.communityName}: ${payload.title}`;
         const timestamp = new Date();
 
@@ -559,13 +562,13 @@ const startNotificationWorker = async () => {
                 notification: {
                   communityId: payload.communityId,
                   discussionId: payload.discussionId,
-                  type: "discussion-created",
+                  type:  NOTIFICATION_TYPES.DISCUSSION_CREATED,
                   // user: payload.authorName,
                   user: `New discussion from ${payload.communityName} domain`,
                   message,
                   authorEmail: payload.authorEmail || "",
                   profile: recipient.profile || "",
-                  url,
+                  url: buildNotificationUrl.discussionThread(payload.communityId, payload.discussionId),
                   timestamp,
                 },
               },
@@ -589,14 +592,14 @@ const startNotificationWorker = async () => {
           try {
             await publishNotificationEvent(recipient.email, {
               _id: payload.discussionId,
-              type: "discussion-created",
+              type: NOTIFICATION_TYPES.DISCUSSION_CREATED,
               communityId: payload.communityId,
               discussionId: payload.discussionId,
               user: `New discussion from ${payload.communityName} domain`,
               message,
               authorEmail: payload.authorEmail || "",
               profile: recipient.profile || "",
-              url,
+              url: buildNotificationUrl.discussionThread(payload.communityId, payload.discussionId),
               timestamp: timestamp.toISOString(),
             });
           } catch (err) {

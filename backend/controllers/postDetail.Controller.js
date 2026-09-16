@@ -17,7 +17,7 @@ const nodemailer = require('nodemailer');
 
 const {checkAndAwardBadges} = require("../services/badgeService")
 const { enqueuePostNotification, enqueueAISync } = require("../services/notificationQueue");
-
+const { NOTIFICATION_TYPES, buildNotificationUrl } = require("../models/services/notificationSchema")
 const escapeHtml = (value) => String(value)
   .replace(/&/g, '&amp;')
   .replace(/</g, '&lt;')
@@ -543,10 +543,11 @@ const addPosts = async (req, res) => {
               $push: {
                 notification: {
                   postId,
-                  user: author.authorname,
+                  user: "New post",
+                  type: NOTIFICATION_TYPES.POST_CREATED,
                   authorEmail: author.email,
                   message,
-                  url,
+                  url:buildNotificationUrl.post(author.email, postId),
                   profile: author.profile || "",
                 },
               },

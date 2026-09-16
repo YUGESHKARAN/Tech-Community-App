@@ -363,3 +363,52 @@ const DRY_RUN = false;
 // });
 
 
+// migrateDeleteAllNotifications.js
+// Clears the notification array for every author in tenantId: "dsu"
+// Run dry first: DRY_RUN=true node migrateDeleteAllNotifications.js
+
+
+
+// const run = async () => {
+//   await mongoose.connect(process.env.MONGODB_URL);
+//   console.log("Connected to MongoDB");
+
+//   const db = mongoose.connection.db;
+//   const collection = db.collection("authors"); // adjust if your collection name differs
+
+//   // count affected authors first
+//   const affected = await collection.countDocuments({
+//     tenantId:                "dsu",
+//     "notification.0":        { $exists: true }, // only authors who have at least one notification
+//   });
+
+//   console.log(`Found ${affected} author(s) with notifications in tenantId: dsu`);
+
+//   if (affected === 0) {
+//     console.log("Nothing to clear.");
+//     await mongoose.disconnect();
+//     return;
+//   }
+
+//   if (DRY_RUN) {
+//     console.log(`DRY RUN — would clear notifications for ${affected} author(s)`);
+//     await mongoose.disconnect();
+//     return;
+//   }
+
+//   const result = await collection.updateMany(
+//     {
+//       tenantId:         "dsu",
+//       "notification.0": { $exists: true },
+//     },
+//     { $set: { notification: [] } }
+//   );
+
+//   console.log(`Done. Modified: ${result.modifiedCount} / Matched: ${result.matchedCount}`);
+//   await mongoose.disconnect();
+// };
+
+// run().catch((err) => {
+//   console.error("Migration failed:", err.message);
+//   process.exit(1);
+// });
