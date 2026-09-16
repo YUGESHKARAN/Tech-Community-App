@@ -6,7 +6,8 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 // badge schema
 
-const {badgeSchema} = require("./badgeSchema")
+const {badgeSchema} = require("./badgeSchema");
+const { notificationSchema } = require('./services/notificationSchema');
 
 // ── Sub-schemas ──────────────────────────────────────────────
 const messageSchema = new mongoose.Schema({
@@ -18,18 +19,18 @@ const messageSchema = new mongoose.Schema({
   timestamp: { type: Date,   default: Date.now },
 });
 
-const notificationSchema = new mongoose.Schema({
-  postId:      { type: mongoose.Schema.Types.ObjectId, ref: 'Post', required: false },
-  communityId: { type: mongoose.Schema.Types.ObjectId, ref: 'Community', required: false },
-  discussionId: { type: mongoose.Schema.Types.ObjectId, ref: 'Discussion', required: false },
-  type:        { type: String, required: false },
-  user:        { type: String, required: true  },
-  message:     { type: String, required: true  },
-  profile:     { type: String, required: false },
-  url:         { type: String, required: true  },
-  authorEmail: { type: String, required: true  },
-  timestamp:   { type: Date,   default: Date.now },
-});
+// const notificationSchema = new mongoose.Schema({
+//   postId:      { type: mongoose.Schema.Types.ObjectId, ref: 'Post', required: false },
+//   communityId: { type: mongoose.Schema.Types.ObjectId, ref: 'Community', required: false },
+//   discussionId: { type: mongoose.Schema.Types.ObjectId, ref: 'Discussion', required: false },
+//   type:        { type: String, required: false },
+//   user:        { type: String, required: true  },
+//   message:     { type: String, required: true  },
+//   profile:     { type: String, required: false },
+//   url:         { type: String, required: true  },
+//   authorEmail: { type: String, required: true  },
+//   timestamp:   { type: Date,   default: Date.now },
+// });
 
 const announcementSchema = new mongoose.Schema({
   user:  { type: String, required: true },
@@ -126,7 +127,11 @@ const authorSchema = new mongoose.Schema({
   followers: { type: [String], default: [] },
   following: { type: [String], default: [] },
   posts:     { type: [mongoose.Schema.Types.ObjectId], ref: 'Post', default: [] },
-  notification: [notificationSchema],
+  // notification: [notificationSchema],
+  notification:  {
+    type: [notificationSchema],
+    default: [],
+  },
   personalLinks: {
     type: [{ title: { type: String, required: false }, url: { type: String, required: false } }],
     default: [],

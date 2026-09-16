@@ -796,7 +796,10 @@ function NavBar() {
         <RecentVisit setIsSidebarOpen={setIsSidebarOpen} />
       </div>
 
-      <div
+
+      <Notificationpanel notificationRef={notificationRef} showNotification={showNotification} showAddContent={showAddContent} note={note} loading={loading} deleteAllNotification={deleteAllNotification}  deleteSigleNotification={deleteSigleNotification} setShowNotification={setShowNotification} />
+
+      {/* <div
         ref={notificationRef}
         className={`${
           showNotification && !showAddContent
@@ -804,7 +807,6 @@ function NavBar() {
             : "hidden"
         }`}
       >
-        {/* Header */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-gray-700 sticky top-0 theme z-40 rounded-t-2xl">
           <h2 className="text-sm font-semibold text-white tracking-wide flex items-center ">
             🔔 Notifications
@@ -818,7 +820,6 @@ function NavBar() {
           </button>
         </div>
 
-        {/* Notification List */}
         <div className="flex flex-col divide-y max-h-[440px] overflow-y-auto emerald-scrollbar divide-gray-800">
           {[...note].reverse().map((data, index) => (
             <div
@@ -829,27 +830,9 @@ function NavBar() {
                 onClick={() => {
                   setShowNotification(false);
                 }}
-                // to={data.url}
                 className="flex gap-3  items-start"
               >
-                {/* Avatar */}
-                {/* <Link to={data.url} className="relative flex-shrink-0">
-                  {data.profile ? (
-                    <img
-                      src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.profile}`}
-                      alt="Profile"
-                      className="w-9 h-9 rounded-full object-cover bg-gray-400 border border-gray-600"
-                    />
-                  ) : (
-                    <div className="md:w-9 md:h-9 w-8 h-8 rounded-full object-cover border border-gray-300">
-                      <HiOutlineUserCircle className="text-[#786fa6] bg-gray-200 rounded-full w-full h-full " />
-                    </div>
-                  )}
-
-                  <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 rounded-full border border-gray-900"></span>
-                </Link> */}
-
-                {/* Content */}
+             
                 <div className="flex relative  flex-col flex-1 min-w-0">
                   <Link
                     to={data.url}
@@ -870,8 +853,6 @@ function NavBar() {
                   </span>
                 </div>
               </div>
-
-              {/* Delete Button */}
               <button
                 onClick={() => deleteSigleNotification(userEmail, data._id)}
                 className="absolute top-3 right-3 md:opacity-0 group-hover:opacity-50 transition text-gray-400 md:hover:text-red-300"
@@ -884,19 +865,17 @@ function NavBar() {
 
         {loading && (
           <div className="flex flex-col items-center justify-center py-10 text-gray-400 text-sm">
-            {/* <span className="text-2xl mb-2">🔔</span> */}
+        
             Loading...
           </div>
         )}
-
-        {/* Empty State */}
         {note.length === 0 && !loading && (
           <div className="flex flex-col items-center justify-center py-10 text-gray-400 text-sm">
-            {/* <span className="text-2xl mb-2">🔔</span> */}
+           
             No notifications yet
           </div>
         )}
-      </div>
+      </div> */}
 
       <div
         ref={addContentRef}
@@ -1087,6 +1066,7 @@ import formatCount from "../utils/NumberConversion";
 import RecentVisit from "../components/RecentVisit";
 import { AiOutlineUsergroupAdd } from "react-icons/ai";
 import { isImpersonating } from "../hooks/director/Useimpersonation";
+import Notificationpanel from "../services/Notification";
 
 function NavIconDesktop({ to, icon, label }) {
   const location = useLocation();

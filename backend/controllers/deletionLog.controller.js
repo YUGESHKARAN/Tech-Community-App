@@ -7,6 +7,7 @@ const { DeletionLog } = require("../models/deletionLogSchema");
 const TutorPlayList = require("../models/tutorPlaylistSchema");
 const Community = require("../models/communitySchema");
 const CommunityMembership = require("../models/communityMembershipSchema");
+const { NOTIFICATION_TYPES, buildNotificationUrl } = require("../models/services/notificationSchema");
 // const { DeleteObjectCommand } = require('@aws-sdk/client-s3');
 // const { s3, bucketName }      = require('../config/s3');
 
@@ -719,9 +720,10 @@ const rollbackDeletion = async (req, res) => {
     const newNotification = {
       _id: new mongoose.Types.ObjectId(),
       user: "Account Restored!",
+      type: NOTIFICATION_TYPES.SYSTEM,
       authorEmail: restorerEmail,
       message: `Welcome back, Your account has been successfully recovered!`,
-      url,
+      url: buildNotificationUrl.profile(),
       timestamp: now,
     };
 
