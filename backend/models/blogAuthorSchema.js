@@ -44,7 +44,7 @@ const announcementSchema = new mongoose.Schema({
     },
   },
   poster:      { type: String, required: false },
-  deliveredTo: { type: String, enum: ['all', 'community', 'coordinators'], default: 'all' },
+  deliveredTo: { type: String, enum: ['all', 'community', 'coordinators','individual'], default: 'individual' },
   message:     { type: String, required: true  },
   profile:     { type: String, required: false },
   authorEmail: { type: String, required: true  },
