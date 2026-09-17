@@ -219,8 +219,7 @@ function ViewSingleAuthor() {
 
                 </div>
                 </div>
-
-                
+              
 
                 {/* Role pill */}
                 <span className="absolute left-4 top-4 ">
