@@ -351,7 +351,7 @@ const addAuthor = async (req, res) => {
       title: welcomeTitle,
       message: welcomeMsg,
       authorEmail: adminEmail,
-      deliveredTo: "all",
+      deliveredTo: "individual",
       timestamp: now,
     };
 

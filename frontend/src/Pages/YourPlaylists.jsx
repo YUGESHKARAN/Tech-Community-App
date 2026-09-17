@@ -177,7 +177,6 @@ useEffect(() => {
         </div>
       )}
 
-
       <div className="min-h-screen max-w-[1800px] mx-auto md:px-4 w-full md:mt-4 mx-auto theme pb-8">
         {filteredPlaylist?.length > 0 && (
           <div

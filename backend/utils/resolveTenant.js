@@ -31,12 +31,12 @@ const resolveTenantFromEmail = async (email) => {
 
   const tenant = await Tenant.findOne({
     emailDomain: { $eq: normalizedDomain },
-    active: true,
+    // active: true,
   })
     .select('tenantId name emailDomain active')
     .lean();
 
-  console.log("tenant found:", tenant);
+  // console.log("tenant found:", tenant);
 
   if (!tenant) {
     // check if the domain exists but is inactive — gives a better error message

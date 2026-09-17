@@ -11,7 +11,6 @@ import {
   Search,
   FileText,
   Layers,
-  
 } from "lucide-react";
 
 import NavBar from "../../ui/NavBar";
@@ -62,7 +61,7 @@ function Dashboard() {
   const { topContributors, topContributorsLoading } = useTopContributors(
     email,
     limit,
-    filter
+    filter,
   );
   const {
     contributors,
@@ -80,7 +79,7 @@ function Dashboard() {
   //  console.log("statsSummary",statsSummary)
   //  console.log("communities",communities)
   //  console.log("postsByMonth",postsByMonth);
-  // console.log("topContributors", topContributors);
+  console.log("topContributors", topContributors);
   // console.log("contributors", contributors);
   // console.log("students", students);
 
@@ -182,7 +181,7 @@ function Dashboard() {
                   icon={Users}
                   change="8.2%"
                   changePositive={true}
-                  to={'/control'}
+                  to={"/control"}
                 />
                 <KPICard
                   label="Admins"
@@ -190,7 +189,7 @@ function Dashboard() {
                   sub="Chief Control"
                   icon={ShieldCheck}
                   accent="#ec4899"
-                  to={'/control'}
+                  to={"/control"}
                 />
 
                 <KPICard
@@ -201,7 +200,7 @@ function Dashboard() {
                   accent="#f59e0b"
                   change="2.3%"
                   changePositive={true}
-                  to={'/control#coordinators'}
+                  to={"/control#coordinators"}
                 />
 
                 <KPICard
@@ -212,7 +211,7 @@ function Dashboard() {
                   accent="#3b82f6"
                   change="5.1%"
                   changePositive={true}
-                  to={'#users'}
+                  to={"#users"}
                 />
 
                 <KPICard
@@ -222,10 +221,10 @@ function Dashboard() {
                   icon={TrendingUp}
                   change="11%"
                   changePositive={true}
-                  to={'#'}
+                  to={"#"}
                 />
 
-                 <KPICard
+                <KPICard
                   label="Posts"
                   value={`+${statsSummary?.totalPosts || 0}`}
                   sub="Total Records"
@@ -233,7 +232,7 @@ function Dashboard() {
                   accent="#993bf6"
                   change="11%"
                   changePositive={true}
-                  to={'/home'}
+                  to={"/home"}
                 />
 
                 <KPICard
@@ -244,7 +243,7 @@ function Dashboard() {
                   accent="#5226ef"
                   change="11%"
                   changePositive={true}
-                  to={'/home'}
+                  to={"/home"}
                 />
               </div>
             ) : (
@@ -290,13 +289,19 @@ function Dashboard() {
                       Total posts in each domain
                     </p>
                   </div>
-                  <div className="flex flex-col w-full overflow-x-auto scrollbar-hide ">
-                    <MiniBar
-                      data={communities}
-                      // valueKey="postscount"
-                      labelKey="categoryname"
-                      color="#1121ff"
-                    />
+                  <div className="flex flex-col w-full items-center  overflow-x-auto scrollbar-hide ">
+                    {communities?.length > 0 ? (
+                      <MiniBar
+                        data={communities}
+                        // valueKey="postscount"
+                        labelKey="categoryname"
+                        color="#1121ff"
+                      />
+                    ) : (
+                      <p className=" text-xs h-36 text-emerald-400">
+                        No communities added!
+                      </p>
+                    )}
                   </div>
                 </div>
               ) : (
@@ -341,59 +346,74 @@ function Dashboard() {
                   </div>
 
                   <div className="flex flex-col w-full h-52 emerald-scrollbar pr-4 overflow-y-auto gap-2">
-                    {communities.map((c) => {
-                      const total = c.followerscount;
-                      return (
-                        <div
-                          key={c.categoryname}
-                          className="flex items-center gap-2"
-                        >
-                          <span className="text-xs text-gray-400 font-semibold w-32 truncate">
-                            {c.categoryname}
-                          </span>
+                    {communities.length > 0 &&
+                      communities.map((c) => {
+                        const total = c.followerscount;
+                        return (
+                          <div
+                            key={c.categoryname}
+                            className="flex items-center gap-2"
+                          >
+                            <span className="text-xs text-gray-400 font-semibold w-32 truncate">
+                              {c.categoryname}
+                            </span>
 
-                          <div className="flex-1 h-4 bg-[#1e293b] rounded-full overflow-hidden flex">
-                            {/* Coordinators */}
-                            <div
-                              className="h-full cursor-pointer bg-emerald-500/70 rounded-l-full flex items-center justify-center transition-all duration-300 group relative"
-                              style={{
-                                width: `${(c.authorcount / (total || 1)) * 100}%`,
-                              }}
-                            >
-                              <span className="opacity-0 group-hover:opacity-100 transition-all duration-200 text-[9px] text-gray-200 md:font-bold  whitespace-nowrap">
-                                {((c.authorcount / (total || 1)) * 100).toFixed(
-                                  0,
-                                )}
-                                {/* % · {c.authorcount} */}
-                                % · {formatCount(c.authorcount)}
-                              </span>
+                            <div className="flex-1 h-4 bg-[#1e293b] rounded-full overflow-hidden flex">
+                              {/* Coordinators */}
+                              <div
+                                className="h-full cursor-pointer bg-emerald-500/70 rounded-l-full flex items-center justify-center transition-all duration-300 group relative"
+                                style={{
+                                  width: `${(c.authorcount / (total || 1)) * 100}%`,
+                                }}
+                              >
+                                <span className="opacity-0 group-hover:opacity-100 transition-all duration-200 text-[9px] text-gray-200 md:font-bold  whitespace-nowrap">
+                                  {(
+                                    (c.authorcount / (total || 1)) *
+                                    100
+                                  ).toFixed(0)}
+                                  {/* % · {c.authorcount} */}% ·{" "}
+                                  {formatCount(c.authorcount)}
+                                </span>
+                              </div>
+
+                              {/* Students */}
+                              <div
+                                className="h-full cursor-pointer bg-blue-500/50 flex items-center justify-center transition-all duration-300 group relative"
+                                style={{
+                                  width: `${((c.followerscount - c.authorcount) / (total || 1)) * 100}%`,
+                                }}
+                              >
+                                <span className="opacity-0 group-hover:opacity-100 transition-all duration-200 text-[9px] text-gray-200 md:font-bold  whitespace-nowrap">
+                                  {(
+                                    ((c.followerscount - c.authorcount) /
+                                      (total || 1)) *
+                                    100
+                                  ).toFixed(0)}
+                                  {/* % · {(c.followerscount- c.authorcount)} */}
+                                  % ·{" "}
+                                  {formatCount(
+                                    c.followerscount - c.authorcount,
+                                  )}
+                                </span>
+                              </div>
                             </div>
 
-                            {/* Students */}
-                            <div
-                              className="h-full cursor-pointer bg-blue-500/50 flex items-center justify-center transition-all duration-300 group relative"
-                              style={{
-                                width: `${((c.followerscount- c.authorcount) / (total || 1)) * 100}%`,
-                              }}
-                            >
-                              <span className="opacity-0 group-hover:opacity-100 transition-all duration-200 text-[9px] text-gray-200 md:font-bold  whitespace-nowrap">
-                                {(
-                                  ((c.followerscount- c.authorcount) / (total || 1)) *
-                                  100
-                                ).toFixed(0)}
-                                {/* % · {(c.followerscount- c.authorcount)} */}
-                                % · {formatCount((c.followerscount- c.authorcount))}
-                              </span>
-                            </div>
+                            <span className="text-xs text-gray-300 font-semibold w-6 text-right">
+                              {total}
+                            </span>
                           </div>
+                        );
+                      })}
 
-                          <span className="text-xs text-gray-300 font-semibold w-6 text-right">
-                            {total}
-                          </span>
+                    {communities.length === 0 && (
+                      <div className="flex overflow-y-auto scrollbar-hide h-52 flex-col gap-2">
+                        <div className="w-full h-full flex flex-col items-center justify-center">
+                          <p className=" text-xs text-emerald-400">
+                            No communities created!
+                          </p>
                         </div>
-                      );
-                    })}
-                  
+                      </div>
+                    )}
                   </div>
                 </div>
               ) : (
@@ -424,27 +444,26 @@ function Dashboard() {
                           {/* {months[key]} */}
                           {key === "current_month" ? "This Month" : months[key]}
                         </option>
-                      ))} 
+                      ))}
                     </select>
                   </div>
 
-                  <div className="flex overflow-y-auto overflow-x-hidden scrollbar-hide h-52 flex-col md:gap-2">
-                    {topContributors.map((u, i) => 
-                   {
-                    const isYou =
-                    u.email === email;
-                    const rank = i + 1;
-                    const medalColors = ["#00f01c", "#cd7f32", "#8f9296"];
-                     return(
-                      <Link
-                        to={`/viewProfile/${u.email}`}
-                        key={i}
-                        // className="flex cursor-pointer md:p-2 md:hover:bg-gray-800/50 rounded-lg items-center gap-3"
-                         className={`flex items-center gap-2 px-1 py-1 md:py-0 rounded-lg ${
-                        isYou ? "bg-emerald-500/10" : ""
-                      }`}
-                      >
-                        {/* <span
+                  {topContributors?.length > 0 ? (
+                    <div className="flex overflow-y-auto overflow-x-hidden scrollbar-hide h-52 flex-col md:gap-2">
+                      {topContributors.map((u, i) => {
+                        const isYou = u.email === email;
+                        const rank = i + 1;
+                        const medalColors = ["#00f01c", "#cd7f32", "#8f9296"];
+                        return (
+                          <Link
+                            to={`/viewProfile/${u.email}`}
+                            key={i}
+                            // className="flex cursor-pointer md:p-2 md:hover:bg-gray-800/50 rounded-lg items-center gap-3"
+                            className={`flex items-center gap-2 px-1 py-1 md:py-0 rounded-lg ${
+                              isYou ? "bg-emerald-500/10" : ""
+                            }`}
+                          >
+                            {/* <span
                           className={`md:text-[11px] text-[9px] bg-gray-800 rounded-full text-gray-300 px-2 py-1 md:px-3  md:py-1.5 md:font-bold font-semibold ${i+1<10 && 'mr-1'}`}
                           style={{
                             color:
@@ -455,66 +474,76 @@ function Dashboard() {
                         >
                           {i + 1} {i+1<10 && '  '}
                         </span> */}
-                         {rank <= 3 ? (
-                          <div
-                            className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
-                            style={{ background: `${medalColors[rank - 1]}33` }}
-                          >
-                            <TbCrown
-                              className="text-[11px]"
-                              style={{ color: medalColors[rank - 1] }}
-                            />
-                          </div>
-                        ) : (
-                          <span className="w-5 text-center text-[11px] text-gray-500 font-medium flex-shrink-0">
-                            {rank}
-                          </span>
-                        )}
-                        {!u.profile ? (
-                          <div
-                            className=" w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold text-white shrink-0"
-                            style={{ backgroundColor: avatarColor(u.name) }}
-                          >
-                            {initials(u.name)}
-                          </div>
-                        ) : (
-                          <img
-                            src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${u.profile}`}
-                            alt=""
-                            className=" w-6 h-6 border border-green-500/70 rounded-full object-cover"
-                          />
-                        )}
+                            {rank <= 3 ? (
+                              <div
+                                className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
+                                style={{
+                                  background: `${medalColors[rank - 1]}33`,
+                                }}
+                              >
+                                <TbCrown
+                                  className="text-[11px]"
+                                  style={{ color: medalColors[rank - 1] }}
+                                />
+                              </div>
+                            ) : (
+                              <span className="w-5 text-center text-[11px] text-gray-500 font-medium flex-shrink-0">
+                                {rank}
+                              </span>
+                            )}
+                            {!u.profile ? (
+                              <div
+                                className=" w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold text-white shrink-0"
+                                style={{ backgroundColor: avatarColor(u.name) }}
+                              >
+                                {initials(u.name)}
+                              </div>
+                            ) : (
+                              <img
+                                src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${u.profile}`}
+                                alt=""
+                                className=" w-6 h-6 border border-green-500/70 rounded-full object-cover"
+                              />
+                            )}
 
-                        <span className="text-xs flex-1 font-semibold text-gray-200 truncate">
-                          <p className="truncate line-clamp-1 w-[150px] md:w-[300px]">
-                            {u.name}
-                            {isYou && (
-                          <span className="ml-1.5 text-[9px] font-semibold px-1.5 py-0.5 rounded-full bg-emerald-500 text-black">
-                            You
-                          </span>
-                        )}
-                          </p>
-                          
-                          <p className="md:text-[10px]  hidden  md:block text-[9px] text-gray-500 truncate">
-                            {u.email}
-                          </p>
-                        </span>
-                        
-                        <BadgeIcons
-                          badges={u?.badges}
-                          parentClass="static  -space-x-1.5"
-                          shieldClassName="w-4 h-4 md:h-7 md:w-7"
-                        />
-                        <span className="text-[10px] text-emerald-400 font-medium">
-                          {/* {u.postsCount} posts */}
-                          {/* {formatCount(u.postsCount)} posts */}
-                          {formatCount(u.totalPoints)} pts
-                        </span>
-                      </Link>
-                    
-                    )
-                    })}
-                  </div>
+                            <span className="text-xs flex-1 font-semibold text-gray-200 truncate">
+                              <p className="truncate line-clamp-1 w-[150px] md:w-[300px]">
+                                {u.name}
+                                {isYou && (
+                                  <span className="ml-1.5 text-[9px] font-semibold px-1.5 py-0.5 rounded-full bg-emerald-500 text-black">
+                                    You
+                                  </span>
+                                )}
+                              </p>
+
+                              <p className="md:text-[10px]  hidden  md:block text-[9px] text-gray-500 truncate">
+                                {u.email}
+                              </p>
+                            </span>
+
+                            <BadgeIcons
+                              badges={u?.badges}
+                              parentClass="static  -space-x-1.5"
+                              shieldClassName="w-4 h-4 md:h-7 md:w-7"
+                            />
+                            <span className="text-[10px] text-emerald-400 font-medium">
+                              {/* {u.postsCount} posts */}
+                              {/* {formatCount(u.postsCount)} posts */}
+                              {formatCount(u.totalPoints)} pts
+                            </span>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="flex overflow-y-auto scrollbar-hide h-52 flex-col gap-2">
+                      <div className="w-full h-full flex flex-col items-center justify-center">
+                        <p className=" text-xs text-emerald-400">
+                          No contributors found!
+                        </p>
+                      </div>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <TopContributorsSkeleton />
@@ -541,13 +570,12 @@ function Dashboard() {
           </section>
 
           {/* ── ZONE 4: Users Tables ──────────────────────────────────── */}
-          <section 
-          // id ="users"
-          className="space-y-4 ">
+          <section
+            // id ="users"
+            className="space-y-4 "
+          >
             <div>
-              <h2 className="text-xl font-semibold text-emerald-400">
-                Users
-              </h2>
+              <h2 className="text-xl font-semibold text-emerald-400">Users</h2>
               <p className="text-xs text-gray-400">
                 Contributors and users records
               </p>
@@ -555,7 +583,7 @@ function Dashboard() {
 
             <div className="md:flex overflow-hidden gap-4 items-start">
               <div>
-                {!contributorsLoading && contributors.length > 0 ? (
+                {!contributorsLoading  ? (
                   <AuthorsTable
                     contributors={contributors}
                     totalContributors={totalContributors}
@@ -689,17 +717,12 @@ const PostsGaugeCard = ({ data, year, setYear, target, setTarget }) => {
     }
   }, [data]);
 
-  const currentIndex = data.findIndex(
-    (item) => item.month === currentMonth,
-  );
+  const currentIndex = data.findIndex((item) => item.month === currentMonth);
 
-  const previous =
-    currentIndex > 0 ? data[currentIndex - 1]?.count ?? 0 : 0;
+  const previous = currentIndex > 0 ? (data[currentIndex - 1]?.count ?? 0) : 0;
 
   const change =
-    previous > 0
-      ? (((current - previous) / previous) * 100).toFixed(1)
-      : 0;
+    previous > 0 ? (((current - previous) / previous) * 100).toFixed(1) : 0;
 
   const isPositive = Number(change) >= 0;
 
@@ -763,9 +786,7 @@ const PostsGaugeCard = ({ data, year, setYear, target, setTarget }) => {
             <span
               className="mt-1 text-[10px] font-semibold px-2 py-0.5 rounded-full"
               style={{
-                backgroundColor: isPositive
-                  ? "#10b98122"
-                  : "#ef444422",
+                backgroundColor: isPositive ? "#10b98122" : "#ef444422",
                 color: isPositive ? "#10b981" : "#ef4444",
               }}
             >
@@ -778,10 +799,8 @@ const PostsGaugeCard = ({ data, year, setYear, target, setTarget }) => {
 
       {/* Footer */}
       <p className="text-[10px] text-gray-500 text-center mt-2 leading-relaxed">
-        <span className="text-gray-300 font-semibold">
-          {current} posts
-        </span>{" "}
-        in {currentMonth}
+        <span className="text-gray-300 font-semibold">{current} posts</span> in{" "}
+        {currentMonth}
         {current > 0
           ? isPositive
             ? ", higher than the previous month."
@@ -814,14 +833,9 @@ const PostsGaugeCard = ({ data, year, setYear, target, setTarget }) => {
               style={{
                 height: `${Math.max((d.count / max) * 40, 10)}px`,
                 backgroundColor:
-                  currentMonth === d.month
-                    ? "#6366f1"
-                    : "#1e293b",
+                  currentMonth === d.month ? "#6366f1" : "#1e293b",
                 border: "1px solid",
-                borderColor:
-                  currentMonth === d.month
-                    ? "#6366f1"
-                    : "#334155",
+                borderColor: currentMonth === d.month ? "#6366f1" : "#334155",
               }}
             />
 
@@ -844,7 +858,7 @@ const KPICard = ({
   accent = "#10b981",
   change,
   changePositive = true,
-  to = "#"
+  to = "#",
 }) => {
   const handleClick = () => {
     if (label === "Posts") {
@@ -882,7 +896,6 @@ const KPICard = ({
         <span className="md:text-sm text-xs bg-gray-700/50 font-medium text-white rounded-full md:px-4 md:py-2 px-2 py-1">
           {/* {value && value} */}
           {formatCount(value && value)}
-    
         </span>
       </div>
     </Link>
@@ -1142,7 +1155,7 @@ const AuthorsTable = ({
                 </tr>
               ))}
 
-              {!hasMore && (
+              {!hasMore && contributors.length > 0  && (
                 <tr>
                   <td
                     colSpan={6}
@@ -1171,12 +1184,14 @@ const AuthorsTable = ({
                 <tr>
                   <td
                     colSpan={6}
-                    className="text-center text-[10px] text-gray-400 py-4"
+                    className="text-center h-48 flex flex-col items-center justify-center text-[10px] text-gray-400 py-4"
                   >
                     No contributors found.
                   </td>
                 </tr>
               )}
+
+              
             </tbody>
           </table>
         </div>
@@ -1225,8 +1240,9 @@ const StudentsTable = ({
 
   return (
     <div
-    id ="users"
-     className="theme scroll-mt-4 md:scroll-mt-24  border mt-4 md:mt-0 border-[#1e293b] rounded-2xl flex flex-col  overflow-hidden md:w-[600px]">
+      id="users"
+      className="theme scroll-mt-4 md:scroll-mt-24  border mt-4 md:mt-0 border-[#1e293b] rounded-2xl flex flex-col  overflow-hidden md:w-[600px]"
+    >
       <TableHeader
         title="Total Students"
         count={totalStudents}
@@ -1248,7 +1264,7 @@ const StudentsTable = ({
           style={{ height: "260px" }}
         >
           <table className="w-full table-fixed">
-            <tbody>
+            <tbody >
               {filtered.map((u) => (
                 <tr
                   key={u.email}
@@ -1300,11 +1316,11 @@ const StudentsTable = ({
                 </tr>
               ))}
 
-              {!hasMore && (
+              {!hasMore && students.length > 0 && (
                 <tr>
                   <td
                     colSpan={2}
-                    className="text-center text-[10px] text-gray-400 py-2 md:py-4"
+                    className="text-center text-[10px]  text-gray-400 py-2 md:py-4"
                   >
                     No more students.
                   </td>
@@ -1330,7 +1346,7 @@ const StudentsTable = ({
                 <tr>
                   <td
                     colSpan={2}
-                    className="text-center text-[10px] text-gray-400 py-4"
+                    className="text-center text-[10px] h-48 flex flex-col items-center justify-center text-gray-400 py-4"
                   >
                     No students found.
                   </td>
