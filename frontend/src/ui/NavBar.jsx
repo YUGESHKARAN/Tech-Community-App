@@ -999,10 +999,9 @@ function NavBar() {
             <button
               className="
                 w-full flex items-center gap-1.5
-                pl-2 py-1 pb-1
-                text-sm text-gray-100
-                bg-gray-800/40
-                hover:bg-gray-800/70
+                pl-2 py-1
+                text-sm text-white/70
+               
                 transition-all duration-200
                 rounded-lg 
               "
@@ -1014,10 +1013,9 @@ function NavBar() {
 
           <div
             className=" w-full flex items-center gap-1.5
-                pl-2 py-1 mt-1 pt-1
+                pl-2 py-1 mt-0.5
                 text-sm text-gray-100
-                bg-gray-800/40
-                hover:bg-gray-800/70
+               
                 transition-all duration-200
                 rounded-lg"
           >

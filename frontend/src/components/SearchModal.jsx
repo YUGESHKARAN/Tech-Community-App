@@ -8,6 +8,8 @@ import { useNavigate } from "react-router-dom";
 import axiosInstance from "../instances/Axiosinstances";
 import highlightText from "../hooks/highlightText";
 import logoicon from "../assets/embed_logo_2.png"
+import { MdOutlineScreenSearchDesktop } from "react-icons/md";
+import { AiOutlineFileSearch } from "react-icons/ai";
 function SearchModal({ open, setOpen, inputValue, setInputValue }) {
   const inputRef = useRef(null);
   const abortRef = useRef(null); // cancel in-flight requests on new keystroke
@@ -154,7 +156,7 @@ function SearchModal({ open, setOpen, inputValue, setInputValue }) {
       <div
         className="
           relative w-full max-w-2xl
-          rounded-2xl border border-[#30363d]
+          rounded-xl border border-[#30363d]
           bg-gray-950 shadow-2xl
           
           animate-in fade-in zoom-in-95 duration-200
@@ -165,19 +167,6 @@ function SearchModal({ open, setOpen, inputValue, setInputValue }) {
         {/* Search Header — unchanged */}
         <div className="flex items-center gap-3 px-4 py-3 w-full min-w-0 border-b border-[#21262d] shrink-0">
           <IoIosSearch className="text-xl text-gray-500 shrink-0" />
-
-          {/* <input
-            ref={inputRef}
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) handleSearch(); }}
-            placeholder="Search post and playlist contents..."
-            className="
-              flex-1 min-w-0 w-0 bg-transparent
-              outline-none border-0 text-sm text-white
-              placeholder:text-gray-500 md:placeholder:text-gray-400 truncate
-            "
-          /> */}
 
            <textarea   
             ref={inputRef}
@@ -326,7 +315,11 @@ function SearchModal({ open, setOpen, inputValue, setInputValue }) {
 
         {/* Footer — unchanged */}
         <div className="px-4 py-3 text-xs text-gray-500 md:text-gray-400 flex items-center justify-between border-t border-[#21262d] shrink-0">
-          <span className="flex items-center gap-2.5"> <img src={logoicon} className="w-6 h-6 md:w-7 md:h-7 object-contain rounded-md md:rounded-lg " alt="" /> You are searching for :</span>
+          {/* <span className="flex items-center gap-2.5"> <img src={logoicon} className="w-6 h-6 md:w-7 md:h-7 object-contain rounded-md md:rounded-lg " alt="" /> You are searching for :</span> */}
+          <span className="flex items-center gap-2"> 
+            {/* <MdOutlineScreenSearchDesktop  className="w-5 h-5 text-gray-400 md:w-7 md:h-7 "/> */}
+            <AiOutlineFileSearch  className="w-4 h-4 text-gray-400 md:w-6 md:h-6 "/>
+          You are searching for :</span>
           {searchTerm && (
             <div className="max-w-[180px] overflow-hidden">
               <span className="text-emerald-400 block truncate whitespace-nowrap">
