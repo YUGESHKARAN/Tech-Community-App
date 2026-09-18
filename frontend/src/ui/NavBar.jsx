@@ -1001,9 +1001,10 @@ function NavBar() {
                 w-full flex items-center gap-1.5
                 pl-2 py-1
                 text-sm text-white/70
-               
+                hover:bg-gray-600/20
                 transition-all duration-200
                 rounded-lg 
+                hover:text-white
               "
             >
               <MdManageAccounts className="text-[17px] text-emerald-600" />
@@ -1015,7 +1016,7 @@ function NavBar() {
             className=" w-full flex items-center gap-1.5
                 pl-2 py-1 mt-0.5
                 text-sm text-gray-100
-               
+               hover:bg-gray-600/20
                 transition-all duration-200
                 rounded-lg"
           >
