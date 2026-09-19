@@ -227,7 +227,7 @@ function ViewSingleAuthor() {
                   <RoleBadge role={author.role} />
                 </span>
 
-                {author?.role !== "student" && (
+                {author?.badges?.length>0 && (
                   <div
                     onClick={scrollToAchievements}
                     className="cursor-pointer"
@@ -657,7 +657,7 @@ function ViewSingleAuthor() {
                                             {p.email}
                                           </p> */}
                                 </div>
-                                <div
+                              {p?.badges?.length > 0 &&  <div
                                   className="
                                           text-gray-500
                                           group-hover:text-emerald-400
@@ -669,7 +669,7 @@ function ViewSingleAuthor() {
                                     parentClass="static -space-x-1.5"
                                     shieldClassName="w-4 h-4"
                                   />
-                                </div>
+                                </div>}
                               </Link>
                             </motion.div>
                           ))

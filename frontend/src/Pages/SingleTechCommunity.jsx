@@ -779,13 +779,7 @@ const MemberCard = ({ author }) => {
           className="w-14 h-14 rounded-full object-cover border border-gray-700 bg-gray-700"
           alt={author?.name}
         />
-        {author?.badges?.length > 0 && (
-          <BadgeIcons
-            badges={author?.badges}
-            parentClass="absolute -top-1 -right-1 -space-x-1"
-            shieldClassName="w-3.5 h-3.5"
-          />
-        )}
+       
       </div>
       <div>
         <h3 className="text-sm font-semibold text-gray-100 truncate w-full">
@@ -795,6 +789,14 @@ const MemberCard = ({ author }) => {
           {author?.email}
         </p>
       </div>
+       {author?.badges?.length > 0 && (
+          <BadgeIcons
+            badges={author?.badges}
+            // parentClass="absolute -top-1 -right-1 -space-x-1"
+               parentClass="static -space-x-0"
+            shieldClassName="w-4 h-4"
+          />
+        )}
       <div className="flex gap-3 text-[10px] text-gray-500">
         {author?.postCount > 0 && (
           <span>

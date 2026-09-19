@@ -422,6 +422,14 @@ function Authors() {
         <p className="text-[10px] text-gray-400 truncate w-full">
           {highlightText(author.email, debouncedSearch)}
         </p>
+         {author?.badges?.length > 0 && (
+          <BadgeIcons
+            badges={author?.badges}
+            // parentClass="absolute -top-1 -right-1 -space-x-1"
+               parentClass="static -space-x-0"
+            shieldClassName="w-4 h-4"
+          />
+        )}
         <span className="text-[9px] font-semibold text-gray-500 uppercase tracking-wide">
           Student
         </span>
