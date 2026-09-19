@@ -620,32 +620,32 @@ const addPosts = async (req, res) => {
     // ---------------------------------------------------------------------------------------------------------------
 
      // --- Send emails in background ---
-    if (followersSet.length > 0) {
-      const sendEmailsSequentially = async () => {
-        for (const recipient of followersSet) {
-          try {
-            const safeAuthorName = escapeHtml(author.authorname);
-            const safeTitle = escapeHtml(title);
-            await transporter.sendMail({
-              from: `"${safeAuthorName}" <${process.env.EMAIL_USER}>`,
-              to: recipient,
-              subject: `New post from ${safeAuthorName}`,
-              html: `
-                <h3>${safeAuthorName} has posted a new Post!</h3>
-                <p><strong>Title:</strong> ${safeTitle}</p>
-                <p><a href="${url}">Click here to view the post</a></p>
-              `,
-            });
-            console.log(`Email sent to ${recipient}`);
-            await new Promise(r => setTimeout(r, 200));
-          } catch (err) {
-            console.error(`Failed to send email to ${recipient}:`, err.message);
-          }
-        }
-        console.log("All emails processed.");
-      };
-      sendEmailsSequentially();
-    }
+    // if (followersSet.length > 0) {
+    //   const sendEmailsSequentially = async () => {
+    //     for (const recipient of followersSet) {
+    //       try {
+    //         const safeAuthorName = escapeHtml(author.authorname);
+    //         const safeTitle = escapeHtml(title);
+    //         await transporter.sendMail({
+    //           from: `"${safeAuthorName}" <${process.env.EMAIL_USER}>`,
+    //           to: recipient,
+    //           subject: `New post from ${safeAuthorName}`,
+    //           html: `
+    //             <h3>${safeAuthorName} has posted a new Post!</h3>
+    //             <p><strong>Title:</strong> ${safeTitle}</p>
+    //             <p><a href="${url}">Click here to view the post</a></p>
+    //           `,
+    //         });
+    //         console.log(`Email sent to ${recipient}`);
+    //         await new Promise(r => setTimeout(r, 200));
+    //       } catch (err) {
+    //         console.error(`Failed to send email to ${recipient}:`, err.message);
+    //       }
+    //     }
+    //     console.log("All emails processed.");
+    //   };
+    //   sendEmailsSequentially();
+    // }
 
   } catch (err) {
     console.error("Server error:", err);

@@ -1529,19 +1529,7 @@ const addAnnouncement = async (req, res) => {
     //   await Author.bulkWrite(bulkOps);
     // }
 
-    const linkHtml =
-      parsedLinks.length > 0
-        ? `<p>Links:<br>${parsedLinks
-            .map((link) => {
-              if (typeof link === "string") {
-                return `<a href="${link}" target="_blank">${link}</a>`;
-              } else if (typeof link === "object" && link.url) {
-                return `<a href="${link.url}" target="_blank">${link.url}</a>`;
-              }
-              return "";
-            })
-            .join("<br>")}</p>`
-        : "";
+
 
     // console.log("recipientsEmail", recipientEmails);
     // console.log("recipients", recipients)
@@ -1553,66 +1541,66 @@ const addAnnouncement = async (req, res) => {
     });
 
     // Send emails sequentially after response
-    const sendEmailsSequentially = async () => {
-      console.log(
-        `📨 Sending announcement emails to ${recipientEmails.length} recipients...`,
-      );
-      for (const recipient of recipientEmails) {
-        try {
-          const escapeHtml = (value) =>
-            String(value ?? "")
-              .replace(/&/g, "&amp;")
-              .replace(/</g, "&lt;")
-              .replace(/>/g, "&gt;")
-              .replace(/"/g, "&quot;")
-              .replace(/'/g, "&#39;");
+    // const sendEmailsSequentially = async () => {
+    //   console.log(
+    //     `📨 Sending announcement emails to ${recipientEmails.length} recipients...`,
+    //   );
+    //   for (const recipient of recipientEmails) {
+    //     try {
+    //       const escapeHtml = (value) =>
+    //         String(value ?? "")
+    //           .replace(/&/g, "&amp;")
+    //           .replace(/</g, "&lt;")
+    //           .replace(/>/g, "&gt;")
+    //           .replace(/"/g, "&quot;")
+    //           .replace(/'/g, "&#39;");
 
-          const safeUser = escapeHtml(user);
-          const safeTitle = escapeHtml(title);
-          const safeMessage = escapeHtml(message);
-          const safeUrl = escapeHtml(url);
-          const safeLinkHtml = Array.isArray(parsedLinks)
-            ? parsedLinks
-                .map((link) => {
-                  if (typeof link === "string") {
-                    const safeLink = escapeHtml(link);
-                    return `<p><a href="${safeLink}" target="_blank" rel="noopener noreferrer">${safeLink}</a></p>`;
-                  }
-                  if (link && typeof link === "object") {
-                    const href = escapeHtml(link.url || link.href || "");
-                    const text = escapeHtml(link.label || link.text || href);
-                    return `<p><a href="${href}" target="_blank" rel="noopener noreferrer">${text}</a></p>`;
-                  }
-                  return "";
-                })
-                .join("")
-            : "";
+    //       const safeUser = escapeHtml(user);
+    //       const safeTitle = escapeHtml(title);
+    //       const safeMessage = escapeHtml(message);
+    //       const safeUrl = escapeHtml(url);
+    //       const safeLinkHtml = Array.isArray(parsedLinks)
+    //         ? parsedLinks
+    //             .map((link) => {
+    //               if (typeof link === "string") {
+    //                 const safeLink = escapeHtml(link);
+    //                 return `<p><a href="${safeLink}" target="_blank" rel="noopener noreferrer">${safeLink}</a></p>`;
+    //               }
+    //               if (link && typeof link === "object") {
+    //                 const href = escapeHtml(link.url || link.href || "");
+    //                 const text = escapeHtml(link.label || link.text || href);
+    //                 return `<p><a href="${href}" target="_blank" rel="noopener noreferrer">${text}</a></p>`;
+    //               }
+    //               return "";
+    //             })
+    //             .join("")
+    //         : "";
 
-          await transporter.sendMail({
-            from: `"${user}" <${process.env.EMAIL_USER}>`,
-            to: recipient,
-            subject: `Announcement: ${title}`,
-            html: `
-              <h3>New Announcement from ${safeUser}</h3>
-              <p><strong>Title:</strong> ${safeTitle}</p>
-              <p>${safeMessage}</p>
-              ${safeLinkHtml}
-              <p><a href="${safeUrl}">View Announcement</a></p>
-            `,
-          });
-          // console.log(` Email sent to: ${recipient}`);
-          await new Promise((res) => setTimeout(res, 200)); // Prevent overload
-        } catch (err) {
-          console.error(
-            `❌ Failed to send email to ${recipient}:`,
-            err.message,
-          );
-        }
-      }
-      console.log("📬 All announcement emails processed.");
-    };
+    //       await transporter.sendMail({
+    //         from: `"${user}" <${process.env.EMAIL_USER}>`,
+    //         to: recipient,
+    //         subject: `Announcement: ${title}`,
+    //         html: `
+    //           <h3>New Announcement from ${safeUser}</h3>
+    //           <p><strong>Title:</strong> ${safeTitle}</p>
+    //           <p>${safeMessage}</p>
+    //           ${safeLinkHtml}
+    //           <p><a href="${safeUrl}">View Announcement</a></p>
+    //         `,
+    //       });
+    //       // console.log(` Email sent to: ${recipient}`);
+    //       await new Promise((res) => setTimeout(res, 200)); // Prevent overload
+    //     } catch (err) {
+    //       console.error(
+    //         `❌ Failed to send email to ${recipient}:`,
+    //         err.message,
+    //       );
+    //     }
+    //   }
+    //   console.log("📬 All announcement emails processed.");
+    // };
 
-    sendEmailsSequentially();
+    // sendEmailsSequentially();
   } catch (error) {
     console.error("Error adding announcement:", error);
     res.status(500).json({ message: "Server error" });
