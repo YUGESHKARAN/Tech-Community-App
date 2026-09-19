@@ -460,8 +460,7 @@ function ViewSingleAuthor() {
             
             <PerformanceTracker streakData={streakData} userId={userId} streakLoading={streakLoader} showActivityGraph={true} isOwn={false}/>
 
-            {author?.role !== "student" && (
-              <motion.div
+             <motion.div
                 ref={achievementRef}
                 animate={
                   highlightAchievement
@@ -477,7 +476,6 @@ function ViewSingleAuthor() {
                   achievementRef={achievementRef}
                 />
               </motion.div>
-            )}
           </div>
         )
       ) : (

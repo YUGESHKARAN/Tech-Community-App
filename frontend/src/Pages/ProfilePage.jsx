@@ -947,7 +947,7 @@ function ProfilePage() {
 
           {  !editProfile && <PerformanceTracker streakData={streakData} authorId={authorId} streakLoading={streakLoader} showActivityGraph={true}/>}
 
-            {author?.role !== "student" && !editProfile && (
+            { !editProfile && (
               <motion.div
                 ref={achievementRef}
                 animate={

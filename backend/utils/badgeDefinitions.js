@@ -50,6 +50,16 @@ const BADGE_DEFINITIONS = {
       gold:   { value: 100, eventType: 'follower_milestone' },
     },
   },
+
+  bytes_brain: {
+    label:       "Bytes Brain",
+    description: "Celebrating contributors whose accepted answers bring valuable solutions to the community.",
+    thresholds: {
+      bronze: { value: 1,  eventType: 'answer_milestone' },
+      silver: { value: 10,  eventType: 'answer_milestone' },
+      gold:   { value: 50, eventType: 'answer_milestone' },
+    },
+  },
 };
 
 const TIER_ORDER = ['bronze', 'silver', 'gold'];
