@@ -451,7 +451,7 @@ function ProfilePage() {
                 </div>
                 </div>
 
-                {author?.role !== "student" && (
+                {author?.badges?.length>0 && (
                   <div
                     onClick={scrollToAchievements}
                     className="cursor-pointer"
