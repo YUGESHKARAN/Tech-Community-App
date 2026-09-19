@@ -2,6 +2,7 @@
 // badgeService.js
 const { Author, Post } = require("../models/blogAuthorSchema");
 const TutorPlayList = require("../models/tutorPlaylistSchema");
+const DiscussionReply = require("../models/communityDiscussions/discussionsReplySchema");
 const { BADGE_DEFINITIONS, TIER_ORDER } = require('../utils/badgeDefinitions');
 const { NOTIFICATION_TYPES, buildNotificationUrl } = require("../models/services/notificationSchema")
 const dotenv = require("dotenv");
@@ -52,6 +53,11 @@ const getMilestoneTitle = (badgeId, tier, milestone) => {
       silver: `Collaborated on ${milestone}+ playlists`,
       gold:   `Collaborated on ${milestone}+ playlists`,
     },
+    bytes_brain: {
+      bronze: `Had ${milestone}+ accepted answers`,
+      silver: `Had ${milestone}+ accepted answers`,
+      gold:   `Had ${milestone}+ accepted answers`,
+    },
   };
 
   return titles[badgeId]?.[tier] || `Reached ${milestone}+ milestone`;
@@ -72,6 +78,7 @@ const checkAndAwardBadges = async (authorEmail, badgeIds, eventContext = {}) => 
       [topViewedPost],
       postCount,
       collaboratorCount,
+      acceptedAnswerCount,
     ] = await Promise.all([
       // fix: single post with highest likes — badge per-post not cumulative
       Post.aggregate([
@@ -89,6 +96,7 @@ const checkAndAwardBadges = async (authorEmail, badgeIds, eventContext = {}) => 
       ]),
       Post.countDocuments({ authorId: author._id }),
       TutorPlayList.countDocuments({ "collaborators.email": author.email }),
+      DiscussionReply.countDocuments({ authorId: author._id, isAnswer: true }),
     ]);
 
     const stats = {
@@ -97,6 +105,7 @@ const checkAndAwardBadges = async (authorEmail, badgeIds, eventContext = {}) => 
       strong_publisher:  postCount,
       community_builder: author.followers?.length  || 0,
       collaborator:      collaboratorCount,
+      bytes_brain:       acceptedAnswerCount,
     };
 
     // auto-resolve eventContext for like/view badges from the top post

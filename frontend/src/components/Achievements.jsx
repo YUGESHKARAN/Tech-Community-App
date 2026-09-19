@@ -21,6 +21,12 @@ import proContributorGold from "../assets/achievements/pro_contributor_gold.png"
 import collaboratorBronze from "../assets/achievements/collaborator_bronze.png";
 import collaboratorSilver from "../assets/achievements/collaborator_silver.png";
 import collaboratorGold from "../assets/achievements/collaborator_gold.png";
+
+
+import bytesBrainBronze from "../assets/achievements/bytes_brain_bronze.png"
+import bytesBrainSilver from "../assets/achievements/bytes_brain_silver.png"
+import bytesBrainGold from "../assets/achievements/bytes_brain_gold.png"
+
 import { HiOutlineTrophy } from "react-icons/hi2";
 import { ChevronRight } from "lucide-react";
 
@@ -53,6 +59,13 @@ const collaboratorImages = {
   silver: collaboratorSilver,
   gold: collaboratorGold,
 };
+
+
+const bytesBrainImages = {
+  bronze: bytesBrainBronze,
+  silver: bytesBrainSilver,
+  gold: bytesBrainGold,
+}
 
 // ── Badge metadata ────────────────────────────────────────────
 const BADGE_META = {
@@ -116,6 +129,20 @@ const BADGE_META = {
       <img
         src={communityBuilderImages[tier]}
         alt="Impact Creator Badge"
+        className="w-full h-full object-cover rounded-full"
+        draggable={false}
+      />
+    ),
+  },
+
+    bytes_brain: {
+    label: "Bytes Brain",
+    desc: "Celebrating contributors whose accepted answers bring valuable solutions to the community.",
+    icon: (tier) => (
+      
+      <img
+        src={bytesBrainImages[tier]}
+        alt="Bytes Brain Badge"
         className="w-full h-full object-cover rounded-full"
         draggable={false}
       />
@@ -331,7 +358,7 @@ function EmptyAchievements() {
       </div>
       <p className="text-sm text-gray-400 font-medium">No achievements yet</p>
       <p className="text-xs text-gray-600 mt-1 max-w-[200px] leading-relaxed">
-        Start publishing posts and engaging with the community to earn badges.
+        Engaging with the community to earn badges.
       </p>
     </div>
   );

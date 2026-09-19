@@ -12,7 +12,7 @@ const badgeHistorySchema = new mongoose.Schema({
   eventType:  {
     type: String,
     enum: ['like_milestone', 'post_milestone', 'view_milestone',
-           'follower_milestone', 'collab_milestone', 'general'],
+           'follower_milestone', 'collab_milestone', 'answer_milestone', 'general'],
     required: true,
   },
   eventId:    { type: mongoose.Schema.Types.ObjectId }, // postId, playlistId etc.
@@ -24,7 +24,7 @@ const badgeSchema = new mongoose.Schema({
   badgeId: {
     type:     String,
     enum:     ['impact_creator', 'strong_publisher', 'collaborator',
-               'pro_contributor', 'community_builder'],
+               'pro_contributor', 'community_builder', 'bytes_brain'],
     required: true,
   },
 

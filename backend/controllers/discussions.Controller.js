@@ -11,6 +11,7 @@ const { Author } = require("../models/blogAuthorSchema");
 const Community = require("../models/communitySchema");
 const { Post } = require("../models/blogAuthorSchema");
 const { trackActivity, getTodayIST } = require("../services/trackActivity");
+const { checkAndAwardBadges } = require("../services/badgeService");
 const { DeletionLog } = require("../models/deletionLogSchema");
 const {
   enqueueDiscussionNotification,
@@ -1014,6 +1015,22 @@ const markSolved = async (req, res) => {
       }).catch((err) =>
         console.error("discussion answer notification error:", err.message),
       );
+    }
+
+    if (isSolving) {
+      Author.findById(answerReply.authorId)
+        .select("email")
+        .lean()
+        .then((replyAuthor) => {
+          if (!replyAuthor?.email) return;
+          return checkAndAwardBadges(replyAuthor.email, ["bytes_brain"], {
+            eventId: answerReply._id,
+            eventTitle: discussion.title,
+          });
+        })
+        .catch((err) =>
+          console.error("accepted answer badge error:", err.message),
+        );
     }
   } catch (err) {
     console.error("markSolved error:", err.message);

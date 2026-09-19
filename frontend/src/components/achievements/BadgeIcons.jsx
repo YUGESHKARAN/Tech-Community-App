@@ -19,6 +19,11 @@ import collaboratorBronze from "../../assets/achievements/collaborator_bronze.pn
 import collaboratorSilver from "../../assets/achievements/collaborator_silver.png";
 import collaboratorGold from "../../assets/achievements/collaborator_gold.png";
 
+import bytesBrainBronze from "../../assets/achievements/bytes_brain_bronze.png"
+import bytesBrainSilver from "../../assets/achievements/bytes_brain_silver.png"
+import bytesBrainGold from "../../assets/achievements/bytes_brain_gold.png"
+
+
 import { twMerge } from "tailwind-merge";
 import clsx from "clsx";
 
@@ -51,6 +56,12 @@ const collaboratorImages = {
   silver: collaboratorSilver,
   gold: collaboratorGold,
 };
+
+const bytesBrainImages = {
+  bronze: bytesBrainBronze,
+  silver: bytesBrainSilver,
+  gold: bytesBrainGold,
+}
 
 // ── Badge metadata ────────────────────────────────────────────
 
@@ -91,6 +102,7 @@ function BadgeIcons({ badges = [], parentClass="", shieldClassName="" }) {
 };
 
 const BADGE_META = {
+  
   impact_creator: {
     label: "Impact Creator",
     desc: "Your posts resonated with the community.",
@@ -104,6 +116,7 @@ const BADGE_META = {
       />
     ),
   },
+
   strong_publisher: {
     label: "Strong Publisher",
     desc: "Consistent contributor to the platform.",
@@ -117,6 +130,7 @@ const BADGE_META = {
       />
     ),
   },
+
   collaborator: {
     label: "Collaborator",
     desc: "Active collaborator on community playlists.",
@@ -130,6 +144,7 @@ const BADGE_META = {
       />
     ),
   },
+
   pro_contributor: {
     label: "Pro Contributor",
     desc: "Your content reaches a wide audience.",
@@ -143,6 +158,7 @@ const BADGE_META = {
       />
     ),
   },
+
   community_builder: {
     label: "Community Builder",
     desc: "Building a strong following on the platform.",
@@ -151,6 +167,20 @@ const BADGE_META = {
       <img
         src={communityBuilderImages[tier]}
         alt="Impact Creator Badge"
+        className="w-full h-full object-cover rounded-full"
+        draggable={false}
+      />
+    ),
+  },
+
+   bytes_brain: {
+    label: "Bytes Brain",
+    desc: "Celebrating contributors whose accepted answers bring valuable solutions to the community.",
+    icon: (tier) => (
+      
+      <img
+        src={bytesBrainImages[tier]}
+        alt="Bytes Brain Badge"
         className="w-full h-full object-cover rounded-full"
         draggable={false}
       />
