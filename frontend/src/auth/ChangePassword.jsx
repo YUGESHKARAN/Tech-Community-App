@@ -523,7 +523,7 @@ function ChangePassword() {
                 </header>
 
                 <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
-                  {!email && (
+                  {/* {!email && (
                     <Alert tone="warning">
                       <>
                         We couldn't find a reset request on this device.{" "}
@@ -533,7 +533,7 @@ function ChangePassword() {
                         and choose "Forgot password" to get a new code.
                       </>
                     </Alert>
-                  )}
+                  )} */}
                   {success && <Alert tone="success">{success}</Alert>}
                   {errors.apiError && <Alert tone="error">{errors.apiError}</Alert>}
 
