@@ -298,9 +298,15 @@ function Dashboard() {
                         color="#1121ff"
                       />
                     ) : (
-                      <p className=" text-xs h-36 text-emerald-400">
-                        No communities added!
-                      </p>
+                
+
+                       <div className="flex overflow-y-auto scrollbar-hide h-52 flex-col gap-2">
+                        <div className="w-full h-full flex flex-col items-center justify-center">
+                          <p className=" text-xs text-emerald-400">
+                             No communities added!
+                          </p>
+                        </div>
+                      </div>
                     )}
                   </div>
                 </div>

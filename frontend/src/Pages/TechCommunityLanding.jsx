@@ -700,7 +700,7 @@ function TechCommunityLanding() {
                 </div>
 
                 <div className="flex flex-col overflow-y-auto overflow-x-hidden scrollbar-hide max-h-52 md:max-h-80 ">
-                  {topContributors?.map((c, i) => {
+                  {topContributors?.length>0 && topContributors?.map((c, i) => {
                     const rank = i + 1;
                     const isYou = c.email === email;
                     const medalColors = ["#00f01c", "#cd7f32", "#8f9296"];
@@ -772,6 +772,18 @@ function TechCommunityLanding() {
                       </Link>
                     );
                   })}
+
+                  {
+                    topContributors?.length ==0 && (
+                       <div className="flex overflow-y-auto scrollbar-hide h-36 flex-col gap-2">
+                        <div className="w-full h-full flex flex-col items-center justify-center">
+                          <p className=" text-xs text-emerald-400">
+                             No user found!
+                          </p>
+                        </div>
+                      </div>
+                    )
+                  }
                 </div>
               </div>
             ) : (
