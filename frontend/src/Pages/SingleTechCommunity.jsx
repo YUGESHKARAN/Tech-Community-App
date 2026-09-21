@@ -58,6 +58,7 @@ import { getLast3MonthsName } from "../utils/dateFunction";
 import { PostCardSkeleton } from "../components/loaders/community/PostCardSkeleton";
 import { CoordinatorsCardSkeleton } from "../components/loaders/community/CoordinatorsCardSkeleton";
 import RenderTextNoMarkdown from "../components/RenderTextNoMarkdown";
+import { isImpersonating } from "../hooks/director/Useimpersonation";
 
 // ── S3 image base ─────────────────────────────────────────────────────────────
 const S3 = "https://open-access-blog-image.s3.us-east-1.amazonaws.com/";
@@ -160,13 +161,19 @@ const CommunityBanner = ({
         />
 
         <div className="relative px-5 p-3.5 md:pt-4 md:pb-5">
+          
           {canEdit && communityId && (
             <Link
               to={`/techCommunityDetails/${communityId}/edit`}
-              className="absolute top-2.5 md:top-4 right-20  text-[10px] md:font-semibold px-2 md:px-3 py-1 rounded-full  text-white md:hover:text-gray-300 transition-all duration-200 transition-colors"
+             
             >
+              <button
+               className="absolute top-2.5 md:top-4 right-20 disabled:opacity-50 disabled:cursor-not-allowed text-[10px] md:font-semibold px-2 md:px-3 py-1 rounded-full  text-white md:hover:text-gray-300 transition-all duration-200 transition-colors"
+               disabled={isImpersonating()}
+               >
               {/* Edit */}
               <TbIcons.TbSettings className="text-sm md:text-lg" />
+              </button>
             </Link>
           )}
           {community.userRole ? (
@@ -484,14 +491,23 @@ const DiscussionsTab = ({
             </button>
           ))}
         </div>
+        
+        
         {canPost && (
           <Link
+           to={`/techCommunityDetails/${community._id}/discussions/new`}
+         
+          >
+          <button
             to={`/techCommunityDetails/${community._id}/discussions/new`}
-            className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full text-white"
+             disabled={isImpersonating()}
+            className="flex items-center gap-1 disabled:cursor-not-allowed disabled:opacity-50 text-xs font-semibold px-3 py-1.5 rounded-full text-white"
             style={{ background: community?.colorTheme || accentColor }}
+            
           >
             <TbPlus className="text-sm" />
             New discussion
+          </button>
           </Link>
         )}
 

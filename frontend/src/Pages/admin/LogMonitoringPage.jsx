@@ -9,6 +9,7 @@ import toast from "../../components/toaster/Toast";
 import LogTableSkeleton from "../../components/loaders/controls/LogTableSkeleton";
 import formatCount from "../../utils/NumberConversion";
 import logNotFound from "../../assets/log_not_found.png"
+import { isImpersonating } from "../../hooks/director/Useimpersonation";
 
 const STATIC_LOGS = [
   {
@@ -480,7 +481,7 @@ function LogMonitoringPage() {
                       onClick={() => {
                         handleRestore(log.logId);
                       }}
-                      disabled={restoreLogId == log.logId}
+                      disabled={restoreLogId == log.logId || isImpersonating()}
                       className="px-3 py-1.5 text-xs rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/30 transition disabled:cursor-not-allowed disabled:bg-emerald-500/10 disabled:text-emerald-400/50 disabled:border-emerald-500/20"
                     >
                       {restoreLogId == log.logId ? "Restoring..." : "Restore"}
@@ -490,10 +491,10 @@ function LogMonitoringPage() {
                       onClick={() => {
                         handleDelete(log.logId);
                       }}
-                      disabled={deleteLogId == log.logId}
+                      disabled={deleteLogId == log.logId || isImpersonating()}
                       className="px-3 py-1.5 text-xs rounded-lg bg-red-500/20 text-red-400 border border-red-500/30 hover:bg-red-500/30 transition disabled:cursor-not-allowed disabled:bg-red-500/10 disabled:text-red-400/50 disabled:border-red-500/20"
                     >
-                      {deleteLogId == log.logId ? "Deleting..." : "Delete Log"}
+                      {deleteLogId == log.logId ? "Deleting..." : "Delete Log" }
                     </button>
                   )}
                 </div>

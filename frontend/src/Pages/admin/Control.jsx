@@ -18,6 +18,7 @@ import highlightText from "../../hooks/highlightText";
 import Fuse from "fuse.js";
 import { BsFilterLeft } from "react-icons/bs";
 import formatCount from "../../utils/NumberConversion";
+import { isImpersonating } from "../../hooks/director/Useimpersonation";
 // import Footer from "../../ui/Footer";
 function Control() {
   const [authors, setAuthors] = useState([]);
@@ -486,7 +487,7 @@ function Control() {
                   <button
                     className="mt-2 md:px-4   text-xs  p-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white  font-semibold hover:bg-gray-500 bg-white text-gray-800 transition-all duration-200 rounded"
                     onClick={() => updateRole(author.email, author.id)}
-                    disabled={email === author.email || updateId === author.id}
+                    disabled={email === author.email || updateId === author.id || isImpersonating()}
                   >
                     {updateId === author.id ? "Updating..." : "Update Role"}
                   </button>
@@ -524,8 +525,8 @@ function Control() {
                       updateAssignedCommunities(author.email, author.id)
                     }
                     className="md:px-5 px-3 py-2 mt-4 bg-emerald-600/20 hover:bg-emerald-500/20
-                         rounded-md text-xs md:text-xs  text-emerald-400 transition-all duration-300 disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed"
-                    disabled={updateCommuntiyId === author.id}
+                         rounded-md text-xs md:text-xs  text-emerald-400 transition-all duration-300 disabled:opacity-50 disabled:text-gray-400 disabled:cursor-not-allowed"
+                    disabled={updateCommuntiyId === author.id || isImpersonating()}
                   >
                     {updateCommuntiyId === author.id
                       ? "Saving..."
@@ -681,7 +682,7 @@ function Control() {
                   <button
                     className="mt-2 md:px-4  text-xs  p-1 font-semibold hover:bg-gray-500 bg-white text-gray-800 transition-all duration-200 rounded disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white"
                     onClick={() => updateRole(author.email, author.id)}
-                    disabled={updateId === author.id}
+                    disabled={updateId === author.id || isImpersonating()}
                   >
                     {updateId === author.id ? "Updating..." : "Update Role"}
                   </button>
@@ -719,8 +720,8 @@ function Control() {
                       updateAssignedCommunities(author.email, author.id)
                     }
                     className="md:px-5 px-3 py-2 mt-4 bg-emerald-600/20 hover:bg-emerald-500/20
-                         rounded-md text-xs md:text-xs  text-emerald-400 transition-all duration-300 disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed"
-                    disabled={updateCommuntiyId === author.id}
+                         rounded-md text-xs md:text-xs  text-emerald-400 transition-all duration-300 disabled:opacity-50 disabled:text-gray-400 disabled:cursor-not-allowed"
+                    disabled={updateCommuntiyId === author.id || isImpersonating()}
                   >
                     {updateCommuntiyId === author.id
                       ? "Saving..."
@@ -863,7 +864,7 @@ function Control() {
                   <button
                     className="mt-2 md:px-4  text-xs  p-1 font-semibold hover:bg-gray-500 bg-white text-gray-800 transition-all duration-200 rounded disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white"
                     onClick={() => updateRole(author.email, author.id)}
-                    disabled={updateId === author.id}
+                    disabled={updateId === author.id || isImpersonating()}
                   >
                     {updateId === author.id ? "Updating..." : "Update Role"}
                   </button>

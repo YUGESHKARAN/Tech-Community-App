@@ -40,6 +40,7 @@ import toast from "../components/toaster/Toast";
 import useCommunityPosts from "../hooks/SingleTechDomain/useCommunityPosts";
 import getTimeAgo from "../components/DateCovertion";
 import RenderTextWithHashtags from "../components/RenderTextWithHashtags";
+import { isImpersonating } from "../hooks/director/Useimpersonation";
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 const S3 = "https://open-access-blog-image.s3.us-east-1.amazonaws.com/";
@@ -70,27 +71,13 @@ const TAG_PRESET_COLORS = [
   "#d97706",
 ];
 
-const timeAgo = (d) => {
-  const diff = Date.now() - new Date(d).getTime();
-  const m = Math.floor(diff / 60000);
-  if (m < 60) return `${m}m ago`;
-  const h = Math.floor(m / 60);
-  if (h < 24) return `${h}h ago`;
-  return `${Math.floor(h / 24)}d ago`;
-};
 
 // ── Sample data — replace with real hooks ─────────────────────────────────────
 // useGetCommunityTags(communityId)    → tags
 // useGetCommunityFeed(communityId)    → posts
 // useGetCommunityById(communityId)    → community
 
-const SAMPLE_TAGS = [
-  { _id: "tag001", name: "fine-tuning", color: "#0d9488" },
-  { _id: "tag002", name: "lora", color: "#7c3aed" },
-  { _id: "tag003", name: "prompting", color: "#ea580c" },
-  { _id: "tag004", name: "rag", color: "#2563eb" },
-  { _id: "tag005", name: "transformers", color: "#059669" },
-];
+
 
 // const SAMPLE_POSTS = [
 //   {
@@ -746,7 +733,7 @@ function CreateDiscussion() {
 
   // redirect if no permission
   useEffect(() => {
-    if (!isCoordinator && whoCanPost === "coordinator") {
+    if ((!isCoordinator && whoCanPost === "coordinator") || isImpersonating()) {
       navigate(`/techCommunityDetails/${communityId}?tab=discussions`);
     }
   }, [isCoordinator, whoCanPost, communityId, navigate]);

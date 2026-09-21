@@ -33,6 +33,7 @@ import highlightText from "../hooks/highlightText";
 import BadgeIcons from "../components/achievements/BadgeIcons";
 import formatCount from "../utils/NumberConversion";
 import empty_state_author from "../assets/author_not_found_3.png";
+import { isImpersonating } from "../hooks/director/Useimpersonation";
 // ── Per-domain visual identity — reused from the community landing page ──
 const domainStyle = {
   "AI/ML": { icon: TbBrain, from: "#0d9488", to: "#0f766e" },
@@ -277,8 +278,8 @@ function Authors() {
         <button
           // onClick={() => addFollower(author.email)}
           onClick={handleClick}
-          disabled={isLoading}
-          className="w-full py-2 rounded-full bg-white/5 border border-white/10 text-gray-400 text-xs font-semibold disabled:opacity-50"
+          disabled={isLoading || isImpersonating()}
+          className="w-full py-2 rounded-full bg-white/5 border border-white/10 text-gray-400 text-xs font-semibold disabled:cursor-not-allowed disabled:opacity-50"
         >
           {isLoading ? "..." : "Following"}
         </button>
@@ -288,8 +289,8 @@ function Authors() {
       <button
         // onClick={() => addFollower(author.email)}
         onClick={handleClick}
-        disabled={isLoading}
-        className="w-full py-2 rounded-full text-emerald-400 border border-emerald-700 text-xs font-semibold disabled:opacity-50 flex items-center justify-center gap-1 hover:text-emerald-300 hover:border-emerald-600 transition-colors duration-300"
+        disabled={isLoading || isImpersonating()}
+        className="w-full py-2 rounded-full text-emerald-400 border border-emerald-700 text-xs font-semibold disabled:cursor-not-allowed disabled:opacity-50 flex items-center justify-center gap-1 hover:text-emerald-300 hover:border-emerald-600 transition-colors duration-300"
       >
         <TbUserPlus className="text-sm" />
         {isLoading ? "..." : "Follow"}
