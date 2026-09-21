@@ -40,6 +40,7 @@ import * as TbIcons from "react-icons/tb";
 import { deriveGradient } from "../utils/bannerTheme";
 import PerformanceTracker from "../components/performancetracker/PerformanceTracker";
 import useStreak from "../hooks/performanceTracker/useStreak";
+import { isImpersonating } from "../hooks/director/Useimpersonation";
 
 const streakSample = {
   currentStreak: 4,
@@ -509,6 +510,7 @@ function TechCommunityLanding() {
                     duration: 1.0,
                     ease: [0.22, 1, 0.36, 1],
                   }}
+                  disabled={isImpersonating()}
                   className="
                 absolute right-16 top-4 z-40
                 rounded-lg items-center gap-1.5
@@ -522,7 +524,10 @@ function TechCommunityLanding() {
                 hover:bg-emerald-500/5
                 hidden xl:flex
                 font-semibold
+                disabled:text-gray-300/50
+                disabled:cursor-not-allowed
               "
+              
                 >
                   <AiOutlineUsergroupAdd className="text-lg" />
                   Add New Community

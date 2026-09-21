@@ -22,6 +22,7 @@ import { IoClose } from "react-icons/io5";
 import ProfilePageSkeleton from "../components/loaders/ProfilePageSkeleton";
 import PerformanceTracker from "../components/performancetracker/PerformanceTracker";
 import useStreak from "../hooks/performanceTracker/useStreak";
+import { isImpersonating } from "../hooks/director/Useimpersonation";
 
 function ViewSingleAuthor() {
   const { email } = useParams();
@@ -331,9 +332,9 @@ function ViewSingleAuthor() {
                       bg-gray-900 text-emerald-500
                       border border-neutral-700
                       text-sm font-medium
-                      cursor-pointer transition-all duration-400 disabled:border-none disabled:bg-transparent
+                      cursor-pointer transition-all duration-400 disabled:cursor-not-allowed disabled:border-none disabled:opacity-50
                     "
-                          disabled={followAuthorLoaderId === email}
+                          disabled={followAuthorLoaderId === email || isImpersonating()}
                         >
                           {followAuthorLoaderId === email ? (
                             <div className="flex items-center py-1.5 justify-center gap-1">
@@ -354,9 +355,9 @@ function ViewSingleAuthor() {
                         text-sm font-semibold 
                         border border-neutral-700
                         transition-all duration-300   
-                        cursor-pointer transition-all duration-400 disabled:border-none  disabled:bg-transparent
+                        cursor-pointer transition-all duration-400 disabled:cursor-not-allowed  disabled:border-none  disabled:opacity-50
                       "
-                          disabled={followAuthorLoaderId === email}
+                          disabled={followAuthorLoaderId === email || isImpersonating()}
                         >
                           {followAuthorLoaderId === email ? (
                             <div className="flex items-center py-1.5 justify-center gap-1">

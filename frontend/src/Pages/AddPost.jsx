@@ -19,6 +19,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight } from "lucide-react";
 import { BsInfoSquare } from "react-icons/bs";
 import useCommunities from "../hooks/techCommunity/useCommunities";
+import { isImpersonating } from "../hooks/director/Useimpersonation";
 
 function AddPost() {
   const [title, setTitle] = useState("");
@@ -1549,10 +1550,11 @@ function AddPost() {
                     whileTap={{ scale: 0.97 }}
                     whileHover={{ scale: 1.02 }}
                     onClick={() => {}}
+                    disabled={isImpersonating()}
                     type="submit"
                     className="md:px-5 px-3 py-2 md:py-2.5 bg-[#111827]
                          rounded-lg text-xs  flex items-center justify-center gap-2 border
-                  border-slate-700 text-slate-200 transition-all duration-300 disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed"
+                  border-slate-700 text-slate-200 transition-all duration-300 disabled:bg-gray-700/50 disabled:opacity-50 disabled:text-gray-400 disabled:cursor-not-allowed"
                   >
                     <VscGitStashApply className="md:text-base text-emerald-400 text-sm" />{" "}
                     <motion.span

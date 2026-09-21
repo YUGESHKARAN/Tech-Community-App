@@ -588,9 +588,6 @@ function NavBar() {
         </Link>
 
         {/* 👤 MOBILE USER */}
-
-       
-
         <div className="relative lg:hidden">
           <RiNotification3Line
             onClick={() => setShowNotification(!showNotification)}
@@ -631,8 +628,10 @@ function NavBar() {
         {/* 🚪 LOGOUT (DESKTOP ONLY) */}
         <button
           onClick={exit}
+          disabled={isImpersonating()}
           className="hidden xl:flex items-center justify-center
                  w-9 h-9 rounded-full
+                 disabled:cursor-not-allowed
                  bg-red-500/10 hover:bg-red-500/20
                  text-red-400 transition"
         >
@@ -649,11 +648,13 @@ function NavBar() {
               flex flex-col
               transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]
               rounded-br-2xl rounded-tr-2xl border border-white/10
+              ${isImpersonating() ? "mt-10" : "mt"}
               ${
                 isSidebarOpen
                   ? "opacity-100 translate-x-0"
                   : "opacity-0 -translate-x-full pointer-events-none"
               }`}
+              
       >
         {/* ================= HEADER ================= */}
         <div className="flex items-center justify-between px-5 py-4 pb-3">
@@ -1022,7 +1023,8 @@ function NavBar() {
           >
             <button
               onClick={exit}
-              className="flex items-center gap-2 text-white/70 hover:text-white transition"
+              disabled={isImpersonating()}
+              className="flex items-center gap-2 text-white/70  hover:text-white disabled:cursor-not-allowed transition"
             >
               <IoLogOutOutline className="text-[17px] text-red-400" />
               <span className="text-[11px]">Sign Out</span>

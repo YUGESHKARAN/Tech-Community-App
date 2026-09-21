@@ -38,6 +38,7 @@ import CommunityHeaderSkeleton from "../components/loaders/community/CommunityHe
 import useGetDiscussions from "../hooks/useGetDiscussions";
 import { DiscussionsTab } from "../components/community/DiscussionTab";
 import { getDomainStyle } from "../utils/domainStyle";
+import { isImpersonating } from "../hooks/director/Useimpersonation";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -377,7 +378,7 @@ function EditCommunity() {
   }, [communityId, fetchAuthors]);
 
   useEffect(() => {
-    if (!membersLoading && !hasEditAccess && communityId) {
+    if ((!membersLoading && !hasEditAccess && communityId) || isImpersonating()) {
       navigate(`/techCommunityDetails/${communityId}`);
     }
   }, [communityId, hasEditAccess, isLoadingAccessData, navigate]);
@@ -543,7 +544,7 @@ const isDirty = useMemo(() => {
 
 
 
-  console.log("whoCreateDiscuttion", whoCanPost);
+  // console.log("whoCreateDiscuttion", whoCanPost);
 
   // ─────────────────────────────────────────────────────────────────────────
   //  FULL-SCREEN PREVIEW MODE

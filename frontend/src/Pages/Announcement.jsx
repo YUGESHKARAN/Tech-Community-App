@@ -36,6 +36,7 @@ import { twMerge } from "tailwind-merge";
 import clsx from "clsx";
 import formatCount from "../utils/NumberConversion";
 import RenderTextWithHashtags from "../components/RenderTextWithHashtags";
+import { isImpersonating } from "../hooks/director/Useimpersonation";
 
 function Announcement() {
   const username = getItem("username");
@@ -1329,9 +1330,9 @@ function Announcement() {
 
                         <button
                           type="submit"
-                          disabled={loading}
+                          disabled={loading || isImpersonating()}
                           className="w-full py-2 bg-emerald-600/20 hover:bg-emerald-500/20
-                          text-emerald-400 text-xs font-semibold flex items-center justify-center gap-2 rounded-md transition"
+                          text-emerald-400 text-xs font-semibold  flex items-center justify-center gap-2 rounded-md transition disabled:cursor-not-allowed disabled:opacity-70"
                         >
                           <VscGitStashApply className=" text-xs " />{" "}
                           {loading ? "Publishing..." : "Publish"}
