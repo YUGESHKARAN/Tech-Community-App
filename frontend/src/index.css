@@ -111,13 +111,13 @@ body {
 
 
 .default-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(246, 255, 252, 0.337); /* emerald glass */
+  background: rgba(246, 255, 252, 0.255); /* emerald glass */
   border-radius: 999px;
   transition: all 0.25s ease;
 }
 
 .default-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(246, 255, 252, 0.553);
+  background: rgba(246, 255, 252, 0.415);
 }
 
 .default-scrollbar::-webkit-scrollbar-thumb:active {

@@ -37,6 +37,7 @@ import clsx from "clsx";
 import formatCount from "../utils/NumberConversion";
 import RenderTextWithHashtags from "../components/RenderTextWithHashtags";
 import { isImpersonating } from "../hooks/director/Useimpersonation";
+import { AnnounceSummarySkeleton } from "../components/loaders/AnnounSummarySkeleton";
 
 function Announcement() {
   const username = getItem("username");
@@ -1371,7 +1372,7 @@ function Announcement() {
           >
       
 
-            <div
+           {!announceLoading? <div
               className="rounded-3xl relative group overflow-hidden rounded-lg
         border border-emerald-500/20
         bg-gradient-to-br from-emerald-500/5 to-transparent  p-4 md:p-5
@@ -1416,7 +1417,8 @@ function Announcement() {
                   </span>
                 </div>
               </div>
-            </div>
+            </div>:
+            <AnnounceSummarySkeleton/>}
 
             {announcement.length === 0 && !announceLoading && (
               <div className="flex h-[45vh] md:h-[50vh] md:h-auto flex-col justify-center items-center gap-2 md:gap-3 ">
