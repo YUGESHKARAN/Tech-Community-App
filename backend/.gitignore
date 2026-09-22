@@ -1,2 +1,7 @@
 node_modules/
 .env
+artillery-results/
+
+artillery.content-feed.js
+artillery.content-feed.yml
+run-content-feed-benchmark.ps1
