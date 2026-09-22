@@ -492,7 +492,7 @@ const ComposeBox = ({
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
           rows={minRows}
-          className="w-full bg-transparent overflow-x-hidden h-[200px] md:h-[400px] emerald-scrollbar px-4 md:px-6 pt-3 pb-2 text-xs text-gray-200
+          className="w-full bg-transparent overflow-x-hidden h-[200px] md:h-[250px] emerald-scrollbar px-4 md:px-6 pt-3 pb-2 text-xs text-gray-200
                      placeholder-gray-600 resize-none focus:outline-none
                      font-mono leading-relaxed"
         />
@@ -509,7 +509,7 @@ const ComposeBox = ({
               prose
                         md:prose-invert
                         md:max-w-none
-                        px-4 md:px-6 h-[200px] md:h-[400px] overflow-x-hidden scrollbar-hide overflow-y-auto  prose-discussion
+                        px-4 md:px-6 h-[200px] md:h-[250px] overflow-x-hidden scrollbar-hide overflow-y-auto  prose-discussion
                         md:prose-p:text-gray-300
                          break-words
                         md:prose-p:md:leading-6
@@ -592,8 +592,8 @@ const InlineEdit = ({ initialValue, onSave, onCancel }) => {
         autoFocus
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        rows={4}
-        className="w-full emerald-scrollbar bg-transparent px-4 pt-3 pb-2 text-xs md:text-sm text-gray-200 resize-none focus:outline-none"
+        
+        className="w-full emerald-scrollbar h-[150px] bg-transparent px-4 pt-3 pb-2 text-xs md:text-sm text-gray-200 resize-none focus:outline-none"
       />
       <div className="flex items-center gap-2 px-3 pb-3">
         <button
