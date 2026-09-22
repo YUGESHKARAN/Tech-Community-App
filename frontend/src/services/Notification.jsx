@@ -18,6 +18,7 @@ import {
 import getTimeAgo from "../components/DateCovertion";
 import { getItem } from "../utils/encode";
 import { RiNotification4Fill, RiNotificationFill } from "react-icons/ri";
+import { MdNotificationsActive } from "react-icons/md";
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  TYPE → ICON / COLOR MAP
@@ -127,7 +128,7 @@ const Notificationpanel = ({
       {/* ── header ── */}
       <div className="flex items-center justify-between px-4  py-3.5 border-b border-gray-700/50 sticky top-0 theme z-40">
         <div className="flex items-center  gap-1.5">
-          <RiNotificationFill className="text-[15px] text-emerald-400" />
+          <MdNotificationsActive className="md:text-[15px] text-[14px] text-emerald-400" />
           <h2 className="text-[13px] tracking-wide font-medium text-white/80 tracking-tight">
             Notifications
           </h2>
