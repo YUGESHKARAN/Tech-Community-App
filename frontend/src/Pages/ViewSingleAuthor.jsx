@@ -323,7 +323,7 @@ function ViewSingleAuthor() {
 
                 {author.role === "coordinator" &&
                   coordEamil !== authorEmail && (
-                    <div className="mt-4 md:mt-0">
+                    <div className="mt-4 md:mt-3">
                       {author.followers.includes(authorEmail) ? (
                         <button
                           onClick={() => addFollower(email)}

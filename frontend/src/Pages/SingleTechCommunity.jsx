@@ -784,58 +784,131 @@ const FeedTab = ({ posts, setPosts, feedLoad, feedHashMore }) => {
 // ── Member card ───────────────────────────────────────────────────────────────
 const MemberCard = ({ author }) => {
   // const {  author, joinedAt } = membership;
-  return (
-    <Link
-      to={`/viewProfile/${author?.email}`}
-      className="theme border relative border-[#1e293b] rounded-xl p-4 flex flex-col items-center text-center gap-2 hover:border-white/10 hover:-translate-y-0.5 transition-all duration-200"
-    >
-      <div className="relative">
-        <img
-          src={avatar(author?.profile)}
-          className="w-14 h-14 rounded-full object-cover border border-gray-700 bg-gray-700"
-          alt={author?.name}
-        />
+  // return (
+  //   <Link
+  //     to={`/viewProfile/${author?.email}`}
+  //     className="theme border relative border-[#1e293b] rounded-xl p-4 flex flex-col items-center text-center gap-2 hover:border-white/10 hover:-translate-y-0.5 transition-all duration-200"
+  //   >
+  //     <div className="relative">
+  //       <img
+  //         src={avatar(author?.profile)}
+  //         className="w-14 h-14 rounded-full object-cover border border-gray-700 bg-gray-700"
+  //         alt={author?.name}
+  //       />
        
-      </div>
-      <div>
-        <h3 className="text-sm font-semibold text-gray-100 truncate w-full">
-          {author?.authorName}
-        </h3>
-        <p className="text-[10px] text-gray-500 truncate w-full">
-          {author?.email}
-        </p>
-      </div>
-       {author?.badges?.length > 0 && (
-          <BadgeIcons
-            badges={author?.badges}
-            // parentClass="absolute -top-1 -right-1 -space-x-1"
-               parentClass="static -space-x-0"
-            shieldClassName="w-4 h-4"
-          />
-        )}
-      <div className="flex gap-3 text-[10px] text-gray-500">
-        {author?.postCount > 0 && (
-          <span>
-            <b className="text-gray-300">{formatCount(author?.postCount)}</b>{" "}
-            posts
-          </span>
-        )}
-        <span>
+  //     </div>
+  //     <div>
+  //       <h3 className="text-sm font-semibold text-gray-100 truncate w-full">
+  //         {author?.authorName}
+  //       </h3>
+  //       <p className="text-[10px] text-gray-500 truncate w-full">
+  //         {author?.email}
+  //       </p>
+  //     </div>
+  //      {author?.badges?.length > 0 && (
+  //         <BadgeIcons
+  //           badges={author?.badges}
+  //           // parentClass="absolute -top-1 -right-1 -space-x-1"
+  //              parentClass="static -space-x-0"
+  //           shieldClassName="w-4 h-4"
+  //         />
+  //       )}
+  //     <div className="flex gap-3 text-[10px] text-gray-500">
+  //       {author?.postCount > 0 && (
+  //         <span>
+  //           <b className="text-gray-300">{formatCount(author?.postCount)}</b>{" "}
+  //           posts
+  //         </span>
+  //       )}
+        // <span>
+        //   <b className="text-gray-300">
+        //     {formatCount(author?.followingCount || 0)}
+        //   </b>{" "}
+        //   following
+        // </span>
+  //     </div>
+  //     <span className="text-[9px] text-gray-600 flex items-center gap-1">
+  //       <TbClock className="text-[10px]" /> Joined{" "}
+  //       {new Date(author?.joinedAt).toLocaleDateString("en-IN", {
+  //         month: "short",
+  //         year: "numeric",
+  //       })}
+  //     </span>
+  //   </Link>
+  // );
+
+      return (
+      <div className="theme border border-[#1e293b] rounded-xl md:rounded-2xl overflow-hidden hover:border-white/10 transition-all duration-300">
+        <div className="pt-5 pb-10 md:pb-9 px-4 relative bg-white/[0.03] border-b border-emerald-500/20">
+         
+            <span className="absolute top-3 right-3 text-[8px] md:text-[9px] md:font-semibold px-1.5 py-0.5 md:px-2 md:py-1 rounded-full bg-emerald-500/10 border border-emerald-700/40 text-emerald-400">
+              Member
+            </span>
+  
+        </div>
+
+        <Link to={`/viewProfile/${author.email}`} className="block px-4">
+          <div className="relative -mt-8 mb-2 flex justify-center">
+
+               <img
+           src={avatar(author?.profile)}
+           className="md:w-16 w-14 h-14 md:h-16 rounded-full object-cover border-[3px] border-[#0f172a] bg-gray-700"
+           alt={author?.name}
+         />
+        
+          </div>
+
+          <div className="text-center mb-2">
+            <h3 className="text-sm font-semibold text-white truncate">
+              {/* {highlightText(author.authorName, debouncedSearch)} */}
+              {author?.authorName}
+            </h3>
+            <p className="text-[10px] text-gray-400 truncate">
+              {/* {highlightText(author.email, debouncedSearch)} */}
+              {author?.email}
+            </p>
+          </div>
+
+        
+
+          {author?.badges?.length > 0 && (
+            <div className="flex justify-center mb-2">
+              <BadgeIcons
+                badges={author.badges}
+                parentClass="static -space-x-0"
+                shieldClassName="w-4 h-4"
+              />
+            </div>
+          )}
+
+          {/* <div className="mb-3">
+            <DomainTags communities={author.communities} />
+          </div> */}
+          <div className="flex flex-col gap-1 mb-3 justify-end  items-center">
+
+          
+          <div className="flex justify-center gap-4 text-[10px] text-gray-400 pt-1 border-t border-white/5 ">
+                    <span>
           <b className="text-gray-300">
             {formatCount(author?.followingCount || 0)}
           </b>{" "}
           following
         </span>
+          </div>
+              <span className="text-[9px] text-gray-600 flex items-center gap-1">
+                  <TbClock className="text-[10px]" /> Joined{" "}
+                  {new Date(author?.joinedAt).toLocaleDateString("en-IN", {
+                    month: "short",
+                    year: "numeric",
+                  })}
+                </span>
+                </div>
+       
+        </Link>
+
+       
       </div>
-      <span className="text-[9px] text-gray-600 flex items-center gap-1">
-        <TbClock className="text-[10px]" /> Joined{" "}
-        {new Date(author?.joinedAt).toLocaleDateString("en-IN", {
-          month: "short",
-          year: "numeric",
-        })}
-      </span>
-    </Link>
-  );
+    );
 };
 
 // ── Members tab ───────────────────────────────────────────────────────────────

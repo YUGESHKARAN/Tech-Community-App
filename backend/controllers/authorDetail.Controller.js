@@ -1771,6 +1771,10 @@ const updateRole = async (req, res) => {
     author.notification.push(newNotification);
 
     await author.save({ validateBeforeSave: false });
+    await CommunityMembership.updateMany(
+      { tenantId, authorId: author._id },
+      { $set: { role: ["coordinator", "admin", "director"].includes(role) ? "coordinator" : "member" } }
+    );
     res.status(200).json({ message: "Role updated successfully", author });
   } catch (err) {
     res
