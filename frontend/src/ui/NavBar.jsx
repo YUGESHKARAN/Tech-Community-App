@@ -980,7 +980,7 @@ function NavBar() {
         </div>
       </div>
 
-      <div
+      {/* <div
         ref={showProfileSettings}
         className={`${
           !showAddContent && !showNotification && showProfile
@@ -988,7 +988,6 @@ function NavBar() {
             : "hidden"
         }`}
       >
-        {/* Top Section */}
         <div className="py-1.5">
           <Link
             onClick={() => {
@@ -1031,7 +1030,81 @@ function NavBar() {
             </button>
           </div>
         </div>
-      </div>
+      </div> */}
+         <div
+  ref={showProfileSettings}
+  className={`${
+    !showAddContent && !showNotification && showProfile
+      ? "fixed top-16 right-2 z-50 w-52 overflow-hidden rounded-lg border border-white/10 theme shadow-[0_20px_50px_-12px_rgba(0,0,0,0.75)] backdrop-blur-xl"
+      : "hidden"
+  }`}
+>
+  {/* Signed-in-as header */}
+  <div className="flex items-start gap-2.5 px-3 py-2.5">
+
+
+    {profile !== "undefined" && profile !== "null" && profile !== "" ? (
+            <img
+              src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`}
+             className="h-6 w-6 shrink-0 rounded-full ring-1 ring-white/10"
+            />
+          ) : (
+            <RiUser3Line className="text-lg text-emerald-400" />
+          )}
+    <div className="min-w-0">
+      <p className="text-[10px] uppercase tracking-wide text-slate-500">Signed in as</p>
+      <p className="truncate text-[12px] tracking-wide trucate font-semibold text-white">
+        {username|| "Account"}
+      </p>
+    </div>
+  </div>
+
+  <div className="h-px bg-white/[0.08]" />
+
+  {/* Menu items */}
+  <div className="pt-1 pb-0.5">
+    <Link
+      onClick={() => {
+        setShowProfile(false);
+      }}
+      to="/profile"
+    >
+      <button
+        className="
+          flex w-full items-center gap-2
+          px-3 py-1.5
+          text-[11px] font-medium text-slate-300
+          transition-colors duration-150
+           hover:text-white
+        "
+      >
+        <MdManageAccounts className="text-[15px] text-emerald-400" />
+        <span>Profile Settings</span>
+      </button>
+    </Link>
+  </div>
+
+  {/* <div className="h-px bg-white/[0.08]" /> */}
+
+  {/* Sign out — isolated in its own section, GitHub-style */}
+  <div className="pb-2">
+    <button
+      onClick={exit}
+      disabled={isImpersonating()}
+      className="
+        flex w-full items-center gap-2
+        px-3 py-1.5
+        text-[11px] font-medium text-slate-300
+        transition-colors duration-150
+       hover:text-white
+        disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-slate-300
+      "
+    >
+      <IoLogOutOutline className="text-[15px] text-red-400" />
+      <span>Sign Out</span>
+    </button>
+  </div>
+</div>
 
       <SearchModal
         open={showSearchModal}
