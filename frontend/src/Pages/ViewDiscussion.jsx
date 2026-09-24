@@ -910,7 +910,7 @@ const [notFound, setNotFound] = useState(false);
   const [discussionBody, setDiscussionBody] = useState("");
   const [discussionLoader, setDiscussionLoader] = useState(false);
   const [repliesLoader, setRepliesLoader] = useState(false);
-  const profile = localStorage.getItem("profile");
+  const profile = sessionStorage.getItem("profile");
 
   const isOP = discussion?.authorId?.email === currentUserEmail;
   // Replace with membership check from community context

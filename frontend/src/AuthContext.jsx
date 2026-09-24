@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import Cookies from 'js-cookie';
-import { clearStore, removeItem, storeItem, getItem } from "./utils/encode";
+import { clearStore, removeItem } from "./utils/encode";
+import { getSessionItem, removeSessionItem, storeSessionItem } from "./utils/sessionEncode";
 // import { useNavigate } from "react-router-dom";
 // Create context
 const AuthContext = createContext();
@@ -15,37 +15,35 @@ export const AuthProvider = ({ children }) => {
   // const navigate = useNavigate()
 
     const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    return Boolean(Cookies.get("token")) && getItem("isAuthenticated") === "true";
+      return Boolean(getSessionItem("token")) && getSessionItem("isAuthenticated") === "true";
   });
   const login = async(token = null) => {
       if (token) {
-      Cookies.set("token", token, { expires: 1, sameSite: "lax" });
-      // Cookies.set("token", token,  { expires: 10 / 86400, sameSite: "lax" });
+        storeSessionItem("token", token);
        setIsAuthenticated(true);
-      //  localStorage.setItem("isAuthenticated", "true"); // Store login status
-       storeItem("isAuthenticated", "true"); // Store login status
+         storeSessionItem("isAuthenticated", "true");
     }
        else {
     // If no token provided, treat as failed login
     setIsAuthenticated(false);
-    localStorage.removeItem("isAuthenticated");
+    removeSessionItem("isAuthenticated");
   }
    
   };
 
   const logout = () => {
     setIsAuthenticated(false);
-    Cookies.remove("token");
-    localStorage.removeItem("isAuthenticated"); // Clear login status
-    localStorage.removeItem("username"); // Clear additional data if needed
+    removeSessionItem("token");
+    removeSessionItem("isAuthenticated");
+    removeItem("username"); // Clear additional data if needed
     // localStorage.removeItem("email");
     removeItem("email");
     // localStorage.removeItem("message");
     // localStorage.removeItem("role");
     removeItem("role");
-    localStorage.removeItem("profile");
+    sessionStorage.removeItem("profile");
     clearStore()
-    localStorage.clear()
+    sessionStorage.clear()
   };
 
   // useEffect(() => {
@@ -58,16 +56,15 @@ export const AuthProvider = ({ children }) => {
 
     // ✅ Effect: Sync state if a valid token exists on reload
   useEffect(() => {
-    const token = Cookies.get("token");
+    const token = getSessionItem("token");
     if (token && !isAuthenticated) {
       setIsAuthenticated(true);
-      // localStorage.setItem("isAuthenticated", "true");
-      storeItem("isAuthenticated", "true");
+      storeSessionItem("isAuthenticated", "true");
     } else if (!token && isAuthenticated) {
       // Optional: Auto logout if token missing (prevents stale state)
       setIsAuthenticated(false);
       // window.location.reload()
-      localStorage.removeItem("isAuthenticated");
+      removeSessionItem("isAuthenticated");
  
       
     }
@@ -75,7 +72,7 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
     const interval = setInterval(() => {
-      if (!Cookies.get("token") && isAuthenticated) {
+      if (!getSessionItem("token") && isAuthenticated) {
         logout(); // Auto logout when token expires
       }
     }, 1000); // Check every 1 second

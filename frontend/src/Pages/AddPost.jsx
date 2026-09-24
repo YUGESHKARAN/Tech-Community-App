@@ -10,8 +10,8 @@ import axiosInstance from "../instances/Axiosinstances";
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 import glow from "../assets/glow.png";
 import { VscGitStashApply, VscGitStashPop, VscSend } from "react-icons/vsc";
-import Cookies from "js-cookie";
 import { getItem } from "../utils/encode";
+import { getSessionItem } from "../utils/sessionEncode";
 import RenderTextWithHashtags from "../components/RenderTextWithHashtags";
 import { TbAlertTriangleFilled } from "react-icons/tb";
 import toast from "../components/toaster/Toast";
@@ -43,7 +43,7 @@ function AddPost() {
   const user = getItem("username");
   const [loading, setLoading] = useState(false);
   const [customTitle, setCustomTitle] = useState("");
-  const token = Cookies.get("token");
+  const token = getSessionItem("token");
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
 

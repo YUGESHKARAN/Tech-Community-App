@@ -64,7 +64,7 @@ function ViewPage() {
   const [loading, setLoading] = useState(false);
   const commentsRef = useRef(null);
   const [bookMarkId, setBookMarkId] = useState([]);
-  const myProfile = localStorage.getItem("profile");
+  const myProfile = sessionStorage.getItem("profile");
   // const { sheetRef, handleDragStart } = useDragSheet(setViewComments);
   const sheetRef = useRef(null);
   const [isInputFocused, setIsInputFocused] = useState(false);

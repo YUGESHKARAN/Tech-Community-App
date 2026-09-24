@@ -17,16 +17,18 @@ const decode = (encoded) => {
 };
 
 export const storeItem = (key, value) => {
-  localStorage.setItem(key, encode(value));
+  sessionStorage.setItem(key, encode(value));
 };
 
 
 // console.log('secrete key', SALT)
 export const getItem = (key) => {
-  const raw = localStorage.getItem(key);
+  const raw = sessionStorage.getItem(key);
   if (!raw) return null;
   return decode(raw);
 };
 
-export const removeItem = (key) => localStorage.removeItem(key);
-export const clearStore = () => localStorage.clear();
+export const removeItem = (key) => {
+  sessionStorage.removeItem(key);
+};
+export const clearStore = () => sessionStorage.clear();

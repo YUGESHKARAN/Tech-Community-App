@@ -771,8 +771,8 @@ function RegisterPage() {
       });
       if (response.status === 201) {
         setSuccess("Registration successful!");
-        localStorage.setItem("username", formData.username);
-        localStorage.setItem("email", formData.email);
+        sessionStorage.setItem("username", formData.username);
+        sessionStorage.setItem("email", formData.email);
         navigate("/home");
       }
     } catch (error) {

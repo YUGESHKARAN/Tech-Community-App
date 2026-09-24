@@ -427,7 +427,6 @@ import { useAuth } from "../AuthContext";
 import { CirclesWithBar } from "react-loader-spinner";
 import { AnimatePresence, MotionConfig, motion } from "framer-motion";
 import axiosInstance from "../instances/Axiosinstances";
-import Cookies from "js-cookie";
 import { removeItem, storeItem } from "../utils/encode";
 import logoicon from "../assets/embed_logo_1.png";
 
@@ -651,7 +650,7 @@ function LoginPage() {
         storeItem("email", author.email);
         storeItem("role", role);
         storeItem("authorId", author.authorId || author.directorId);
-        localStorage.setItem("profile", author?.profile);
+        sessionStorage.setItem("profile", author?.profile);
 
         // store isDirector flag so components can distinguish director sessions
         if (author.isDirector) {
@@ -695,7 +694,7 @@ function LoginPage() {
   const sendOtp = async (e, email) => {
     e.preventDefault();
     setLoader2(true);
-    localStorage.setItem("emailForOtp", email);
+    sessionStorage.setItem("emailForOtp", email);
     try {
       const response = await axiosInstance.post("/blog/author/send-otp", {
         email,

@@ -1,16 +1,15 @@
 // utils/axiosInstance.js
 import axios from 'axios';
-import Cookies from 'js-cookie';
+import { getSessionItem, removeSessionItem } from '../utils/sessionEncode';
 
 const axiosInstance = axios.create({
   // baseURL: 'http://localhost:3000/',
   baseURL: 'https://node-blog-app-seven.vercel.app/',
-  withCredentials: true, // needed for cookies
 });
 
 // Request Interceptor
 axiosInstance.interceptors.request.use((config) => {
-  const token = Cookies.get('token');
+  const token = getSessionItem('token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -40,8 +39,9 @@ axiosInstance.interceptors.response.use(
       console.warn("Session expired. Logging out...");
 
       // clear auth data
-      Cookies.remove("token");
-      localStorage.clear();
+      removeSessionItem("token");
+      removeSessionItem("isAuthenticated");
+      sessionStorage.clear();
 
       // prevent infinite reload loop
       if (window.location.pathname !== "/") {

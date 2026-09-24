@@ -25,9 +25,9 @@ import {
 import RecommendedAuthorsSkeleton from "../components/loaders/RecommendedAuthorsSkeleton ";
 import CoordinatorGridSkeleton from "../components/loaders/CoordinatorGridSkeleton ";
 import StudentGridSkeleton from "../components/loaders/StudentGridSkeleton ";
-import Cookies from "js-cookie";
 import Fuse from "fuse.js";
 import { getItem } from "../utils/encode";
+import { getSessionItem } from "../utils/sessionEncode";
 import useAuthorCommunity from "../hooks/useAuthorCommunity";
 import highlightText from "../hooks/highlightText";
 import BadgeIcons from "../components/achievements/BadgeIcons";
@@ -77,7 +77,7 @@ function Authors() {
   const [roleFilter, setRoleFilter] = useState("");
   const [recommendation, setRecommendation] = useState([]);
   const [loading, setLoading] = useState(false);
-  const token = Cookies.get("token");
+  const token = getSessionItem("token");
 
   const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(1);
