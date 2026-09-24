@@ -135,12 +135,12 @@
 
 // export default useImpersonation;
 
-import Cookies from "js-cookie";
 import { storeItem, getItem, removeItem } from "../../utils/encode";
+import { getSessionItem, removeSessionItem, storeSessionItem } from "../../utils/sessionEncode";
 import axiosInstance from "../../instances/Axiosinstances";
 import { useState, useEffect, useCallback } from "react";
 
-const COOKIE_KEY           = "token";
+const SESSION_TOKEN_KEY    = "token";
 const ORIGINAL_TOKEN_KEY   = "director_original_token";
 const IMPERSONATION_META   = "impersonation_meta";
 const ORIGINAL_STORAGE_KEY = "director_original_storage";
@@ -157,13 +157,13 @@ export const getImpersonationMeta = () => {
 export const isImpersonating = () => !!getImpersonationMeta();
 
 export const enterImpersonation = (impersonationToken, meta) => {
-  const original = Cookies.get(COOKIE_KEY);
+  const original = getSessionItem(SESSION_TOKEN_KEY);
   if (!original) {
     throw new Error("No active session to impersonate from");
   }
 
   // ── backup original cookie ────────────────────────────────────────────────
-  sessionStorage.setItem(ORIGINAL_TOKEN_KEY, original);
+  storeSessionItem(ORIGINAL_TOKEN_KEY, original);
 
   // ── backup original encoded localStorage values via getItem ───────────────
   // getItem decodes them — we store decoded strings in sessionStorage
@@ -173,7 +173,7 @@ export const enterImpersonation = (impersonationToken, meta) => {
     email:      getItem("email"),
     role:       getItem("role"),
     authorId:   getItem("authorId"),
-    profile:    localStorage.getItem("profile"), // profile is stored raw (not encoded)
+    profile:    sessionStorage.getItem("profile"), // profile is stored raw (not encoded)
     isDirector: getItem("isDirector"),
   };
   sessionStorage.setItem(ORIGINAL_STORAGE_KEY, JSON.stringify(originalStorage));
@@ -188,10 +188,7 @@ export const enterImpersonation = (impersonationToken, meta) => {
   }));
 
   // ── swap cookie ───────────────────────────────────────────────────────────
-  Cookies.set(COOKIE_KEY, impersonationToken, {
-    expires:  15 / (24 * 60),
-    sameSite: "lax",
-  });
+  storeSessionItem(SESSION_TOKEN_KEY, impersonationToken);
 
   // ── overwrite encoded localStorage with impersonated context ─────────────
   // ProtectedRoute reads role via getItem("role") — must match token payload
@@ -206,7 +203,7 @@ export const enterImpersonation = (impersonationToken, meta) => {
 
 export const exitImpersonation = async () => {
   const meta = getImpersonationMeta();
-  const original = sessionStorage.getItem(ORIGINAL_TOKEN_KEY);
+  const original = getSessionItem(ORIGINAL_TOKEN_KEY);
 
   let originalStorage = {};
   try {
@@ -230,9 +227,9 @@ export const exitImpersonation = async () => {
 
   // ── restore original cookie ───────────────────────────────────────────────
   if (original) {
-    Cookies.set(COOKIE_KEY, original, { expires: 1, sameSite: "lax" });
+    storeSessionItem(SESSION_TOKEN_KEY, original);
   } else {
-    Cookies.remove(COOKIE_KEY);
+    removeSessionItem(SESSION_TOKEN_KEY);
   }
 
   // ── restore original encoded localStorage via storeItem ──────────────────
@@ -246,11 +243,11 @@ export const exitImpersonation = async () => {
 
   // profile is stored raw
   if (originalStorage.profile !== undefined && originalStorage.profile !== null) {
-    localStorage.setItem("profile", originalStorage.profile);
+    sessionStorage.setItem("profile", originalStorage.profile);
   }
 
   // ── clear impersonation state ─────────────────────────────────────────────
-  sessionStorage.removeItem(ORIGINAL_TOKEN_KEY);
+  removeSessionItem(ORIGINAL_TOKEN_KEY);
   sessionStorage.removeItem(IMPERSONATION_META);
   sessionStorage.removeItem(ORIGINAL_STORAGE_KEY);
 

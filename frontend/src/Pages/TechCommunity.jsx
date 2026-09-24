@@ -16,7 +16,7 @@ import formatCount from "../utils/NumberConversion";
 function TechCommunity() {
   const [posts, setPosts] = useState([]);
 
-  const username = localStorage.getItem("username");
+  const username = getItem("username");
   const email = getItem("email");
   const role = getItem("role");
   const { communityStats, getCommunityStats } = useGetCommunityStats();

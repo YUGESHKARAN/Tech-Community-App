@@ -18,7 +18,7 @@ import { FaYoutube } from "react-icons/fa";
 import userImg from "../images/user.png";
 import { getItem } from "../utils/encode.js";
 function ViewPostPlaylist() {
-  const user = localStorage.getItem("username");
+  const user = getItem("username");
   // const userEmail = localStorage.getItem("email");
   const userEmail = getItem("email");
   const [newMessage, setNewMessage] = useState("");

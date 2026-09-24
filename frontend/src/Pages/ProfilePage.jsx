@@ -169,7 +169,7 @@ function ProfilePage() {
         toast.success("Updated", "Account details updated successfully");
         if (image !== "") {
           formData.append("profile", image);
-          localStorage.setItem("profile",response.data.data.profile)
+          sessionStorage.setItem("profile",response.data.data.profile)
         }
         setLinks([]);
         fetchAuthor();

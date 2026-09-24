@@ -345,7 +345,7 @@ function Alert({ tone, children }) {
 /* -------------------------------------------------------------------------- */
 function ChangePassword() {
   const [errors, setErrors] = useState({});
-  const email = localStorage.getItem("emailForOtp");
+  const email = sessionStorage.getItem("emailForOtp");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState("");
   const navigate = useNavigate();
@@ -419,7 +419,7 @@ function ChangePassword() {
       const response = await axiosInstance.post("/blog/author/reset-password", formData);
       if (response.status === 200) {
         setSuccess("Password updated successfully!");
-        localStorage.removeItem("emailForOtp");
+        sessionStorage.removeItem("emailForOtp");
         setTimeout(() => {
           navigate("/");
         }, 2000);

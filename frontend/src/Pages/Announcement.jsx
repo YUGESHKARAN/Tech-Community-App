@@ -43,7 +43,7 @@ function Announcement() {
   const username = getItem("username");
   // const email = localStorage.getItem("email");
   const email = getItem("email");
-  const profile = localStorage.getItem("profile");
+  const profile = sessionStorage.getItem("profile");
 
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");

@@ -21,12 +21,12 @@ export const GlobalStateContext = createContext();
 export const GlobalStateProvider = ({ children }) => {
   const [notification, setNotification] = useState([]);
   const [searchTerm, setSearchTerm] = useState(
-    localStorage.getItem("globalSearch") || ""
+    sessionStorage.getItem("globalSearch") || ""
   );
   const [inputValue, setInputValue] = useState(searchTerm || "");
 
   useEffect(() => {
-    localStorage.setItem("globalSearch", searchTerm);
+    sessionStorage.setItem("globalSearch", searchTerm);
   }, [searchTerm]);
 
   return (

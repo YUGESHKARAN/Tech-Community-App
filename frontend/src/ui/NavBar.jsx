@@ -73,7 +73,7 @@ function NavBar() {
   // const userEmail = localStorage.getItem("email");
   const userEmail = getItem("email");
   // const role = localStorage.getItem("role");
-  const profile = localStorage.getItem("profile");
+  const profile = sessionStorage.getItem("profile");
   const [showNotification, setShowNotification] = useState(false);
   const [announcement, setAnnouncement] = useState([]);
   const [socket, setSocket] = useState(null);
@@ -99,7 +99,7 @@ function NavBar() {
     setSearchTerm("");
     setInputValue("");
     removeItem("role");
-    localStorage.removeItem("username");
+    removeItem("username");
     // localStorage.removeItem("email");
     removeItem("email");
     // localStorage.removeItem("message");
