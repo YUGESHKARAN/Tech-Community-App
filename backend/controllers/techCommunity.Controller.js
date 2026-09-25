@@ -83,6 +83,12 @@ const getCommunityLandingPage = async (req, res) => {
       { $group: { _id: '$communityId', count: { $sum: 1 } } },
     ]);
 
+    // discussion counts — one aggregation across all communities at once
+    const discussionCountsPromise = Discussion.aggregate([
+      { $match: { tenantId, communityId: { $in: communityIds } } },
+      { $group: { _id: '$communityId', count: { $sum: 1 } } },
+    ]);
+
     // 10 random profiles (member + coordinator mixed) per community —
     // one $sample aggregation per community, fine at this community count
     const profilesPromise = Promise.all(
@@ -113,9 +119,10 @@ const getCommunityLandingPage = async (req, res) => {
       })
     );
 
-    const [weeklyStats, coordinatorCounts, profilesEntries] = await Promise.all([
+    const [weeklyStats, coordinatorCounts, discussionCounts, profilesEntries] = await Promise.all([
       weeklyStatsPromise,
       coordinatorCountsPromise,
+      discussionCountsPromise,
       profilesPromise,
     ]);
 
@@ -125,6 +132,9 @@ const getCommunityLandingPage = async (req, res) => {
     const coordinatorCountMap = Object.fromEntries(
       coordinatorCounts.map((c) => [c._id.toString(), c.count])
     );
+    const discussionCountMap = Object.fromEntries(
+      discussionCounts.map((d) => [d._id.toString(), d.count])
+    );
     const profilesMap = Object.fromEntries(profilesEntries);
 
     const result = communities.map((c) => ({
@@ -132,6 +142,7 @@ const getCommunityLandingPage = async (req, res) => {
       userRole: membershipMap[c._id.toString()] || null,
       weeklyPostCount: statsMap[c.name] || 0,
       coordinatorsCount: coordinatorCountMap[c._id.toString()] || 0,
+      discussionCount: discussionCountMap[c._id.toString()] || 0,
       profiles: profilesMap[c._id.toString()] || [],
     }));
 
