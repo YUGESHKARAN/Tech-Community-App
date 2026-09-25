@@ -336,6 +336,14 @@ function TechCommunityLanding() {
                   </b>
                   posts
                 </span>
+
+                <span className="flex items-center gap-1 md:text-sm text-xs text-gray-300">
+                  <TbIcons.TbMessageCircle className="text-sm md:text-base text-gray-500" />
+                  <b className="text-gray-100 text-xs font-semibold">
+                    {formatCount(item?.discussionCount)}
+                  </b>
+                  discussions
+                </span>
               </div>
 
               <div className="flex mt-1 md::mt-0  items-center">
