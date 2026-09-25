@@ -37,6 +37,10 @@ import getTimeAgo from "../components/DateCovertion";
 import RenderTextWithHashtags from "../components/RenderTextWithHashtags";
 import DiscussionDetailSkeleton from "../components/loaders/community/DiscussionDetailSkeleton";
 import ReplyCardSkeleton from "../components/loaders/community/ReplyCardSkeleton";
+import useGetSingleTechCommunity from "../hooks/SingleTechDomain/useGetSingleTechCommunity";
+import { getDomainStyle } from "../utils/domainStyle";
+import { deriveGradient } from "../utils/bannerTheme";
+import * as TbIcons from "react-icons/tb";
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 const S3 = "https://open-access-blog-image.s3.us-east-1.amazonaws.com/";
@@ -786,7 +790,7 @@ const ReplyCard = ({
     <div
       className={`border rounded-xl p-4 transition-all ${
         isAccepted
-          ? "md:border-2 border-emerald-500/30 bg-emerald-500/[0.03]"
+          ? " border-green-900 bg-green-600/10"
           : "border-[#1e293b] theme"
       }`}
     >
@@ -892,6 +896,7 @@ function ViewDiscussion() {
   const { communityId, discussionId } = useParams();
   const navigate = useNavigate();
   const currentUserEmail = getItem("email");
+  const { communityDetails } = useGetSingleTechCommunity(communityId);
   // 1. add state at the top with your other state declarations
 const [notFound, setNotFound] = useState(false);
 
@@ -918,6 +923,12 @@ const [notFound, setNotFound] = useState(false);
     getItem("role") === "coordinator" || getItem("role") === "admin";
 
   const cat = CATEGORY_COLORS[discussion?.category] || CATEGORY_COLORS.qa;
+  const domainName = communityDetails?.name || discussion?.communityName || "Community";
+  const domainStyle = getDomainStyle(domainName);
+  const domainGradient = deriveGradient(communityDetails?.colorTheme || domainStyle.from);
+  const DomainIcon = communityDetails?.icon
+    ? TbIcons[communityDetails.icon] || domainStyle.icon
+    : domainStyle.icon;
   const [upvoteCount, setUpvoteCount] = useState(0);
 
   const [upvoteStatus, setUpvoteStatus] = useState(false);
@@ -1423,18 +1434,78 @@ const [notFound, setNotFound] = useState(false);
 
         {/* ── Discussion thread ── */}
         {!discussionLoader ? (
-          <div className="theme border border-[#1e293b] rounded-2xl overflow-hidden mb-4">
+          <div className={`${discussion?.isSolved ?'border-green-800':'border-[#1e293b]'} theme border  rounded-lg overflow-hidden mb-4`}>
+            {/* domain identity */}
+            <div
+              className="relative overflow-hidden border-b border-white/10"
+              style={{
+                background: `linear-gradient(125deg, ${domainGradient.from}, ${domainGradient.to})`,
+              }}
+            >
+              <div className="absolute inset-0 opacity-20 [background-image:radial-gradient(circle_at_85%_15%,_rgba(255,255,255,.7),_transparent_36%)]" />
+              <div className="relative flex items-center justify-between gap-4 px-5 py-2 md:px-7 md:py-3">
+                <Link
+                  to={`/techCommunityDetails/${communityId}`}
+                  className="flex min-w-0 items-center gap-3 group"
+                >
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-black/15 ring-1 ring-white/20">
+                    <DomainIcon className="text-xl text-white" />
+                  </span>
+                  <span className="min-w-0">
+                    {/* <span className="block text-[9px] font-semibold uppercase tracking-[0.2em] text-white/65">
+                      BytesBase domain
+                    </span> */}
+                    <span className="block truncate text-base font-semibold text-white transition-colors group-hover:text-white/80 md:text-lg">
+                      {domainName}
+                    </span>
+                    {(communityDetails?.tagline || communityDetails?.description) && (
+                      <span className="mt-0.5 block max-w-xl truncate text-[10px] text-white/70 md:text-xs">
+                        {communityDetails.tagline || communityDetails.description}
+                      </span>
+                    )}
+                  </span>
+                </Link>
+                
+                <span className="hidden shrink-0 items-center gap-1.5 rounded-full bg-black/15 px-3 py-1.5 text-[10px] font-medium text-white/75 ring-1 ring-white/15 sm:flex">
+                  <TbMessageCircle className="text-sm" />
+                 
+                  Discussion
+
+                    <span
+                      className={`text-[9px] font-semibold px-1.5 py-0.5 rounded ${cat.bg} ${cat.text}`}
+                    >
+                      {cat.label}
+                    </span>
+                </span>
+              </div>
+            </div>
+            
+
             {/* pinned banner */}
-            {discussion?.isPinned && (
-              <div className="flex items-center gap-2 px-5 py-2 bg-emerald-500/5 border-b border-emerald-500/10">
+            {(discussion?.isPinned || discussion?.isSolved) && (
+              <div className="flex items-center gap-3 px-5  py-2 bg-emerald-500/5 border-b border-emerald-500/10">
+
+                 { discussion?.isSolved &&
+                   <span className="flex items-center gap-0.5 text-[9px] font-semibold px-1.5 py-0.5 rounded bg-green-500/10 text-green-400">
+                        <TbCircleCheck className="text-[10px]" /> Solved
+                      </span>
+                  }
+
+             {discussion?.isPinned &&   <div className="flex px-1.5 py-0.5 rounded bg-green-500/10 items-center gap-2">
                 <TbPin className="text-emerald-400 text-xs" />
                 <span className="text-[10px] font-semibold text-emerald-400">
                   Pinned by coordinator
                 </span>
+
+                </div>}
+
+               
               </div>
             )}
 
-            <div className="p-5">
+        
+
+            <div className={`${discussion?.isSolved &&' bg-green-400/10'} p-5`}>
               {/* header row */}
               <div className="flex items-start gap-3">
                 {/* upvote */}
