@@ -364,7 +364,7 @@ const StreakWidget = ({ currentStreak, longestStreak, lastActiveDate }) => {
   return (
     <div className="grid grid-cols-2 gap-3">
       <div className="theme flex flex-col justify-between border border-[#1e293b] rounded-xl p-4">
-        <div className="flex items-center gap-1.5 mb-2">
+        <div className="flex items-center gap-1.5 mb-1 md:mb-2">
           <TbFlame className={`text-base ${display > 0 ? "text-amber-400" : "text-gray-600"}`} />
           <span className="text-[10px] font-medium text-gray-500 uppercase tracking-wide">
             Current streak
@@ -376,7 +376,7 @@ const StreakWidget = ({ currentStreak, longestStreak, lastActiveDate }) => {
           </span>
           <span className="text-xs text-gray-500">days</span>
         </div>
-        <p className={`text-[10px] mt-1 ${
+        <p className={`text-[10px] mt-0.5 md:mt-1 ${
           streakLapsed ? "text-amber-500/70" : display > 0 ? "text-emerald-500/70" : "text-gray-600"
         }`}>
           {streakLapsed
@@ -388,7 +388,7 @@ const StreakWidget = ({ currentStreak, longestStreak, lastActiveDate }) => {
       </div>
 
       <div className="theme flex flex-col justify-between border border-[#1e293b] rounded-xl p-4">
-        <div className="flex items-center gap-1.5 mb-2">
+        <div className="flex items-center gap-1.5 mb-1 md:mb-2">
           <TbTrophy className="text-base text-amber-400/60" />
           <span className="text-[10px] font-medium text-gray-500 uppercase tracking-wide">
             Longest streak
@@ -398,7 +398,7 @@ const StreakWidget = ({ currentStreak, longestStreak, lastActiveDate }) => {
           <span className="text-2xl font-bold text-gray-100">{formatCount(longestStreak)}</span>
           <span className="text-xs text-gray-500">days</span>
         </div>
-        <p className="text-[10px] text-gray-600 mt-1">All-time personal best</p>
+        <p className="text-[10px] text-gray-600 mt-0.5 md:mt-1">All-time personal best</p>
       </div>
     </div>
   );

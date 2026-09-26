@@ -277,7 +277,7 @@ function TechCommunityLanding() {
     const bgColor = gradient?.from ?? style.from;
 
     return (
-      <div className="group  relative theme border border-[#1e293b] rounded-2xl overflow-hidden flex flex-col hover:border-white/10 transition-all duration-300">
+      <div className="group  relative theme border border-[#1e293b] rounded-xl md:rounded-2xl overflow-hidden flex flex-col hover:border-white/10 transition-all duration-300">
         <Link
           // to={`/techDomainDetails/${encodeURIComponent(item.name)}`}
           to={`/techCommunityDetails/${item?._id}`}
@@ -691,7 +691,7 @@ function TechCommunityLanding() {
               Overall Leaderboard
             </h3>
             {!topContributorsLoading ? (
-              <div className="theme border border-[#1e293b] rounded-2xl p-4">
+              <div className="theme border border-[#1e293b] rounded-xl md:rounded-2xl p-4">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2 text-sm font-semibold text-gray-200">
                     <TbTrophy className="text-amber-400" />

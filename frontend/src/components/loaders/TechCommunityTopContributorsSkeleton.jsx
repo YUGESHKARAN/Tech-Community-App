@@ -2,7 +2,7 @@ import React from 'react'
 
 const TechCommunityTopContributorsSkeleton = ()=> {
   return (
-    <div className="theme border border-[#1e293b] rounded-2xl p-4 animate-pulse">
+    <div className="theme border border-[#1e293b] rounded-xl md:rounded-2xl p-4 animate-pulse">
       {/* Header */}
       <div className="flex items-center justify-between mb-1.5 md:mb-2">
         <div className="h-5 w-36 rounded bg-gray-700/60" />

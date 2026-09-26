@@ -579,6 +579,9 @@ const ComposeBox = ({
 const InlineEdit = ({ initialValue, onSave, onCancel }) => {
   const [value, setValue] = useState(initialValue);
   const [saving, setSaving] = useState(false);
+  const [mode, setMode] = useState("write");
+
+  const isEmpty = !value.trim();
 
   const handleSave = async () => {
     if (!value.trim() || value.trim() === initialValue) {
@@ -592,22 +595,52 @@ const InlineEdit = ({ initialValue, onSave, onCancel }) => {
 
   return (
     <div className="theme border border-white/10 rounded-xl overflow-hidden mt-2">
-      <textarea
-        autoFocus
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        
-        className="w-full emerald-scrollbar h-[150px] bg-transparent px-4 pt-3 pb-2 text-xs md:text-sm text-gray-200 resize-none focus:outline-none"
-      />
-      <div className="flex items-center gap-2 px-3 pb-3">
+      <div className="flex items-center gap-0.5 px-2 pt-2 pb-1 border-b border-white/10">
+        {[
+          { id: "write", label: "Write", icon: TbPencil },
+          { id: "preview", label: "Preview", icon: TbEye },
+        ].map(({ id, label, icon: Icon }) => (
+          <button
+            key={id}
+            type="button"
+            onClick={() => setMode(id)}
+            disabled={id === "preview" && isEmpty}
+            className={`flex items-center gap-1 text-[10px] font-semibold px-2 py-1 rounded-md transition-all disabled:opacity-30 disabled:cursor-not-allowed ${
+              mode === id
+                ? "bg-white/8 text-white"
+                : "text-gray-500 hover:text-gray-300"
+            }`}
+          >
+            <Icon className="text-xs" />
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {mode === "write" ? (
+        <textarea
+          autoFocus
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          className="w-full emerald-scrollbar h-[150px] bg-transparent px-4 pt-3 pb-2 text-xs md:text-sm text-gray-200 resize-none focus:outline-none"
+        />
+      ) : (
+        <div className="prose md:prose-invert md:max-w-none h-[150px] overflow-y-auto overflow-x-hidden scrollbar-hide px-4 pt-3 pb-2 prose-discussion break-words md:prose-p:text-gray-300 md:prose-p:text-sm prose-headings:text-white">
+          <RenderTextWithHashtags text={value} />
+        </div>
+      )}
+
+      <div className="flex items-center gap-2 px-3 pb-3 pt-1">
         <button
+          type="button"
           onClick={handleSave}
-          disabled={saving}
+          disabled={saving || isEmpty}
           className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-lg bg-emerald-600 text-white disabled:opacity-40"
         >
           <TbCheck className="text-sm" /> {saving ? "Saving..." : "Save"}
         </button>
         <button
+          type="button"
           onClick={onCancel}
           className="text-xs text-gray-500 hover:text-gray-300 px-3 py-1.5 rounded-lg transition-colors"
         >
@@ -838,6 +871,8 @@ const ReplyCard = ({
              md:prose-p:md:leading-6
              md:prose-p:text-sm
              prose-headings:text-white
+
+             
            "
             >
               {/* {renderTextWithHashtags(singlePostData.description)} */}
@@ -1562,7 +1597,7 @@ const [notFound, setNotFound] = useState(false);
                     <AuthorRow
                       author={discussion?.authorId}
                       timestamp={discussion?.createdAt}
-                      label={isOP ? "OP" : null}
+                      label={isOP ? "Author" : null}
                     />
                     {discussion?.linkedPostId && (
                       <Link
@@ -1631,18 +1666,18 @@ const [notFound, setNotFound] = useState(false);
         {!showReplyCompose ? (
           <button
             onClick={() => setShowReplyCompose(true)}
-            className="flex items-center gap-2 w-full text-left px-4 py-3 theme border border-[#1e293b] rounded-xl text-sm text-gray-500 hover:text-gray-300 hover:border-white/10 transition-all duration-200 mb-4"
+            className="flex items-center gap-2 w-full text-left px-4 py-2 md:py-3 theme border border-[#1e293b] rounded-lg md:rounded-xl text-xs md:text-sm text-gray-500 hover:text-gray-300 hover:border-white/10 transition-all duration-200 mb-4"
           >
             { profile !== 'undefined' && profile !== 'null' && profile !== "" ? (
               <img
                 src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`}
-                className="w-6 h-6 rounded-full object-cover bg-gray-700"
+                className="md:w-6 w-5 h-5  md:h-6 rounded-full object-cover bg-gray-700"
                 alt=""
               />
             ) : (
               <img
                 src={av(null)}
-                className="w-6 h-6 rounded-full object-cover bg-gray-700"
+                className="md:w-6 w-5 h-5  md:h-6 rounded-full object-cover bg-gray-700"
                 alt=""
               />
             )}
