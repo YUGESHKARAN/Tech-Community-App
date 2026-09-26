@@ -691,8 +691,8 @@ function TechCommunityLanding() {
               Overall Leaderboard
             </h3>
             {!topContributorsLoading ? (
-              <div className="theme border border-[#1e293b] rounded-xl md:rounded-2xl p-4">
-                <div className="flex items-center justify-between mb-3">
+              <div className="theme border border-[#1e293b] rounded-xl md:rounded-2xl px-3 py-2.5 md:p-4">
+                <div className="flex items-center justify-between mb-2 md:mb-3">
                   <div className="flex items-center gap-2 text-sm font-semibold text-gray-200">
                     <TbTrophy className="text-amber-400" />
                     Top contributors
@@ -701,7 +701,7 @@ function TechCommunityLanding() {
                   <select
                     value={filter}
                     onChange={(e) => setFilter(e.target.value)}
-                    className="theme outline-none text-gray-200 cursor-pointer text-xs rounded px-2 py-1 border border-[#334155]"
+                    className="theme outline-none text-gray-200 cursor-pointer text-xs md:text-xs rounded px-1.5 md:px-2 py-1 border border-[#334155]"
                   >
                     <option value="overall">Overall</option>
                     {Object.keys(months).map((key) => (
@@ -747,7 +747,7 @@ function TechCommunityLanding() {
                             key={c.email}
                             src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${c.profile}`}
                             alt={c.name}
-                            className="h-6 w-6 rounded-full border border-teal-600 bg-gray-400"
+                            className="h-6 w-6 rounded-full border border-teal-600 theme"
                           />
                         ) : (
                           <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-[9px] font-semibold text-gray-200 flex-shrink-0">
