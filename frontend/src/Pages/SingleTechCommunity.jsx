@@ -145,7 +145,7 @@ const CommunityBanner = ({
   if (!loader && community?.colorTheme) {
     return (
       <div
-        className="relative rounded-xl md:rounded-2xl md:px-2 overflow-hidden mb-0"
+        className="relative rounded-lg md:rounded-2xl md:px-2 overflow-hidden mb-0"
         style={{
           // background: `linear-gradient(135deg, ${style.from}, ${style.to})`,
           background: `${community?.colorTheme ? `linear-gradient(135deg, ${gradient?.from}, ${gradient?.to})` : `linear-gradient(135deg, ${style?.from}, ${style?.to})`}`,
@@ -345,12 +345,12 @@ const DiscussionCard = ({
 
   return (
     <div
-      className={`block theme border rounded-xl px-4 py-3  transition-all duration-200 ${
+      className={`block theme border rounded-lg md:rounded-xl px-2.5 md:px-4 py-3  transition-all duration-200 ${
         discussion.isPinned ? "border-l-2" : "border-[#1e293b]"
       }`}
       style={discussion.isPinned ? { borderLeftColor: accentColor } : {}}
     >
-      <div className="flex gap-3">
+      <div className="flex gap-2 md:gap-3">
         {/* upvote column */}
         <div
           onClick={(e) => {
@@ -361,7 +361,7 @@ const DiscussionCard = ({
           className="flex flex-col cursor-pointer items-center gap-0.5 pt-0.5 min-w-[28px]"
         >
           <TbChevronUp
-            className={`text-base ${upvoteStatus ? "text-emerald-400" : "text-gray-500"}`}
+            className={`text-sm md:text-base ${upvoteStatus ? "text-emerald-400" : "text-gray-500"}`}
           />
           <span className="text-xs font-semibold text-gray-200">
             {/* {formatCount(discussion.upvoteCount)} */}
@@ -375,7 +375,7 @@ const DiscussionCard = ({
           className="flex-1 min-w-0"
         >
           <div className="flex items-start gap-2 mb-1 flex-wrap">
-            <span className="text-sm font-medium text-gray-100 leading-snug">
+            <span className="md:text-sm text-[13px] font-medium text-gray-100 leading-snug">
               {discussion.title}
             </span>
             <div className="flex items-center gap-1 flex-shrink-0">
@@ -392,7 +392,7 @@ const DiscussionCard = ({
             </div>
           </div>
 
-          <div className="flex items-center gap-2 flex-wrap mb-2">
+          <div className="flex items-center gap-2 flex-wrap mb-1 md:mb-2">
             <span
               className={`text-[9px] font-semibold px-1.5 py-0.5 rounded-md ${cat.bg} ${cat.text}`}
             >
@@ -409,7 +409,7 @@ const DiscussionCard = ({
 
           <div className="flex items-center justify-between">
             {discussion.tags?.length > 0 && (
-              <div className="flex gap-1.5 flex-wrap mb-2">
+              <div className="flex gap-1.5 flex-wrap mb-1 md:mb-2">
                 {discussion.tags.map((tag) => (
                   <span
                     key={tag._id}
@@ -501,11 +501,11 @@ const DiscussionsTab = ({
           <button
             to={`/techCommunityDetails/${community._id}/discussions/new`}
              disabled={isImpersonating()}
-            className="flex items-center gap-1 disabled:cursor-not-allowed disabled:opacity-50 text-xs font-semibold px-3 py-1.5 rounded-full text-white"
+            className="flex items-center gap-1 disabled:cursor-not-allowed disabled:opacity-50 text-[10px] md:text-xs font-semibold px-2 md:px-3 py-1.5 rounded-2xl md:rounded-full text-white"
             style={{ background: community?.colorTheme || accentColor }}
             
           >
-            <TbPlus className="text-sm" />
+            <TbPlus className="text-[10px] md:text-sm" />
             New discussion
           </button>
           </Link>
@@ -1287,7 +1287,7 @@ function SingleTechCommunity() {
         development, feel free to explore the platform 😊.{" "}
       </span> */}
 
-      <div className="flex-grow px-4 md:px-20 max-w-[1800px] mx-auto w-full pb-20 pt-3 md:pt-4">
+      <div className="flex-grow px-3 md:px-20 max-w-[1800px] mx-auto w-full pb-20 pt-3 md:pt-4">
         <CommunityBanner
           community={community}
           style={style}

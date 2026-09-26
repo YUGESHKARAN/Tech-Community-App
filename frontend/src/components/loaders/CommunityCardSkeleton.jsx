@@ -52,7 +52,7 @@
 
 const CommunityCardSkeleton = () => {
   return (
-    <div className="animate-pulse group relative border border-[#1e293b] rounded-2xl overflow-hidden flex flex-col bg-[#0b1220]">
+    <div className="animate-pulse group relative border border-[#1e293b] rounded-xl md:rounded-2xl overflow-hidden flex flex-col bg-[#0b1220]">
       {/* Banner */}
       <div className="px-4 pt-4 pb-3 flex items-center gap-3 bg-slate-700/60">
         <div className="w-10 h-10 rounded-xl bg-slate-600 shrink-0" />

@@ -4,15 +4,15 @@ const DiscussionCardSkeleton = () => {
   return (
     <div
     // key={key}
-     className="relative theme border border-[#1e293b] rounded-xl px-4 py-3 overflow-hidden">
+     className="relative theme border border-[#1e293b] rounded-lg md:rounded-xl px-4 py-3 overflow-hidden">
       {/* Shimmer */}
       <div className="absolute inset-0 -translate-x-full animate-[discussionShimmer_1.8s_infinite] bg-gradient-to-r from-transparent via-white/[0.035] to-transparent pointer-events-none" />
 
       <div className="flex gap-3">
         {/* Upvote column */}
         <div className="flex flex-col items-center gap-1 pt-0.5 min-w-[28px]">
-          <div className="w-4 h-4 rounded bg-white/[0.08]" />
-          <div className="w-6 h-3 rounded bg-white/[0.08]" />
+          <div className="md:w-4 w-3 h-3 md:h-4 rounded bg-white/[0.08]" />
+          <div className="md:w-6 w-4 h-2 md:h-3 rounded bg-white/[0.08]" />
         </div>
 
         {/* Content */}

@@ -1666,18 +1666,18 @@ const [notFound, setNotFound] = useState(false);
         {!showReplyCompose ? (
           <button
             onClick={() => setShowReplyCompose(true)}
-            className="flex items-center gap-2 w-full text-left px-4 py-3 theme border border-[#1e293b] rounded-xl text-sm text-gray-500 hover:text-gray-300 hover:border-white/10 transition-all duration-200 mb-4"
+            className="flex items-center gap-2 w-full text-left px-4 py-2 md:py-3 theme border border-[#1e293b] rounded-lg md:rounded-xl text-xs md:text-sm text-gray-500 hover:text-gray-300 hover:border-white/10 transition-all duration-200 mb-4"
           >
             { profile !== 'undefined' && profile !== 'null' && profile !== "" ? (
               <img
                 src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`}
-                className="w-6 h-6 rounded-full object-cover bg-gray-700"
+                className="md:w-6 w-5 h-5  md:h-6 rounded-full object-cover bg-gray-700"
                 alt=""
               />
             ) : (
               <img
                 src={av(null)}
-                className="w-6 h-6 rounded-full object-cover bg-gray-700"
+                className="md:w-6 w-5 h-5  md:h-6 rounded-full object-cover bg-gray-700"
                 alt=""
               />
             )}
