@@ -1042,7 +1042,14 @@ const LeaderboardCard = ({
                     You
                   </span>
                 )}
+              
               </span>
+
+                <BadgeIcons
+                  badges={entry?.badges}
+                  parentClass="static  -space-x-2"
+                  shieldClassName="w-4 h-4 md:h-4 md:w-4"
+                />
               <span className="text-[10px] text-gray-500 whitespace-nowrap">
                 {formatCount(entry.points)} pts
               </span>

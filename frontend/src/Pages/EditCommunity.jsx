@@ -244,7 +244,7 @@ const BannerPreview = ({ form, gradient, loader, userRole, community }) => {
   if (!loader && community?.colorTheme) {
     return (
       <div
-        className="relative rounded-xl md:rounded-2xl overflow-hidden"
+        className="relative rounded-lg md:rounded-xl md:rounded-2xl overflow-hidden"
         style={{
           background: `linear-gradient(135deg, ${gradient.from}, ${gradient.to})`,
         }}
@@ -281,7 +281,7 @@ const BannerPreview = ({ form, gradient, loader, userRole, community }) => {
             </div>
           </div>
 
-          <p className="md:text-xs text-[10px] text-white font-semibold line-clamp-2 max-w-2xl leading-relaxed mb-2 md:mb-2.5">
+          <p className="md:text-xs text-[10px] text-white font-semibold max-w-2xl leading-relaxed mb-2 md:mb-2.5">
             {form.description}
           </p>
 
@@ -559,8 +559,8 @@ const isDirty = useMemo(() => {
               className="w-3 h-3 rounded-full"
               style={{ background: gradient.from }}
             />
-            <span className="text-sm font-medium text-gray-200">
-              Preview — {form.name}
+            <span className="text-xs font-medium text-gray-200">
+              Preview - {form.name}
             </span>
             <span className="text-[10px] text-gray-500 hidden md:block">
               Press Esc to exit
@@ -568,14 +568,14 @@ const isDirty = useMemo(() => {
           </div>
           <button
             onClick={() => setPreview(false)}
-            className="flex items-center gap-1.5 text-xs font-medium text-gray-400 hover:text-white px-3 py-1.5 rounded-lg border border-white/10 hover:border-white/20 transition-colors"
+            className="flex items-center gap-1 md:gap-1.5 text-[10px] md:text-xs font-medium text-gray-400 hover:text-white px-2 md:px-3 py-1 md:py-1.5 rounded-lg border border-white/10 hover:border-white/20 transition-colors"
           >
-            <TbEyeOff className="text-sm" /> Back to edit
+            <TbEyeOff className="text-xs" /> Back to edit
           </button>
         </div>
 
         {/* Preview content */}
-        <div className="px-4 md:px-8 max-w-[1400px] mx-auto pt-6 pb-20">
+        <div className="px-3 md:px-8 max-w-[1400px] mx-auto md:pt-6 pt-3 pb-20">
           <BannerPreview
             form={form}
             gradient={gradient}
@@ -584,11 +584,11 @@ const isDirty = useMemo(() => {
           />
 
           {/* Tab bar preview */}
-          <div className="flex border-b border-white/5 mt-4 mb-6">
+          <div className="flex border-b border-white/5 mt-1 md:mt-4 mb-6">
             {["Discussions", "Feed", "Members", "Leaderboard"].map((tab, i) => (
               <div
                 key={tab}
-                className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${
+                className={`px-4 py-2.5 text-xs font-medium border-b-2 transition-colors ${
                   i === 0
                     ? "border-white text-white"
                     : "border-transparent text-gray-500"
