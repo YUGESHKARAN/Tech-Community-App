@@ -181,10 +181,10 @@ function ViewSingleAuthor() {
           <div className="w-full 3xl:max-w-[1800px] max-w-7xl mx-auto min-h-screen mx-auto px-4 md:px-6 pt-2 md:pt-6 pb-8 pb-24">
             {/* ── Page header ──────────────────────────────────────── */}
             <div className="md:mb-4 px-1">
-              <p className="text-[11px] font-medium tracking-widest uppercase text-gray-300 mb-0.5">
+              <p className="text-[10px] font-medium tracking-widest uppercase text-gray-300 ">
                 Account
               </p>
-              <h1 className="text-xl  font-medium tracking-tight text-emerald-400">
+              <h1 className="text-lg  font-medium tracking-tight text-emerald-400">
                 Profile Page
               </h1>
             </div>

@@ -182,16 +182,16 @@ export default function BadgeLeagueInfoModal({ open, onClose }) {
             onClick={(e) => e.stopPropagation()}
             className="
               relative w-full sm:max-w-xl lg:max-w-2xl max-h-[85vh] overflow-y-auto bblm-scroll
-              rounded-xl border border-white/[0.09] bg-[#0a0d16]
+              md:rounded-xl rounded-lg border border-white/[0.09] bg-[#080810]
               shadow-[0_24px_70px_-20px_rgba(0,0,0,0.65)]
             "
           >
             <div className="sticky top-0 z-10 flex items-center justify-between gap-4 px-5 py-1   border-b border-white/[0.07] bg-[#0a0d16]/95 backdrop-blur-sm">
-              <div className="flex justify-start items-center gap-2.5">
-                <GrTrophy className="text-yellow-500 text-lg md:text-xl shrink-0" />
+              <div className="flex justify-start items-center gap-2 md:gap-2.5">
+                <GrTrophy className="text-yellow-500 text-sm md:text-xl shrink-0" />
                 <div className="flex flex-col pt-2.5 items-start">
                   <div className="text-white flex flex-col items-start">
-                   <h1 className="text-lg  md:text-xl tracking-wide uppercase font-bold text-emerald-500">Bytes Base</h1>
+                   <h1 className="md:text-lg text-sm   tracking-wide uppercase font-bold text-emerald-500">Bytes Base</h1>
                    <span className=" text-[10px] md:text-xs tracking-wide uppercase font-semibold ">League Levels</span>
                   </div>
 

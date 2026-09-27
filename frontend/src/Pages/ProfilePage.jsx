@@ -289,11 +289,11 @@ function ProfilePage() {
 
             <div className="flex items-center justify-between mb-0 md:mt-2 md:mb-4 px-1">
               <div>
-                <p className="text-[11px] font-medium tracking-widest uppercase text-gray-300 mb-0.5">
+                <p className="text-[10px] font-medium tracking-widest uppercase text-gray-300 ">
                   Account
                 </p>
 
-                <h1 className="text-xl font-medium tracking-tight text-emerald-400">
+                <h1 className="text-lg font-medium tracking-tight text-emerald-400">
                   My Profile
                 </h1>
               </div>
