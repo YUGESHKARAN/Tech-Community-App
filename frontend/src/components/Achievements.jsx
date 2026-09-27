@@ -366,6 +366,7 @@ function EmptyAchievements() {
 
 import { AnimatePresence, motion } from "framer-motion";
 import { useRef } from "react";
+import BadgeLeagueInfoModal, { BadgeInfoTrigger } from "../components/achievements/BadgeLeagueInfoModal";
 // ── Main export ───────────────────────────────────────────────
 export default function AchievementSection({ badges = [], achievementRef }) {
   const [selected, setSelected] = useState(null);
@@ -397,14 +398,15 @@ export default function AchievementSection({ badges = [], achievementRef }) {
   }, [selected]);
 
   const hasBadges = badges.length > 0;
+  const [showBadgeInfo, setShowBadgeInfo] = useState(false);
 
   return (
     <div className="w-full block  shink-0 overflow-hidden">
 
       <div className="flex items-center justify-between px-2 md:px-5 py-4 md:border-b border-white/[0.06]">
         <div>
-          <p className="text-[11px] font-medium tracking-widest uppercase text-gray-400">
-            Achievements
+          <p className="text-[11px] flex items-center gap-2 font-medium tracking-widest uppercase text-gray-400">
+            Achievements <BadgeInfoTrigger onClick={() => setShowBadgeInfo(true)} />
           </p>
           <p className="text-sm font-semibold text-white mt-0.5">
             {hasBadges
@@ -686,6 +688,9 @@ export default function AchievementSection({ badges = [], achievementRef }) {
         )}
       </div>
 
+
+<BadgeLeagueInfoModal open={showBadgeInfo} onClose={() => setShowBadgeInfo(false)} />
+
       {/* footer hint */}
       {hasBadges && !showAll && !selected && (
         <div className="px-5 py-3 border-t border-white/[0.04]">
@@ -708,6 +713,8 @@ export default function AchievementSection({ badges = [], achievementRef }) {
         .animate-ping-slow { animation: ping-slow 2.5s ease-in-out infinite; }
         .animate-pulse-slow { animation: pulse-slow 2s ease-in-out infinite; }
       `}</style>
+
+      
     </div>
   );
 }

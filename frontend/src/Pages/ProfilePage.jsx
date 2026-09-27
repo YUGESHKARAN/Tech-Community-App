@@ -970,6 +970,7 @@ function ProfilePage() {
           <ProfilePageSkeleton />
         )}
 
+
         {/* ── Delete confirm modal ──────────────────────────────────── */}
         {showConfirm && (
           <div className="fixed h-full inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm px-4">
