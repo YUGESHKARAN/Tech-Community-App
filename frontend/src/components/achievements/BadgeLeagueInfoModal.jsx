@@ -82,7 +82,7 @@ export function BadgeInfoTrigger({ onClick }) {
       onClick={onClick}
       aria-label="How badges work"
       className="
-        w-6 h-6 shrink-0 rounded-full flex items-center justify-center
+        w-4 h-4 shrink-0 rounded-full flex items-center justify-center
         text-gray-500 hover:text-emerald-400
         bg-white/[0.03] border border-white/[0.08]
         hover:bg-white/[0.06] hover:border-emerald-500/25
@@ -182,17 +182,17 @@ export default function BadgeLeagueInfoModal({ open, onClose }) {
             onClick={(e) => e.stopPropagation()}
             className="
               relative w-full sm:max-w-xl lg:max-w-2xl max-h-[85vh] overflow-y-auto bblm-scroll
-              rounded-xl border border-white/[0.09] bg-[#0a0d16]
+              md:rounded-xl rounded-lg border border-white/[0.09] bg-[#080810]
               shadow-[0_24px_70px_-20px_rgba(0,0,0,0.65)]
             "
           >
             <div className="sticky top-0 z-10 flex items-center justify-between gap-4 px-5 py-1   border-b border-white/[0.07] bg-[#0a0d16]/95 backdrop-blur-sm">
-              <div className="flex justify-start items-center gap-2.5">
-                <GrTrophy className="text-yellow-500 text-lg md:text-xl shrink-0" />
+              <div className="flex justify-start items-center gap-2 md:gap-2.5">
+                <GrTrophy className="text-yellow-500 text-sm md:text-xl shrink-0" />
                 <div className="flex flex-col pt-2.5 items-start">
                   <div className="text-white flex flex-col items-start">
-                   <h1 className="md:text-2xl  text-xl tracking-wide uppercase font-bold text-emerald-500">Bytes Base</h1>
-                   <span className="md:text-sm text-[14px] tracking-wide uppercase font-semibold ">League Levels</span>
+                   <h1 className="md:text-lg text-sm   tracking-wide uppercase font-bold text-emerald-500">Bytes Base</h1>
+                   <span className=" text-[10px] md:text-xs tracking-wide uppercase font-semibold ">League Levels</span>
                   </div>
 
                 </div>
