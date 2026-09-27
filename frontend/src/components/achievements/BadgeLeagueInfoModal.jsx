@@ -82,7 +82,7 @@ export function BadgeInfoTrigger({ onClick }) {
       onClick={onClick}
       aria-label="How badges work"
       className="
-        w-6 h-6 shrink-0 rounded-full flex items-center justify-center
+        w-4 h-4 shrink-0 rounded-full flex items-center justify-center
         text-gray-500 hover:text-emerald-400
         bg-white/[0.03] border border-white/[0.08]
         hover:bg-white/[0.06] hover:border-emerald-500/25
@@ -191,8 +191,8 @@ export default function BadgeLeagueInfoModal({ open, onClose }) {
                 <GrTrophy className="text-yellow-500 text-lg md:text-xl shrink-0" />
                 <div className="flex flex-col pt-2.5 items-start">
                   <div className="text-white flex flex-col items-start">
-                   <h1 className="md:text-2xl  text-xl tracking-wide uppercase font-bold text-emerald-500">Bytes Base</h1>
-                   <span className="md:text-sm text-[14px] tracking-wide uppercase font-semibold ">League Levels</span>
+                   <h1 className="text-lg  md:text-xl tracking-wide uppercase font-bold text-emerald-500">Bytes Base</h1>
+                   <span className=" text-[10px] md:text-xs tracking-wide uppercase font-semibold ">League Levels</span>
                   </div>
 
                 </div>
