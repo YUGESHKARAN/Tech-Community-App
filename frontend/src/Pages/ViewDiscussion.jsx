@@ -496,7 +496,7 @@ const ComposeBox = ({
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
           rows={minRows}
-          className="w-full bg-transparent overflow-x-hidden h-[200px] md:h-[250px] emerald-scrollbar px-4 md:px-6 pt-3 pb-2 text-xs text-gray-200
+          className="w-full bg-transparent overflow-x-hidden h-[200px]  emerald-scrollbar px-4 md:px-6 pt-3 pb-2 text-xs text-gray-200
                      placeholder-gray-600 resize-none focus:outline-none
                      font-mono leading-relaxed"
         />
@@ -513,7 +513,7 @@ const ComposeBox = ({
               prose
                         md:prose-invert
                         md:max-w-none
-                        px-4 md:px-6 h-[200px] md:h-[250px] overflow-x-hidden scrollbar-hide overflow-y-auto  prose-discussion
+                        px-4 md:px-6 h-[200px]  overflow-x-hidden scrollbar-hide overflow-y-auto  prose-discussion
                         md:prose-p:text-gray-300
                          break-words
                         md:prose-p:md:leading-6
@@ -1418,6 +1418,20 @@ const [notFound, setNotFound] = useState(false);
       setLoadingMore(false);
     }
   };
+  const hasProfile =
+  profile !== "undefined" && profile !== "null" && profile !== "";
+const avatarSrc = hasProfile
+  ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`
+  : av(null);
+
+  const MD_TOOLS = [
+  { Icon: TbBold, label: "Bold" },
+  { Icon: TbItalic, label: "Italic" },
+  { Icon: TbBlockquote, label: "Quote" },
+  { Icon: TbCode, label: "Code" },
+  { Icon: TbLink, label: "Link" },
+  { Icon: TbList, label: "List" },
+];
 
   // console.log("discussions", discussion);
   // console.log("replies", replies);
@@ -1664,25 +1678,65 @@ const [notFound, setNotFound] = useState(false);
 
         {/* ── Reply compose toggle ── */}
         {!showReplyCompose ? (
-          <button
+          // <button
+          //   onClick={() => setShowReplyCompose(true)}
+          //   className="flex items-center gap-2 w-full text-left px-4 py-2 md:py-3 theme border border-[#1e293b] rounded-lg md:rounded-xl text-xs md:text-sm text-gray-500 hover:text-gray-300 hover:border-white/10 transition-all duration-200 mb-4"
+          // >
+          //   { profile !== 'undefined' && profile !== 'null' && profile !== "" ? (
+          //     <img
+          //       src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`}
+          //       className="md:w-6 w-5 h-5  md:h-6 rounded-full object-cover bg-gray-700"
+          //       alt=""
+          //     />
+          //   ) : (
+          //     <img
+          //       src={av(null)}
+          //       className="md:w-6 w-5 h-5  md:h-6 rounded-full object-cover bg-gray-700"
+          //       alt=""
+          //     />
+          //   )}
+          //   Write a reply...
+          // </button>
+
+          <div
+            role="button"
+            tabIndex={0}
+            aria-label="Write a reply"
             onClick={() => setShowReplyCompose(true)}
-            className="flex items-center gap-2 w-full text-left px-4 py-2 md:py-3 theme border border-[#1e293b] rounded-lg md:rounded-xl text-xs md:text-sm text-gray-500 hover:text-gray-300 hover:border-white/10 transition-all duration-200 mb-4"
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                setShowReplyCompose(true);
+              }
+            }}
+            className="mb-4 w-full cursor-text overflow-hidden rounded-lg border border-white/10 bg-white/[0.01] text-left transition-colors duration-200 hover:border-white/20  focus-visible:outline-none  "
           >
-            { profile !== 'undefined' && profile !== 'null' && profile !== "" ? (
+            {/* Placeholder row */}
+            <div className="flex items-start gap-2.5 px-3 pb-3 pt-2.5 md:px-4 md:pt-3">
               <img
-                src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`}
-                className="md:w-6 w-5 h-5  md:h-6 rounded-full object-cover bg-gray-700"
+                src={avatarSrc}
                 alt=""
+                className="mt-0.5 h-5 w-5 shrink-0 rounded-full bg-slate-700 object-cover md:h-6 md:w-6"
               />
-            ) : (
-              <img
-                src={av(null)}
-                className="md:w-6 w-5 h-5  md:h-6 rounded-full object-cover bg-gray-700"
-                alt=""
-              />
-            )}
-            Write a reply...
-          </button>
+              <span className="text-xs text-slate-500 font-mono leading-relaxed md:text-sm">Write a reply…</span>
+            </div>
+
+            {/* Markdown toolbar (visual only) */}
+            <div className="flex items-center justify-between border-t border-white/[0.06] bg-white/[0.02] px-2 py-1 md:px-3">
+              <div className="flex items-center gap-0.5" aria-hidden="true">
+                {MD_TOOLS.map(({ Icon, label }) => (
+                  <span
+                    key={label}
+                    title={label}
+                    className="inline-flex h-6 w-6 items-center justify-center rounded text-slate-500 transition-colors hover:bg-white/[0.06] hover:text-slate-300"
+                  >
+                    <Icon className="text-[15px]" />
+                  </span>
+                ))}
+              </div>
+              <span className="text-[10px] text-slate-500">Markdown supported</span>
+            </div>
+          </div>
         ) : (
           <div className="mb-4">
             <ComposeBox
