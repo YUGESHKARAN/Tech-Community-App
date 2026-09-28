@@ -103,7 +103,7 @@ function BadgeReferenceCard({ badgeId }) {
 
   return (
     <div className="rounded-lg border border-white/[0.05] bg-white/[0.01] p-3">
-      <p className="text-xs md:text-[13px] tracking-wide font-semibold text-white/95 uppercase truncate">{def.label}</p>
+      <p className="text-[10px] md:text-[13px] tracking-wide font-semibold text-white/95 uppercase truncate">{def.label}</p>
       
       <div className="flex items-start gap-1 mt-0.5">
        
