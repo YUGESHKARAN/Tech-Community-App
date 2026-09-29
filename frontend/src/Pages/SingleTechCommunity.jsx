@@ -1314,7 +1314,7 @@ function SingleTechCommunity() {
         </div>
 
         {/* ── Two-column layout: main + sidebar ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_300px] gap-6 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_330px] gap-6 items-start">
           {/* ── Main column ── */}
           <div>
             {activeTab === "feed" && (
