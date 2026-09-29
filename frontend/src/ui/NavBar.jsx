@@ -707,7 +707,7 @@ function NavBar() {
           <NavIcon
             to="/community"
             icon={<MdGroups />}
-            label="Community"
+            label="Communities"
             close={setIsSidebarOpen}
           />
 

@@ -251,7 +251,15 @@ export default function AITechAssistant({
   // console.log("messages", messages )
   return (
     <>
-
+      {/* Floating Ask Button (Mobile) */}
+      {/* {!open && (
+        <button
+          onClick={() => setOpen(true)}
+          className=" bottom-4 flex items-center gap-2 right-4 bg-white text-black text-xs md:text-sm md:px-5 px-3 py-2 rounded-full md:hidden z-50 shadow-xl"
+        >
+         Ask AI <SiGooglegemini />
+        </button>
+      )} */}
 
       {open && (
         <div
@@ -264,7 +272,14 @@ export default function AITechAssistant({
         />
       )}
 
-
+      {/* {!open && (
+        <button
+          onClick={() => setOpen(true)}
+          className=" bottom-4 flex items-center gap-2 right-4 bg-gray-900 hover:theme-fields-lite border border-neutral-700 text-emerald-400 text-sm md:px-5 px-3 py-1 rounded-full md:hidden z-50 shadow-xl"
+        >
+         AI <SiGooglegemini />
+        </button>
+      )} */}
 
       <button
         onClick={() => setOpen(!open)}
@@ -272,10 +287,13 @@ export default function AITechAssistant({
       >
         Ask AI
         <img src={logoicon} className="w-3 h-3 object-contain rounded-full " alt="" />
-
+        {/* <SiGoogleassistant /> */}
+         {/* <SiGooglegemini /> */}
       </button>
 
       {/* Assistant Panel */}
+      {/* [#0f0f0f] */}
+      {/* [#0a0f1d]  */}
       <div
         className={`
       fixed md:static bottom-0 right-0
@@ -294,6 +312,7 @@ export default function AITechAssistant({
           md:h-[470px]  
           ${isInputFocused ? "h-[50vh] " : "h-[75vh]"}
     `}
+        //  style={{ height: isInputFocused ? "50vh " : "75vh" }}
       >
         <div
           onClick={() => {
@@ -448,6 +467,9 @@ export default function AITechAssistant({
                             key={i}
                             to={`/viewpage/${p.authorEmail}/${p.postId}`}
                             onClick={() => setOpen(false)}
+                            // bg-[#121212]
+                            // border border-neutral-800
+                            //   hover:border-neutral-700
                             className="
                               group min-w-48 max-w-48
                               rounded-lg
@@ -459,11 +481,13 @@ export default function AITechAssistant({
                           >
                             <div className="relative aspect-video overflow-hidden">
                               <img
+                                // src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${p.image}`}
                                 src={
                                   p.image
                                     ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${p.image}`
                                     : blog1
                                 }
+                                // className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                 className="w-full h-full rounded-lg object-cover"
                               />
 
@@ -495,11 +519,16 @@ export default function AITechAssistant({
                                   <p className="text-xs text-neutral-300 truncate">
                                     {p.authorName}
                                   </p>
-                   
+                                  {/* <p className="text-[11px] text-neutral-500 truncate">
+                                      {p.authorEmail}
+                                    </p> */}
                                 </div>
                               </div>
 
-                        
+                              {/* <div className="flex justify-between text-[11px] text-neutral-500">
+                                  <span>{p.links?.length >0 ? p.links?.length : ''} resources</span>
+                                  <span>Community</span>
+                                </div> */}
                             </div>
                           </Link>
                         ))}
@@ -515,8 +544,11 @@ export default function AITechAssistant({
                           key={i}
                           disabled={loading}
                           onClick={async () => {
+                            // setQuery(s);
+                            // await handleQueryClick(e);
                             handleQueryClick(s);
                           }}
+                          // className="bg-neutral-800 hover:bg-neutral-700 px-3 py-1.5 rounded-full text-sm"
                           className="border border-neutral-600 w-fit text-left hover:theme-fields-lite/70 px-3 md:py-1.5 transition-all duration-300 py-2 rounded-3xl text-sm disabled:opacity-50
                               disabled:cursor-not-allowed
                               disabled:hover:bg-transparent "
@@ -525,7 +557,27 @@ export default function AITechAssistant({
                         </button>
                       ))}
 
-             
+                      {/* {idx > 0 && msg.suggestedQueries?.length > 0 && (
+                        <div className="flex flex-nowarp scrollbar-hide overflow-x-auto gap-2 pt-2">
+                          {msg.suggestedQueries.map((s, i) => (
+                            <button
+                              key={i}
+                              disabled = {loading}
+                             onClick={async () => {
+                              // setQuery(s);
+                              // await handleQueryClick(e);
+                               handleQueryClick(s);
+                            }}
+                              // className="bg-neutral-800 hover:bg-neutral-700 px-3 py-1.5 rounded-full text-sm"
+                              className="border text-nowrap w-11/12 text-left  inline-block border-neutral-600 hover:bg-neutral-800 px-5  py-2 rounded-3xl text-sm disabled:opacity-50 disabled:cursor-not-allowed
+                              disabled:hover:bg-transparent "
+                            >
+                              <p className=" text-wrap   w-64">{s}</p>
+                              
+                            </button>
+                          ))}
+                        </div>
+                      )} */}
                     </div>
                   )}
                 </div>
@@ -544,6 +596,9 @@ export default function AITechAssistant({
 
                 {/* Line 1 */}
                 <div className="h-3 w-full rounded-full bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 " />
+
+                {/* Line 2 */}
+                {/* <div className="h-3 w-[95%] rounded-full bg-gradient-to-r from-neutral-800 via-neutral-700 to-neutral-800 animate-shimmer" /> */}
               </div>
             </div>
           )}
@@ -551,6 +606,16 @@ export default function AITechAssistant({
 
         {/* Input */}
         <div className="p-3 pb-0  rounded-b-xl flex gap-2 theme min-h-0">
+          {/* <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && askAI()}
+            placeholder="Ask your queries..."
+            className="flex-1 md:hidden theme-fields-lite border border-neutral-800 rounded-xl px-4 py-2 text-sm text-white placeholder-neutral-500 outline-none"
+            onFocus={() => setIsInputFocused(true)}
+            // onBlur={() => setIsInputFocused(false)}
+            onMouseOut={() => setIsInputFocused(false)}
+          /> */}
 
            <textarea   
             value={query}
@@ -558,7 +623,7 @@ export default function AITechAssistant({
              disabled={loading}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && askAI()}
-            
+            // placeholder="Ask your queries..."
             placeholder={PLACEHOLDERS[placeholderIndex]}
             className="flex-1 md:hidden min-h-[40px] max-h-[150px] shrink-0 theme-fields-lite border border-neutral-800 rounded-xl px-4 py-2 text-sm text-white placeholder-neutral-500 outline-none"
             onFocus={() => setIsInputFocused(true)}
@@ -567,12 +632,21 @@ export default function AITechAssistant({
             rows={1}
             />
 
+          {/* <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => {e.key === "Enter" && !e.shiftKey && askAI()}}
+            placeholder="Ask your queries..."
+            className="flex-1 theme-fields-lite hidden md:block border border-neutral-800 rounded-xl px-4 py-2 text-sm text-white placeholder-neutral-500 outline-none"
+          /> */}
+
           <textarea   
           value={query}
           disabled={loading}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => {e.key === "Enter" && !e.shiftKey && askAI()}}
             ref={textareaRef2}
+            // placeholder="Ask your queries..."
             placeholder={PLACEHOLDERS[placeholderIndex]}
             className="flex-1 theme-fields-lite  min-h-[40px] shrink-0  scrollbar-hide hidden max-h-[150px] md:block border border-neutral-800 rounded-xl px-4 py-2 text-sm text-white placeholder-neutral-500 outline-none"
             rows={1}
@@ -581,6 +655,7 @@ export default function AITechAssistant({
           <button
             onClick={() => askAI(query)}
             disabled={loading}
+            // className="bg-white text-black px-4 rounded-xl text-sm text-base block"
             className="text-2xl md:text-2xl transition-all duration-300 hover:text-gray-400 text-gray-500 block transition-all duration-300  disabled:text-gray-700 disabled:cursor-not-allowed"
           >
             {/* Send */}
