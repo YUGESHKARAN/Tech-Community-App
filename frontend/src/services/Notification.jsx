@@ -121,7 +121,7 @@ const Notificationpanel = ({
       ref={notificationRef}
       className={`${
         showNotification && !showAddContent
-          ? "fixed top-16 right-2 z-50 md:w-[320px] w-72 theme border border-gray-700/50 shadow-2xl rounded-xl  md:rounded-2xl transition-all duration-300 overflow-hidden"
+          ? "fixed top-16 right-2 z-50 md:w-[320px] w-72 theme border border-gray-700/50 shadow-2xl rounded-lg  md:rounded-xl transition-all duration-300 overflow-hidden"
           : "hidden"
       }`}
     >
