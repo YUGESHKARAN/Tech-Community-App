@@ -289,11 +289,11 @@ function ProfilePage() {
 
             <div className="flex items-center justify-between mb-0 md:mt-2 md:mb-4 px-1">
               <div>
-                <p className="text-[10px] font-medium tracking-widest uppercase text-gray-300 ">
+                <p className="md:text-[10px] text-[8px] font-medium tracking-widest uppercase text-gray-300 ">
                   Account
                 </p>
 
-                <h1 className="text-lg font-medium tracking-tight text-emerald-400">
+                <h1 className="md:text-lg text-sm font-medium tracking-tight text-emerald-400">
                   My Profile
                 </h1>
               </div>
@@ -315,7 +315,8 @@ function ProfilePage() {
                     group
                     inline-flex
                     items-center
-                    gap-1.5
+                    md:gap-1.5
+                    gap-1
                     px-2
                     md:px-3.5
                     md:py-2
@@ -325,11 +326,12 @@ function ProfilePage() {
                     border
                     border-slate-700
                     text-slate-200
-                    text-[11px]
+                    md:text-[11px]
+                    text-[9px]
                     font-medium
                   "
                 >
-                  <MdEdit className="text-sm  text-emerald-400" />
+                  <MdEdit className="text-xs md:text-sm  text-emerald-400" />
 
                   <motion.span
                     key={editProfile ? "Close Editing" : "Edit Profile"}
