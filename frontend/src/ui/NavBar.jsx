@@ -882,7 +882,7 @@ function NavBar() {
         ref={addContentRef}
         className={`${
           showAddContent && !showNotification
-            ? "fixed top-16 right-12 z-50 px-2 py-1 w-48 overflow-hidden rounded-lg border border-[#30363d] theme shadow-2xl"
+            ? "fixed top-16 right-12 z-50 px-2 py-1 w-48 overflow-hidden rounded-2xl border border-[#30363d] theme shadow-2xl"
             : "hidden"
         }`}
       >
@@ -1035,12 +1035,12 @@ function NavBar() {
   ref={showProfileSettings}
   className={`${
     !showAddContent && !showNotification && showProfile
-      ? "fixed top-16 right-2 z-50 w-40 overflow-hidden rounded-lg border border-white/10 theme shadow-[0_20px_50px_-12px_rgba(0,0,0,0.75)] backdrop-blur-xl"
+      ? "fixed top-16 right-2 z-50 w-44 overflow-hidden rounded-lg border border-white/10 theme shadow-[0_20px_50px_-12px_rgba(0,0,0,0.75)] backdrop-blur-xl"
       : "hidden"
   }`}
 >
   {/* Signed-in-as header */}
-  <div className="flex items-center gap-2.5 px-2.5 py-2">
+  <div className="flex items-center gap-2.5 px-3 py-2.5">
 
 
     {profile !== "undefined" && profile !== "null" && profile !== "" ? (
@@ -1062,7 +1062,7 @@ function NavBar() {
   <div className="h-px bg-white/[0.08]" />
 
   {/* Menu items */}
-  <div className=" px-1 ">
+  <div className="pt-1 px-1 ">
     <Link
       onClick={() => {
         setShowProfile(false);
@@ -1087,7 +1087,7 @@ function NavBar() {
   {/* <div className="h-px bg-white/[0.08]" /> */}
 
   {/* Sign out — isolated in its own section, GitHub-style */}
-  <div className="pb-1.5 px-1">
+  <div className="pb-2 px-1">
     <button
       onClick={exit}
       disabled={isImpersonating()}
