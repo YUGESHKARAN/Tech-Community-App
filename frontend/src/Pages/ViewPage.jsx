@@ -55,7 +55,7 @@ function ViewPage() {
   const [postId, setPostId] = useState("");
   const { email, id } = useParams();
   const [viewComments, setViewComments] = useState(false);
-  const [showContent, setShowContent] = useState(false);
+  const [showContent, setShowContent] = useState(true);
   const navigate = useNavigate();
   const [selectedImage, setSelectedImage] = useState(null);
   const [profile, setProfile] = useState("");
