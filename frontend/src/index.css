@@ -164,5 +164,108 @@ body {
   background-color: #0d121e;
 }
 
+.dot {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: rgb(167 139 250);
+}
+
+/* First dot */
+.dot-1 {
+  left: 1px;
+  top: 7px;
+  animation: dot1 2s ease-in-out infinite;
+}
+
+/* Second dot */
+.dot-2 {
+  left: 12px;
+  top: 7px;
+  animation: dot2 2s ease-in-out infinite;
+}
+
+/* Third dot */
+.dot-3 {
+  left: 23px;
+  top: 7px;
+  animation: dot3 2s ease-in-out infinite;
+}
 
 
+/* ───────── DOT 1 ───────── */
+
+@keyframes dot1 {
+  /* 0–50% = sequential bounce */
+  0%,
+  20%,
+  50% {
+    transform: translateY(0);
+  }
+
+  8% {
+    transform: translateY(-5px);
+  }
+
+  /* 50–100% = triangle rotation */
+  75% {
+    transform: translate(11px, -7px);
+  }
+
+  100% {
+    transform: translate(22px, 0);
+  }
+}
+
+
+/* ───────── DOT 2 ───────── */
+
+@keyframes dot2 {
+  /* sequential bounce — starts after dot 1 */
+  0%,
+  15%,
+  30%,
+  50% {
+    transform: translateY(0);
+  }
+
+  30% {
+    transform: translateY(-5px);
+  }
+
+  /* triangle rotation */
+  75% {
+    transform: translate(-11px, 0);
+  }
+
+  100% {
+    transform: translate(0, -7px);
+  }
+}
+
+
+/* ───────── DOT 3 ───────── */
+
+@keyframes dot3 {
+  /* sequential bounce — starts after dot 2 */
+  0%,
+  20%,
+  40%,
+  50% {
+    transform: translateY(0);
+  }
+
+  40% {
+    transform: translateY(-5px);
+  }
+
+  /* triangle rotation */
+  75% {
+    transform: translate(-11px, 7px);
+  }
+
+  100% {
+    transform: translate(-22px, 0);
+  }
+}
