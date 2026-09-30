@@ -585,7 +585,7 @@ function ViewPage() {
           </div>
 
           {/* Title */}
-          <h1 className="text-xl  pl-1 md:pl-0 md:text-3xl max-w-[370px] md:max-w-4xl  font-semibold text-gray-200 mt-2 mb-1  md:mb-4">
+          <h1 className="text-lg  pl-1 md:pl-0 md:text-3xl max-w-[370px] md:max-w-4xl  font-semibold text-gray-200 mt-2 mb-1  md:mb-4">
             {singlePostData.title}
           </h1>
 
