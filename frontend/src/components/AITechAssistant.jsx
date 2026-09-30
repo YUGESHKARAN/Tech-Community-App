@@ -836,11 +836,12 @@ export default function AITechAssistant({
     const userMessage = lastUserRef.current;
     if (!container || !userMessage) return;
 
-    const lastMessage = messages[messages.length - 1];
-    if (lastMessage?.role !== "user") return;
-
     const start = container.scrollTop;
-    const end = userMessage.offsetTop - 30; // slight padding
+    const end =
+      container.scrollTop +
+      userMessage.getBoundingClientRect().top -
+      container.getBoundingClientRect().top -
+      16;
     const duration = 350;
 
     let startTime = null;
@@ -858,7 +859,7 @@ export default function AITechAssistant({
     }
 
     requestAnimationFrame(animateScroll);
-  }, [messages]);
+  }, [messages, loading]);
 
   useEffect(() => {
     if (viewComments) {
@@ -1286,7 +1287,7 @@ export default function AITechAssistant({
 
           {loading && (
             <div className="relative space-y-3 overflow-x-hidden">
-              <div className="flex items-center gap-2.5">
+              {/* <div className="flex items-center gap-2.5">
                 <img src={logoicon} className="h-5 w-5 shrink-0 rounded-md object-contain opacity-60" alt="" />
                 <div className="flex items-center gap-1">
                   {[0, 1, 2].map((i) => (
@@ -1297,7 +1298,20 @@ export default function AITechAssistant({
                     />
                   ))}
                 </div>
-              </div>
+              </div> */}
+              <div className="flex items-center gap-2.5">
+  <img
+    src={logoicon}
+    className="h-5 w-5 shrink-0 rounded-md object-contain opacity-60"
+    alt=""
+  />
+
+  <div className="relative h-5 w-8">
+    <span className="dot dot-1" />
+    <span className="dot dot-2" />
+    <span className="dot dot-3" />
+  </div>
+</div>
               <div className="space-y-2.5 rounded-xl border border-white/[0.08] bg-white/[0.02] p-4">
                 <div className="h-3 w-2/3 animate-pulse rounded-full bg-white/[0.08]" />
                 <div className="h-3 w-full animate-pulse rounded-full bg-white/[0.08]" />
