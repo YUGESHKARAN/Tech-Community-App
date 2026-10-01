@@ -360,52 +360,140 @@ const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 // ─────────────────────────────────────────────────────────────────────────────
 //  STREAK WIDGET
 // ─────────────────────────────────────────────────────────────────────────────
+// const StreakWidget = ({ currentStreak, longestStreak, lastActiveDate }) => {
+//   const display      = effectiveStreak(currentStreak, lastActiveDate);
+//   const streakLapsed = display === 0 && currentStreak > 0;
+
+//   return (
+//     <div className="grid grid-cols-2 gap-3">
+//       <div className="theme flex flex-col justify-between border border-[#1e293b] rounded-xl p-4">
+//         <div className="flex items-center gap-1.5 mb-1 md:mb-2">
+//           <TbFlame className={`text-base ${display > 0 ? "text-amber-400" : "text-gray-600"}`} />
+//           <span className="text-[10px] font-medium text-gray-500 uppercase tracking-wide">
+//             Current streak
+//           </span>
+//         </div>
+//         <div className="flex items-baseline gap-1.5">
+//           <span className={`text-2xl font-bold ${display > 0 ? "text-gray-100" : "text-gray-600"}`}>
+//             {formatCount(display)}
+//           </span>
+//           <span className="text-xs text-gray-500">days</span>
+//         </div>
+//         <p className={`text-[10px] mt-0.5 md:mt-1 ${
+//           streakLapsed ? "text-amber-500/70" : display > 0 ? "text-emerald-500/70" : "text-gray-600"
+//         }`}>
+//           {streakLapsed
+//             ? "Streak ended — post today to restart"
+//             : display > 0
+//             ? "Keep it going!"
+//             : "Post today to start a streak"}
+//         </p>
+//       </div>
+
+//       <div className="theme flex flex-col justify-between border border-[#1e293b] rounded-xl p-4">
+//         <div className="flex items-center gap-1.5 mb-1 md:mb-2">
+//           <TbTrophy className="text-base text-amber-400/60" />
+//           <span className="text-[10px] font-medium text-gray-500 uppercase tracking-wide">
+//             Longest streak
+//           </span>
+//         </div>
+//         <div className="flex items-baseline gap-1.5">
+//           <span className="text-2xl font-bold text-gray-100">{formatCount(longestStreak)}</span>
+//           <span className="text-xs text-gray-500">days</span>
+//         </div>
+//         <p className="text-[10px] text-gray-600 mt-0.5 md:mt-1">All-time personal best</p>
+//       </div>
+//     </div>
+//   );
+// };
+
 const StreakWidget = ({ currentStreak, longestStreak, lastActiveDate }) => {
   const display      = effectiveStreak(currentStreak, lastActiveDate);
   const streakLapsed = display === 0 && currentStreak > 0;
+  const isActive     = display > 0;
+
+const flameColor = (days) => {
+  if (days <= 0) return "text-slate-600";   // no active streak
+  if (days < 5)  return "text-yellow-400";  // 1-4 days
+  if (days < 10) return "text-emerald-400"; // 5-9 days
+  return "text-red-400";                    // 10+ days
+};
 
   return (
-    <div className="grid grid-cols-2 gap-3">
-      <div className="theme flex flex-col justify-between border border-[#1e293b] rounded-xl p-4">
-        <div className="flex items-center gap-1.5 mb-1 md:mb-2">
-          <TbFlame className={`text-base ${display > 0 ? "text-amber-400" : "text-gray-600"}`} />
-          <span className="text-[10px] font-medium text-gray-500 uppercase tracking-wide">
+    <div className="grid grid-cols-2 gap-2.5">
+      {/* Current streak */}
+      <div
+        className={`flex flex-col justify-between rounded-xl border bg-[#12151c] p-3 transition-colors ${
+          isActive ? "border-emerald-500/20" : "border-white/[0.07]"
+        }`}
+      >
+        <div className="flex items-center gap-1.5">
+          <span className="flex h-6 w-6 items-center justify-center rounded-md border border-white/[0.07] bg-white/[0.04]">
+            {/* <TbFlame
+              className={`text-sm ${isActive ? "text-emerald-400" : "text-yellow-500"}`}
+            /> */}
+            <TbFlame className={`text-sm ${flameColor(display)}`} />
+          </span>
+          <span className="text-[10px] font-medium uppercase tracking-wider text-slate-400">
             Current streak
           </span>
         </div>
-        <div className="flex items-baseline gap-1.5">
-          <span className={`text-2xl font-bold ${display > 0 ? "text-gray-100" : "text-gray-600"}`}>
+
+        <div className="mt-2.5 flex items-baseline gap-1">
+          <span
+            className={`text-2xl font-semibold leading-none tracking-tight tabular-nums ${
+              isActive ? "text-white" : "text-slate-600"
+            }`}
+          >
             {formatCount(display)}
           </span>
-          <span className="text-xs text-gray-500">days</span>
+          <span className="text-[11px] text-slate-500">days</span>
         </div>
-        <p className={`text-[10px] mt-0.5 md:mt-1 ${
-          streakLapsed ? "text-amber-500/70" : display > 0 ? "text-emerald-500/70" : "text-gray-600"
-        }`}>
+
+        <p
+          className={`mt-2 border-t border-white/[0.06] pt-2 text-[11px] leading-snug ${
+            streakLapsed
+              ? "text-yellow-500/50"
+              : isActive
+              ? "text-emerald-400/80"
+              : "text-yellow-500/50"
+          }`}
+        >
           {streakLapsed
             ? "Streak ended — post today to restart"
-            : display > 0
-            ? "Keep it going!"
+            : isActive
+            ? "Keep it going !"
             : "Post today to start a streak"}
         </p>
       </div>
 
-      <div className="theme flex flex-col justify-between border border-[#1e293b] rounded-xl p-4">
-        <div className="flex items-center gap-1.5 mb-1 md:mb-2">
-          <TbTrophy className="text-base text-amber-400/60" />
-          <span className="text-[10px] font-medium text-gray-500 uppercase tracking-wide">
+      {/* Longest streak */}
+      <div className="flex flex-col justify-between rounded-xl border border-white/[0.07] bg-[#12151c] p-3">
+        <div className="flex items-center gap-1.5">
+          <span className="flex h-6 w-6 items-center justify-center rounded-md border border-white/[0.07] bg-white/[0.04]">
+            <TbTrophy className="text-sm text-yellow-500" />
+          </span>
+          <span className="text-[10px] font-medium uppercase tracking-wider text-slate-400">
             Longest streak
           </span>
         </div>
-        <div className="flex items-baseline gap-1.5">
-          <span className="text-2xl font-bold text-gray-100">{formatCount(longestStreak)}</span>
-          <span className="text-xs text-gray-500">days</span>
+
+        <div className="mt-2.5 flex items-baseline gap-1">
+          <span className="text-2xl font-semibold leading-none tracking-tight tabular-nums text-white">
+            {formatCount(longestStreak)}
+          </span>
+          <span className="text-[11px] text-slate-500">days</span>
         </div>
-        <p className="text-[10px] text-gray-600 mt-0.5 md:mt-1">All-time personal best</p>
+          <p className={`mt-2 border-t border-white/[0.06] pt-2 text-[11px] leading-snug ${formatCount(longestStreak)>1?'text-slate-500':'text-slate-500/80'} `}>
+          All-time personal best
+        </p>
+       
       </div>
     </div>
   );
 };
+
+
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  DAY EVENT DRAWER
