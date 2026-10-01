@@ -640,10 +640,11 @@ function NavBar() {
       </div>
 
       {/* Sidebar */}
+      {/* bg-[#0b1220] */}
       <div
         ref={sidebarRef}
         className={`fixed top-0 left-0 w-[300px]
-              bg-[#0b1220]
+              bg-[#080e18]
               text-white shadow-2xl z-50 h-screen
               flex flex-col
               transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]
@@ -685,7 +686,7 @@ function NavBar() {
         </div>
 
         {/* ================= PRIMARY ICON NAV ================= */}
-        <div className="flex flex-col  space-y-4 px-6 pt-10 pb-3">
+        <div className="flex flex-col  space-y-4 px-6 pt-5 pb-3">
           {role != "admin" && (
             <NavIcon
               to="/home"
@@ -742,7 +743,8 @@ function NavBar() {
         >
 
           {role === "admin" && (
-            <p className="text-gray-400 font-medium text-xs mb-3"> Admin Controls</p>
+            // <p className="text-gray-400 font-medium text-xs mb-3"> Admin Controls</p>
+            <p className="text-slate-500/90  font-medium uppercase tracking-widest mb-3 text-[11px]"> Admin Controls</p>
           )}
 
          
@@ -769,7 +771,7 @@ function NavBar() {
             )}
 
              {role !== "student" && (
-            <p className="text-gray-400 font-medium text-xs ">Workspace</p>
+            <span className="text-slate-500/90  font-medium uppercase tracking-widest text-[11px] ">Workspace</span>
           )}
 
     
@@ -794,7 +796,7 @@ function NavBar() {
           </div>
         </div>
 
-        <RecentVisit setIsSidebarOpen={setIsSidebarOpen} />
+        <RecentVisit titleClass="text-slate-500/90  font-medium uppercase tracking-widest text-[10px]" parentClass="px-1" setIsSidebarOpen={setIsSidebarOpen} />
       </div>
 
 
@@ -1125,7 +1127,7 @@ function NavIcon({ to, icon, label, close }) {
                    transition-all duration-300"
     >
       <span className=" text-sm text-gray-300/80">{icon}</span>
-      <span className="text-sm text-gray-200">{label}</span>
+      <span className="text-sm text-slate-300/90">{label}</span>
     </Link>
   );
 }
@@ -1230,7 +1232,7 @@ function NavTile({ to, icon, title, subtitle, badge, close }) {
     >
       <span className="text-sm text-gray-300/80 text-sm mt-1">{icon}</span>
       <div className="flex mt-0 flex-col">
-        <p className=" text-sm text-gray-200  ">{title}</p>
+        <p className=" text-sm text-slate-300/90  ">{title}</p>
         <p className="text-xs text-white/40">{subtitle}</p>
       </div>
       {badge > 0 && (
