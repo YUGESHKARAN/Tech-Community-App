@@ -686,7 +686,7 @@ function NavBar() {
         </div>
 
         {/* ================= PRIMARY ICON NAV ================= */}
-        <div className="flex flex-col  space-y-4 px-6 pt-5 pb-3">
+        <div className="flex flex-col  space-y-4 px-6 pt-10 pb-3">
           {role != "admin" && (
             <NavIcon
               to="/home"
@@ -884,7 +884,7 @@ function NavBar() {
         ref={addContentRef}
         className={`${
           showAddContent && !showNotification
-            ? "fixed top-16 right-12 z-50 px-2 py-1 w-48 overflow-hidden rounded-2xl border border-[#30363d] theme shadow-2xl"
+            ? "fixed top-16 right-12 z-50 px-2 py-1 w-48 overflow-hidden rounded-xl border border-[#30363d] theme shadow-2xl"
             : "hidden"
         }`}
       >

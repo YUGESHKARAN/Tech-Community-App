@@ -551,7 +551,7 @@ function TechCommunityLanding() {
 
           <RecentVisit
             parentClass="flex col-span-1 order-1 border-none md:col-span-2 lg:col-span-1 flex-col hidden xl:block gap-3 pt-0 lg:sticky lg:top-16"
-            titleClass="text-sm  font-semibold text-gray-300 "
+            titleClass="md:text-slate-400 text-slate-500   uppercase tracking-widest text-[10px] md:text-[11px]"
             childClass="theme border border-[#1e293b] rounded-2xl p-1 mt-2"
           />
 
@@ -560,7 +560,7 @@ function TechCommunityLanding() {
             <div className="md:col-span-2 order-3 xl:order-2 col-span-1 ">
               {statsLoader ? (
                 <div className="grid grid-cols-1   gap-5">
-                  <h3 className="text-sm col-span-full font-semibold text-gray-300 ">
+                  <h3 className="text-slate-400   uppercase tracking-widest text-[10px] md:text-[11px] col-span-full font-semibold ">
                     Your Communities
                   </h3>
                   {[...Array(8)].map((_, index) => (
@@ -571,7 +571,7 @@ function TechCommunityLanding() {
                 <>
                   {yourCommunities?.length > 0 && (
                     <div className="">
-                      <h3 className="text-sm font-semibold text-gray-300 mb-3">
+                      <h3 className="md:text-slate-400 text-slate-500 uppercase tracking-widest text-[10px] md:text-[11px] font-semibold  mb-3">
                         Your Communities
                       </h3>
 
@@ -602,7 +602,7 @@ function TechCommunityLanding() {
 
                   {exploreCommunities.length > 0 && (
                     <div className="mt-8">
-                      <h3 className="text-sm font-semibold text-gray-300 mb-3">
+                      <h3 className="md:text-slate-400 text-slate-500 uppercase tracking-widest text-[10px] md:text-[11px] font-semibold  mb-3">
                         Explore Communities
                       </h3>
 
@@ -685,9 +685,9 @@ function TechCommunityLanding() {
             </div>
           }
           <div className="flex col-span-1 order-2 xl:order-3  md:col-span-2 lg:col-span-2 xl:col-span-1 flex-col gap-3 lg:sticky lg:top-16">
-            <PerformanceTracker streakData={streakData} authorId={authorId} streakLoading={streakLoader} showStreak={true}/>
+            <PerformanceTracker titleClass="md:text-slate-400 text-slate-500 uppercase tracking-widest text-[10px] md:text-[11px] font-semibold " streakData={streakData} authorId={authorId} streakLoading={streakLoader} showStreak={true}/>
             {/* Top contributors */}
-            <h3 className="text-sm md:ml-2 font-semibold text-gray-300">
+            <h3 className="md:text-slate-400 text-slate-500 uppercase tracking-widest text-[10px] md:text-[11px] font-semibold  md:ml-2 ">
               Overall Leaderboard
             </h3>
             {!topContributorsLoading ? (

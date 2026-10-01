@@ -10,6 +10,9 @@ import {
 
 import { createPortal } from "react-dom";
 
+import { twMerge } from "tailwind-merge";
+import clsx from "clsx";
+
 // ── Sample data imports ───────────────────────────────────────────────────────
 // Swap these for real hooks when ready:
 //   const { data: streakData } = useGetStreakData(authorId);
@@ -908,7 +911,7 @@ const CellTooltip = ({ day, anchorRect }) => {
  * Sample data mode (no authorId — for UI testing):
  *   <PerformanceTracker isOwn={true} />
  */
-const PerformanceTracker = ({userId=null, streakData,streakLoading, showStreak=false, showActivityGraph=false,  isOwn = true }) => {
+const PerformanceTracker = ({userId=null, titleClass="", streakData,streakLoading, showStreak=false, showActivityGraph=false,  isOwn = true }) => {
   const currentYear = new Date().getFullYear();
   let authorId = getItem("authorId");
   if(!isOwn)
@@ -1065,7 +1068,18 @@ const PerformanceTracker = ({userId=null, streakData,streakLoading, showStreak=f
 
   return (
     <div className="flex flex-col gap-4">
-      <span className="text-sm md:ml-2 font-semibold text-gray-300">
+      <span 
+      // className="text-sm md:ml-2 font-semibold text-gray-300"
+
+                 className={twMerge(
+              clsx(
+                `
+             text-sm md:ml-2 font-semibold text-gray-30
+                `,
+                titleClass
+              )
+            )}
+      >
         {isOwn ? "Your Contribution Activity" : "Contribution Activity"}
       </span>
 
