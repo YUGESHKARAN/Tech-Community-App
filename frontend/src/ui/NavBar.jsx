@@ -657,6 +657,27 @@ function NavBar() {
               }`}
               
       >
+        {/* <div
+  className="absolute inset-0 pointer-events-none opacity-[0.10]"
+  style={{
+    backgroundImage: `
+      linear-gradient(
+        rgba(255,255,255,0.32) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        90deg,
+        rgba(255,255,255,0.32) 1px,
+        transparent 1px
+      )
+    `,
+    backgroundSize: "28px 28px",
+    maskImage:
+      "linear-gradient(to bottom, black 0%, rgba(0,0,0,.85) 65%, transparent 100%)",
+    WebkitMaskImage:
+      "linear-gradient(to bottom, black 0%, rgba(0,0,0,.85) 65%, transparent 100%)",
+  }}
+/> */}
         {/* ================= HEADER ================= */}
         <div className="flex items-center justify-between px-5 py-4 pb-3">
           {role !== "admin" ? (

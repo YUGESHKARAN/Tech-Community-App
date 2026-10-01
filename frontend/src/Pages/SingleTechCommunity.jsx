@@ -145,12 +145,37 @@ const CommunityBanner = ({
   if (!loader && community?.colorTheme) {
     return (
       <div
-        className="relative rounded-lg md:rounded-2xl md:px-2 overflow-hidden mb-0"
+        className="relative md:py-2 rounded-lg  md:px-2 overflow-hidden mb-0"
         style={{
           // background: `linear-gradient(135deg, ${style.from}, ${style.to})`,
           background: `${community?.colorTheme ? `linear-gradient(135deg, ${gradient?.from}, ${gradient?.to})` : `linear-gradient(135deg, ${style?.from}, ${style?.to})`}`,
         }}
       >
+        {/* ─────────────────────────────────────────
+    PREMIUM TECH GRID
+───────────────────────────────────────── */}
+<div
+  className="absolute inset-0 pointer-events-none opacity-[0.25]"
+  style={{
+    backgroundImage: `
+      linear-gradient(
+        rgba(255,255,255,0.32) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        90deg,
+        rgba(255,255,255,0.32) 1px,
+        transparent 1px
+      )
+    `,
+    backgroundSize: "28px 28px",
+    maskImage:
+      "linear-gradient(to bottom, black 0%, rgba(0,0,0,.85) 65%, transparent 100%)",
+    WebkitMaskImage:
+      "linear-gradient(to bottom, black 0%, rgba(0,0,0,.85) 65%, transparent 100%)",
+  }}
+/>
+        
         {/* subtle texture overlay */}
         <div
           className="absolute inset-0 opacity-10"
