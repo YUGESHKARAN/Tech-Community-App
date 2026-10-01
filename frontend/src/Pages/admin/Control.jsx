@@ -329,8 +329,8 @@ function Control() {
       <div className="min-h-screen">
 
       <div className="flex px-4 md:px-12 mx-auto width-max items-center items-center gap-1 pt-3 pb-2 md:pb-0 md:gap-3">
-        <MdManageAccounts className="text-emerald-500/70 text-lg " />
-        <h1 className="text-lg md:text-xl font-semibold tracking-tight text-gray-100">
+        <MdManageAccounts className="text-emerald-500/70 text-sm md:text-lg " />
+        <h1 className="text-sm md:text-xl font-semibold tracking-tight text-gray-100">
           Control Panel
         </h1>
       </div>

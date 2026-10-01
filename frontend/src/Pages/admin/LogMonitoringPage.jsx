@@ -303,10 +303,10 @@ function LogMonitoringPage() {
       {/* HEADER */}
       <div className="flex flex-col md:flex-row justify-between gap-4 mb-3">
         <div>
-          <h1 className="text-xl font-semibold text-emerald-400">
+          <h1 className="text-sm md:text-xl font-semibold text-emerald-400">
             Backup Logs
           </h1>
-          <p className="text-xs text-gray-400">
+          <p className="text-[10px] md:text-xs text-gray-400">
             Monitor, backup and recover deleted user data
           </p>
         </div>

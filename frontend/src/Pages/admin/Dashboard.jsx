@@ -257,10 +257,10 @@ function Dashboard() {
             className="space-y-4"
           >
             <div>
-              <h2 className=" text-xl font-semibold text-emerald-400 ">
+              <h2 className="text-sm md:text-xl font-semibold text-emerald-400 ">
                 Analytics
               </h2>
-              <p className="text-xs text-gray-400">Key trends and insights</p>
+              <p className="md:text-xs text-[10px] text-gray-400">Key trends and insights</p>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -581,8 +581,8 @@ function Dashboard() {
             className="space-y-4 "
           >
             <div>
-              <h2 className="text-xl font-semibold text-emerald-400">Users</h2>
-              <p className="text-xs text-gray-400">
+              <h2 className="md:text-xl text-sm font-semibold text-emerald-400">Users</h2>
+              <p className="md:text-xs text-[10px] text-gray-400">
                 Contributors and users records
               </p>
             </div>
