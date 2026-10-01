@@ -823,7 +823,7 @@ const ReplyCard = ({
     <div
       className={`border rounded-xl p-4 transition-all ${
         isAccepted
-          ? " border-green-900 bg-green-600/10"
+          ? " border-green-900 bg-green-800/10"
           : "border-[#1e293b] theme"
       }`}
     >
@@ -1575,7 +1575,7 @@ const avatarSrc = hasProfile
 
         
 
-            <div className={`${discussion?.isSolved &&' bg-green-400/10'} p-5`}>
+            <div className={`${discussion?.isSolved &&' bg-green-800/10'} p-5`}>
               {/* header row */}
               <div className="flex items-start gap-3">
                 {/* upvote */}
