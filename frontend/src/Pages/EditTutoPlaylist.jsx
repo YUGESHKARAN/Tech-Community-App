@@ -233,7 +233,7 @@ const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
       <NavBar />
       <div className="mb-6 mt-4 px-4 md:px-12 mx-auto flex items-center justify-between">
         <div>
-          <h1 className="md:text-xl text-xl font-semibold   text-white tracking-tight">
+          <h1 className="md:text-xl text-sm font-semibold   text-white tracking-tight">
             Update Playlist
           </h1>
           <p className="text-xs text-gray-400 mt-1">

@@ -277,7 +277,7 @@ function TechCommunityLanding() {
     const bgColor = gradient?.from ?? style.from;
 
     return (
-      <div className="group  relative theme border border-[#1e293b] rounded-xl md:rounded-2xl overflow-hidden flex flex-col hover:border-white/10 transition-all duration-300">
+      <div className="group  relative theme border border-[#1e293b] rounded-xl overflow-hidden flex flex-col hover:border-white/10 transition-all duration-300">
         <Link
           // to={`/techDomainDetails/${encodeURIComponent(item.name)}`}
           to={`/techCommunityDetails/${item?._id}`}
@@ -291,6 +291,28 @@ function TechCommunityLanding() {
               background: `${item?.colorTheme ? `linear-gradient(135deg, ${gradient?.from}, ${gradient?.to})` : `linear-gradient(135deg, ${style?.from}, ${style?.to})`}`,
             }}
           >
+
+            <div
+  className="absolute inset-0 pointer-events-none opacity-[0.28]"
+  style={{
+    backgroundImage: `
+      linear-gradient(
+        rgba(255,255,255,0.32) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        90deg,
+        rgba(255,255,255,0.32) 1px,
+        transparent 1px
+      )
+    `,
+    backgroundSize: "28px 28px",
+    maskImage:
+      "linear-gradient(to bottom, black 0%, rgba(0,0,0,.85) 65%, transparent 100%)",
+    WebkitMaskImage:
+      "linear-gradient(to bottom, black 0%, rgba(0,0,0,.85) 65%, transparent 100%)",
+  }}
+/>
             <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
               <Icon className="text-white text-sm md:text-lg" />
             </div>
