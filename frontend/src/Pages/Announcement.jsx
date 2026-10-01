@@ -626,76 +626,7 @@ function Announcement() {
       );
     });
   };
-  const renderTextWithHashtags2 = (text) => {
-    if (!text) return null;
 
-    const cleanedText = text
-      .replace(/\\r\\n/g, "\n")
-      .replace(/\\n/g, "\n")
-      .replace(/\\r/g, "\n");
-
-    return cleanedText.split("\n").map((line, lineIndex) => {
-      const parts = line.split(/(\*\*.*?\*\*|#{1,6}[^\n]+|\s?#\w+)/gm);
-
-      return (
-        <React.Fragment key={lineIndex}>
-          {parts.map((part, index) => {
-            if (!part) return null;
-
-            const trimmed = part.trim();
-
-            // ---------- Markdown Headings ----------
-            // Supports:
-            // ###Heading
-            // ### Heading
-            if (/^#{1,6}/.test(trimmed)) {
-              return (
-                <span
-                  key={index}
-                  className="font-semibold  md:text-sm text-xs text-white"
-                >
-                  {trimmed.replace(/^#{1,6}\s*/, "")}
-                </span>
-              );
-            }
-
-            // ---------- Bold ----------
-            if (trimmed.startsWith("**") && trimmed.endsWith("**")) {
-              return (
-                <span
-                  key={index}
-                  className="font-semibold md:text-sm text-xs text-white"
-                >
-                  {trimmed.replace(/\*\*/g, "")}
-                </span>
-              );
-            }
-
-            // ---------- Hashtags ----------
-            if (/^(\s)?#\w+/.test(part)) {
-              return (
-                <span
-                  key={index}
-                  className="text-white md:text-sm text-xs font-medium"
-                >
-                  {part}
-                </span>
-              );
-            }
-
-            // ---------- Normal ----------
-            return (
-              <React.Fragment key={index}>
-                {part.replace(/\\\*/g, "*").replace(/\\\\/g, "\\")}
-              </React.Fragment>
-            );
-          })}
-
-          <br />
-        </React.Fragment>
-      );
-    });
-  };
 
   const clearAllAnnouncements = async () => {
     if (reversedAnnouncements.length === 0) {
@@ -756,8 +687,8 @@ function Announcement() {
               </h1> */}
 
               <div className="flex items-center gap-1 md:gap-2">
-                      <MdAnnouncement className="text-xl  pt-0.5 md:pt-0 md:text-xl" />
-                      <h1 className="text-lg md:text-xl font-semibold tracking-tight text-gray-100">
+                      <MdAnnouncement className="text-sm  pt-0.5 md:pt-0 md:text-xl" />
+                      <h1 className="text-sm md:text-xl font-semibold tracking-tight text-gray-100">
                          Announcements
                       </h1>
                     </div>
@@ -787,7 +718,8 @@ function Announcement() {
                   group
                   inline-flex
                   items-center
-                  gap-1.5
+                  md:gap-1.5
+                  gap-1
                   px-2
                   py-1
                   rounded-lg
@@ -795,7 +727,8 @@ function Announcement() {
                   border
                   border-slate-700
                   text-slate-200
-                  text-[11px]
+                  md:text-[11px]
+                  text-[10px]
                   font-medium
                 "
               >

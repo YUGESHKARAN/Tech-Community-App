@@ -325,7 +325,7 @@ function Authors() {
   const ContributorCard = ({ author }) => {
     return (
       <div className="theme border border-[#1e293b] rounded-xl md:rounded-2xl overflow-hidden hover:border-white/10 transition-all duration-300">
-        <div className="pt-5 pb-10 md:pb-9 px-4 relative bg-white/[0.03] border-b border-emerald-500/20">
+        <div className="pt-5 pb-10 md:pb-9 px-2 relative bg-white/[0.03] border-b border-emerald-500/20">
           {author.role === "coordinator" && (
             <span className="absolute top-3 right-3 text-[8px] md:text-[9px] md:font-semibold px-1.5 py-0.5 md:px-2 md:py-1 rounded-full bg-emerald-500/10 border border-emerald-700/40 text-emerald-400">
               Coordinator
@@ -333,7 +333,7 @@ function Authors() {
           )}
         </div>
 
-        <Link to={`/viewProfile/${author.email}`} className="block px-4">
+        <Link to={`/viewProfile/${author.email}`} className="block px-2">
           <div className="relative -mt-8 mb-2 flex justify-center">
             <img
               src={
@@ -387,7 +387,7 @@ function Authors() {
           </div>
         </Link>
 
-        <div className="px-4 pb-4" onClick={(e) => e.stopPropagation()}>
+        <div className="px-2 pb-4" onClick={(e) => e.stopPropagation()}>
           <FollowButton author={author} />
         </div>
       </div>
@@ -464,7 +464,7 @@ function Authors() {
     const reason = reasonLabel(author.reason);
 
     return (
-      <div className="min-w-[240px] relative theme border border-gray-700 rounded-xl py-2 px-4 md:p-4 shadow hover:shadow-xl  transition flex-shrink-0">
+      <div className="min-w-[240px] relative theme border border-gray-700 rounded-xl py-2 px-2 md:p-4 shadow hover:shadow-xl  transition flex-shrink-0">
         {reason && (
           <span
             className="inline-block text-[9px] font-semibold px-2 py-1 rounded-full mb-1.5 md:mb-3"
@@ -520,10 +520,10 @@ function Authors() {
     <div className="w-full min-h-screen theme">
       <NavBar />
 
-      <div className="w-full max-w-[1800px] md:px-12 mx-auto px-4 flex items-center justify-between flex-wrap gap-1.5 md:gap-3 py-3 md:pb-0.5 md:pt-3">
+      <div className="w-full max-w-[1800px] md:px-12 mx-auto px-2 flex items-center justify-between flex-wrap gap-1.5 md:gap-3 py-3 md:pb-0.5 md:pt-3">
         <div className="flex items-center gap-1 md:gap-3">
-          <IoIosGitNetwork className="text-emerald-500/70 text-lg md:text-xl" />
-          <h1 className="text-lg md:text-xl font-semibold tracking-tight text-gray-100">
+          <IoIosGitNetwork className="text-emerald-500/70 text-sm md:text-xl" />
+          <h1 className="text-sm  md:text-xl font-semibold tracking-tight text-gray-100">
             My Network
           </h1>
         </div>
@@ -557,7 +557,7 @@ function Authors() {
       </div>
 
       {/* Search + filter chips */}
-      <div className="w-full max-w-[1800px] px-4 md:px-12 mx-auto px-auto justify-between flex flex-wrap mt-0 md:mt-2.5 items-center gap-2 md:gap-3 mb-4 md:mb-4">
+      <div className="w-full max-w-[1800px] px-2 md:px-12 mx-auto px-auto justify-between flex flex-wrap mt-0 md:mt-2.5 items-center gap-2 md:gap-3 mb-4 md:mb-4">
         <div className="max-w-44 md:min-w-96 flex items-center gap-1 md:gap-3 theme-fields-lite border border-gray-700 rounded-lg md:rounded-xl px-3 md:px-3 py-1 md:py-1.5 shadow-md focus-within:ring-1 focus-within:ring-teal-500/40 transition">
           <IoSearch className="text-gray-400" />
           <input
@@ -591,14 +591,14 @@ function Authors() {
 
       {/* Recommended */}
       {showRecommended && (
-        <h2 className="w-full text-left px-4 md:px-12 text-[11px] md:text-xs tracking-[0.2em] uppercase text-gray-500 font-medium mb-2 mt-4 md:mt-6 md:mb-3">
+        <h2 className="w-full text-left px-2 md:px-12 text-[11px] md:text-xs tracking-[0.2em] uppercase text-gray-500 font-medium mb-2 mt-4 md:mt-6 md:mb-3">
           Recommended
         </h2>
       )}
       <div
         className={
           showRecommended
-            ? "flex w-full px-4 md:px-12 max-w-[1800px] overflow-y-hidden mx-auto gap-3 overflow-x-auto scrollbar-hide  md:pb-1"
+            ? "flex w-full px-2 md:px-12 max-w-[1800px] overflow-y-hidden mx-auto gap-3 overflow-x-auto scrollbar-hide  md:pb-1"
             : "hidden"
         }
       >
@@ -611,14 +611,14 @@ function Authors() {
         filteredRecommended.length === 0 &&
         filteredAuthors.length === 0 && (
           <>
-            <h2 className="w-full text-left px-4 md:px-12 text-[11px] md:text-xs tracking-[0.2em] uppercase text-gray-500 font-medium mb-2 mt-4 md:mt-6 md:mb-3">
+            <h2 className="w-full text-left px-2 md:px-12 text-[11px] md:text-xs tracking-[0.2em] uppercase text-gray-500 font-medium mb-2 mt-4 md:mt-6 md:mb-3">
               Recommended
             </h2>
             <RecommendedAuthorsSkeleton />
           </>
         )}
 
-      <div className="w-full px-4 md:px-12 max-w-[1800px] mx-auto min-h-screen flex flex-col items-center text-white">
+      <div className="w-full px-2 md:px-12 max-w-[1800px] mx-auto min-h-screen flex flex-col items-center text-white">
         {/* Contributors */}
         {filteredAuthors.filter((a) => a.role === "coordinator").length > 0 &&
           roleFilter !== "student" && (

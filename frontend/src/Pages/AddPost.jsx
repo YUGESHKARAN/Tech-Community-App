@@ -439,7 +439,7 @@ function AddPost() {
         <div className="w-full  mx-auto  md:px-12">
           <div className=" mb-6 flex px-4 items-center justify-between">
             <div>
-              <h1 className="md:text-xl text-lg  font-semibold text-white tracking-tight">
+              <h1 className="md:text-xl text-sm  font-semibold text-white tracking-tight">
                 Create New Post
               </h1>
               <p className="text-xs text-gray-400 mt-1">
