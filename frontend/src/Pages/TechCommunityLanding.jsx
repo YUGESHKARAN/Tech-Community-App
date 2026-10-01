@@ -560,7 +560,7 @@ function TechCommunityLanding() {
             <div className="md:col-span-2 order-3 xl:order-2 col-span-1 ">
               {statsLoader ? (
                 <div className="grid grid-cols-1   gap-5">
-                  <h3 className="text-slate-400   uppercase tracking-widest text-[10px] md:text-[11px] col-span-full font-semibold ">
+                  <h3 className="md:text-slate-400  text-slate-500   uppercase tracking-widest text-[10px] md:text-[11px] col-span-full font-semibold ">
                     Your Communities
                   </h3>
                   {[...Array(8)].map((_, index) => (
