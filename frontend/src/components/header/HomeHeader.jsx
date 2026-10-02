@@ -90,7 +90,7 @@ function HomeHeader({ events = UPCOMING }) {
 //   #12151c
 
   return (
-    <section className="relative overflow-hidden rounded-lg md:rounded-xl border border-white/[0.07] bg-[#13161f] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
+    <section className="relative overflow-hidden rounded-lg md:rounded-xl md:border border-white/[0.07] bg-[#13161f] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
       {/* Tech grid */}
       <div className="pointer-events-none absolute inset-0" style={gridStyle} />
 
