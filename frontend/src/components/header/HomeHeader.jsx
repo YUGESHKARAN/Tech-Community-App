@@ -1,34 +1,38 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { TbSun, TbTrophy, TbCode, TbCalendarEvent } from "react-icons/tb";
-import event1 from "../../assets/events/event-slug-16x9.png"
+
+import event1 from "../../assets/events/event-bytes-16x9.png"
+import event2 from "../../assets/events/event-slug-16x9.png"
+
 /* Demo data: replace with your events API.
    `image` is the admin-uploaded cover URL; leave empty to show the grid fallback. */
 const UPCOMING = [
-  {
+   {
     id: 1,
-    type: "challenge",
-    name: "Summer Challenge",
-    date: "Dec 18",
-    status: "Coming soon",
-    title: "Summer Challenge 2026",
-    // meta: "Oct 18 – Nov 15 · Online · +500 XP",
+    type: "contest",
+    name: "Bytes Contest",
+    date: "Dec 22",
+    status: "Coming Soon",
+    title: "Bytes Base Innovate 2.0 - 2026",
+    // meta: "Oct 22 · Main Auditorium · +200 XP",
     meta: "Coming Soon...",
     image: event1,
     href: "/home",
   },
-//   {
-//     id: 2,
-//     type: "contest",
-//     name: "Code Clash",
-//     date: "Oct 22",
-//     status: "Registration opens soon",
-//     title: "Code Clash #15",
-//     // meta: "Oct 22 · Main Auditorium · +200 XP",
-//     meta: "Coming Soon...",
-//     image: "",
-//     href: "/events",
-//   },
+  {
+    id: 2,
+    type: "challenge",
+    name: "Summer Challenge",
+    date: "May 18",
+    status: "Coming Soon",
+    title: "Summer Challenge 2027",
+    // meta: "Oct 18 – Nov 15 · Online · +500 XP",
+    meta: "Coming Soon...",
+    image: event2,
+    href: "/home",
+  },
+ 
 //   {
 //     id: 3,
 //     type: "hackathon",
