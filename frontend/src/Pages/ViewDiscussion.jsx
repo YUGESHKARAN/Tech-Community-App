@@ -1,4 +1,10 @@
-import React, { useState, useRef, useEffect, useMemo, useCallback } from "react";
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  useMemo,
+  useCallback,
+} from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import NavBar from "../ui/NavBar";
 import Footer from "../ui/Footer";
@@ -29,7 +35,7 @@ import {
   TbBookmark,
   TbShare,
   TbBlockquote,
-  TbList
+  TbList,
 } from "react-icons/tb";
 
 import toast from "../components/toaster/Toast";
@@ -62,9 +68,6 @@ const CATEGORY_COLORS = {
   },
 };
 
-
-
-
 // ─────────────────────────────────────────────────────────────────────────────
 //  SMALL SHARED COMPONENTS
 // ─────────────────────────────────────────────────────────────────────────────
@@ -96,7 +99,6 @@ const AuthorRow = ({ author, timestamp, label }) => (
           className="text-xs font-semibold text-wrap line-clamp-1 truncate text-gray-200 hover:text-white transition-colors"
         >
           {author?.authorname}
-          {/* Lorem, ipsum dolor sit amet consectetur adipisicing elit. Deserunt dolor itaque veniam amet nisi et exercitationem laudantium beatae illo quis iusto, reprehenderit dolorem veritatis. Dicta beatae labore tempore optio corrupti numquam laboriosam enim quae assumenda quis nostrum provident perferendis quisquam porro nobis aperiam itaque ducimus voluptas omnis, esse, magnam aliquam laborum repellendus. Atque veritatis ipsam magnam tenetur placeat! Voluptatibus, dignissimos! Vel, aspernatur ipsum! Eligendi vitae earum amet ipsa magnam consectetur iste quam cumque beatae sed. Obcaecati iste tempora dicta fugiat non veniam nesciunt, provident eius quis possimus veritatis magni voluptatibus maxime voluptate cum eligendi excepturi animi porro accusantium maiores. Aspernatur provident dolorum iusto animi vitae illum delectus corrupti, alias cum praesentium? Sint, pariatur maxime deleniti nihil illo amet dicta voluptatem. */}
         </Link>
         {label && (
           <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400">
@@ -225,92 +227,40 @@ const OverflowMenu = ({ items }) => {
 };
 
 // ── Compose box ───────────────────────────────────────────────────────────────
-// const ComposeBox = ({
-//   placeholder,
-//   onSubmit,
-//   onCancel,
-//   autoFocus = false,
-//   initialValue = "",
-// }) => {
-//   const [value, setValue] = useState(initialValue);
-//   const [submitting, setSubmitting] = useState(false);
-//   const ref = useRef();
-
-//   useEffect(() => {
-//     if (autoFocus && ref.current) ref.current.focus();
-//   }, [autoFocus]);
-
-//   const handleSubmit = async () => {
-//     if (!value.trim()) return;
-//     setSubmitting(true);
-//     await onSubmit(value.trim());
-//     setValue("");
-//     setSubmitting(false);
-//   };
-
-//   return (
-//     <div className="theme border border-[#1e293b] rounded-xl overflow-hidden focus-within:border-white/20 transition-colors">
-//       <textarea
-//         ref={ref}
-//         value={value}
-//         onChange={(e) => setValue(e.target.value)}
-//         placeholder={placeholder}
-//         rows={3}
-//         className="w-full bg-transparent px-4 pt-3 pb-2 text-sm text-gray-200 placeholder-gray-600 resize-none focus:outline-none"
-//       />
-//       <div className="flex items-center justify-end gap-2 px-3 pb-3">
-//         {onCancel && (
-//           <button
-//             onClick={onCancel}
-//             className="text-xs text-gray-500 hover:text-gray-300 px-3 py-1.5 rounded-lg transition-colors"
-//           >
-//             Cancel
-//           </button>
-//         )}
-//         <button
-//           onClick={handleSubmit}
-//           disabled={!value.trim() || submitting}
-//           className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-emerald-600 text-white disabled:opacity-40 disabled:cursor-not-allowed hover:bg-emerald-500 transition-colors"
-//         >
-//           <TbSend className="text-sm" />
-//           {submitting ? "Posting..." : "Reply"}
-//         </button>
-//       </div>
-//     </div>
-//   );
-// };
-
-// ─────────────────────────────────────────────────────────────────────────────
-//  TOOLBAR ACTIONS
-//  Each action wraps the selection (or inserts at cursor) with markdown syntax.
-// ─────────────────────────────────────────────────────────────────────────────
 const wrapSelection = (textarea, before, after = before, placeholder = "") => {
   const start = textarea.selectionStart;
-  const end   = textarea.selectionEnd;
+  const end = textarea.selectionEnd;
   const selected = textarea.value.slice(start, end) || placeholder;
   const newValue =
     textarea.value.slice(0, start) +
-    before + selected + after +
+    before +
+    selected +
+    after +
     textarea.value.slice(end);
 
   // return new value + new cursor position
   return {
-    value:       newValue,
+    value: newValue,
     cursorStart: start + before.length,
-    cursorEnd:   start + before.length + selected.length,
+    cursorEnd: start + before.length + selected.length,
   };
 };
 
 const insertLine = (textarea, prefix, placeholder = "text") => {
-  const start    = textarea.selectionStart;
+  const start = textarea.selectionStart;
   const lineStart = textarea.value.lastIndexOf("\n", start - 1) + 1;
-  const before   = textarea.value.slice(0, lineStart);
-  const after    = textarea.value.slice(lineStart);
-  const newValue = before + prefix + (after.startsWith(prefix) ? after.slice(prefix.length) : after || placeholder + "\n");
+  const before = textarea.value.slice(0, lineStart);
+  const after = textarea.value.slice(lineStart);
+  const newValue =
+    before +
+    prefix +
+    (after.startsWith(prefix)
+      ? after.slice(prefix.length)
+      : after || placeholder + "\n");
   return {
-    value:       newValue,
+    value: newValue,
     cursorStart: lineStart + prefix.length,
-    cursorEnd:   lineStart + prefix.length + (after || placeholder).length,
+    cursorEnd: lineStart + prefix.length + (after || placeholder).length,
   };
 };
 
@@ -334,29 +284,17 @@ const ToolbarBtn = ({ icon: Icon, title, onClick }) => (
 // ─────────────────────────────────────────────────────────────────────────────
 //  COMPOSE BOX
 // ─────────────────────────────────────────────────────────────────────────────
-/**
- * ComposeBox — drop-in replacement for the plain textarea compose box.
- *
- * Props (identical to original):
- *   placeholder   string
- *   onSubmit      async (value: string) => void
- *   onCancel      () => void | undefined
- *   autoFocus     boolean
- *   initialValue  string
- *   submitLabel   string   — default "Reply"
- *   minRows       number   — default 3
- */
 const ComposeBox = ({
-  placeholder   = "Write a reply…",
+  placeholder = "Write a reply…",
   onSubmit,
   onCancel,
-  autoFocus     = false,
-  initialValue  = "",
-  submitLabel   = "Reply",
-  minRows       = 7,
+  autoFocus = false,
+  initialValue = "",
+  submitLabel = "Reply",
+  minRows = 7,
 }) => {
-  const [value,      setValue]      = useState(initialValue);
-  const [mode,       setMode]       = useState("write"); // "write" | "preview"
+  const [value, setValue] = useState(initialValue);
+  const [mode, setMode] = useState("write"); // "write" | "preview"
   const [submitting, setSubmitting] = useState(false);
   const textareaRef = useRef(null);
 
@@ -384,12 +322,36 @@ const ComposeBox = ({
   }, []);
 
   const toolbar = [
-    { icon: TbBold,       title: "Bold (Ctrl+B)",        action: (ta) => wrapSelection(ta, "**", "**", "bold text") },
-    { icon: TbItalic,     title: "Italic (Ctrl+I)",       action: (ta) => wrapSelection(ta, "_",  "_",  "italic text") },
-    { icon: TbCode,       title: "Inline code",           action: (ta) => wrapSelection(ta, "`",  "`",  "code") },
-    { icon: TbBlockquote, title: "Blockquote",            action: (ta) => insertLine(ta, "> ",  "quote") },
-    { icon: TbList,       title: "Unordered list",        action: (ta) => insertLine(ta, "- ",  "list item") },
-    { icon: TbLink,       title: "Link",                  action: (ta) => wrapSelection(ta, "[", "](url)", "link text") },
+    {
+      icon: TbBold,
+      title: "Bold (Ctrl+B)",
+      action: (ta) => wrapSelection(ta, "**", "**", "bold text"),
+    },
+    {
+      icon: TbItalic,
+      title: "Italic (Ctrl+I)",
+      action: (ta) => wrapSelection(ta, "_", "_", "italic text"),
+    },
+    {
+      icon: TbCode,
+      title: "Inline code",
+      action: (ta) => wrapSelection(ta, "`", "`", "code"),
+    },
+    {
+      icon: TbBlockquote,
+      title: "Blockquote",
+      action: (ta) => insertLine(ta, "> ", "quote"),
+    },
+    {
+      icon: TbList,
+      title: "Unordered list",
+      action: (ta) => insertLine(ta, "- ", "list item"),
+    },
+    {
+      icon: TbLink,
+      title: "Link",
+      action: (ta) => wrapSelection(ta, "[", "](url)", "link text"),
+    },
   ];
 
   // ── keyboard shortcuts ────────────────────────────────────────────────────
@@ -416,9 +378,10 @@ const ComposeBox = ({
       applyAction((ta) => {
         const start = ta.selectionStart;
         return {
-          value:       ta.value.slice(0, start) + "  " + ta.value.slice(ta.selectionEnd),
+          value:
+            ta.value.slice(0, start) + "  " + ta.value.slice(ta.selectionEnd),
           cursorStart: start + 2,
-          cursorEnd:   start + 2,
+          cursorEnd: start + 2,
         };
       });
     }
@@ -440,18 +403,20 @@ const ComposeBox = ({
   const isEmpty = !value.trim();
 
   return (
-    <div className="theme border border-[#1e293b] rounded-xl overflow-hidden
-                    focus-within:border-white/15 transition-colors">
-
+    <div
+      className="theme border border-[#1e293b] rounded-xl overflow-hidden
+                    focus-within:border-white/15 transition-colors"
+    >
       {/* ── tab bar + toolbar ── */}
-      <div className="flex items-center justify-between px-2 pt-2 pb-1
-                      border-b border-[#1e293b]">
-
+      <div
+        className="flex items-center justify-between px-2 pt-2 pb-1
+                      border-b border-[#1e293b]"
+      >
         {/* Write / Preview tabs */}
         <div className="flex gap-0.5 bg-white/[0.03] border border-[#1e293b] rounded-lg p-0.5">
           {[
-            { id: "write",   label: "Write",   icon: TbPencil },
-            { id: "preview", label: "Preview", icon: TbEye    },
+            { id: "write", label: "Write", icon: TbPencil },
+            { id: "preview", label: "Preview", icon: TbEye },
           ].map(({ id, label, icon: Icon }) => (
             <button
               key={id}
@@ -461,10 +426,10 @@ const ComposeBox = ({
               className={`flex items-center gap-1 text-[10px] font-semibold
                           px-2 py-1 rounded-md transition-all
                           disabled:opacity-30 disabled:cursor-not-allowed ${
-                mode === id
-                  ? "bg-white/8 text-white"
-                  : "text-gray-500 hover:text-gray-300"
-              }`}
+                            mode === id
+                              ? "bg-white/8 text-white"
+                              : "text-gray-500 hover:text-gray-300"
+                          }`}
             >
               <Icon className="text-xs" />
               {label}
@@ -504,12 +469,9 @@ const ComposeBox = ({
 
       {/* ── preview area ── */}
       {mode === "preview" && (
-        // <div
-        //   className="px-4 pt-3 pb-2 min-h-[80px] prose-discussion"
-        //   dangerouslySetInnerHTML={{ __html: renderMarkdown(value) }}
-        // />
-           <p
-            className="
+     
+        <p
+          className="
               prose
                         md:prose-invert
                         md:max-w-none
@@ -520,30 +482,28 @@ const ComposeBox = ({
                         md:prose-p:text-sm
                         prose-headings:text-white
            "
-          >
-            {/* {renderTextWithHashtags(singlePostData.description)} */}
-            <RenderTextWithHashtags text={value} />
-          </p>
-          
+        >
+          <RenderTextWithHashtags text={value} />
+        </p>
       )}
 
       {/* ── footer: hint + actions ── */}
       <div className="md:flex-row flex flex-col items-center justify-between px-3 pb-2.5 pt-1">
         {/* markdown hint */}
-            <div className="flex order-2 md:order-1 w-full items-center gap-2.5 pb-0.5 md:py-2 ">
-        <p className="text-[10px] text-gray-700 md:text-gray-600">
-          Markdown supported ·{" "}
-          <a
-            href="https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline hover:text-gray-400"
-          >
-            syntax guide
-          </a>
-        </p>
-        <p className="text-[10px] text-gray-600">{value.length} chars</p>
-      </div>
+        <div className="flex order-2 md:order-1 w-full items-center gap-2.5 pb-0.5 md:py-2 ">
+          <p className="text-[10px] text-gray-700 md:text-gray-600">
+            Markdown supported ·{" "}
+            <a
+              href="https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:text-gray-400"
+            >
+              syntax guide
+            </a>
+          </p>
+          <p className="text-[10px] text-gray-600">{value.length} chars</p>
+        </div>
 
         {/* actions */}
         <div className="flex order-1 md:order-2  justify-end items-center gap-2 ml-auto">
@@ -724,9 +684,6 @@ const NestedReplyCard = ({
             onCancel={() => setEditing(false)}
           />
         ) : (
-          // <p className="text-xs break-all md:text-sm text-gray-300 mt-2 leading-relaxed whitespace-pre-wrap">
-          //   {body}
-          // </p>
           <p
             className="
              prose
@@ -740,7 +697,6 @@ const NestedReplyCard = ({
              prose-headings:text-white
            "
           >
-            {/* {renderTextWithHashtags(singlePostData.description)} */}
             <RenderTextWithHashtags text={body} />
           </p>
         )}
@@ -875,7 +831,6 @@ const ReplyCard = ({
              
            "
             >
-              {/* {renderTextWithHashtags(singlePostData.description)} */}
               <RenderTextWithHashtags text={body} />
             </p>
           )}
@@ -933,7 +888,7 @@ function ViewDiscussion() {
   const currentUserEmail = getItem("email");
   const { communityDetails } = useGetSingleTechCommunity(communityId);
   // 1. add state at the top with your other state declarations
-const [notFound, setNotFound] = useState(false);
+  const [notFound, setNotFound] = useState(false);
 
   // ── State ─────────────────────────────────────────────────────────────────
   // Replace with useGetDiscussionById(communityId, discussionId)
@@ -958,9 +913,12 @@ const [notFound, setNotFound] = useState(false);
     getItem("role") === "coordinator" || getItem("role") === "admin";
 
   const cat = CATEGORY_COLORS[discussion?.category] || CATEGORY_COLORS.qa;
-  const domainName = communityDetails?.name || discussion?.communityName || "Community";
+  const domainName =
+    communityDetails?.name || discussion?.communityName || "Community";
   const domainStyle = getDomainStyle(domainName);
-  const domainGradient = deriveGradient(communityDetails?.colorTheme || domainStyle.from);
+  const domainGradient = deriveGradient(
+    communityDetails?.colorTheme || domainStyle.from,
+  );
   const DomainIcon = communityDetails?.icon
     ? TbIcons[communityDetails.icon] || domainStyle.icon
     : domainStyle.icon;
@@ -969,57 +927,36 @@ const [notFound, setNotFound] = useState(false);
   const [upvoteStatus, setUpvoteStatus] = useState(false);
   const discussionRequestInFlight = useRef(false);
 
-  // const getDiscussionsById = useCallback(async (showLoader = true) => {
-  //   if (discussionRequestInFlight.current) return;
 
-  //   discussionRequestInFlight.current = true;
-  //   try {
-  //     if (showLoader) setDiscussionLoader(true);
-  //     const res = await axiosInstance.get(
-  //       `/bytes/discuss/${communityId}/discussions/${discussionId}`,
-  //     );
-  //     if (res.status === 200) {
-  //       setDiscussion(res?.data?.discussion);
-  //       setUpvoteCount(res?.data?.discussion?.upvoteCount);
-  //       setUpvoteStatus(res?.data?.discussion?.hasVoted);
-  //       setDiscussionBody(res?.data?.discussion?.body);
-  //     }
-  //   } catch (err) {
-  //     console.log("error getting discussion", err.message);
-  //   } finally {
-  //     if (showLoader) setDiscussionLoader(false);
-  //     discussionRequestInFlight.current = false;
-  //   }
-  // }, [communityId, discussionId]);
-
-  // 2. update getDiscussionsById to detect 404
-
-  const getDiscussionsById = useCallback(async (showLoader = true) => {
-  if (discussionRequestInFlight.current) return;
-  discussionRequestInFlight.current = true;
-  try {
-    if (showLoader) setDiscussionLoader(true);
-    const res = await axiosInstance.get(
-      `/bytes/discuss/${communityId}/discussions/${discussionId}`,
-    );
-    if (res.status === 200) {
-      setDiscussion(res?.data?.discussion);
-      setUpvoteCount(res?.data?.discussion?.upvoteCount);
-      setUpvoteStatus(res?.data?.discussion?.hasVoted);
-      setDiscussionBody(res?.data?.discussion?.body);
-    }
-  } catch (err) {
-    // handle 404 — invalid or deleted discussionId
-    if (err?.response?.status === 404 || err?.response?.status === 500  ) {
-      setNotFound(true);
-    } else {
-      console.log("error getting discussion", err.message);
-    }
-  } finally {
-    if (showLoader) setDiscussionLoader(false);
-    discussionRequestInFlight.current = false;
-  }
-}, [communityId, discussionId]);
+  const getDiscussionsById = useCallback(
+    async (showLoader = true) => {
+      if (discussionRequestInFlight.current) return;
+      discussionRequestInFlight.current = true;
+      try {
+        if (showLoader) setDiscussionLoader(true);
+        const res = await axiosInstance.get(
+          `/bytes/discuss/${communityId}/discussions/${discussionId}`,
+        );
+        if (res.status === 200) {
+          setDiscussion(res?.data?.discussion);
+          setUpvoteCount(res?.data?.discussion?.upvoteCount);
+          setUpvoteStatus(res?.data?.discussion?.hasVoted);
+          setDiscussionBody(res?.data?.discussion?.body);
+        }
+      } catch (err) {
+        // handle 404 — invalid or deleted discussionId
+        if (err?.response?.status === 404 || err?.response?.status === 500) {
+          setNotFound(true);
+        } else {
+          console.log("error getting discussion", err.message);
+        }
+      } finally {
+        if (showLoader) setDiscussionLoader(false);
+        discussionRequestInFlight.current = false;
+      }
+    },
+    [communityId, discussionId],
+  );
 
   useEffect(() => {
     getDiscussionsById();
@@ -1159,8 +1096,6 @@ const [notFound, setNotFound] = useState(false);
       }
     }
   };
-
-  // Helper: walks top-level and nested replies to update vote state
 
   const updateReplyVote = (list, id, delta, voted) =>
     list.map((r) => {
@@ -1419,19 +1354,19 @@ const [notFound, setNotFound] = useState(false);
     }
   };
   const hasProfile =
-  profile !== "undefined" && profile !== "null" && profile !== "";
-const avatarSrc = hasProfile
-  ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`
-  : av(null);
+    profile !== "undefined" && profile !== "null" && profile !== "";
+  const avatarSrc = hasProfile
+    ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`
+    : av(null);
 
   const MD_TOOLS = [
-  { Icon: TbBold, label: "Bold" },
-  { Icon: TbItalic, label: "Italic" },
-  { Icon: TbBlockquote, label: "Quote" },
-  { Icon: TbCode, label: "Code" },
-  { Icon: TbLink, label: "Link" },
-  { Icon: TbList, label: "List" },
-];
+    { Icon: TbBold, label: "Bold" },
+    { Icon: TbItalic, label: "Italic" },
+    { Icon: TbBlockquote, label: "Quote" },
+    { Icon: TbCode, label: "Code" },
+    { Icon: TbLink, label: "Link" },
+    { Icon: TbList, label: "List" },
+  ];
 
   // console.log("discussions", discussion);
   // console.log("replies", replies);
@@ -1441,31 +1376,31 @@ const avatarSrc = hasProfile
   //  RENDER
   // ─────────────────────────────────────────────────────────────────────────
 
- return ( (notFound)? 
-  <div className="flex-grow flex flex-col items-center justify-center px-4 py-20 text-center">
-    <div className="w-14 h-14 rounded-2xl bg-white/[0.03] border border-[#1e293b] flex items-center justify-center mb-5">
-      <TbMessageCircle className="text-2xl text-gray-600" />
-    </div>
-    <h2 className="text-base font-semibold text-gray-300 mb-1">
-      Discussion not found
-    </h2>
-    <p className="text-xs text-gray-500 max-w-xs leading-relaxed mb-6">
-      This discussion may have been deleted or the link is invalid.
-    </p>
-    <button
-      onClick={() =>
-        navigate(`/techCommunityDetails/${communityId}?tab=discussions`)
-      }
-      className="flex items-center gap-1.5 text-xs font-semibold
+  return notFound ? (
+    <div className="flex-grow flex flex-col items-center justify-center px-4 py-20 text-center">
+      <div className="w-14 h-14 rounded-2xl bg-white/[0.03] border border-[#1e293b] flex items-center justify-center mb-5">
+        <TbMessageCircle className="text-2xl text-gray-600" />
+      </div>
+      <h2 className="text-base font-semibold text-gray-300 mb-1">
+        Discussion not found
+      </h2>
+      <p className="text-xs text-gray-500 max-w-xs leading-relaxed mb-6">
+        This discussion may have been deleted or the link is invalid.
+      </p>
+      <button
+        onClick={() =>
+          navigate(`/techCommunityDetails/${communityId}?tab=discussions`)
+        }
+        className="flex items-center gap-1.5 text-xs font-semibold
                  px-4 py-2 rounded-xl bg-white/5 border border-[#1e293b]
                  text-gray-300 hover:bg-white/8 hover:border-white/15
                  transition-all"
-    >
-      <TbChevronLeft className="text-sm" />
-      Back to discussions
-    </button>
-  </div>:
-    (
+      >
+        <TbChevronLeft className="text-sm" />
+        Back to discussions
+      </button>
+    </div>
+  ) : (
     <div className="min-h-screen theme text-white flex flex-col">
       <NavBar />
 
@@ -1483,7 +1418,9 @@ const avatarSrc = hasProfile
 
         {/* ── Discussion thread ── */}
         {!discussionLoader ? (
-          <div className={`${discussion?.isSolved ?'border-green-800':'border-[#1e293b]'} theme border  rounded-lg overflow-hidden mb-4`}>
+          <div
+            className={`${discussion?.isSolved ? "border-green-800" : "border-[#1e293b]"} theme border  rounded-lg overflow-hidden mb-4`}
+          >
             {/* domain identity */}
             <div
               className="relative overflow-hidden border-b border-white/10"
@@ -1492,26 +1429,26 @@ const avatarSrc = hasProfile
               }}
             >
               <div
-  className="absolute inset-0 pointer-events-none opacity-[0.25]"
-  style={{
-    backgroundImage: `
-      linear-gradient(
-        rgba(255,255,255,0.32) 1px,
-        transparent 1px
-      ),
-      linear-gradient(
-        90deg,
-        rgba(255,255,255,0.32) 1px,
-        transparent 1px
-      )
-    `,
-    backgroundSize: "28px 28px",
-    maskImage:
-      "linear-gradient(to bottom, black 0%, rgba(0,0,0,.85) 65%, transparent 100%)",
-    WebkitMaskImage:
-      "linear-gradient(to bottom, black 0%, rgba(0,0,0,.85) 65%, transparent 100%)",
-  }}
-/>
+                className="absolute inset-0 pointer-events-none opacity-[0.25]"
+                style={{
+                  backgroundImage: `
+                      linear-gradient(
+                        rgba(255,255,255,0.32) 1px,
+                        transparent 1px
+                      ),
+                      linear-gradient(
+                        90deg,
+                        rgba(255,255,255,0.32) 1px,
+                        transparent 1px
+                      )
+                    `,
+                  backgroundSize: "28px 28px",
+                  maskImage:
+                    "linear-gradient(to bottom, black 0%, rgba(0,0,0,.85) 65%, transparent 100%)",
+                  WebkitMaskImage:
+                    "linear-gradient(to bottom, black 0%, rgba(0,0,0,.85) 65%, transparent 100%)",
+                }}
+              />
               <div className="absolute inset-0 opacity-20 [background-image:radial-gradient(circle_at_85%_15%,_rgba(255,255,255,.7),_transparent_36%)]" />
               <div className="relative flex items-center justify-between gap-4 px-5 py-2 md:px-7 md:py-3">
                 <Link
@@ -1528,54 +1465,51 @@ const avatarSrc = hasProfile
                     <span className="block truncate text-base font-semibold text-white transition-colors group-hover:text-white/80 md:text-lg">
                       {domainName}
                     </span>
-                    {(communityDetails?.tagline || communityDetails?.description) && (
+                    {(communityDetails?.tagline ||
+                      communityDetails?.description) && (
                       <span className="mt-0.5 block max-w-xl truncate text-[10px] text-white/70 md:text-xs">
-                        {communityDetails.tagline || communityDetails.description}
+                        {communityDetails.tagline ||
+                          communityDetails.description}
                       </span>
                     )}
                   </span>
                 </Link>
-                
+
                 <span className="hidden shrink-0 items-center gap-1.5 rounded-full bg-black/15 px-3 py-1.5 text-[10px] font-medium text-white/75 ring-1 ring-white/15 sm:flex">
                   <TbMessageCircle className="text-sm" />
-                 
                   Discussion
-
-                    <span
-                      className={`text-[9px] font-semibold px-1.5 py-0.5 rounded ${cat.bg} ${cat.text}`}
-                    >
-                      {cat.label}
-                    </span>
+                  <span
+                    className={`text-[9px] font-semibold px-1.5 py-0.5 rounded ${cat.bg} ${cat.text}`}
+                  >
+                    {cat.label}
+                  </span>
                 </span>
               </div>
             </div>
-            
 
             {/* pinned banner */}
             {(discussion?.isPinned || discussion?.isSolved) && (
               <div className="flex items-center gap-3 px-5  py-2 bg-emerald-500/5 border-b border-emerald-500/10">
+                {discussion?.isSolved && (
+                  <span className="flex items-center gap-0.5 text-[9px] font-semibold px-1.5 py-0.5 rounded bg-green-500/10 text-green-400">
+                    <TbCircleCheck className="text-[10px]" /> Solved
+                  </span>
+                )}
 
-                 { discussion?.isSolved &&
-                   <span className="flex items-center gap-0.5 text-[9px] font-semibold px-1.5 py-0.5 rounded bg-green-500/10 text-green-400">
-                        <TbCircleCheck className="text-[10px]" /> Solved
-                      </span>
-                  }
-
-             {discussion?.isPinned &&   <div className="flex px-1.5 py-0.5 rounded bg-green-500/10 items-center gap-2">
-                <TbPin className="text-emerald-400 text-xs" />
-                <span className="text-[10px] font-semibold text-emerald-400">
-                  Pinned by coordinator
-                </span>
-
-                </div>}
-
-               
+                {discussion?.isPinned && (
+                  <div className="flex px-1.5 py-0.5 rounded bg-green-500/10 items-center gap-2">
+                    <TbPin className="text-emerald-400 text-xs" />
+                    <span className="text-[10px] font-semibold text-emerald-400">
+                      Pinned by coordinator
+                    </span>
+                  </div>
+                )}
               </div>
             )}
 
-        
-
-            <div className={`${discussion?.isSolved &&' bg-green-800/10'} p-5`}>
+            <div
+              className={`${discussion?.isSolved && " bg-green-800/10"} p-5`}
+            >
               {/* header row */}
               <div className="flex items-start gap-3">
                 {/* upvote */}
@@ -1657,9 +1591,6 @@ const avatarSrc = hasProfile
                       onCancel={() => setEditingDiscussion(false)}
                     />
                   ) : (
-                    // <div className="text-xs break-all md:text-sm text-gray-300 leading-relaxed whitespace-pre-wrap">
-                    //   {discussionBody}
-                    // </div>
                     <p
                       className="
                     prose
@@ -1673,7 +1604,6 @@ const avatarSrc = hasProfile
                     prose-headings:text-white
                   "
                     >
-                      {/* {renderTextWithHashtags(singlePostData.description)} */}
                       <RenderTextWithHashtags text={discussionBody} />
                     </p>
                   )}
@@ -1699,26 +1629,6 @@ const avatarSrc = hasProfile
 
         {/* ── Reply compose toggle ── */}
         {!showReplyCompose ? (
-          // <button
-          //   onClick={() => setShowReplyCompose(true)}
-          //   className="flex items-center gap-2 w-full text-left px-4 py-2 md:py-3 theme border border-[#1e293b] rounded-lg md:rounded-xl text-xs md:text-sm text-gray-500 hover:text-gray-300 hover:border-white/10 transition-all duration-200 mb-4"
-          // >
-          //   { profile !== 'undefined' && profile !== 'null' && profile !== "" ? (
-          //     <img
-          //       src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`}
-          //       className="md:w-6 w-5 h-5  md:h-6 rounded-full object-cover bg-gray-700"
-          //       alt=""
-          //     />
-          //   ) : (
-          //     <img
-          //       src={av(null)}
-          //       className="md:w-6 w-5 h-5  md:h-6 rounded-full object-cover bg-gray-700"
-          //       alt=""
-          //     />
-          //   )}
-          //   Write a reply...
-          // </button>
-
           <div
             role="button"
             tabIndex={0}
@@ -1739,7 +1649,9 @@ const avatarSrc = hasProfile
                 alt=""
                 className="mt-0.5 h-5 w-5 shrink-0 rounded-full bg-slate-700 object-cover md:h-6 md:w-6"
               />
-              <span className="text-xs text-slate-500 font-mono leading-relaxed md:text-sm">Write a reply…</span>
+              <span className="text-xs text-slate-500 font-mono leading-relaxed md:text-sm">
+                Write a reply…
+              </span>
             </div>
 
             {/* Markdown toolbar (visual only) */}
@@ -1755,7 +1667,9 @@ const avatarSrc = hasProfile
                   </span>
                 ))}
               </div>
-              <span className="text-[10px] text-slate-500">Markdown supported</span>
+              <span className="text-[10px] text-slate-500">
+                Markdown supported
+              </span>
             </div>
           </div>
         ) : (
@@ -1819,9 +1733,7 @@ const avatarSrc = hasProfile
 
       <Footer />
     </div>
-  )
- 
- )
+  );
 }
 
 export default ViewDiscussion;
