@@ -182,7 +182,7 @@
 //   };
 
 //   return (
-//     // <div className= h-screen"md:min-h-screen bg-[#0b1120] flex items-center justify-center px-4 py-8">
+//     // <div className="min-h-screen bg-[#0b1120] flex items-center justify-center px-4 py-8">
 
 //     // </div>
 
@@ -190,7 +190,7 @@
 //       initial={{ opacity: 0, y: 30 }}
 //       animate={{ opacity: 1, y: 0 }}
 //       transition={{ duration: 0.55, ease: "easeOut" }}
-//       className={`relative w-full h-screen md:min-h-screen  overflow-y-hidden border border-white/10 bg-[#070a16] shadow-[0_45px_120px_-60px_rgba(0,0,0,0.8)] `}
+//       className={`relative w-full min-h-screen  overflow-y-hidden border border-white/10 bg-[#070a16] shadow-[0_45px_120px_-60px_rgba(0,0,0,0.8)] `}
 //     >
 //       {
 //         <>
@@ -199,7 +199,7 @@
 //           />
 
 //           <div
-//             className={`grid grid-cols-1  h-screen md:min-h-screen lg:grid-cols-2 ${loader && "opacity-60"}`}
+//             className={`grid grid-cols-1  min-h-screen lg:grid-cols-2 ${loader && "opacity-60"}`}
 //           >
 //             <div className="relative hidden lg:flex flex-col justify-center gap-8 bg-gradient-to-b from-[#0f172a] via-[#111827] to-[#0b1230] p-10 lg:p-12">
 //               <div>
@@ -736,10 +736,10 @@ function LoginPage() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.4, ease: "easeOut" }}
-        className="relative h-screen md:min-h-screen w-full bg-[#080b14] text-slate-100 [color-scheme:dark]"
+        className="relative min-h-screen w-full bg-[#080b14] text-slate-100 [color-scheme:dark]"
       >
         <div
-          className="grid h-screen md:min-h-screen overflow-y-hidden grid-cols-1 inset-0 overflow-hidden bg-[radial-gradient(circle_at_top_right,_rgba(30,197,94,0.30),_transparent_42%),radial-gradient(circle_at_bottom_left,_rgba(14,165,233,0.14),_transparent_30%)]  lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]"
+          className="grid min-h-screen grid-cols-1 inset-0 overflow-hidden bg-[radial-gradient(circle_at_top_right,_rgba(30,197,94,0.30),_transparent_42%),radial-gradient(circle_at_bottom_left,_rgba(14,165,233,0.14),_transparent_30%)]  lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]"
           aria-busy={loader}
         >
           {/* ------------------------ Left: workspace + trust ------------------------ */}
@@ -805,7 +805,7 @@ function LoginPage() {
           <main className="relative  flex flex-col">
            
 
-            <div className="flex flex-1 items-center justify-center px-6 py-10 sm:px-10">
+            <div className="flex flex-1 sm:items-center justify-center px-6 mt-40 sm:mt-0 sm:py-10 sm:px-10">
               
               <div className="w-full max-w-[400px]">
                   <div className="mb-6 lg:hidden">
