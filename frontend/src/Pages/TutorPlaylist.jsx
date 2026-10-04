@@ -195,6 +195,53 @@ function TutorPlaylist() {
     // bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800
 
     <div className="w-full min-h-screen theme relative">
+          {loader && (
+                    <motion.div
+                      role="status"
+                      aria-live="polite"
+                      aria-label="Updating post"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden bg:opacity-50 px-6 backdrop-blur-md"
+                    >
+                      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(16,185,129,0.14),_transparent_55%)]" />
+                      <motion.div
+                        initial={{ opacity: 0, y: 12, scale: 0.98 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        transition={{ duration: 0.35, ease: "easeOut" }}
+                        className="relative w-full max-w-sm rounded-lg border border-emerald-400/20 bg-[#0b0f19]/95 p-8 text-center shadow-[0_24px_100px_rgba(0,0,0,0.55)]"
+                      >
+                        <div className="relative mx-auto mb-6 flex h-16 w-16 items-center justify-center">
+                          <motion.span
+                            aria-hidden="true"
+                            animate={{ rotate: 360 }}
+                            transition={{ duration: 2.4, repeat: Infinity, ease: "linear" }}
+                            className="absolute inset-0 rounded-full border-2 border-emerald-400/15 border-t-emerald-400"
+                          />
+                          <span className="flex h-11 w-11 items-center justify-center rounded-full border border-emerald-400/20 bg-emerald-400/10">
+                            <VscGitStashApply className="text-2xl text-emerald-300" />
+                          </span>
+                        </div>
+                        <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-emerald-300/80">
+                          Uploading
+                        </p>
+                        <h2 className="mt-2 text-xl font-semibold text-white">
+                          Adding your playlist
+                        </h2>
+                        <p className="mt-2 text-sm text-gray-400">
+                          Your playlist content are being published.
+                        </p>
+                        <div className="mt-7 h-1 overflow-hidden rounded-full bg-white/10">
+                          <motion.div
+                            aria-hidden="true"
+                            animate={{ scaleX: [0.18, 0.78, 0.42] }}
+                            transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+                            className="h-full origin-left rounded-full bg-gradient-to-r from-emerald-500 to-teal-300"
+                          />
+                        </div>
+                      </motion.div>
+                    </motion.div>
+                  )}
       <NavBar />
       <div className="max-w-[1800px] mx-auto w-full mb-6 mt-4 px-4 md:px-12 flex items-center justify-between">
         <div>
