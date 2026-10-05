@@ -354,16 +354,16 @@ function ViewSingleAuthor() {
                         bg-emerald-400 text-black
                         text-sm font-semibold 
                         border border-neutral-700
-                        transition-all duration-300   
+                        transition-transform duration-300   
                         cursor-pointer transition-all duration-400 disabled:cursor-not-allowed  disabled:border-none  disabled:opacity-50
                       "
                           disabled={followAuthorLoaderId === email || isImpersonating()}
                         >
                           {followAuthorLoaderId === email ? (
                             <div className="flex items-center py-1.5 justify-center gap-1">
-                              <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
-                              <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
-                              <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce" />
+                              <span className="w-1.5 h-1.5 bg-emerald-900 rounded-full animate-bounce [animation-delay:-0.3s]" />
+                              <span className="w-1.5 h-1.5 bg-emerald-900 rounded-full animate-bounce [animation-delay:-0.15s]" />
+                              <span className="w-1.5 h-1.5 bg-emerald-900 rounded-full animate-bounce" />
                             </div>
                           ) : (
                             "Follow +"
