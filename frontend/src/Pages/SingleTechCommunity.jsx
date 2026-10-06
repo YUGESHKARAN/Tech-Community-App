@@ -59,6 +59,7 @@ import { PostCardSkeleton } from "../components/loaders/community/PostCardSkelet
 import { CoordinatorsCardSkeleton } from "../components/loaders/community/CoordinatorsCardSkeleton";
 import RenderTextNoMarkdown from "../components/RenderTextNoMarkdown";
 import { isImpersonating } from "../hooks/director/Useimpersonation";
+import { EmptyState } from "../components/EmptyState";
 
 // ── S3 image base ─────────────────────────────────────────────────────────────
 const S3 = "https://open-access-blog-image.s3.us-east-1.amazonaws.com/";
@@ -561,7 +562,8 @@ const DiscussionsTab = ({
 
       {filtered.length === 0 && !discussionLoading ? (
         <div className="text-center py-16 text-gray-500 text-sm">
-          No discussions yet.{canPost && " Start the first one."}
+          {/* No discussions yet.{canPost && " Start the first one."} */}
+          <EmptyState image={empty_state_post} title={`No discussions yet.`} description={`${canPost ? "Start the first one." : ""}`} action={`${canPost ? "Create new discussion" : ""}`} />
         </div>
       ) : (
         <div className="flex flex-col gap-2">
@@ -732,8 +734,10 @@ const FeedCard = ({ post, email, setPosts }) => {
 };
 
 // ── Feed tab ──────────────────────────────────────────────────────────────────
-const FeedTab = ({ posts, setPosts, feedLoad, feedHashMore }) => {
+const FeedTab = ({ posts, setPosts, feedLoad, feedHashMore, whoCanPost, userRole }) => {
   const email = getItem("email");
+    const canPost =
+     userRole === "coordinator" || whoCanPost === "member";
 
   // share post with social media
   const sharePost = async (title, email, postId) => {
@@ -763,11 +767,17 @@ const FeedTab = ({ posts, setPosts, feedLoad, feedHashMore }) => {
 
   if (!feedLoad && posts?.length === 0) {
     return (
-      <div className="flex h-[70vh] col-span-full md:h-[55vh] flex-col justify-center items-center">
-        <img className="w-48 md:w-60" src={empty_state_post} alt="" />
+      // <div className="flex h-[70vh] col-span-full md:h-[55vh] flex-col justify-center items-center">
+      //   <img className="w-48 md:w-60" src={empty_state_post} alt="" />
 
-        <p className="text-center text-gray-500 text-sm">No posts available!</p>
-      </div>
+      //   <p className="text-center text-gray-500 text-sm">No posts available!</p>
+      // </div>
+      
+
+         <div className="text-center py-16 text-gray-500 text-sm">
+          {/* No discussions yet.{canPost && " Start the first one."} */}
+          <EmptyState image={empty_state_post} title={`No posts available`} description={`${canPost ? "Start the first one." : ""}`} action={`${canPost ? "Create new post" : ""}`} />
+        </div>
     );
   }
   return (
@@ -1348,6 +1358,8 @@ function SingleTechCommunity() {
                 setPosts={setPosts}
                 feedLoad={feedLoad}
                 feedHashMore={feedHashMore}
+                whoCanPost={whoCanPost}
+                userRole ={community.userRole}
               />
             )}
             {activeTab === "discussions" && (
