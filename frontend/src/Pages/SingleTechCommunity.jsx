@@ -1189,7 +1189,7 @@ function SingleTechCommunity() {
 
   // const lb = leaderboardSample;
   const [leaderboardData, setLeaderboardData] = useState([]);
-  const [period, setPeriod] = useState("overall");
+  const [period, setPeriod] = useState("current_month");
   const [leaderboardLoader, setLeaderBoardLoader] = useState(false);
 
   const getLeaderBoardByCommunity = async () => {
