@@ -381,6 +381,16 @@ function AddPost() {
   }, [isFocused, prompt]);
 
   const [showPostGuide, setShowPostGuide] = useState(true);
+
+   const [isDesktop, setIsDesktop] = useState(
+     () => typeof window !== "undefined" && window.matchMedia("(min-width: 1024px)").matches
+   );
+   useEffect(() => {
+     const mq = window.matchMedia("(min-width: 1024px)");
+     const onChange = (e) => setIsDesktop(e.matches);
+     mq.addEventListener("change", onChange);
+     return () => mq.removeEventListener("change", onChange);
+   }, []);
   // console.log("documents",documents)
 
   return (
@@ -732,373 +742,173 @@ function AddPost() {
                 </AnimatePresence>
               </div>
 
+
+<AnimatePresence mode="popLayout">
+  {(chatbot || isDesktop) && (
+    <motion.section
+      key="draftmate"
+      layout
+      aria-label="DraftMate AI assistant"
+      initial={{ opacity: 0, x: 24, scale: 0.985 }}
+      animate={{ opacity: 1, x: 0, scale: 1 }}
+      exit={{ opacity: 0, x: 24, scale: 0.985 }}
+      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+      className="
+        relative flex flex-col overflow-hidden
+        h-[600px] lg:h-[450px] lg:w-11/12
+        rounded-2xl border border-white/[0.08]
+        bg-[#0d1017]
+        shadow-[0_1px_0_rgba(255,255,255,0.04)_inset,0_24px_48px_-24px_rgba(0,0,0,0.6)]
+      "
+    >
+      {/* Header */}
+      <header className="flex items-center gap-3 px-5 py-3.5 border-b border-white/[0.07] bg-white/[0.015]">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-emerald-400/20 bg-emerald-400/[0.08]">
+          <img src={glow} alt="" className="h-[18px] w-[18px]" />
+        </div>
+        <div className="min-w-0">
+          <h2 className="text-[13px] font-semibold leading-none tracking-[-0.005em] text-slate-100">
+            DraftMate AI
+          </h2>
+          <p className="mt-1.5 text-[11px] leading-none text-slate-400">
+            Content refinement assistant
+          </p>
+        </div>
+      </header>
+
+      {/* Conversation */}
+      <div
+        ref={containerRef}
+        role="log"
+        aria-live="polite"
+        className="emerald-scrollbar flex-1 space-y-5 overflow-y-auto overflow-x-hidden px-4 py-5 md:px-5"
+      >
+        {messages.map((msg, idx) => {
+          const outgoing = msg.direction === "outgoing";
+          return (
+            <div
+              key={msg._id || `msg-${idx}`}
+              className={`flex ${outgoing ? "justify-end" : "justify-start"}`}
+            >
+              <div
+                className={`
+                  max-w-[88%] whitespace-pre-wrap break-words
+                  rounded-2xl px-4 py-2.5
+                  text-[13px] leading-[1.6]
+                  ${
+                    outgoing
+                      ? "rounded-br-md border border-white/[0.08] bg-white/[0.06] text-slate-100"
+                      : "rounded-bl-md border border-emerald-400/[0.14] bg-emerald-400/[0.06] text-slate-200"
+                  }
+                `}
+              >
+                {msg.message}
+              </div>
+            </div>
+          );
+        })}
+
+        {/* Loading: skeleton reply */}
+        {draftMateLoading && (
+          <div className="flex justify-start" role="status" aria-label="DraftMate is refining your content">
+            <div className="w-[72%] max-w-[88%] rounded-2xl rounded-bl-md border border-emerald-400/[0.14] bg-emerald-400/[0.06] px-4 py-3.5">
+              <div className="space-y-2.5 animate-pulse">
+                <div className="h-2 w-11/12 rounded-full bg-emerald-300/20" />
+                <div className="h-2 w-full rounded-full bg-emerald-300/15" />
+                <div className="h-2 w-7/12 rounded-full bg-emerald-300/10" />
+              </div>
+              <p className="mt-3 text-[11px] text-slate-400">Refining your content…</p>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Composer */}
+      <div className="border-t border-white/[0.07] px-4 pt-3 pb-2.5">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSend(prompt);
+            setPrompt("");
+          }}
+          className="
+            flex items-end gap-2 rounded-xl
+            border border-white/[0.09] bg-white/[0.03]
+            p-1.5 pl-3.5
+            transition-colors duration-200
+            focus-within:border-emerald-400/40
+            focus-within:bg-white/[0.04]
+          "
+        >
+          <textarea
+            name="message"
+            ref={textareaRef}
+            rows={1}
+            value={prompt}
+            disabled={isTyping}
+            placeholder={PLACEHOLDERS[placeholderIndex]}
+            aria-label="Message DraftMate"
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+            onChange={(e) => setPrompt(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                handleSend(prompt);
+                setPrompt("");
+              }
+            }}
+            className="
+              scrollbar-hide block flex-1 resize-none bg-transparent
+              min-h-[32px] max-h-[160px] py-1.5
+              text-[13px] leading-5 text-slate-100
+              placeholder:text-slate-500
+              outline-none disabled:cursor-not-allowed disabled:opacity-60
+            "
+          />
+
+          <button
+            type="submit"
+            aria-label="Send message"
+            disabled={isTyping || !prompt.trim()}
+            className="
+              flex h-8 w-8 shrink-0 items-center justify-center rounded-lg
+              bg-emerald-500 text-slate-950 text-base
+              transition-all duration-200
+              hover:bg-emerald-400 active:scale-95
+              focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300/60
+              disabled:cursor-not-allowed disabled:bg-white/[0.06] disabled:text-slate-600
+            "
+          >
+            <VscSend />
+          </button>
+        </form>
+
+        <div className="mt-2.5 flex items-center justify-between gap-3 px-1">
+          <p className="text-[10px] tracking-wide text-slate-500">
+            Verify generated content before publishing.
+          </p>
+          <Link
+            to={`${window.location.origin}/viewpage/yugeshkaran01@gmail.com/69fc146c5ea31bc1ac08c77d`}
+            onClick={() => postViews(email)}
+            className="text-[10px]
+                      text-emerald-400
+                      hover:text-emerald-300
+                      transition-all duration-300
+                      whitespace-nowrap"
+          >
+           <span className="font-medium">DraftMate Docs</span>  ↗
+          </Link>
+        </div>
+      </div>
+    </motion.section>
+  )}
+</AnimatePresence>
               {/* AI Assistant (Always visible on desktop) */}
 
               {/* backdrop-blur-xl */}
 
-              <AnimatePresence mode="popLayout">
-                {chatbot && (
-                  <motion.div
-                    key="draftmate-mobile"
-                    layout
-                    initial={{
-                      opacity: 0,
-                      x: 60,
-                      scale: 0.96,
-                      filter: "blur(8px)",
-                    }}
-                    animate={{
-                      opacity: 1,
-                      x: 0,
-                      scale: 1,
-                      filter: "blur(0px)",
-                    }}
-                    exit={{
-                      opacity: 0,
-                      x: 60,
-                      scale: 0.96,
-                      filter: "blur(8px)",
-                    }}
-                    transition={{
-                      duration: 0.45,
-                      ease: [0.22, 1, 0.36, 1],
-                    }}
-                    className="
-                      lg:hidden
-                      relative overflow-hidden
-                      theme-fields-dark
-                      border border-emerald-500/20
-                      shadow-[0_0_40px_rgba(16,185,129,0.06)]
-                      rounded-2xl
-                      h-[600px]
-                      pb-2
-                      flex flex-col
-                    "
-                  >
-                    {/* DraftMate Content */}
-                    {/* Header */}
-                    <div className="relative z-10 px-5 py-4 border-b border-white/[0.06] flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="relative">
-                          <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
-                            <img src={glow} className="w-5 h-5" />
-                          </div>
-                        </div>
-
-                        <div>
-                          <h2 className="text-sm font-semibold tracking-wide text-white">
-                            DraftMate AI
-                          </h2>
-
-                          <p className="text-[11px] text-gray-400 md:text-gray-400 mt-0.5">
-                            Content Refinement Assistant
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* <div className="hidden md:flex items-center gap-2 text-[10px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-full">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                    Active
-                  </div> */}
-                    </div>
-
-                    <div
-                      ref={containerRef}
-                      className="flex-1 overflow-y-auto overflow-x-hidden px-4 pt-6 pb-3 md:p-6 md:pb-4 emerald-scrollbar space-y-4 h-[600px] pr-2"
-                    >
-                      {messages.map((msg, idx) => (
-                        <div
-                          key={msg._id || `msg-${idx}`}
-                          className={`flex  ${
-                            msg.direction === "outgoing"
-                              ? "justify-end"
-                              : "justify-start"
-                          }`}
-                        >
-                          <div
-                            className={`
-                          w-full
-                          px-4
-                          py-2.5
-                          rounded-2xl
-                          text-xs
-                          leading-relaxed
-                          break-words
-
-                          
-                          whitespace-pre-wrap
-                          ${
-                            msg.direction === "outgoing"
-                              ? "bg-gray-800 md:ml-5  text-white rounded-br-md"
-                              : "bg-emerald-700/20 text-gray-200 md:mr-5 rounded-bl-md"
-                          }
-                        `}
-                          >
-                            {msg.message}
-                          </div>
-                        </div>
-                      ))}
-
-                      {draftMateLoading && (
-                        <div className="flex items-center gap-3 px-1">
-                          <div className="flex items-center gap-1">
-                            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-bounce [animation-delay:-0.3s]" />
-                            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-bounce [animation-delay:-0.15s]" />
-                            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-bounce" />
-                          </div>
-
-                          <span className="text-xs text-gray-400">
-                            DraftMate is refining your content...
-                          </span>
-                        </div>
-                      )}
-                    </div>
-
-                    <form
-                      onSubmit={(e) => {
-                        e.preventDefault();
-                        // const input = e.target.message;
-                        // handleSend(input.value);
-                        //  input.value = "";
-                        handleSend(prompt);
-                        setPrompt("");
-                      }}
-                      // className="flex pb-1 h-20  pt-4 px-4 relative  gap-3  min-h-[80px]  outline-none "
-                      className="flex items-end pb-1 pt-4 px-4 relative gap-3 outline-none"
-                    >
-                      {/* <input
-                    name="message"
-                    placeholder="Ask DraftMate to transform your content..."
-                    onKeyDown={()=>{ e.key === "Enter" && !e.shiftKey}}
-                    className="flex-1 px-4  rounded-xl border border-gray-700 py-2 theme text-xs outline-none text-white"
-                  /> */}
-
-                      <textarea
-                        name="message"
-                        disabled={isTyping}
-                        ref={textareaRef}
-                        value={prompt}
-                        onFocus={() => {
-                          setIsFocused(true);
-                        }}
-                        onBlur={() => {
-                          setIsFocused(false);
-                        }}
-                        placeholder={PLACEHOLDERS[placeholderIndex]}
-                        className="flex-1  min-h-[40px] max-h-[200px] shrink-0 px-4 flex scrollbar-hide  rounded-xl border border-gray-700 py-2 transition-all duration-200 theme text-xs outline-none text-white"
-                        id=""
-                        onChange={(e) => {
-                          setPrompt(e.target.value);
-                        }}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter" && !e.shiftKey) {
-                            e.preventDefault();
-                            handleSend(prompt);
-                            setPrompt("");
-                          }
-                        }}
-                        rows={1}
-                      />
-
-                      <button
-                        disabled={isTyping}
-                        className="text-2xl  md:text-2xl transition-all duration-300 hover:text-gray-400 text-gray-500 block transition-all duration-300  disabled:text-gray-700 disabled:cursor-not-allowed"
-                      >
-                        <VscSend />
-                      </button>
-                    </form>
-                    <div className="flex items-center justify-center  gap-1 pt-1 pb-3 px-6">
-                      <p className="text-[9px] md:text-[10px] text-gray-400 tracking-wide">
-                        Verify generated content before publishing.
-                      </p>
-
-                      <Link
-                        to={`${window.location.origin}/viewpage/yugeshkaran01@gmail.com/69fc146c5ea31bc1ac08c77d`}
-                        onClick={() => postViews(email)}
-                        className="
-                      text-[9px]
-                      md:text-[10px]
-                      text-emerald-400
-                      hover:text-emerald-300
-                      transition-all duration-300
-                      whitespace-nowrap
-                    "
-                      >
-                        DraftMate Docs ↗
-                      </Link>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              <div
-                className={`relative overflow-hidden
-                    theme-fields-dark
-                    border border-emerald-500/20
-                    shadow-[0_0_40px_rgba(16,185,129,0.06)]
-                    rounded-2xl
-                    lg:w-11/12
-                    md:h-[450px]
-                    h-[600px]
-                    pb-2
-                    flex flex-col
-                    hidden lg:flex
-                   
-                `}
-              >
-                {/* Header */}
-                <div className="relative z-10 px-5 py-4 border-b border-white/[0.06] flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="relative">
-                      <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
-                        <img src={glow} className="w-5 h-5" />
-                      </div>
-                    </div>
-
-                    <div>
-                      <h2 className="text-sm font-semibold tracking-wide text-white">
-                        DraftMate AI
-                      </h2>
-
-                      <p className="text-[11px] text-gray-400 md:text-gray-400 mt-0.5">
-                        Content Refinement Assistant
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* <div className="hidden md:flex items-center gap-2 text-[10px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-full">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                    Active
-                  </div> */}
-                </div>
-
-                <div
-                  ref={containerRef}
-                  className="flex-1 overflow-y-auto overflow-x-hidden px-4 pt-6 pb-3 md:p-6 md:pb-4 emerald-scrollbar space-y-4 h-[600px] pr-2"
-                >
-                  {messages.map((msg, idx) => (
-                    <div
-                      key={msg._id || `msg-${idx}`}
-                      className={`flex  ${
-                        msg.direction === "outgoing"
-                          ? "justify-end"
-                          : "justify-start"
-                      }`}
-                    >
-                      <div
-                        className={`
-                          w-full
-                          px-4
-                          py-2.5
-                          rounded-2xl
-                          text-xs
-                          leading-relaxed
-                          break-words
-
-                          
-                          whitespace-pre-wrap
-                          ${
-                            msg.direction === "outgoing"
-                              ? "bg-gray-800 md:ml-5  text-white rounded-br-md"
-                              : "bg-emerald-700/20 text-gray-200 md:mr-5 rounded-bl-md"
-                          }
-                        `}
-                      >
-                        {msg.message}
-                      </div>
-                    </div>
-                  ))}
-
-                  {draftMateLoading && (
-                    <div className="flex items-center gap-3 px-1">
-                      <div className="flex items-center gap-1">
-                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-bounce [animation-delay:-0.3s]" />
-                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-bounce [animation-delay:-0.15s]" />
-                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-bounce" />
-                      </div>
-
-                      <span className="text-xs text-gray-400">
-                        DraftMate is refining your content...
-                      </span>
-                    </div>
-                  )}
-                </div>
-
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    // const input = e.target.message;
-                    // handleSend(input.value);
-                    //  input.value = "";
-                    handleSend(prompt);
-                    setPrompt("");
-                  }}
-                  // className="flex pb-1 h-20  pt-4 px-4 relative  gap-3  min-h-[80px]  outline-none "
-                  className="flex items-end pb-1 pt-4 px-4 relative gap-3 outline-none"
-                >
-                  {/* <input
-                    name="message"
-                    placeholder="Ask DraftMate to transform your content..."
-                    onKeyDown={()=>{ e.key === "Enter" && !e.shiftKey}}
-                    className="flex-1 px-4  rounded-xl border border-gray-700 py-2 theme text-xs outline-none text-white"
-                  /> */}
-
-                  <textarea
-                    name="message"
-                    disabled={isTyping}
-                    ref={textareaRef2}
-                    value={prompt}
-                    onFocus={() => {
-                      setIsFocused(true);
-                    }}
-                    onBlur={() => {
-                      setIsFocused(false);
-                    }}
-                    placeholder={PLACEHOLDERS[placeholderIndex]}
-                    className="flex-1  min-h-[40px]
-                     max-h-[200px] shrink-0 px-4 flex scrollbar-hide  rounded-xl border border-gray-700 py-2 transition-all duration-200 theme text-xs outline-none text-white"
-                    id=""
-                    onChange={(e) => {
-                      setPrompt(e.target.value);
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" && !e.shiftKey) {
-                        e.preventDefault();
-                        handleSend(prompt);
-                        setPrompt("");
-                      }
-                    }}
-                    rows={1}
-                  />
-
-                  <button
-                    disabled={isTyping}
-                    className="text-2xl  md:text-2xl transition-all duration-300 hover:text-gray-400 text-gray-500 block transition-all duration-300  disabled:text-gray-700 disabled:cursor-not-allowed"
-                  >
-                    <VscSend />
-                  </button>
-                </form>
-                <div className="flex items-center justify-center  gap-1 pt-1 pb-3 px-6">
-                  <p className="text-[9px] md:text-[10px] text-gray-400 tracking-wide">
-                    Verify generated content before publishing.
-                  </p>
-
-                  <Link
-                    to={`${window.location.origin}/viewpage/yugeshkaran01@gmail.com/69fc146c5ea31bc1ac08c77d`}
-                    onClick={() => postViews(email)}
-                    className="
-                      text-[9px]
-                      md:text-[10px]
-                      text-emerald-400
-                      hover:text-emerald-300
-                      transition-all duration-300
-                      whitespace-nowrap
-                    "
-                  >
-                    DraftMate Docs ↗
-                  </Link>
-                </div>
-              </div>
+                
             </div>
 
             {/* RIGHT COLUMN FORM */}
