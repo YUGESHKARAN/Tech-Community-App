@@ -48,6 +48,9 @@ import { getDomainStyle } from "../utils/domainStyle";
 import { deriveGradient } from "../utils/bannerTheme";
 import * as TbIcons from "react-icons/tb";
 
+import { twMerge } from "tailwind-merge";
+import clsx from "clsx";
+
 // ── Constants ─────────────────────────────────────────────────────────────────
 const S3 = "https://open-access-blog-image.s3.us-east-1.amazonaws.com/";
 const av = (p) => (p ? `${S3}${p}` : userPlaceholder);
@@ -291,6 +294,7 @@ const ComposeBox = ({
   autoFocus = false,
   initialValue = "",
   submitLabel = "Reply",
+  headerClass="",
   minRows = 7,
 }) => {
   const [value, setValue] = useState(initialValue);
@@ -404,16 +408,20 @@ const ComposeBox = ({
 
   return (
     <div
-      className="theme border border-[#1e293b] rounded-xl overflow-hidden
+      className="theme border border-[#1e293b] rounded-lg md:rounded-xl overflow-hidden
                     focus-within:border-white/15 transition-colors"
     >
       {/* ── tab bar + toolbar ── */}
       <div
         className="flex items-center justify-between px-2 pt-2 pb-1
                       border-b border-[#1e293b]"
+        
       >
         {/* Write / Preview tabs */}
-        <div className="flex gap-0.5 bg-white/[0.03] border border-[#1e293b] rounded-lg p-0.5">
+        <div 
+        className="flex gap-0.5 bg-white/[0.03] border border-[#1e293b] rounded-lg p-0.5"
+      
+        >
           {[
             { id: "write", label: "Write", icon: TbPencil },
             { id: "preview", label: "Preview", icon: TbEye },
@@ -423,13 +431,22 @@ const ComposeBox = ({
               type="button"
               onClick={() => setMode(id)}
               disabled={id === "preview" && isEmpty}
-              className={`flex items-center gap-1 text-[10px] font-semibold
+           
+
+               className={twMerge(
+                clsx(
+                  `
+               flex items-center gap-1 text-[10px] font-semibold
                           px-2 py-1 rounded-md transition-all
                           disabled:opacity-30 disabled:cursor-not-allowed ${
                             mode === id
                               ? "bg-white/8 text-white"
                               : "text-gray-500 hover:text-gray-300"
-                          }`}
+                          }
+                  `,
+                  headerClass
+                )
+              )}
             >
               <Icon className="text-xs" />
               {label}
@@ -511,8 +528,8 @@ const ComposeBox = ({
             <button
               type="button"
               onClick={onCancel}
-              className="text-xs text-gray-400 font-semibold hover:text-gray-300
-                         px-3 py-1.5 rounded-lg transition-colors"
+              className="text-[10px] md:text-xs text-gray-400 font-semibold hover:text-gray-300
+                        px-2.5 md:px-3 py-1 md:py-1.5 rounded-lg transition-colors"
             >
               Cancel
             </button>
@@ -521,12 +538,12 @@ const ComposeBox = ({
             type="button"
             onClick={handleSubmit}
             disabled={isEmpty || submitting}
-            className="flex items-center gap-1.5 text-xs font-semibold
-                       px-3 py-1 py-1.5 rounded-lg bg-emerald-600 text-white
+            className="flex items-center gap-1.5 text-[10px] md:text-xs font-semibold
+                      px-2.5 md:px-3 py-1 py-1 md:py-1.5 rounded-lg bg-emerald-600 text-white
                        disabled:opacity-40 disabled:cursor-not-allowed
                        hover:bg-emerald-500 transition-colors"
           >
-            <TbSend className="text-sm" />
+            <TbSend className="text-xs md:text-sm" />
             {submitting ? "Posting…" : submitLabel}
           </button>
         </div>
@@ -869,6 +886,8 @@ const ReplyCard = ({
                 placeholder={`Reply to ${reply.authorId.authorName}...`}
                 onSubmit={handleNestedSubmit}
                 onCancel={() => setShowNestedCompose(false)}
+                headerClass="px-0.5 text-[8px] md:px-2 md:text-[10px]"
+             
                 autoFocus
               />
             </div>
