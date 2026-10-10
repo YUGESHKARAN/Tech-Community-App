@@ -200,7 +200,6 @@ const BADGE_META = {
         //     setShowAll(!showAll);
         //   }
         }}
-        // className="flex absolute right-2 top-4 cursor-pointer max-w-40 md:max-w-xl flex-wrap -space-x-2.5"
                  className={twMerge(
         clsx(
           `
