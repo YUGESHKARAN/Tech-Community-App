@@ -34,7 +34,10 @@ function HomePage() {
     // <div className="min-h-screen h-auto  relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white flex flex-col">
     <div className="min-h-screen  h-auto  relative theme text-white flex flex-col">
       <NavBar />
-      <div className="mx-auto w-full md:px-3 md:pt-3 md:px-4 md:pt-4">
+      <div
+      //  className="mx-auto w-full md:px-3 md:pt-3 md:px-4 md:pt-4"
+       className="mx-auto w-full"
+       >
   <HomeHeader />
 </div>
         
