@@ -108,7 +108,8 @@ function HomeHeader({ events = UPCOMING }) {
 
           {/* <h1 className="mt-4 text-2xl font-semibold leading-[1.1] tracking-tight bg-gradient-to-r from-slate-100 to-emerald-300 bg-clip-text text-transparent  md:text-4xl"> */}
           <h1 className="mt-4 text-2xl font-semibold leading-[1.1] tracking-tight text-slate-100  md:text-4xl">
-            Build something this summer.
+            {/* Build something this summer. */}
+            Build your product this summer.
           </h1>
 
           <p className="mt-3 max-w-lg text-sm leading-relaxed text-slate-400 md:text-[15px]">
