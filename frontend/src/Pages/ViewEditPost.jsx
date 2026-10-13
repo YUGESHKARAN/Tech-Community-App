@@ -526,6 +526,7 @@ function ViewEditPost() {
                                   "YouTube",
                                   "LinkedIn",
                                   "Portfolio",
+                                  "Try It"
                                 ];
 
                                 if (dropDown.includes(link.title)) {
@@ -607,6 +608,12 @@ function ViewEditPost() {
                             (l) =>
                               l.title === "Demo" && currentLinkTitle !== "Demo",
                           ) && <option value="Demo">Demo</option>}
+
+                           {!postLinks.some(
+                            (l) =>
+                              l.title === "Try It" && currentLinkTitle !== "Try It",
+                          ) && <option value="Try It">App / Platform - URL</option>}
+
                           <option value="Others">Others</option>
                         </select>
                       )}

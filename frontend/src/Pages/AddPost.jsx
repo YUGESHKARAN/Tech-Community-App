@@ -1187,6 +1187,7 @@ function AddPost() {
                           <option value="GitHub">GitHub</option>
                           <option value="YouTube">YouTube</option>
                           <option value="Demo">Demo</option>
+                          <option value="Try It">App / Platform - URL</option>
                           <option value="Others">Others</option>
                         </select>
                       )}
