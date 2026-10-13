@@ -2132,10 +2132,13 @@ function ViewPage() {
 
   // TODO: show only when the resources contain an application link, and
   // point handleTryOut at that link. Placeholder for now.
-  const showTryOut = true;
+  const [showTryOut, setTryOut] = useState(false);
   const handleTryOut = () => {
     // TODO: open the application / demo link
+    navigate(appUrl)
   };
+
+  // console.log("post data", singlePostData)
 
   // ============================================================ SECTIONS
 
@@ -2319,7 +2322,10 @@ function ViewPage() {
   /* ---------- Participants strip ---------- */
   const participantsSection =
     participants.length > 0 ? (
-      <div className="rounded-2xl border border-neutral-800 bg-neutral-900/40 px-4 py-3">
+      <div 
+      // className="rounded-2xl border border-neutral-800 bg-neutral-900/40 px-4 py-3"
+      className="rounded-2xl px-4"
+      >
         <p className="text-gray-400 text-xs font-semibold">Participants</p>
         <div className="mt-3 flex flex-wrap items-center gap-1">
           {participants.slice(0, 3).map((p) => (
@@ -2403,7 +2409,7 @@ function ViewPage() {
   const desktopComments = (
     <section
       ref={commentWrapperRef}
-      className="hidden lg:flex flex-col theme-fields-dark border border-[#30363d] rounded-lg text-white max-h-[70vh] overflow-hidden"
+      className="hidden lg:flex flex-col theme-fields-dark border border-[#30363d] rounded-lg text-white max-h-[60vh] overflow-hidden"
     >
       <div className="flex items-center gap-2 px-4 py-3 border-b border-[#21262d] shrink-0">
         <MdOutlineInsertComment className="text-emerald-400 text-base" />
@@ -2438,6 +2444,24 @@ function ViewPage() {
       </div>
     </section>
   );
+
+  const [appUrl, setAppUrl] = useState("")
+
+  const getUrl = (links=[]) => {
+    const link = links.find(r=> r.title == "Try It");
+    if(link){
+      setTryOut(true)
+      setAppUrl(link.url)
+    }
+  }
+
+  useEffect(()=>{
+    if(singlePostData?.links){
+      getUrl(singlePostData.links)
+    }
+  },[singlePostData, email])
+
+console.log(singlePostData)
 
   // ================================================================ RENDER
   return (
@@ -2517,7 +2541,9 @@ function ViewPage() {
                     />
                     <span className="text-xs font-semibold text-white truncate">
                       {singlePostData.authorname}
+                      
                     </span>
+                   
                     <span className="text-[11px] text-gray-500 shrink-0">
                       · {singlePostData.timestamp ? getTimeAgo(singlePostData.timestamp) : ""}
                     </span>
@@ -2571,13 +2597,14 @@ function ViewPage() {
                     </button>
 
                     {showTryOut && (
-                      <button
-                        onClick={handleTryOut}
+                      <Link
+                      to={appUrl}
+                        // onClick={handleTryOut}
                         className="ml-1 h-8 px-3.5 rounded-full bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-semibold flex items-center gap-1.5 active:scale-95 transition-all"
                       >
                         Try it out
                         <MdOutlineOpenInNew className="text-sm" />
-                      </button>
+                      </Link>
                     )}
                   </div>
                 </div>
@@ -2680,7 +2707,7 @@ function ViewPage() {
             whileTap={{ scale: 0.94 }}
             aria-label={showAssistant ? "Close AI assistant" : "Ask AI"}
             className="
-              fixed z-[60] bottom-4 right-3 md:bottom-6 md:right-6
+              fixed z-[30] bottom-4 right-3 md:bottom-6 md:right-6
               flex items-center gap-2
               h-12 md:h-12 px-4 rounded-full
               bg-[#0d1117]/95 backdrop-blur-md
@@ -2723,7 +2750,7 @@ function ViewPage() {
             transition-transform duration-300 ease-out
             ${viewComments ? "translate-y-0" : "translate-y-full"}
           `}
-          style={{ height: isInputFocused ? "55vh" : "78vh" }}
+          style={{ height: isInputFocused ? "55vh" : "75vh" }}
         >
           <div
             className="flex justify-center pt-3 pb-1 shrink-0"
