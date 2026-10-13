@@ -2608,10 +2608,21 @@ function ViewPage() {
       )}
 
       {loading && <PostDetailSkeleton />}
+     
 
       {/* ===================== FLOATING AI (bottom-right) ===================== */}
       {!loading && Object.keys(singlePostData).length > 0 && (
         <>
+          {showAssistant && (
+        <div
+          onClick={() => setShowAssistant(false)}
+          className={`absolute md:hidden inset-0 duration-300 ${
+            showAssistant
+              ? "bg-black/60 backdrop-blur-sm transition-opacity"
+              : "opacity-0"
+          }`}
+        />
+      )}
           <AnimatePresence>
             {showAssistant && (
               <motion.div
@@ -2631,7 +2642,7 @@ function ViewPage() {
                   bg-[#0a0f1d] shadow-2xl shadow-black/60
                 "
               >
-                <div className="flex items-center justify-between px-4 py-2.5 border-b border-neutral-800 shrink-0">
+                {/* <div className="flex items-center justify-between px-4 py-2.5 border-b border-neutral-800 shrink-0">
                   <div className="flex items-center gap-2">
                     <img
                       src={logoicon}
@@ -2649,12 +2660,14 @@ function ViewPage() {
                   >
                     <IoClose className="text-base" />
                   </button>
-                </div>
+                </div> */}
 
                 <div className="flex-1 overflow-y-auto scrollbar-hide">
                   <AITechAssistant
                     currentPostId={singlePostData._id}
                     category={singlePostData.category}
+                    showAssistant={showAssistant}
+                    setShowAssistant = {setShowAssistant}
                   />
                 </div>
               </motion.div>
