@@ -19,6 +19,8 @@
 </a>
 <a href="https://www.linkedin.com/company/bytes-base">
   <img src="https://img.shields.io/badge/Follow%20us%20on-LinkedIn-black?style=flat&logo=linkedin&logoColor=white&labelColor=white" alt="LinkedIn" />
+  
+<a href="https://www.producthunt.com/products/bytes-base?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-bytes-base" target="_blank" rel="noopener noreferrer"><img alt="Bytes Base - One place to connect developer minds | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1247669&amp;theme=light&amp;t=1791864759459"></a>
 
   </div>
 
