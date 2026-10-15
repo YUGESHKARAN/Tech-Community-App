@@ -63,8 +63,6 @@ const PostDetailSkeleton = () => {
             {skeletonBlock("h-4 w-full rounded")}
             {skeletonBlock("h-4 w-full rounded")}
             {skeletonBlock("h-4 w-full rounded")}
-            {skeletonBlock("h-4 w-full rounded")}
-            {skeletonBlock("h-4 w-full rounded")}
             {skeletonBlock("h-4 w-5/6 rounded")}
             {skeletonBlock("h-4 w-2/3 rounded")}
           </div>
