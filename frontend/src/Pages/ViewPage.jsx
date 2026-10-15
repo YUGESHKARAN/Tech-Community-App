@@ -2461,7 +2461,7 @@ function ViewPage() {
     }
   },[singlePostData, email])
 
-console.log(singlePostData)
+// console.log(singlePostData)
 
   // ================================================================ RENDER
   return (
