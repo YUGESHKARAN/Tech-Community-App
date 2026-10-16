@@ -1796,6 +1796,9 @@ function ViewPage() {
 
   // ---- UI state ----
   const [showAssistant, setShowAssistant] = useState(false);
+  const [isAssistantMobileViewport, setIsAssistantMobileViewport] = useState(
+    () => window.matchMedia("(max-width: 767px)").matches,
+  );
   const [viewComments, setViewComments] = useState(false); // mobile comment sheet
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [activeTab, setActiveTab] = useState("overview"); // mobile: overview | resources
@@ -1805,6 +1808,15 @@ function ViewPage() {
   const sheetRef = useRef(null);
   const textareaRef = useRef(null); // desktop input
   const textareaRef2 = useRef(null); // mobile sheet input
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 767px)");
+    const updateViewport = (event) =>
+      setIsAssistantMobileViewport(event.matches);
+
+    mediaQuery.addEventListener("change", updateViewport);
+    return () => mediaQuery.removeEventListener("change", updateViewport);
+  }, []);
 
   // ---------------------------------------------------------------- views
   useEffect(() => {
@@ -2293,8 +2305,8 @@ function ViewPage() {
   );
 
   const mainCard = (
-    <section className="rounded-lg md:border border-neutral-800 bg-neutral-900/40 overflow-hidden">
-      <div className="flex items-center md:border-b border-neutral-800  md:px-3">
+    <section className="rounded-lg relative md:border border-neutral-800 bg-neutral-900/40">
+      <div className="sticky top-0 z-20 flex items-center md:border-b border-neutral-800 md:px-3 rounded-t-lg bg-[#0d1117]/95 backdrop-blur-md">
         {tabBtn("overview", "Overview", MdOutlineDescription)}
         {tabBtn("resources", "Resources", MdOutlineLibraryBooks)}
 
@@ -2640,33 +2652,36 @@ function ViewPage() {
       {/* ===================== FLOATING AI (bottom-right) ===================== */}
       {!loading && Object.keys(singlePostData).length > 0 && (
         <>
-          {showAssistant && (
-        <div
-          onClick={() => setShowAssistant(false)}
-          className={`absolute md:hidden inset-0 duration-300 ${
-            showAssistant
-              ? "bg-black/60 backdrop-blur-sm transition-opacity"
-              : "opacity-0"
-          }`}
-        />
-      )}
+          <div
+            onClick={() => setShowAssistant(false)}
+            className={`md:hidden fixed inset-0 z-[59] bg-black/60 backdrop-blur-sm transition-opacity duration-300 ${
+              showAssistant ? "visible opacity-100" : "invisible opacity-0"
+            }`}
+          />
           <AnimatePresence>
             {showAssistant && (
               <motion.div
                 key="ai-panel"
-                initial={{ opacity: 0, y: 24, scale: 0.94 }}
+                initial={
+                  isAssistantMobileViewport
+                    ? { opacity: 1, y: "100%" }
+                    : { opacity: 0, y: 24, scale: 0.94 }
+                }
                 animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 24, scale: 0.94 }}
+                exit={
+                  isAssistantMobileViewport
+                    ? { opacity: 1, y: "100%" }
+                    : { opacity: 0, y: 24, scale: 0.94 }
+                }
                 transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
                 style={{ transformOrigin: "bottom right" }}
                 className="
-                  fixed z-[60]
-                  bottom-20 right-3 md:bottom-24 md:right-6
-                  w-[calc(100vw-1.5rem)] md:w-[420px]
-                  max-h-[75vh] md:max-h-[640px]
-                  flex flex-col overflow-hidden
-                  rounded-2xl border border-neutral-700/70
-                  bg-[#0a0f1d] shadow-2xl shadow-black/60
+                  fixed bottom-0 left-0 right-0 z-[60]
+                  flex w-full max-h-[75vh] flex-col overflow-hidden
+                  rounded-t-2xl border border-neutral-700/70
+                  shadow-2xl shadow-black/60
+                  md:bottom-24 md:left-auto md:right-6
+                  md:w-[420px] md:max-h-[640px] md:rounded-2xl
                 "
               >
                 {/* <div className="flex items-center justify-between px-4 py-2.5 border-b border-neutral-800 shrink-0">
@@ -2693,8 +2708,8 @@ function ViewPage() {
                   <AITechAssistant
                     currentPostId={singlePostData._id}
                     category={singlePostData.category}
-                    showAssistant={showAssistant}
-                    setShowAssistant = {setShowAssistant}
+                    viewComments={viewComments}
+                    setShowAssistant={setShowAssistant}
                   />
                 </div>
               </motion.div>

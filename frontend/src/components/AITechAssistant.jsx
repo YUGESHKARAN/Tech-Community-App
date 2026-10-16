@@ -1394,9 +1394,7 @@ export default function AITechAssistant({
   currentPostId,
   category,
   viewComments = null,
-  setViewComments = null,
-  showAssistant,
-  setShowAssistant
+  setShowAssistant,
 
 }) {
   const username = getItem("username");
@@ -1547,7 +1545,7 @@ export default function AITechAssistant({
     if (viewComments) {
       setShowAssistant(false);
     }
-  }, [viewComments]);
+  }, [viewComments, setShowAssistant]);
 
   // Single responsive textarea (mobile + desktop) — auto-grows with content.
   const textareaRef = useRef(null);
@@ -1660,38 +1658,14 @@ export default function AITechAssistant({
           so this component doesn't depend on a tailwind.config.js edit. */}
 
 
-      {showAssistant && (
-        <div
-          onClick={() => setShowAssistant(false)}
-          className={`absolute inset-0 duration-300 ${
-            showAssistant
-              ? "bg-black/60 backdrop-blur-sm transition-opacity"
-              : "opacity-0"
-          }`}
-        />
-      )}
-
-      {/* Mobile launcher */}
-      <button
-        onClick={() => setShowAssistant(!showAssistant)}
-        className="bottom-4 right-4 z-50 flex items-center gap-2 rounded-full border border-violet-400/25 bg-violet-500/10 px-3 py-[6px] text-xs text-violet-100 shadow-xl backdrop-blur transition-all duration-300 active:scale-95 md:hidden"
-      >
-        Ask AI
-        <img src={logoicon} className="h-3 w-3 rounded-full object-contain" alt="" />
-      </button>
-
       {/* Assistant Panel */}
       <div
         className={`
-      fixed md:static bottom-0 right-0
-      w-full md:w-full
-      md:relative
+      relative w-full
       ${panelSurface}
       md:border
       border-t border-white/[0.08]
       rounded-t-2xl
-      transform transition-transform duration-300
-      ${showAssistant ? "translate-y-0" : "translate-y-full md:translate-y-0"}
       z-40 flex flex-col overflow-hidden md:rounded-2xl
       md:pb-4
           md:h-[470px]
@@ -2045,4 +2019,3 @@ export default function AITechAssistant({
     </>
   );
 }
-
