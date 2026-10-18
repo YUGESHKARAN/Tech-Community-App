@@ -159,7 +159,7 @@ useEffect(() => {
           return (
           <div
             key={msg._id || `temp-${index}`}
-            className="group flex items-start gap-1.5 md:gap-3 py-3 last:border-none"
+            className={`group  flex items-start gap-1.5 md:gap-3 pb-2.5 last:border-none ${isChainedComment ? 'py-0':'  pt-2.5'}`}
           >
             {/* Avatar */}
           
@@ -315,8 +315,6 @@ useEffect(() => {
   );
 };
 
-
-// ─── Comments Section (parent) ────────────────────────────────────────────────
 
 
 
