@@ -533,7 +533,7 @@ function NavBar() {
         </div>
         {/* 🔔 Notifications */}
         <div className="relative hidden lg:block">
-          <IoMdNotifications
+          <RiNotification3Line
             // <RiNotification3Line
             onClick={() => setShowNotification(!showNotification)}
             className="text-xl  text-white/70 hover:text-white transition-all duration-300 cursor-pointer transition"
