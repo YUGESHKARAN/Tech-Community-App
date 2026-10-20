@@ -2676,7 +2676,7 @@ function ViewPage() {
                 transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
                 style={{ transformOrigin: "bottom right" }}
                 className="
-                  fixed bottom-0 left-0 right-0 z-[60]
+                  fixed bottom-0 left-0 right-0 z-[60] md:z-40
                   flex w-full max-h-[75vh] flex-col overflow-hidden
                   rounded-t-2xl border border-neutral-700/70
                   shadow-2xl shadow-black/60
