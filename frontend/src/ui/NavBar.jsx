@@ -1003,131 +1003,87 @@ function NavBar() {
         </div>
       </div>
 
-      {/* <div
+
+
+         <div
         ref={showProfileSettings}
         className={`${
           !showAddContent && !showNotification && showProfile
-            ? "fixed top-16 right-2 z-50 px-2  w-32 overflow-hidden rounded-lg border border-[#30363d] theme shadow-2xl"
+            ? "fixed top-16 right-2 z-50 w-48 overflow-hidden rounded-lg border border-white/10 theme shadow-[0_20px_50px_-12px_rgba(0,0,0,0.75)] backdrop-blur-xl"
             : "hidden"
         }`}
       >
-        <div className="py-1.5">
+        {/* Signed-in-as header */}
+      {/* Account header — top of profile dropdown */}
+<div className="m-1.5 mb-1.5 flex items-center gap-2.5 rounded-lg bg-white/[0.03] px-2.5 py-2 ring-1 ring-white/[0.06]">
+  {profile && profile !== "undefined" && profile !== "null" ? (
+    <img
+      src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`}
+      alt=""
+      className="h-6 w-6 shrink-0 rounded-full object-cover ring-1 ring-white/10"
+    />
+  ) : (
+    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white/[0.06] ring-1 ring-white/10">
+      <RiUser3Line className="text-[13px] text-emerald-400" />
+    </span>
+  )}
+
+  <div className="min-w-0 leading-tight">
+    <p className="truncate text-xs font-semibold text-white">
+      {username || "Account"}
+    </p>
+    {userEmail && (
+      <p className="truncate text-[10px] text-slate-500">{userEmail}</p>
+    )}
+  </div>
+</div>
+
+        <div className="h-px bg-white/[0.08]" />
+
+        {/* Menu items */}
+        <div className="pt-0.5 px-1 ">
           <Link
             onClick={() => {
-              setShowAddContent(false);
-              setShowAddContent(false);
+              setShowProfile(false);
             }}
             to="/profile"
           >
             <button
               className="
-                w-full flex items-center gap-1.5
-                pl-2 py-1
-                text-sm text-white/70
-                hover:bg-gray-600/20
-                transition-all duration-200
-                rounded-lg 
-                hover:text-white
+                flex w-full items-center gap-1
+                px-3 py-1.5
+                text-[11px]  text-slate-300
+                transition-colors duration-150
+                hover:text-slate-200 hover:bg-gray-700/10 rounded-lg
               "
             >
-              <MdManageAccounts className="text-[17px] text-emerald-600" />
-              <span className="text-[11px]">Profile Settings</span>
+              <MdManageAccounts className="text-[15px] text-emerald-400" />
+              <span>Profile Settings</span>
             </button>
           </Link>
-
-          <div
-            className=" w-full flex items-center gap-1.5
-                pl-2 py-1 mt-0.5
-                text-sm text-gray-100
-               hover:bg-gray-600/20
-                transition-all duration-200
-                rounded-lg"
-          >
-            <button
-              onClick={exit}
-              disabled={isImpersonating()}
-              className="flex items-center gap-2 text-white/70  hover:text-white disabled:cursor-not-allowed transition"
-            >
-              <IoLogOutOutline className="text-[17px] text-red-400" />
-              <span className="text-[11px]">Sign Out</span>
-            </button>
-          </div>
         </div>
-      </div> */}
-         <div
-  ref={showProfileSettings}
-  className={`${
-    !showAddContent && !showNotification && showProfile
-      ? "fixed top-16 right-2 z-50 w-44 overflow-hidden rounded-lg border border-white/10 theme shadow-[0_20px_50px_-12px_rgba(0,0,0,0.75)] backdrop-blur-xl"
-      : "hidden"
-  }`}
->
-  {/* Signed-in-as header */}
-  <div className="flex items-center gap-2.5 px-3 py-2.5">
 
+        {/* <div className="h-px bg-white/[0.08]" /> */}
 
-    {profile !== "undefined" && profile !== "null" && profile !== "" ? (
-            <img
-              src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`}
-             className="h-6 w-6 shrink-0 rounded-full ring-1 ring-white/10"
-            />
-          ) : (
-            <RiUser3Line className="text-lg text-emerald-400" />
-          )}
-    <div className="min-w-0">
-      <p className="text-[9px] uppercase tracking-wide text-slate-500">Signed in as</p>
-      <p className="truncate text-xs  tracking-wide trucate font-semibold text-white">
-        {username|| "Account"}
-      </p>
-    </div>
-  </div>
-
-  <div className="h-px bg-white/[0.08]" />
-
-  {/* Menu items */}
-  <div className="pt-1 px-1 ">
-    <Link
-      onClick={() => {
-        setShowProfile(false);
-      }}
-      to="/profile"
-    >
-      <button
-        className="
-          flex w-full items-center gap-1
-          px-3 py-1.5
-          text-[11px]  text-slate-300
-          transition-colors duration-150
-           hover:text-slate-200 hover:bg-gray-600/20 rounded-lg
-        "
-      >
-        <MdManageAccounts className="text-[15px] text-emerald-400" />
-        <span>Profile Settings</span>
-      </button>
-    </Link>
-  </div>
-
-  {/* <div className="h-px bg-white/[0.08]" /> */}
-
-  {/* Sign out — isolated in its own section, GitHub-style */}
-  <div className="pb-2 px-1">
-    <button
-      onClick={exit}
-      disabled={isImpersonating()}
-      className="
-        flex w-full items-center gap-1
-        px-3 py-1.5
-        text-[11px]  text-slate-300
-        transition-colors duration-150
-       hover:text-slate-200  hover:bg-gray-600/20 rounded-lg
-        disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-slate-300
-      "
-    >
-      <IoLogOutOutline className="text-[15px] text-red-400" />
-      <span>Sign Out</span>
-    </button>
-  </div>
-</div>
+        {/* Sign out — isolated in its own section, GitHub-style */}
+        <div className="pb-2 px-1">
+          <button
+            onClick={exit}
+            disabled={isImpersonating()}
+            className="
+              flex w-full items-center gap-1
+              px-3 py-1.5
+              text-[11px]  text-slate-300
+              transition-colors duration-150
+            hover:text-slate-200  hover:bg-gray-700/10 rounded-lg
+              disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-slate-300
+            "
+          >
+            <IoLogOutOutline className="text-[15px] text-red-400" />
+            <span>Sign Out</span>
+          </button>
+        </div>
+      </div>
 
       <SearchModal
         open={showSearchModal}
