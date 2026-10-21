@@ -964,15 +964,7 @@ function ViewEditPost() {
                 </div>
 
                 {/* Submit */}
-                {/* <button
-                type="submit"
-                disabled={loading}
-                className="md:px-5 px-3 py-2 md:py-2.5 bg-emerald-600/20 hover:bg-emerald-500/20
-                         rounded-md text-xs md:text-sm  text-emerald-400 transition-all duration-300 disabled:bg-gray-700/50 disabled:text-gray-400 disabled:cursor-not-allowed"
-              >
-                {loading ? "Updating..." : "Update Post"}
-              </button> */}
-
+                
                 <motion.button
                   whileTap={{ scale: 0.97 }}
                   whileHover={{ scale: 1.02 }}
