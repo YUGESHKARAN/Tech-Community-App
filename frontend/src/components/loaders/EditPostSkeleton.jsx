@@ -20,7 +20,7 @@ const EditPostSkeleton = () => {
           {/* TITLE */}
           <div>
             <div className="h-4 w-20 bg-gray-700 rounded mb-3" />
-            <div className="h-11 w-full bg-gray-800 rounded-lg border border-gray-700" />
+            <div className="h-8 md:h-11 w-full bg-gray-800 rounded-lg border border-gray-700" />
           </div>
 
           {/* DESCRIPTION */}
@@ -29,12 +29,12 @@ const EditPostSkeleton = () => {
               <div className="h-4 w-28 bg-gray-700 rounded" />
 
               <div className="flex gap-2">
-                <div className="w-16 h-8 rounded-md bg-gray-800" />
-                <div className="w-16 h-8 rounded-md bg-gray-800" />
+                <div className="w-16 h-6 md:h-8 rounded-md bg-gray-800" />
+                <div className="w-16 h-6 md:h-8 rounded-md bg-gray-800" />
               </div>
             </div>
 
-            <div className="md:h-[300px] h-[200px] rounded-xl bg-gray-800 border border-gray-700" />
+            <div className="md:h-[300px] h-[230px] rounded-md md:rounded-xl bg-gray-800 border border-gray-700" />
 
             <div className="flex justify-end mt-2">
               <div className="h-3 w-20 bg-gray-700 rounded" />
@@ -75,7 +75,7 @@ const EditPostSkeleton = () => {
                 <div className="flex-1 h-11 rounded-lg bg-gray-800 border border-gray-700" />
               </div>
 
-              <div className="w-24 h-10 rounded-lg bg-gray-800 border border-gray-700" />
+              <div className="w-24 h-7 md:h-10 rounded-lg bg-gray-800 border border-gray-700" />
             </div>
           </div>
 
@@ -83,13 +83,13 @@ const EditPostSkeleton = () => {
           <div>
             <div className="h-4 w-36 bg-gray-700 rounded mb-4" />
 
-            <div className="h-11 rounded-lg bg-gray-800 border border-gray-700" />
+            <div className="h-9 md:h-12 rounded-lg bg-gray-800 border border-gray-700" />
 
             <div className="mt-4 space-y-2">
               {[1, 2].map((i) => (
                 <div
                   key={i}
-                  className="h-12 rounded-lg bg-gray-800 border border-gray-700"
+                  className="h-9 md:h-12 rounded-lg bg-gray-800 border border-gray-700"
                 />
               ))}
             </div>
@@ -115,7 +115,7 @@ const EditPostSkeleton = () => {
           {/* CATEGORY */}
           <div>
             <div className="h-4 w-24 bg-gray-700 rounded mb-3" />
-            <div className="h-11 rounded-lg bg-gray-800 border border-gray-700" />
+            <div className="h-9 md:h-11 rounded-lg bg-gray-800 border border-gray-700" />
           </div>
 
           {/* BUTTON */}
