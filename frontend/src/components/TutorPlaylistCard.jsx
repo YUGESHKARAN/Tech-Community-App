@@ -106,7 +106,7 @@ const TutorPlaylistCard = ({
       {/* MAIN CARD */}
       <div
         className="relative z-20 theme rounded-xl 
-        border border-zinc-900 overflow-hidden 
+         overflow-hidden
         transition-transform duration-300 hover:-translate-y-1"
       >
         {/* Thumbnail */}
