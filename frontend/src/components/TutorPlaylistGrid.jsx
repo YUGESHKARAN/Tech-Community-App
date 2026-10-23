@@ -171,7 +171,7 @@ const getUniqueCategories = (tutorPlayList = []) => {
                 xl:grid-cols-4
                 3xl:grid-cols-5
                 overflow-visible
-                space-y-3
+                space-y-1.5
                 md:space-y-0
                 mt-4
                 
@@ -224,7 +224,7 @@ const getUniqueCategories = (tutorPlayList = []) => {
 
 
       {tutorPlayList.length === 0 && loading && (
-        <div className="px-auto ">
+        <div className="px-auto mt-4">
           <TutorPlaylistGridSkeleton />
         </div>
       )}
