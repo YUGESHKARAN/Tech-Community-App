@@ -817,7 +817,7 @@ function AddPost() {
                 <div className="h-2 w-full rounded-full bg-emerald-300/15" />
                 <div className="h-2 w-7/12 rounded-full bg-emerald-300/10" />
               </div>
-              <p className="mt-3 text-[11px] text-slate-400">Refining your content…</p>
+              <p className="mt-3 text-[11px] text-slate-400">Content refinement in progress...</p>
             </div>
           </div>
         )}
@@ -982,7 +982,7 @@ function AddPost() {
                     {preview ? (
                       <div
                         className="
-                          w-full min-h-40 h-[300px]
+                          w-full min-h-40 h-[370px]
                           overflow-y-auto
                           px-4 py-3
                           rounded-md
@@ -1005,7 +1005,7 @@ function AddPost() {
                       </div>
                     ) : (
                       <textarea
-                        rows="11"
+                        rows="17"
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                         placeholder="Write your post description..."
