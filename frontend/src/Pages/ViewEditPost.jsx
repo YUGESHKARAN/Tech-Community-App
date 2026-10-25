@@ -406,8 +406,7 @@ function ViewEditPost() {
                     {preview ? (
                       <div
                         className="
-                          w-full min-h-40 h-[300px]
-                          
+                          w-full min-h-40 h-[370px]                
                           overflow-y-auto
                           scrollbar-hide
                           px-4 py-3
@@ -420,9 +419,6 @@ function ViewEditPost() {
                           overflow-auto
                           scrollbar-hide
                           break-words
-                          
-
-                       
                         "
                       >
                         {description?.trim()?.length > 0 ? (
@@ -439,7 +435,7 @@ function ViewEditPost() {
                       </div>
                     ) : (
                       <textarea
-                        rows="10"
+                        rows="17"
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                         placeholder="Write your post description..."
