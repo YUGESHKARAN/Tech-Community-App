@@ -34,7 +34,7 @@ const EditPostSkeleton = () => {
               </div>
             </div>
 
-            <div className="md:h-[300px] h-[230px] rounded-md md:rounded-xl bg-gray-800 border border-gray-700" />
+            <div className="md:h-[370px] h-[260px] rounded-md md:rounded-xl bg-gray-800 border border-gray-700" />
 
             <div className="flex justify-end mt-2">
               <div className="h-3 w-20 bg-gray-700 rounded" />
