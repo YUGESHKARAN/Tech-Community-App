@@ -218,7 +218,7 @@ const MarkdownEditor = ({ value, onChange }) => {
   );
 
   return (
-    <div className="theme border border-[#1e293b] rounded-xl overflow-hidden focus-within:border-white/15 transition-colors">
+    <div className="theme border border-[#1e293b] rounded-lg md:rounded-xl overflow-hidden focus-within:border-white/15 transition-colors">
       {/* toolbar */}
       <div className="md:flex  items-center gap-0.5 px-3 py-2 border-b border-[#1e293b] flex-wrap">
         {/* write / preview tabs */}
@@ -377,7 +377,7 @@ const TagSelector = ({
   };
 
   return (
-    <div className="theme border border-[#1e293b] rounded-xl overflow-hidden">
+    <div className="theme border border-[#1e293b] rounded-lg md:rounded-xl overflow-hidden">
       {/* search */}
       <div className="flex items-center gap-2 px-3 py-2 border-b border-[#1e293b]">
         <TbSearch className="text-gray-500 text-xs flex-shrink-0" />
@@ -833,7 +833,7 @@ function CreateDiscussion() {
               <button
                 type="button"
                 onClick={() => setCategoryOpen((v) => !v)}
-                className={`flex items-center justify-between w-full md:w-64 px-4 py-2.5 rounded-xl border text-xs transition-colors ${
+                className={`flex items-center justify-between w-full md:w-64 px-4 py-2.5 rounded-lg md:rounded-xl border text-xs transition-colors ${
                   CATEGORY_COLORS[category]
                     ? `${CATEGORY_COLORS[category]}`
                     : "border-[#1e293b] text-gray-300"
@@ -846,7 +846,7 @@ function CreateDiscussion() {
               </button>
 
               {categoryOpen && (
-                <div className="absolute top-12 left-0 z-50 w-64 theme border border-[#1e293b] rounded-xl overflow-hidden shadow-2xl py-1">
+                <div className="absolute top-12 left-0 z-50 w-64 theme border border-[#1e293b] rounded-lg md:rounded-xl overflow-hidden shadow-2xl py-1">
                   {CATEGORIES.map((cat) => {
                     const isDisabled =
                       cat.value === "announcement" && !isCoordinator;
@@ -898,7 +898,7 @@ function CreateDiscussion() {
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Write a clear, specific title..."
               maxLength={300}
-              className={`w-full bg-white/[0.03] border rounded-xl px-4 py-3 text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-white/20 transition-colors ${
+              className={`w-full bg-white/[0.03] border rounded-lg md:rounded-xl px-4 py-3 text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-white/20 transition-colors ${
                 errors.title ? "border-red-500/40" : "border-[#1e293b]"
               }`}
             />
@@ -994,7 +994,7 @@ function CreateDiscussion() {
 
             {/* linked post preview */}
             {linkedPost && !showPostPanel && (
-              <div className="flex items-center gap-3 px-4 py-3 theme border border-[#1e293b] rounded-xl">
+              <div className="flex items-center gap-3 px-4 py-3 theme border border-[#1e293b] rounded-lg md:rounded-xl">
                 {linkedPost.image ? (
                   <img
                     src={`${S3}${linkedPost.image}`}
