@@ -177,7 +177,7 @@ useEffect(() => {
         </div>
       )}
 
-      <div className="min-h-screen max-w-[1800px] mx-auto md:px-4 w-full md:mt-4 mx-auto theme pb-8">
+      <div className="min-h-screen max-w-[1800px] mx-auto  md:px-4 w-full md:mt-4 mx-auto theme pb-8">
         {filteredPlaylist?.length > 0 && (
           <div
             className="
@@ -235,8 +235,12 @@ useEffect(() => {
           </div>
         )}
 
+        
+
          {!tutorPlayListByEmail?.length > 0 && loading && (
+          <div className="mt-2 md:mt-0">
          <TutorPlaylistGridSkeleton />
+        </div>
         )}
 
        

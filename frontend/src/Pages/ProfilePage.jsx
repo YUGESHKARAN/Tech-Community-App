@@ -166,7 +166,7 @@ function ProfilePage() {
       if (response.status === 201) {
         // navigate("/home"); // Redirect to the homepage
         console.log("response", response.data)
-        toast.success("Updated", "Account details updated successfully");
+        toast.success("Updated !", "Account details updated successfully");
         if (image !== "") {
           formData.append("profile", image);
           sessionStorage.setItem("profile",response.data.data.profile)
