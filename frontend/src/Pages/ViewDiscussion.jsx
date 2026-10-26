@@ -478,7 +478,7 @@ const ComposeBox = ({
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
           rows={minRows}
-          className="w-full bg-transparent overflow-x-hidden h-[200px]  emerald-scrollbar px-4 md:px-6 pt-3 pb-2 text-xs text-gray-200
+          className="w-full bg-transparent overflow-x-hidden h-[200px]  emerald-scrollbar px-4 md:px-6 pt-3 pb-2 text-xs md:text-sm text-gray-200
                      placeholder-gray-600 resize-none focus:outline-none
                      font-mono leading-relaxed"
         />
