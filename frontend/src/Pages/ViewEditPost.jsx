@@ -124,7 +124,7 @@ function ViewEditPost() {
       );
 
       if (response.status === 200) {
-        toast.success("Post updated successfully");
+        toast.success("Updated !", "Post updated successfully");
         // setTitle("");
         // setDescription("");
         // setCategory("");
