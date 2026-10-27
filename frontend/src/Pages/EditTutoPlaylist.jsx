@@ -18,6 +18,7 @@ import { getItem } from "../utils/encode";
 import { VscGitStashApply } from "react-icons/vsc";
 import {motion} from "framer-motion"
 import PlaylistEditSkeleton from "../components/loaders/PlaylistEditSkeleton";
+import toast from "../components/toaster/Toast";
 function EditTutorPlaylist() {
   // const email = localStorage.getItem("email");
   const email = getItem("email");
@@ -112,6 +113,7 @@ function EditTutorPlaylist() {
       );
 
       if (response.status === 200) {
+        toast.success("Updated !", "Playlist updated successfully");
         setTitle("");
         setDomain("");
         setCollaboratorsData([]);

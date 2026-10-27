@@ -1234,12 +1234,12 @@ function AddPost() {
                           setCustomTitle("");
                         } else if (titleToUse) {
                           toast.error(
-                            "Invalid URL",
+                            "Invalid URL !",
                             "Please enter a valid http(s) URL.",
                           );
                         } else if (!titleToUse) {
                           toast.error(
-                            "Invalid URL Title",
+                            "Invalid URL Title !",
                             "Please enter a valid URL Title.",
                           );
                         }
