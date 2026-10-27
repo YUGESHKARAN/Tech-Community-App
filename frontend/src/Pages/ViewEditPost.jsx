@@ -197,7 +197,7 @@ function ViewEditPost() {
         { data: { linkId } },
       );
       if (response.status === 200) {
-        toast.success("Deleted", "Resource link removed successfully");
+        toast.success("Deleted !", "Resource link removed successfully");
         setLinkId(null);
         // Refresh post data to reflect changes
         getSinglrPost();
@@ -209,8 +209,8 @@ function ViewEditPost() {
   };
 
   const removeDoc = async (documentKey) => {
-    console.log("postid", PostId);
-    console.log("document", documentKey);
+    // console.log("postid", PostId);
+    // console.log("document", documentKey);
     try {
       const confirm = window.confirm(
         "Are you sure you want to delete this document ?",
@@ -228,7 +228,7 @@ function ViewEditPost() {
       );
 
       if (response.status === 200) {
-        toast.success("Deleted", "Document removed successfully");
+        toast.success("Deleted !", "Document removed successfully");
         setSinglePostData((prev) => ({
           ...prev,
           documents: response.data.documents,

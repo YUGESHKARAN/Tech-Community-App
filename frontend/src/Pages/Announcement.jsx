@@ -168,7 +168,7 @@ function Announcement() {
       );
 
       if (response.status == 201) {
-        toast.success("Delivered ", "New announcement delivered ");
+        toast.success("Delivered !", "New announcement delivered ");
         setTitle("");
         setMessage("");
         setLinks("");
@@ -207,7 +207,7 @@ function Announcement() {
         `/blog/author/announcements/${id}`,
       );
       // console.log("response", response);
-      toast.success("Deleted ", "Announcement removed successfully ");
+      toast.success("Deleted !", "Announcement removed successfully ");
       // fetchAllAnnouncement();
       setAnnouncement((prev) => prev.filter((a) => a._id !== id));
     } catch (err) {
@@ -650,7 +650,7 @@ function Announcement() {
       setAnnouncement([]);
       if (response.status === 200) {
         toast.info(
-          "Announcements Cleared",
+          "Announcements Cleared !",
           "All announcements have been successfully removed.",
         );
       }
@@ -1087,13 +1087,13 @@ function Announcement() {
                                   setCurrentLinkUrl("");
                                 } else if (titleToUse) {
                                   toast.error(
-                                    "Invalid URL",
+                                    "Invalid URL !",
                                     "Please enter a valid http(s) URL.",
                                   );
                                 }
                                    else if(!titleToUse){
                            toast.error(
-                            "Invalid URL Title",
+                            "Invalid URL Title !",
                             "Please enter a valid URL Title.",
                           );
                         }
