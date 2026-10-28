@@ -1761,21 +1761,21 @@ function ViewTutorPlaylist() {
         aria-label={playlistBookmarked ? "Remove bookmark" : "Bookmark playlist"}
         aria-pressed={playlistBookmarked}
         onClick={() => addBookMarkPostIdPlaylist(playlistData._id)}
-        className="flex h-8 w-8 items-center justify-center rounded-full border border-neutral-700/70 bg-white/[0.03] text-teal-300 transition-colors hover:border-neutral-600 hover:bg-white/[0.07] md:h-9 md:w-9"
+        className="flex md:h-8 h-7 w-7 md:w-8 items-center justify-center rounded-full border border-neutral-700/70 bg-white/[0.03] text-teal-300 transition-colors hover:border-neutral-600 hover:bg-white/[0.07] md:h-9 md:w-9"
       >
         {playlistBookmarked ? (
-          <PiBookmarksSimpleFill className="text-base text-teal-500 md:text-lg" />
+          <PiBookmarksSimpleFill className="text-sm md:text-base text-teal-500 md:text-lg" />
         ) : (
-          <PiBookmarksSimpleLight className="text-base md:text-lg" />
+          <PiBookmarksSimpleLight className="text-sm md:text-base md:text-lg" />
         )}
       </button>
       <button
         type="button"
         aria-label="Share playlist"
         onClick={() => sharePlayList(playlistData.title, playlistData._id)}
-        className="flex h-8 w-8 items-center justify-center rounded-full border border-neutral-700/70 bg-white/[0.03] text-teal-400 transition-colors hover:border-neutral-600 hover:bg-white/[0.07] md:h-9 md:w-9"
+        className="flex md:h-8 h-7 w-7 md:w-8 items-center justify-center rounded-full border border-neutral-700/70 bg-white/[0.03] text-teal-400 transition-colors hover:border-neutral-600 hover:bg-white/[0.07] md:h-9 md:w-9"
       >
-        <IoShareSocial className="text-base md:text-lg" />
+        <IoShareSocial className="text-sm md:text-base md:text-lg" />
       </button>
     </div>
   );
@@ -1878,7 +1878,7 @@ function ViewTutorPlaylist() {
             </div>
 
             {/* ───────── RIGHT PANEL · Playlist posts ───────── */}
-            <div className="scrollbar-hide mt-0 space-y-2.5 overflow-x-hidden md:h-[550px] md:overflow-y-auto lg:h-[calc(100vh-10rem)] lg:min-h-[550px] lg:col-span-1">
+            <div className="scrollbar-hide mt-0.5 md:mt-0 space-y-2 md:space-y-2.5 overflow-x-hidden md:h-[550px] md:overflow-y-auto lg:h-[calc(100vh-10rem)] lg:min-h-[550px] lg:col-span-1">
               {playlistPosts.map((post, index) => {
                 const liked = (post.likes || []).includes(email);
                 const saved =
@@ -1888,7 +1888,7 @@ function ViewTutorPlaylist() {
                 return (
                   <div
                     key={post._id}
-                    className="theme flex w-full gap-3 overflow-hidden rounded-xl border border-neutral-800 p-2.5 transition-colors duration-200 hover:border-neutral-600 hover:bg-white/[0.02]"
+                    className="theme flex w-full gap-3 overflow-hidden rounded-lg md:rounded-xl border border-neutral-800 p-1 md:p-2.5 transition-colors duration-200 hover:border-neutral-700 hover:bg-white/[0.01]"
                   >
                     {/* Thumbnail */}
                     <Link
@@ -1926,7 +1926,7 @@ function ViewTutorPlaylist() {
                       </Link>
 
                       {/* Footer */}
-                      <div className="flex items-center justify-between pt-1">
+                      <div className="flex items-center justify-between md:pt-1">
                         <p className="whitespace-nowrap text-[10px] tabular-nums text-gray-300">
                           Views {post.views?.length}
                         </p>
