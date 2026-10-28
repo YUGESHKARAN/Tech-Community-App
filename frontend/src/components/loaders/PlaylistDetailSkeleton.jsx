@@ -5,7 +5,7 @@ const PlaylistDetailSkeleton = () => {
     <div className="grid w-full mx-4 mx-auto md:min-h-screen grid-cols-1 lg:grid-cols-2 lg:gap-4 gap-2">
       
       {/* LEFT PANEL */}
-      <div className="lg:col-span-1 p-2 md:p-0 space-y-4 animate-pulse">
+      <div className="lg:col-span-1  space-y-4 animate-pulse">
         
         {/* Banner */}
         <div className="relative">
