@@ -1,27 +1,1565 @@
+// import React, { useState, useEffect } from "react";
+// import { Link, useParams } from "react-router-dom";
+// import axiosInstance from "../instances/Axiosinstances";
+// import NavBar from "../ui/NavBar";
+// import user from "../images/user.png";
+// import blog1 from "../images/img_not_found2.png";
+// import { PiBookmarksSimpleFill, PiBookmarksSimpleLight } from "react-icons/pi";
+// import { IoClose, IoShareSocial } from "react-icons/io5";
+// import { MdArrowDropDown } from "react-icons/md";
+// import { IoMdArrowDropup } from "react-icons/io";
+// import { BiLike, BiSolidLike } from "react-icons/bi";
+// import { ToastContainer, toast } from "react-toastify";
+// import PlaylistDetailSkeleton from "../components/loaders/PlaylistDetailSkeleton";
+// import Footer from "../ui/Footer";
+// import { getItem } from "../utils/encode";
+// import RenderTextNoMarkdown from "../components/RenderTextNoMarkdown";
+// import empty_state_post from "../assets/empty_state_post.png";
+// import { BsTag } from "react-icons/bs";
+// import { TfiTag } from "react-icons/tfi";
+// import { SlTag } from "react-icons/sl";
+// import { motion, AnimatePresence } from "framer-motion";
+// import formatCount from "../utils/NumberConversion";
+// function ViewTutorPlaylist() {
+//   // const email = localStorage.getItem("email");
+//   const email = getItem("email");
+//   const { playlistId } = useParams();
+//   const [playlistData, setPlaylistData] = useState({});
+//   const [playlistPosts, setPlaylistPosts] = useState([]);
+//   const [showContributors, setShowContributors] = useState(false);
+//   const [selectedImage, setSelectedImage] = useState(null);
+//   const [loading, setLoading] = useState(false);
+//   const [authorEmail, setAuthorEmail] = useState(null);
+//   const [authorName, setAuthorName] = useState(null);
+//   // console.log("playlist Id", playlistId);
+
+//   const getTutorPlaylist = async () => {
+//     try {
+//       setLoading(true);
+//       const response = await axiosInstance.get(`/blog/playlist/${playlistId}`);
+//       if (response.status === 200) {
+//         setPlaylistData(response.data.data);
+//         setPlaylistPosts(response.data.posts);
+//         setAuthorEmail(response.data.data.email);
+//         setAuthorName(response.data.data.name);
+//       }
+//     } catch (err) {
+//       console.log("error", err.message);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   useEffect(() => {
+//     getTutorPlaylist();
+//   }, [playlistId]);
+
+//   // console.log("playlist data", playlistData);
+//   // console.log("playlist Posts", playlistPosts);
+
+//   const [playlistbookMarkId, setPlaylistBookMarkId] = useState([]);
+//   const [bookMarkId, setBookMarkId] = useState([]);
+
+//   const getBookMarkPlaylist = async () => {
+//     try {
+//       const response = await axiosInstance.get(
+//         `/blog/playlist/bookmark/${email}`,
+//       );
+//       if (response.status == 200) {
+//         setPlaylistBookMarkId(response.data.playlistIds);
+//       }
+//     } catch (err) {
+//       console.log("error", err.message);
+//     }
+//   };
+
+//   const getBookMarkPosts = async () => {
+//     try {
+//       const response = await axiosInstance.get(
+//         `/blog/posts/getBookmarkPosts/bookmark/${email}`,
+//       );
+//       if (response.status == 200) {
+//         setBookMarkId(response.data.postIds);
+//       }
+//     } catch (err) {
+//       console.log("error", err.message);
+//     }
+//   };
+
+//   useEffect(() => {
+//     getBookMarkPlaylist();
+//     getBookMarkPosts();
+//   }, []);
+
+//   const addBookMarkPostIdPlaylist = async (_id) => {
+//     // e.preventDefault()
+//     // console.log("bookmark id", _id);
+//     try {
+//       const response = await axiosInstance.post(
+//         `/blog/posts/bookmarkPosts/${email}`,
+//         { postId: _id },
+//       );
+//       if (response.status === 200) {
+//         setPlaylistBookMarkId((prev) => {
+//           if (prev.includes(_id)) {
+//             // toast.success("bookmark removed successfully");
+//             return prev.filter((id) => id !== _id);
+//           } else {
+//             // toast.success("post bookmarked successfully");
+//             return [...prev, _id];
+//           }
+//         });
+//       }
+//     } catch (err) {
+//       console.log("error", err.message);
+//       // toast.error("unable to bookmark");
+//     }
+//   };
+
+//   const addBookMarkPostId = async (_id) => {
+//     // e.preventDefault()
+//     // console.log("bookmark id", _id);
+//     try {
+//       const response = await axiosInstance.post(
+//         `/blog/posts/bookmarkPosts/${email}`,
+//         { postId: _id },
+//       );
+//       if (response.status === 200) {
+//         setBookMarkId((prev) => {
+//           if (prev.includes(_id)) {
+//             // toast.success("bookmark removed successfully");
+//             return prev.filter((id) => id !== _id);
+//           } else {
+//             // toast.success("post bookmarked successfully");
+//             return [...prev, _id];
+//           }
+//         });
+//       }
+//     } catch (err) {
+//       console.log("error", err.message);
+//       // toast.error("unable to bookmark");
+//     }
+//   };
+
+//   // share playlist with social media
+//   const sharePlayList = async (title, id) => {
+//     try {
+//       const data = {
+//         title: title,
+//         text: title,
+//         url: `${window.location.origin}/viewplaylist/${id}`,
+//       };
+//       const response = await navigator.share(data);
+//       // console.log("post shared successfully", response);
+//     } catch (err) {
+//       console.log("error sharing post", err);
+//     }
+//   };
+
+//   // share playlist with social media
+//   const sharePost = async (title, email, id) => {
+//     try {
+//       const data = {
+//         title: title,
+//         text: title,
+//         url: `${window.location.origin}/viewpage/${email}/${id}`,
+//       };
+//       const response = await navigator.share(data);
+//       // console.log("post shared successfully", response);
+//     } catch (err) {
+//       console.log("error sharing post", err);
+//     }
+//   };
+
+//   const postLikes = async (authorEmail, postId) => {
+//     // e.preventDefault();
+//     try {
+//       const response = await axiosInstance.put(
+//         `/blog/posts/likes/${authorEmail}/${postId}`,
+//         {
+//           emailAuthor: email,
+//         },
+//       );
+
+//       if (response.status === 200) {
+//         setPlaylistPosts((prevPosts) =>
+//           prevPosts.map((post) =>
+//             post._id === postId
+//               ? {
+//                   ...post,
+//                   likes: post.likes.includes(email)
+//                     ? post.likes.filter((like) => like !== email) // Unlike the post
+//                     : [...post.likes, email], // Like the post
+//                 }
+//               : post,
+//           ),
+//         );
+//       }
+
+//       // getTutorPlaylist();
+//     } catch (err) {
+//       console.error("Error updating views:", err);
+//     }
+//   };
+
+//   // Track post views
+//   const postViews = async (authorEmail, postId) => {
+//     try {
+//       await axiosInstance.put(`/blog/posts/views/${authorEmail}/${postId}`, {
+//         emailAuthor: email,
+//       });
+//     } catch (err) {
+//       console.error("Error updating views:", err);
+//     }
+//   };
+
+//   const handleImageClick = (image) => {
+//     setSelectedImage(image);
+//   };
+
+//   const handleCloseModal = () => {
+//     setSelectedImage(null);
+//   };
+
+//   const avatarColor = (name) => {
+//     const colors = [
+//       "#10b981",
+//       "#1871ff",
+//       "#f59e0b",
+//       "#f6238c",
+//       "#8b5cf6",
+//       "#09b2d0",
+//       "#f97316",
+//     ];
+//     return colors[(name?.charCodeAt(0) ?? 0) % colors.length];
+//   };
+
+//   const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
+
+//   const recentlyVisited = async () => {
+//     try {
+//       const response = await axiosInstance.put("/blog/recentHistory/track", {
+//         email,
+//         itemType: "playlist",
+//         itemId: playlistId,
+//         authorEmail,
+//         authorName,
+//       });
+
+//       if (response.status === 200) {
+//         console.log("playlist trackied", response.data.message);
+//       }
+//     } catch (err) {
+//       console.log("error", err.message);
+//     }
+//   };
+
+//   useEffect(() => {
+//     recentlyVisited();
+//   }, [email, authorEmail, playlistId]);
+
+//   // console.log("playlist data", playlistData);
+//   return (
+//     <div className="min-h-screen theme text-white">
+//       <NavBar />
+
+//       <div className="w-full mx-auto px-2 max-w-[1800px] mx-auto min-h-screen h-auto md:px-16 py-6">
+//         <h1 className="text-3xl w-full mb-7 pl-1 mx-auto hidden md:block font-semibold">
+//           {loading ? "Loading Playlist..." : playlistData?.title}
+//         </h1>
+//         {!loading && Object.keys(playlistData).length > 0 && (
+//           <div className="grid w-full mx-auto md:min-h-screen grid-cols-1 lg:grid-cols-2 lg:gap-4 gap-2">
+//             {/* LEFT PANEL (Banner + Info) */}
+//             <div className="lg:col-span-1 md:hidden  p-1 md:sticky top-4 self-start  md:p-0 space-y-2 md:space-y-4">
+//               {/* Banner */}
+
+//               <div className="relative">
+//                 <div
+//                   className="absolute bottom-2 left-3 w-[95%] h-full 
+//                     bg-zinc-600 rounded-xl border border-zinc-700 
+//                     z-0"
+//                 />
+
+//                 {/* STACK LAYER 2 (MIDDLE) */}
+//                 <div
+//                   className="absolute bottom-1 left-1.5 w-[97%] h-full 
+//                     bg-zinc-700 rounded-xl border border-zinc-800 
+//                     z-10"
+//                 />
+
+//                 <div className="relative rounded-xl z-20 md:hover:-translate-y-1  overflow-hidden bg-black border border-gray-700 transition-transform duration-300 hover:-translate-y-1 group">
+//                   <img
+//                     src={
+//                       playlistData.thumbnail
+//                         ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.thumbnail}`
+//                         : blog1
+//                     }
+//                     onClick={() =>
+//                       handleImageClick(
+//                         playlistData.thumbnail
+//                           ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.thumbnail}`
+//                           : blog1,
+//                       )
+//                     }
+//                     alt="Playlist Banner"
+//                     className="w-full h-48 md:h-[60vh]  object-cover md:object-contain"
+//                   />
+//                   <span className="absolute bottom-2 right-2 bg-black/80 text-white flex items-center gap-1 text-[10px] px-2 py-1 rounded-full">
+//                     <SlTag className="text-[11px] " /> {playlistData?.domain}
+//                   </span>
+//                 </div>
+//               </div>
+
+//               {/* Playlist Info */}
+//               <div className="space-y-2 p-1">
+//                 <h1 className="text-xl  max-w-sm md:hidden font-semibold">
+//                   {playlistData.title}
+//                 </h1>
+//                 <div className="flex relative justify-between items-center ">
+//                   {/* left content */}
+//                   <div className="flex flex-col items-start gap-2">
+//                     {/* Author */}
+
+//                     <div className="">
+//                       <h1 className="font-semibold uppercase tracking-wide flex items-center gap-1 mb-1  text-gray-400 text-[11px]">
+//                         Contributors{" "}
+//                         {playlistData?.collaborators?.length > 0 && (
+//                           <span className="text-white rounded-full px-1.5 py-0.5 text-[9px] border border-neutral-700">
+//                             { formatCount(
+//                               playlistData?.collaborators?.length + 1
+//                             ) }
+//                           </span>
+//                         )}
+//                         <motion.span
+//                           whileTap={{ scale: 0.9 }}
+//                           animate={{
+//                             rotate: showContributors ? 180 : 0,
+//                           }}
+//                           transition={{
+//                             duration: 0.3,
+//                             ease: [0.22, 1, 0.36, 1],
+//                           }}
+//                           onClick={() => setShowContributors((prev) => !prev)}
+//                           className="cursor-pointer flex items-center"
+//                         >
+//                           <MdArrowDropDown className="text-xl" />
+//                         </motion.span>
+//                       </h1>
+
+//                       {/* Contributors profile */}
+//                       <AnimatePresence>
+//                         {!showContributors && (
+//                           <motion.div
+//                             initial={{
+//                               opacity: 0,
+//                               height: 0,
+//                               y: -6,
+//                             }}
+//                             animate={{
+//                               opacity: 1,
+//                               height: "auto",
+//                               y: 0,
+//                             }}
+//                             exit={{
+//                               opacity: 0,
+//                               height: 0,
+//                               y: -6,
+//                             }}
+//                             transition={{
+//                               duration: 0.3,
+//                               ease: [0.22, 1, 0.36, 1],
+//                             }}
+//                             className="overflow-hidden"
+//                           >
+//                             <div
+//                               className="flex -space-x-2 cursor-pointer"
+//                               onClick={() => setShowContributors(true)}
+//                             >
+//                               {playlistData?.collaborators?.length > 4 && (
+//                                 <div
+//                                   whileHover={{ scale: 1.08 }}
+//                                   whileTap={{ scale: 0.95 }}
+//                                   className="
+//                                   h-6
+//                                   w-6
+//                                   md:w-7
+//                                   md:h-7
+//                                   p-2
+//                                   mr-2
+//                                 rounded-full
+//                                 border border-white/10
+//                                 bg-white/[0.05]
+//                                 text-[11px]
+//                                 font-semibold
+//                                 text-gray-200
+//                                 flex flex-col t justify-center items-center
+//                               "
+//                                 >
+//                                   <p>
+//                                     {" "}
+//                                     +
+//                                     {formatCount(
+//                                       playlistData?.collaborators?.length - 4,
+//                                     )}{" "}
+//                                   </p>
+//                                 </div>
+//                               )}
+
+//                               {/* avatars */}
+//                               {playlistData?.collaborators
+//                                 ?.slice(0, 4)
+//                                 .map((collab) => (
+//                                   <>
+//                                     {collab.profile ? (
+//                                       <img
+//                                         key={collab._id}
+//                                         src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${collab.profile}`}
+//                                         alt={collab.name}
+//                                         className="h-6 w-6 md:h-7 md:w-7 rounded-full border border-teal-600 bg-gray-400"
+//                                       />
+//                                     ) : (
+//                                       <div
+//                                         key={collab._id}
+//                                         className="w-6 h-6 md:h-7 md:w-7 rounded-full flex items-center border border-neutral-800 justify-center text-[9px] font-bold text-white shrink-0"
+//                                         style={{
+//                                           backgroundColor: avatarColor(
+//                                             collab.name,
+//                                           ),
+//                                         }}
+//                                       >
+//                                         {initials(collab.name)}
+//                                       </div>
+//                                     )}
+//                                   </>
+//                                 ))}
+
+//                               {playlistData.profile ? (
+//                                 <img
+//                                   src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.profile}`}
+//                                   // alt={collab.name}
+//                                   className="h-6 w-6 rounded-full border border-teal-600 bg-gray-400"
+//                                 />
+//                               ) : (
+//                                 <div
+//                                   className="w-6 h-6 md:h-7 md:w-7 rounded-full flex items-center border border-neutral-800 justify-center text-[9px] font-bold text-white shrink-0"
+//                                   style={{
+//                                     backgroundColor: avatarColor(
+//                                       playlistData.name,
+//                                     ),
+//                                   }}
+//                                 >
+//                                   {initials(playlistData.name)}
+//                                 </div>
+//                               )}
+//                             </div>
+//                           </motion.div>
+//                         )}
+//                       </AnimatePresence>
+
+//                       {/* Contributors details */}
+
+//                       <AnimatePresence initial={false}>
+//                         {showContributors && (
+//                           <motion.div
+//                             initial={{
+//                               opacity: 0,
+//                               height: 0,
+//                               y: -8,
+//                             }}
+//                             animate={{
+//                               opacity: 1,
+//                               height: "auto",
+//                               y: 0,
+//                             }}
+//                             exit={{
+//                               opacity: 0,
+//                               height: 0,
+//                               y: -8,
+//                             }}
+//                             transition={{
+//                               duration: 0.35,
+//                               ease: [0.22, 1, 0.36, 1],
+//                             }}
+//                             className="overflow-hidden max-h-56 overflow-x-hidden overflow-y-auto scrollbar-hide"
+//                           >
+//                             <motion.div
+//                               variants={{
+//                                 hidden: {},
+//                                 show: {
+//                                   transition: {
+//                                     staggerChildren: 0.04,
+//                                   },
+//                                 },
+//                               }}
+//                               initial="hidden"
+//                               animate="show"
+//                               className="w-full flex flex-col justify-center gap-0"
+//                             >
+//                               {/* Author */}
+//                               <motion.div
+//                                 variants={{
+//                                   hidden: {
+//                                     opacity: 0,
+//                                     y: 8,
+//                                   },
+//                                   show: {
+//                                     opacity: 1,
+//                                     y: 0,
+//                                   },
+//                                 }}
+//                                 transition={{
+//                                   duration: 0.25,
+//                                   ease: [0.22, 1, 0.36, 1],
+//                                 }}
+//                               >
+//                                 <Link
+//                                   to={`/viewProfile/${playlistData.email}`}
+//                                   className="flex items-center gap-2 p-1 rounded-md text-xs text-gray-400 hover:bg-gray-400/20"
+//                                 >
+//                                   {playlistData.profile ? (
+//                                     <img
+//                                       src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.profile}`}
+//                                       className="h-6 w-6 rounded-full border border-teal-600 bg-gray-400"
+//                                     />
+//                                   ) : (
+//                                     <div
+//                                       className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold text-white border border-neutral-800 shrink-0"
+//                                       style={{
+//                                         backgroundColor: avatarColor(
+//                                           playlistData.name,
+//                                         ),
+//                                       }}
+//                                     >
+//                                       {initials(playlistData.name)}
+//                                     </div>
+//                                   )}
+
+//                                   <span>{playlistData.name}</span>
+
+//                                   <span className="text-gray-200">
+//                                     (Author)
+//                                   </span>
+//                                 </Link>
+//                               </motion.div>
+
+//                               {/* Contributors */}
+//                               {playlistData?.collaborators?.map(
+//                                 (data, index) => (
+//                                   <motion.div
+//                                     key={data.email}
+//                                     variants={{
+//                                       hidden: {
+//                                         opacity: 0,
+//                                         y: 8,
+//                                       },
+//                                       show: {
+//                                         opacity: 1,
+//                                         y: 0,
+//                                       },
+//                                     }}
+//                                     transition={{
+//                                       duration: 0.25,
+//                                       delay: index * 0.02,
+//                                       ease: [0.22, 1, 0.36, 1],
+//                                     }}
+//                                   >
+//                                     <Link
+//                                       to={`/viewProfile/${data.email}`}
+//                                       className="flex items-center gap-2 p-1 rounded-md text-xs text-gray-400 hover:bg-gray-400/20"
+//                                     >
+//                                       {data.profile ? (
+//                                         <img
+//                                           src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.profile}`}
+//                                           alt={data.name}
+//                                           className="h-6 w-6 md:h-7 md:w-7 rounded-full border border-teal-600 bg-gray-400"
+//                                         />
+//                                       ) : (
+//                                         <div
+//                                           className="w-6 h-6 md:h-7 md:w-7 rounded-full flex items-center justify-center text-[9px] font-bold text-white border border-neutral-800 shrink-0"
+//                                           style={{
+//                                             backgroundColor: avatarColor(
+//                                               data.name,
+//                                             ),
+//                                           }}
+//                                         >
+//                                           {initials(data.name)}
+//                                         </div>
+//                                       )}
+
+//                                       <p className="line-clamp-1 max-w-[250px] md:max-w-[300px]">
+//                                         {data.name}
+//                                       </p>
+//                                     </Link>
+//                                   </motion.div>
+//                                 ),
+//                               )}
+//                             </motion.div>
+//                           </motion.div>
+//                         )}
+//                       </AnimatePresence>
+//                     </div>
+//                   </div>
+
+//                   {/* right content */}
+//                   <div className=" absolute top-0 right-0 flex flex-col items-start gap-2">
+//                     <p className="text-xs text-gray-400">
+//                       Playlist • {playlistData?.post_ids?.length}
+//                     </p>
+
+//                     <div className="flex items-center gap-2">
+//                       <div
+//                         onClick={() => {
+//                           addBookMarkPostIdPlaylist(playlistData._id);
+//                         }}
+//                         className="cursor-pointer flex items-center md:text-xl gap-1 text-teal-300 hover:text-teal-300"
+//                       >
+//                         {Array.isArray(playlistbookMarkId) &&
+//                         playlistbookMarkId.includes(playlistData._id) ? (
+//                           <PiBookmarksSimpleFill className="text-teal-500" />
+//                         ) : (
+//                           <PiBookmarksSimpleLight />
+//                         )}
+//                       </div>
+
+//                       <div
+//                         onClick={() =>
+//                           sharePlayList(playlistData.title, playlistData._id)
+//                         }
+//                         className="cursor-pointer flex items-center gap-1 hover:text-teal-300"
+//                       >
+//                         <IoShareSocial className="md:text-xl text-teal-400" />
+//                       </div>
+//                     </div>
+//                   </div>
+//                 </div>
+//               </div>
+//             </div>
+
+//             {/* LEFT PANEL (Banner + Info) */}
+//             <div className="lg:col-span-1 hidden md:block lg:sticky top-6 self-start space-y-4">
+//               <div className="relative">
+//                 <div
+//                   className="absolute bottom-2 left-3 w-[95%] h-full 
+//                   bg-zinc-600 rounded-xl border border-zinc-700 
+//                   z-0"
+//                 />
+
+//                 {/* STACK LAYER 2 (MIDDLE) */}
+//                 <div
+//                   className="absolute bottom-1 left-1.5 w-[97%] h-full 
+//                   bg-zinc-700 rounded-xl border border-zinc-800 
+//                   z-10"
+//                 />
+
+//                 <div className="relative z-20 w-[99%] rounded-2xl overflow-hidden border border-gray-800 shadow-xl transition-transform duration-300 hover:-translate-y-1 group">
+//                   <img
+//                     src={
+//                       playlistData.thumbnail
+//                         ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.thumbnail}`
+//                         : blog1
+//                     }
+//                     onClick={() =>
+//                       handleImageClick(
+//                         playlistData.thumbnail
+//                           ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.thumbnail}`
+//                           : blog1,
+//                       )
+//                     }
+//                     alt="Playlist Banner"
+//                     className="w-full h-[260px] md:h-[46vh] cursor-pointer object-cover transition-transform duration-500 "
+//                   />
+
+//                   {/* Gradient Overlay */}
+//                   <div
+//                     onClick={() =>
+//                       handleImageClick(
+//                         playlistData.thumbnail
+//                           ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.thumbnail}`
+//                           : blog1,
+//                       )
+//                     }
+//                     className="absolute inset-0 bg-gradient-to-t cursor-pointer from-black via-black/10 to-transparent"
+//                   />
+
+//                   {/* Title + Meta */}
+//                   <div className="absolute bottom-4 left-4 right-4 space-y-2">
+//                     <h1 className="text-xl md:text-2xl font-semibold text-white leading-snug">
+//                       {playlistData?.domain}
+//                     </h1>
+
+//                     <div className="flex items-center justify-between">
+//                       <p className="text-xs md:text-sm text-gray-300">
+//                         Playlist • {playlistData?.post_ids?.length} posts
+//                       </p>
+//                     </div>
+//                   </div>
+//                 </div>
+//               </div>
+
+//               {/* CONTRIBUTORS CARD */}
+//               <div className="flex p-4 relative border border-neutral-700/70 rounded-lg  justify-between items-center ">
+//                 {/* left content */}
+//                 <div className="flex flex-col items-start gap-2">
+//                   {/* Author */}
+
+//                   <div className="">
+//                     <h1 className="font-medium tracking-wide uppercase flex items-center gap-2 mb-1 text-gray-400 text-xs ">
+//                       Contributors{" "}
+//                       {playlistData?.collaborators?.length > 0 && (
+//                         <span className="text-white rounded-full px-2 py-0.5 text-xs border border-neutral-700">
+//                           {playlistData?.collaborators?.length}
+//                         </span>
+//                       )}
+//                       {/* <span
+//                         onClick={() => {
+//                           setShowContributors(!showContributors);
+//                         }}
+//                         className=" cursor-pointer  "
+//                       >
+//                         {!showContributors ? (
+//                           <MdArrowDropDown className="text-xl" />
+//                         ) : (
+//                           <IoMdArrowDropup className="text-xl" />
+//                         )}
+//                       </span> */}
+//                       <motion.span
+//                         whileTap={{ scale: 0.9 }}
+//                         animate={{
+//                           rotate: showContributors ? 180 : 0,
+//                         }}
+//                         transition={{
+//                           duration: 0.3,
+//                           ease: [0.22, 1, 0.36, 1],
+//                         }}
+//                         onClick={() => setShowContributors((prev) => !prev)}
+//                         className="cursor-pointer flex items-center"
+//                       >
+//                         <MdArrowDropDown className="text-xl" />
+//                       </motion.span>
+//                     </h1>
+
+//                     {/* Contributors profile */}
+//                     <AnimatePresence>
+//                       {!showContributors && (
+//                         <motion.div
+//                           initial={{
+//                             opacity: 0,
+//                             height: 0,
+//                             y: -6,
+//                           }}
+//                           animate={{
+//                             opacity: 1,
+//                             height: "auto",
+//                             y: 0,
+//                           }}
+//                           exit={{
+//                             opacity: 0,
+//                             height: 0,
+//                             y: -6,
+//                           }}
+//                           transition={{
+//                             duration: 0.3,
+//                             ease: [0.22, 1, 0.36, 1],
+//                           }}
+//                           className="overflow-hidden"
+//                         >
+//                           <div
+//                             className="flex -space-x-2 cursor-pointer"
+//                             onClick={() => setShowContributors(true)}
+//                           >
+//                             {/* avatars */}
+
+//                             {playlistData?.collaborators?.length > 5 && (
+//                               <div
+//                                 whileHover={{ scale: 1.08 }}
+//                                 whileTap={{ scale: 0.95 }}
+//                                 className="
+//                                   h-6
+//                                   w-6
+//                                   md:w-7
+//                                   md:h-7
+//                                   p-2
+//                                   mr-2
+//                                 rounded-full
+//                                 border border-white/10
+//                                 bg-white/[0.05]
+//                                 text-[11px]
+//                                 font-semibold
+//                                 text-gray-200
+//                                 flex flex-col t justify-center items-center
+//                               "
+//                               >
+//                                 <p>
+//                                   {" "}
+//                                   +
+//                                   {formatCount(
+//                                     playlistData?.collaborators?.length - 5,
+//                                   )}{" "}
+//                                 </p>
+//                               </div>
+//                             )}
+
+//                             {playlistData?.collaborators
+//                               ?.slice(0, 4)
+//                               .map((collab) => (
+//                                 <>
+//                                   {collab.profile ? (
+//                                     <img
+//                                       key={collab._id}
+//                                       src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${collab.profile}`}
+//                                       alt={collab.name}
+//                                       className="h-6 w-6 md:h-7 md:w-7 rounded-full border border-teal-600 bg-gray-400"
+//                                     />
+//                                   ) : (
+//                                     <div
+//                                       key={collab._id}
+//                                       className="w-6 h-6 md:h-7 md:w-7 rounded-full flex items-center border border-neutral-800 justify-center text-[9px] font-bold text-white shrink-0"
+//                                       style={{
+//                                         backgroundColor: avatarColor(
+//                                           collab.name,
+//                                         ),
+//                                       }}
+//                                     >
+//                                       {initials(collab.name)}
+//                                     </div>
+//                                   )}
+//                                 </>
+//                               ))}
+
+//                             {playlistData.profile ? (
+//                               <img
+//                                 src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.profile}`}
+//                                 // alt={collab.name}
+//                                 className="h-6 w-6 md:w-7 md:h-7 rounded-full border border-teal-600 bg-gray-400"
+//                               />
+//                             ) : (
+//                               <div
+//                                 className="w-6 h-6 md:h-7 md:w-7 rounded-full flex items-center border border-neutral-800 justify-center text-[9px] font-bold text-white shrink-0"
+//                                 style={{
+//                                   backgroundColor: avatarColor(
+//                                     playlistData.name,
+//                                   ),
+//                                 }}
+//                               >
+//                                 {initials(playlistData.name)}
+//                               </div>
+//                             )}
+//                           </div>
+//                         </motion.div>
+//                       )}
+//                     </AnimatePresence>
+
+//                     {/* Contributors details */}
+
+//                     <AnimatePresence initial={false}>
+//                       {showContributors && (
+//                         <motion.div
+//                           initial={{
+//                             opacity: 0,
+//                             height: 0,
+//                             y: -8,
+//                           }}
+//                           animate={{
+//                             opacity: 1,
+//                             height: "auto",
+//                             y: 0,
+//                           }}
+//                           exit={{
+//                             opacity: 0,
+//                             height: 0,
+//                             y: -8,
+//                           }}
+//                           transition={{
+//                             duration: 0.35,
+//                             ease: [0.22, 1, 0.36, 1],
+//                           }}
+//                           className="overflow-hidden"
+//                         >
+//                           <motion.div
+//                             variants={{
+//                               hidden: {},
+//                               show: {
+//                                 transition: {
+//                                   staggerChildren: 0.04,
+//                                 },
+//                               },
+//                             }}
+//                             initial="hidden"
+//                             animate="show"
+//                             className="w-full flex flex-col md:max-h-52 overflow-x-hidden overflow-y-auto scrollbar-hide justify-center gap-0"
+//                           >
+//                             {/* Author */}
+//                             <motion.div
+//                               variants={{
+//                                 hidden: {
+//                                   opacity: 0,
+//                                   y: 8,
+//                                 },
+//                                 show: {
+//                                   opacity: 1,
+//                                   y: 0,
+//                                 },
+//                               }}
+//                               transition={{
+//                                 duration: 0.25,
+//                                 ease: [0.22, 1, 0.36, 1],
+//                               }}
+//                             >
+//                               <Link
+//                                 to={`/viewProfile/${playlistData.email}`}
+//                                 className="flex items-center gap-2 p-1 rounded-md text-xs text-gray-400 hover:bg-gray-400/20"
+//                               >
+//                                 {playlistData.profile ? (
+//                                   <img
+//                                     src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.profile}`}
+//                                     className="h-6 w-6 rounded-full border border-teal-600 bg-gray-400"
+//                                   />
+//                                 ) : (
+//                                   <div
+//                                     className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold text-white border border-neutral-800 shrink-0"
+//                                     style={{
+//                                       backgroundColor: avatarColor(
+//                                         playlistData.name,
+//                                       ),
+//                                     }}
+//                                   >
+//                                     {initials(playlistData.name)}
+//                                   </div>
+//                                 )}
+
+//                                 <span>{playlistData.name}</span>
+
+//                                 <span className="text-gray-200">(Author)</span>
+//                               </Link>
+//                             </motion.div>
+
+//                             {/* Contributors */}
+//                             {playlistData?.collaborators?.map((data, index) => (
+//                               <motion.div
+//                                 key={data.email}
+//                                 variants={{
+//                                   hidden: {
+//                                     opacity: 0,
+//                                     y: 8,
+//                                   },
+//                                   show: {
+//                                     opacity: 1,
+//                                     y: 0,
+//                                   },
+//                                 }}
+//                                 transition={{
+//                                   duration: 0.25,
+//                                   delay: index * 0.02,
+//                                   ease: [0.22, 1, 0.36, 1],
+//                                 }}
+//                               >
+//                                 <Link
+//                                   to={`/viewProfile/${data.email}`}
+//                                   className="flex items-center gap-2 p-1 rounded-md text-xs text-gray-400 hover:bg-gray-400/20"
+//                                 >
+//                                   {data.profile ? (
+//                                     <img
+//                                       src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.profile}`}
+//                                       alt={data.name}
+//                                       className="h-6 w-6 md:h-7 md:w-7 rounded-full border border-teal-600 bg-gray-400"
+//                                     />
+//                                   ) : (
+//                                     <div
+//                                       className="w-6 h-6 md:h-7 md:w-7 rounded-full flex items-center justify-center text-[9px] font-bold text-white border border-neutral-800 shrink-0"
+//                                       style={{
+//                                         backgroundColor: avatarColor(data.name),
+//                                       }}
+//                                     >
+//                                       {initials(data.name)}
+//                                     </div>
+//                                   )}
+
+//                                   <p className="line-clamp-1 max-w-[250px] md:max-w-[300px]">
+//                                     {data.name}
+//                                   </p>
+//                                 </Link>
+//                               </motion.div>
+//                             ))}
+//                           </motion.div>
+//                         </motion.div>
+//                       )}
+//                     </AnimatePresence>
+//                   </div>
+//                 </div>
+
+//                 {/* right content */}
+//                 <div className=" absolute top-4 right-4 flex flex-col items-start gap-2">
+//                   {/* <p className="text-sm text-gray-400">
+//                       Playlist • {playlistData?.post_ids?.length}
+//                     </p> */}
+
+//                   <div className="flex items-center gap-2">
+//                     <div
+//                       onClick={() => {
+//                         addBookMarkPostIdPlaylist(playlistData._id);
+//                       }}
+//                       className="cursor-pointer flex items-center md:text-lg gap-1 text-teal-300 hover:text-teal-300"
+//                     >
+//                       {Array.isArray(playlistbookMarkId) &&
+//                       playlistbookMarkId.includes(playlistData._id) ? (
+//                         <PiBookmarksSimpleFill className="text-teal-500" />
+//                       ) : (
+//                         <PiBookmarksSimpleLight />
+//                       )}
+//                     </div>
+
+//                     <div
+//                       onClick={() =>
+//                         sharePlayList(playlistData.title, playlistData._id)
+//                       }
+//                       className="cursor-pointer flex items-center gap-1 hover:text-teal-300"
+//                     >
+//                       <IoShareSocial className="md:text-xl text-teal-400" />
+//                     </div>
+//                   </div>
+//                 </div>
+//               </div>
+//             </div>
+
+//             {/* RIGHT PANEL (Playlist Posts) */}
+//             <div className="lg:col-span-1 md:overflow-y-scroll md:h-[550px] overflow-x-hidden mt-0 scrollbar-hide space-y-2 md:space-y-2">
+//               {playlistPosts.map((post, index) => (
+//                 <div
+//                   key={post._id}
+//                   className="
+//                   flex gap-3
+//                   p-2
+//                   theme
+//                   rounded-lg
+//                   border border-neutral-800
+//                   transition
+//                   overflow-hidden
+//                   w-full
+//                 "
+//                 >
+//                   {/* Thumbnail */}
+//                   <Link
+//                     to={`/viewpage/${playlistData.email}/${post._id}`}
+//                     onClick={() => postViews(playlistData.email, post._id)}
+//                     className="
+//                       relative
+//                       w-28
+//                       md:w-40
+//                       h-20
+//                       md:h-24
+//                       flex-shrink-0
+//                       rounded-md
+//                       overflow-hidden
+//                     "
+//                   >
+//                     <img
+//                       src={
+//                         post.image
+//                           ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${post.image}`
+//                           : blog1
+//                       }
+//                       alt={post.title}
+//                       className="w-full h-full object-cover"
+//                     />
+
+//                     <span className="absolute bottom-1 right-1 bg-black/80 text-xs px-1.5 py-0.5 rounded">
+//                       {index + 1}
+//                     </span>
+//                   </Link>
+
+//                   {/* Content */}
+//                   <div className="flex flex-col flex-1 min-w-0 justify-between">
+//                     {/* Title */}
+//                     <Link
+//                       to={`/viewpage/${playlistData.email}/${post._id}`}
+//                       onClick={() => postViews(playlistData.email, post._id)}
+//                       className="
+//         text-sm
+//         font-medium
+//         line-clamp-2
+//         break-words
+//         text-white
+//       "
+//                     >
+//                       {post.title}
+//                     </Link>
+
+//                     {/* Description */}
+//                     <Link
+//                       to={`/viewpage/${playlistData.email}/${post._id}`}
+//                       onClick={() => postViews(playlistData.email, post._id)}
+//                       className="
+//         text-xs
+//         text-gray-300
+//         line-clamp-2
+//         overflow-hidden
+//         break-words
+//       "
+//                     >
+//                       <RenderTextNoMarkdown text={post.description} />
+//                     </Link>
+
+//                     {/* Footer */}
+//                     <div className="flex justify-between items-center pt-1">
+//                       <p className="text-[10px] text-gray-300 whitespace-nowrap">
+//                         Views {post.views?.length}
+//                       </p>
+
+//                       <div className="flex items-center gap-2 flex-shrink-0">
+//                         {/* Like */}
+//                         <button
+//                           type="button"
+//                           onClick={(e) =>
+//                             postLikes(playlistData.email, post._id, e)
+//                           }
+//                           className="cursor-pointer flex items-center gap-1 hover:text-teal-300 bg-transparent border-0 disabled:opacity-50"
+//                         >
+//                           {(post.likes || []).includes(email) ? (
+//                             <BiSolidLike className="text-sm text-teal-400" />
+//                           ) : (
+//                             <BiLike className="text-sm text-teal-400" />
+//                           )}
+
+//                           <span className="text-[9px] text-white">
+//                             {post.likes && post.likes.length > 0
+//                               ? post.likes.length
+//                               : ""}
+//                           </span>
+//                         </button>
+
+//                         {/* Share */}
+//                         <div
+//                           onClick={() =>
+//                             sharePost(post.title, playlistData.email, post._id)
+//                           }
+//                           className="cursor-pointer flex items-center gap-1 hover:text-teal-300"
+//                         >
+//                           <IoShareSocial className="text-sm text-teal-400" />
+//                         </div>
+
+//                         {/* Bookmark */}
+//                         <div
+//                           onClick={() => {
+//                             addBookMarkPostId(post._id);
+//                           }}
+//                           className="cursor-pointer flex items-center gap-1 text-teal-300 hover:text-teal-300"
+//                         >
+//                           {Array.isArray(bookMarkId) &&
+//                           bookMarkId.includes(post._id) ? (
+//                             <PiBookmarksSimpleFill className="text-teal-500" />
+//                           ) : (
+//                             <PiBookmarksSimpleLight />
+//                           )}
+//                         </div>
+//                       </div>
+//                     </div>
+//                   </div>
+//                 </div>
+//               ))}
+//             </div>
+//           </div>
+//         )}
+//         {loading && <PlaylistDetailSkeleton />}
+
+//         {!loading &&
+//           (!playlistData || Object.keys(playlistData).length === 0) && (
+//             <div className="w-full h-[70vh] md:h-[55vh] flex flex-col items-center justify-center">
+//               {/* <p className="text-gray-500">Playlist not found.</p> */}
+//               <img className="w-48 md:w-60 " src={empty_state_post} alt="" />
+//               <p className="text-gray-400 max-w-xs md:max-w-md text-sm md:text-base flex justify-center items-center text-center">
+//                 Playlist not found !
+//               </p>
+//             </div>
+//           )}
+//       </div>
+//       <ToastContainer />
+
+//       {/* Image Modal */}
+//       {/* {selectedImage && (
+//         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
+     
+//           <div className="relative max-w-6xl w-full flex items-center justify-center">
+  
+//             <img
+//               src={selectedImage}
+//               alt="Preview"
+//               className="
+//           max-h-[80vh]
+//           w-auto
+//           rounded-2xl
+//           shadow-2xl
+//           border border-gray-700
+//           object-contain
+//           transition-transform duration-300
+         
+//         "
+//             />
+
+       
+//             <button
+//               onClick={handleCloseModal}
+//               className="
+//           absolute
+//           md:-top-4
+//           md:-right-4
+//           -top-3
+//           -right-3
+//           md:w-10
+//           md:h-10
+//           h-8
+//           w-8
+//           flex
+//           items-center
+//           justify-center
+//           rounded-full
+//           theme
+//           border border-gray-700
+//           text-white
+//           shadow-lg
+//           md:hover:bg-red-500
+//           transition-all
+//         "
+//             >
+//               <IoClose className="text-sm" />
+//             </button>
+//           </div>
+//         </div>
+//       )} */}
+
+//       <AnimatePresence>
+//         {selectedImage && (
+//           <motion.div
+//             initial={{
+//               opacity: 0,
+//               backdropFilter: "blur(0px)",
+//             }}
+//             animate={{
+//               opacity: 1,
+//               backdropFilter: "blur(12px)",
+//             }}
+//             exit={{
+//               opacity: 0,
+//               backdropFilter: "blur(0px)",
+//             }}
+//             transition={{
+//               duration: 0.25,
+//             }}
+//             onClick={handleCloseModal}
+//             className="
+//               fixed inset-0 z-50
+//               flex items-center justify-center
+//               bg-black/70
+//               p-4
+//             "
+//           >
+//             {/* Modal Container */}
+//             <motion.div
+//               layout
+//               onClick={(e) => e.stopPropagation()}
+//               initial={{
+//                 opacity: 0,
+//                 scale: 0.92,
+//                 y: 20,
+//               }}
+//               animate={{
+//                 opacity: 1,
+//                 scale: 1,
+//                 y: 0,
+//               }}
+//               exit={{
+//                 opacity: 0,
+//                 scale: 0.96,
+//                 y: 10,
+//               }}
+//               transition={{
+//                 duration: 0.35,
+//                 ease: [0.22, 1, 0.36, 1],
+//               }}
+//               className="
+//                 relative
+//                 max-w-6xl
+//                 w-full
+//                 flex
+//                 items-center
+//                 justify-center
+//               "
+//             >
+//               {/* Image */}
+//               <motion.img
+//                 src={selectedImage}
+//                 alt="Preview"
+//                 initial={{
+//                   scale: 0.95,
+//                   opacity: 0,
+//                 }}
+//                 animate={{
+//                   scale: 1,
+//                   opacity: 1,
+//                 }}
+//                 exit={{
+//                   scale: 0.95,
+//                   opacity: 0,
+//                 }}
+//                 transition={{
+//                   duration: 0.4,
+//                   ease: [0.22, 1, 0.36, 1],
+//                 }}
+//                 className="
+//                   max-h-[50vh]
+//                   w-auto
+//                   rounded-2xl
+//                   shadow-2xl
+//                   border border-gray-700
+//                   object-contain
+//                 "
+//               />
+
+//               {/* Close Button */}
+//               <motion.button
+//                 onClick={handleCloseModal}
+//                 initial={{
+//                   opacity: 0,
+//                   scale: 0.8,
+//                 }}
+//                 animate={{
+//                   opacity: 1,
+//                   scale: 1,
+//                 }}
+//                 exit={{
+//                   opacity: 0,
+//                   scale: 0.8,
+//                 }}
+//                 transition={{
+//                   delay: 0.15,
+//                   duration: 0.2,
+//                 }}
+//                 whileHover={{
+//                   scale: 1.08,
+//                   rotate: 90,
+//                 }}
+//                 whileTap={{
+//                   scale: 0.92,
+//                 }}
+//                 className="
+//                   absolute
+//                   md:-top-4
+//                   md:-right-4
+//                   -top-3
+//                   -right-3
+//                   md:w-10
+//                   md:h-10
+//                   h-8
+//                   w-8
+//                   flex
+//                   items-center
+//                   justify-center
+//                   rounded-full
+//                   theme
+//                   border border-gray-700
+//                   text-white
+//                   shadow-lg
+//                   md:hover:bg-red-500
+//                   transition-colors
+//                 "
+//               >
+//                 <IoClose className="text-sm" />
+//               </motion.button>
+//             </motion.div>
+//           </motion.div>
+//         )}
+//       </AnimatePresence>
+
+//       <Footer />
+//     </div>
+//   );
+// }
+
+// export default ViewTutorPlaylist;
+
 import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import axiosInstance from "../instances/Axiosinstances";
 import NavBar from "../ui/NavBar";
-import user from "../images/user.png";
 import blog1 from "../images/img_not_found2.png";
 import { PiBookmarksSimpleFill, PiBookmarksSimpleLight } from "react-icons/pi";
 import { IoClose, IoShareSocial } from "react-icons/io5";
 import { MdArrowDropDown } from "react-icons/md";
-import { IoMdArrowDropup } from "react-icons/io";
 import { BiLike, BiSolidLike } from "react-icons/bi";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import PlaylistDetailSkeleton from "../components/loaders/PlaylistDetailSkeleton";
 import Footer from "../ui/Footer";
 import { getItem } from "../utils/encode";
 import RenderTextNoMarkdown from "../components/RenderTextNoMarkdown";
 import empty_state_post from "../assets/empty_state_post.png";
-import { BsTag } from "react-icons/bs";
-import { TfiTag } from "react-icons/tfi";
 import { SlTag } from "react-icons/sl";
 import { motion, AnimatePresence } from "framer-motion";
 import formatCount from "../utils/NumberConversion";
+
+const S3 = "https://open-access-blog-image.s3.us-east-1.amazonaws.com";
+const EASE = [0.22, 1, 0.36, 1];
+
+const avatarColor = (name) => {
+  const colors = [
+    "#10b981",
+    "#1871ff",
+    "#f59e0b",
+    "#f6238c",
+    "#8b5cf6",
+    "#09b2d0",
+    "#f97316",
+  ];
+  return colors[(name?.charCodeAt(0) ?? 0) % colors.length];
+};
+
+const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
+
+const imageUrl = (key) => (key ? `${S3}/${key}` : blog1);
+
+/* One avatar for every place (image with teal ring, or initials chip) */
+function Avatar({ src, name, className = "h-6 w-6 md:h-7 md:w-7", style }) {
+  return src ? (
+    <img
+      src={`${S3}/${src}`}
+      alt={name || ""}
+      style={style}
+      className={`${className} shrink-0 rounded-full border border-teal-600 bg-gray-400 object-cover`}
+    />
+  ) : (
+    <div
+      className={`${className} flex shrink-0 items-center justify-center rounded-full border border-neutral-800 text-[9px] font-bold text-white`}
+      style={{ ...style, backgroundColor: avatarColor(name) }}
+    >
+      {initials(name)}
+    </div>
+  );
+}
+
+/* Contributors: label + count + caret, avatar stack, inline expandable list */
+function Contributors({ playlistData, show, setShow, compact }) {
+  const collaborators = playlistData?.collaborators || [];
+  const extra = collaborators.length - 4;
+
+  return (
+    <div>
+      <button
+        type="button"
+        onClick={() => setShow((prev) => !prev)}
+        aria-expanded={show}
+        className={`mb-1.5 flex items-center gap-1.5 font-medium uppercase tracking-wide text-gray-400 transition-colors hover:text-gray-200 focus-visible:outline-none ${
+          compact ? "text-[11px]" : "text-xs"
+        }`}
+      >
+        Contributors
+        {collaborators.length > 0 && (
+          <span className="rounded-full border border-neutral-700 px-1.5 py-0.5 text-[10px] tabular-nums text-white">
+            {formatCount(collaborators.length + 1)}
+          </span>
+        )}
+        <motion.span
+          animate={{ rotate: show ? 180 : 0 }}
+          transition={{ duration: 0.3, ease: EASE }}
+          className="flex items-center"
+        >
+          <MdArrowDropDown className="text-xl" />
+        </motion.span>
+      </button>
+
+      {/* Avatar stack */}
+      <AnimatePresence>
+        {!show && (
+          <motion.div
+            initial={{ opacity: 0, height: 0, y: -6 }}
+            animate={{ opacity: 1, height: "auto", y: 0 }}
+            exit={{ opacity: 0, height: 0, y: -6 }}
+            transition={{ duration: 0.3, ease: EASE }}
+            className="overflow-hidden"
+          >
+            <div
+              className="flex cursor-pointer items-center -space-x-2"
+              onClick={() => setShow(true)}
+            >
+              <Avatar
+                src={playlistData.profile}
+                name={playlistData.name}
+                style={{ zIndex: 10 }}
+              />
+              {collaborators.slice(0, 4).map((collab, i) => (
+                <Avatar
+                  key={collab._id || collab.email}
+                  src={collab.profile}
+                  name={collab.name}
+                  style={{ zIndex: 9 - i }}
+                />
+              ))}
+              {extra > 0 && (
+                <div
+                  style={{ zIndex: 4 }}
+                  className="flex h-6 w-6 items-center justify-center rounded-full border border-white/10 bg-neutral-800 text-[10px] font-semibold text-gray-200 md:h-7 md:w-7"
+                >
+                  +{formatCount(extra)}
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Expanded list */}
+      <AnimatePresence initial={false}>
+        {show && (
+          <motion.div
+            initial={{ opacity: 0, height: 0, y: -8 }}
+            animate={{ opacity: 1, height: "auto", y: 0 }}
+            exit={{ opacity: 0, height: 0, y: -8 }}
+            transition={{ duration: 0.35, ease: EASE }}
+            className="overflow-hidden"
+          >
+            <motion.ul
+              variants={{ hidden: {}, show: { transition: { staggerChildren: 0.04 } } }}
+              initial="hidden"
+              animate="show"
+              className="scrollbar-hide flex max-h-56 w-full flex-col overflow-y-auto overflow-x-hidden"
+            >
+              {[
+                {
+                  email: playlistData.email,
+                  name: playlistData.name,
+                  profile: playlistData.profile,
+                  isAuthor: true,
+                },
+                ...collaborators,
+              ].map((p, index) => (
+                <motion.li
+                  key={p.email || index}
+                  variants={{
+                    hidden: { opacity: 0, y: 8 },
+                    show: { opacity: 1, y: 0 },
+                  }}
+                  transition={{ duration: 0.25, ease: EASE }}
+                >
+                  <Link
+                    to={`/viewProfile/${p.email}`}
+                    className="flex items-center gap-2 rounded-md p-1 text-xs text-gray-400 transition-colors hover:bg-gray-400/20 hover:text-gray-200"
+                  >
+                    <Avatar src={p.profile} name={p.name} />
+                    <span className="line-clamp-1 max-w-[250px] md:max-w-[300px]">
+                      {p.name}
+                    </span>
+                    {p.isAuthor && (
+                      <span className="text-gray-200">(Author)</span>
+                    )}
+                  </Link>
+                </motion.li>
+              ))}
+            </motion.ul>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
 function ViewTutorPlaylist() {
-  // const email = localStorage.getItem("email");
   const email = getItem("email");
   const { playlistId } = useParams();
   const [playlistData, setPlaylistData] = useState({});
@@ -31,7 +1569,6 @@ function ViewTutorPlaylist() {
   const [loading, setLoading] = useState(false);
   const [authorEmail, setAuthorEmail] = useState(null);
   const [authorName, setAuthorName] = useState(null);
-  // console.log("playlist Id", playlistId);
 
   const getTutorPlaylist = async () => {
     try {
@@ -53,9 +1590,6 @@ function ViewTutorPlaylist() {
   useEffect(() => {
     getTutorPlaylist();
   }, [playlistId]);
-
-  // console.log("playlist data", playlistData);
-  // console.log("playlist Posts", playlistPosts);
 
   const [playlistbookMarkId, setPlaylistBookMarkId] = useState([]);
   const [bookMarkId, setBookMarkId] = useState([]);
@@ -92,93 +1626,66 @@ function ViewTutorPlaylist() {
   }, []);
 
   const addBookMarkPostIdPlaylist = async (_id) => {
-    // e.preventDefault()
-    // console.log("bookmark id", _id);
     try {
       const response = await axiosInstance.post(
         `/blog/posts/bookmarkPosts/${email}`,
         { postId: _id },
       );
       if (response.status === 200) {
-        setPlaylistBookMarkId((prev) => {
-          if (prev.includes(_id)) {
-            // toast.success("bookmark removed successfully");
-            return prev.filter((id) => id !== _id);
-          } else {
-            // toast.success("post bookmarked successfully");
-            return [...prev, _id];
-          }
-        });
+        setPlaylistBookMarkId((prev) =>
+          prev.includes(_id) ? prev.filter((id) => id !== _id) : [...prev, _id],
+        );
       }
     } catch (err) {
       console.log("error", err.message);
-      // toast.error("unable to bookmark");
     }
   };
 
   const addBookMarkPostId = async (_id) => {
-    // e.preventDefault()
-    // console.log("bookmark id", _id);
     try {
       const response = await axiosInstance.post(
         `/blog/posts/bookmarkPosts/${email}`,
         { postId: _id },
       );
       if (response.status === 200) {
-        setBookMarkId((prev) => {
-          if (prev.includes(_id)) {
-            // toast.success("bookmark removed successfully");
-            return prev.filter((id) => id !== _id);
-          } else {
-            // toast.success("post bookmarked successfully");
-            return [...prev, _id];
-          }
-        });
+        setBookMarkId((prev) =>
+          prev.includes(_id) ? prev.filter((id) => id !== _id) : [...prev, _id],
+        );
       }
     } catch (err) {
       console.log("error", err.message);
-      // toast.error("unable to bookmark");
     }
   };
 
-  // share playlist with social media
   const sharePlayList = async (title, id) => {
     try {
-      const data = {
-        title: title,
+      await navigator.share({
+        title,
         text: title,
         url: `${window.location.origin}/viewplaylist/${id}`,
-      };
-      const response = await navigator.share(data);
-      // console.log("post shared successfully", response);
+      });
     } catch (err) {
       console.log("error sharing post", err);
     }
   };
 
-  // share playlist with social media
   const sharePost = async (title, email, id) => {
     try {
-      const data = {
-        title: title,
+      await navigator.share({
+        title,
         text: title,
         url: `${window.location.origin}/viewpage/${email}/${id}`,
-      };
-      const response = await navigator.share(data);
-      // console.log("post shared successfully", response);
+      });
     } catch (err) {
       console.log("error sharing post", err);
     }
   };
 
   const postLikes = async (authorEmail, postId) => {
-    // e.preventDefault();
     try {
       const response = await axiosInstance.put(
         `/blog/posts/likes/${authorEmail}/${postId}`,
-        {
-          emailAuthor: email,
-        },
+        { emailAuthor: email },
       );
 
       if (response.status === 200) {
@@ -188,21 +1695,18 @@ function ViewTutorPlaylist() {
               ? {
                   ...post,
                   likes: post.likes.includes(email)
-                    ? post.likes.filter((like) => like !== email) // Unlike the post
-                    : [...post.likes, email], // Like the post
+                    ? post.likes.filter((like) => like !== email)
+                    : [...post.likes, email],
                 }
               : post,
           ),
         );
       }
-
-      // getTutorPlaylist();
     } catch (err) {
       console.error("Error updating views:", err);
     }
   };
 
-  // Track post views
   const postViews = async (authorEmail, postId) => {
     try {
       await axiosInstance.put(`/blog/posts/views/${authorEmail}/${postId}`, {
@@ -213,28 +1717,8 @@ function ViewTutorPlaylist() {
     }
   };
 
-  const handleImageClick = (image) => {
-    setSelectedImage(image);
-  };
-
-  const handleCloseModal = () => {
-    setSelectedImage(null);
-  };
-
-  const avatarColor = (name) => {
-    const colors = [
-      "#10b981",
-      "#1871ff",
-      "#f59e0b",
-      "#f6238c",
-      "#8b5cf6",
-      "#09b2d0",
-      "#f97316",
-    ];
-    return colors[(name?.charCodeAt(0) ?? 0) % colors.length];
-  };
-
-  const initials = (name) => name?.slice(0, 2).toUpperCase() ?? "??";
+  const handleImageClick = (image) => setSelectedImage(image);
+  const handleCloseModal = () => setSelectedImage(null);
 
   const recentlyVisited = async () => {
     try {
@@ -245,7 +1729,6 @@ function ViewTutorPlaylist() {
         authorEmail,
         authorName,
       });
-
       if (response.status === 200) {
         console.log("playlist trackied", response.data.message);
       }
@@ -258,1109 +1741,306 @@ function ViewTutorPlaylist() {
     recentlyVisited();
   }, [email, authorEmail, playlistId]);
 
-  // console.log("playlist data", playlistData);
+  /* Escape closes the image preview */
+  useEffect(() => {
+    const onKey = (e) => e.key === "Escape" && setSelectedImage(null);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  const bannerSrc = imageUrl(playlistData.thumbnail);
+  const playlistBookmarked =
+    Array.isArray(playlistbookMarkId) &&
+    playlistbookMarkId.includes(playlistData._id);
+
+  /* Playlist-level bookmark + share (used by both mobile and desktop) */
+  const PlaylistActions = ({ className = "" }) => (
+    <div className={`flex items-center gap-2 ${className}`}>
+      <button
+        type="button"
+        aria-label={playlistBookmarked ? "Remove bookmark" : "Bookmark playlist"}
+        aria-pressed={playlistBookmarked}
+        onClick={() => addBookMarkPostIdPlaylist(playlistData._id)}
+        className="flex h-8 w-8 items-center justify-center rounded-full border border-neutral-700/70 bg-white/[0.03] text-teal-300 transition-colors hover:border-neutral-600 hover:bg-white/[0.07] md:h-9 md:w-9"
+      >
+        {playlistBookmarked ? (
+          <PiBookmarksSimpleFill className="text-base text-teal-500 md:text-lg" />
+        ) : (
+          <PiBookmarksSimpleLight className="text-base md:text-lg" />
+        )}
+      </button>
+      <button
+        type="button"
+        aria-label="Share playlist"
+        onClick={() => sharePlayList(playlistData.title, playlistData._id)}
+        className="flex h-8 w-8 items-center justify-center rounded-full border border-neutral-700/70 bg-white/[0.03] text-teal-400 transition-colors hover:border-neutral-600 hover:bg-white/[0.07] md:h-9 md:w-9"
+      >
+        <IoShareSocial className="text-base md:text-lg" />
+      </button>
+    </div>
+  );
+
   return (
-    <div className="min-h-screen theme text-white">
+    <div className="theme min-h-screen text-white">
       <NavBar />
 
-      <div className="w-full mx-auto px-2 max-w-[1800px] mx-auto min-h-screen h-auto md:px-16 py-6">
-        <h1 className="text-3xl w-full mb-7 pl-1 mx-auto hidden md:block font-semibold">
+      <div className="mx-auto h-auto min-h-screen w-full max-w-[1800px] px-3 py-5 md:px-16 md:py-8">
+        <h1 className="mb-7 hidden w-full pl-1 text-3xl font-semibold tracking-tight md:block">
           {loading ? "Loading Playlist..." : playlistData?.title}
         </h1>
+
         {!loading && Object.keys(playlistData).length > 0 && (
-          <div className="grid w-full mx-auto md:min-h-screen grid-cols-1 lg:grid-cols-2 lg:gap-4 gap-2">
-            {/* LEFT PANEL (Banner + Info) */}
-            <div className="lg:col-span-1 md:hidden  p-1 md:sticky top-4 self-start  md:p-0 space-y-2 md:space-y-4">
-              {/* Banner */}
-
+          <div className="mx-auto grid w-full grid-cols-1 gap-3 md:min-h-screen lg:grid-cols-2 lg:gap-6">
+            {/* ───────── LEFT PANEL · MOBILE (Banner + Info) ───────── */}
+            <div className="top-4 space-y-3 self-start md:hidden lg:col-span-1">
+              {/* Banner with stacked layers */}
               <div className="relative">
-                <div
-                  className="absolute bottom-2 left-3 w-[95%] h-full 
-                    bg-zinc-600 rounded-xl border border-zinc-700 
-                    z-0"
-                />
+                <div className="absolute bottom-2 left-3 z-0 h-full w-[95%] rounded-xl border border-zinc-700 bg-zinc-600" />
+                <div className="absolute bottom-1 left-1.5 z-10 h-full w-[97%] rounded-xl border border-zinc-800 bg-zinc-700" />
 
-                {/* STACK LAYER 2 (MIDDLE) */}
-                <div
-                  className="absolute bottom-1 left-1.5 w-[97%] h-full 
-                    bg-zinc-700 rounded-xl border border-zinc-800 
-                    z-10"
-                />
-
-                <div className="relative rounded-xl z-20 md:hover:-translate-y-1  overflow-hidden bg-black border border-gray-700 transition-transform duration-300 hover:-translate-y-1 group">
+                <div className="group relative z-20 overflow-hidden rounded-xl border border-gray-700 bg-black shadow-lg transition-transform duration-300 hover:-translate-y-1">
                   <img
-                    src={
-                      playlistData.thumbnail
-                        ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.thumbnail}`
-                        : blog1
-                    }
-                    onClick={() =>
-                      handleImageClick(
-                        playlistData.thumbnail
-                          ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.thumbnail}`
-                          : blog1,
-                      )
-                    }
+                    src={bannerSrc}
+                    onClick={() => handleImageClick(bannerSrc)}
                     alt="Playlist Banner"
-                    className="w-full h-48 md:h-[60vh]  object-cover md:object-contain"
+                    className="h-52 w-full cursor-zoom-in object-cover"
                   />
-                  <span className="absolute bottom-2 right-2 bg-black/80 text-white flex items-center gap-1 text-[10px] px-2 py-1 rounded-full">
-                    <SlTag className="text-[11px] " /> {playlistData?.domain}
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                  <span className="absolute bottom-2 right-2 flex items-center gap-1 rounded-full border border-white/10 bg-black/70 px-2.5 py-1 text-[10px] font-medium text-white backdrop-blur-sm">
+                    <SlTag className="text-[11px]" /> {playlistData?.domain}
                   </span>
                 </div>
               </div>
 
-              {/* Playlist Info */}
-              <div className="space-y-2 p-1">
-                <h1 className="text-xl  max-w-sm md:hidden font-semibold">
+              {/* Playlist info */}
+              <div className="space-y-2.5 px-1">
+                <h1 className="max-w-sm text-xl font-semibold leading-snug tracking-tight">
                   {playlistData.title}
                 </h1>
-                <div className="flex relative justify-between items-center ">
-                  {/* left content */}
-                  <div className="flex flex-col items-start gap-2">
-                    {/* Author */}
 
-                    <div className="">
-                      <h1 className="font-semibold uppercase tracking-wide flex items-center gap-1 mb-1  text-gray-400 text-[11px]">
-                        Contributors{" "}
-                        {playlistData?.collaborators?.length > 0 && (
-                          <span className="text-white rounded-full px-1.5 py-0.5 text-[9px] border border-neutral-700">
-                            { formatCount(
-                              playlistData?.collaborators?.length + 1
-                            ) }
-                          </span>
-                        )}
-                        <motion.span
-                          whileTap={{ scale: 0.9 }}
-                          animate={{
-                            rotate: showContributors ? 180 : 0,
-                          }}
-                          transition={{
-                            duration: 0.3,
-                            ease: [0.22, 1, 0.36, 1],
-                          }}
-                          onClick={() => setShowContributors((prev) => !prev)}
-                          className="cursor-pointer flex items-center"
-                        >
-                          <MdArrowDropDown className="text-xl" />
-                        </motion.span>
-                      </h1>
+                <div className="relative flex items-start justify-between">
+                  <Contributors
+                    playlistData={playlistData}
+                    show={showContributors}
+                    setShow={setShowContributors}
+                    compact
+                  />
 
-                      {/* Contributors profile */}
-                      <AnimatePresence>
-                        {!showContributors && (
-                          <motion.div
-                            initial={{
-                              opacity: 0,
-                              height: 0,
-                              y: -6,
-                            }}
-                            animate={{
-                              opacity: 1,
-                              height: "auto",
-                              y: 0,
-                            }}
-                            exit={{
-                              opacity: 0,
-                              height: 0,
-                              y: -6,
-                            }}
-                            transition={{
-                              duration: 0.3,
-                              ease: [0.22, 1, 0.36, 1],
-                            }}
-                            className="overflow-hidden"
-                          >
-                            <div
-                              className="flex -space-x-2 cursor-pointer"
-                              onClick={() => setShowContributors(true)}
-                            >
-                              {playlistData?.collaborators?.length > 4 && (
-                                <div
-                                  whileHover={{ scale: 1.08 }}
-                                  whileTap={{ scale: 0.95 }}
-                                  className="
-                                  h-6
-                                  w-6
-                                  md:w-7
-                                  md:h-7
-                                  p-2
-                                  mr-2
-                                rounded-full
-                                border border-white/10
-                                bg-white/[0.05]
-                                text-[11px]
-                                font-semibold
-                                text-gray-200
-                                flex flex-col t justify-center items-center
-                              "
-                                >
-                                  <p>
-                                    {" "}
-                                    +
-                                    {formatCount(
-                                      playlistData?.collaborators?.length - 4,
-                                    )}{" "}
-                                  </p>
-                                </div>
-                              )}
-
-                              {/* avatars */}
-                              {playlistData?.collaborators
-                                ?.slice(0, 4)
-                                .map((collab) => (
-                                  <>
-                                    {collab.profile ? (
-                                      <img
-                                        key={collab._id}
-                                        src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${collab.profile}`}
-                                        alt={collab.name}
-                                        className="h-6 w-6 md:h-7 md:w-7 rounded-full border border-teal-600 bg-gray-400"
-                                      />
-                                    ) : (
-                                      <div
-                                        key={collab._id}
-                                        className="w-6 h-6 md:h-7 md:w-7 rounded-full flex items-center border border-neutral-800 justify-center text-[9px] font-bold text-white shrink-0"
-                                        style={{
-                                          backgroundColor: avatarColor(
-                                            collab.name,
-                                          ),
-                                        }}
-                                      >
-                                        {initials(collab.name)}
-                                      </div>
-                                    )}
-                                  </>
-                                ))}
-
-                              {playlistData.profile ? (
-                                <img
-                                  src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.profile}`}
-                                  // alt={collab.name}
-                                  className="h-6 w-6 rounded-full border border-teal-600 bg-gray-400"
-                                />
-                              ) : (
-                                <div
-                                  className="w-6 h-6 md:h-7 md:w-7 rounded-full flex items-center border border-neutral-800 justify-center text-[9px] font-bold text-white shrink-0"
-                                  style={{
-                                    backgroundColor: avatarColor(
-                                      playlistData.name,
-                                    ),
-                                  }}
-                                >
-                                  {initials(playlistData.name)}
-                                </div>
-                              )}
-                            </div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-
-                      {/* Contributors details */}
-
-                      <AnimatePresence initial={false}>
-                        {showContributors && (
-                          <motion.div
-                            initial={{
-                              opacity: 0,
-                              height: 0,
-                              y: -8,
-                            }}
-                            animate={{
-                              opacity: 1,
-                              height: "auto",
-                              y: 0,
-                            }}
-                            exit={{
-                              opacity: 0,
-                              height: 0,
-                              y: -8,
-                            }}
-                            transition={{
-                              duration: 0.35,
-                              ease: [0.22, 1, 0.36, 1],
-                            }}
-                            className="overflow-hidden max-h-56 overflow-x-hidden overflow-y-auto scrollbar-hide"
-                          >
-                            <motion.div
-                              variants={{
-                                hidden: {},
-                                show: {
-                                  transition: {
-                                    staggerChildren: 0.04,
-                                  },
-                                },
-                              }}
-                              initial="hidden"
-                              animate="show"
-                              className="w-full flex flex-col justify-center gap-0"
-                            >
-                              {/* Author */}
-                              <motion.div
-                                variants={{
-                                  hidden: {
-                                    opacity: 0,
-                                    y: 8,
-                                  },
-                                  show: {
-                                    opacity: 1,
-                                    y: 0,
-                                  },
-                                }}
-                                transition={{
-                                  duration: 0.25,
-                                  ease: [0.22, 1, 0.36, 1],
-                                }}
-                              >
-                                <Link
-                                  to={`/viewProfile/${playlistData.email}`}
-                                  className="flex items-center gap-2 p-1 rounded-md text-xs text-gray-400 hover:bg-gray-400/20"
-                                >
-                                  {playlistData.profile ? (
-                                    <img
-                                      src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.profile}`}
-                                      className="h-6 w-6 rounded-full border border-teal-600 bg-gray-400"
-                                    />
-                                  ) : (
-                                    <div
-                                      className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold text-white border border-neutral-800 shrink-0"
-                                      style={{
-                                        backgroundColor: avatarColor(
-                                          playlistData.name,
-                                        ),
-                                      }}
-                                    >
-                                      {initials(playlistData.name)}
-                                    </div>
-                                  )}
-
-                                  <span>{playlistData.name}</span>
-
-                                  <span className="text-gray-200">
-                                    (Author)
-                                  </span>
-                                </Link>
-                              </motion.div>
-
-                              {/* Contributors */}
-                              {playlistData?.collaborators?.map(
-                                (data, index) => (
-                                  <motion.div
-                                    key={data.email}
-                                    variants={{
-                                      hidden: {
-                                        opacity: 0,
-                                        y: 8,
-                                      },
-                                      show: {
-                                        opacity: 1,
-                                        y: 0,
-                                      },
-                                    }}
-                                    transition={{
-                                      duration: 0.25,
-                                      delay: index * 0.02,
-                                      ease: [0.22, 1, 0.36, 1],
-                                    }}
-                                  >
-                                    <Link
-                                      to={`/viewProfile/${data.email}`}
-                                      className="flex items-center gap-2 p-1 rounded-md text-xs text-gray-400 hover:bg-gray-400/20"
-                                    >
-                                      {data.profile ? (
-                                        <img
-                                          src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.profile}`}
-                                          alt={data.name}
-                                          className="h-6 w-6 md:h-7 md:w-7 rounded-full border border-teal-600 bg-gray-400"
-                                        />
-                                      ) : (
-                                        <div
-                                          className="w-6 h-6 md:h-7 md:w-7 rounded-full flex items-center justify-center text-[9px] font-bold text-white border border-neutral-800 shrink-0"
-                                          style={{
-                                            backgroundColor: avatarColor(
-                                              data.name,
-                                            ),
-                                          }}
-                                        >
-                                          {initials(data.name)}
-                                        </div>
-                                      )}
-
-                                      <p className="line-clamp-1 max-w-[250px] md:max-w-[300px]">
-                                        {data.name}
-                                      </p>
-                                    </Link>
-                                  </motion.div>
-                                ),
-                              )}
-                            </motion.div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
-                  </div>
-
-                  {/* right content */}
-                  <div className=" absolute top-0 right-0 flex flex-col items-start gap-2">
-                    <p className="text-xs text-gray-400">
+                  <div className="absolute right-0 top-0 flex flex-col items-end gap-2">
+                    <p className="text-xs tabular-nums text-gray-400">
                       Playlist • {playlistData?.post_ids?.length}
                     </p>
-
-                    <div className="flex items-center gap-2">
-                      <div
-                        onClick={() => {
-                          addBookMarkPostIdPlaylist(playlistData._id);
-                        }}
-                        className="cursor-pointer flex items-center md:text-xl gap-1 text-teal-300 hover:text-teal-300"
-                      >
-                        {Array.isArray(playlistbookMarkId) &&
-                        playlistbookMarkId.includes(playlistData._id) ? (
-                          <PiBookmarksSimpleFill className="text-teal-500" />
-                        ) : (
-                          <PiBookmarksSimpleLight />
-                        )}
-                      </div>
-
-                      <div
-                        onClick={() =>
-                          sharePlayList(playlistData.title, playlistData._id)
-                        }
-                        className="cursor-pointer flex items-center gap-1 hover:text-teal-300"
-                      >
-                        <IoShareSocial className="md:text-xl text-teal-400" />
-                      </div>
-                    </div>
+                    <PlaylistActions />
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* LEFT PANEL (Banner + Info) */}
-            <div className="lg:col-span-1 hidden md:block lg:sticky top-6 self-start space-y-4">
+            {/* ───────── LEFT PANEL · DESKTOP (Banner + Info) ───────── */}
+            <div className="top-6 hidden space-y-4 self-start md:block lg:sticky lg:col-span-1">
               <div className="relative">
-                <div
-                  className="absolute bottom-2 left-3 w-[95%] h-full 
-                  bg-zinc-600 rounded-xl border border-zinc-700 
-                  z-0"
-                />
+                <div className="absolute bottom-2 left-3 z-0 h-full w-[95%] rounded-xl border border-zinc-700 bg-zinc-600" />
+                <div className="absolute bottom-1 left-1.5 z-10 h-full w-[97%] rounded-xl border border-zinc-800 bg-zinc-700" />
 
-                {/* STACK LAYER 2 (MIDDLE) */}
-                <div
-                  className="absolute bottom-1 left-1.5 w-[97%] h-full 
-                  bg-zinc-700 rounded-xl border border-zinc-800 
-                  z-10"
-                />
-
-                <div className="relative z-20 w-[99%] rounded-2xl overflow-hidden border border-gray-800 shadow-xl transition-transform duration-300 hover:-translate-y-1 group">
+                <div className="group relative z-20 w-[99%] overflow-hidden rounded-2xl border border-gray-800 shadow-xl transition-transform duration-300 hover:-translate-y-1">
                   <img
-                    src={
-                      playlistData.thumbnail
-                        ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.thumbnail}`
-                        : blog1
-                    }
-                    onClick={() =>
-                      handleImageClick(
-                        playlistData.thumbnail
-                          ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.thumbnail}`
-                          : blog1,
-                      )
-                    }
+                    src={bannerSrc}
+                    onClick={() => handleImageClick(bannerSrc)}
                     alt="Playlist Banner"
-                    className="w-full h-[260px] md:h-[46vh] cursor-pointer object-cover transition-transform duration-500 "
+                    className="h-[260px] w-full cursor-zoom-in object-cover transition-transform duration-500 group-hover:scale-[1.02] md:h-[46vh]"
                   />
 
-                  {/* Gradient Overlay */}
                   <div
-                    onClick={() =>
-                      handleImageClick(
-                        playlistData.thumbnail
-                          ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.thumbnail}`
-                          : blog1,
-                      )
-                    }
-                    className="absolute inset-0 bg-gradient-to-t cursor-pointer from-black via-black/10 to-transparent"
+                    onClick={() => handleImageClick(bannerSrc)}
+                    className="absolute inset-0 cursor-zoom-in bg-gradient-to-t from-black via-black/10 to-transparent"
                   />
 
-                  {/* Title + Meta */}
-                  <div className="absolute bottom-4 left-4 right-4 space-y-2">
-                    <h1 className="text-xl md:text-2xl font-semibold text-white leading-snug">
+                  <div className="pointer-events-none absolute bottom-4 left-4 right-4 space-y-2">
+                    <h2 className="text-xl font-semibold leading-snug text-white md:text-2xl">
                       {playlistData?.domain}
-                    </h1>
-
-                    <div className="flex items-center justify-between">
-                      <p className="text-xs md:text-sm text-gray-300">
-                        Playlist • {playlistData?.post_ids?.length} posts
-                      </p>
-                    </div>
+                    </h2>
+                    <p className="text-xs tabular-nums text-gray-300 md:text-sm">
+                      Playlist • {playlistData?.post_ids?.length} posts
+                    </p>
                   </div>
                 </div>
               </div>
 
-              {/* CONTRIBUTORS CARD */}
-              <div className="flex p-4 relative border border-neutral-700/70 rounded-lg  justify-between items-center ">
-                {/* left content */}
-                <div className="flex flex-col items-start gap-2">
-                  {/* Author */}
-
-                  <div className="">
-                    <h1 className="font-medium tracking-wide uppercase flex items-center gap-2 mb-1 text-gray-400 text-xs ">
-                      Contributors{" "}
-                      {playlistData?.collaborators?.length > 0 && (
-                        <span className="text-white rounded-full px-2 py-0.5 text-xs border border-neutral-700">
-                          {playlistData?.collaborators?.length}
-                        </span>
-                      )}
-                      {/* <span
-                        onClick={() => {
-                          setShowContributors(!showContributors);
-                        }}
-                        className=" cursor-pointer  "
-                      >
-                        {!showContributors ? (
-                          <MdArrowDropDown className="text-xl" />
-                        ) : (
-                          <IoMdArrowDropup className="text-xl" />
-                        )}
-                      </span> */}
-                      <motion.span
-                        whileTap={{ scale: 0.9 }}
-                        animate={{
-                          rotate: showContributors ? 180 : 0,
-                        }}
-                        transition={{
-                          duration: 0.3,
-                          ease: [0.22, 1, 0.36, 1],
-                        }}
-                        onClick={() => setShowContributors((prev) => !prev)}
-                        className="cursor-pointer flex items-center"
-                      >
-                        <MdArrowDropDown className="text-xl" />
-                      </motion.span>
-                    </h1>
-
-                    {/* Contributors profile */}
-                    <AnimatePresence>
-                      {!showContributors && (
-                        <motion.div
-                          initial={{
-                            opacity: 0,
-                            height: 0,
-                            y: -6,
-                          }}
-                          animate={{
-                            opacity: 1,
-                            height: "auto",
-                            y: 0,
-                          }}
-                          exit={{
-                            opacity: 0,
-                            height: 0,
-                            y: -6,
-                          }}
-                          transition={{
-                            duration: 0.3,
-                            ease: [0.22, 1, 0.36, 1],
-                          }}
-                          className="overflow-hidden"
-                        >
-                          <div
-                            className="flex -space-x-2 cursor-pointer"
-                            onClick={() => setShowContributors(true)}
-                          >
-                            {/* avatars */}
-
-                            {playlistData?.collaborators?.length > 5 && (
-                              <div
-                                whileHover={{ scale: 1.08 }}
-                                whileTap={{ scale: 0.95 }}
-                                className="
-                                  h-6
-                                  w-6
-                                  md:w-7
-                                  md:h-7
-                                  p-2
-                                  mr-2
-                                rounded-full
-                                border border-white/10
-                                bg-white/[0.05]
-                                text-[11px]
-                                font-semibold
-                                text-gray-200
-                                flex flex-col t justify-center items-center
-                              "
-                              >
-                                <p>
-                                  {" "}
-                                  +
-                                  {formatCount(
-                                    playlistData?.collaborators?.length - 5,
-                                  )}{" "}
-                                </p>
-                              </div>
-                            )}
-
-                            {playlistData?.collaborators
-                              ?.slice(0, 4)
-                              .map((collab) => (
-                                <>
-                                  {collab.profile ? (
-                                    <img
-                                      key={collab._id}
-                                      src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${collab.profile}`}
-                                      alt={collab.name}
-                                      className="h-6 w-6 md:h-7 md:w-7 rounded-full border border-teal-600 bg-gray-400"
-                                    />
-                                  ) : (
-                                    <div
-                                      key={collab._id}
-                                      className="w-6 h-6 md:h-7 md:w-7 rounded-full flex items-center border border-neutral-800 justify-center text-[9px] font-bold text-white shrink-0"
-                                      style={{
-                                        backgroundColor: avatarColor(
-                                          collab.name,
-                                        ),
-                                      }}
-                                    >
-                                      {initials(collab.name)}
-                                    </div>
-                                  )}
-                                </>
-                              ))}
-
-                            {playlistData.profile ? (
-                              <img
-                                src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.profile}`}
-                                // alt={collab.name}
-                                className="h-6 w-6 md:w-7 md:h-7 rounded-full border border-teal-600 bg-gray-400"
-                              />
-                            ) : (
-                              <div
-                                className="w-6 h-6 md:h-7 md:w-7 rounded-full flex items-center border border-neutral-800 justify-center text-[9px] font-bold text-white shrink-0"
-                                style={{
-                                  backgroundColor: avatarColor(
-                                    playlistData.name,
-                                  ),
-                                }}
-                              >
-                                {initials(playlistData.name)}
-                              </div>
-                            )}
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-
-                    {/* Contributors details */}
-
-                    <AnimatePresence initial={false}>
-                      {showContributors && (
-                        <motion.div
-                          initial={{
-                            opacity: 0,
-                            height: 0,
-                            y: -8,
-                          }}
-                          animate={{
-                            opacity: 1,
-                            height: "auto",
-                            y: 0,
-                          }}
-                          exit={{
-                            opacity: 0,
-                            height: 0,
-                            y: -8,
-                          }}
-                          transition={{
-                            duration: 0.35,
-                            ease: [0.22, 1, 0.36, 1],
-                          }}
-                          className="overflow-hidden"
-                        >
-                          <motion.div
-                            variants={{
-                              hidden: {},
-                              show: {
-                                transition: {
-                                  staggerChildren: 0.04,
-                                },
-                              },
-                            }}
-                            initial="hidden"
-                            animate="show"
-                            className="w-full flex flex-col md:max-h-52 overflow-x-hidden overflow-y-auto scrollbar-hide justify-center gap-0"
-                          >
-                            {/* Author */}
-                            <motion.div
-                              variants={{
-                                hidden: {
-                                  opacity: 0,
-                                  y: 8,
-                                },
-                                show: {
-                                  opacity: 1,
-                                  y: 0,
-                                },
-                              }}
-                              transition={{
-                                duration: 0.25,
-                                ease: [0.22, 1, 0.36, 1],
-                              }}
-                            >
-                              <Link
-                                to={`/viewProfile/${playlistData.email}`}
-                                className="flex items-center gap-2 p-1 rounded-md text-xs text-gray-400 hover:bg-gray-400/20"
-                              >
-                                {playlistData.profile ? (
-                                  <img
-                                    src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${playlistData.profile}`}
-                                    className="h-6 w-6 rounded-full border border-teal-600 bg-gray-400"
-                                  />
-                                ) : (
-                                  <div
-                                    className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold text-white border border-neutral-800 shrink-0"
-                                    style={{
-                                      backgroundColor: avatarColor(
-                                        playlistData.name,
-                                      ),
-                                    }}
-                                  >
-                                    {initials(playlistData.name)}
-                                  </div>
-                                )}
-
-                                <span>{playlistData.name}</span>
-
-                                <span className="text-gray-200">(Author)</span>
-                              </Link>
-                            </motion.div>
-
-                            {/* Contributors */}
-                            {playlistData?.collaborators?.map((data, index) => (
-                              <motion.div
-                                key={data.email}
-                                variants={{
-                                  hidden: {
-                                    opacity: 0,
-                                    y: 8,
-                                  },
-                                  show: {
-                                    opacity: 1,
-                                    y: 0,
-                                  },
-                                }}
-                                transition={{
-                                  duration: 0.25,
-                                  delay: index * 0.02,
-                                  ease: [0.22, 1, 0.36, 1],
-                                }}
-                              >
-                                <Link
-                                  to={`/viewProfile/${data.email}`}
-                                  className="flex items-center gap-2 p-1 rounded-md text-xs text-gray-400 hover:bg-gray-400/20"
-                                >
-                                  {data.profile ? (
-                                    <img
-                                      src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${data.profile}`}
-                                      alt={data.name}
-                                      className="h-6 w-6 md:h-7 md:w-7 rounded-full border border-teal-600 bg-gray-400"
-                                    />
-                                  ) : (
-                                    <div
-                                      className="w-6 h-6 md:h-7 md:w-7 rounded-full flex items-center justify-center text-[9px] font-bold text-white border border-neutral-800 shrink-0"
-                                      style={{
-                                        backgroundColor: avatarColor(data.name),
-                                      }}
-                                    >
-                                      {initials(data.name)}
-                                    </div>
-                                  )}
-
-                                  <p className="line-clamp-1 max-w-[250px] md:max-w-[300px]">
-                                    {data.name}
-                                  </p>
-                                </Link>
-                              </motion.div>
-                            ))}
-                          </motion.div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                </div>
-
-                {/* right content */}
-                <div className=" absolute top-4 right-4 flex flex-col items-start gap-2">
-                  {/* <p className="text-sm text-gray-400">
-                      Playlist • {playlistData?.post_ids?.length}
-                    </p> */}
-
-                  <div className="flex items-center gap-2">
-                    <div
-                      onClick={() => {
-                        addBookMarkPostIdPlaylist(playlistData._id);
-                      }}
-                      className="cursor-pointer flex items-center md:text-lg gap-1 text-teal-300 hover:text-teal-300"
-                    >
-                      {Array.isArray(playlistbookMarkId) &&
-                      playlistbookMarkId.includes(playlistData._id) ? (
-                        <PiBookmarksSimpleFill className="text-teal-500" />
-                      ) : (
-                        <PiBookmarksSimpleLight />
-                      )}
-                    </div>
-
-                    <div
-                      onClick={() =>
-                        sharePlayList(playlistData.title, playlistData._id)
-                      }
-                      className="cursor-pointer flex items-center gap-1 hover:text-teal-300"
-                    >
-                      <IoShareSocial className="md:text-xl text-teal-400" />
-                    </div>
-                  </div>
-                </div>
+              {/* Contributors card */}
+              <div className="relative flex items-center justify-between rounded-xl border border-neutral-700/70 bg-white/[0.02] p-4">
+                <Contributors
+                  playlistData={playlistData}
+                  show={showContributors}
+                  setShow={setShowContributors}
+                />
+                <PlaylistActions className="absolute right-4 top-4" />
               </div>
             </div>
 
-            {/* RIGHT PANEL (Playlist Posts) */}
-            <div className="lg:col-span-1 md:overflow-y-scroll md:h-[550px] overflow-x-hidden mt-0 scrollbar-hide space-y-2 md:space-y-2">
-              {playlistPosts.map((post, index) => (
-                <div
-                  key={post._id}
-                  className="
-                  flex gap-3
-                  p-2
-                  theme
-                  rounded-lg
-                  border border-neutral-800
-                  transition
-                  overflow-hidden
-                  w-full
-                "
-                >
-                  {/* Thumbnail */}
-                  <Link
-                    to={`/viewpage/${playlistData.email}/${post._id}`}
-                    onClick={() => postViews(playlistData.email, post._id)}
-                    className="
-                      relative
-                      w-28
-                      md:w-40
-                      h-20
-                      md:h-24
-                      flex-shrink-0
-                      rounded-md
-                      overflow-hidden
-                    "
+            {/* ───────── RIGHT PANEL · Playlist posts ───────── */}
+            <div className="scrollbar-hide mt-0 space-y-2.5 overflow-x-hidden md:h-[550px] md:overflow-y-auto lg:h-[calc(100vh-10rem)] lg:min-h-[550px] lg:col-span-1">
+              {playlistPosts.map((post, index) => {
+                const liked = (post.likes || []).includes(email);
+                const saved =
+                  Array.isArray(bookMarkId) && bookMarkId.includes(post._id);
+                const postPath = `/viewpage/${playlistData.email}/${post._id}`;
+
+                return (
+                  <div
+                    key={post._id}
+                    className="theme flex w-full gap-3 overflow-hidden rounded-xl border border-neutral-800 p-2.5 transition-colors duration-200 hover:border-neutral-600 hover:bg-white/[0.02]"
                   >
-                    <img
-                      src={
-                        post.image
-                          ? `https://open-access-blog-image.s3.us-east-1.amazonaws.com/${post.image}`
-                          : blog1
-                      }
-                      alt={post.title}
-                      className="w-full h-full object-cover"
-                    />
-
-                    <span className="absolute bottom-1 right-1 bg-black/80 text-xs px-1.5 py-0.5 rounded">
-                      {index + 1}
-                    </span>
-                  </Link>
-
-                  {/* Content */}
-                  <div className="flex flex-col flex-1 min-w-0 justify-between">
-                    {/* Title */}
+                    {/* Thumbnail */}
                     <Link
-                      to={`/viewpage/${playlistData.email}/${post._id}`}
+                      to={postPath}
                       onClick={() => postViews(playlistData.email, post._id)}
-                      className="
-        text-sm
-        font-medium
-        line-clamp-2
-        break-words
-        text-white
-      "
+                      className="group relative h-20 w-28 flex-shrink-0 overflow-hidden rounded-lg bg-neutral-900 md:h-24 md:w-40"
                     >
-                      {post.title}
+                      <img
+                        src={imageUrl(post.image)}
+                        alt={post.title}
+                        loading="lazy"
+                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                      <span className="absolute bottom-1 right-1 rounded bg-black/80 px-1.5 py-0.5 text-xs tabular-nums">
+                        {index + 1}
+                      </span>
                     </Link>
 
-                    {/* Description */}
-                    <Link
-                      to={`/viewpage/${playlistData.email}/${post._id}`}
-                      onClick={() => postViews(playlistData.email, post._id)}
-                      className="
-        text-xs
-        text-gray-300
-        line-clamp-2
-        overflow-hidden
-        break-words
-      "
-                    >
-                      <RenderTextNoMarkdown text={post.description} />
-                    </Link>
+                    {/* Content */}
+                    <div className="flex min-w-0 flex-1 flex-col justify-between">
+                      <Link
+                        to={postPath}
+                        onClick={() => postViews(playlistData.email, post._id)}
+                        className="line-clamp-2 break-words text-sm font-medium leading-snug text-white"
+                      >
+                        {post.title}
+                      </Link>
 
-                    {/* Footer */}
-                    <div className="flex justify-between items-center pt-1">
-                      <p className="text-[10px] text-gray-300 whitespace-nowrap">
-                        Views {post.views?.length}
-                      </p>
+                      <Link
+                        to={postPath}
+                        onClick={() => postViews(playlistData.email, post._id)}
+                        className="line-clamp-2 overflow-hidden break-words text-xs leading-relaxed text-gray-400"
+                      >
+                        <RenderTextNoMarkdown text={post.description} />
+                      </Link>
 
-                      <div className="flex items-center gap-2 flex-shrink-0">
-                        {/* Like */}
-                        <button
-                          type="button"
-                          onClick={(e) =>
-                            postLikes(playlistData.email, post._id, e)
-                          }
-                          className="cursor-pointer flex items-center gap-1 hover:text-teal-300 bg-transparent border-0 disabled:opacity-50"
-                        >
-                          {(post.likes || []).includes(email) ? (
-                            <BiSolidLike className="text-sm text-teal-400" />
-                          ) : (
-                            <BiLike className="text-sm text-teal-400" />
-                          )}
+                      {/* Footer */}
+                      <div className="flex items-center justify-between pt-1">
+                        <p className="whitespace-nowrap text-[10px] tabular-nums text-gray-300">
+                          Views {post.views?.length}
+                        </p>
 
-                          <span className="text-[9px] text-white">
-                            {post.likes && post.likes.length > 0
-                              ? post.likes.length
-                              : ""}
-                          </span>
-                        </button>
+                        <div className="-mr-1.5 flex flex-shrink-0 items-center">
+                          <button
+                            type="button"
+                            aria-label={liked ? "Unlike post" : "Like post"}
+                            aria-pressed={liked}
+                            onClick={() => postLikes(playlistData.email, post._id)}
+                            className="flex h-8 items-center gap-1 rounded-full px-2 text-teal-400 transition-colors hover:bg-white/[0.06] hover:text-teal-300"
+                          >
+                            {liked ? (
+                              <BiSolidLike className="text-sm" />
+                            ) : (
+                              <BiLike className="text-sm" />
+                            )}
+                            <span className="text-[10px] tabular-nums text-white">
+                              {post.likes && post.likes.length > 0
+                                ? post.likes.length
+                                : ""}
+                            </span>
+                          </button>
 
-                        {/* Share */}
-                        <div
-                          onClick={() =>
-                            sharePost(post.title, playlistData.email, post._id)
-                          }
-                          className="cursor-pointer flex items-center gap-1 hover:text-teal-300"
-                        >
-                          <IoShareSocial className="text-sm text-teal-400" />
-                        </div>
+                          <button
+                            type="button"
+                            aria-label="Share post"
+                            onClick={() =>
+                              sharePost(post.title, playlistData.email, post._id)
+                            }
+                            className="flex h-8 w-8 items-center justify-center rounded-full text-teal-400 transition-colors hover:bg-white/[0.06] hover:text-teal-300"
+                          >
+                            <IoShareSocial className="text-sm" />
+                          </button>
 
-                        {/* Bookmark */}
-                        <div
-                          onClick={() => {
-                            addBookMarkPostId(post._id);
-                          }}
-                          className="cursor-pointer flex items-center gap-1 text-teal-300 hover:text-teal-300"
-                        >
-                          {Array.isArray(bookMarkId) &&
-                          bookMarkId.includes(post._id) ? (
-                            <PiBookmarksSimpleFill className="text-teal-500" />
-                          ) : (
-                            <PiBookmarksSimpleLight />
-                          )}
+                          <button
+                            type="button"
+                            aria-label={saved ? "Remove bookmark" : "Bookmark post"}
+                            aria-pressed={saved}
+                            onClick={() => addBookMarkPostId(post._id)}
+                            className="flex h-8 w-8 items-center justify-center rounded-full text-teal-300 transition-colors hover:bg-white/[0.06]"
+                          >
+                            {saved ? (
+                              <PiBookmarksSimpleFill className="text-sm text-teal-500" />
+                            ) : (
+                              <PiBookmarksSimpleLight className="text-sm" />
+                            )}
+                          </button>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         )}
+
         {loading && <PlaylistDetailSkeleton />}
 
         {!loading &&
           (!playlistData || Object.keys(playlistData).length === 0) && (
-            <div className="w-full h-[70vh] md:h-[55vh] flex flex-col items-center justify-center">
-              {/* <p className="text-gray-500">Playlist not found.</p> */}
-              <img className="w-48 md:w-60 " src={empty_state_post} alt="" />
-              <p className="text-gray-400 max-w-xs md:max-w-md text-sm md:text-base flex justify-center items-center text-center">
+            <div className="flex h-[70vh] w-full flex-col items-center justify-center md:h-[55vh]">
+              <img className="w-48 md:w-60" src={empty_state_post} alt="" />
+              <p className="flex max-w-xs items-center justify-center text-center text-sm text-gray-400 md:max-w-md md:text-base">
                 Playlist not found !
               </p>
             </div>
           )}
       </div>
+
       <ToastContainer />
 
       {/* Image Modal */}
-      {/* {selectedImage && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
-     
-          <div className="relative max-w-6xl w-full flex items-center justify-center">
-  
-            <img
-              src={selectedImage}
-              alt="Preview"
-              className="
-          max-h-[80vh]
-          w-auto
-          rounded-2xl
-          shadow-2xl
-          border border-gray-700
-          object-contain
-          transition-transform duration-300
-         
-        "
-            />
-
-       
-            <button
-              onClick={handleCloseModal}
-              className="
-          absolute
-          md:-top-4
-          md:-right-4
-          -top-3
-          -right-3
-          md:w-10
-          md:h-10
-          h-8
-          w-8
-          flex
-          items-center
-          justify-center
-          rounded-full
-          theme
-          border border-gray-700
-          text-white
-          shadow-lg
-          md:hover:bg-red-500
-          transition-all
-        "
-            >
-              <IoClose className="text-sm" />
-            </button>
-          </div>
-        </div>
-      )} */}
-
       <AnimatePresence>
         {selectedImage && (
           <motion.div
-            initial={{
-              opacity: 0,
-              backdropFilter: "blur(0px)",
-            }}
-            animate={{
-              opacity: 1,
-              backdropFilter: "blur(12px)",
-            }}
-            exit={{
-              opacity: 0,
-              backdropFilter: "blur(0px)",
-            }}
-            transition={{
-              duration: 0.25,
-            }}
+            initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
+            animate={{ opacity: 1, backdropFilter: "blur(12px)" }}
+            exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
+            transition={{ duration: 0.25 }}
             onClick={handleCloseModal}
-            className="
-              fixed inset-0 z-50
-              flex items-center justify-center
-              bg-black/70
-              p-4
-            "
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
           >
-            {/* Modal Container */}
             <motion.div
               layout
               onClick={(e) => e.stopPropagation()}
-              initial={{
-                opacity: 0,
-                scale: 0.92,
-                y: 20,
-              }}
-              animate={{
-                opacity: 1,
-                scale: 1,
-                y: 0,
-              }}
-              exit={{
-                opacity: 0,
-                scale: 0.96,
-                y: 10,
-              }}
-              transition={{
-                duration: 0.35,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-              className="
-                relative
-                max-w-6xl
-                w-full
-                flex
-                items-center
-                justify-center
-              "
+              initial={{ opacity: 0, scale: 0.92, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.96, y: 10 }}
+              transition={{ duration: 0.35, ease: EASE }}
+              className="relative flex w-full max-w-6xl items-center justify-center"
             >
-              {/* Image */}
               <motion.img
                 src={selectedImage}
                 alt="Preview"
-                initial={{
-                  scale: 0.95,
-                  opacity: 0,
-                }}
-                animate={{
-                  scale: 1,
-                  opacity: 1,
-                }}
-                exit={{
-                  scale: 0.95,
-                  opacity: 0,
-                }}
-                transition={{
-                  duration: 0.4,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-                className="
-                  max-h-[50vh]
-                  w-auto
-                  rounded-2xl
-                  shadow-2xl
-                  border border-gray-700
-                  object-contain
-                "
+                initial={{ scale: 0.95, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.95, opacity: 0 }}
+                transition={{ duration: 0.4, ease: EASE }}
+                className="max-h-[60vh] w-auto rounded-2xl border border-gray-700 object-contain shadow-2xl md:max-h-[75vh]"
               />
 
-              {/* Close Button */}
               <motion.button
+                type="button"
+                aria-label="Close preview"
                 onClick={handleCloseModal}
-                initial={{
-                  opacity: 0,
-                  scale: 0.8,
-                }}
-                animate={{
-                  opacity: 1,
-                  scale: 1,
-                }}
-                exit={{
-                  opacity: 0,
-                  scale: 0.8,
-                }}
-                transition={{
-                  delay: 0.15,
-                  duration: 0.2,
-                }}
-                whileHover={{
-                  scale: 1.08,
-                  rotate: 90,
-                }}
-                whileTap={{
-                  scale: 0.92,
-                }}
-                className="
-                  absolute
-                  md:-top-4
-                  md:-right-4
-                  -top-3
-                  -right-3
-                  md:w-10
-                  md:h-10
-                  h-8
-                  w-8
-                  flex
-                  items-center
-                  justify-center
-                  rounded-full
-                  theme
-                  border border-gray-700
-                  text-white
-                  shadow-lg
-                  md:hover:bg-red-500
-                  transition-colors
-                "
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                transition={{ delay: 0.15, duration: 0.2 }}
+                whileHover={{ scale: 1.08, rotate: 90 }}
+                whileTap={{ scale: 0.92 }}
+                className="theme absolute -right-3 -top-3 flex h-8 w-8 items-center justify-center rounded-full border border-gray-700 text-white shadow-lg transition-colors md:-right-4 md:-top-4 md:h-10 md:w-10 md:hover:bg-red-500"
               >
                 <IoClose className="text-sm" />
               </motion.button>
