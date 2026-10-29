@@ -1,4 +1,111 @@
 
+// const mongoose = require('mongoose');
+
+// // ── DailyEventLog ─────────────────────────────────────────────────────────────
+// /**
+//  * One document per (authorId, date).
+//  * Stores up to N events per day alongside the cached point total.
+//  * Kept separate from UserContributions so the contributions heatmap
+//  * read (points only) is never blocked by a large events array,
+//  * and so paginated event reads are a simple indexed query.
+//  *
+//  * communityId  — populated for 'discussion' and 'reply' events only.
+//  *                null for 'post' events.
+//  * discussionId — populated for 'reply' events only (needed to build
+//  *                the navigation URL /community/:communityId?...#replyId).
+//  *                null for 'post' and 'discussion' events.
+//  */
+// const dailyEventSchema = new mongoose.Schema({
+//   type: {
+//     type:     String,
+//     enum:     ['post', 'discussion', 'reply'],
+//     required: true,
+//   },
+//   targetId: {
+//     // post._id | discussion._id | reply._id
+//     type:     mongoose.Schema.Types.ObjectId,
+//     required: true,
+//   },
+//   authorEmail: {
+//     // required for post navigation: /:email/:postId
+//     type:    String,
+//     default: null,
+//   },
+//   communityId: {
+//     // discussion + reply only — needed for navigation
+//     type:    mongoose.Schema.Types.ObjectId,
+//     ref:     'Community',
+//     default: null,
+//   },
+//   discussionId: {
+//     // reply only — parent discussion, needed to build thread URL
+//     type:    mongoose.Schema.Types.ObjectId,
+//     ref:     'Discussion',
+//     default: null,
+//   },
+//   title:        { type: String,  required: true },
+//   communityName:{ type: String,  default: null  },
+//   pts:          { type: Number,  required: true },
+//   createdAt:    { type: Date,    default: Date.now },
+// }, { _id: true });
+
+// const dailyEventLogSchema = new mongoose.Schema({
+//   authorId: {
+//     type:     mongoose.Schema.Types.ObjectId,
+//     ref:      'Author',
+//     required: true,
+//   },
+//   tenantId: { type: String, required: true },
+//   date:     { type: String, required: true }, // "YYYY-MM-DD" Asia/Kolkata
+
+//   // cached total points for the day — mirrors UserContributions.days[date]
+//   // kept here too so a single read gives both count and events
+//   totalPts: { type: Number, default: 0 },
+
+//   events: [dailyEventSchema],
+// });
+
+// // primary: fetch events for a specific day
+// dailyEventLogSchema.index({ authorId: 1, date: 1 }, { unique: true });
+// // tenant-scoped queries (admin dashboards etc.)
+// dailyEventLogSchema.index({ tenantId: 1, authorId: 1, date: 1 });
+
+// const DailyEventLog = mongoose.model('DailyEventLog', dailyEventLogSchema);
+
+
+// // ── UserContributions ─────────────────────────────────────────────────────────
+// /**
+//  * One document per (authorId, year).
+//  * The `days` map is the source of truth for the heatmap —
+//  * keyed by "MM-DD" to avoid the year being part of every key.
+//  * totalCount is a running sum for quick "X contributions in YEAR" display.
+//  *
+//  * This collection is heatmap-read-only. Event detail reads go to
+//  * DailyEventLog.
+//  */
+// const userContributionsSchema = new mongoose.Schema({
+//   authorId: {
+//     type:     mongoose.Schema.Types.ObjectId,
+//     ref:      'Author',
+//     required: true,
+//   },
+//   tenantId: { type: String,  required: true },
+//   year:     { type: Number,  required: true },
+//   // "MM-DD" → total weighted points for that day
+//   days:       { type: Map, of: Number, default: {} },
+//   totalCount: { type: Number, default: 0 },
+// }, { timestamps: true });
+
+// userContributionsSchema.index({ authorId: 1, year: 1 }, { unique: true });
+// userContributionsSchema.index({ tenantId: 1, authorId: 1, year: 1 });
+
+// const UserContributions = mongoose.model('UserContributions', userContributionsSchema);
+
+
+// module.exports = { DailyEventLog, UserContributions };
+
+
+
 const mongoose = require('mongoose');
 
 // ── DailyEventLog ─────────────────────────────────────────────────────────────
@@ -9,20 +116,31 @@ const mongoose = require('mongoose');
  * read (points only) is never blocked by a large events array,
  * and so paginated event reads are a simple indexed query.
  *
+ * Event types:
+ *   post              targetId = post._id
+ *   discussion        targetId = discussion._id
+ *   reply             targetId = reply._id
+ *   event-submission  targetId = submission._id   (team lead, first submission only)
+ *   event-win         targetId = eventResult._id  (each ranked team's result row)
+ *
  * communityId  — populated for 'discussion' and 'reply' events only.
- *                null for 'post' events.
+ *                null for 'post' and event types.
  * discussionId — populated for 'reply' events only (needed to build
  *                the navigation URL /community/:communityId?...#replyId).
- *                null for 'post' and 'discussion' events.
+ *                null for all other types.
+ * eventId      — populated for 'event-submission' and 'event-win' only.
+ *                Builds the navigation URL /events/:eventId.
+ *                null for all other types.
  */
+
 const dailyEventSchema = new mongoose.Schema({
   type: {
     type:     String,
-    enum:     ['post', 'discussion', 'reply'],
+    enum:     ['post', 'discussion', 'reply', 'event-submission', 'event-win'],
     required: true,
   },
   targetId: {
-    // post._id | discussion._id | reply._id
+    // post._id | discussion._id | reply._id | submission._id | eventResult._id
     type:     mongoose.Schema.Types.ObjectId,
     required: true,
   },
@@ -41,6 +159,12 @@ const dailyEventSchema = new mongoose.Schema({
     // reply only — parent discussion, needed to build thread URL
     type:    mongoose.Schema.Types.ObjectId,
     ref:     'Discussion',
+    default: null,
+  },
+  eventId: {
+    // event-submission + event-win only — needed to build event URL
+    type:    mongoose.Schema.Types.ObjectId,
+    ref:     'Event',
     default: null,
   },
   title:        { type: String,  required: true },
