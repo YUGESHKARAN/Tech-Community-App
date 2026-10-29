@@ -1377,7 +1377,7 @@ function Announcement() {
                       group
                       relative
                       overflow-hidden
-                      rounded-xl md:rounded-3xl
+                      rounded-xl 
                       border border-slate-800/80
                       bg-gradient-to-b
                       from-theme
