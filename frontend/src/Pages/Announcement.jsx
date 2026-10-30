@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-// import axiosInstance from 'axiosInstance';
 import NavBar from "../ui/NavBar";
 import {
   RiChatDeleteFill,
@@ -8,7 +7,6 @@ import {
 } from "react-icons/ri";
 import Footer from "../ui/Footer";
 import axiosInstance from "../instances/Axiosinstances";
-// import { format } from 'date-fns';
 import { Link } from "react-router-dom";
 import {
   HiOutlineInformationCircle,
@@ -39,23 +37,25 @@ import RenderTextWithHashtags from "../components/RenderTextWithHashtags";
 import { isImpersonating } from "../hooks/director/Useimpersonation";
 import { AnnounceSummarySkeleton } from "../components/loaders/AnnounSummarySkeleton";
 
+import AnnouncementFilterBar from "../components/announcement/AnnouncementFilterBar";
+import useAnnouncementFilters from "../hooks/announcement/useAnnouncementFilters";
+import AnnouncementHeader from "../components/announcement/AnnouncementHeader";
+
 function Announcement() {
   const username = getItem("username");
-  // const email = localStorage.getItem("email");
   const email = getItem("email");
   const profile = sessionStorage.getItem("profile");
 
+ 
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
   const [links, setLinks] = useState("");
-  // const [image, setImage] = useState(null);
   const [deliveredTo, setDeliveredTo] = useState("");
   const [currentLinkTitle, setCurrentLinkTitle] = useState("");
   const [currentLinkUrl, setCurrentLinkUrl] = useState("");
   const [showAnnouncement, setShowAnnouncement] = useState(false);
   const [announcement, setAnnouncement] = useState([]);
   const [loading, setLoading] = useState(false);
-  // const role = localStorage.getItem("role");
   const role = getItem("role");
   const [communityOptions, setCommunityOptions] = useState([]);
   const [selectedCommunities, setSelectedCommunities] = useState([]);
@@ -83,7 +83,6 @@ function Announcement() {
     try {
       setAnnounceLoading(true);
       const response = await axiosInstance.get(`/blog/author/${email}`);
-      // console.log("announcement", response.data.announcement);
       setAnnouncement(response.data.announcement);
       storeItem("announceCount", response.data.announcement.length);
     } catch (err) {
@@ -253,6 +252,12 @@ function Announcement() {
   const handleCloseModal = () => {
     setSelectedImage(null);
   };
+
+   const {
+  filters, setFilters, clearAll, activeCount,
+  filtered, publishers, queryInput, setQueryInput,
+} = useAnnouncementFilters(Array.isArray(announcement) ? announcement : []);
+
   // console.log("communityOptions", communityOptions);
   // console.log("selectedCommunities", selectedCommunities);
   // console.log("announcements", reversedAnnouncements);
@@ -276,25 +281,8 @@ function Announcement() {
             className,
           ),
         )}
-        //   className={`
-        //   w-full
-        //   rounded-lg
-        //   border border-emerald-500/20
-        //   bg-gradient-to-br from-emerald-500/5 to-transparent
-        //   p-4 md:p-5
-        //   space-y-5
-        //   ${className}
-        //    ${showInfo ? "block" : "hidden md:block"}
-
-        //   mb-4
-        // `}
-      >
-        {/* Header */}
-        {/* <div className="flex items-center gap-2">
-        <h2 className="text-sm md:text-base font-semibold text-white tracking-wide">
-        About Announcements
-        </h2>
-      </div> */}
+        >
+      
 
         {/* Purpose */}
         <div className="space-y-2">
@@ -317,16 +305,6 @@ function Announcement() {
             </li>
           </ul>
         </div>
-
-        {/* What You Can Do */}
-        {/* <div className="space-y-2">
-        <p className="text-xs text-emerald-400 font-medium">What You Can Do</p>
-        <ul className="space-y-1.5 text-xs md:text-sm text-gray-300">
-          <li className="flex gap-2"><span>•</span> Stay updated on events</li>
-          <li className="flex gap-2"><span>•</span> Access shared links & resources</li>
-          <li className="flex gap-2"><span>•</span> View posters for quick insights</li>
-        </ul>
-      </div> */}
 
         {/* Benefits */}
         <div className="space-y-2">
@@ -351,7 +329,6 @@ function Announcement() {
             Announcements are only shared by{" "}
             <span className="text-white font-medium">Admins</span> and{" "}
             <span className="text-white font-medium">Coordinators</span> 
-            {/* to ensure quality and relevance. */}
           </p>
         </div>
       </div>
@@ -383,20 +360,7 @@ function Announcement() {
             className,
           ),
         )}
-        //   className={`
-        //   w-full
-        //   rounded-lg
-        //   border border-emerald-500/20
-        //   bg-gradient-to-br from-emerald-500/5 to-transparent
-        //   p-4 md:p-5
-        //   space-y-5
-        //   mb-6
 
-        //   ${showGuidelines ? "block" : "hidden md:block"}
-
-        //   ${showAnnouncement && "hidden md:hidden"}
-
-        // `}
       >
         {/* Header */}
         <div className="flex items-center gap-2">
@@ -488,146 +452,6 @@ function Announcement() {
     );
   }
 
-  const renderTextWithHashtags = (text) => {
-    if (!text) return null;
-
-    const cleanedText = text
-      .replace(/\\r\\n/g, "\n")
-      .replace(/\\n/g, "\n")
-      .replace(/\\r/g, "\n");
-
-    return cleanedText.split("\n").map((line, lineIndex) => {
-      // Handle empty lines for spacing
-      if (!line.trim()) {
-        return <div key={lineIndex} className="h-3" />;
-      }
-
-      const parts = line.split(/(\*\*.*?\*\*|#{1,6}[^\n]+|\s?#\w+)/gm);
-
-      return (
-        <div
-          key={lineIndex}
-          className="
-          text-gray-300
-          text-sm
-          md:text-[15px]
-          leading-relaxed
-          break-words
-          mb-2
-        "
-        >
-          {parts.map((part, index) => {
-            if (!part) return null;
-
-            const trimmed = part.trim();
-
-            // ---------- Markdown Headings ----------
-            if (/^#{1,6}/.test(trimmed)) {
-              const level = trimmed.match(/^#{1,6}/)?.[0].length || 1;
-
-              const headingClasses = {
-                1: "text-xl md:text-2xl font-semibold text-white block my-4",
-                2: "text-lg md:text-xl font-semibold text-white block my-3",
-                3: "text-base md:text-lg font-semibold text-white block my-2",
-                4: "text-sm md:text-base font-semibold text-white block my-2",
-                5: "text-sm font-semibold text-white block my-1",
-                6: "text-xs font-semibold text-white block my-1",
-              };
-
-              return (
-                <div key={index} className={headingClasses[level]}>
-                  {trimmed.replace(/^#{1,6}\s*/, "")}
-                </div>
-              );
-            }
-
-            // ---------- Bold ----------
-            if (trimmed.startsWith("**") && trimmed.endsWith("**")) {
-              return (
-                <strong
-                  key={index}
-                  className="
-                  font-semibold
-                  text-white
-                "
-                >
-                  {trimmed.replace(/\*\*/g, "")}
-                </strong>
-              );
-            }
-
-            // ---------- Unordered List ----------
-            if (/^- /.test(trimmed)) {
-              return (
-                <div
-                  key={index}
-                  className="
-                  flex
-                  items-start
-                  gap-2
-                  my-1
-                  text-gray-300
-                  leading-relaxed
-                "
-                >
-                  <span className="text-white mt-[2px]">•</span>
-
-                  <span>{trimmed.replace(/^- /, "")}</span>
-                </div>
-              );
-            }
-
-            // ---------- Ordered List ----------
-            if (/^\d+\.\s/.test(trimmed)) {
-              const number = trimmed.match(/^\d+/)?.[0];
-
-              return (
-                <div
-                  key={index}
-                  className="
-                  flex
-                  items-start
-                  gap-2
-                  my-1
-                  text-gray-300
-                  leading-relaxed
-                "
-                >
-                  <span className="text-white">{number}.</span>
-
-                  <span>{trimmed.replace(/^\d+\.\s/, "")}</span>
-                </div>
-              );
-            }
-
-            // ---------- Hashtags ----------
-            if (/^(\s)?#\w+/.test(part)) {
-              return (
-                <span
-                  key={index}
-                  className="
-                  text-white
-                  font-medium
-                "
-                >
-                  {part}
-                </span>
-              );
-            }
-
-            // ---------- Normal Text ----------
-            return (
-              <React.Fragment key={index}>
-                {part.replace(/\\\*/g, "*").replace(/\\\\/g, "\\")}
-              </React.Fragment>
-            );
-          })}
-        </div>
-      );
-    });
-  };
-
-
   const clearAllAnnouncements = async () => {
     if (reversedAnnouncements.length === 0) {
       return;
@@ -672,7 +496,7 @@ function Announcement() {
   };
 
   // console.log("guidelinses", showGuidelines)
-  // console.log("announcement", reversedAnnouncements)
+  console.log("announcement", reversedAnnouncements)
   return (
     <div className="min-h-screen  theme text-slate-200">
       <NavBar />
@@ -681,10 +505,6 @@ function Announcement() {
         <div className="w-full">
           <div className="w-full mx-auto px-4 md:px-20 py-3  md:pb-2 flex justify-between items-center">
             <div className="flex items-center justify-center gap-2">
-              {/* <h1 className="md:text-3xl text-xl font-semibold  tracking-tight  flex items-center gap-1 justify-center">
-                <MdAnnouncement className="tetxt-xl pt-0.5 md:pt-0 md:text-3xl " />{" "}
-                Announcements
-              </h1> */}
 
               <div className="flex items-center gap-1 md:gap-2">
                       <MdAnnouncement className="text-sm  pt-0.5 md:pt-0 md:text-xl" />
@@ -815,6 +635,7 @@ function Announcement() {
             {role !== "student" && (
               <AnnouncementGuidelines
                 showAnnouncement={showAnnouncement}
+                setShowAnnouncement={setShowAnnouncement}
                 showGuidelines={showGuidelines}
                 className={`hidden ${!showAnnouncement && "md:block"}`}
               />
@@ -970,13 +791,6 @@ function Announcement() {
                               </button>
                             </div>
                           </div>
-                          {/* <textarea
-                            value={message}
-                            onChange={(e) => setMessage(e.target.value)}
-                            placeholder="Announcement message..."
-                            className="w-full mt-1 px-3 py-2 theme border border-slate-700
-                     rounded-md focus:outline-none emerald-scrollbar focus:border-emerald-500/20 text-slate-300 leading-relaxed text-xs"
-                          /> */}
 
                           {/* Editor / Preview Wrapper */}
                           <div className="relative">
@@ -1000,7 +814,6 @@ function Announcement() {
                         "
                               >
                                 {message?.trim()?.length > 0 ? (
-                                  // renderTextWithHashtags2(message)
                                   <RenderTextWithHashtags text ={message}/>
                                 ) : (
                                   <span className="text-gray-500">
@@ -1277,24 +1090,6 @@ function Announcement() {
                     </motion.div>
                   )}
                 </AnimatePresence>
-
-                {/* DANGER ZONE */}
-                {/* {role === "admin" && (
-              <div className="theme border border-red-900 rounded-lg p-5">
-                <h3 className="text-xs uppercase tracking-wide text-red-400 mb-4">
-                  Danger Zone
-                </h3>
-
-                <button
-                  onClick={() => setShowConfirm(true)}
-                  className="w-full py-2 rounded-md
-                             bg-red-600 hover:bg-red-500
-                             text-white text-sm transition"
-                >
-                  Delete All Announcements
-                </button>
-              </div>
-            )} */}
               </>
             )}
           </aside>
@@ -1305,53 +1100,45 @@ function Announcement() {
           >
       
 
-           {!announceLoading? <div
-              className="rounded-3xl relative group overflow-hidden rounded-lg
-        border border-emerald-500/20
-        bg-gradient-to-br from-emerald-500/5 to-transparent  p-4 md:p-5
-        "
-            >
-              {/* <div className="absolute top-0 left-0 mx-auto rounded-full right-0 h-[2px] bg-white/70" /> */}
-              {/* Header */}
-              <div className="flex items-center justify-between mb-5">
-                <div>
-                  <p className="text-[11px] uppercase tracking-[0.2em] text-emerald-400 font-semibold">
-                    Overview
-                  </p>
-                  <h3 className="text-sm text-white mt-1">Community Summary</h3>
-                </div>
+          {!announceLoading ? (
+  <AnnouncementHeader
+    role={role}
+    announcements={announcement}
+    shown={filtered.length}
+    activeCount={activeCount}
+    onClearAll={clearAllAnnouncements}
+  >
+    {announcement.length > 0 && (
+      <AnnouncementFilterBar
+        filters={filters}
+        setFilters={setFilters}
+        clearAll={clearAll}
+        activeCount={activeCount}
+        publishers={publishers}
+        total={announcement.length}
+        shown={filtered.length}
+        queryInput={queryInput}
+        setQueryInput={setQueryInput}
+      />
+    )}
+  </AnnouncementHeader>
+) : (
+  <AnnounceSummarySkeleton />
+)}
+           
 
-                {announcement?.length > 1 && (
+               {!announceLoading && announcement.length > 0 && filtered.length === 0 && (
+                <div className="flex flex-col items-center justify-center gap-3 py-16 text-center">
+                  <img className="w-40 md:w-52" src={empty_state_announcement} alt="" />
+                  <p className="text-sm text-gray-400">No announcements match your filters.</p>
                   <button
-                    onClick={clearAllAnnouncements}
-                    className="text-red-400 hover:text-red-300 transition-colors duration-200"
-                    title="Clear all announcements"
+                    onClick={clearAll}
+                    className="rounded-md bg-emerald-600/20 px-4 py-2 text-xs font-semibold text-emerald-400 transition hover:bg-emerald-500/20"
                   >
-                    <RiDeleteBin6Line className="text-base" />
+                    Clear filters
                   </button>
-                )}
-              </div>
-
-              {/* Content */}
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-400">User Role</span>
-
-                  <span className="px-2.5 py-1 rounded-full bg-white/[0.04] border border-white/[0.06] text-xs capitalize text-gray-200">
-                    {role}
-                  </span>
                 </div>
-
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-400">Inbox</span>
-
-                  <span className="md:text-sm text-xs font-medium text-white">
-                    {announcement?.length > 0 ? formatCount(announcement.length) : "Empty"}
-                  </span>
-                </div>
-              </div>
-            </div>:
-            <AnnounceSummarySkeleton/>}
+              )}
 
             {announcement.length === 0 && !announceLoading && (
               <div className="flex h-[45vh] md:h-[50vh] md:h-auto flex-col justify-center items-center gap-2 md:gap-3 ">
@@ -1366,11 +1153,11 @@ function Announcement() {
                 </span>
               </div>
             )}
+         
 
             {!announceLoading &&
-              reversedAnnouncements.map((item) => (
-      
-
+              // reversedAnnouncements.map((item) => (
+              filtered.map((item) => (
                 <div
                   key={item._id}
                   className="
@@ -1391,7 +1178,6 @@ function Announcement() {
                     "
                 >
                   {/* Top Accent */}
-                  {/* <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-emerald-500 via-cyan-500 to-violet-500" /> */}
                   <div className="absolute top-0 left-0 right-0 h-[1.5px] bg-emerald-400/70" />
 
                   {/* Header */}
@@ -1402,16 +1188,16 @@ function Announcement() {
                           <div className="flex flex-wrap items-center gap-2 mb-3">
                             <span
                               className="
-              px-2.5 py-1
-              rounded-full
-              text-[10px]
-              font-medium
-              uppercase
-              tracking-wide
-              bg-emerald-500/10
-              text-emerald-400
-              border border-emerald-500/20
-            "
+                                px-2.5 py-1
+                                rounded-full
+                                text-[10px]
+                                font-medium
+                                uppercase
+                                tracking-wide
+                                bg-emerald-500/10
+                                text-emerald-400
+                                border border-emerald-500/20
+                              "
                             >
                               Announcement
                             </span>
@@ -1467,7 +1253,6 @@ function Announcement() {
                         text-slate-300
                       "
                     >
-                      {/* {renderTextWithHashtags(item.message)} */}
                       <RenderTextWithHashtags text= {item.message}/>
                     </div>
                   </div>
@@ -1613,54 +1398,6 @@ function Announcement() {
           </main>
         </div>
 
-        {/* {selectedImage && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
-  
-            <div className="relative max-w-6xl w-full flex items-center justify-center">
-           
-              <img
-                src={selectedImage}
-                alt="Preview"
-                className="
-                        max-h-[50vh]
-                        w-auto
-                        rounded-2xl
-                        shadow-2xl
-                        border border-gray-700
-                        object-contain
-                        transition-transform duration-300
-                   
-                      "
-              />
-              <button
-                onClick={handleCloseModal}
-                className="
-                        absolute
-                        md:-top-4
-                        md:-right-4
-                        -top-3
-                        -right-3
-                        md:w-10
-                        md:h-10
-                        h-8
-                        w-8
-                        flex
-                        items-center
-                        justify-center
-                        rounded-full
-                        theme
-                        border border-gray-700
-                        text-white
-                        shadow-lg
-                        md:hover:bg-red-500
-                        transition-all
-                      "
-              >
-                <IoClose className="text-sm" />
-              </button>
-            </div>
-          </div>
-        )} */}
              <AnimatePresence>
           {selectedImage && (
             <motion.div
