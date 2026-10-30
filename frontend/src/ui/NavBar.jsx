@@ -905,7 +905,7 @@ function NavBar() {
         ref={addContentRef}
         className={`${
           showAddContent && !showNotification
-            ? "fixed top-16 right-12 z-50 px-2 py-1 w-48 overflow-hidden rounded-xl border border-[#30363d] theme shadow-2xl"
+            ? "fixed top-16 right-12 z-50 px-2 py-1 w-48 overflow-hidden rounded-lg border border-[#30363d] theme shadow-2xl"
             : "hidden"
         }`}
       >
