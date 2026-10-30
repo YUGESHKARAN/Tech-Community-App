@@ -496,7 +496,7 @@ function Announcement() {
   };
 
   // console.log("guidelinses", showGuidelines)
-  console.log("announcement", reversedAnnouncements)
+  // console.log("announcement", reversedAnnouncements)
   return (
     <div className="min-h-screen  theme text-slate-200">
       <NavBar />
