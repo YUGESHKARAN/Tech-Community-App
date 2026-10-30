@@ -37,6 +37,7 @@ const snapshotPostSchema = new mongoose.Schema({
   authorId:    { type: mongoose.Schema.Types.ObjectId },
   title:       { type: String },
   tenantId:       { type: String },
+  eventId:     { type: mongoose.Schema.Types.ObjectId },  // event submissions only
   description: { type: String },
   category:    { type: String },
   image:       { type: String },

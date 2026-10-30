@@ -56,6 +56,11 @@ const announcementSchema = new mongoose.Schema({
 const postSchema = new mongoose.Schema({
   authorId:    { type: mongoose.Schema.Types.ObjectId, ref: 'Author', required: true },
   title:       { type: String, required: true  },
+  eventId: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: 'Event',
+  default: null,
+},
   image:       { type: String, required: false },
   tenantId:    { type: String, required: true}, 
   links: {
@@ -101,6 +106,8 @@ postSchema.index({ authorId: 1, category: 1 });
 postSchema.index({ timestamp: -1 });
 postSchema.index({ authorId: 1, timestamp: -1 }); 
 postSchema.index({ title: 'text' }); 
+// Lists an event's posts without scanning all posts. Sparse, because most posts have no eventId.
+postSchema.index({ eventId: 1 }, { sparse: true });
 
 // ── Author Schema ─────────────────────────────────────────────
 const authorSchema = new mongoose.Schema({
