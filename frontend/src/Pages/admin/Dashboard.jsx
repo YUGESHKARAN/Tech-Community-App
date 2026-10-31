@@ -726,7 +726,7 @@ const MiniBar = ({ data, valueKey, labelKey, color = "#0004ff" }) => {
     // growing to the chart's min-width
     <div className="flex w-full min-w-0 gap-3">
       {/* Y-axis ticks: fixed narrow column that never scrolls or shrinks */}
-      <div className="flex w-3 shrink-0 flex-col-reverse justify-between pb-5 text-right">
+      <div className="flex w-2 shrink-0 flex-col-reverse justify-between pb-5 text-right">
         {ticks.map((t, i) => (
           <span
             key={i}
@@ -1079,6 +1079,8 @@ const AuthorsTable = ({
   // const { contributors, totalContributors, loading:contributorsLoading, error, hasMore }  = useGetContributors(email);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState(search);
+
+  
 
   useEffect(() => {
     const timer = setTimeout(() => {

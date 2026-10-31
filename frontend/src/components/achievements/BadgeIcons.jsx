@@ -203,7 +203,7 @@ const BADGE_META = {
                  className={twMerge(
         clsx(
           `
-       flex absolute right-2 top-4 cursor-pointer max-w-40 md:max-w-xl flex-wrap -space-x-2.5
+       flex absolute right-2 top-4 items-center cursor-pointer max-w-40 md:max-w-xl flex-wrap -space-x-2.5
           `,
           parentClass
         )
@@ -233,7 +233,7 @@ const BADGE_META = {
         })}
 
         {badges.length > 4 && (
-          <div className="w-6 h-6 rounded-full ring-2 ring-gray-900 bg-gray-700 flex items-center justify-center text-[9px] text-gray-300 font-bold">
+          <div className="md:w-6 w-5 h-5 p-0.5 md:h-6 rounded-full md:bg-white/5 flex items-center justify-center md:text-[10px] text-[9px] text-gray-300 font-semibold">
             +{badges.length - 4}
           </div>
         )}
