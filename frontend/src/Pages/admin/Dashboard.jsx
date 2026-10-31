@@ -630,8 +630,89 @@ function Dashboard() {
 export default Dashboard;
 
 // ── Mini bar chart ─────────────────────────────────────────────────────────────
+// const MiniBar = ({ data, valueKey, labelKey, color = "#0004ff" }) => {
+//   const max = Math.max(...data.map((d) => d.postscount));
+//   const ticks = [
+//     0,
+//     Math.ceil(max * (33 / 100)),
+//     Math.ceil(max * (66 / 100)),
+//     max,
+//   ];
+//   const [hoveredIndex, setHoveredIndex] = useState(null);
+
+//   return (
+//     <div className="flex gap-3">
+//       {/* Y-axis ticks */}
+//       <div className="flex flex-col-reverse justify-between pb-5 shrink-0">
+//         {ticks.map((t, i) => (
+//           <span
+//             key={i}
+//             className="text-xs font-semibold text-gray-400 leading-none"
+//           >
+//             {t}
+//           </span>
+//         ))}
+//       </div>
+
+//       {/* Chart area — scrollable on x */}
+//       <div className="flex-1 overflow-x-auto scrollbar-hide">
+//         <div
+//           className="flex flex-col gap-1"
+//           style={{ minWidth: `${data.length * 90}px` }}
+//         >
+//           <div className="relative flex items-end justify-between h-36">
+//             {/* Bars */}
+//             {data.map((d, i) => (
+//               <div
+//                 key={i}
+//                 className="flex-1 flex justify-center items-end h-full relative"
+//                 onMouseEnter={() => setHoveredIndex(i)}
+//                 onMouseLeave={() => setHoveredIndex(null)}
+//               >
+//                 {/* Tooltip */}
+//                 {hoveredIndex === i && (
+//                   <div className="absolute  top-0 left-1/2 -translate-x-1/2 bg-gray-800 border border-white/10 text-white text-xs font-semibold px-2 py-1 rounded-md whitespace-nowrap z-10 shadow-lg">
+//                     {/* {d.postscount} */}
+//                     {formatCount(d.postscount)}
+//                     <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800" />
+//                   </div>
+//                 )}
+//                 {/* Bar */}
+//                 <div
+//                   className="rounded-t-md transition-all duration-300 cursor-pointer"
+//                   style={{
+//                     width: "28px",
+//                     height: `${(d.postscount / max) * 100}%`,
+//                     background:
+//                       hoveredIndex === i
+//                         ? `linear-gradient(180deg, #ffffff 0%, ${color} 100%)`
+//                         : color,
+//                     minHeight: "4px",
+//                   }}
+//                 />
+//               </div>
+//             ))}
+//           </div>
+
+//           {/* X-axis labels */}
+//           <div className="flex justify-between">
+//             {data.map((d, i) => (
+//               <span
+//                 key={i}
+//                 className="flex-1 font-semibold text-center text-[10px] text-gray-400"
+//               >
+//                 {d.categoryname}
+//               </span>
+//             ))}
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
 const MiniBar = ({ data, valueKey, labelKey, color = "#0004ff" }) => {
-  const max = Math.max(...data.map((d) => d.postscount));
+  // Guard: an all-zero dataset would otherwise divide by 0 (NaN heights)
+  const max = Math.max(1, ...data.map((d) => d.postscount));
   const ticks = [
     0,
     Math.ceil(max * (33 / 100)),
@@ -641,45 +722,46 @@ const MiniBar = ({ data, valueKey, labelKey, color = "#0004ff" }) => {
   const [hoveredIndex, setHoveredIndex] = useState(null);
 
   return (
-    <div className="flex gap-3">
-      {/* Y-axis ticks */}
-      <div className="flex flex-col-reverse justify-between pb-5 shrink-0">
+    // w-full + min-w-0 lets this flex row shrink to the card instead of
+    // growing to the chart's min-width
+    <div className="flex w-full min-w-0 gap-3">
+      {/* Y-axis ticks: fixed narrow column that never scrolls or shrinks */}
+      <div className="flex w-2 shrink-0 flex-col-reverse justify-between pb-5 text-right">
         {ticks.map((t, i) => (
           <span
             key={i}
-            className="text-xs font-semibold text-gray-400 leading-none"
+            className="text-xs font-semibold leading-none tabular-nums text-gray-400"
           >
-            {t}
+            {formatCount(t)}
           </span>
         ))}
       </div>
 
-      {/* Chart area — scrollable on x */}
-      <div className="flex-1 overflow-x-auto scrollbar-hide">
+      {/* Chart area: the only part that scrolls horizontally */}
+      <div className="min-w-0 flex-1 overflow-x-auto scrollbar-hide">
         <div
           className="flex flex-col gap-1"
           style={{ minWidth: `${data.length * 90}px` }}
         >
-          <div className="relative flex items-end justify-between h-36">
+          <div className="relative flex h-36 items-end justify-between">
             {/* Bars */}
             {data.map((d, i) => (
               <div
                 key={i}
-                className="flex-1 flex justify-center items-end h-full relative"
+                className="relative flex h-full flex-1 items-end justify-center"
                 onMouseEnter={() => setHoveredIndex(i)}
                 onMouseLeave={() => setHoveredIndex(null)}
               >
                 {/* Tooltip */}
                 {hoveredIndex === i && (
-                  <div className="absolute  top-0 left-1/2 -translate-x-1/2 bg-gray-800 border border-white/10 text-white text-xs font-semibold px-2 py-1 rounded-md whitespace-nowrap z-10 shadow-lg">
-                    {/* {d.postscount} */}
+                  <div className="absolute left-1/2 top-0 z-10 -translate-x-1/2 whitespace-nowrap rounded-md border border-white/10 bg-gray-800 px-2 py-1 text-xs font-semibold text-white shadow-lg">
                     {formatCount(d.postscount)}
-                    <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800" />
+                    <div className="absolute left-1/2 top-full -translate-x-1/2 border-4 border-transparent border-t-gray-800" />
                   </div>
                 )}
                 {/* Bar */}
                 <div
-                  className="rounded-t-md transition-all duration-300 cursor-pointer"
+                  className="cursor-pointer rounded-t-md transition-all duration-300"
                   style={{
                     width: "28px",
                     height: `${(d.postscount / max) * 100}%`,
@@ -699,7 +781,7 @@ const MiniBar = ({ data, valueKey, labelKey, color = "#0004ff" }) => {
             {data.map((d, i) => (
               <span
                 key={i}
-                className="flex-1 font-semibold text-center text-[10px] text-gray-400"
+                className="flex-1 text-center text-[10px] font-semibold text-gray-400"
               >
                 {d.categoryname}
               </span>
@@ -997,6 +1079,8 @@ const AuthorsTable = ({
   // const { contributors, totalContributors, loading:contributorsLoading, error, hasMore }  = useGetContributors(email);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState(search);
+
+  
 
   useEffect(() => {
     const timer = setTimeout(() => {
