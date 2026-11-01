@@ -136,18 +136,24 @@
 // export default useImpersonation;
 
 import { storeItem, getItem, removeItem } from "../../utils/encode";
-import { getSessionItem, removeSessionItem, storeSessionItem } from "../../utils/sessionEncode";
+import {
+  getAuthToken,
+  getTokenCookie,
+  IMPERSONATION_ORIGINAL_TOKEN_COOKIE,
+  removeAuthToken,
+  removeTokenCookie,
+  setAuthToken,
+  setTokenCookie,
+} from "../../utils/authToken";
 import axiosInstance from "../../instances/Axiosinstances";
 import { useState, useEffect, useCallback } from "react";
 
-const SESSION_TOKEN_KEY    = "token";
-const ORIGINAL_TOKEN_KEY   = "director_original_token";
 const IMPERSONATION_META   = "impersonation_meta";
 const ORIGINAL_STORAGE_KEY = "director_original_storage";
 
 export const getImpersonationMeta = () => {
   try {
-    const raw = sessionStorage.getItem(IMPERSONATION_META);
+    const raw = getItem(IMPERSONATION_META);
     return raw ? JSON.parse(raw) : null;
   } catch {
     return null;
@@ -157,38 +163,32 @@ export const getImpersonationMeta = () => {
 export const isImpersonating = () => !!getImpersonationMeta();
 
 export const enterImpersonation = (impersonationToken, meta) => {
-  const original = getSessionItem(SESSION_TOKEN_KEY);
+  const original = getAuthToken();
   if (!original) {
     throw new Error("No active session to impersonate from");
   }
 
-  // ── backup original cookie ────────────────────────────────────────────────
-  storeSessionItem(ORIGINAL_TOKEN_KEY, original);
+  setTokenCookie(IMPERSONATION_ORIGINAL_TOKEN_COOKIE, original);
 
-  // ── backup original encoded localStorage values via getItem ───────────────
-  // getItem decodes them — we store decoded strings in sessionStorage
-  // so restoreItem can re-encode them correctly on exit
   const originalStorage = {
     username:   getItem("username"),
     email:      getItem("email"),
     role:       getItem("role"),
     authorId:   getItem("authorId"),
-    profile:    sessionStorage.getItem("profile"), // profile is stored raw (not encoded)
+    profile:    getItem("profile"),
     isDirector: getItem("isDirector"),
   };
-  sessionStorage.setItem(ORIGINAL_STORAGE_KEY, JSON.stringify(originalStorage));
+  storeItem(ORIGINAL_STORAGE_KEY, JSON.stringify(originalStorage));
 
-  // ── save impersonation meta ───────────────────────────────────────────────
-  sessionStorage.setItem(IMPERSONATION_META, JSON.stringify({
+  storeItem(IMPERSONATION_META, JSON.stringify({
     tenantId:      meta.tenantId,
     tenantName:    meta.tenantName,
-    jti:           meta.jti,
+    jti:            meta.jti,
     expiresAt:     meta.expiresAt,
     directorEmail: meta.directorEmail,
   }));
 
-  // ── swap cookie ───────────────────────────────────────────────────────────
-  storeSessionItem(SESSION_TOKEN_KEY, impersonationToken);
+  setAuthToken(impersonationToken);
 
   // ── overwrite encoded localStorage with impersonated context ─────────────
   // ProtectedRoute reads role via getItem("role") — must match token payload
@@ -203,13 +203,11 @@ export const enterImpersonation = (impersonationToken, meta) => {
 
 export const exitImpersonation = async () => {
   const meta = getImpersonationMeta();
-  const original = getSessionItem(ORIGINAL_TOKEN_KEY);
+  const original = getTokenCookie(IMPERSONATION_ORIGINAL_TOKEN_COOKIE);
 
   let originalStorage = {};
   try {
-    originalStorage = JSON.parse(
-      sessionStorage.getItem(ORIGINAL_STORAGE_KEY) || "{}"
-    );
+    originalStorage = JSON.parse(getItem(ORIGINAL_STORAGE_KEY) || "{}");
   } catch {
     originalStorage = {};
   }
@@ -227,9 +225,9 @@ export const exitImpersonation = async () => {
 
   // ── restore original cookie ───────────────────────────────────────────────
   if (original) {
-    storeSessionItem(SESSION_TOKEN_KEY, original);
+    setAuthToken(original);
   } else {
-    removeSessionItem(SESSION_TOKEN_KEY);
+    removeAuthToken();
   }
 
   // ── restore original encoded localStorage via storeItem ──────────────────
@@ -241,15 +239,14 @@ export const exitImpersonation = async () => {
   if (originalStorage.isDirector) storeItem("isDirector", originalStorage.isDirector);
   else                           removeItem("isDirector");
 
-  // profile is stored raw
   if (originalStorage.profile !== undefined && originalStorage.profile !== null) {
-    sessionStorage.setItem("profile", originalStorage.profile);
+    storeItem("profile", originalStorage.profile);
   }
 
   // ── clear impersonation state ─────────────────────────────────────────────
-  removeSessionItem(ORIGINAL_TOKEN_KEY);
-  sessionStorage.removeItem(IMPERSONATION_META);
-  sessionStorage.removeItem(ORIGINAL_STORAGE_KEY);
+  removeTokenCookie(IMPERSONATION_ORIGINAL_TOKEN_COOKIE);
+  removeItem(IMPERSONATION_META);
+  removeItem(ORIGINAL_STORAGE_KEY);
 
   // ── reload back to director console ──────────────────────────────────────
   window.location.href = "/director";

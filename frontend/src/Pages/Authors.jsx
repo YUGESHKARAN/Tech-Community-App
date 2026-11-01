@@ -27,7 +27,7 @@ import CoordinatorGridSkeleton from "../components/loaders/CoordinatorGridSkelet
 import StudentGridSkeleton from "../components/loaders/StudentGridSkeleton ";
 import Fuse from "fuse.js";
 import { getItem } from "../utils/encode";
-import { getSessionItem } from "../utils/sessionEncode";
+import { getAuthToken } from "../utils/authToken";
 import useAuthorCommunity from "../hooks/useAuthorCommunity";
 import highlightText from "../hooks/highlightText";
 import BadgeIcons from "../components/achievements/BadgeIcons";
@@ -77,7 +77,7 @@ function Authors() {
   const [roleFilter, setRoleFilter] = useState("");
   const [recommendation, setRecommendation] = useState([]);
   const [loading, setLoading] = useState(false);
-  const token = getSessionItem("token");
+  const token = getAuthToken();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(1);

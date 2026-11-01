@@ -1790,7 +1790,7 @@ function ViewPage() {
   const { setNotification } = useContext(GlobalStateContext);
   const [loading, setLoading] = useState(false);
   const [bookMarkId, setBookMarkId] = useState([]);
-  const myProfile = sessionStorage.getItem("profile");
+  const myProfile = getItem("profile");
   const [msgLoading, setMsgLoading] = useState(false);
   const [, setLiveParticipants] = useState(0);
 

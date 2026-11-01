@@ -15,18 +15,19 @@
 
 
 import React, { createContext, useEffect, useState } from "react";
+import { getItem, storeItem } from "./utils/encode";
 
 export const GlobalStateContext = createContext();
 
 export const GlobalStateProvider = ({ children }) => {
   const [notification, setNotification] = useState([]);
   const [searchTerm, setSearchTerm] = useState(
-    sessionStorage.getItem("globalSearch") || ""
+    getItem("globalSearch") || ""
   );
   const [inputValue, setInputValue] = useState(searchTerm || "");
 
   useEffect(() => {
-    sessionStorage.setItem("globalSearch", searchTerm);
+    storeItem("globalSearch", searchTerm);
   }, [searchTerm]);
 
   return (

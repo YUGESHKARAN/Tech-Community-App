@@ -1,6 +1,12 @@
 // utils/axiosInstance.js
 import axios from 'axios';
-import { getSessionItem, removeSessionItem } from '../utils/sessionEncode';
+import { clearStore, removeItem } from '../utils/encode';
+import {
+  getAuthToken,
+  IMPERSONATION_ORIGINAL_TOKEN_COOKIE,
+  removeAuthToken,
+  removeTokenCookie,
+} from '../utils/authToken';
 
 const axiosInstance = axios.create({
   // baseURL: 'http://localhost:3000/',
@@ -9,7 +15,7 @@ const axiosInstance = axios.create({
 
 // Request Interceptor
 axiosInstance.interceptors.request.use((config) => {
-  const token = getSessionItem('token');
+  const token = getAuthToken();
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -39,9 +45,10 @@ axiosInstance.interceptors.response.use(
       console.warn("Session expired. Logging out...");
 
       // clear auth data
-      removeSessionItem("token");
-      removeSessionItem("isAuthenticated");
-      sessionStorage.clear();
+      removeAuthToken();
+      removeTokenCookie(IMPERSONATION_ORIGINAL_TOKEN_COOKIE);
+      removeItem("isAuthenticated");
+      clearStore();
 
       // prevent infinite reload loop
       if (window.location.pathname !== "/") {

@@ -11,7 +11,7 @@ import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 import glow from "../assets/glow.png";
 import { VscGitStashApply, VscGitStashPop, VscSend } from "react-icons/vsc";
 import { getItem } from "../utils/encode";
-import { getSessionItem } from "../utils/sessionEncode";
+import { getAuthToken } from "../utils/authToken";
 import RenderTextWithHashtags from "../components/RenderTextWithHashtags";
 import { TbAlertTriangleFilled } from "react-icons/tb";
 import toast from "../components/toaster/Toast";
@@ -43,7 +43,7 @@ function AddPost() {
   const user = getItem("username");
   const [loading, setLoading] = useState(false);
   const [customTitle, setCustomTitle] = useState("");
-  const token = getSessionItem("token");
+  const token = getAuthToken();
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
 

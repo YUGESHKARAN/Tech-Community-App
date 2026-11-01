@@ -185,6 +185,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { MotionConfig, motion } from "framer-motion";
 import axiosInstance from "../instances/Axiosinstances";
 import logoicon from "../assets/embed_logo_1.png";
+import { getItem, removeItem } from "../utils/encode";
 
 /* -------------------------------------------------------------------------- */
 /*  Shared class strings (dark only — same tokens as Login / Register)         */
@@ -345,7 +346,7 @@ function Alert({ tone, children }) {
 /* -------------------------------------------------------------------------- */
 function ChangePassword() {
   const [errors, setErrors] = useState({});
-  const email = sessionStorage.getItem("emailForOtp");
+  const email = getItem("emailForOtp");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState("");
   const navigate = useNavigate();
@@ -419,7 +420,7 @@ function ChangePassword() {
       const response = await axiosInstance.post("/blog/author/reset-password", formData);
       if (response.status === 200) {
         setSuccess("Password updated successfully!");
-        sessionStorage.removeItem("emailForOtp");
+        removeItem("emailForOtp");
         setTimeout(() => {
           navigate("/");
         }, 2000);

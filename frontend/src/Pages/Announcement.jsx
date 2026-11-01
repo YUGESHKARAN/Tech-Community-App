@@ -44,7 +44,7 @@ import AnnouncementHeader from "../components/announcement/AnnouncementHeader";
 function Announcement() {
   const username = getItem("username");
   const email = getItem("email");
-  const profile = sessionStorage.getItem("profile");
+  const profile = getItem("profile");
 
  
   const [title, setTitle] = useState("");
