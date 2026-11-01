@@ -73,7 +73,7 @@ function NavBar() {
   // const userEmail = localStorage.getItem("email");
   const userEmail = getItem("email");
   // const role = localStorage.getItem("role");
-  const profile = sessionStorage.getItem("profile");
+  const profile = getItem("profile");
   const [showNotification, setShowNotification] = useState(false);
   const [announcement, setAnnouncement] = useState([]);
   const [socket, setSocket] = useState(null);

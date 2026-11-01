@@ -1377,7 +1377,7 @@ import user from "../images/user.png";
 import blog1 from "../images/img_not_found.png";
 import logoicon from "../assets/assistant_1.png";
 import { getItem } from "../utils/encode";
-import { getSessionItem } from "../utils/sessionEncode";
+import { getAuthToken } from "../utils/authToken";
 
 /* -------------------------------------------------------------------------- */
 /*  AI-surface tokens                                                          */
@@ -1402,7 +1402,7 @@ export default function AITechAssistant({
   const [query, setQuery] = useState("");
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
-  const token = getSessionItem("token");
+  const token = getAuthToken();
   const assistantURL = import.meta.env.VITE_TECH_ASSISTANT_URL;
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [messages, setMessages] = useState([

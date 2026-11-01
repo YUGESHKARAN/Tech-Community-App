@@ -474,6 +474,7 @@ import Footer from "../ui/Footer";
 import { MotionConfig, motion } from "framer-motion";
 import axiosInstance from "../instances/Axiosinstances";
 import logoicon from "../assets/embed_logo_1.png";
+import { storeItem } from "../utils/encode";
 
 /* -------------------------------------------------------------------------- */
 /*  Shared class strings (dark only — same tokens as LoginPage)                */
@@ -771,8 +772,8 @@ function RegisterPage() {
       });
       if (response.status === 201) {
         setSuccess("Registration successful!");
-        sessionStorage.setItem("username", formData.username);
-        sessionStorage.setItem("email", formData.email);
+        storeItem("username", formData.username);
+        storeItem("email", formData.email);
         navigate("/home");
       }
     } catch (error) {

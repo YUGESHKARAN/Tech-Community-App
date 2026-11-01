@@ -650,7 +650,7 @@ function LoginPage() {
         storeItem("email", author.email);
         storeItem("role", role);
         storeItem("authorId", author.authorId || author.directorId);
-        sessionStorage.setItem("profile", author?.profile);
+        storeItem("profile", author?.profile ?? "");
 
         // store isDirector flag so components can distinguish director sessions
         if (author.isDirector) {
@@ -694,7 +694,7 @@ function LoginPage() {
   const sendOtp = async (e, email) => {
     e.preventDefault();
     setLoader2(true);
-    sessionStorage.setItem("emailForOtp", email);
+    storeItem("emailForOtp", email);
     try {
       const response = await axiosInstance.post("/blog/author/send-otp", {
         email,

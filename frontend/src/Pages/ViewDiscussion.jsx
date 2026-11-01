@@ -924,7 +924,7 @@ function ViewDiscussion() {
   const [discussionBody, setDiscussionBody] = useState("");
   const [discussionLoader, setDiscussionLoader] = useState(false);
   const [repliesLoader, setRepliesLoader] = useState(false);
-  const profile = sessionStorage.getItem("profile");
+  const profile = getItem("profile");
 
   const isOP = discussion?.authorId?.email === currentUserEmail;
   // Replace with membership check from community context
