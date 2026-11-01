@@ -733,6 +733,7 @@ const ReplyCard = ({
   currentUserEmail,
   isCoordinator,
   isOP,
+  category,
   solvedReplyId,
   onEdit,
   onDelete,
@@ -747,7 +748,7 @@ const ReplyCard = ({
 
   const isMine = reply?.authorId?.email === currentUserEmail;
   const canModerate = isMine || isCoordinator;
-  const canMarkAnswer = isOP || isCoordinator;
+  const canMarkAnswer = category === "qa" && (isOP || isCoordinator);
   const isAccepted = reply?._id === solvedReplyId;
 
   const overflowItems = [
@@ -1387,7 +1388,7 @@ function ViewDiscussion() {
     { Icon: TbList, label: "List" },
   ];
 
-  // console.log("discussions", discussion);
+  console.log("discussions", discussion);
   // console.log("replies", replies);
   // console.log("profile", profile);
 
@@ -1500,7 +1501,7 @@ function ViewDiscussion() {
                   <span
                     className={`text-[9px] font-semibold px-1.5 py-0.5 rounded ${cat.bg} ${cat.text}`}
                   >
-                    {cat.label}
+                  {cat.label}
                   </span>
                 </span>
               </div>
@@ -1720,6 +1721,7 @@ function ViewDiscussion() {
                 discussionId={discussionId}
                 communityId={communityId}
                 solvedReplyId={discussion?.solvedReplyId?._id}
+                category = {discussion?.category}
                 onUpvote={handleUpvote}
                 onUnvote={handleUnvote}
                 onEdit={handleEditReply}

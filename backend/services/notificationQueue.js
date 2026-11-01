@@ -242,18 +242,7 @@ const notifyDiscussionAnswer = async ({
   };
 
   const updated = await Author.findOneAndUpdate(
-    {
-      _id: recipient._id,
-      tenantId,
-      notification: {
-        $not: {
-          $elemMatch: {
-            discussionId,
-            type: "discussion-answer",
-          },
-        },
-      },
-    },
+    { _id: recipient._id, tenantId },
     { $push: { notification } },
     { new: true, runValidators: true },
   );
@@ -275,6 +264,56 @@ const notifyDiscussionAnswer = async ({
   });
 
   return "discussion-answer";
+};
+
+const notifyDiscussionAnswerUnmarked = async ({
+  tenantId,
+  discussionId,
+  communityId,
+  replyAuthorId,
+  discussionTitle,
+}) => {
+  const recipient = await Author.findOne({ _id: replyAuthorId, tenantId })
+    .select("email profile")
+    .lean();
+  if (!recipient) return null;
+
+  const notificationUrl = process.env.NOTIFICATION_URL || "http://localhost:5173";
+  const url = `${notificationUrl}/discussion/${communityId}/${discussionId}`;
+  const notification = {
+    _id: new mongoose.Types.ObjectId(),
+    communityId,
+    discussionId,
+    type: NOTIFICATION_TYPES.DISCUSSION_ANSWER_UNMARKED,
+    user: "Answer Unmarked",
+    message: `Your accepted answer was unmarked for: ${discussionTitle}`,
+    authorEmail: recipient.email,
+    profile: recipient.profile || "",
+    url: buildNotificationUrl.discussionThread(communityId, discussionId),
+    timestamp: new Date(),
+  };
+
+  const updated = await Author.findOneAndUpdate(
+    { _id: recipient._id, tenantId },
+    { $push: { notification } },
+    { new: true, runValidators: true },
+  );
+  if (!updated) return null;
+
+  await publishNotificationEvent(recipient.email, {
+    _id: notification._id,
+    type: NOTIFICATION_TYPES.DISCUSSION_ANSWER_UNMARKED,
+    discussionId,
+    communityId,
+    user: notification.user,
+    message: notification.message,
+    authorEmail: recipient.email,
+    profile: notification.profile,
+    url,
+    timestamp: notification.timestamp.toISOString(),
+  });
+
+  return NOTIFICATION_TYPES.DISCUSSION_ANSWER_UNMARKED;
 };
 
 const publishNotificationEvent = async (email, payload) => {
@@ -668,6 +707,7 @@ module.exports = {
   isEmailOnline,
   notifyDiscussionReply,
   notifyDiscussionAnswer,
+  notifyDiscussionAnswerUnmarked,
   publishNotificationEvent,
   startNotificationWorker,
   stopNotificationWorker,

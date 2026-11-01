@@ -78,6 +78,7 @@ const NOTIFICATION_TYPES = {
   ANNOUNCEMENT:        "announcement",
   DISCUSSION_REPLY:    "discussion-reply",
   DISCUSSION_ANSWER:   "discussion-answer",
+  DISCUSSION_ANSWER_UNMARKED: "discussion-answer-unmarked",
   ACHIEVEMENT:         "achievement",
   COLLAB:              "collab",
   SYSTEM:              "system",

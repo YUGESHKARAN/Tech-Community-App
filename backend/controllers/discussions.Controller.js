@@ -17,6 +17,7 @@ const {
   enqueueDiscussionNotification,
   notifyDiscussionReply,
   notifyDiscussionAnswer,
+  notifyDiscussionAnswerUnmarked,
 } = require("../services/notificationQueue");
 // ─────────────────────────────────────────────────────────────────────────────
 //  HELPERS
@@ -949,7 +950,14 @@ const markSolved = async (req, res) => {
     }
 
     const isSolving = Boolean(solvedReplyId);
+    const previousAnswerId = discussion.solvedReplyId?.toString() || null;
+    const nextAnswerId = isSolving ? String(solvedReplyId) : null;
     let answerReply = null;
+    let previousAnswer = null;
+    const flaggedAnswers = await DiscussionReply.find(
+      { tenantId, communityId, discussionId, isAnswer: true },
+      "_id authorId",
+    ).lean();
 
     if (isSolving) {
       answerReply = await DiscussionReply.findOne(
@@ -967,8 +975,43 @@ const markSolved = async (req, res) => {
       }
     }
 
-    const [updated] = await Promise.all([
-      Discussion.findByIdAndUpdate(
+    const targetWasFlagged = isSolving && flaggedAnswers.some(
+      (reply) => String(reply._id) === nextAnswerId,
+    );
+    const answersToUnmark = flaggedAnswers.filter(
+      (reply) => String(reply._id) !== nextAnswerId,
+    );
+
+    if (previousAnswerId && previousAnswerId !== nextAnswerId) {
+      previousAnswer = await DiscussionReply.findOne(
+        {
+          _id: previousAnswerId,
+          tenantId,
+          communityId,
+          discussionId,
+        },
+        "authorId",
+      ).lean();
+
+      if (
+        previousAnswer &&
+        !answersToUnmark.some((reply) => String(reply._id) === previousAnswerId)
+      ) {
+        answersToUnmark.push({
+          _id: previousAnswerId,
+          authorId: previousAnswer.authorId,
+        });
+      }
+    }
+
+    const answerChanged =
+      previousAnswerId !== nextAnswerId ||
+      answersToUnmark.length > 0 ||
+      (isSolving && !targetWasFlagged);
+    const acceptedAnswerChanged =
+      isSolving && (previousAnswerId !== nextAnswerId || !targetWasFlagged);
+    const updates = [
+      Discussion.findOneAndUpdate(
         { _id: discussionId, tenantId, communityId },
         {
           $set: {
@@ -978,22 +1021,37 @@ const markSolved = async (req, res) => {
         },
         { new: true },
       ).lean(),
+    ];
 
-      isSolving
-        ? DiscussionReply.findByIdAndUpdate(
-          { _id: solvedReplyId, tenantId, discussionId },
+    if (answerChanged) {
+      const previousAnswerFilter = {
+        tenantId,
+        communityId,
+        discussionId,
+        isAnswer: true,
+      };
+      if (nextAnswerId) previousAnswerFilter._id = { $ne: nextAnswerId };
+
+      updates.push(
+        DiscussionReply.updateMany(
+          previousAnswerFilter,
+          { $set: { isAnswer: false } },
+          { runValidators: false },
+        ),
+      );
+
+      if (isSolving) {
+        updates.push(
+          DiscussionReply.updateOne(
+            { _id: solvedReplyId, tenantId, communityId, discussionId },
             { $set: { isAnswer: true } },
             { runValidators: false },
-          )
-        : // unmark: clear the previous answer flag if there was one
-          discussion.solvedReplyId
-          ? DiscussionReply.findByIdAndUpdate(
-              { _id: discussion.solvedReplyId, tenantId, discussionId },
-              { $set: { isAnswer: false } },
-              { runValidators: false },
-            )
-          : Promise.resolve(),
-    ]);
+          ),
+        );
+      }
+    }
+
+    const [updated] = await Promise.all(updates);
 
     res.status(200).json({
       message: isSolving ? "Marked as solved" : "Marked as unsolved",
@@ -1002,7 +1060,7 @@ const markSolved = async (req, res) => {
     });
 
     if (
-      isSolving &&
+      acceptedAnswerChanged &&
       isAuthor &&
       String(answerReply.authorId) !== String(authorId)
     ) {
@@ -1017,20 +1075,59 @@ const markSolved = async (req, res) => {
       );
     }
 
-    if (isSolving) {
-      Author.findById(answerReply.authorId)
-        .select("email")
-        .lean()
-        .then((replyAuthor) => {
-          if (!replyAuthor?.email) return;
-          return checkAndAwardBadges(replyAuthor.email, ["bytes_brain"], {
-            eventId: answerReply._id,
-            eventTitle: discussion.title,
-          });
-        })
-        .catch((err) =>
-          console.error("accepted answer badge error:", err.message),
+    if (answerChanged) {
+      const notifiedAuthorIds = new Set();
+      for (const reply of answersToUnmark) {
+        const replyAuthorId = String(reply.authorId);
+        if (replyAuthorId === String(authorId) || notifiedAuthorIds.has(replyAuthorId)) {
+          continue;
+        }
+        notifiedAuthorIds.add(replyAuthorId);
+
+        notifyDiscussionAnswerUnmarked({
+          tenantId,
+          discussionId,
+          communityId,
+          replyAuthorId,
+          discussionTitle: discussion.title,
+        }).catch((err) =>
+          console.error("discussion answer unmark notification error:", err.message),
         );
+      }
+    }
+
+    if (answerChanged || isSolving) {
+      const affectedAuthorIds = new Set(
+        [
+          ...flaggedAnswers.map((reply) => reply.authorId),
+          previousAnswer?.authorId,
+          answerReply?.authorId,
+        ]
+          .filter(Boolean)
+          .map((id) => String(id)),
+      );
+
+      for (const affectedAuthorId of affectedAuthorIds) {
+        const eventReply = [
+          answerReply,
+          previousAnswer,
+          ...flaggedAnswers,
+        ].find((reply) => String(reply?.authorId) === affectedAuthorId);
+
+        Author.findOne({ _id: affectedAuthorId, tenantId })
+          .select("email")
+          .lean()
+          .then((replyAuthor) => {
+            if (!replyAuthor?.email) return;
+            return checkAndAwardBadges(replyAuthor.email, ["bytes_brain"], {
+              eventId: eventReply?._id,
+              eventTitle: discussion.title,
+            });
+          })
+          .catch((err) =>
+            console.error("accepted-answer badge sync error:", err.message),
+          );
+      }
     }
   } catch (err) {
     console.error("markSolved error:", err.message);
