@@ -69,7 +69,7 @@ const checkAndAwardBadges = async (authorEmail, badgeIds, eventContext = {}) => 
 
   try {
     const author = await Author.findOne({ email: { $eq: authorEmail } })
-      .select('badges posts followers email notification');
+      .select('badges posts followers email notification tenantId');
 
     if (!author) return;
 
