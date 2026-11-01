@@ -8,6 +8,10 @@ const TutorPlayList = require("../models/tutorPlaylistSchema");
 const Community = require("../models/communitySchema");
 const CommunityMembership = require("../models/communityMembershipSchema");
 const { NOTIFICATION_TYPES, buildNotificationUrl } = require("../models/services/notificationSchema");
+const {
+  adjustCommunityPostCounts,
+  deletePostsAndSyncCommunityPostCounts,
+} = require("../services/communityPostCount");
 // const { DeleteObjectCommand } = require('@aws-sdk/client-s3');
 // const { s3, bucketName }      = require('../config/s3');
 
@@ -187,7 +191,7 @@ const deleteAuthor = async (req, res) => {
     });
 
     // 2. delete posts
-    await Post.deleteMany({ authorId: author._id, tenantId });
+    await deletePostsAndSyncCommunityPostCounts({ authorId: author._id, tenantId });
 
     // 2.5 delete playlists
     await TutorPlayList.deleteMany({ email: author.email, tenantId });
@@ -336,7 +340,7 @@ const deleteAuthorByAdmin = async (req, res) => {
     });
 
     // 2. delete posts
-    await Post.deleteMany({ authorId: author._id, tenantId });
+    await deletePostsAndSyncCommunityPostCounts({ authorId: author._id, tenantId });
 
     // 2.5 delete playlists
     await TutorPlayList.deleteMany({ email: author.email, tenantId });
@@ -750,6 +754,7 @@ const rollbackDeletion = async (req, res) => {
         return { ...raw, _id: p._id, authorId: authorSnap._id, tenantId };
       });
       await Post.insertMany(postDocs, { ordered: false });
+      await adjustCommunityPostCounts(postDocs, 1);
       await Author.updateOne(
         { _id: authorSnap._id },
         { $set: { posts: postDocs.map((p) => p._id) } }
