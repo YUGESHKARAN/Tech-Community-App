@@ -22,7 +22,7 @@ import { MdNotificationsActive } from "react-icons/md";
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  TYPE → ICON / COLOR MAP
-//  Covers all 10 notification types.
+//  Covers all notification types.
 //  bg uses Tailwind opacity variants so it works on any dark surface.
 // ─────────────────────────────────────────────────────────────────────────────
 export const NOTIFICATION_TYPE_MAP = {
@@ -66,6 +66,12 @@ export const NOTIFICATION_TYPE_MAP = {
     bg:    "bg-teal-500/10",
     color: "text-teal-400",
     label: "Answer accepted",
+  },
+  "discussion-answer-unmarked": {
+    Icon:  TbCircleCheck,
+    bg:    "bg-amber-500/10",
+    color: "text-amber-400",
+    label: "Answer unmarked",
   },
 
   // ── platform ──────────────────────────────────────────────────────────────

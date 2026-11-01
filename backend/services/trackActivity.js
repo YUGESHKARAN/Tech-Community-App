@@ -35,6 +35,7 @@
  *   });
  */
 
+const mongoose = require('mongoose');
 const { DailyEventLog, UserContributions } = require('../models/performanceTracker/performanceTrackerSchema');
 const { checkAndUpdateStreak } = require('./checkAndUpdateStreak');
 
@@ -53,6 +54,112 @@ const getTodayIST = () => {
  * Used as the key in UserContributions.days map.
  */
 const toMonthDay = (dateStr) => dateStr.slice(5); // "2026-08-19" → "08-19"
+
+const removeTrackedActivity = async ({ tenantId, type, targetIds, session }) => {
+  const ids = [...new Set((Array.isArray(targetIds) ? targetIds : [targetIds])
+    .filter(Boolean)
+    .map((id) => String(id)))];
+  if (!tenantId || !type || !ids.length) {
+    throw new Error('tenantId, activity type, and at least one target ID are required');
+  }
+
+  const objectIds = ids.map((id) => new mongoose.Types.ObjectId(id));
+  const matchingEvent = (event) => ({
+    $and: [
+      { $eq: [`${event}.type`, type] },
+      { $in: [`${event}.targetId`, objectIds] },
+    ],
+  });
+  const eventFilter = {
+    tenantId,
+    events: { $elemMatch: { type, targetId: { $in: objectIds } } },
+  };
+  let logQuery = DailyEventLog.find(eventFilter, '_id authorId date');
+  if (session) logQuery = logQuery.session(session);
+  const matchingLogs = await logQuery.lean();
+
+  for (const log of matchingLogs) {
+    const filter = {
+      _id: log._id,
+      tenantId,
+      events: { $elemMatch: { type, targetId: { $in: objectIds } } },
+    };
+    const matchingEventsExpression = {
+      $filter: {
+        input: { $ifNull: ['$events', []] },
+        as: 'activity',
+        cond: matchingEvent('$$activity'),
+      },
+    };
+    const updatePipeline = [{
+      $set: {
+        events: {
+          $filter: {
+            input: { $ifNull: ['$events', []] },
+            as: 'activity',
+            cond: { $not: [matchingEvent('$$activity')] },
+          },
+        },
+        totalPts: {
+          $subtract: [
+            { $ifNull: ['$totalPts', 0] },
+            {
+              $sum: {
+                $map: {
+                  input: matchingEventsExpression,
+                  as: 'activity',
+                  in: { $ifNull: ['$$activity.pts', 0] },
+                },
+              },
+            },
+          ],
+        },
+      },
+    }];
+
+    const updateQuery = DailyEventLog.findOneAndUpdate(filter, updatePipeline, {
+      new: false,
+      session,
+    });
+    const previousLog = await updateQuery.lean();
+    if (!previousLog) continue;
+
+    const removedEvents = previousLog.events.filter(
+      (event) => event.type === type && objectIds.some((id) => id.equals(event.targetId)),
+    );
+    if (!removedEvents.length) continue;
+
+    const monthDay = log.date.slice(5);
+    const year = Number(log.date.slice(0, 4));
+    let remainingLogQuery = DailyEventLog.findOne(
+      { authorId: log.authorId, tenantId, date: log.date },
+      'totalPts',
+    );
+    if (session) remainingLogQuery = remainingLogQuery.session(session);
+    const remainingLog = await remainingLogQuery.lean();
+    const contributionUpdate = {
+      $inc: { totalCount: -removedEvents.length },
+    };
+    if (remainingLog?.totalPts > 0) {
+      contributionUpdate.$set = {
+        [`days.${monthDay}`]: remainingLog.totalPts,
+      };
+    } else {
+      contributionUpdate.$unset = { [`days.${monthDay}`]: 1 };
+    }
+
+    const contributionResult = await UserContributions.updateOne(
+      { authorId: log.authorId, tenantId, year },
+      contributionUpdate,
+      session ? { session } : {},
+    );
+    if (!contributionResult.matchedCount) {
+      throw new Error(
+        `UserContributions record not found for author ${log.authorId} in ${year}`,
+      );
+    }
+  }
+};
 
 /**
  * Main activity tracking function.
@@ -102,4 +209,4 @@ const trackActivity = async ({ authorId, tenantId, date, event }) => {
     .catch((err) => console.error('checkAndUpdateStreak error:', err.message));
 };
 
-module.exports = { trackActivity, getTodayIST };
+module.exports = { trackActivity, getTodayIST, removeTrackedActivity };

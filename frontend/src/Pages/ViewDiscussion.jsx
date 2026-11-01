@@ -733,6 +733,7 @@ const ReplyCard = ({
   currentUserEmail,
   isCoordinator,
   isOP,
+  category,
   solvedReplyId,
   onEdit,
   onDelete,
@@ -747,7 +748,7 @@ const ReplyCard = ({
 
   const isMine = reply?.authorId?.email === currentUserEmail;
   const canModerate = isMine || isCoordinator;
-  const canMarkAnswer = isOP || isCoordinator;
+  const canMarkAnswer = category === "qa" && (isOP || isCoordinator);
   const isAccepted = reply?._id === solvedReplyId;
 
   const overflowItems = [
@@ -1246,10 +1247,15 @@ function ViewDiscussion() {
   // ── Edit reply ────────────────────────────────────────────────────────────
   const handleEditReply = async (replyId, newBody) => {
     try {
-      await axiosInstance.patch(
+     const res =  await axiosInstance.patch(
         `/bytes/discuss/${communityId}/discussions/${discussion?._id}/replies/${replyId}`,
         { body: newBody },
       );
+
+      if (res.status===200)
+      {
+        toast.success("Edited !", "Reply edited successfully")
+      }
     } catch (err) {
       console.error("Edit reply error:", err);
     }
@@ -1278,7 +1284,7 @@ function ViewDiscussion() {
       );
 
       if (res.status === 200) {
-        toast.success("Reply deleted successfully !");
+        toast.success("Deleted !", "Reply deleted successfully");
       }
     } catch (err) {
       console.error("Delete reply error:", err);
@@ -1308,8 +1314,8 @@ function ViewDiscussion() {
       if (res.status === 200) {
         getDiscussionsById();
         isCurrentlyAccepted
-          ? toast.success("Reply unmarked as a solution")
-          : toast.success("Reply marked as solution");
+          ? toast.success("Unmarked !", "Reply unmarked as a solution")
+          : toast.success("Marked !", "Reply marked as solution");
       }
     } catch (err) {
       console.error("Mark answer error:", err);
@@ -1334,10 +1340,15 @@ function ViewDiscussion() {
     setDiscussionBody(newBody);
     setEditingDiscussion(false);
     try {
-      await axiosInstance.patch(
+      const res = await axiosInstance.patch(
         `/bytes/discuss/${communityId}/discussions/${discussion?._id}`,
         { body: newBody },
       );
+
+      if (res.status===200)
+      {
+        toast.success("Edied !", "Discussion edited successfully")
+      }
     } catch (err) {
       console.error("Edit discussion error:", err);
     }
@@ -1500,7 +1511,7 @@ function ViewDiscussion() {
                   <span
                     className={`text-[9px] font-semibold px-1.5 py-0.5 rounded ${cat.bg} ${cat.text}`}
                   >
-                    {cat.label}
+                  {cat.label}
                   </span>
                 </span>
               </div>
@@ -1720,6 +1731,7 @@ function ViewDiscussion() {
                 discussionId={discussionId}
                 communityId={communityId}
                 solvedReplyId={discussion?.solvedReplyId?._id}
+                category = {discussion?.category}
                 onUpvote={handleUpvote}
                 onUnvote={handleUnvote}
                 onEdit={handleEditReply}

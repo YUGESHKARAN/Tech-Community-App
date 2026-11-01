@@ -69,7 +69,7 @@ const checkAndAwardBadges = async (authorEmail, badgeIds, eventContext = {}) => 
 
   try {
     const author = await Author.findOne({ email: { $eq: authorEmail } })
-      .select('badges posts followers email notification');
+      .select('badges posts followers email notification tenantId');
 
     if (!author) return;
 
@@ -96,7 +96,11 @@ const checkAndAwardBadges = async (authorEmail, badgeIds, eventContext = {}) => 
       ]),
       Post.countDocuments({ authorId: author._id }),
       TutorPlayList.countDocuments({ "collaborators.email": author.email }),
-      DiscussionReply.countDocuments({ authorId: author._id, isAnswer: true }),
+      DiscussionReply.countDocuments({
+        tenantId: author.tenantId,
+        authorId: author._id,
+        isAnswer: true,
+      }),
     ]);
 
     const stats = {
@@ -121,7 +125,35 @@ const checkAndAwardBadges = async (authorEmail, badgeIds, eventContext = {}) => 
       if (!def) continue;
 
       const currentVal  = stats[badgeId];
-      const existing    = author.badges.find(b => b.badgeId === badgeId);
+      let existing      = author.badges.find(b => b.badgeId === badgeId);
+
+      if (badgeId === "bytes_brain" && existing) {
+        const eligibleTiers = TIER_ORDER.filter(
+          (tier) => currentVal >= def.thresholds[tier].value,
+        );
+        const retainedHistory = existing.history.filter((entry) =>
+          eligibleTiers.includes(entry.tier),
+        );
+
+        if (retainedHistory.length === 0) {
+          author.badges = author.badges.filter((badge) => badge.badgeId !== badgeId);
+          existing = null;
+          updated = true;
+        } else {
+          const currentTier = retainedHistory[retainedHistory.length - 1].tier;
+          if (
+            retainedHistory.length !== existing.history.length ||
+            currentTier !== existing.currentTier ||
+            retainedHistory.length !== existing.count
+          ) {
+            existing.history = retainedHistory;
+            existing.currentTier = currentTier;
+            existing.count = retainedHistory.length;
+            updated = true;
+          }
+        }
+      }
+
       const earnedTiers = existing?.history.map(h => h.tier) || [];
 
       const nextTier = TIER_ORDER.find(tier => {

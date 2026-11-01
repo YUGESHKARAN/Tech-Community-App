@@ -18,7 +18,7 @@ const mongoose = require('mongoose');
  * reply resolves the discussion. Setting this also triggers:
  *   - Discussion.isSolved = true
  *   - Discussion.solvedReplyId = this._id
- * Both updates happen atomically in the markAnswer controller.
+ * The markSolved handler keeps these fields synchronized.
  */
 const discussionReplySchema = new mongoose.Schema(
   {
