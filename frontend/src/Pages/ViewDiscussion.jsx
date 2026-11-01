@@ -1247,10 +1247,15 @@ function ViewDiscussion() {
   // ── Edit reply ────────────────────────────────────────────────────────────
   const handleEditReply = async (replyId, newBody) => {
     try {
-      await axiosInstance.patch(
+     const res =  await axiosInstance.patch(
         `/bytes/discuss/${communityId}/discussions/${discussion?._id}/replies/${replyId}`,
         { body: newBody },
       );
+
+      if (res.status===200)
+      {
+        toast.success("Edited !", "Reply edited successfully")
+      }
     } catch (err) {
       console.error("Edit reply error:", err);
     }
@@ -1279,7 +1284,7 @@ function ViewDiscussion() {
       );
 
       if (res.status === 200) {
-        toast.success("Reply deleted successfully !");
+        toast.success("Deleted !", "Reply deleted successfully");
       }
     } catch (err) {
       console.error("Delete reply error:", err);
@@ -1309,8 +1314,8 @@ function ViewDiscussion() {
       if (res.status === 200) {
         getDiscussionsById();
         isCurrentlyAccepted
-          ? toast.success("Reply unmarked as a solution")
-          : toast.success("Reply marked as solution");
+          ? toast.success("Unmarked !", "Reply unmarked as a solution")
+          : toast.success("Marked !", "Reply marked as solution");
       }
     } catch (err) {
       console.error("Mark answer error:", err);
@@ -1335,10 +1340,15 @@ function ViewDiscussion() {
     setDiscussionBody(newBody);
     setEditingDiscussion(false);
     try {
-      await axiosInstance.patch(
+      const res = await axiosInstance.patch(
         `/bytes/discuss/${communityId}/discussions/${discussion?._id}`,
         { body: newBody },
       );
+
+      if (res.status===200)
+      {
+        toast.success("Edied !", "Discussion edited successfully")
+      }
     } catch (err) {
       console.error("Edit discussion error:", err);
     }
@@ -1388,7 +1398,7 @@ function ViewDiscussion() {
     { Icon: TbList, label: "List" },
   ];
 
-  console.log("discussions", discussion);
+  // console.log("discussions", discussion);
   // console.log("replies", replies);
   // console.log("profile", profile);
 
