@@ -1,5 +1,8 @@
 const {Author, Post} = require("../models/blogAuthorSchema");
 const { trackActivity, getTodayIST } = require('../services/trackActivity');
+const {
+  adjustCommunityPostCount,
+} = require("../services/communityPostCount");
 
 const path = require('path');
 
@@ -507,6 +510,8 @@ const addPosts = async (req, res) => {
       throw dbErr; // re-throw so outer catch returns 500
     }
 
+    await adjustCommunityPostCount(tenantId, savedPost.category, 1);
+
     const postId = savedPost._id;
     const url = `${notificationUrl}/viewpage/${author.email}/${postId}`;
 
@@ -750,6 +755,7 @@ const updatePost = async (req, res) => {
       }
     }
 
+    const previousCategory = post.category;
     post.title       = title;
     post.image       = imageUrl;
     post.description = description;
@@ -771,6 +777,13 @@ const updatePost = async (req, res) => {
       );
       await Promise.allSettled(cleanup);
       throw dbErr;
+    }
+
+    if (previousCategory !== savedPost.category) {
+      await Promise.all([
+        adjustCommunityPostCount(tenantId, previousCategory, -1),
+        adjustCommunityPostCount(tenantId, savedPost.category, 1),
+      ]);
     }
 
     const updatedToAI = {
@@ -944,7 +957,10 @@ const deletePost = async (req, res) => {
     }
 
     // fix: delete from Post collection and pull ref from author.posts
-    await Post.deleteOne({ _id: postId, tenantId });
+    const deleteResult = await Post.deleteOne({ _id: postId, tenantId });
+    if (deleteResult.deletedCount) {
+      await adjustCommunityPostCount(tenantId, postToDelete.category, -1);
+    }
     await Author.updateOne(
       { _id: author._id },
       { $pull: { posts: postToDelete._id } }

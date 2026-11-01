@@ -1,4 +1,7 @@
 const { Author, Post } = require("../models/blogAuthorSchema");
+const {
+  deletePostsAndSyncCommunityPostCounts,
+} = require("../services/communityPostCount");
 const Community = require("../models/communitySchema");
 const CommunityMembership = require("../models/communityMembershipSchema");
 const { NOTIFICATION_TYPES, buildNotificationUrl } = require("../models/services/notificationSchema");
@@ -926,7 +929,7 @@ const deleteAuthor = async (req, res) => {
     }
 
     // fix: delete all posts belonging to this author (were orphaned before)
-    await Post.deleteMany({ authorId: author._id, tenantId });
+    await deletePostsAndSyncCommunityPostCounts({ authorId: author._id, tenantId });
 
     await Author.deleteOne({ email: author.email, tenantId });
 
@@ -984,7 +987,7 @@ const deleteAuthorByAdmin = async (req, res) => {
     if (!author) return res.status(404).json({ message: "Author not found" });
 
     // fix: delete all posts belonging to this author (were orphaned before)
-    await Post.deleteMany({ authorId: author._id, tenantId });
+    await deletePostsAndSyncCommunityPostCounts({ authorId: author._id, tenantId });
 
     // fix: S3 now wrapped in try/catch — author is already deleted, don't crash on S3 failure
     if (author.profile) {

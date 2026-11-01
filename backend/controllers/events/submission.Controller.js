@@ -4,6 +4,7 @@ const Team = require('../../models/events/team');
 const EventRegistration = require('../../models/events/eventRegistration');
 const Submission = require('../../models/events/submission');
 const {Post} = require('../../models/blogAuthorSchema'); // adjust path if different
+const { adjustCommunityPostCount } = require('../../services/communityPostCount');
 const { buildNotificationUrl } = require('../../models/services/notificationSchema');
 const {
   EVENTS_POST_CATEGORY,
@@ -67,6 +68,13 @@ const upsertSubmission = async (req, res) => {
             eventId: event._id,
           }],
           { session }
+        );
+
+        await adjustCommunityPostCount(
+          event.tenantId,
+          EVENTS_POST_CATEGORY,
+          1,
+          { session },
         );
 
         const [created] = await Submission.create(

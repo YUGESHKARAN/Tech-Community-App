@@ -8,10 +8,9 @@ const mongoose = require('mongoose');
  * (tenantId, slug) — not slug alone — so two tenants can each have their
  * own "AI/ML" community without colliding.
  *
- * memberCount / postCount are cached counters, kept in sync by:
- *   - inline $inc on join/leave/post-create (fast path)
- *   - a nightly reconciliation job that recounts from source collections
- *     and corrects any drift (safety net, see reconcileCommunityCounts)
+ * memberCount / postCount are cached counters. Member updates and post
+ * lifecycle operations maintain them, with a backfill script available to
+ * reconcile postCount from the Post collection.
  */
 const communitySchema = new mongoose.Schema(
   {

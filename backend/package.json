@@ -5,7 +5,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon app.js",
-    "start:notifications": "node workers/notificationWorker.js"
+    "start:notifications": "node workers/notificationWorker.js",
+    "backfill:community-post-counts": "node scripts/backfillCommunityPostCounts.js"
   },
   "author": "yugesh@01",
   "license": "ISC",
