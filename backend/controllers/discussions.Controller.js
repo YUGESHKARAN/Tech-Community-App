@@ -10,7 +10,11 @@ const CommunityMembership = require("../models/communityMembershipSchema");
 const { Author } = require("../models/blogAuthorSchema");
 const Community = require("../models/communitySchema");
 const { Post } = require("../models/blogAuthorSchema");
-const { trackActivity, getTodayIST } = require("../services/trackActivity");
+const {
+  trackActivity,
+  getTodayIST,
+  removeTrackedActivity,
+} = require("../services/trackActivity");
 const { checkAndAwardBadges } = require("../services/badgeService");
 const { DeletionLog } = require("../models/deletionLogSchema");
 const {
@@ -853,14 +857,28 @@ const deleteDiscussion = async (req, res) => {
       .lean()
       .then((docs) => docs.map((d) => d._id));
 
-    await Promise.all([
-      Discussion.deleteOne({ _id: discussionId, tenantId, communityId }),
-      DiscussionReply.deleteMany({ tenantId, discussionId }),
-      Upvote.deleteMany({
-        tenantId,
-        targetId: { $in: [discussionId, ...replyIds] },
-      }),
-    ]);
+    const session = await mongoose.startSession();
+    try {
+      await session.withTransaction(async () => {
+        await Discussion.deleteOne(
+          { _id: discussionId, tenantId, communityId },
+          { session },
+        );
+        await DiscussionReply.deleteMany({ tenantId, discussionId }, { session });
+        await Upvote.deleteMany(
+          { tenantId, targetId: { $in: [discussionId, ...replyIds] } },
+          { session },
+        );
+        await removeTrackedActivity({
+          tenantId,
+          type: "discussion",
+          targetIds: discussionId,
+          session,
+        });
+      });
+    } finally {
+      await session.endSession();
+    }
 
     res.status(200).json({ message: "Discussion deleted" });
   } catch (err) {
@@ -1548,25 +1566,49 @@ const deleteReply = async (req, res) => {
           .then((docs) => docs.map((d) => d._id))
       : [];
 
-    await Promise.all([
-      DiscussionReply.deleteOne({ _id: replyId, tenantId, discussionId }),
-      nestedIds.length
-        ? DiscussionReply.deleteMany({ _id: { $in: nestedIds }, tenantId, discussionId })
-        : Promise.resolve(),
-      Upvote.deleteMany({ tenantId, targetId: { $in: [replyId, ...nestedIds] } }),
-      // decrement replyCount only for top-level deletions
-      isTopLevel
-        ? Discussion.findOneAndUpdate({ _id: discussionId, tenantId, communityId }, {
-            $inc: { replyCount: -1 },
-          })
-        : Promise.resolve(),
-    ]);
+    const session = await mongoose.startSession();
+    try {
+      await session.withTransaction(async () => {
+        await DiscussionReply.deleteOne(
+          { _id: replyId, tenantId, discussionId },
+          { session },
+        );
+        if (nestedIds.length) {
+          await DiscussionReply.deleteMany(
+            { _id: { $in: nestedIds }, tenantId, discussionId },
+            { session },
+          );
+        }
+        await Upvote.deleteMany(
+          { tenantId, targetId: { $in: [replyId, ...nestedIds] } },
+          { session },
+        );
 
-    // if this was the accepted answer, unmark the discussion as solved
-    if (reply.isAnswer) {
-      await Discussion.findOneAndUpdate({ _id: discussionId, tenantId, communityId }, {
-        $set: { isSolved: false, solvedReplyId: null },
+        if (isTopLevel) {
+          await Discussion.findOneAndUpdate(
+            { _id: discussionId, tenantId, communityId },
+            { $inc: { replyCount: -1 } },
+            { session },
+          );
+        }
+
+        if (reply.isAnswer) {
+          await Discussion.findOneAndUpdate(
+            { _id: discussionId, tenantId, communityId },
+            { $set: { isSolved: false, solvedReplyId: null } },
+            { session },
+          );
+        }
+
+        await removeTrackedActivity({
+          tenantId,
+          type: "reply",
+          targetIds: [replyId, ...nestedIds],
+          session,
+        });
       });
+    } finally {
+      await session.endSession();
     }
 
     res.status(200).json({ message: "Reply deleted" });

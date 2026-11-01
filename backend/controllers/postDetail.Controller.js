@@ -1,5 +1,9 @@
 const {Author, Post} = require("../models/blogAuthorSchema");
-const { trackActivity, getTodayIST } = require('../services/trackActivity');
+const {
+  trackActivity,
+  getTodayIST,
+  removeTrackedActivity,
+} = require('../services/trackActivity');
 const {
   adjustCommunityPostCount,
 } = require("../services/communityPostCount");
@@ -957,14 +961,37 @@ const deletePost = async (req, res) => {
     }
 
     // fix: delete from Post collection and pull ref from author.posts
-    const deleteResult = await Post.deleteOne({ _id: postId, tenantId });
-    if (deleteResult.deletedCount) {
-      await adjustCommunityPostCount(tenantId, postToDelete.category, -1);
+    const session = await mongoose.startSession();
+    let deleteResult;
+    try {
+      await session.withTransaction(async () => {
+        deleteResult = await Post.deleteOne(
+          { _id: postId, tenantId },
+          { session },
+        );
+        if (deleteResult.deletedCount) {
+          await adjustCommunityPostCount(
+            tenantId,
+            postToDelete.category,
+            -1,
+            { session },
+          );
+          await removeTrackedActivity({
+            tenantId,
+            type: 'post',
+            targetIds: postToDelete._id,
+            session,
+          });
+        }
+        await Author.updateOne(
+          { _id: author._id },
+          { $pull: { posts: postToDelete._id } },
+          { session },
+        );
+      });
+    } finally {
+      await session.endSession();
     }
-    await Author.updateOne(
-      { _id: author._id },
-      { $pull: { posts: postToDelete._id } }
-    );
 
     enqueueAISync({
       operation: 'delete',
