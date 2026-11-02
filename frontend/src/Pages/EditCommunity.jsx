@@ -143,11 +143,11 @@ const IconPicker = ({ value, onChange, accentColor }) => {
   }, [search, activeCategory]);
 
   return (
-    <div className="theme border border-[#1e293b] rounded-xl overflow-hidden">
+    <div className="theme border border-[#1e293b] rounded-lg md:rounded-xl overflow-hidden">
       {/* search + category row */}
       <div className="flex items-center gap-2 p-3 border-b border-[#1e293b]">
         <div className="flex items-center gap-2 flex-1 bg-white/5 rounded-lg px-3 py-1.5">
-          <TbSearch className="text-gray-500 text-sm flex-shrink-0" />
+          <TbSearch className="text-gray-500 text-xs md:text-sm flex-shrink-0" />
           <input
             type="text"
             value={search}
@@ -244,7 +244,7 @@ const BannerPreview = ({ form, gradient, loader, userRole, community }) => {
   if (!loader && community?.colorTheme) {
     return (
       <div
-        className="relative rounded-lg md:rounded-xl md:rounded-2xl overflow-hidden"
+        className="relative rounded-lg md rounded-lg:md:rounded-xl md:rounded-2xl overflow-hidden"
         style={{
           background: `linear-gradient(135deg, ${gradient.from}, ${gradient.to})`,
         }}
@@ -284,7 +284,7 @@ const BannerPreview = ({ form, gradient, loader, userRole, community }) => {
             </span>
           )}
           <div className="flex items-center mb-0.5 md:mb-1  gap-3">
-            <div className="md:w-10 w-9 h-9 md:h-10 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
+            <div className="md:w-10 w-9 h-9 md:h-10 rounded-lg md:rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
               <Icon className="text-white text-lg md:text-xl" />
             </div>
             <div>
@@ -629,12 +629,12 @@ const isDirty = useMemo(() => {
           {/* <div className="grid grid-cols-1 lg:grid-cols-[1fr_260px] gap-6">
             <div className="space-y-3">
               {[1, 2, 3].map((n) => (
-                <div key={n} className="h-20 bg-white/[0.02] rounded-xl border border-[#1e293b] animate-pulse" />
+                <div key={n} className="h-20 bg-white/[0.02] rounded-lg md:rounded-xl border border-[#1e293b] animate-pulse" />
               ))}
             </div>
             <div className="space-y-3">
-              <div className="h-48 bg-white/[0.02] rounded-xl border border-[#1e293b] animate-pulse" />
-              <div className="h-32 bg-white/[0.02] rounded-xl border border-[#1e293b] animate-pulse" />
+              <div className="h-48 bg-white/[0.02] rounded-lg md:rounded-xl border border-[#1e293b] animate-pulse" />
+              <div className="h-32 bg-white/[0.02] rounded-lg md:rounded-xl border border-[#1e293b] animate-pulse" />
             </div>
           </div> */}
           <DiscussionsTab
@@ -678,7 +678,7 @@ const isDirty = useMemo(() => {
           <div className="flex items-center gap-2">
             <button
               onClick={() => setPreview(true)}
-              className="flex items-center gap-1.5 text-[10px] md:text-xs font-medium px-2 md:px-3.5 py-1 md:py-2 rounded-lg md:rounded-xl border border-white/10 text-gray-300 hover:text-white hover:border-white/20 transition-colors"
+              className="flex items-center gap-1.5 text-[10px] md:text-xs font-medium px-2 md:px-3.5 py-1 md:py-2 rounded-lg md rounded-lg:md:rounded-xl border border-white/10 text-gray-300 hover:text-white hover:border-white/20 transition-colors"
             >
               <TbEye className="text-sm" /> Preview
             </button>
@@ -686,7 +686,7 @@ const isDirty = useMemo(() => {
               <button
                 onClick={handleSave}
                 disabled={!isDirty || loading}
-                className="flex items-center gap-1.5 text-[10px] md:text-xs  font-semibold px-3.5 py-1 md:py-2 rounded-lg md:rounded-xl text-white disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                className="flex items-center gap-1.5 text-[10px] md:text-xs  font-semibold px-3.5 py-1 md:py-2 rounded-lg md rounded-lg:md:rounded-xl text-white disabled:opacity-40 disabled:cursor-not-allowed transition-all"
                 style={{
                   background: isDirty && !loading ? gradient.from : undefined,
                 }}
@@ -713,7 +713,7 @@ const isDirty = useMemo(() => {
         </div>
 
         {saveError && (
-          <div className="flex items-center gap-2 mb-5 px-4 py-3 bg-red-500/10 border border-red-500/20 rounded-xl text-xs text-red-400">
+          <div className="flex items-center gap-2 mb-5 px-4 py-3 bg-red-500/10 border border-red-500/20 rounded-lg md:rounded-xl text-xs text-red-400">
             <TbAlertCircle className="text-sm flex-shrink-0" />
             {saveError}
           </div>
@@ -742,7 +742,7 @@ const isDirty = useMemo(() => {
                 onChange={(e) => set("name")(e.target.value)}
                 disabled={!isAdmin}
                 placeholder="e.g. AI/ML"
-                className="w-full bg-white/[0.03] border border-[#1e293b] rounded-xl px-4 py-2.5 text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-white/20 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                className="w-full bg-white/[0.03] border border-[#1e293b] rounded-lg md:rounded-xl px-4 py-2 md:py-2.5 text-xs md:text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-white/20 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
               />
             </div>
 
@@ -751,7 +751,7 @@ const isDirty = useMemo(() => {
               <label className="block text-xs font-semibold text-gray-300 mb-1.5">
                 Tagline
                 <span className="text-gray-600 font-normal ml-1">
-                  — short descriptor under the title
+                  - short descriptor under the title
                 </span>
               </label>
               <input
@@ -760,7 +760,7 @@ const isDirty = useMemo(() => {
                 onChange={(e) => set("tagline")(e.target.value)}
                 maxLength={100}
                 placeholder="e.g. Connect, collaborate and grow together"
-                className="w-full bg-white/[0.03] border border-[#1e293b] rounded-xl px-4 py-2.5 text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-white/20 transition-colors"
+                className="w-full bg-white/[0.03] border border-[#1e293b] rounded-lg md:rounded-xl px-4 py-2 md:py-2.5 text-xs md:text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-white/20 transition-colors"
               />
               <p className="text-[10px] text-gray-600 mt-1 text-right">
                 {form.tagline.length}/100
@@ -772,7 +772,7 @@ const isDirty = useMemo(() => {
               <label className="block text-xs font-semibold text-gray-300 mb-1.5">
                 Description
                 <span className="text-gray-600 font-normal ml-1">
-                  — shown in the About section
+                  - shown in the About section
                 </span>
               </label>
               <textarea
@@ -781,7 +781,7 @@ const isDirty = useMemo(() => {
                 maxLength={500}
                 rows={4}
                 placeholder="What is this community about? Who is it for?"
-                className="w-full bg-white/[0.03] border border-[#1e293b] rounded-xl px-4 py-3 text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-white/20 resize-none transition-colors"
+                className="w-full bg-white/[0.03] leading-relaxed border border-[#1e293b] rounded-lg md:rounded-xl px-4 py-2.5 md:py-3 text-xs md:text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-white/20 resize-none transition-colors"
               />
               <p className="text-[10px] text-gray-600 mt-1 text-right">
                 {form.description.length}/500
@@ -803,7 +803,7 @@ const isDirty = useMemo(() => {
                 </div>
 
                 {/* Bytes Base compact toggle */}
-                <div className="relative flex items-center gap-0.5 p-1 rounded-xl bg-[#0b1120] border border-[#1e293b] shadow-inner">
+                <div className="relative flex items-center gap-0.5 p-1 rounded-lg md:rounded-xl bg-[#0b1120] border border-[#1e293b] shadow-inner">
                   <motion.div
                     layout
                     transition={{
@@ -902,7 +902,7 @@ const isDirty = useMemo(() => {
 
               {/* Custom hex input + native color picker */}
               <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2 bg-white/[0.03] border border-[#1e293b] rounded-xl px-3 py-2 flex-1 focus-within:border-white/20 transition-colors">
+                <div className="flex items-center gap-2 bg-white/[0.03] border border-[#1e293b] rounded-lg md:rounded-xl px-3 py-2 flex-1 focus-within:border-white/20 transition-colors">
                   <div
                     className="w-4 h-4 rounded-full flex-shrink-0"
                     style={{
@@ -915,14 +915,14 @@ const isDirty = useMemo(() => {
                     onChange={(e) => handleHexInput(e.target.value)}
                     placeholder="#0d9488"
                     maxLength={7}
-                    className="bg-transparent text-sm text-gray-200 placeholder-gray-600 focus:outline-none flex-1 font-mono"
+                    className="bg-transparent text-xs md:text-sm text-gray-200 placeholder-gray-600 focus:outline-none flex-1 font-mono"
                   />
                 </div>
 
                 {/* Native color picker — hidden, triggered by the swatch */}
                 <label className="cursor-pointer">
                   <div
-                    className="w-10 h-10 rounded-xl border-2 border-white/10 overflow-hidden flex-shrink-0"
+                    className="w-10 h-10 rounded-lg md:rounded-xl border-2 border-white/10 overflow-hidden flex-shrink-0"
                     style={{ background: form.colorTheme }}
                   />
                   <input
@@ -965,9 +965,9 @@ const isDirty = useMemo(() => {
             />
 
             {/* Mini icon + color summary */}
-            <div className="theme border border-[#1e293b] rounded-xl p-4 flex items-center gap-3">
+            <div className="theme border border-[#1e293b] rounded-lg md:rounded-xl p-4 flex items-center gap-3">
               <div
-                className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                className="w-10 h-10 rounded-lg md:rounded-xl flex items-center justify-center flex-shrink-0"
                 style={{ background: `${gradient.from}22` }}
               >
                 {(() => {
@@ -992,7 +992,7 @@ const isDirty = useMemo(() => {
 
             <button
               onClick={() => setPreview(true)}
-              className="w-full flex items-center justify-center gap-2 text-xs font-medium py-2.5 rounded-xl border border-white/10 text-gray-300 hover:text-white hover:border-white/20 transition-colors"
+              className="w-full flex items-center justify-center gap-2 text-xs font-medium py-2.5 rounded-lg md:rounded-xl border border-white/10 text-gray-300 hover:text-white hover:border-white/20 transition-colors"
             >
               <TbEye className="text-sm" />
               Full-screen preview

@@ -905,7 +905,7 @@ function NavBar() {
         ref={addContentRef}
         className={`${
           showAddContent && !showNotification
-            ? "fixed top-16 right-12 z-50 px-2 py-1 w-48 overflow-hidden rounded-lg border border-[#30363d] theme shadow-2xl"
+            ? "fixed top-16 right-12 z-50 px-2 py-1 w-44 md:w-48 overflow-hidden rounded-lg border border-[#30363d] theme shadow-2xl"
             : "hidden"
         }`}
       >
@@ -920,15 +920,15 @@ function NavBar() {
             <button
               className="
                 w-full flex items-center gap-2
-                pl-2 py-1.5
+                pl-2 py-[5px] md:py-1.5
                 text-sm text-gray-100
                 hover:bg-gray-800/70
                 transition-all duration-200
                 rounded-lg
               "
             >
-              <FiPlusCircle className="text-[17px] text-gray-400" />
-              <span className="text-[13px]">Add New Post</span>
+              <FiPlusCircle className="text-[14px] md:text-[17px] text-gray-400" />
+              <span className="text-xs md:text-[13px]">Add New Post</span>
             </button>
           </Link>
 
@@ -941,15 +941,15 @@ function NavBar() {
             <button
               className="
                 w-full flex items-center gap-2
-                pl-2 py-1.5
+                pl-2 py-[5px] md:py-1.5
                 text-sm text-gray-100
                 hover:bg-gray-800/70
                 transition-all duration-200
                 rounded-lg
               "
             >
-              <FiLayers className="text-[17px] text-gray-400" />
-              <span className="text-[13px]">Create New Playlist</span>
+              <FiLayers className="text-[14px] md:text-[17px] text-gray-400" />
+              <span className="text-xs md:text-[13px]">Create New Playlist</span>
             </button>
           </Link>
 
@@ -964,21 +964,21 @@ function NavBar() {
             <button
               className="
                 w-full flex items-center gap-2
-                pl-2 py-1.5
+                pl-2 py-[5px] md:py-1.5
                 text-sm text-gray-100
                 hover:bg-gray-800/70
                 transition-all duration-200
                 rounded-lg
               "
             >
-              <VscGitStashApply className="text-[17px] text-gray-400" />
-              <span className="text-[13px]">Create New Campaign</span>
+              <VscGitStashApply className="text-[14px] md:text-[17px] text-gray-400" />
+              <span className="text-xs md:text-[13px]">Create New Campaign</span>
             </button>
           </Link>
 
 
             {(role==='admin' || role==='director') && 
-            <p className="text-gray-400 pl-2 text-xs font-semibold border-t border-gray-700 mt-1 pt-2">Admin Access</p>
+            <p className="text-gray-400 pl-2 text-[11px] md:text-xs font-semibold border-t border-gray-700 mt-1 pt-2">Admin Access</p>
             }
           {(role==='admin' || role==='director') && <Link
             onClick={() => {
@@ -989,15 +989,15 @@ function NavBar() {
             <button
               className="
                 w-full flex items-center gap-2
-                pl-2 py-1.5
+                pl-2 py-[5px] md:py-1.5
                 text-sm text-gray-100
                 hover:bg-gray-800/70
                 transition-all duration-200
                 rounded-lg
               "
             >
-              <AiOutlineUsergroupAdd className="text-[17px] text-gray-400" />
-              <span className="text-[13px]"> Add New Community</span>
+              <AiOutlineUsergroupAdd className="text-[14px] md:text-[17px] text-gray-400" />
+              <span className="text-xs md:text-[13px]"> Add New Community</span>
             </button>
           </Link>}
         </div>

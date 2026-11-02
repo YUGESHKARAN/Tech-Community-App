@@ -91,10 +91,10 @@ const IconPicker = ({ value, onChange, accentColor }) => {
   }, [search, activeCategory,]);
 
   return (
-    <div className="theme border border-[#1e293b] rounded-xl overflow-hidden">
+    <div className="theme border border-[#1e293b] rounded-lg md:rounded-xl overflow-hidden">
       <div className="flex items-center gap-2 p-3 border-b border-[#1e293b]">
         <div className="flex items-center gap-2 flex-1 bg-white/5 rounded-lg px-3 py-1.5">
-          <TbSearch className="text-gray-500 text-sm flex-shrink-0" />
+          <TbSearch className="text-gray-500 text-xs md:text-sm flex-shrink-0" />
           <input
             type="text"
             value={search}
@@ -185,7 +185,7 @@ const BannerPreview = ({ form, gradient, userRole="" }) => {
     //   />
     //   <div className="relative px-5 pt-6 pb-5">
     //     <div className="flex items-center gap-3 mb-3">
-    //       <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
+    //       <div className="w-10 h-10 rounded-lg md:rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
     //         <Icon className="text-white text-xl" />
     //       </div>
     //       <div>
@@ -218,7 +218,7 @@ const BannerPreview = ({ form, gradient, userRole="" }) => {
     //   </div>
     // </div>
     <div
-          className="relative rounded-xl md:rounded-2xl overflow-hidden"
+          className="relative rounded-lg md:rounded-xl md:rounded-2xl overflow-hidden"
           style={{ background: `linear-gradient(135deg, ${gradient.from}, ${gradient.to})` }}
         >
           <div
@@ -253,7 +253,7 @@ const BannerPreview = ({ form, gradient, userRole="" }) => {
               </span>
             )}
             <div className="flex items-center mb-0.5 md:mb-1  gap-3">
-              <div className="md:w-10 w-9 h-9 md:h-10 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
+              <div className="md:w-10 w-9 h-9 md:h-10 rounded-lg md:rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
                 <Icon className="text-white text-lg md:text-xl" />
               </div>
               <div>
@@ -271,7 +271,7 @@ const BannerPreview = ({ form, gradient, userRole="" }) => {
               </div>
             </div>
     
-            <p className="md:text-xs text-[10px] text-white font-semibold line-clamp-2 max-w-2xl leading-relaxed mb-2 md:mb-2.5">
+            <p className="md:text-xs text-[10px] text-white font-semibold max-w-2xl leading-relaxed mb-2 md:mb-2.5">
                 {form.description}
               </p>
             
@@ -413,7 +413,7 @@ function CreateCommunity() {
 
               {/* submit error */}
               {errors.submit && (
-                <div className="flex items-center gap-2 px-4 py-3 bg-red-500/10 border border-red-500/20 rounded-xl text-xs text-red-400">
+                <div className="flex items-center gap-2 px-4 py-3 bg-red-500/10 border border-red-500/20 rounded-lg md:rounded-xl text-xs text-red-400">
                   <TbAlertCircle className="text-sm flex-shrink-0" />
                   {errors.submit}
                 </div>
@@ -430,7 +430,7 @@ function CreateCommunity() {
                   onChange={(e) => set("name")(e.target.value)}
                   placeholder="e.g. AI/ML, Cyber Security, GenAI"
                   maxLength={100}
-                  className={`w-full bg-white/[0.03] border rounded-xl px-4 py-2.5 text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-white/20 transition-colors ${
+                  className={`w-full bg-white/[0.03] border rounded-lg md:rounded-xl px-4 py-2 md:py-2.5 text-xs md:text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-white/20 transition-colors ${
                     errors.name ? "border-red-500/40" : "border-[#1e293b]"
                   }`}
                 />
@@ -448,7 +448,7 @@ function CreateCommunity() {
               <div>
                 <label className="block text-xs font-semibold text-gray-300 mb-1.5">
                   Tagline
-                  <span className="text-gray-600 font-normal ml-1">— short descriptor shown under the banner title</span>
+                  <span className="text-gray-600 font-normal ml-1">- short descriptor shown under the banner title</span>
                 </label>
                 <input
                   type="text"
@@ -456,7 +456,7 @@ function CreateCommunity() {
                   onChange={(e) => set("tagline")(e.target.value)}
                   placeholder="e.g. Connect, collaborate and grow together"
                   maxLength={120}
-                  className={`w-full bg-white/[0.03] border rounded-xl px-4 py-2.5 text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-white/20 transition-colors ${
+                  className={`w-full bg-white/[0.03] border rounded-lg md:rounded-xl px-4 py-2 md:py-2.5 text-xs md:text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-white/20 transition-colors ${
                     errors.tagline ? "border-red-500/40" : "border-[#1e293b]"
                   }`}
                 />
@@ -472,7 +472,7 @@ function CreateCommunity() {
               <div>
                 <label className="block text-xs font-semibold text-gray-300 mb-1.5">
                   Description
-                  <span className="text-gray-600 font-normal ml-1">— shown in the About section of the community page</span>
+                  <span className="text-gray-600 font-normal ml-1">- shown in the About section of the community page</span>
                 </label>
                 <textarea
                   value={form.description}
@@ -480,7 +480,7 @@ function CreateCommunity() {
                   placeholder="What is this community about? Who should join?"
                   maxLength={500}
                   rows={4}
-                  className={`w-full bg-white/[0.03] border rounded-xl px-4 py-3 text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-white/20 resize-none transition-colors ${
+                  className={`w-full bg-white/[0.03] border leading-relaxed rounded-lg md:rounded-xl px-4 py-2.5 md:py-3 text-xs md:text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-white/20 resize-none transition-colors ${
                     errors.description ? "border-red-500/40" : "border-[#1e293b]"
                   }`}
                 />
@@ -533,7 +533,7 @@ function CreateCommunity() {
 
                 {/* hex input + native picker */}
                 <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-2 bg-white/[0.03] border border-[#1e293b] rounded-xl px-3 py-2 flex-1 focus-within:border-white/20 transition-colors">
+                  <div className="flex items-center gap-2 bg-white/[0.03] border border-[#1e293b] rounded-lg md:rounded-xl px-3 py-2 flex-1 focus-within:border-white/20 transition-colors">
                     <div
                       className="w-4 h-4 rounded-full flex-shrink-0"
                       style={{ background: isValidHex(hexInput) ? hexInput : "#444" }}
@@ -544,12 +544,12 @@ function CreateCommunity() {
                       onChange={(e) => handleHexInput(e.target.value)}
                       placeholder="#0d9488"
                       maxLength={7}
-                      className="bg-transparent text-sm text-gray-200 placeholder-gray-600 focus:outline-none flex-1 font-mono"
+                      className="bg-transparent text-xs md:text-sm text-gray-200 placeholder-gray-600 focus:outline-none flex-1 font-mono"
                     />
                   </div>
                   <label className="cursor-pointer">
                     <div
-                      className="w-10 h-10 rounded-xl border-2 border-white/10 overflow-hidden flex-shrink-0"
+                      className="w-10 h-10 rounded-lg md:rounded-xl border-2 border-white/10 overflow-hidden flex-shrink-0"
                       style={{ background: form.colorTheme }}
                     />
                     <input
@@ -586,7 +586,7 @@ function CreateCommunity() {
                 <button
                   type="submit"
                   disabled={submitting || !form.name.trim()}
-                  className="flex items-center gap-2 text-xs font-semibold px-5 py-2.5 rounded-xl text-white disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                  className="flex items-center gap-2 text-xs font-semibold px-5 py-2.5 rounded-lg md:rounded-xl text-white disabled:opacity-40 disabled:cursor-not-allowed transition-all"
                   style={{
                     background: form.name.trim() && !submitting
                       ? gradient.from
@@ -618,9 +618,9 @@ function CreateCommunity() {
               <BannerPreview form={form} gradient={gradient} />
 
               {/* mini card summary */}
-              <div className="theme border border-[#1e293b] rounded-xl p-4 flex items-center gap-3">
+              <div className="theme border border-[#1e293b] rounded-lg md:rounded-xl p-4 flex items-center gap-3">
                 <div
-                  className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                  className="w-10 h-10 rounded-lg md:rounded-xl flex items-center justify-center flex-shrink-0"
                   style={{ background: `${gradient.from}22` }}
                 >
                   {(() => {
@@ -639,21 +639,21 @@ function CreateCommunity() {
               </div>
 
               {/* how it looks on the landing card */}
-              {/* <div className="theme border border-[#1e293b] rounded-xl overflow-hidden">
+              {/* <div className="theme border border-[#1e293b] rounded-lg md:rounded-xl overflow-hidden">
                 <div
                   className="px-4 pt-4 pb-3 flex items-center gap-3 relative"
                   style={{
                     background: `linear-gradient(135deg, ${gradient.from}, ${gradient.to})`,
                   }}
                 >
-                  <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
+                  <div className="w-9 h-9 rounded-lg md:rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
                     {(() => {
                       const Icon = TbIcons[form.icon] || TbBrain;
                       return <Icon className="text-white text-base" />;
                     })()}
                   </div>
                   <div className="min-w-0">
-                    <div className="text-white font-semibold text-sm truncate">
+                    <div className="text-white font-semibold text-xs md:text-sm truncate">
                       {form.name || "Community name"}
                     </div>
                     <div className="text-white/70 text-[10px]">Tech Domain</div>
