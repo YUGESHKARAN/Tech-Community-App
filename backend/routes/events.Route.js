@@ -6,7 +6,7 @@ const eventCtrl      = require("../controllers/events/event.Controller");
 const teamCtrl       = require("../controllers/events/team.Controller");
 const submissionCtrl = require("../controllers/events/submission.Controller");
 const judgingCtrl    = require("../controllers/events/judging.Controller");
-const manageCtrl     = require("../controllers/events/manage.Controller");
+const manageCtrl     = require("../controllers/events/eventManage.Controller");
 const partnerCtrl    = require("../controllers/events/partner.Controller");
 const mediaCtrl      = require("../controllers/events/media.Controller");
 

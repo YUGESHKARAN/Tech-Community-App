@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 // const { redisClient } = require('../../config/redis'); // adjust to your redis module
 const {redisClient} = require("../../middleware/redis")
 const {Author} = require('../../models/blogAuthorSchema');
-const { Event } = require('../../models/events/Event');
+const { Event } = require('../../models/events/event');
 const { trackActivity } = require('../../services/trackActivity');
 
 const EVENTS_POST_CATEGORY = 'Events';

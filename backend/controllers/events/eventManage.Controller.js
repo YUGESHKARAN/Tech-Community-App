@@ -1,4 +1,4 @@
-const { Event } = require('../../models/events/Event');
+const { Event } = require('../../models/events/event');
 const EventJudge = require('../../models/events/eventJudge');
 const Judgement = require('../../models/events/judgement');
 const Submission = require('../../models/events/submission');
