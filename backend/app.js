@@ -76,6 +76,7 @@ const performanceTrackerRouter = require("./routes/performanceTracker.Route");
 const directorAdvancedRouter = require("./routes/DirectorAdvanced.routes");
 
 const directorTeamRoutes = require('./routes/directorTeam.Route');
+const eventRoute = require("./routes/events.Route");
 
 
 app.use("/blog/login", loginRouter);
@@ -92,6 +93,7 @@ app.use("/bytes/directorAdvanced", directorAdvancedRouter);
 app.use("/bytes/discuss",discussionsRouter);
 app.use("/bytes/performanceTrack", performanceTrackerRouter);
 app.use('/bytes/directorTeam', directorTeamRoutes);
+app.use('/bytes/manage',eventRoute);
 
 
 app.get("/blog/notifications/stream/:email", async (req, res) => {
