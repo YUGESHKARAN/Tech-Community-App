@@ -1,7 +1,7 @@
 const crypto = require('crypto');
 const { S3Client, PutObjectCommand, HeadObjectCommand } = require('@aws-sdk/client-s3');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
-const EventMedia = require('../../models/events/EventMedia');
+const EventMedia = require('../../models/events/eventMedia');
 const Team = require('../../models/events/team');
 const {Event} = require('../../models/events/event');
 const {
