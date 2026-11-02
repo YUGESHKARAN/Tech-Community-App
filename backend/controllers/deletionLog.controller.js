@@ -12,6 +12,9 @@ const {
   adjustCommunityPostCounts,
   deletePostsAndSyncCommunityPostCounts,
 } = require("../services/communityPostCount");
+const {
+  deletePlaylistsAndSyncCollaboratorBadges,
+} = require("../services/badgeService");
 // const { DeleteObjectCommand } = require('@aws-sdk/client-s3');
 // const { s3, bucketName }      = require('../config/s3');
 
@@ -194,7 +197,10 @@ const deleteAuthor = async (req, res) => {
     await deletePostsAndSyncCommunityPostCounts({ authorId: author._id, tenantId });
 
     // 2.5 delete playlists
-    await TutorPlayList.deleteMany({ email: author.email, tenantId });
+    await deletePlaylistsAndSyncCollaboratorBadges({
+      email: author.email,
+      tenantId,
+    });
 
     // 2.6 sync Community memberCount and remove memberships
     const memberships = await CommunityMembership.find({
@@ -343,7 +349,10 @@ const deleteAuthorByAdmin = async (req, res) => {
     await deletePostsAndSyncCommunityPostCounts({ authorId: author._id, tenantId });
 
     // 2.5 delete playlists
-    await TutorPlayList.deleteMany({ email: author.email, tenantId });
+    await deletePlaylistsAndSyncCollaboratorBadges({
+      email: author.email,
+      tenantId,
+    });
 
     // 2.6 sync Community memberCount and remove memberships
     const memberships = await CommunityMembership.find({

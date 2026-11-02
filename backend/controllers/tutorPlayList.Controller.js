@@ -14,7 +14,10 @@ const {
 require("dotenv").config();
 
 const redisClient = require("../middleware/redis");
-const { checkAndAwardBadges } = require("../services/badgeService");
+const {
+  checkAndAwardBadges,
+  deletePlaylistsAndSyncCollaboratorBadges,
+} = require("../services/badgeService");
 const { NOTIFICATION_TYPES, buildNotificationUrl } = require("../models/services/notificationSchema");
 
 const bucketName = process.env.BUCKET_NAME;
@@ -740,6 +743,7 @@ const addTutorPlayList = async (req, res) => {
       checkAndAwardBadges(collabUser.email, ['collaborator'], {
         eventId:    tutorPlaylist._id,
         eventTitle: tutorPlaylist.title,
+        tenantId,
       }).catch(err => console.error("Badge check error:", err.message));
     }
 
@@ -926,8 +930,11 @@ const deleteTutorPlayList = async (req, res) => {
         console.log("Error deleting thumbnail from S3:", err);
       }
     }
-    const tutorPlayList = await TutorPlayList.findOneAndDelete({ _id: id, tenantId });
-    if (!tutorPlayList) {
+    const deleteResult = await deletePlaylistsAndSyncCollaboratorBadges({
+      _id: id,
+      tenantId,
+    });
+    if (!deleteResult.deletedCount) {
       return res.status(404).json({ message: "Playlist not found" });
     }
     res.status(200).json({ message: "Playlist deleted successfully" });

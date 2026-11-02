@@ -4,6 +4,7 @@ const { Author, Post } = require("../models/blogAuthorSchema");
 const TutorPlayList = require("../models/tutorPlaylistSchema");
 const DiscussionReply = require("../models/communityDiscussions/discussionsReplySchema");
 const { BADGE_DEFINITIONS, TIER_ORDER } = require('../utils/badgeDefinitions');
+const mongoose = require("mongoose");
 const { NOTIFICATION_TYPES, buildNotificationUrl } = require("../models/services/notificationSchema")
 const dotenv = require("dotenv");
 dotenv.config();
@@ -63,12 +64,107 @@ const getMilestoneTitle = (badgeId, tier, milestone) => {
   return titles[badgeId]?.[tier] || `Reached ${milestone}+ milestone`;
 };
 
+const recalculateCollaboratorBadge = async (authorEmail, tenantId, session) => {
+  const author = await Author.findOne({ email: { $eq: authorEmail }, tenantId })
+    .select("badges email")
+    .session(session)
+    .lean();
+
+  if (!author) return;
+
+  const playlists = await TutorPlayList.find({
+    tenantId,
+    "collaborators.email": author.email,
+  })
+    .select("_id")
+    .sort({ _id: 1 })
+    .session(session)
+    .lean();
+
+  const existingBadges = author.badges || [];
+  const existingBadge = existingBadges.find((badge) => badge.badgeId === "collaborator");
+  const existingHistory = new Map(
+    (existingBadge?.history || []).map((entry) => [entry.tier, entry]),
+  );
+  const thresholds = BADGE_DEFINITIONS.collaborator.thresholds;
+  const history = TIER_ORDER
+    .filter((tier) => playlists.length >= thresholds[tier].value)
+    .map((tier) => {
+      const threshold = thresholds[tier];
+      return {
+        tier,
+        awardedAt: existingHistory.get(tier)?.awardedAt || new Date(),
+        eventType: threshold.eventType,
+        eventId: playlists[threshold.value - 1]._id,
+        eventTitle: getMilestoneTitle("collaborator", tier, threshold.value),
+        milestone: threshold.value,
+      };
+    });
+
+  const badges = existingBadges.filter((badge) => badge.badgeId !== "collaborator");
+  if (history.length > 0) {
+    badges.push({
+      badgeId: "collaborator",
+      currentTier: history[history.length - 1].tier,
+      history,
+      count: history.length,
+    });
+  }
+
+  if (JSON.stringify(existingBadges) !== JSON.stringify(badges)) {
+    await Author.updateOne(
+      { _id: author._id, tenantId },
+      { $set: { badges } },
+      { session },
+    );
+  }
+};
+
+const deletePlaylistsAndSyncCollaboratorBadges = async (filter) => {
+  const session = await mongoose.startSession();
+  let result;
+
+  try {
+    await session.withTransaction(async () => {
+      const playlists = await TutorPlayList.find(filter)
+        .select("tenantId collaborators")
+        .session(session)
+        .lean();
+      result = await TutorPlayList.deleteMany(filter, { session });
+
+      if (!result.deletedCount) return;
+
+      const affectedAuthors = new Map();
+      for (const playlist of playlists) {
+        for (const collaborator of playlist.collaborators || []) {
+          const email = String(collaborator.email || "").trim();
+          if (!email || !playlist.tenantId) continue;
+
+          const key = JSON.stringify([playlist.tenantId, email.toLowerCase()]);
+          affectedAuthors.set(key, { email, tenantId: playlist.tenantId });
+        }
+      }
+
+      for (const { email, tenantId } of affectedAuthors.values()) {
+        await recalculateCollaboratorBadge(email, tenantId, session);
+      }
+    });
+  } finally {
+    await session.endSession();
+  }
+
+  return result;
+};
+
 
 const checkAndAwardBadges = async (authorEmail, badgeIds, eventContext = {}) => {
   console.log(badgeIds, "called");
 
   try {
-    const author = await Author.findOne({ email: { $eq: authorEmail } })
+    const authorFilter = { email: { $eq: authorEmail } };
+    if (eventContext.tenantId) authorFilter.tenantId = eventContext.tenantId;
+
+    const author = await Author.findOne(authorFilter)
       .select('badges posts followers email notification tenantId');
 
     if (!author) return;
@@ -95,7 +191,10 @@ const checkAndAwardBadges = async (authorEmail, badgeIds, eventContext = {}) => 
         { $limit: 1 },
       ]),
       Post.countDocuments({ authorId: author._id }),
-      TutorPlayList.countDocuments({ "collaborators.email": author.email }),
+      TutorPlayList.countDocuments({
+        tenantId: author.tenantId,
+        "collaborators.email": author.email,
+      }),
       DiscussionReply.countDocuments({
         tenantId: author.tenantId,
         authorId: author._id,
@@ -210,7 +309,7 @@ const checkAndAwardBadges = async (authorEmail, badgeIds, eventContext = {}) => 
 
     if (updated) {
       await Author.updateOne(
-        { email: { $eq: authorEmail } },
+        { _id: author._id, tenantId: author.tenantId },
         { $set: { badges: author.badges, notification: author.notification } }
       );
     }
@@ -222,4 +321,7 @@ const checkAndAwardBadges = async (authorEmail, badgeIds, eventContext = {}) => 
 
 
 
-module.exports = { checkAndAwardBadges };
+module.exports = {
+  checkAndAwardBadges,
+  deletePlaylistsAndSyncCollaboratorBadges,
+};
