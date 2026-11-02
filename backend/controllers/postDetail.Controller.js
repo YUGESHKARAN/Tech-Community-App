@@ -7,6 +7,7 @@ const {
 const {
   adjustCommunityPostCount,
 } = require("../services/communityPostCount");
+const TutorPlayList = require("../models/tutorPlaylistSchema");
 
 const path = require('path');
 
@@ -970,6 +971,11 @@ const deletePost = async (req, res) => {
           { session },
         );
         if (deleteResult.deletedCount) {
+          await TutorPlayList.updateMany(
+            { tenantId, post_ids: postToDelete._id },
+            { $pull: { post_ids: postToDelete._id } },
+            { session },
+          );
           await adjustCommunityPostCount(
             tenantId,
             postToDelete.category,
