@@ -1,5 +1,6 @@
 const Community = require("../models/communitySchema");
 const { Post } = require("../models/blogAuthorSchema");
+const TutorPlayList = require("../models/tutorPlaylistSchema");
 
 const categoryFilter = (tenantId, category) => ({
   tenantId,
@@ -130,10 +131,26 @@ const recalculateCommunityPostCountsForPosts = async (posts) => {
 };
 
 const deletePostsAndSyncCommunityPostCounts = async (filter) => {
-  const posts = await Post.find(filter).select("tenantId category").lean();
+  const posts = await Post.find(filter).select("_id tenantId category").lean();
   const result = await Post.deleteMany(filter);
 
   if (result.deletedCount) {
+    const postsByTenant = new Map();
+    for (const post of posts) {
+      const postIds = postsByTenant.get(post.tenantId) || [];
+      postIds.push(post._id);
+      postsByTenant.set(post.tenantId, postIds);
+    }
+
+    await Promise.all(
+      Array.from(postsByTenant, ([tenantId, postIds]) =>
+        TutorPlayList.updateMany(
+          { tenantId, post_ids: { $in: postIds } },
+          { $pull: { post_ids: { $in: postIds } } },
+        ),
+      ),
+    );
+
     if (result.deletedCount === posts.length) {
       await adjustCommunityPostCounts(posts, -1);
     } else {
