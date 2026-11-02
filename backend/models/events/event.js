@@ -331,7 +331,7 @@ eventSchema.index({ tenantId: 1, category: 1, 'schedule.eventStartsAt': -1 });
 eventSchema.index({ tenantId: 1, 'organizers.authorId': 1 });
 
 module.exports = {
-  Event: mongoose.model('Event', eventSchema),
+  Event: mongoose.models.Event || mongoose.model('Event', eventSchema),
   EVENT_STATUS_FIELDS,
   EVENT_CATEGORIES,
   PARTICIPATION_TYPES,

@@ -3,7 +3,7 @@ const { S3Client, PutObjectCommand, HeadObjectCommand } = require('@aws-sdk/clie
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 const EventMedia = require('../../models/events/EventMedia');
 const Team = require('../../models/events/team');
-const Event = require('../../models/events/event').Event;
+const {Event} = require('../../models/events/event');
 const {
   httpError,
   sendError,
