@@ -45,10 +45,14 @@ const upsertSubmission = async (req, res) => {
 
     const body = req.body || {};
     const title = (body.title || '').trim();
+    const summary = (body.summary || '').trim();
+    if (summary.length < 20) throw httpError(400, 'Project summary must be at least 20 characters');
+
     if (!title) throw httpError(400, 'Title is required');
     const description = (body.description || '').trim();
 
     const fields = {
+      summary,
       repoUrl: body.repoUrl?.trim() || null,
       demoUrl: body.demoUrl?.trim() || null,
       presentationKey: body.presentationKey || null,

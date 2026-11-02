@@ -29,6 +29,7 @@ const submissionSchema = new mongoose.Schema(
     postId:       { type: mongoose.Schema.Types.ObjectId, ref: 'Post', default: null },
     submittedBy:  { type: mongoose.Schema.Types.ObjectId, ref: 'Author', required: true },
 
+    summary: { type: String, trim: true, minlength: 20, maxlength: 1000, default: null },
     repoUrl:      { type: String, trim: true, default: null, validate: httpsUrl },
     demoUrl:      { type: String, trim: true, default: null, validate: httpsUrl },
     presentationKey: { type: String, default: null }, // S3 key
