@@ -1,10 +1,14 @@
 const express = require("express");
 const router = express.Router();
 
+// Controller filenames follow the project's *.Controller.js convention.
 const eventCtrl      = require("../controllers/events/event.Controller");
 const teamCtrl       = require("../controllers/events/team.Controller");
 const submissionCtrl = require("../controllers/events/submission.Controller");
-const judgingCtrl    = require("../controllers/events/submission.Controller");
+const judgingCtrl    = require("../controllers/events/judging.Controller");
+const manageCtrl     = require("../controllers/events/manage.Controller");
+const partnerCtrl    = require("../controllers/events/partner.Controller");
+const mediaCtrl      = require("../controllers/events/media.Controller");
 
 const { limiter, readLimiter } = require("../middleware/rateLimitter");
 const authenticateToken        = require("../middleware/authMiddleware");
@@ -18,12 +22,19 @@ const judgeOrAuth = (req, res, next) =>
     ? next()
     : authenticateToken(req, res, next);
 
+// Mounted at /bytes/manage, so full paths are /bytes/manage/events/...
+
 // ── events ───────────────────────────────────────────────────────────────────
 router.get("/events", readLimiter, authenticateToken, eventCtrl.listEvents);
 router.post("/events", limiter, authenticateToken, requireAdmin, eventCtrl.createEvent);
+router.get("/events/me/invites", readLimiter, authenticateToken, manageCtrl.listMyInvites);
+router.get("/events/teams/:teamId", readLimiter, authenticateToken, manageCtrl.getTeam);
 router.get("/events/:eventId", readLimiter, authenticateToken, eventCtrl.getEvent);
 router.patch("/events/:eventId", limiter, authenticateToken, eventCtrl.updateEvent);
+router.get("/events/:eventId/me", readLimiter, authenticateToken, manageCtrl.getMyEventStatus);
 router.post("/events/:eventId/cancel", limiter, authenticateToken, eventCtrl.cancelEvent);
+
+// ── organizers ───────────────────────────────────────────────────────────────
 router.post("/events/:eventId/organizers", limiter, authenticateToken, eventCtrl.addOrganizer);
 router.delete("/events/:eventId/organizers/:authorId", limiter, authenticateToken, eventCtrl.removeOrganizer);
 
@@ -43,9 +54,12 @@ router.delete("/events/invites/:inviteId", limiter, authenticateToken, teamCtrl.
 // ── submissions ──────────────────────────────────────────────────────────────
 router.get("/events/:eventId/submission", readLimiter, authenticateToken, submissionCtrl.getMySubmission);
 router.put("/events/:eventId/submission", limiter, authenticateToken, submissionCtrl.upsertSubmission);
+router.get("/events/:eventId/submissions", readLimiter, authenticateToken, manageCtrl.listSubmissions);
 
 // ── judging ──────────────────────────────────────────────────────────────────
+router.get("/events/:eventId/judges", readLimiter, authenticateToken, manageCtrl.listJudges);
 router.post("/events/:eventId/judges", limiter, authenticateToken, judgingCtrl.addJudge);
+router.delete("/events/:eventId/judges/:judgeId", limiter, authenticateToken, manageCtrl.revokeJudge);
 router.post("/events/judge/redeem", limiter, judgingCtrl.redeemJudgeToken); // public, token-gated
 router.get("/events/:eventId/judging/queue", readLimiter, judgeOrAuth, judgingCtrl.judgingQueue);
 router.post(
@@ -54,7 +68,26 @@ router.post(
   judgeOrAuth,
   judgingCtrl.submitJudgement
 );
+
+// ── results ──────────────────────────────────────────────────────────────────
 router.post("/events/:eventId/results/publish", limiter, authenticateToken, judgingCtrl.publishResults);
 router.get("/events/:eventId/results", readLimiter, authenticateToken, judgingCtrl.getResults);
+
+// ── partners ─────────────────────────────────────────────────────────────────
+router.get("/partners", readLimiter, authenticateToken, partnerCtrl.listPartners);
+router.post("/partners", limiter, authenticateToken, requireAdmin, partnerCtrl.createPartner);
+router.patch("/partners/:partnerId", limiter, authenticateToken, requireAdmin, partnerCtrl.updatePartner);
+router.delete("/partners/:partnerId", limiter, authenticateToken, requireAdmin, partnerCtrl.deactivatePartner);
+
+router.post("/events/:eventId/partners", limiter, authenticateToken, partnerCtrl.attachPartner);
+router.patch("/events/:eventId/partners/:partnerId", limiter, authenticateToken, partnerCtrl.updateEventPartner);
+router.delete("/events/:eventId/partners/:partnerId", limiter, authenticateToken, partnerCtrl.detachPartner);
+
+// ── media and uploads ────────────────────────────────────────────────────────
+router.post("/events/:eventId/uploads", limiter, authenticateToken, mediaCtrl.createUpload);
+router.get("/events/:eventId/media", readLimiter, authenticateToken, mediaCtrl.listMedia);
+router.post("/events/:eventId/media/:mediaId/confirm", limiter, authenticateToken, mediaCtrl.confirmMedia);
+router.patch("/events/:eventId/media/:mediaId", limiter, authenticateToken, mediaCtrl.updateMedia);
+router.delete("/events/:eventId/media/:mediaId", limiter, authenticateToken, mediaCtrl.deleteMedia);
 
 module.exports = router;
