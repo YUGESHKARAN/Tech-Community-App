@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import NavBar from "../ui/NavBar";
 
 import { useAuth } from "../AuthContext";
@@ -26,6 +26,7 @@ import { IoClose } from "react-icons/io5";
 import useGetFollowersDetails from "../hooks/useGetFollowersDetails";
 import useStreak from "../hooks/performanceTracker/useStreak";
 import PerformanceTracker from "../components/performancetracker/PerformanceTracker";
+import ProfilePictureCropper from "../components/ProfilePictureCropper";
 
 function ProfilePage() {
   const { logout } = useAuth();
@@ -36,13 +37,14 @@ function ProfilePage() {
   const [author, setAuthor] = useState({});
   const [authorName, setAuthorName] = useState("");
   const [authorEmail, setAuthorEmail] = useState("");
-  const [image, setImage] = useState("");
+  const [profileFile, setProfileFile] = useState(null);
   const [followers, setFollowers] = useState([]);
   const [following, setFollowing] = useState([]);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
+  const [cropFile, setCropFile] = useState(null);
   const [bioDescription, setBioDescription] = useState("");
   const [editProfile, setEditProfile] = useState(false);
   const authorId = getItem("authorId");
@@ -114,7 +116,6 @@ function ProfilePage() {
       setAuthorName(authorData.authorname);
       setAuthorEmail(authorData.email);
       setAuthor(response.data);
-      setImage(response.data.profile);
       setFollowers(authorData.followers);
       setFollowing(authorData.following);
       setProfileLinks(authorData.personalLinks);
@@ -130,15 +131,28 @@ function ProfilePage() {
     fetchAuthor();
   }, []);
 
-  const onImageChange = (e) => {
-    setImage(e.target.files[0]);
-    setUpdateButton(true);
+  useEffect(() => {
+    return () => {
+      if (previewImage) URL.revokeObjectURL(previewImage);
+    };
+  }, [previewImage]);
 
-    const file = e.target.files[0];
-    if (file) {
-      setPreviewImage(URL.createObjectURL(file));
-      // You can also send this file to backend here if needed
+  const onImageChange = (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      toast.error("Invalid image", "Please select an image file.");
+      return;
     }
+    setCropFile(file);
+  };
+
+  const handleCropComplete = (croppedFile) => {
+    setProfileFile(croppedFile);
+    setPreviewImage(URL.createObjectURL(croppedFile));
+    setUpdateButton(true);
+    setCropFile(null);
   };
 
   const handleSubmit = async (e) => {
@@ -152,9 +166,7 @@ function ProfilePage() {
     formData.append("links", JSON.stringify(links));
     formData.append("bio", bioDescription);
 
-    if (image !== "") {
-      formData.append("profile", image);
-    }
+    if (profileFile) formData.append("profile", profileFile);
 
     try {
       const response = await axiosInstance.put(
@@ -167,9 +179,12 @@ function ProfilePage() {
         // navigate("/home"); // Redirect to the homepage
         console.log("response", response.data)
         toast.success("Updated !", "Account details updated successfully");
-        if (image !== "") {
-          formData.append("profile", image);
-          storeItem("profile", response.data.data.profile);
+        if (profileFile) {
+          const savedProfile = response.data.data.profile;
+          storeItem("profile", savedProfile);
+          setAuthor((current) => ({ ...current, profile: savedProfile }));
+          setProfileFile(null);
+          setPreviewImage(null);
         }
         setLinks([]);
         fetchAuthor();
@@ -377,7 +392,8 @@ function ProfilePage() {
                 {/* Avatar */}
 
                 <div className="flex items-start md:items-center md:flex-col mt-9 w-full  justify-start gap-1.5 md:gap-2">
-                <div className="relative md:w-24 w-16 shrink-0 ">
+                <div className="flex shrink-0 flex-col items-center gap-2">
+                <div className="relative md:w-24 w-16">
                   {previewImage ? (
                     <img
                       src={previewImage}
@@ -396,24 +412,26 @@ function ProfilePage() {
                     </div>
                   )}
                   {editProfile && (
-                    <>
-                      {" "}
-                      <label
-                        htmlFor="image"
-                        className="absolute bottom-1 right-1 w-4 h-4 flex items-center justify-center bg-gray-700 hover:bg-gray-600 border border-white/10 text-emerald-400 rounded-full cursor-pointer transition-colors"
-                        title="Change photo"
-                      >
-                        <MdEdit className="text-xs" />
-                      </label>
-                      <input
-                        type="file"
-                        id="image"
-                        accept="image/*"
-                        onChange={onImageChange}
-                        className="hidden"
-                      />
-                    </>
+                    <label
+                      htmlFor="profile-picture-input"
+                      aria-label="Upload and edit profile picture"
+                      className="absolute bottom-1 right-1 flex h-5 w-5 cursor-pointer items-center justify-center rounded-full border border-white/10 bg-gray-700 text-emerald-400"
+                    >
+                      <MdEdit className="text-xs" />
+                    </label>
                   )}
+                </div>
+                {editProfile && (
+                  <div className="flex flex-col gap-1.5">
+                    <input
+                      type="file"
+                      id="profile-picture-input"
+                      accept="image/*"
+                      onChange={onImageChange}
+                      className="hidden"
+                    />
+                  </div>
+                )}
                 </div>
 
                 {/* Name */}
@@ -972,6 +990,14 @@ function ProfilePage() {
           <ProfilePageSkeleton />
         )}
 
+
+        {cropFile && (
+          <ProfilePictureCropper
+            file={cropFile}
+            onCancel={() => setCropFile(null)}
+            onCrop={handleCropComplete}
+          />
+        )}
 
         {/* ── Delete confirm modal ──────────────────────────────────── */}
         {showConfirm && (
