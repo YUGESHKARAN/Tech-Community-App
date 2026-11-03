@@ -193,7 +193,7 @@ function ViewSingleAuthor() {
             {/* ── Two-column layout ─────────────────────────────────── */}
             <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] gap-4 mt-4 md:mt-0 mb-3 items-start">
               {/* ══ LEFT — Profile card ══════════════════════════════ */}
-              <div className="bg-gray-900/50 relative border border-white/[0.09] md:border-white/[0.1] rounded-2xl p-6  text-center">
+              <div className="bg-gray-900/50 relative border border-white/[0.09] md:border-white/[0.1] rounded-lg md:rounded-2xl p-6  text-center">
 
              <div className="flex items-start md:items-center md:flex-col mt-9 w-full  justify-start gap1.5 md:gap-2">
                 {/* Avatar */}
@@ -376,7 +376,7 @@ function ViewSingleAuthor() {
               </div>
 
               {/* ══ RIGHT — Info panel ═══════════════════════════════ */}
-              <div className="bg-gray-900/50 border border-white/[0.09] md:border-white/[0.1] rounded-2xl p-6 md:p-8">
+              <div className="bg-gray-900/50 border border-white/[0.09] md:border-white/[0.1] rounded-lg md:rounded-2xl p-6 md:p-8">
                 <div className="grid md:grid-cols-1 gap-6">
 
                   <div className="space-y-5">
@@ -609,7 +609,7 @@ function ViewSingleAuthor() {
                                 className="
                                         flex items-center gap-2
                                         md:px-3 px-1 py-1.5
-                                        rounded-2xl
+                                        rounded-lg md:rounded-2xl
                                         hover:bg-white/[0.03]
                                         transition-all
                                         group

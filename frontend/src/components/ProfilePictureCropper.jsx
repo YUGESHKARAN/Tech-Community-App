@@ -154,7 +154,7 @@ function ProfilePictureCropper({ file, onCancel, onCrop }) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="profile-picture-crop-title"
-        className="theme w-full max-w-md rounded-2xl border border-white/10 p-5 shadow-2xl md:p-6"
+        className="theme w-full max-w-md rounded-lg bg-gray-900 md:rounded-xl border border-white/10 p-5 shadow-2xl md:p-6"
       >
         <div className="mb-5 flex items-start justify-between gap-4">
           <div>

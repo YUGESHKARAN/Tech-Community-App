@@ -389,7 +389,7 @@ function ProfilePage() {
             {/* ── Two-column layout ─────────────────────────────────── */}
             <div className="grid grid-cols-1 md:grid-cols-[300px_1fr]  md:gap-4 mt-4 md:mt-0 mb-3 items-start">
               {/* ══ LEFT — Profile card ══════════════════════════════ */}
-              <div className="md:sticky md:top-6 relative self-start theme/50 border md:border-white/[0.1] border-white/[0.09] rounded-2xl mt-0 p-6 pb-3 text-center">
+              <div className="md:sticky md:top-6 relative self-start theme/50 border md:border-white/[0.1] border-white/[0.09] rounded-lg md:rounded-2xl mt-0 p-6 pb-3 text-center">
                 {/* Avatar */}
 
                 <div className="flex items-start md:items-center md:flex-col mt-9 w-full  justify-start gap-1.5 md:gap-2">
@@ -622,7 +622,7 @@ function ProfilePage() {
               {/* ══ RIGHT — Form ═ ════════════════════════════════════ */}
               <form
                 onSubmit={handleSubmit}
-                className="theme/50 border border-white/[0.09] md:border-white/[0.1] rounded-2xl mt-4 md:mt-0  p-6 "
+                className="theme/50 border border-white/[0.09] md:border-white/[0.1] rounded-lg md:rounded-2xl mt-4 md:mt-0  p-6 "
               >
                 <div className="md:grid flex flex-col md:grid-cols-1 gap-6">
                   
@@ -1003,7 +1003,7 @@ function ProfilePage() {
         {/* ── Delete confirm modal ──────────────────────────────────── */}
         {showConfirm && (
           <div className="fixed h-full inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm px-4">
-            <div className="w-full max-w-sm theme border border-white/[0.08] rounded-2xl shadow-2xl p-6">
+            <div className="w-full max-w-sm theme border border-white/[0.08] rounded-lg md:rounded-2xl shadow-2xl p-6">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-9 h-9 flex items-center justify-center rounded-xl bg-red-500/10 border border-red-500/20">
                   <RiDeleteBin6Line className="text-red-400 text-base" />
@@ -1165,7 +1165,7 @@ function ProfilePage() {
                           className="
                                   flex items-center gap-2
                                   md:px-3 px-1 py-1.5
-                                  rounded-2xl
+                                  rounded-lg md:rounded-2xl
                                   hover:bg-white/[0.03]
                                   transition-all
                                   group
