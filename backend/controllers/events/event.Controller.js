@@ -59,7 +59,8 @@ const createEvent = async (req, res) => {
       title: body.title,
       overview: body.overview,
       category: body.category,
-      schedule: body.schedule,
+      // themeRevealAt defaults to the creation time unless the organizer sets one
+      schedule: { ...body.schedule, themeRevealAt: body.schedule?.themeRevealAt || new Date() },
       participation: body.participation,
       capacity: body.capacity,
       themes: body.themes,
@@ -136,16 +137,23 @@ const listEvents = async (req, res) => {
 // ── GET /bytes/events/:eventId ───────────────────────────────────────────────
 const getEvent = async (req, res) => {
   try {
+    const me = await resolveAuthor(req);
     const event = await loadEvent(req.params.eventId, req.user.tenantId);
     const partners = await EventPartner.find({ eventId: event._id })
       .sort({ order: 1 })
       .populate('partnerId', 'name logoKey website')
       .lean();
 
-    return res.status(200).json({
-      event: { ...event.toObject(), status: Event.computeStatus(event) },
-      partners,
-    });
+    const isOrganizer = event.organizers.some((o) => String(o.authorId) === String(me._id));
+    const revealed = Event.themesVisible(event);
+
+    const payload = { ...event.toObject(), status: Event.computeStatus(event) };
+    payload.themeRevealAt = Event.themeRevealDate(event);
+    payload.themesRevealed = revealed;
+    // Participants don't see themes until the reveal time. Organizers always do.
+    if (!revealed && !isOrganizer) payload.themes = [];
+
+    return res.status(200).json({ event: payload, partners });
   } catch (err) {
     return sendError(res, err, 'getEvent');
   }
@@ -161,8 +169,26 @@ const updateEvent = async (req, res) => {
     const status = Event.computeStatus(event);
     if (status === 'ended' || status === 'cancelled') throw httpError(409, `Event is ${status}`);
 
-    const body = req.body || {};
+    const body = { ...(req.body || {}) };
     const keys = Object.keys(body).filter((k) => EDITABLE.includes(k));
+
+    // A partial schedule keeps the fields that weren't sent, including themeRevealAt.
+    if (body.schedule) {
+      body.schedule = { ...event.schedule.toObject(), ...body.schedule };
+    }
+
+    // Once themes are visible, they and their reveal time are locked.
+    const revealed = Event.themesVisible(event);
+    if (revealed && body.themes !== undefined) {
+      throw httpError(409, 'Themes are already revealed and can no longer change');
+    }
+    if (
+      revealed &&
+      body.schedule &&
+      new Date(body.schedule.themeRevealAt).getTime() !== new Date(Event.themeRevealDate(event)).getTime()
+    ) {
+      throw httpError(409, 'The theme reveal time can no longer change');
+    }
 
     // schedule and participation are frozen once registration closes
     if ((body.schedule || body.participation) && !['upcoming', 'registration_open'].includes(status)) {

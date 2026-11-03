@@ -58,6 +58,9 @@ const scheduleSchema = new mongoose.Schema(
     judgingStartsAt:      { type: Date, required: true },
     judgingEndsAt:        { type: Date, required: true },
     resultsPublishAt:     { type: Date, required: true },
+    // when themes become visible to participants. Defaults to the creation time,
+    // so themes are visible straight away unless the organizer sets a later time.
+    themeRevealAt:        { type: Date, default: Date.now },
   },
   { _id: false }
 );
@@ -237,6 +240,9 @@ eventSchema.pre('validate', function () {
     if (!ordered(s.judgingEndsAt, s.resultsPublishAt)) {
       this.invalidate('schedule.resultsPublishAt', 'must be on or after judgingEndsAt');
     }
+    if (s.themeRevealAt && s.eventStartsAt && !ordered(s.themeRevealAt, s.eventStartsAt)) {
+      this.invalidate('schedule.themeRevealAt', 'must be on or before eventStartsAt');
+    }
   }
 
   // team size range only applies to team events
@@ -318,6 +324,22 @@ eventSchema.statics.cancellationBlocker = function (event, now = new Date()) {
   return null;
 };
 
+/**
+ * The time themes become visible. Falls back to createdAt for documents saved
+ * before schedule.themeRevealAt existed.
+ */
+eventSchema.statics.themeRevealDate = function (event) {
+  return event.schedule?.themeRevealAt || event.createdAt || null;
+};
+
+/**
+ * True once `now` has reached the theme reveal time.
+ */
+eventSchema.statics.themesVisible = function (event, now = new Date()) {
+  const at = this.themeRevealDate(event);
+  return Boolean(at) && new Date(now).getTime() >= new Date(at).getTime();
+};
+
 // ── Indexes ──────────────────────────────────────────────────────────────────
 
 // slug is unique within a tenant, not globally
@@ -331,7 +353,7 @@ eventSchema.index({ tenantId: 1, category: 1, 'schedule.eventStartsAt': -1 });
 eventSchema.index({ tenantId: 1, 'organizers.authorId': 1 });
 
 module.exports = {
-  Event: mongoose.models.Event || mongoose.model('Event', eventSchema),
+  Event: mongoose.model('Event', eventSchema),
   EVENT_STATUS_FIELDS,
   EVENT_CATEGORIES,
   PARTICIPATION_TYPES,
