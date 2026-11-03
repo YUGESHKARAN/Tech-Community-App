@@ -23,6 +23,7 @@ import ProfilePageSkeleton from "../components/loaders/ProfilePageSkeleton";
 import PerformanceTracker from "../components/performancetracker/PerformanceTracker";
 import useStreak from "../hooks/performanceTracker/useStreak";
 import { isImpersonating } from "../hooks/director/Useimpersonation";
+import ProfilePicturePreview from "../components/ProfilePicturePreview";
 
 function ViewSingleAuthor() {
   const { email } = useParams();
@@ -198,7 +199,7 @@ function ViewSingleAuthor() {
                 {/* Avatar */}
                 <div className="relative md:w-24 w-16 shrink-0">
                   {author.profile ? (
-                    <img
+                    <ProfilePicturePreview
                       src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`}
                       alt="Profile"
                       className="w-14 h-14 md:w-24 md:h-24 rounded-full object-cover  border md:border-2 border-emerald-500/60"

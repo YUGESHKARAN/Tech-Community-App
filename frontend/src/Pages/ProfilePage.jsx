@@ -27,6 +27,7 @@ import useGetFollowersDetails from "../hooks/useGetFollowersDetails";
 import useStreak from "../hooks/performanceTracker/useStreak";
 import PerformanceTracker from "../components/performancetracker/PerformanceTracker";
 import ProfilePictureCropper from "../components/ProfilePictureCropper";
+import ProfilePicturePreview from "../components/ProfilePicturePreview";
 
 function ProfilePage() {
   const { logout } = useAuth();
@@ -395,13 +396,13 @@ function ProfilePage() {
                 <div className="flex shrink-0 flex-col items-center gap-2">
                 <div className="relative md:w-24 w-16">
                   {previewImage ? (
-                    <img
+                    <ProfilePicturePreview
                       src={previewImage}
                       alt="Preview"
                       className="w-14 h-14 md:w-24 md:h-24 rounded-full object-cover border md:border-2 border-emerald-500/60"
                     />
                   ) : author.profile ? (
-                    <img
+                    <ProfilePicturePreview
                       src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`}
                       alt="Profile"
                       className="w-14 h-14 md:w-24 md:h-24 rounded-full object-cover border md:border-2 border-emerald-500/60"
