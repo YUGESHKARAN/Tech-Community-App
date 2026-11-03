@@ -379,7 +379,7 @@ function TechCommunityLanding() {
                         style={{
                           marginLeft: i === 0 ? 0 : "-6px",
                         }}
-                        className="h-7 min-w-7 rounded-full border border-teal-600 bg-gray-400"
+                        className="h-7 min-w-7 object-cover rounded-full border border-teal-600 bg-gray-400"
                       />
                     ) : (
                       <div
@@ -769,7 +769,7 @@ function TechCommunityLanding() {
                             key={c.email}
                             src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${c.profile}`}
                             alt={c.name}
-                            className="h-6 w-6 rounded-full border border-teal-600 theme"
+                            className="h-6 w-6 rounded-full border object-cover border-teal-600 theme"
                           />
                         ) : (
                           <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-[9px] font-semibold text-gray-200 flex-shrink-0">
