@@ -41,6 +41,8 @@ import CreateCommunity from "./Pages/CreateCommunity.jsx";
 import DirectorTenantsPage from "./Pages/director/DirectorTenantsPage.jsx";
 import ImpersonationBanner from "./Pages/director/ImpersonationBanner.jsx";
 import DirectorTeamPage from "./Pages/director/DirectorTeamPage.jsx";
+import EventsBrowsePage from "./Pages/event/EventsBrowsePage.jsx";
+import EventDetailPage from "./Pages/event/EventDetailPage.jsx";
 function App() {
   // Updated route definitions
 const DIRECTOR_ROLES = ["super_director", "director", "readonly_director"];
@@ -254,6 +256,16 @@ const DIRECTOR_ROLES = ["super_director", "director", "readonly_director"];
               <Route
                 path="/discussion/:communityId/:discussionId"
                 element={<ProtectedRoute element={<ViewDiscussion />} />}
+              />
+
+               <Route
+                path="/events"
+                element={<ProtectedRoute element={<EventsBrowsePage />} />}
+              />
+
+               <Route
+                path="/events/:id"
+                element={<ProtectedRoute element={<EventDetailPage />} />}
               />
 
             
