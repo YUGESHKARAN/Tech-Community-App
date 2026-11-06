@@ -3,7 +3,7 @@ import React from "react";
 
 const DiscussionDetailSkeleton = () => {
   return (
-    <div className="relative theme border border-[#1e293b] rounded-2xl overflow-hidden mb-4">
+    <div className="relative theme border border-[#1e293b] rounded-lg overflow-hidden mb-4">
       {/* shimmer overlay */}
       <div className="pointer-events-none absolute inset-0 z-10 overflow-hidden">
         <div
