@@ -408,7 +408,7 @@ const ComposeBox = ({
 
   return (
     <div
-      className="theme border border-[#1e293b] rounded-lg md:rounded-xl overflow-hidden
+      className="theme border border-[#1e293b] rounded-lg  overflow-hidden
                     focus-within:border-white/15 transition-colors"
     >
       {/* ── tab bar + toolbar ── */}
@@ -795,7 +795,7 @@ const ReplyCard = ({
 
   return (
     <div
-      className={`border rounded-xl p-4 transition-all ${
+      className={`border rounded-lg p-4 transition-all ${
         isAccepted
           ? " border-green-900 bg-green-800/10"
           : "border-[#1e293b] theme"

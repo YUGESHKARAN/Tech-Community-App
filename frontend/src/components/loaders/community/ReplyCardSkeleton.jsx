@@ -2,7 +2,7 @@ import React from "react";
 
 const ReplyCardSkeleton = () => {
   return (
-    <div className="relative theme border border-[#1e293b] rounded-xl p-4 overflow-hidden">
+    <div className="relative theme border border-[#1e293b] rounded-lg p-4 overflow-hidden">
       {/* Shimmer */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div
