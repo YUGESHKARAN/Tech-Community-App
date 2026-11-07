@@ -197,7 +197,7 @@ function ViewSingleAuthor() {
 
              <div className="flex items-start md:items-center md:flex-col mt-9 w-full  justify-start gap1.5 md:gap-2">
                 {/* Avatar */}
-                <div className="relative md:w-24 w-16 shrink-0">
+                <div className="md:w-24 w-16 shrink-0">
                   {author.profile ? (
                     <ProfilePicturePreview
                       src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${author.profile}`}

@@ -171,7 +171,7 @@ function ProfilePictureCropper({ file, onCancel, onCrop }) {
           <button
             type="button"
             onClick={onCancel}
-            className="rounded-lg px-2 py-1 text-sm text-gray-400 hover:bg-white/5 hover:text-white"
+            className="rounded-lg px-2 py-1 text-xs md:text-sm text-gray-400 hover:bg-white/5 hover:text-white"
             aria-label="Cancel picture crop"
           >
             ✕
