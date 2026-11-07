@@ -9,8 +9,8 @@ import {
 } from '../utils/authToken';
 
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:3000/',
-  // baseURL: 'https://node-blog-app-seven.vercel.app/',
+  // baseURL: 'http://localhost:3000/',
+  baseURL: 'https://node-blog-app-seven.vercel.app/',
 });
 
 // Request Interceptor
