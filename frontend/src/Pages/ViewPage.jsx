@@ -2658,63 +2658,63 @@ function ViewPage() {
               showAssistant ? "visible opacity-100" : "invisible opacity-0"
             }`}
           />
-          <AnimatePresence>
-            {showAssistant && (
-              <motion.div
-                key="ai-panel"
-                initial={
-                  isAssistantMobileViewport
-                    ? { opacity: 1, y: "100%" }
-                    : { opacity: 0, y: 24, scale: 0.94 }
-                }
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={
-                  isAssistantMobileViewport
-                    ? { opacity: 1, y: "100%" }
-                    : { opacity: 0, y: 24, scale: 0.94 }
-                }
-                transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                style={{ transformOrigin: "bottom right" }}
-                className="
-                  fixed bottom-0 left-0 right-0 z-[60] md:z-40
-                  flex w-full max-h-[75vh] flex-col overflow-hidden
-                  rounded-t-2xl border border-neutral-700/70
-                  shadow-2xl shadow-black/60
-                  md:bottom-24 md:left-auto md:right-6
-                  md:w-[420px] md:max-h-[640px] md:rounded-2xl
-                "
+          <motion.div
+            initial={false}
+            animate={
+              showAssistant
+                ? { opacity: 1, y: 0, scale: 1, visibility: "visible" }
+                : {
+                    ...(isAssistantMobileViewport
+                      ? { opacity: 1, y: "100%", scale: 1 }
+                      : { opacity: 0, y: 24, scale: 0.94 }),
+                    transitionEnd: { visibility: "hidden" },
+                  }
+            }
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            aria-hidden={!showAssistant}
+            style={{
+              transformOrigin: "bottom right",
+              pointerEvents: showAssistant ? "auto" : "none",
+            }}
+            className="
+              fixed bottom-0 left-0 right-0 z-[60] md:z-40
+              flex w-full max-h-[75vh] flex-col overflow-hidden
+              rounded-t-2xl border border-neutral-700/70
+              shadow-2xl shadow-black/60
+              md:bottom-24 md:left-auto md:right-6
+              md:w-[420px] md:max-h-[640px] md:rounded-2xl
+            "
+          >
+            {/* <div className="flex items-center justify-between px-4 py-2.5 border-b border-neutral-800 shrink-0">
+              <div className="flex items-center gap-2">
+                <img
+                  src={logoicon}
+                  className="w-5 h-5 object-contain rounded-full"
+                  alt=""
+                />
+                <span className="text-sm font-semibold text-gray-200">
+                  Tech Assistant
+                </span>
+              </div>
+              <button
+                onClick={() => setShowAssistant(false)}
+                className="p-1.5 rounded-md text-gray-500 hover:text-gray-200 hover:bg-white/5 transition-colors"
+                aria-label="Close assistant"
               >
-                {/* <div className="flex items-center justify-between px-4 py-2.5 border-b border-neutral-800 shrink-0">
-                  <div className="flex items-center gap-2">
-                    <img
-                      src={logoicon}
-                      className="w-5 h-5 object-contain rounded-full"
-                      alt=""
-                    />
-                    <span className="text-sm font-semibold text-gray-200">
-                      Tech Assistant
-                    </span>
-                  </div>
-                  <button
-                    onClick={() => setShowAssistant(false)}
-                    className="p-1.5 rounded-md text-gray-500 hover:text-gray-200 hover:bg-white/5 transition-colors"
-                    aria-label="Close assistant"
-                  >
-                    <IoClose className="text-base" />
-                  </button>
-                </div> */}
+                <IoClose className="text-base" />
+              </button>
+            </div> */}
 
-                <div className="flex-1 overflow-y-auto scrollbar-hide">
-                  <AITechAssistant
-                    currentPostId={singlePostData._id}
-                    category={singlePostData.category}
-                    viewComments={viewComments}
-                    setShowAssistant={setShowAssistant}
-                  />
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+            <div className="flex-1 overflow-y-auto scrollbar-hide">
+              <AITechAssistant
+                key={singlePostData._id}
+                currentPostId={singlePostData._id}
+                category={singlePostData.category}
+                viewComments={viewComments}
+                setShowAssistant={setShowAssistant}
+              />
+            </div>
+          </motion.div>
 
           <motion.button
             onClick={() => setShowAssistant((v) => !v)}
