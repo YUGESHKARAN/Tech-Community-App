@@ -394,7 +394,7 @@ function ProfilePage() {
 
                 <div className="flex items-start md:items-center md:flex-col mt-9 w-full  justify-start gap-1.5 md:gap-2">
                 <div className="flex shrink-0 flex-col items-center gap-2">
-                <div className="relative md:w-24 w-16">
+                <div className="md:w-24 w-16">
                   {previewImage ? (
                     <ProfilePicturePreview
                       src={previewImage}

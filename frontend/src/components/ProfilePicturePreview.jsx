@@ -53,9 +53,9 @@ function ProfilePicturePreview({ src, alt, className }) {
                 type="button"
                 onClick={() => setIsOpen(false)}
                 aria-label="Close image preview"
-                className="absolute -right-3 -top-3 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-gray-900 text-white shadow-lg transition-colors hover:bg-gray-800"
+                className="absolute -right-5 md:-right-7 -top-3 z-10 flex md:h-8 w-7 h-7 md:w-8 items-center justify-center rounded-full border border-white/15 bg-gray-900 text-white shadow-lg transition-colors hover:bg-gray-800"
               >
-                <IoClose size={20} />
+                <IoClose className="text-sm md:text-base" />
               </button>
               <img
                 src={src}
