@@ -244,7 +244,7 @@ return (
                           key={collab._id}
                           src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${collab.profile}`}
                           alt={collab.name}
-                          className="h-6 w-6 rounded-full border border-teal-600 bg-gray-400"
+                          className="h-6 w-6 object-cover rounded-full border border-teal-600 bg-gray-400"
                         />
                       ) : (
                         <div
@@ -262,7 +262,7 @@ return (
                   <img
                     src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`}
                     // alt={collab.name}
-                    className="h-6 w-6 rounded-full border border-teal-600 bg-gray-400"
+                    className="h-6 w-6 rounded-full object-cover border border-teal-600 bg-gray-400"
                   />
                 ) : (
                   <div
