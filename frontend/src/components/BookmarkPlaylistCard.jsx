@@ -121,63 +121,49 @@ const BookmarkPlaylistCard = ({ playlist, setBookMarPlaylist }) => {
               </span> */}
 
               <div className="flex -space-x-2">
-                {collaborators?.length > 3 && (
-                                      // <p className="text-[17px] cursor-pointer hover:text-gray-400/90  font-semibold ml-3 text-gray-500 transition-all duration-500">
-                                      //   +{totalParticipants - 2}
-                                      // </p>
-                                      <div
-                                        whileHover={{ scale: 1.08 }}
-                                        whileTap={{ scale: 0.95 }}
-                                        className="
-                                         h-6
-                                         w-6
-                                         p-2
-                                         mr-1
-                                        rounded-full
-                                        border border-white/10
-                                        bg-white/[0.05]
-                                        text-[11px]
-                                        font-semibold
-                                        text-gray-200
-                                        flex flex-col t justify-center items-center
-                                      "
-                                      >
-                                       <p> +{formatCount(collaborators?.length - 3) } </p>
-                                      </div>
-                                    )}
-                  {collaborators.length > 0 &&
-                  collaborators.slice(0, 3).map((collab) => (
-                    <>
-                      {collab.profile ? (
-                        <img
-                          key={collab._id}
-                          src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${collab.profile}`}
-                          alt={collab.name}
-                          className="h-6 w-6 rounded-full object-cover border border-teal-600 bg-gray-400"
-                        />
-                      ) : (
-                        <div
-                        key={collab._id}
-                          className="w-6 h-6 rounded-full flex items-center border border-neutral-800 justify-center text-[9px] font-bold text-white shrink-0"
-                          style={{ backgroundColor: avatarColor(collab.name) }}
-                        >
-                          {initials(collab.name)}
-                        </div>
-                      )}
-                    </>
-                  ))}
                 {profile ? (
                   <img
                     src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${profile}`}
-                    // alt={collab.name}
-                    className="h-6 w-6 rounded-full object-cover border border-teal-600 bg-gray-400"
+                    alt={name}
+                    className="relative h-6 w-6 rounded-full object-cover border border-teal-600 bg-gray-400"
+                    style={{ zIndex: 10 }}
                   />
                 ) : (
                   <div
-                    className="w-6 h-6 rounded-full flex items-center border border-neutral-800 justify-center text-[9px] font-bold text-white shrink-0"
-                    style={{ backgroundColor: avatarColor(name) }}
+                    className="relative w-6 h-6 rounded-full flex items-center border border-neutral-800 justify-center text-[9px] font-bold text-white shrink-0"
+                    style={{ backgroundColor: avatarColor(name), zIndex: 10 }}
                   >
                     {initials(name)}
+                  </div>
+                )}
+                {collaborators?.slice(0, 3).map((collab, index) =>
+                  collab.profile ? (
+                    <img
+                      key={collab._id}
+                      src={`https://open-access-blog-image.s3.us-east-1.amazonaws.com/${collab.profile}`}
+                      alt={collab.name}
+                      className="relative h-6 w-6 rounded-full object-cover border border-teal-600 bg-gray-400"
+                      style={{ zIndex: 9 - index }}
+                    />
+                  ) : (
+                    <div
+                      key={collab._id}
+                      className="relative w-6 h-6 rounded-full flex items-center border border-neutral-800 justify-center text-[9px] font-bold text-white shrink-0"
+                      style={{
+                        backgroundColor: avatarColor(collab.name),
+                        zIndex: 9 - index,
+                      }}
+                    >
+                      {initials(collab.name)}
+                    </div>
+                  )
+                )}
+                {collaborators?.length > 3 && (
+                  <div
+                    className="relative flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.05] text-[9px] font-semibold text-gray-200"
+                    style={{ zIndex: 6 }}
+                  >
+                    +{formatCount(collaborators.length - 3)}
                   </div>
                 )}
               </div>
