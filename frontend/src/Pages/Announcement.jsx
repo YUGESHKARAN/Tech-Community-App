@@ -1263,7 +1263,8 @@ function Announcement() {
                       <div
                         className="
                           overflow-hidden
-                          rounded-2xl
+                          md:rounded-xl
+                          rounded-lg
                           border
                           border-slate-800
                           bg-black
@@ -1305,7 +1306,8 @@ function Announcement() {
                               flex
                               items-center
                               justify-between
-                              rounded-2xl
+                              md:rounded-xl
+                              rounded-lg
                               border
                               border-slate-800
                               bg-slate-900/40
@@ -1479,7 +1481,8 @@ function Announcement() {
                   className="
                     max-h-[50vh]
                     w-auto
-                    rounded-2xl
+                    md:rounded-xl
+                    rounded-lg
                     shadow-2xl
                     border border-gray-700
                     object-contain
