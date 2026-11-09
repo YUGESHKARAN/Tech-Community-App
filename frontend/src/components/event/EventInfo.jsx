@@ -1,4 +1,6 @@
+import { motion } from "framer-motion";
 import { themeRevealHint } from "../../utils/event/eventUtils";
+import { revealProps } from "../../utils/event/motion";
 
 const TIER_ORDER = ["title", "gold", "silver", "community"];
 const TIER_LABEL = {
@@ -33,12 +35,16 @@ const fmtDateTime = (t) =>
 
 const themeLabel = (t) => (typeof t === "string" ? t : t?.title || t?.name || "");
 
+// Fades in when it scrolls into view.
 function Section({ title, children }) {
   return (
-    <section className="rounded-2xl border border-white/[0.07] bg-[#13161b] p-5 md:p-6">
+    <motion.section
+      {...revealProps}
+      className="rounded-2xl border border-white/[0.07] bg-[#13161b] p-5 md:p-6"
+    >
       <h2 className="mb-4 text-[11px] font-semibold uppercase tracking-widest text-zinc-500">{title}</h2>
       {children}
-    </section>
+    </motion.section>
   );
 }
 
