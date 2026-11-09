@@ -43,6 +43,7 @@ import ImpersonationBanner from "./Pages/director/ImpersonationBanner.jsx";
 import DirectorTeamPage from "./Pages/director/DirectorTeamPage.jsx";
 import EventsBrowsePage from "./Pages/event/EventsBrowsePage.jsx";
 import EventDetailPage from "./Pages/event/EventDetailPage.jsx";
+import EventsSectionPage from "./Pages/event/EventsSectionPage.jsx";
 function App() {
   // Updated route definitions
 const DIRECTOR_ROLES = ["super_director", "director", "readonly_director"];
@@ -258,15 +259,17 @@ const DIRECTOR_ROLES = ["super_director", "director", "readonly_director"];
                 element={<ProtectedRoute element={<ViewDiscussion />} />}
               />
 
-               <Route
-                path="/events"
-                element={<ProtectedRoute element={<EventsBrowsePage />} />}
-              />
-
-               <Route
-                path="/events/:id"
-                element={<ProtectedRoute element={<EventDetailPage />} />}
-              />
+              
+              <Route path="/events" element={<EventsBrowsePage />} />
+              <Route path="/events/:eventId" element={<EventDetailPage />} />
+              <Route path="/events/my" element={<EventsSectionPage title="Registered events" />} />
+              <Route path="/events/my/teams" element={<EventsSectionPage title="My teams" />} />
+              <Route path="/events/my/invites" element={<EventsSectionPage title="Invitations" />} />
+              <Route path="/events/my/past" element={<EventsSectionPage title="Past events" />} />
+              <Route path="/events/judging" element={<EventsSectionPage title="Judging queue" />} />
+              <Route path="/events/results" element={<EventsSectionPage title="Results" />} />
+              <Route path="/manage/events" element={<EventsSectionPage title="Manage events" />} />
+              <Route path="/manage/partners" element={<EventsSectionPage title="Partners" />} />
 
             
 

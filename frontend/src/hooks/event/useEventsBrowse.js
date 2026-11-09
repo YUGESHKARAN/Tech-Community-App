@@ -2,45 +2,48 @@ import { useEffect, useState } from "react";
 import axiosInstance from "../../instances/Axiosinstances";
 import { MOCK_EVENTS } from "../../data/mockEvents";
 
-// Flip to false once GET /bytes/manage/events is ready.
+// Flip to false once GET /bytes/manage/events is live.
 const USE_MOCK = true;
 
 /**
  * Loads the events list for the browse page.
  * Returns { events, loading, error }.
- * The shape of `events` is the same for mock and real data.
  */
-export default function useEventsBrowse({ limit = 50 } = {}) {
-  const [state, setState] = useState({ events: [], loading: true, error: null });
+export default function useEventsBrowse() {
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     let cancelled = false;
 
-    (async () => {
-      if (USE_MOCK) {
-        await new Promise((r) => setTimeout(r, 300)); // simulate latency
-        if (!cancelled) setState({ events: MOCK_EVENTS, loading: false, error: null });
-        return;
-      }
-
+    async function load() {
+      setLoading(true);
+      setError(null);
       try {
-        const res = await axiosInstance.get("/bytes/manage/events", { params: { limit } });
-        if (!cancelled) setState({ events: res.data.events || [], loading: false, error: null });
+        let list;
+        if (USE_MOCK) {
+          await new Promise((r) => setTimeout(r, 250));
+          list = MOCK_EVENTS;
+        } else {
+          const { data } = await axiosInstance.get("/bytes/manage/events");
+          list = Array.isArray(data) ? data : data.events || [];
+        }
+        if (!cancelled) setEvents(list);
       } catch (err) {
         if (!cancelled) {
-          setState({
-            events: [],
-            loading: false,
-            error: err?.response?.data?.message || "Could not load events. Please try again.",
-          });
+          setError(err?.response?.data?.message || "Could not load events. Please try again.");
         }
+      } finally {
+        if (!cancelled) setLoading(false);
       }
-    })();
+    }
 
+    load();
     return () => {
       cancelled = true;
     };
-  }, [limit]);
+  }, []);
 
-  return state;
+  return { events, loading, error };
 }
