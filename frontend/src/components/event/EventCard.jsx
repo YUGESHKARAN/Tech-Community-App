@@ -23,7 +23,7 @@ export default function EventCard({ event, now, onOpen }) {
 
   return (
     <article
-      className={`flex min-w-0 flex-col rounded-2xl border bg-[#13161b] p-4 transition ${
+      className={`flex min-w-0 flex-col rounded-lg md:rounded-xl border bg-[#13161b] p-4 transition ${
         isLive ? "border-emerald-500/40" : "border-white/[0.07] hover:border-white/15"
       } ${isEnded ? "opacity-75" : ""}`}
     >

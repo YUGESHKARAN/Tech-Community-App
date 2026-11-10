@@ -49,13 +49,13 @@ export default function EventsBrowsePage() {
 
   return (
     <EventsShell>
-      <div className="mx-auto w-full max-w-[1200px] min-w-0 px-4 py-6 md:px-8 md:py-8 text-zinc-100">
+      <div className="mx-auto w-full  min-w-0 px-3 md:px-4 py-2  text-zinc-100">
         {/* header */}
         <header>
-          <p className="text-[11px] font-semibold uppercase tracking-widest text-zinc-500">
+          <p className="text-[11px] hidden md:block mb-2 font-semibold uppercase tracking-widest text-zinc-500">
             University hub / <span className="text-zinc-300">Events</span>
           </p>
-          <div className="mt-2 flex flex-wrap items-end justify-between gap-3">
+          {/* <div className="mt-2 flex flex-wrap items-end justify-between gap-3">
             <div className="min-w-0">
               <h1 className="text-4xl font-bold tracking-tight md:text-5xl">Events</h1>
               <p className="mt-2 text-zinc-400">
@@ -65,7 +65,7 @@ export default function EventsBrowsePage() {
             <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-zinc-400">
               {TERM_LABEL}
             </span>
-          </div>
+          </div> */}
         </header>
 
         {error && (
@@ -87,12 +87,12 @@ export default function EventsBrowsePage() {
         ) : (
           <>
             {featured.length > 0 && (
-              <motion.div {...fadeUpProps} className="mt-8">
+              <motion.div {...fadeUpProps} className="">
                 <EventBanner events={featured} onOpen={openEvent} />
               </motion.div>
             )}
 
-            <div className="mt-8">
+            <div className="mt-2">
               <EventFilters
                 tab={tab}
                 onTab={setTab}
