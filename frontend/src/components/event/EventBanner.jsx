@@ -37,7 +37,7 @@ export default function EventBanner({ events, onOpen }) {
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
-      <div className="relative min-h-[300px] overflow-hidden rounded-2xl border border-white/[0.07] bg-[#0f1216] md:min-h-[380px]">
+      <div className="relative min-h-[300px] overflow-hidden rounded-lg md:rounded-xl border border-white/[0.07] bg-[#0f1216] md:min-h-[380px]">
         {/* decorative grid and glow */}
         <div
           aria-hidden
@@ -89,7 +89,7 @@ export default function EventBanner({ events, onOpen }) {
                 type="button"
                 disabled={cta.variant === "disabled"}
                 onClick={() => onOpen(current)}
-                className={`rounded-xl px-5 py-3 text-sm font-semibold transition ${CTA_STYLES[cta.variant]}`}
+                className={`rounded-lg md:rounded-xl md:px-5 px-3 py-1.5 md:py-3 text-xs md:text-sm font-semibold transition ${CTA_STYLES[cta.variant]}`}
               >
                 {cta.label === "Register" ? "Register now" : cta.label}
               </button>
@@ -111,7 +111,7 @@ export default function EventBanner({ events, onOpen }) {
               type="button"
               onClick={() => step(1)}
               aria-label="Next event"
-              className="absolute right-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 text-zinc-100 hover:bg-black/70"
+              className="absolute right-2 top-1/2 flex md:h-9 h-7 w-7 md:w-9 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 text-zinc-100 hover:bg-black/70"
             >
               <TbChevronRight />
             </button>
