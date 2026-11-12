@@ -90,6 +90,10 @@ const prizeSchema = new mongoose.Schema(
     rank:        { type: Number, min: 1, required: true },
     title:       { type: String, required: true, trim: true, maxlength: 120 },
     description: { type: String, trim: true, maxlength: 500, default: '' },
+    // optional cash value in minor-free major units (e.g. 125000 = ₹1,25,000)
+    amount:      { type: Number, min: 0, default: null },
+    currency:    { type: String, trim: true, uppercase: true, maxlength: 3, default: 'INR' },
+    sponsor:     { type: String, trim: true, maxlength: 120, default: '' },
   },
   { _id: false }
 );
@@ -149,10 +153,24 @@ const pointsPolicySchema = new mongoose.Schema(
   { _id: false }
 );
 
+// Social and website links shown on the event's support card.
+const supportLinkSchema = new mongoose.Schema(
+  {
+    label: { type: String, required: true, trim: true, maxlength: 40 },
+    url:   { type: String, required: true, trim: true, maxlength: 300 },
+  },
+  { _id: false }
+);
+
 const supportSchema = new mongoose.Schema(
   {
     contactEmail: { type: String, trim: true, lowercase: true, default: null },
     chatUrl:      { type: String, trim: true, default: null },
+    links:        {
+      type: [supportLinkSchema],
+      default: [],
+      validate: [(v) => v.length <= 8, 'max 8 support links'],
+    },
   },
   { _id: false }
 );
