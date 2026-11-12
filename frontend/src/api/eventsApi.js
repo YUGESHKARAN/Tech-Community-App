@@ -105,7 +105,7 @@ const enrich = (ev) => {
   const isTeam = ev.participation.type === "team";
   return {
     ...ev,
-    overview: `${ev.overview}.\n\nBuild with your team, present to the judges, and ship something people can use.`,
+    overview: ev.overview,
     participation: { ...ev.participation, teamSize: isTeam ? TEAM : { min: 1, max: 1 } },
     schedule: {
       ...ev.schedule,
@@ -115,7 +115,7 @@ const enrich = (ev) => {
       judgingEndsAt: iso(end + 72 * HOUR),
       resultsPublishAt: iso(end + 96 * HOUR),
     },
-    prizes: [
+    prizes: ev.prizes ?? [
       { rank: 1, title: "Grand prize", description: "Cash award and a mentorship session" },
       { rank: 2, title: "Runner-up", description: "Cloud credits" },
       { rank: 3, title: "Third place", description: "Swag pack" },
@@ -126,13 +126,13 @@ const enrich = (ev) => {
       { key: "impact", label: "Impact", weight: 25 },
       { key: "presentation", label: "Presentation", weight: 15 },
     ],
-    rules: "Teams must build during the event window. All code must be original or properly licensed.",
-    eligibility: "Open to all enrolled students of the institution.",
-    faqs: [
+    rules: ev.rules ?? "Teams must build during the event window. All code must be original or properly licensed.",
+    eligibility: ev.eligibility ?? "Open to all enrolled students of the institution.",
+    faqs: ev.faqs ?? [
       { question: "Can I join after registering?", answer: "Yes. Accept an invite or create a team before the team formation deadline." },
       { question: "What do I submit?", answer: "A repository link, a demo link, a short summary, and optionally a presentation PDF." },
     ],
-    support: { contactEmail: "events@dsuniversity.ac.in", chatUrl: null },
+    support: ev.support ?? { contactEmail: "events@bytesbase.tech", chatUrl: null },
     pointsPolicy: {
       participation: 10,
       submission: 20,
