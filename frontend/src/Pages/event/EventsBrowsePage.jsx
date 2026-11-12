@@ -2,50 +2,68 @@ import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import useEventsBrowse from "../../hooks/event/useEventsBrowse";
-import EventBanner from "../../components/event/EventBanner";
 import EventCard from "../../components/event/EventCard";
-import EventFilters from "../../components/event/EventFilters";
+import EventsHero from "../../components/event/EventsHero";
+import EventsToolbar from "../../components/event/EventsToolbar";
 import EventsShell from "../../components/event/EventsShell";
+import { useNow } from "../../utils/event/eventUtils";
 import {
+  DEFAULT_FILTERS,
+  SORTS,
   TABS,
-  matchesQuery,
-  matchesTab,
-  sortEvents,
-  useNow,
-} from "../../utils/event/eventUtils";
+  activeFilterCount,
+  matchesBrowse,
+  sortBrowse,
+} from "../../utils/event/browse";
 import { fadeUpProps, staggerContainer, staggerItem } from "../../utils/event/motion";
-
-// Shown in the header. Replace with the active term from tenant config.
-const TERM_LABEL = "Fall 2025 • Term 1";
 
 export default function EventsBrowsePage() {
   const { events, loading, error } = useEventsBrowse();
   const now = useNow();
   const navigate = useNavigate();
 
-  const [tab, setTab] = useState("all");
+  const [draft, setDraft] = useState("");
   const [query, setQuery] = useState("");
-  const [sort, setSort] = useState("date_asc");
+  const [tab, setTab] = useState("all");
+  const [sortIndex, setSortIndex] = useState(0);
+  const [filters, setFilters] = useState(DEFAULT_FILTERS);
+  const [panelOpen, setPanelOpen] = useState(false);
 
   const featured = useMemo(() => events.filter((e) => e.featured).slice(0, 5), [events]);
 
-  // Counts come from the loaded list. The real API should return them, because
-  // a paginated list can't give accurate totals on its own.
+  // Tab counts reflect the search and filters, so each number is what you'd see on that tab.
   const counts = useMemo(
-    () => Object.fromEntries(TABS.map((t) => [t.key, events.filter((e) => matchesTab(e, t.key)).length])),
-    [events]
+    () =>
+      Object.fromEntries(
+        TABS.map((t) => [t.key, events.filter((e) => matchesBrowse(e, { tab: t.key, query, filters, now })).length])
+      ),
+    [events, query, filters, now]
   );
 
   const visible = useMemo(
-    () => sortEvents(events.filter((e) => matchesTab(e, tab) && matchesQuery(e, query)), sort),
-    [events, tab, query, sort]
+    () =>
+      sortBrowse(
+        events.filter((e) => matchesBrowse(e, { tab, query, filters, now })),
+        SORTS[sortIndex].key
+      ),
+    [events, tab, query, filters, now, sortIndex]
   );
 
-  const openEvent = (e) => navigate(`/events/${e._id}`);
-  const resetFilters = () => {
-    setTab("all");
+  const submitSearch = (ev) => {
+    ev.preventDefault();
+    setQuery(draft.trim());
+  };
+  const clearSearch = () => {
+    setDraft("");
     setQuery("");
   };
+  const clearAll = () => {
+    clearSearch();
+    setTab("all");
+    setFilters(DEFAULT_FILTERS);
+  };
+  const cycleSort = () => setSortIndex((i) => (i + 1) % SORTS.length);
+  const openEvent = (e) => navigate(`/events/${e._id}`);
 
   return (
     <EventsShell>
@@ -62,9 +80,6 @@ export default function EventsBrowsePage() {
                 University hackathons, technical workshops, and weekly coding clashes.
               </p>
             </div>
-            <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-zinc-400">
-              {TERM_LABEL}
-            </span>
           </div> */}
         </header>
 
@@ -74,9 +89,19 @@ export default function EventsBrowsePage() {
           </div>
         )}
 
+        <motion.div {...fadeUpProps}>
+          <EventsHero
+            featured={featured}
+            draft={draft}
+            onDraftChange={setDraft}
+            onSubmit={submitSearch}
+            onClear={clearSearch}
+            query={query}
+          />
+        </motion.div>
+
         {loading ? (
           <div className=" space-y-6" aria-busy="true">
-            <div className="h-[300px] animate-pulse rounded-lg md:rounded-xl bg-white/5 md:h-[380px]" />
             <div className="h-10 animate-pulse rounded-xl bg-white/5" />
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3 xl:grid-cols-4">
               {Array.from({ length: 6 }).map((_, i) => (
@@ -86,27 +111,28 @@ export default function EventsBrowsePage() {
           </div>
         ) : (
           <>
-            {featured.length > 0 && (
-              <motion.div {...fadeUpProps} className="">
-                <EventBanner events={featured} onOpen={openEvent} />
-              </motion.div>
-            )}
-
             <div className="mt-2">
-              <EventFilters
+              <EventsToolbar
+                tabs={TABS}
+                counts={counts}
                 tab={tab}
                 onTab={setTab}
-                counts={counts}
-                query={query}
-                onQuery={setQuery}
-                sort={sort}
-                onSort={setSort}
+                sorts={SORTS}
+                sortIndex={sortIndex}
+                onCycleSort={cycleSort}
+                shown={visible.length}
+                filters={filters}
+                onFiltersChange={setFilters}
+                filterCount={activeFilterCount(filters)}
+                panelOpen={panelOpen}
+                onTogglePanel={() => setPanelOpen((o) => !o)}
+                onResetFilters={() => setFilters(DEFAULT_FILTERS)}
               />
             </div>
 
             {visible.length > 0 ? (
               <motion.div
-                key={`${tab}|${query}|${sort}`}
+                key={`${tab}|${query}|${sortIndex}|${JSON.stringify(filters)}`}
                 variants={staggerContainer}
                 initial="hidden"
                 animate="show"
@@ -120,13 +146,13 @@ export default function EventsBrowsePage() {
               </motion.div>
             ) : (
               <div className="mt-10 flex flex-col items-center gap-3 rounded-2xl border border-dashed border-white/10 p-10 text-center">
-                <p className="text-sm text-zinc-400">No events match these filters.</p>
+                <p className="text-sm text-zinc-400">No programs match your search and filters.</p>
                 <button
                   type="button"
-                  onClick={resetFilters}
+                  onClick={clearAll}
                   className="rounded-lg border border-white/10 px-3 py-1.5 text-xs font-medium text-zinc-200 hover:bg-white/5"
                 >
-                  Clear filters
+                  Clear search and filters
                 </button>
               </div>
             )}
