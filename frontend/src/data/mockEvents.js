@@ -35,9 +35,9 @@ export const MOCK_EVENTS = [
       },
     ],
     prizes: [
-      { rank: 1, title: "Grand prize", description: "Cash award and a mentorship session with an industry partner" },
-      { rank: 2, title: "Runner-up", description: "Cloud credits for the next three months" },
-      { rank: 3, title: "Third place", description: "Swag pack and a featured spot on the chapter blog" },
+      { rank: 1, title: "Grand prize", description: "Cash award and a mentorship session with an industry partner", amount: 125000, currency: "INR", sponsor: "Bytes Core Engine" },
+      { rank: 2, title: "Runner-up", description: "Cloud credits for the next three months", amount: 75000, currency: "INR", sponsor: "CloudCredits" },
+      { rank: 3, title: "Third place", description: "Swag pack and a featured spot on the chapter blog", amount: 25000, currency: "INR", sponsor: "DevTools Co." },
     ],
     xpReward: 500,
     participation: { type: "team" },

@@ -19,6 +19,7 @@ export const apiError = (err) =>
 const real = {
   getEvent: async (id) => (await axiosInstance.get(`${BASE}/${id}`)).data,
   getMyStatus: async (id) => (await axiosInstance.get(`${BASE}/${id}/me`)).data,
+  getResults: async (id) => (await axiosInstance.get(`${BASE}/${id}/results`)).data,
   register: (id) => axiosInstance.post(`${BASE}/${id}/register`),
   withdraw: (id) => axiosInstance.delete(`${BASE}/${id}/register`),
   createTeam: (id, name) => axiosInstance.post(`${BASE}/${id}/teams`, { name }),
@@ -132,7 +133,7 @@ const enrich = (ev) => {
       { question: "Can I join after registering?", answer: "Yes. Accept an invite or create a team before the team formation deadline." },
       { question: "What do I submit?", answer: "A repository link, a demo link, a short summary, and optionally a presentation PDF." },
     ],
-    support: ev.support ?? { contactEmail: "events@bytesbase.tech", chatUrl: null },
+    support: ev.support ?? { contactEmail: "events@bytesbase.tech", chatUrl: null, links: [] },
     pointsPolicy: {
       participation: 10,
       submission: 20,
@@ -148,6 +149,23 @@ const enrich = (ev) => {
 };
 
 const mockApi = {
+  getResults: async (id) => {
+    seed();
+    await wait();
+    const ev = enrich(findEvent(id));
+    if (!ev.resultsPublishedAt) fail(404, "Results are not published yet");
+    const rows = [
+      { rank: 1, team: "Team Nova", finalScore: 91.4, pointsAwarded: 100 },
+      { rank: 2, team: "Byte Runners", finalScore: 88.1, pointsAwarded: 70 },
+      { rank: 3, team: "Quantum Quill", finalScore: 84.9, pointsAwarded: 50 },
+    ];
+    return {
+      results: rows
+        .filter((r) => r.rank <= ev.prizes.length)
+        .map((r) => ({ ...r, prizeTitle: ev.prizes.find((p) => p.rank === r.rank)?.title ?? null })),
+    };
+  },
+
   getEvent: async (id) => {
     seed();
     await wait();
