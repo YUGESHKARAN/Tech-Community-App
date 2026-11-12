@@ -60,7 +60,7 @@ export default function EventCard({ event, now, onOpen }) {
         <h3 className="mt-2 text-xs font-semibold uppercase tracking-tight text-zinc-100 line-clamp-2 md:text-sm">
           {event.title}
         </h3>
-        <p className="mt-1  text-xs text-zinc-400 line-clamp-1 text-wrap overflow-hidden">{event.overview}</p>
+        <p className="mt-1  text-xs text-zinc-400 line-clamp-2 md:line-clamp-1 text-wrap overflow-hidden">{event.overview}</p>
 
         {hint && <p className="mt-1.5 text-[10px] font-medium text-amber-300/80">{hint}</p>}
 
