@@ -34,7 +34,7 @@ export default function EventsToolbar({
   const sort = sorts[sortIndex];
 
   return (
-    <div className="md:rounded-lg border border-white/[0.07] bg-[#13161b] p-3 md:p-4">
+    <div className="md:rounded-lg rounded-md border border-white/[0.07] bg-[#13161b] p-3 md:p-4">
       <div className="flex items gap-3 justify-between flex-row flex-wrap items-center md:gap-2">
         {/* Mobile: the category is a dropdown. */}
         <TabSelect tabs={tabs} tab={tab} onTab={onTab} />
@@ -86,7 +86,7 @@ export default function EventsToolbar({
       <div className=" flex items-center justify-between gap-3 text-xs text-zinc-500">
         {/* <span>{plural(shown, "program")}</span> */}
         {filterCount > 0 && (
-          <button type="button" onClick={onResetFilters} className="text-emerald-400 hover:underline">
+          <button type="button" onClick={onResetFilters} className="text-emerald-400  mt-0.5  hover:underline">
             Reset filters
           </button>
         )}
