@@ -67,7 +67,7 @@ export default function EventsBrowsePage() {
 
   return (
     <EventsShell>
-      <div className="mx-auto w-full  min-w-0 px-3 md:px-4 py-2  text-zinc-100">
+      <div className="mx-auto w-full  min-w-0 px-3 md:px-4 pb-2 md:py-2  text-zinc-100">
         {/* header */}
         <header>
           <p className="text-[11px] hidden md:block mb-2 font-semibold uppercase tracking-widest text-zinc-500">

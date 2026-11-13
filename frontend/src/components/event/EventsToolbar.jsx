@@ -34,7 +34,7 @@ export default function EventsToolbar({
   const sort = sorts[sortIndex];
 
   return (
-    <div className="rounded-xl border border-white/[0.07] bg-[#13161b] p-3 md:p-4">
+    <div className="md:rounded-lg border border-white/[0.07] bg-[#13161b] p-3 md:p-4">
       <div className="flex items gap-3 justify-between flex-row flex-wrap items-center md:gap-2">
         {/* Mobile: the category is a dropdown. */}
         <TabSelect tabs={tabs} tab={tab} onTab={onTab} />
@@ -83,8 +83,8 @@ export default function EventsToolbar({
         </div>
       </div>
 
-      <div className="mt-3 flex items-center justify-between gap-3 text-xs text-zinc-500">
-        <span>{plural(shown, "program")}</span>
+      <div className=" flex items-center justify-between gap-3 text-xs text-zinc-500">
+        {/* <span>{plural(shown, "program")}</span> */}
         {filterCount > 0 && (
           <button type="button" onClick={onResetFilters} className="text-emerald-400 hover:underline">
             Reset filters
@@ -144,7 +144,7 @@ function TabSelect({ tabs, tab, onTab }) {
         aria-haspopup="listbox"
         aria-expanded={open}
         onClick={() => setOpen((o) => !o)}
-        className="relative z-20 flex w-full items-center text-xs md:text-sm justify-between rounded-lg border border-white/10 bg-[#0f1216] px-3 py-2.5 text-sm text-zinc-100"
+        className="relative z-20 flex w-full items-center text-xs md:text-sm justify-between rounded-lg border border-white/10 bg-[#0f1216] px-3 py-1.5 md:py-2.5 text-sm text-zinc-100"
       >
         {current.label}
         <TbChevronDown

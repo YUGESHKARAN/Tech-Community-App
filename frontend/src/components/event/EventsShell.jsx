@@ -69,9 +69,9 @@ export default function EventsShell({ children }) {
                     type="button"
                     aria-label="Close menu"
                     onClick={() => setOpen(false)}
-                    className="rounded-lg border border-white/10 p-2 text-zinc-200 hover:bg-white/5"
+                    className="rounded-md border border-white/10 p-1.5 text-zinc-200 hover:bg-white/5"
                   >
-                    <TbX size={18} />
+                    <TbX size={14} />
                   </button>
                 </div>
                 <EventSidebar onNavigate={() => setOpen(false)} />
