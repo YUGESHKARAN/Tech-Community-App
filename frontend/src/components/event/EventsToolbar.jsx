@@ -83,10 +83,10 @@ export default function EventsToolbar({
         </div>
       </div>
 
-      <div className=" flex items-center justify-between gap-3 text-xs text-zinc-500">
+      <div className=" flex items-center   justify-between gap-3 text-xs text-zinc-500">
         {/* <span>{plural(shown, "program")}</span> */}
         {filterCount > 0 && (
-          <button type="button" onClick={onResetFilters} className="text-emerald-400  mt-0.5  hover:underline">
+          <button type="button" onClick={onResetFilters} className="text-emerald-400 mt-1.5 hover:underline">
             Reset filters
           </button>
         )}
