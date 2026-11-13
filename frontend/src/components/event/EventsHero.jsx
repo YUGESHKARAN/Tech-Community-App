@@ -26,10 +26,10 @@ const ARROW =
  */
 export default function EventsHero({ featured, draft, onDraftChange, onSubmit, onClear, query }) {
   return (
-    <section className="relative overflow-hidden rounded-xl border border-white/[0.07] bg-[#0e1017] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] md:rounded-2xl">
+    <section className="relative overflow-hidden rounded-xl  border-white/[0.07] bg-[#0e1017] md:rounded-2xl">
       <div aria-hidden className="pointer-events-none absolute inset-0" style={gridStyle} />
 
-      <div className="relative grid items-center gap-8 p-3 md:p-8 lg:grid-cols-[minmax(0,1fr)_420px] lg:gap-10 xl:grid-cols-[minmax(0,1fr)_460px]">
+      <div className="relative grid items-center gap-8 lg:grid-cols-[minmax(0,1fr)_420px] lg:gap-10 xl:grid-cols-[minmax(0,1fr)_460px]">
         <div className="min-w-0">
           <h1 className="text-3xl font-bold tracking-tight text-zinc-100 md:text-5xl">
             Discover your next opportunity
@@ -52,7 +52,7 @@ export default function EventsHero({ featured, draft, onDraftChange, onSubmit, o
                 value={draft}
                 onChange={(e) => onDraftChange(e.target.value)}
                 placeholder="Search innovation programs"
-                className="w-full rounded-lg md:rounded-xl border border-white/10 bg-[#0f1216] py-3 pl-10 pr-10 text-sm text-zinc-100 placeholder-zinc-500 focus:border-emerald-500/50 focus:outline-none"
+                className="w-full rounded-lg md:rounded-xl border border-white/10 bg-[#0f1216] py-2 md:py-3 pl-10 pr-10 text-sm text-zinc-100 placeholder-zinc-500 focus:border-emerald-500/50 focus:outline-none"
               />
               {draft && (
                 <button
@@ -67,7 +67,7 @@ export default function EventsHero({ featured, draft, onDraftChange, onSubmit, o
             </label>
             <button
               type="submit"
-              className="shrink-0 rounded-lg bg-emerald-500 px-5 py-1 text-xs md:text-sm font-semibold text-zinc-950 transition hover:bg-emerald-400"
+              className="shrink-0 rounded-md md:rounded-lg bg-emerald-500 px-5 py-1 text-xs md:text-sm font-semibold text-zinc-950 transition hover:bg-emerald-400"
             >
               Search
             </button>
