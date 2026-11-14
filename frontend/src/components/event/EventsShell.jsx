@@ -82,7 +82,10 @@ export default function EventsShell({ children }) {
 
         <div className="flex min-w-0 flex-1 flex-col">
           {/* mobile toolbar */}
-          <div className="sticky top-0 z-30 flex items-center gap-3 bg-[#0f1216]/95 px-4 py-2 backdrop-blur lg:hidden">
+                 <div
+            data-events-mobile-toolbar
+            className="sticky top-0 z-30 flex items-center gap-3 bg-[#0f1216]/95 px-4 py-2 backdrop-blur lg:hidden"
+          >
             <button
               type="button"
               aria-label="Open events menu"

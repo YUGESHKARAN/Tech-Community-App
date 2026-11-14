@@ -74,13 +74,12 @@ function EventDetailContent({ d }) {
   const sectionIds = sections.map((x) => x.id).join(",");
   const [active, setActive] = useState("");
 
-  // The tab bar sticks just below the site navbar. Measure the navbar's bottom
-  // edge (the first <header> outside the events main area) and keep it current.
+  // On mobile, keep the tab bar directly below the sticky events toolbar.
   const [stickyTop, setStickyTop] = useState(0);
   useEffect(() => {
     const measure = () => {
-      const nav = Array.from(document.querySelectorAll("header")).find((h) => !h.closest("main"));
-      setStickyTop(nav ? Math.max(0, Math.round(nav.getBoundingClientRect().bottom)) : 0);
+      const toolbar = document.querySelector("[data-events-mobile-toolbar]");
+      setStickyTop(toolbar ? Math.round(toolbar.getBoundingClientRect().height) : 0);
     };
     measure();
     window.addEventListener("scroll", measure, { passive: true });
