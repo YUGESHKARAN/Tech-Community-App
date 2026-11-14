@@ -49,7 +49,7 @@ export default function EventActionPanel({ event, me, teamDetail, actions, busy,
 
   return (
     <div className="space-y-4">
-      <div className="rounded-2xl border border-white/[0.07] bg-[#13161b] p-5">
+      <div className="rounded-lg md:rounded-xl border border-white/[0.07] bg-[#13161b] p-5">
         <span
           className={`inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[10px] font-semibold uppercase tracking-wider ${BADGE_TONES[badge.tone]}`}
         >

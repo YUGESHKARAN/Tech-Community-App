@@ -133,8 +133,16 @@ function EventDetailContent({ d }) {
     primary = { label: me.registration ? "Registered" : badge.label, disabled: true };
   }
 
+  const gridStyle = {
+  backgroundImage:
+    "linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)",
+  backgroundSize: "36px 36px",
+  maskImage: "radial-gradient(ellipse at top, black 30%, transparent 75%)",
+  WebkitMaskImage: "radial-gradient(ellipse at top, black 30%, transparent 75%)",
+};
+
   return (
-    <div className="mx-auto w-full px-3 md:px-4 py-2 pb-28 lg:pb-2 text-zinc-100">
+    <div className="mx-auto w-full px-3 py-2 pb-28 lg:pb-2 text-zinc-100">
       <button
         type="button"
         onClick={() => navigate("/events")}
@@ -145,13 +153,10 @@ function EventDetailContent({ d }) {
 
       <motion.header
         {...fadeUpProps}
-        className="relative overflow-hidden rounded-2xl border border-white/[0.07] bg-[#0f1216] p-6 md:p-10 grid items-center gap-8 md:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]"
+        className="relative overflow-hidden  bg-[#0f1216] grid items-center gap-8 md:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]"
       >
         {/* Faint emerald tech grid, fading out towards the bottom-right. */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(16,185,129,0.09)_1px,transparent_1px),linear-gradient(to_bottom,rgba(16,185,129,0.09)_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_at_top_left,black_25%,transparent_75%)]"
-        />
+         <div aria-hidden className="pointer-events-none absolute inset-0" style={gridStyle} />
         <div className="relative min-w-0 space-y-4">
           <div className="flex flex-wrap items-center gap-2">
             <span className="rounded-md border border-white/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-zinc-300">
