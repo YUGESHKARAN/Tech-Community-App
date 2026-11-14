@@ -32,7 +32,7 @@ export default function EventSectionTabs({ sections, active, onJump, top = 0 }) 
     <nav
       aria-label="Event sections"
       style={{ top }}
-      className="sticky z-30 mt-8 -mx-3 border-b md:border-white/[0.08] border-white/[0.07] bg-[#0f1216]/95 backdrop-blur md:-mx-2.5"
+      className="sticky z-30 mt-1 md:mt-8 -mx-3 border-b md:border-white/[0.08] border-white/[0.07] bg-[#0f1216]/95 backdrop-blur md:-mx-2.5"
     >
       <ul className="flex gap-1 overflow-x-auto px-3 py-3 md:px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {sections.map((s) => {

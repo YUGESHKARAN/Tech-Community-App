@@ -38,7 +38,7 @@ export default function EventDetailPage() {
   if (d.error || !d.event) {
     return (
       <EventsShell>
-        <div className="mx-auto flex w-full max-w-[600px] flex-col items-center gap-4 px-4 py-20 text-center text-zinc-100">
+        <div className="mx-auto flex w-full max-w-[600px] flex-col items-center gap-4 px-4  text-center text-zinc-100">
           <p role="alert" className="text-sm text-red-300">
             {d.error || "This event could not be found."}
           </p>
@@ -142,18 +142,18 @@ function EventDetailContent({ d }) {
 };
 
   return (
-    <div className="mx-auto w-full px-3 py-2 pb-28 lg:pb-2 text-zinc-100">
-      <button
+    <div className="mx-auto w-full px-3 p-2 pb-28 lg:pb-2 text-zinc-100">
+      {/* <button
         type="button"
         onClick={() => navigate("/events")}
         className="mb-5 text-xs text-zinc-400 hover:text-zinc-200"
       >
         ← Back to events
-      </button>
+      </button> */}
 
       <motion.header
         {...fadeUpProps}
-        className="relative overflow-hidden  bg-[#0f1216] grid items-center gap-8 md:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]"
+        className="relative overflow-hidden  bg-[#0f1216] grid items-center gap-4 md:gap-8 md:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]"
       >
         {/* Faint emerald tech grid, fading out towards the bottom-right. */}
          <div aria-hidden className="pointer-events-none absolute inset-0" style={gridStyle} />
@@ -190,7 +190,7 @@ function EventDetailContent({ d }) {
           </ul>
         </div>
 
-        <div className="relative aspect-video overflow-hidden rounded-2xl border border-white/[0.07] bg-[#13161b]">
+        <div className="relative aspect-video overflow-hidden rounded-xl md:rounded-2xl border border-white/[0.07] bg-[#13161b]">
           {poster ? (
             <img src={poster} alt={event.title} className="h-full w-full object-cover" />
           ) : (
