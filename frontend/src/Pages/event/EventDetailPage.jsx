@@ -189,7 +189,7 @@ function EventDetailContent({ d }) {
           </ul>
         </div>
 
-        <div className="relative aspect-video overflow-hidden rounded-xl md:rounded-2xl border border-white/[0.07] bg-[#13161b]">
+        <div className="relative aspect-video overflow-hidden rounded-xl mb-1.5 md:mb-0 md:rounded-2xl border border-white/[0.07] bg-[#13161b]">
           {poster ? (
             <img src={poster} alt={event.title} className="h-full w-full object-cover" />
           ) : (
