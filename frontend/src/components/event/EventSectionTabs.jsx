@@ -34,7 +34,7 @@ export default function EventSectionTabs({ sections, active, onJump, top = 0 }) 
       style={{ top }}
       className="sticky z-30 mt-0 md:mt-8 -mx-3 border-b md:border-white/[0.08] border-white/[0.07] bg-[#0f1216]/95 backdrop-blur md:-mx-2.5"
     >
-      <ul className="flex gap-1 overflow-x-auto px-3 py-3 md:px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <ul className="flex gap-1 overflow-x-auto px-3 py-1.5 pt-0.5 md:py-3 md:px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {sections.map((s) => {
           const on = s.id === active;
           return (
