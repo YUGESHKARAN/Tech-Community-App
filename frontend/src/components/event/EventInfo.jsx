@@ -52,7 +52,7 @@ function Section({ id, title, children }) {
     <motion.section
       id={id}
       {...revealProps}
-      className="scroll-mt-40 rounded-2xl border border-white/[0.07] bg-[#13161b] p-5 md:p-6"
+      className="scroll-mt-40 rounded-lg md:rounded-xl border border-white/[0.07] bg-[#13161b] p-5 md:p-6"
     >
       <h2 className="mb-4 text-[11px] font-semibold uppercase tracking-widest text-zinc-500">{title}</h2>
       {children}

@@ -24,7 +24,7 @@ export default function EventStatsCard({ event }) {
   const registered = event.counters?.registrationCount ?? 0;
 
   return (
-    <div className="rounded-2xl border border-white/[0.07] bg-[#13161b] p-5">
+    <div className="rounded-lg md:rounded-xl border border-white/[0.07] bg-[#13161b] p-5">
       <dl className="divide-y divide-white/[0.07]">
         <Row label="Team size" value={isTeam && size ? `${size.min} – ${size.max} members` : "Individual"} />
         {total > 0 && <Row label="Total prizes" value={`₹${fmt(total)}`} />}
