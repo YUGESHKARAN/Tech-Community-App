@@ -156,7 +156,7 @@ function EventDetailContent({ d }) {
       >
         {/* Faint emerald tech grid, fading out towards the bottom-right. */}
          <div aria-hidden className="pointer-events-none absolute inset-0" style={gridStyle} />
-        <div className="relative min-w-0 space-y-4">
+        <div className="relative min-w-0 space-y-4 md:space-y-6">
           <div className="flex flex-wrap items-center gap-2">
             <span className="rounded-md border border-white/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-zinc-300">
               {CATEGORY_LABEL[event.category]}

@@ -5,8 +5,8 @@ const fmt = (n) => new Intl.NumberFormat("en-IN").format(n);
 function Row({ label, value }) {
   return (
     <div className="flex items-start justify-between gap-4 py-2.5 first:pt-0 last:pb-0">
-      <dt className="text-xs text-zinc-500">{label}</dt>
-      <dd className="text-right text-sm text-zinc-100">{value}</dd>
+      <dt className="text-sm text-zinc-300">{label}</dt>
+      <dd className="text-right text-xs md:text-[13px] text-zinc-100">{value}</dd>
     </div>
   );
 }

@@ -213,7 +213,7 @@ export default function EventInfo({ event, partners = [], now, winnersSlot = nul
               return (
                 <li
                   key={p.partnerId._id}
-                  className="flex flex-col gap-3 rounded-xl border border-white/10 border-t-2 border-t-emerald-500/60 bg-[#0f1216] p-4"
+                  className="flex flex-col gap-3 rounded-lg border border-white/10 border-t-2 border-t-emerald-500/60 bg-[#0f1216] p-4"
                 >
                   <div className="flex items-center gap-3">
                     <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-white/5 text-sm font-bold text-zinc-200">
