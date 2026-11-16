@@ -416,7 +416,7 @@ function ProfilePage() {
                     <label
                       htmlFor="profile-picture-input"
                       aria-label="Upload and edit profile picture"
-                      className="absolute bottom-1 right-1 flex h-5 w-5 cursor-pointer items-center justify-center rounded-full border border-white/10 bg-gray-700 text-emerald-400"
+                      className="absolute bottom-0 md:bottom-1 -right-0.5 md:right-1 flex h-5 w-5 cursor-pointer items-center justify-center rounded-full border border-white/10 bg-gray-700 text-emerald-400"
                     >
                       <MdEdit className="text-xs" />
                     </label>
