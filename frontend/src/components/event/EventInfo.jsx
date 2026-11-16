@@ -1,4 +1,5 @@
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { TbAward, TbBuilding, TbMail } from "react-icons/tb";
 import { themeRevealHint } from "../../utils/event/eventUtils";
 import { revealProps } from "../../utils/event/motion";
@@ -57,6 +58,52 @@ function Section({ id, title, children }) {
       <h2 className="mb-4 text-[11px] font-semibold uppercase tracking-widest text-zinc-500">{title}</h2>
       {children}
     </motion.section>
+  );
+}
+
+function FAQItem({ question, answer, id }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const answerId = `${id}-answer`;
+
+  return (
+    <div className="py-3 first:pt-0 last:pb-0">
+      <button
+        type="button"
+        id={id}
+        aria-expanded={isOpen}
+        aria-controls={answerId}
+        onClick={() => setIsOpen((open) => !open)}
+        className="w-full cursor-pointer text-left text-sm font-medium text-zinc-100"
+      >
+        <span className="flex items-center justify-between gap-4">
+          {question}
+          <motion.span
+            aria-hidden
+            animate={{ rotate: isOpen ? 45 : 0 }}
+            transition={{ duration: 0.2 }}
+            className="text-zinc-500"
+          >
+            +
+          </motion.span>
+        </span>
+      </button>
+      <AnimatePresence initial={false}>
+        {isOpen && (
+          <motion.div
+            id={answerId}
+            role="region"
+            aria-labelledby={id}
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.25, ease: "easeInOut" }}
+            className="overflow-hidden"
+          >
+            <p className="mt-2 text-sm text-zinc-400">{answer}</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }
 
@@ -259,15 +306,7 @@ export default function EventInfo({ event, partners = [], now, winnersSlot = nul
         <Section id="faqs" title="FAQs">
           <div className="divide-y divide-white/[0.07]">
             {event.faqs.map((f, i) => (
-              <details key={i} className="group py-3 first:pt-0 last:pb-0">
-                <summary className="cursor-pointer list-none text-sm font-medium text-zinc-100 marker:hidden">
-                  <span className="flex items-center justify-between gap-4">
-                    {f.question}
-                    <span aria-hidden className="text-zinc-500 transition-transform group-open:rotate-45">+</span>
-                  </span>
-                </summary>
-                <p className="mt-2 text-sm text-zinc-400">{f.answer}</p>
-              </details>
+              <FAQItem key={i} id={`event-faq-${i}`} question={f.question} answer={f.answer} />
             ))}
           </div>
         </Section>
