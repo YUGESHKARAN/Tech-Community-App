@@ -29,7 +29,7 @@ export default function EventsShell({ children }) {
   }, [open]);
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#0f1216] text-zinc-100">
+    <div className="flex min-h-screen flex-col theme text-zinc-100">
       <NavBar />
 
       <div className="flex min-w-0 flex-1">

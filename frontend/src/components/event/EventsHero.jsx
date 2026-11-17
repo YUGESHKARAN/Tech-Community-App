@@ -26,7 +26,7 @@ const ARROW =
  */
 export default function EventsHero({ featured, draft, onDraftChange, onSubmit, onClear, query }) {
   return (
-    <section className="relative overflow-hidden rounded-xl  border-white/[0.07] bg-[#0e1017] md:rounded-2xl">
+    <section className="relative overflow-hidden rounded-xl  border-white/[0.07] theme md:rounded-2xl">
       <div aria-hidden className="pointer-events-none absolute inset-0" style={gridStyle} />
 
       <div className="relative grid items-center gap-8 lg:grid-cols-[minmax(0,1fr)_420px] lg:gap-10 xl:grid-cols-[minmax(0,1fr)_460px]">
