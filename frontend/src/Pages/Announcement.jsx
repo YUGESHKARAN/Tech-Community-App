@@ -117,7 +117,7 @@ function Announcement() {
       })
       .catch((error) => {
         console.error("Error marking announcements as read:", error);
-        toast.error("Error", "Unable to mark announcements as read.");
+        // toast.error("Error", "Unable to mark announcements as read.");
       });
   }, [setAnnouncementUnreadCount]);
 
