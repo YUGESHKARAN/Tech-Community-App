@@ -50,6 +50,7 @@ const announcementSchema = new mongoose.Schema({
   authorEmail: { type: String, required: true  },
   timestamp:   { type: Date,   default: Date.now },
   image:       { type: String, required: false },
+  isRead:      { type: Boolean, default: false },
 });
 
 // ── Post Schema ───────────────────────────────────────────────

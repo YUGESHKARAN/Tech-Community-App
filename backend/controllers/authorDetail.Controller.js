@@ -1260,6 +1260,9 @@ const resetPassword = async (req, res) => {
 };
 
 // reviewed-----------------------------------------------------------------------
+const getUnreadCount = (messages = []) =>
+  messages.filter((message) => message.isRead !== true).length;
+
 const notificationAuthor = async (req, res) => {
   const { email } = req.params;
   try {
@@ -1268,20 +1271,87 @@ const notificationAuthor = async (req, res) => {
       return res.status(401).json({ message: "tenantId required" });
     }
 
-    const author = await Author.findOne({ email: { $eq: email }, tenantId });
+    const author = await Author.findOne({ email: { $eq: email }, tenantId })
+      .select("notification announcement");
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
     }
 
     // console.log("message queues called!")
-
     res.json({
       notifications: author.notification,
       announcements: author.announcement,
+      unreadNotifications: getUnreadCount(author.notification),
+      unreadAnnouncements: getUnreadCount(author.announcement),
     });
   } catch (err) {
     console.error("Error fetching notifications:", err);
     res.status(500).json({ message: "Server error" });
+  }
+};
+
+const notificationAuthorCounts = async (req, res) => {
+  const { authorId, tenantId } = req.user || {};
+  if (!authorId || !tenantId) {
+    return res.status(401).json({ message: "Authenticated author required" });
+  }
+
+  try {
+    const author = await Author.findOne({ _id: authorId, tenantId })
+      .select("notification announcement")
+      .lean();
+
+    if (!author) {
+      return res.status(404).json({ message: "Author not found" });
+    }
+
+    return res.status(200).json({
+      unreadNotifications: getUnreadCount(author.notification),
+      unreadAnnouncements: getUnreadCount(author.announcement),
+    });
+  } catch (error) {
+    console.error("Error fetching unread message counts:", error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+const markMessagesRead = async (req, res) => {
+  const { section } = req.body;
+  const { authorId, tenantId } = req.user || {};
+
+  if (!authorId || !tenantId) {
+    return res.status(401).json({ message: "Authenticated author required" });
+  }
+
+  const fieldsBySection = {
+    notifications: "notification",
+    announcements: "announcement",
+  };
+  const field = fieldsBySection[section];
+  if (!field) {
+    return res.status(400).json({
+      message: "section must be notifications or announcements",
+    });
+  }
+
+  try {
+    const author = await Author.findOneAndUpdate(
+      { _id: authorId, tenantId },
+      { $set: { [`${field}.$[].isRead`]: true } },
+      { new: true },
+    ).select("notification announcement");
+
+    if (!author) {
+      return res.status(404).json({ message: "Author not found" });
+    }
+
+    return res.status(200).json({
+      unreadNotifications: getUnreadCount(author.notification),
+      unreadAnnouncements: getUnreadCount(author.announcement),
+    });
+  } catch (error) {
+    console.error("Error marking messages as read:", error);
+    return res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -2226,6 +2296,8 @@ module.exports = {
   sendOtp,
   resetPassword,
   notificationAuthor,
+  notificationAuthorCounts,
+  markMessagesRead,
   notificationAuthorDelete,
   notificationAuthorDeleteAll,
   addAnnouncement,

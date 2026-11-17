@@ -108,6 +108,7 @@ const notificationSchema = new mongoose.Schema({
   url:         { type: String, required: true  }, // navigation target
 
   timestamp:   { type: Date, default: Date.now },
+  isRead:      { type: Boolean, default: false },
 });
 
 // Lets cancelling or deleting an event remove its notifications in one query.
