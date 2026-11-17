@@ -14,7 +14,7 @@ export default function EventStickyBar({ dateText, primary }) {
   const cls = `${BASE} ${primary.disabled ? DISABLED : ENABLED}`;
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-[#0f1216]/95 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom,0px))] backdrop-blur lg:hidden">
+    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 theme px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom,0px))] backdrop-blur lg:hidden">
       <div className="flex items-center justify-between gap-4">
         <p className="min-w-0 truncate text-xs text-zinc-400">{dateText}</p>
         {isLink ? (
