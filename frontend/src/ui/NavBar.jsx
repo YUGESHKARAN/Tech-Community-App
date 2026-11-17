@@ -293,8 +293,8 @@ function NavBar() {
         );
       }
     } catch (error) {
-      console.error(`Error marking ${section} as read:`, error);
-      toast.error("Error", `Unable to mark ${section} as read.`);
+      console.log(`Error marking ${section} as read:`, error);
+      // toast.error("Error", `Unable to mark ${section} as read.`);
     }
   };
 
