@@ -152,7 +152,7 @@ function EventDetailContent({ d }) {
 
       <motion.header
         {...fadeUpProps}
-        className="relative overflow-hidden  bg-[#0f1216] grid items-center gap-4 md:gap-8 md:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]"
+        className="relative overflow-hidden  theme grid items-center gap-4 md:gap-8 md:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]"
       >
         {/* Faint emerald tech grid, fading out towards the bottom-right. */}
          <div aria-hidden className="pointer-events-none absolute inset-0" style={gridStyle} />
@@ -189,7 +189,7 @@ function EventDetailContent({ d }) {
           </ul>
         </div>
 
-        <div className="relative aspect-video overflow-hidden rounded-xl mb-1.5 md:mb-0 md:rounded-2xl border border-white/[0.07] bg-[#13161b]">
+        <div className="relative aspect-video overflow-hidden rounded-xl mb-1.5 md:mb-0 md:rounded-2xl border border-white/[0.07] theme">
           {poster ? (
             <img src={poster} alt={event.title} className="h-full w-full object-cover" />
           ) : (

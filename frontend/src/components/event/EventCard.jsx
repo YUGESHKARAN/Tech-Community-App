@@ -25,7 +25,7 @@ export default function EventCard({ event, now, onOpen }) {
 
   return (
     <article
-      className={`group flex min-w-0 flex-col overflow-hidden rounded-lg border bg-[#13161b] transition ${
+      className={`group flex min-w-0 flex-col overflow-hidden rounded-lg border theme transition ${
         isLive ? "border-emerald-500/40" : "border-white/[0.07] hover:border-white/15"
       } ${isEnded ? "opacity-75" : ""}`}
     >

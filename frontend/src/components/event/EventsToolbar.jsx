@@ -34,7 +34,7 @@ export default function EventsToolbar({
   const sort = sorts[sortIndex];
 
   return (
-    <div className="md:rounded-lg rounded-md border border-white/[0.07] bg-[#13161b] p-3 md:p-4">
+    <div className="md:rounded-lg rounded-md border border-white/[0.07] theme p-3 md:p-4">
       <div className="flex items gap-3 justify-between flex-row flex-wrap items-center md:gap-2">
         {/* Mobile: the category is a dropdown. */}
         <TabSelect tabs={tabs} tab={tab} onTab={onTab} />
@@ -144,7 +144,7 @@ function TabSelect({ tabs, tab, onTab }) {
         aria-haspopup="listbox"
         aria-expanded={open}
         onClick={() => setOpen((o) => !o)}
-        className="relative z-20 flex w-full items-center text-xs md:text-sm justify-between rounded-lg border border-white/10 bg-[#0f1216] px-3 py-1.5 md:py-2.5 text-sm text-zinc-100"
+        className="relative z-20 flex w-full items-center text-xs md:text-sm justify-between rounded-lg border border-white/10 theme px-3 py-1.5 md:py-2.5 text-sm text-zinc-100"
       >
         {current.label}
         <TbChevronDown
@@ -157,7 +157,7 @@ function TabSelect({ tabs, tab, onTab }) {
         <ul
           role="listbox"
           aria-label="Category"
-          className="absolute left-0 right-0 top-full z-20 mt-1 overflow-hidden rounded-lg border border-white/10 bg-[#13161b] py-1 shadow-xl"
+          className="absolute left-0 right-0 top-full z-20 mt-1 overflow-hidden rounded-lg border border-white/10 theme py-1 shadow-xl"
         >
           {tabs.map((t) => {
             const active = t.key === current.key;
