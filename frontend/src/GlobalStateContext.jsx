@@ -21,6 +21,8 @@ export const GlobalStateContext = createContext();
 
 export const GlobalStateProvider = ({ children }) => {
   const [notification, setNotification] = useState([]);
+  const [notificationUnreadCount, setNotificationUnreadCount] = useState(0);
+  const [announcementUnreadCount, setAnnouncementUnreadCount] = useState(0);
   const [searchTerm, setSearchTerm] = useState(
     getItem("globalSearch") || ""
   );
@@ -35,6 +37,10 @@ export const GlobalStateProvider = ({ children }) => {
       value={{
         notification,
         setNotification,
+        notificationUnreadCount,
+        setNotificationUnreadCount,
+        announcementUnreadCount,
+        setAnnouncementUnreadCount,
         searchTerm,
         setSearchTerm,
         inputValue, 

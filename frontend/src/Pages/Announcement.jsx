@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import NavBar from "../ui/NavBar";
 import {
   RiChatDeleteFill,
@@ -17,7 +17,7 @@ import { MdAnnouncement } from "react-icons/md";
 import getTimeAgo from "../components/DateCovertion";
 
 import toast from "../components/toaster/Toast";
-import { getItem, storeItem } from "../utils/encode";
+import { getItem } from "../utils/encode";
 import AnnouncementSkeleton from "../components/loaders/AnnouncementSkeleton";
 import empty_state_announcement from "../assets/empty_announcement_state.png";
 import { CiSquareRemove } from "react-icons/ci";
@@ -36,6 +36,7 @@ import formatCount from "../utils/NumberConversion";
 import RenderTextWithHashtags from "../components/RenderTextWithHashtags";
 import { isImpersonating } from "../hooks/director/Useimpersonation";
 import { AnnounceSummarySkeleton } from "../components/loaders/AnnounSummarySkeleton";
+import { GlobalStateContext } from "../GlobalStateContext";
 
 import AnnouncementFilterBar from "../components/announcement/AnnouncementFilterBar";
 import useAnnouncementFilters from "../hooks/announcement/useAnnouncementFilters";
@@ -45,6 +46,7 @@ function Announcement() {
   const username = getItem("username");
   const email = getItem("email");
   const profile = getItem("profile");
+  const { setAnnouncementUnreadCount } = useContext(GlobalStateContext);
 
  
   const [title, setTitle] = useState("");
@@ -65,7 +67,6 @@ function Announcement() {
   const [password, setPassword] = useState("");
   const [showConfirm, setShowConfirm] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
-  const announceCount = getItem("announceCount");
   const [showGuidelines, setShowGuidelines] = useState(false);
   const [preview, setPreview] = useState(false);
   const [fieldErrors, setFieldErrors] = useState({
@@ -84,7 +85,6 @@ function Announcement() {
       setAnnounceLoading(true);
       const response = await axiosInstance.get(`/blog/author/${email}`);
       setAnnouncement(response.data.announcement);
-      storeItem("announceCount", response.data.announcement.length);
     } catch (err) {
       console.log("error", err);
     } finally {
@@ -107,6 +107,19 @@ function Announcement() {
     fetchAllAnnouncement();
     fetchAuthorsForCommunities();
   }, []);
+
+  useEffect(() => {
+    axiosInstance
+      .patch("/blog/author/queueMessage/read", { section: "announcements" })
+      .then((response) => {
+        setNotificationUnreadCount(response.data.unreadNotifications);
+        setAnnouncementUnreadCount(response.data.unreadAnnouncements);
+      })
+      .catch((error) => {
+        console.error("Error marking announcements as read:", error);
+        toast.error("Error", "Unable to mark announcements as read.");
+      });
+  }, [setAnnouncementUnreadCount]);
 
   // toggle community selection
   const toggleCommunity = (community) => {
@@ -198,9 +211,7 @@ function Announcement() {
       "Are you sure you want to delete this announcement?",
     );
     if (!verify) return;
-    if (announceCount > 0) {
-      storeItem("announceCount", announceCount - 1);
-    }
+    const deletedAnnouncement = announcement.find((item) => item._id === id);
     try {
       const response = await axiosInstance.delete(
         `/blog/author/announcements/${id}`,
@@ -209,8 +220,12 @@ function Announcement() {
       toast.success("Deleted !", "Announcement removed successfully ");
       // fetchAllAnnouncement();
       setAnnouncement((prev) => prev.filter((a) => a._id !== id));
+      if (deletedAnnouncement && deletedAnnouncement.isRead !== true) {
+        setAnnouncementUnreadCount((count) => Math.max(0, count - 1));
+      }
     } catch (err) {
-      console.log("error", err);
+      console.error("Error deleting announcement:", err);
+      toast.error("Error", "Unable to delete announcement.");
     }
   };
 

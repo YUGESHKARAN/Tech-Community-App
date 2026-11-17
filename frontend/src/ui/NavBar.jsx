@@ -57,17 +57,23 @@ import { BsFillMenuButtonWideFill, BsPersonWorkspace } from "react-icons/bs";
 import getTimeAgo from "../components/DateCovertion";
 import toast from "../components/toaster/Toast";
 import { MdDashboard } from "react-icons/md";
-import { getItem, removeItem, storeItem } from "../utils/encode";
+import { getItem, removeItem } from "../utils/encode";
 import SearchModal from "../components/SearchModal";
 import useGetRecentHistory from "../hooks/useGetRecentHistory";
 import logNotFound from "../assets/log_not_found.png";
 
 function NavBar() {
+  const location = useLocation();
   const { logout } = useAuth();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const sidebarRef = useRef(null);
   const menuRef = useRef(null);
-  const { notification, setNotification } = useContext(GlobalStateContext);
+  const {
+    notificationUnreadCount: notiCount,
+    setNotificationUnreadCount: setNotiCount,
+    announcementUnreadCount: announceCount,
+    setAnnouncementUnreadCount: setAnnounceCount,
+  } = useContext(GlobalStateContext);
   // const username = localStorage.getItem("username");
   const username = getItem("username");
   // const userEmail = localStorage.getItem("email");
@@ -140,10 +146,20 @@ function NavBar() {
       const response = await axiosInstance.get(
         `/blog/author/queueMessage/${userEmail}`,
       );
-      setNote(response.data.notifications);
-      setAnnouncement(response.data.announcements);
-      storeItem("notiCount", response.data.notifications.length);
-      storeItem("announceCount", response.data.announcements.length);
+      const notifications = response.data.notifications || [];
+      const announcements = response.data.announcements || [];
+      setNote(notifications);
+      setAnnouncement(announcements);
+      setNotiCount(
+        response.data.unreadNotifications ??
+          notifications.filter((item) => item.isRead !== true).length,
+      );
+      if (location.pathname !== "/announcement") {
+        setAnnounceCount(
+          response.data.unreadAnnouncements ??
+            announcements.filter((item) => item.isRead !== true).length,
+        );
+      }
       //   console.log("author email data", response.data.notification)
     } catch (error) {
       console.error("Error fetching notifications:", error);
@@ -154,7 +170,26 @@ function NavBar() {
 
   useEffect(() => {
     fetchNotifications();
-  }, [userEmail]);
+  }, [userEmail, location.pathname]);
+
+  useEffect(() => {
+    if (!userEmail) return undefined;
+
+    const refreshUnreadCounts = async () => {
+      try {
+        const response = await axiosInstance.get(
+          "/blog/author/queueMessage/counts",
+        );
+        setNotiCount(response.data.unreadNotifications);
+        setAnnounceCount(response.data.unreadAnnouncements);
+      } catch (error) {
+        console.error("Error refreshing unread message counts:", error);
+      }
+    };
+
+    const intervalId = window.setInterval(refreshUnreadCounts, 30000);
+    return () => window.clearInterval(intervalId);
+  }, [userEmail, setNotiCount, setAnnounceCount]);
 
   // ----------------------------------------------------------
 
@@ -244,35 +279,57 @@ function NavBar() {
 
   // -----------------------------------------------------------------
 
-  const notiCount = getItem("notiCount");
-  const announceCount = getItem("announceCount");
+  const markMessagesRead = async (section) => {
+    try {
+      const response = await axiosInstance.patch(
+        "/blog/author/queueMessage/read",
+        { section },
+      );
+      setNotiCount(response.data.unreadNotifications);
+      setAnnounceCount(response.data.unreadAnnouncements);
+      if (section === "notifications") {
+        setNote((current) =>
+          current.map((item) => ({ ...item, isRead: true })),
+        );
+      }
+    } catch (error) {
+      console.error(`Error marking ${section} as read:`, error);
+      toast.error("Error", `Unable to mark ${section} as read.`);
+    }
+  };
+
+  const toggleNotificationPanel = () => {
+    const opening = !showNotification;
+    setShowNotification(opening);
+    if (opening) {
+      markMessagesRead("notifications");
+    }
+  };
 
   const deleteSigleNotification = async (userEmail, notificationId) => {
-    // console.log("userEmail", userEmail)
-    setNote((note) => note.filter((n) => n._id !== notificationId));
-    storeItem("notiCount", notiCount - 1);
+    const deletedNotification = note.find((item) => item._id === notificationId);
     try {
-      const response = await axiosInstance.delete(
+      await axiosInstance.delete(
         `/blog/author/notification/delete?email=${userEmail}&notificationId=${notificationId}`,
       );
 
       setNote((note) => note.filter((n) => n._id !== notificationId));
-      // if (response.status === 200){
-      //   setNote((note)=> note.filter((n)=> n._id !== notificationId))
-      // }
+      if (deletedNotification && deletedNotification.isRead !== true) {
+        setNotiCount((count) => Math.max(0, count - 1));
+      }
     } catch (err) {
-      console.log("error", err);
+      console.error("Error deleting notification:", err);
+      toast.error("Error", "Unable to delete notification.");
     }
   };
 
   const deleteAllNotification = async (userEmail) => {
-    if (notiCount === 0) return;
+    if (note.length === 0) return;
 
     const confirm = window.confirm(
       "Are you sure want to delete all the notifications",
     );
     if (!confirm) return;
-    storeItem("notiCount", 0);
     try {
       const response = await axiosInstance.delete(
         `/blog/author/notification/deleteall?email=${userEmail}`,
@@ -282,11 +339,13 @@ function NavBar() {
       if (response.status === 200) {
         toast.info("Cleared", "All notifications cleared");
         setNote([]);
+        setNotiCount(0);
       }
 
       // console.log("deleted", response.data);
     } catch (err) {
-      console.log("error", err);
+      console.error("Error clearing notifications:", err);
+      toast.error("Error", "Unable to clear notifications.");
     }
   };
 
@@ -535,7 +594,7 @@ function NavBar() {
         <div className="relative hidden lg:block">
           <RiNotification3Line
             // <RiNotification3Line
-            onClick={() => setShowNotification(!showNotification)}
+            onClick={toggleNotificationPanel}
             className="text-xl  text-white/70 hover:text-white transition-all duration-300 cursor-pointer transition"
           />
           {notiCount > 0 && (
@@ -590,7 +649,7 @@ function NavBar() {
         {/* 👤 MOBILE USER */}
         <div className="relative lg:hidden">
           <RiNotification3Line
-            onClick={() => setShowNotification(!showNotification)}
+            onClick={toggleNotificationPanel}
             className="text-[27px] text-gray-300 rounded-md p-[5px] border border-neutral-600 hover:text-white transition-all duration-300 cursor-pointer transition"
           />
           {notiCount > 0 && (
@@ -821,7 +880,7 @@ function NavBar() {
       </div>
 
 
-      <Notificationpanel notificationRef={notificationRef} showNotification={showNotification} showAddContent={showAddContent} note={note} loading={loading} deleteAllNotification={deleteAllNotification}  deleteSigleNotification={deleteSigleNotification} setShowNotification={setShowNotification} />
+      <Notificationpanel notificationRef={notificationRef} showNotification={showNotification} showAddContent={showAddContent} note={note} loading={loading} deleteAllNotification={deleteAllNotification} deleteSigleNotification={deleteSigleNotification} setShowNotification={setShowNotification} />
 
       {/* <div
         ref={notificationRef}
