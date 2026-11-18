@@ -19,6 +19,7 @@ import getTimeAgo from "../components/DateCovertion";
 import { getItem } from "../utils/encode";
 import { RiNotification4Fill, RiNotificationFill } from "react-icons/ri";
 import { MdNotificationsActive } from "react-icons/md";
+import formatCount from "../utils/NumberConversion";
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  TYPE → ICON / COLOR MAP
@@ -136,7 +137,7 @@ const Notificationpanel = ({
         <div className="flex items-center  gap-1.5">
           <MdNotificationsActive className="md:text-[15px] text-[14px] text-emerald-400" />
           <h2 className="text-[13px] tracking-wide font-medium text-white/80 tracking-tight">
-            Notifications
+            Notifications ({formatCount(note?.length || 0)})
           </h2>
         </div>
         <button
