@@ -84,7 +84,7 @@ export default function EventsShell({ children }) {
           {/* mobile toolbar */}
                  <div
             data-events-mobile-toolbar
-            className="sticky top-0 z-30 flex items-center gap-3 bg-[#0f1216]/95 px-4 py-2 backdrop-blur lg:hidden"
+            className="sticky top-0 z-30 flex items-center gap-3 theme px-4 py-2 backdrop-blur lg:hidden"
           >
             <button
               type="button"
