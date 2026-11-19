@@ -35,7 +35,7 @@ export default function EventsShell({ children }) {
       <div className="flex min-w-0 flex-1">
         {/* desktop sidebar */}
         <aside className="hidden w-60 shrink-0 border-r border-white/[0.07] lg:block">
-          <div className="sticky top-0 h-screen overflow-y-auto p-4">
+          <div className="sticky  top-0 h-screen overflow-y-auto p-4">
             <EventSidebar />
           </div>
         </aside>
@@ -62,7 +62,7 @@ export default function EventsShell({ children }) {
                 animate={{ x: 0 }}
                 exit={{ x: "-100%" }}
                 transition={{ duration: DURATION, ease: EASE }}
-                className="absolute inset-y-0 left-0 w-72 max-w-[85vw] overflow-y-auto border-r border-white/10 bg-[#0f1216] p-4 shadow-2xl"
+                className="absolute inset-y-0 left-0 w-72 max-w-[85vw] overflow-y-auto border-r border-white/10 theme p-4 shadow-2xl"
               >
                 <div className="mb-4 flex justify-end">
                   <button
@@ -84,7 +84,7 @@ export default function EventsShell({ children }) {
           {/* mobile toolbar */}
                  <div
             data-events-mobile-toolbar
-            className="sticky top-0 z-30 flex items-center gap-3 bg-[#0f1216]/95 px-4 py-2 backdrop-blur lg:hidden"
+            className="sticky top-0 z-30 flex items-center gap-3 theme px-4 py-2 backdrop-blur lg:hidden"
           >
             <button
               type="button"
