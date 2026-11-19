@@ -574,7 +574,7 @@ function TechCommunityLanding() {
           <RecentVisit
             parentClass="flex col-span-1 order-1 border-none md:col-span-2 lg:col-span-1 flex-col hidden xl:block gap-3 pt-0 lg:sticky lg:top-16"
             titleClass="md:text-slate-400 text-slate-500   uppercase tracking-widest text-[10px] md:text-[11px]"
-            childClass="theme border border-[#1e293b] rounded-2xl p-1 mt-2"
+            childClass="theme border border-[#1e293b] rounded-xl p-1 mt-2"
           />
 
           {/* ── Main column ── */}
@@ -713,7 +713,7 @@ function TechCommunityLanding() {
               Overall Leaderboard
             </h3>
             {!topContributorsLoading ? (
-              <div className="theme border border-[#1e293b] rounded-xl md:rounded-2xl px-3 py-2.5 md:p-4">
+              <div className="theme border border-[#1e293b] rounded-xl px-3 py-2.5 md:p-4">
                 <div className="flex items-center justify-between mb-2 md:mb-3">
                   <div className="flex items-center gap-2 text-sm font-semibold text-gray-200">
                     <TbTrophy className="text-amber-400" />
