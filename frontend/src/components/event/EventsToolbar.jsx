@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { TbArrowsSort, TbCheck, TbChevronDown, TbFilter } from "react-icons/tb";
+import { AnimatePresence, motion } from "framer-motion";
 import { DATE_OPTIONS, PARTICIPATION_OPTIONS, STATUS_OPTIONS } from "../../utils/event/browse";
 
 const pill = (active) =>
@@ -92,28 +93,39 @@ export default function EventsToolbar({
         )}
       </div>
 
-      {panelOpen && (
-        <div className="mt-4 grid gap-5 border-t border-white/[0.07] pt-4 md:grid-cols-3">
-          <FilterGroup
-            label="Status"
-            options={STATUS_OPTIONS}
-            value={filters.status}
-            onChange={(v) => onFiltersChange({ ...filters, status: v })}
-          />
-          <FilterGroup
-            label="Participation"
-            options={PARTICIPATION_OPTIONS}
-            value={filters.participation}
-            onChange={(v) => onFiltersChange({ ...filters, participation: v })}
-          />
-          <FilterGroup
-            label="Date"
-            options={DATE_OPTIONS}
-            value={filters.date}
-            onChange={(v) => onFiltersChange({ ...filters, date: v })}
-          />
-        </div>
-      )}
+      <AnimatePresence initial={false}>
+        {panelOpen && (
+          <motion.div
+            key="event-filter-panel"
+            initial={{ height: 0, opacity: 0, y: -8 }}
+            animate={{ height: "auto", opacity: 1, y: 0 }}
+            exit={{ height: 0, opacity: 0, y: -8 }}
+            transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+            className="mt-4 overflow-hidden"
+          >
+            <div className="grid gap-5 border-t border-white/[0.07] pt-4 md:grid-cols-3">
+              <FilterGroup
+                label="Status"
+                options={STATUS_OPTIONS}
+                value={filters.status}
+                onChange={(v) => onFiltersChange({ ...filters, status: v })}
+              />
+              <FilterGroup
+                label="Participation"
+                options={PARTICIPATION_OPTIONS}
+                value={filters.participation}
+                onChange={(v) => onFiltersChange({ ...filters, participation: v })}
+              />
+              <FilterGroup
+                label="Date"
+                options={DATE_OPTIONS}
+                value={filters.date}
+                onChange={(v) => onFiltersChange({ ...filters, date: v })}
+              />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
