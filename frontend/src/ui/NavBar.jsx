@@ -772,7 +772,7 @@ function NavBar() {
               onClick={() => setIsSidebarOpen(false)}
              className="rounded-md border border-white/10 p-1.5 text-zinc-200 hover:bg-white/5"
            >
-             <TbX size={16} />
+             <TbX size={14} />
            </button>
 
           
