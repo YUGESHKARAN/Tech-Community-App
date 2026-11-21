@@ -699,7 +699,9 @@ function NavBar() {
       </div>
 
       {/* Sidebar */}
-      {/* bg-[#0b1220] */}
+      {/* bg-[#0b1220]
+      rounded-br-2xl rounded-tr-2xl 
+       */}
       <div
         ref={sidebarRef}
         className={`fixed top-0 left-0 w-[300px]
@@ -707,7 +709,7 @@ function NavBar() {
               text-white shadow-2xl z-50 h-screen
               flex flex-col
               transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]
-              rounded-br-2xl rounded-tr-2xl border border-white/10
+              border border-white/10
               ${isImpersonating() ? "mt-10" : "mt"}
               ${
                 isSidebarOpen
@@ -757,12 +759,23 @@ function NavBar() {
             </Link>
           )}
 
-          <button
+          {/* <button
             onClick={() => setIsSidebarOpen(false)}
             className="text-white/50 hover:text-white transition text-sm md:text-lg"
           >
             ✕
-          </button>
+          </button> */}
+
+           <button
+             type="button"
+             aria-label="Close menu"
+              onClick={() => setIsSidebarOpen(false)}
+             className="rounded-md border border-white/10 p-1.5 text-zinc-200 hover:bg-white/5"
+           >
+             <TbX size={16} />
+           </button>
+
+          
         </div>
 
         {/* ================= PRIMARY ICON NAV ================= */}
@@ -1179,6 +1192,7 @@ import RecentVisit from "../components/RecentVisit";
 import { AiOutlineUsergroupAdd } from "react-icons/ai";
 import { isImpersonating } from "../hooks/director/Useimpersonation";
 import Notificationpanel from "../services/Notification";
+import { TbX } from "react-icons/tb";
 
 function NavIconDesktop({ to, icon, label }) {
   const location = useLocation();
