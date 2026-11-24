@@ -297,6 +297,7 @@ const MarkdownEditor = ({ value, onChange }) => {
               md:prose-p:md:leading-6
               md:prose-p:text-sm
               prose-headings:text-white
+              overflow-y-auto emerald-scrollbar
             "
           >
             <RenderTextWithHashtags
