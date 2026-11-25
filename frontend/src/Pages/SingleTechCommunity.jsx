@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useRef } from "react";
 import { useParams, useSearchParams, Link } from "react-router-dom";
 import NavBar from "../ui/NavBar";
 import Footer from "../ui/Footer";
@@ -62,6 +62,7 @@ import { isImpersonating } from "../hooks/director/Useimpersonation";
 import { EmptyState } from "../components/EmptyState";
 import ShareDiscussionButton from "../components/ShareDiscussionButton";
 import { discussionPath } from "../utils/shareDiscussion";
+import CommunityShareMenu from "../components/CommunityShareMenu";
 
 // ── S3 image base ─────────────────────────────────────────────────────────────
 const S3 = "https://open-access-blog-image.s3.us-east-1.amazonaws.com/";
@@ -138,6 +139,10 @@ const CommunityBanner = ({
   communityId,
   canEdit,
   role,
+  membershipLoading,
+  membershipStale,
+  onMembershipAction,
+  currentUserEmail,
 }) => {
   const gradient = useMemo(() => {
     const theme = community?.colorTheme;
@@ -145,10 +150,14 @@ const CommunityBanner = ({
   }, [community?.colorTheme]);
 
   const Icon = community.icon ? TbIcons[community.icon] : style.icon;
+  const isJoined = community.userRole === "member";
+  const membershipLabel = membershipStale
+    ? membershipLoading ? "Refreshing..." : "Refresh membership"
+    : membershipLoading ? (isJoined ? "Leaving..." : "Joining...") : (isJoined ? "✓ Joined" : "+ Join");
   if (!loader && community?.colorTheme) {
     return (
       <div
-        className="relative md:py-2 rounded-lg  md:px-2 overflow-hidden mb-0"
+        className="relative md:py-2 rounded-lg md:px-2 mb-0"
         style={{
           // background: `linear-gradient(135deg, ${style.from}, ${style.to})`,
           background: `${community?.colorTheme ? `linear-gradient(135deg, ${gradient?.from}, ${gradient?.to})` : `linear-gradient(135deg, ${style?.from}, ${style?.to})`}`,
@@ -158,7 +167,7 @@ const CommunityBanner = ({
     PREMIUM TECH GRID
 ───────────────────────────────────────── */}
 <div
-  className="absolute inset-0 pointer-events-none opacity-[0.25]"
+  className="absolute inset-0 rounded-lg pointer-events-none opacity-[0.25]"
   style={{
     backgroundImage: `
       linear-gradient(
@@ -181,7 +190,7 @@ const CommunityBanner = ({
         
         {/* subtle texture overlay */}
         <div
-          className="absolute inset-0 opacity-10"
+          className="absolute inset-0 rounded-lg pointer-events-none opacity-10"
           style={{
             backgroundImage:
               "radial-gradient(circle at 80% 20%, rgba(255,255,255,.4) 0%, transparent 60%)",
@@ -189,51 +198,64 @@ const CommunityBanner = ({
         />
 
         <div className="relative px-5 p-3.5 md:pt-4 md:pb-5">
-          
-          {canEdit && communityId && (
-            <Link
-              to={`/techCommunityDetails/${communityId}/edit`}
-             
-            >
-              <button
-               className="absolute top-2.5 md:top-4 right-20 disabled:opacity-50 disabled:cursor-not-allowed text-[10px] md:font-semibold px-2 md:px-3 py-1 rounded-full  text-white md:hover:text-gray-300 transition-all duration-200 transition-colors"
-               disabled={isImpersonating()}
-               >
-              {/* Edit */}
-              <TbIcons.TbSettings className="text-sm md:text-lg" />
-              </button>
-            </Link>
-          )}
-          {community.userRole ? (
-            <span className="absolute top-2.5 md:top-4 right-2 text-[10px] md:font-semibold px-2.5 py-0.5 md:py-1 rounded-full bg-white/20 text-white capitalize">
-              {community?.userRole}
-            </span>
-          ) : (
-            <span className="absolute top-2.5 md:top-4 right-2 text-[10px] md:font-semibold px-2.5 py-0.5 md:py-1 rounded-full bg-white/20 text-white capitalize">
-              {role == "admin" ? "Maintainer" : "Viewer"}
-            </span>
-          )}
-
-          <div className="flex items-start justify-start gap-3 mb-0.5 mt-0.5 md:mb-1">
-            <div className="md:w-10 w-9 h-9 md:h-10 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
-              <Icon className="text-white text-lg md:text-xl" />
+          <div className="flex flex-wrap items-start justify-between gap-2 mb-0.5 mt-0.5 md:mb-1">
+            <div className="flex min-w-[140px] flex-1 items-start gap-3">
+              <div className="md:w-10 w-9 h-9 md:h-10 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
+                <Icon className="text-white text-lg md:text-xl" />
+              </div>
+              <div className="min-w-0 break-words">
+                {/* <p className="text-[10px] font-medium tracking-widest uppercase text-white/60 mb-0.5">
+                Tech Domain · BytesBase
+              </p> */}
+                <h1 className="text-lg md:text-2xl font-semibold text-white leading-tight">
+                  {community?.name}
+                </h1>
+                {community.tagline ? (
+                  <p className="md:text-xs text-[10px] text-white/70 max-w-2xl leading-relaxed md:mb-2 mb-1">
+                    {community?.tagline}
+                  </p>
+                ) : (
+                  <p className="md:text-xs text-[10px] text-white/70 max-w-2xl leading-relaxed md:mb-2 mb-1">
+                    No tag line set
+                  </p>
+                )}
+              </div>
             </div>
-            <div>
-              {/* <p className="text-[10px] font-medium tracking-widest uppercase text-white/60 mb-0.5">
-              Tech Domain · BytesBase
-            </p> */}
-              <h1 className="text-lg md:text-2xl font-semibold text-white leading-tight">
-                {community?.name}
-              </h1>
-              {community.tagline ? (
-                <p className="md:text-xs text-[10px] text-white/70 max-w-2xl leading-relaxed md:mb-2 mb-1">
-                  {community?.tagline}
-                </p>
-              ) : (
-                <p className="md:text-xs text-[10px] text-white/70 max-w-2xl leading-relaxed md:mb-2 mb-1">
-                  No tag line set
-                </p>
+            <div className="ml-auto flex shrink-0 items-center gap-1">
+              {canEdit && communityId && (
+                <Link to={`/techCommunityDetails/${communityId}/edit`}>
+                  <button
+                    className="disabled:opacity-50 disabled:cursor-not-allowed text-[10px] md:font-semibold px-2 md:px-3 py-1 rounded-full text-white md:hover:text-gray-300 transition-colors"
+                    disabled={isImpersonating()}
+                  >
+                    <TbIcons.TbSettings className="text-sm md:text-lg" />
+                  </button>
+                </Link>
               )}
+              {role === "student" && community.userRole !== "coordinator" ? (
+                <button
+                  type="button"
+                  onClick={onMembershipAction}
+                  disabled={membershipLoading || !currentUserEmail || community._id !== communityId || isImpersonating()}
+                  className={`text-xs font-semibold px-3.5 py-1.5 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${
+                    isJoined || membershipStale
+                      ? "border border-white/10 bg-white/5 text-gray-300"
+                      : "text-white ring-1 ring-white/25"
+                  }`}
+                  style={!isJoined && !membershipStale ? { background: gradient?.from ?? style.from } : undefined}
+                >
+                  {membershipLabel}
+                </button>
+              ) : community.userRole ? (
+                <span className="text-[10px] md:font-semibold px-2.5 py-0.5 md:py-1 rounded-full bg-white/20 text-white capitalize">
+                  {community?.userRole}
+                </span>
+              ) : (
+                <span className="text-[10px] md:font-semibold px-2.5 py-0.5 md:py-1 rounded-full bg-white/20 text-white capitalize">
+                  {role == "admin" ? "Maintainer" : "Viewer"}
+                </span>
+              )}
+              <CommunityShareMenu community={community} className="relative" />
             </div>
           </div>
 
@@ -247,30 +269,32 @@ const CommunityBanner = ({
             </p>
           )}
 
-          <div className="flex flex-wrap gap-2 md:gap-4">
-            {[
-              { icon: TbUsers, val: (community?.memberCount-community.coordinatorsCount) || 0, label: "members" },
-              { icon: TbFileText, val: community.postCount, label: "posts" },
-              {
-                icon: TbMessageCircle,
-                val: community.discussionCount || 0,
-                label: "discussions",
-              },
-              {
-                icon: TbUserCheck,
-                val: community.coordinatorsCount,
-                label: "coordinators",
-              },
-            ].map(({ icon: StatIcon, val, label }) => (
-              <span
-                key={label}
-                className="flex items-center md:text-xs text-[10px]  gap-1 md:gap-1.5 text-white/80"
-              >
-                <StatIcon className="text-sm text-white/60" />
-                <b className="text-white font-semibold">{formatCount(val)}</b>
-                {label}
-              </span>
-            ))}
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex flex-wrap gap-2 md:gap-4">
+              {[
+                { icon: TbUsers, val: (community?.memberCount-community.coordinatorsCount) || 0, label: "members" },
+                { icon: TbFileText, val: community.postCount, label: "posts" },
+                {
+                  icon: TbMessageCircle,
+                  val: community.discussionCount || 0,
+                  label: "discussions",
+                },
+                {
+                  icon: TbUserCheck,
+                  val: community.coordinatorsCount,
+                  label: "coordinators",
+                },
+              ].map(({ icon: StatIcon, val, label }) => (
+                <span
+                  key={label}
+                  className="flex items-center md:text-xs text-[10px]  gap-1 md:gap-1.5 text-white/80"
+                >
+                  <StatIcon className="text-sm text-white/60" />
+                  <b className="text-white font-semibold">{formatCount(val)}</b>
+                  {label}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -497,10 +521,12 @@ const DiscussionsTab = ({
   accentColor,
   currentUserEmail,
   userRole,
+  currentUserRole,
 }) => {
   const [activeCategory, setActiveCategory] = useState("");
   const canPost =
-    userRole === "coordinator" || whoCanPost === "member";
+    userRole === "coordinator" ||
+    (whoCanPost === "member" && (userRole === "member" || currentUserRole !== "student"));
 
   const filtered = useMemo(() => {
     if (!activeCategory) return discussions;
@@ -744,10 +770,11 @@ const FeedCard = ({ post, email, setPosts }) => {
 };
 
 // ── Feed tab ──────────────────────────────────────────────────────────────────
-const FeedTab = ({ posts, setPosts, feedLoad, feedHashMore, whoCanPost, userRole }) => {
+const FeedTab = ({ posts, setPosts, feedLoad, feedHashMore, whoCanPost, userRole, currentUserRole }) => {
   const email = getItem("email");
     const canPost =
-     userRole === "coordinator" || whoCanPost === "member";
+     userRole === "coordinator" ||
+     (whoCanPost === "member" && (userRole === "member" || currentUserRole !== "student"));
 
   // share post with social media
   const sharePost = async (title, email, postId) => {
@@ -1193,6 +1220,7 @@ function SingleTechCommunity() {
   const { communityId } = useParams();
   const {
     communityDetails: community,
+    setCommunityDetails,
     commLoading,
     getCommunitDetails,
   } = useGetSingleTechCommunity(communityId);
@@ -1253,6 +1281,17 @@ function SingleTechCommunity() {
 
   const currentUserEmail = getItem("email");
   const currentUserRole = getItem("role");
+  const [membershipLoading, setMembershipLoading] = useState(false);
+  const [membershipStale, setMembershipStale] = useState(false);
+  const membershipRequest = useRef(null);
+  const currentCommunityId = useRef(communityId);
+  currentCommunityId.current = communityId;
+
+  useEffect(() => {
+    setMembershipStale(false);
+    setMembershipLoading(false);
+    membershipRequest.current = null;
+  }, [communityId]);
 
   const {
     posts,
@@ -1269,7 +1308,7 @@ function SingleTechCommunity() {
     setPage,
     hasMore,
     loading: memberLoad,
-    fetchAuthors,
+    refreshAuthors,
   } = useGetAllMembersByDomain(communityId);
   // const discussions =discussionsSample
 
@@ -1278,9 +1317,64 @@ function SingleTechCommunity() {
     { category: "", limit: 20 },
   );
 
-  useEffect(() => {
-    fetchAuthors(communityId);
-  }, [communityId]);
+  const handleMembershipAction = async () => {
+    if (membershipRequest.current || !currentUserEmail || !community?.name || community._id !== communityId) return;
+    const request = {};
+    membershipRequest.current = request;
+    setMembershipLoading(true);
+    const targetId = communityId;
+    const isCurrentRequest = () =>
+      currentCommunityId.current === targetId && membershipRequest.current === request;
+    let updated = false;
+
+    try {
+      if (!membershipStale) {
+        try {
+          await axiosInstance.put("/blog/author/control/updateCommunity", {
+            email: currentUserEmail,
+            techcommunity: community.name,
+          });
+          updated = true;
+        } catch (error) {
+          console.error("Unable to update community membership:", error);
+          if (isCurrentRequest()) {
+            toast.error("Could not confirm membership change", "Checking your current membership.");
+          }
+        }
+      }
+
+      const response = await axiosInstance.get(`/blog/techCommunity/${targetId}`);
+      if (!isCurrentRequest()) return;
+      setCommunityDetails(response.data.community);
+      setMembershipStale(false);
+      if (updated) {
+        const joined = response.data.community.userRole === "member";
+        toast[joined ? "success" : "info"](
+          joined ? "Joined" : "Left",
+          joined ? "You have joined the community!" : "You have left the community!",
+        );
+      }
+      try {
+        await refreshAuthors();
+      } catch (error) {
+        console.error("Unable to refresh community members:", error);
+        if (isCurrentRequest()) {
+          toast.error("Unable to refresh members", "Reload the page to update the member list.");
+        }
+      }
+    } catch (error) {
+      console.error("Unable to refresh community membership:", error);
+      if (isCurrentRequest()) {
+        setMembershipStale(true);
+        toast.error("Unable to refresh membership", "Use Refresh membership to try again.");
+      }
+    } finally {
+      if (isCurrentRequest()) {
+        membershipRequest.current = null;
+        setMembershipLoading(false);
+      }
+    }
+  };
 
   const canEditCommunity =
     currentUserRole === "admin" ||
@@ -1347,6 +1441,10 @@ function SingleTechCommunity() {
           loader={commLoading}
           communityId={communityId}
           canEdit={canEditCommunity}
+          membershipLoading={membershipLoading}
+          membershipStale={membershipStale}
+          onMembershipAction={handleMembershipAction}
+          currentUserEmail={currentUserEmail}
         />
 
         {/* ── Tab bar ── */}
@@ -1369,7 +1467,8 @@ function SingleTechCommunity() {
                 feedLoad={feedLoad}
                 feedHashMore={feedHashMore}
                 whoCanPost={whoCanPost}
-                userRole ={community.userRole}
+                userRole ={membershipStale && currentUserRole === "student" ? null : community.userRole}
+                currentUserRole={currentUserRole}
               />
             )}
             {activeTab === "discussions" && (
@@ -1380,12 +1479,13 @@ function SingleTechCommunity() {
                 whoCanPost={whoCanPost}
                 accentColor={accentColor}
                 currentUserEmail={currentUserEmail}
-                userRole={community.userRole}
+                userRole={membershipStale && currentUserRole === "student" ? null : community.userRole}
+                currentUserRole={currentUserRole}
               />
             )}
             {activeTab === "members" && (
               <>
-                {(!memberLoad && coordinators?.length > 0) && 
+                {!memberLoad &&
                   <MembersTab
                     members={members}
                     coordinators={coordinators}
