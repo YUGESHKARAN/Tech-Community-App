@@ -9,12 +9,14 @@ function useGetAllMembersByDomain(communityId) {
   const [loading, setLoading] = useState(false);
   const [hasFetched, setHasFetched] = useState(false);
   const fetchingRef = useRef(false);
+  const requestVersion = useRef(0);
 
   const fetchAuthors = useCallback(async () => {
     if (!communityId) return;
-    if (fetchingRef.current || loading || !hasMore) return;
+    if (fetchingRef.current || !hasMore) return;
 
     fetchingRef.current = true;
+    const version = ++requestVersion.current;
     setLoading(true);
 
     try {
@@ -28,6 +30,7 @@ function useGetAllMembersByDomain(communityId) {
         hasMore: nextHasMore,
       } = response.data;
 
+      if (version !== requestVersion.current) return;
       if (
         newCoordinators.length === 0 &&
         newMembers.length === 0 &&
@@ -44,16 +47,43 @@ function useGetAllMembersByDomain(communityId) {
           : response.data.page < response.data.totalPages
       );
     } catch (err) {
-      console.error("Error loading members:", err);
+      if (version === requestVersion.current) {
+        console.error("Error loading members:", err);
+      }
     } finally {
-      setLoading(false);
-      fetchingRef.current = false;
-      setHasFetched(true);
+      if (version === requestVersion.current) {
+        setLoading(false);
+        fetchingRef.current = false;
+        setHasFetched(true);
+      }
     }
-  }, [communityId, page, loading, hasMore]);
+  }, [communityId, page, hasMore]);
 
-  useEffect(() => {
-    fetchAuthors();
+  const refreshAuthors = useCallback(async () => {
+    const version = ++requestVersion.current;
+    fetchingRef.current = true;
+    setLoading(true);
+    try {
+      const response = await axiosInstance.get(
+        `/blog/techCommunity/${communityId}/members?&page=1&limit=20`
+      );
+      if (version !== requestVersion.current) return;
+      const { coordinators: nextCoordinators = [], members: nextMembers = [], hasMore: nextHasMore } = response.data;
+      setCoordinators(nextCoordinators);
+      setMembers(nextMembers);
+      setPage(1);
+      setHasMore(
+        typeof nextHasMore === "boolean"
+          ? nextHasMore
+          : response.data.page < response.data.totalPages
+      );
+    } finally {
+      if (version === requestVersion.current) {
+        setLoading(false);
+        fetchingRef.current = false;
+        setHasFetched(true);
+      }
+    }
   }, [communityId]);
 
   useEffect(() => {
@@ -61,7 +91,15 @@ function useGetAllMembersByDomain(communityId) {
     setCoordinators([]);
     setPage(1);
     setHasMore(true);
-  }, [communityId]);
+    setHasFetched(false);
+    if (communityId) {
+      refreshAuthors().catch((err) => console.error("Error loading members:", err));
+    }
+    return () => {
+      requestVersion.current += 1;
+      fetchingRef.current = false;
+    };
+  }, [communityId, refreshAuthors]);
 
   return {
     members,
@@ -72,6 +110,7 @@ function useGetAllMembersByDomain(communityId) {
     loading,
     hasFetched,
     fetchAuthors,
+    refreshAuthors,
   };
 }
 
