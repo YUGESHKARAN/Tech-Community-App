@@ -41,6 +41,8 @@ import { deriveGradient } from "../utils/bannerTheme";
 import PerformanceTracker from "../components/performancetracker/PerformanceTracker";
 import useStreak from "../hooks/performanceTracker/useStreak";
 import { isImpersonating } from "../hooks/director/Useimpersonation";
+import CommunityShareMenu from "../components/CommunityShareMenu";
+import { communityPath } from "../utils/shareCommunity";
 
 const streakSample = {
   currentStreak: 4,
@@ -278,9 +280,21 @@ function TechCommunityLanding() {
 
     return (
       <div className="group  relative theme border border-[#1e293b] rounded-xl overflow-hidden flex flex-col hover:border-white/10 transition-all duration-300">
+        <div className="absolute right-2 top-2 z-30 flex items-center gap-1">
+          {item.userRole && (
+            <Link
+              to={communityPath(item?._id)}
+              aria-label={`View ${item.name} community`}
+              className="text-[10px] md:text-[11px] md:font-semibold px-2.5 py-1 rounded-full bg-white/25 text-white"
+            >
+              {item.userRole}
+            </Link>
+          )}
+          <CommunityShareMenu community={item} className="relative" />
+        </div>
         <Link
           // to={`/techDomainDetails/${encodeURIComponent(item.name)}`}
-          to={`/techCommunityDetails/${item?._id}`}
+          to={communityPath(item?._id)}
           className="flex flex-col"
         >
           {/* ── colored banner header ── */}
@@ -316,7 +330,7 @@ function TechCommunityLanding() {
             <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
               <Icon className="text-white text-sm md:text-lg" />
             </div>
-            <div className="min-w-0">
+            <div className={`min-w-0 ${item.userRole ? "pr-28" : "pr-10"}`}>
               <h2 className="text-white font-semibold text-base truncate">
                 {item?.name}
               </h2>
@@ -326,12 +340,6 @@ function TechCommunityLanding() {
               </p>
             </div>
 
-            {item.userRole && (
-              <span className="absolute top-3 right-3 text-[10px] md:text-[11px] md:font-semibold px-2.5 py-1 rounded-full bg-white/25 text-white">
-                {/* Coordinator */}
-                {item?.userRole}
-              </span>
-            )}
           </div>
 
           {/* ── stats + avatar stack ── */}
