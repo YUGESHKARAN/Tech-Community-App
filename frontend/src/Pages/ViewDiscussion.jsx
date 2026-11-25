@@ -33,7 +33,6 @@ import {
   TbCode,
   TbLink,
   TbBookmark,
-  TbShare,
   TbBlockquote,
   TbList,
 } from "react-icons/tb";
@@ -50,6 +49,7 @@ import * as TbIcons from "react-icons/tb";
 
 import { twMerge } from "tailwind-merge";
 import clsx from "clsx";
+import ShareDiscussionButton from "../components/ShareDiscussionButton";
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 const S3 = "https://open-access-blog-image.s3.us-east-1.amazonaws.com/";
@@ -1505,15 +1505,24 @@ function ViewDiscussion() {
                   </span>
                 </Link>
 
-                <span className="hidden shrink-0 items-center gap-1.5 rounded-full bg-black/15 px-3 py-1.5 text-[10px] font-medium text-white/75 ring-1 ring-white/15 sm:flex">
-                  <TbMessageCircle className="text-sm" />
-                  Discussion
-                  <span
-                    className={`text-[9px] font-semibold px-1.5 py-0.5 rounded ${cat.bg} ${cat.text}`}
-                  >
-                  {cat.label}
+                <div className="flex shrink-0 items-center gap-2">
+                  <span className="hidden shrink-0 items-center gap-1.5 rounded-full bg-black/15 px-3 py-1.5 text-[10px] font-medium text-white/75 ring-1 ring-white/15 sm:flex">
+                    <TbMessageCircle className="text-sm" />
+                    Discussion
+                    <span
+                      className={`text-[9px] font-semibold px-1.5 py-0.5 rounded ${cat.bg} ${cat.text}`}
+                    >
+                      {cat.label}
+                    </span>
                   </span>
-                </span>
+                  <ShareDiscussionButton
+                    communityId={communityId}
+                    discussionId={discussion?._id}
+                    title={discussion?.title}
+                    body={discussionBody}
+                    className="bg-black/20 px-3 py-1.5 text-white ring-1 ring-white/20 hover:bg-black/35"
+                  />
+                </div>
               </div>
             </div>
 

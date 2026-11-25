@@ -60,6 +60,8 @@ import { CoordinatorsCardSkeleton } from "../components/loaders/community/Coordi
 import RenderTextNoMarkdown from "../components/RenderTextNoMarkdown";
 import { isImpersonating } from "../hooks/director/Useimpersonation";
 import { EmptyState } from "../components/EmptyState";
+import ShareDiscussionButton from "../components/ShareDiscussionButton";
+import { discussionPath } from "../utils/shareDiscussion";
 
 // ── S3 image base ─────────────────────────────────────────────────────────────
 const S3 = "https://open-access-blog-image.s3.us-east-1.amazonaws.com/";
@@ -397,7 +399,7 @@ const DiscussionCard = ({
 
         {/* content */}
         <Link
-          to={`/discussion/${communityId}/${discussion._id}`}
+          to={discussionPath(communityId, discussion._id)}
           className="flex-1 min-w-0"
         >
           <div className="flex items-start gap-2 mb-1 flex-wrap">
@@ -473,6 +475,14 @@ const DiscussionCard = ({
             </span>
           </div>
         </Link>
+        <ShareDiscussionButton
+          communityId={communityId}
+          discussionId={discussion._id}
+          title={discussion.title}
+          body={discussion.body}
+          childClass="hidden md:block"
+          className="self-start px-2 py-1.5 text-gray-400 hover:bg-white/5 hover:text-emerald-400"
+        />
       </div>
     </div>
   );
