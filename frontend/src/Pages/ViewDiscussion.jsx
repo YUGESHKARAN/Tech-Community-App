@@ -1434,7 +1434,7 @@ function ViewDiscussion() {
     <div className="min-h-screen theme text-white flex flex-col">
       <NavBar />
 
-      <div className="flex-grow px-4 md:px-8 max-w-[900px] mx-auto w-full pb-20 pt-4">
+      <div className="flex-grow px-2.5 md:px-8 max-w-[900px] mx-auto w-full pb-20 pt-4">
         {/* ── Back navigation ── */}
         <button
           onClick={() =>
@@ -1520,7 +1520,7 @@ function ViewDiscussion() {
                     discussionId={discussion?._id}
                     title={discussion?.title}
                     body={discussionBody}
-                    className="bg-black/20 px-3 py-1.5 text-white ring-1 ring-white/20 hover:bg-black/35"
+                    className="md:bg-black/20 bg-black/15 px-2 md:px-3 py-1 md:py-1.5 text-white md:ring-1 md:ring-white/20 hover:bg-black/20 md:hover:bg-black/35"
                   />
                 </div>
               </div>

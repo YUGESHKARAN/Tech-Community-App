@@ -29,9 +29,9 @@ export default function ShareDiscussionButton({
       disabled={!communityId || !discussionId || !title}
       aria-label="Share discussion"
       title="Share discussion"
-      className={`inline-flex shrink-0 items-center justify-center text-white/75 gap-1.5 rounded-lg  text-xs font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
+      className={`inline-flex shrink-0 items-center justify-center text-white/75 gap-1 rounded-xl  text-[10px] font-medium transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
     >
-      <TbShare className="text-sm" aria-hidden="true" />
+      <TbShare className="ms:text-xs text-[10px] " aria-hidden="true" />
       <span className={`${childClass}`}>Share</span>
     </button>
   );
