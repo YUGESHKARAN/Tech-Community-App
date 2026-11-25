@@ -82,7 +82,7 @@ export default function CommunityShareMenu({ community, className = "" }) {
             onClick={handleShare}
             className="flex items-center gap-1.5 whitespace-nowrap px-2 py-1.5 text-xs font-medium text-gray-300 hover:text-gray-200 transition-colors  focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-400"
           >
-            <TbShare className="text-base" aria-hidden="true" />
+            <TbShare className="text-sm md:text-base" aria-hidden="true" />
             Share
           </button>
         </div>
