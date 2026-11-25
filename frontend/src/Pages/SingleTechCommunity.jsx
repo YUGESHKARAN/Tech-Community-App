@@ -222,16 +222,6 @@ const CommunityBanner = ({
               </div>
             </div>
             <div className="ml-auto flex shrink-0 items-center gap-1">
-              {canEdit && communityId && (
-                <Link to={`/techCommunityDetails/${communityId}/edit`}>
-                  <button
-                    className="disabled:opacity-50 disabled:cursor-not-allowed text-[10px] md:font-semibold px-2 md:px-3 py-1 rounded-full text-white md:hover:text-gray-300 transition-colors"
-                    disabled={isImpersonating()}
-                  >
-                    <TbIcons.TbSettings className="text-sm md:text-lg" />
-                  </button>
-                </Link>
-              )}
               {role === "student" && community.userRole !== "coordinator" ? (
                 <button
                   type="button"
@@ -255,7 +245,12 @@ const CommunityBanner = ({
                   {role == "admin" ? "Maintainer" : "Viewer"}
                 </span>
               )}
-              <CommunityShareMenu community={community} className="relative" />
+              <CommunityShareMenu
+                community={community}
+                className="relative"
+                editPath={canEdit && communityId ? `/techCommunityDetails/${communityId}/edit` : undefined}
+                editDisabled={isImpersonating()}
+              />
             </div>
           </div>
 
@@ -505,7 +500,7 @@ const DiscussionCard = ({
           title={discussion.title}
           body={discussion.body}
           childClass="hidden md:block"
-          className="self-start px-2 py-1.5 text-gray-400 hover:bg-white/5 hover:text-emerald-400"
+          className="self-start px-2 py-1.5 text-gray-400 bg-white/5 hover:text-emerald-400"
         />
       </div>
     </div>

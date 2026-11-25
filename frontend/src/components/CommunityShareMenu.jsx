@@ -1,18 +1,24 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useRef, useState } from "react";
-import { TbDotsVertical, TbShare } from "react-icons/tb";
+import { Link } from "react-router-dom";
+import { TbDotsVertical, TbSettings, TbShare } from "react-icons/tb";
 import toast from "./toaster/Toast";
 import { shareCommunity } from "../utils/shareCommunity";
 
-export default function CommunityShareMenu({ community, className = "" }) {
+export default function CommunityShareMenu({
+  community,
+  className = "",
+  editPath,
+  editDisabled = false,
+}) {
   const [open, setOpen] = useState(false);
   const menuRef = useRef(null);
   const triggerRef = useRef(null);
-  const shareRef = useRef(null);
+  const itemsRef = useRef(null);
 
   useEffect(() => {
     if (!open) return;
-    shareRef.current?.focus();
+    itemsRef.current?.querySelector('[role="menuitem"]:not([disabled])')?.focus();
     const handlePointerDown = (event) => {
       if (!menuRef.current?.contains(event.target)) setOpen(false);
     };
@@ -27,7 +33,13 @@ export default function CommunityShareMenu({ community, className = "" }) {
       triggerRef.current?.focus();
     } else if (open && ["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key)) {
       event.preventDefault();
-      shareRef.current?.focus();
+      const items = [...itemsRef.current.querySelectorAll('[role="menuitem"]:not([disabled])')];
+      const currentIndex = items.indexOf(document.activeElement);
+      const nextIndex = event.key === "Home" ? 0
+        : event.key === "End" ? items.length - 1
+        : event.key === "ArrowDown" ? (currentIndex + 1) % items.length
+        : (currentIndex - 1 + items.length) % items.length;
+      items[nextIndex]?.focus();
     } else if (!open && event.key === "ArrowDown") {
       event.preventDefault();
       setOpen(true);
@@ -74,15 +86,37 @@ export default function CommunityShareMenu({ community, className = "" }) {
         <TbDotsVertical className="text-sm md:text-lg" aria-hidden="true" />
       </button>
       {open && (
-        <div role="menu" className="absolute right-0 bg-gray-900/90 rounded top-full mt-1">
+        <div ref={itemsRef} role="menu" className="absolute right-0 bg-gray-900/75 md:bg-white/10 rounded top-full mt-1">
+          {editPath && (
+            editDisabled ? (
+              <button
+                type="button"
+                role="menuitem"
+                disabled
+                className="flex w-full items-center gap-1.5 whitespace-nowrap px-2 py-1 md:pt-1.5 text-xs font-medium text-gray-300 opacity-50 cursor-not-allowed"
+              >
+                <TbSettings className="text-xs md:text-sm" aria-hidden="true" />
+                Edit
+              </button>
+            ) : (
+              <Link
+                to={editPath}
+                role="menuitem"
+                onClick={() => setOpen(false)}
+                className="flex w-full items-center gap-1.5 whitespace-nowrap px-2 pt-1 pb-0  md:pt-1.5 text-[10px] font-medium text-gray-300 hover:text-gray-200 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-400"
+              >
+                <TbSettings className="text-xs md:text-sm" aria-hidden="true" />
+                Edit
+              </Link>
+            )
+          )}
           <button
-            ref={shareRef}
             type="button"
             role="menuitem"
             onClick={handleShare}
-            className="flex items-center gap-1.5 whitespace-nowrap px-2 py-1.5 text-xs font-medium text-gray-300 hover:text-gray-200 transition-colors  focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-400"
+            className="flex w-full items-center gap-1.5 whitespace-nowrap px-2 py-1 md:py-1.5 text-[10px] font-medium text-gray-300 hover:text-gray-200 transition-colors  focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-400"
           >
-            <TbShare className="text-sm md:text-base" aria-hidden="true" />
+            <TbShare className="text-xs md:text-sm" aria-hidden="true" />
             Share
           </button>
         </div>
