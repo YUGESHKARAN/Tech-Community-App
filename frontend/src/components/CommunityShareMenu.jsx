@@ -86,7 +86,7 @@ export default function CommunityShareMenu({
         <TbDotsVertical className="text-sm md:text-lg" aria-hidden="true" />
       </button>
       {open && (
-        <div ref={itemsRef} role="menu" className="absolute right-0 bg-gray-900/75 md:bg-white/10 rounded top-full mt-1">
+        <div ref={itemsRef} role="menu" className="absolute right-0 bg-gray-900/80 md:bg-white/10 rounded top-full md:mt-1">
           {editPath && (
             editDisabled ? (
               <button
@@ -114,7 +114,7 @@ export default function CommunityShareMenu({
             type="button"
             role="menuitem"
             onClick={handleShare}
-            className="flex w-full items-center gap-1.5 whitespace-nowrap px-2 py-1 md:py-1.5 text-[10px] font-medium text-gray-300 hover:text-gray-200 transition-colors  focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-400"
+            className="flex w-full items-center gap-1.5 whitespace-nowrap px-2 py-1.5 text-[11px] font-medium text-gray-300 hover:text-gray-200 transition-colors  focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-400"
           >
             <TbShare className="text-xs md:text-sm" aria-hidden="true" />
             Share

@@ -280,7 +280,7 @@ function TechCommunityLanding() {
 
     return (
       <div className="group  relative theme border border-[#1e293b] rounded-xl overflow-hidden flex flex-col hover:border-white/10 transition-all duration-300">
-        <div className="absolute right-2 top-2 z-30 flex items-center gap-1">
+        <div className="absolute right-2 top-2 z-30 flex items-center md:gap-1">
           {item.userRole && (
             <Link
               to={communityPath(item?._id)}
