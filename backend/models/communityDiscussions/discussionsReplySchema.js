@@ -60,6 +60,7 @@ const discussionReplySchema = new mongoose.Schema(
 
 // Fetch all replies for a thread, oldest first (chronological thread view)
 discussionReplySchema.index({ tenantId: 1, discussionId: 1, createdAt: 1 });
+discussionReplySchema.index({ tenantId: 1, communityId: 1, createdAt: -1 });
 
 // Fast lookup of the accepted answer for a thread
 discussionReplySchema.index({ tenantId: 1, discussionId: 1, isAnswer: 1 });

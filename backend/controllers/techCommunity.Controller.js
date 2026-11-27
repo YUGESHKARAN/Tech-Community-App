@@ -4,6 +4,7 @@ const { Author, Post } = require("../models/blogAuthorSchema");
 const Community = require('../models/communitySchema');
 const CommunityMembership = require('../models/communityMembershipSchema');
 const Discussion = require("../models/communityDiscussions/discussionsSchema")
+const DiscussionReply = require("../models/communityDiscussions/discussionsReplySchema");
 const { CommunitySettings } = require('../models/communityDiscussions/communityTagAndSettingsSchema');
 
 // const getCommunityLandingPage = async (req, res) => {
@@ -83,9 +84,23 @@ const getCommunityLandingPage = async (req, res) => {
       { $group: { _id: '$communityId', count: { $sum: 1 } } },
     ]);
 
-    // discussion counts — one aggregation across all communities at once
+    // Discussion totals, new threads and latest thread per community.
     const discussionCountsPromise = Discussion.aggregate([
       { $match: { tenantId, communityId: { $in: communityIds } } },
+      {
+        $group: {
+          _id: '$communityId',
+          count: { $sum: 1 },
+          weeklyDiscussionCount: {
+            $sum: { $cond: [{ $gte: ['$createdAt', oneWeekAgo] }, 1, 0] },
+          },
+          latestDiscussionAt: { $max: '$createdAt' },
+        },
+      },
+    ]);
+
+    const weeklyRepliesPromise = DiscussionReply.aggregate([
+      { $match: { tenantId, communityId: { $in: communityIds }, createdAt: { $gte: oneWeekAgo } } },
       { $group: { _id: '$communityId', count: { $sum: 1 } } },
     ]);
 
@@ -119,10 +134,11 @@ const getCommunityLandingPage = async (req, res) => {
       })
     );
 
-    const [weeklyStats, coordinatorCounts, discussionCounts, profilesEntries] = await Promise.all([
+    const [weeklyStats, coordinatorCounts, discussionCounts, weeklyReplies, profilesEntries] = await Promise.all([
       weeklyStatsPromise,
       coordinatorCountsPromise,
       discussionCountsPromise,
+      weeklyRepliesPromise,
       profilesPromise,
     ]);
 
@@ -133,7 +149,10 @@ const getCommunityLandingPage = async (req, res) => {
       coordinatorCounts.map((c) => [c._id.toString(), c.count])
     );
     const discussionCountMap = Object.fromEntries(
-      discussionCounts.map((d) => [d._id.toString(), d.count])
+      discussionCounts.map((d) => [d._id.toString(), d])
+    );
+    const weeklyRepliesMap = Object.fromEntries(
+      weeklyReplies.map((r) => [r._id.toString(), r.count])
     );
     const profilesMap = Object.fromEntries(profilesEntries);
 
@@ -142,7 +161,10 @@ const getCommunityLandingPage = async (req, res) => {
       userRole: membershipMap[c._id.toString()] || null,
       weeklyPostCount: statsMap[c.name] || 0,
       coordinatorsCount: coordinatorCountMap[c._id.toString()] || 0,
-      discussionCount: discussionCountMap[c._id.toString()] || 0,
+      discussionCount: discussionCountMap[c._id.toString()]?.count || 0,
+      weeklyDiscussionCount: discussionCountMap[c._id.toString()]?.weeklyDiscussionCount || 0,
+      latestDiscussionAt: discussionCountMap[c._id.toString()]?.latestDiscussionAt || null,
+      weeklyReplyCount: weeklyRepliesMap[c._id.toString()] || 0,
       profiles: profilesMap[c._id.toString()] || [],
     }));
 
