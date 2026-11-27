@@ -30,6 +30,7 @@ import { AiOutlineUsergroupAdd } from "react-icons/ai";
 import { initials, avatarColor } from "../utils/ProfileAvatar";
 import useGetCommunityStats from "../hooks/techCommunity/useGetCommunityStats";
 import { FILTERS } from "../utils/techCommunityFilters";
+import { filterCommunities } from "../utils/filterCommunities";
 import useTopContributors from "../hooks/admins/useTopContributors";
 import { getLast3MonthsName } from "../utils/dateFunction";
 import TopContributorsSkeleton from "../components/loaders/dashboard/TopContributorsSkeleton";
@@ -200,24 +201,7 @@ function TechCommunityLanding() {
   };
 
   const filteredCommunities = useMemo(() => {
-    // const list = [...communities];
-    const list = [...communityStats];
-    switch (activeFilter) {
-      case "trending":
-        return list
-          .filter((c) => c.weeklyPostCount > 0)
-          .sort((a, b) => b.weeklyPostCount - a.weeklyPostCount);
-      case "active":
-        return list.sort(
-          (a, b) => b.memberCount + b.postCount - (a.memberCount + a.postCount),
-        );
-      case "newest":
-        return list.sort(
-          (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
-        );
-      default:
-        return list;
-    }
+    return filterCommunities(communityStats, activeFilter);
   }, [communityStats, activeFilter]);
 
   const yourCommunities = communityStats.filter((c) => c.userRole !== null);
@@ -277,6 +261,12 @@ function TechCommunityLanding() {
     const Icon = item?.icon ? TbIcons[item.icon] : style.icon;
     const isLoading = loadingDomains.has(item.name);
     const bgColor = gradient?.from ?? style.from;
+    const weeklyActivity = [
+      item.weeklyPostCount > 0 && `${item.weeklyPostCount} ${item.weeklyPostCount === 1 ? "post" : "posts"}`,
+      item.weeklyDiscussionCount > 0 && `${item.weeklyDiscussionCount} ${item.weeklyDiscussionCount === 1 ? "discussion" : "discussions"}`,
+      item.weeklyReplyCount > 0 && `${item.weeklyReplyCount} ${item.weeklyReplyCount === 1 ? "reply" : "replies"}`,
+    ].filter(Boolean);
+    const weeklyActivityCount = (item.weeklyPostCount || 0) + (item.weeklyDiscussionCount || 0) + (item.weeklyReplyCount || 0);
 
     return (
       <div className="group  relative theme border border-[#1e293b] rounded-xl overflow-hidden flex flex-col hover:border-white/10 transition-all duration-300">
@@ -415,13 +405,13 @@ function TechCommunityLanding() {
 
         {/* ── footer — trend badge + join/leave button ── */}
         <div className="px-4 pb-4 pt-1 md:pt-2 flex items-center justify-between gap-2">
-          {item.weeklyPostCount >= 5 ? (
-            <span className="flex items-center gap-1 text-[10px] md:text-xs md:text-xs md:px-3 py-2 font-semibold px-2.5 py-1 rounded-full bg-green-500/15 text-emerald-400">
-              <TbFlame /> {item.weeklyPostCount} posts this week
+          {weeklyActivityCount >= 5 ? (
+            <span className="flex min-w-0 items-center gap-1 text-[10px] md:text-xs md:text-xs md:px-3 py-2 font-semibold px-2.5 py-1 rounded-full bg-green-500/15 text-emerald-400">
+              <TbFlame className="shrink-0" /> <span>{weeklyActivity.join(" · ")} this week</span>
             </span>
-          ) : item.weeklyPostCount > 0 ? (
-            <span className="flex items-center gap-1 text-[10px] md:text-xs md:px-3 py-2  font-semibold px-2.5 py-1 rounded-full bg-amber-500/15 text-amber-400">
-              <TbFlame /> {item.weeklyPostCount} posts this week
+          ) : weeklyActivityCount > 0 ? (
+            <span className="flex min-w-0 items-center gap-1 text-[10px] md:text-xs md:px-3 py-2  font-semibold px-2.5 py-1 rounded-full bg-amber-500/15 text-amber-400">
+              <TbFlame className="shrink-0" /> <span>{weeklyActivity.join(" · ")} this week</span>
             </span>
           ) : (
             <span className="text-[10px] md:text-xs md:px-3 py-2 font-semibold px-2.5 py-1 rounded-full bg-white/5 text-gray-500">
@@ -441,7 +431,7 @@ function TechCommunityLanding() {
               type="button"
               onClick={() => updateCommunity(email, item.name)}
               disabled={isLoading}
-              className="text-xs font-semibold px-3.5 py-1.5 rounded-full border border-white/10 bg-white/5 text-gray-300 disabled:opacity-50"
+              className="shrink-0 text-xs font-semibold px-3.5 py-1.5 rounded-full border border-white/10 bg-white/5 text-gray-300 disabled:opacity-50"
             >
               {isLoading ? "Leaving..." : "✓ Joined"}
             </button>
@@ -452,7 +442,7 @@ function TechCommunityLanding() {
                   type="button"
                   onClick={() => updateCommunity(email, item.name)}
                   disabled={isLoading}
-                  className="text-xs font-semibold px-3.5 py-1.5 rounded-full text-white disabled:opacity-50"
+                  className="shrink-0 text-xs font-semibold px-3.5 py-1.5 rounded-full text-white disabled:opacity-50"
                   style={{ background: bgColor }}
                 >
                   {isLoading ? "Joining..." : "+ Join"}
@@ -706,7 +696,9 @@ function TechCommunityLanding() {
                       </motion.div>
                     ) : (
                       <p className="text-xs text-gray-500">
-                        No communities posted anything this week yet.
+                        {activeFilter === "trending"
+                          ? "No communities have new posts or discussions this week."
+                          : "No communities available."}
                       </p>
                     )}
                   </motion.div>
