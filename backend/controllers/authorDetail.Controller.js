@@ -823,6 +823,7 @@ const updateAuthor = async (req, res) => {
           Key: profile,
           Body: req.file.buffer,
           ContentType: req.file.mimetype,
+          CacheControl: "no-cache", 
         }),
       );
 
