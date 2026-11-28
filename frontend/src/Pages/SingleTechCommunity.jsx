@@ -200,14 +200,14 @@ const CommunityBanner = ({
         <div className="relative px-5 p-3.5 md:pt-4 md:pb-5">
           <div className="flex flex-wrap items-start justify-between gap-2 mb-0.5 mt-0.5 md:mb-1">
             <div className="flex min-w-[140px] flex-1 items-start gap-3">
-              <div className="md:w-10 w-9 h-9 md:h-10 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
+              <div className="md:w-10 w-9 h-9 md:h-10 rounded-xl md:mt-1 bg-white/20 flex items-center justify-center flex-shrink-0">
                 <Icon className="text-white text-lg md:text-xl" />
               </div>
               <div className="min-w-0 break-words">
                 {/* <p className="text-[10px] font-medium tracking-widest uppercase text-white/60 mb-0.5">
                 Tech Domain · BytesBase
               </p> */}
-                <h1 className="text-lg md:text-2xl font-semibold text-white leading-tight">
+                <h1 className="text-lg md:text-2xl font-semibold md:font-bold text-white leading-tight">
                   {community?.name}
                 </h1>
                 {community.tagline ? (
@@ -250,12 +250,13 @@ const CommunityBanner = ({
                 className="relative"
                 editPath={canEdit && communityId ? `/techCommunityDetails/${communityId}/edit` : undefined}
                 editDisabled={isImpersonating()}
+                bgClass="bg-gray-900/80 md:bg-white/25"
               />
             </div>
           </div>
 
           {community.description ? (
-            <p className="md:text-xs text-[10px] text-white font-semibold max-w-2xl leading-relaxed mb-2 mt-1 md:mb-2.5">
+            <p className="md:text-[14px] text-xs text-white md:font-normal tracking-wide  font-semibold max-w-2xl md:max-w-6xl leading-relaxed md:leading-[26px] mb-3 mt-1 md:mb-3">
               {community?.description}
             </p>
           ) : (

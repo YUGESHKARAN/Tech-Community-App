@@ -280,7 +280,7 @@ function TechCommunityLanding() {
               {item.userRole}
             </Link>
           )}
-          <CommunityShareMenu community={item} className="relative" />
+          <CommunityShareMenu community={item} className="relative" bgClass="" />
         </div>
         <Link
           // to={`/techDomainDetails/${encodeURIComponent(item.name)}`}
