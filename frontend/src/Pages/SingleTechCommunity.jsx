@@ -197,7 +197,7 @@ const CommunityBanner = ({
           }}
         />
 
-        <div className="relative px-5 p-3.5 md:pt-4 md:pb-5">
+        <div className="relative px-4 md:px-5 p-3.5 md:pt-4 md:pb-5">
           <div className="flex flex-wrap items-start justify-between gap-2 mb-0.5 mt-0.5 md:mb-1">
             <div className="flex min-w-[140px] flex-1 items-start gap-3">
               <div className="md:w-10 w-9 h-9 md:h-10 rounded-xl md:mt-1 bg-white/20 flex items-center justify-center flex-shrink-0">
@@ -221,7 +221,7 @@ const CommunityBanner = ({
                 )}
               </div>
             </div>
-            <div className="ml-auto flex shrink-0 items-center gap-1">
+            <div className="ml-auto flex shrink-0 items-center  md:gap-1">
               {role === "student" && community.userRole !== "coordinator" ? (
                 <button
                   type="button"
@@ -256,7 +256,7 @@ const CommunityBanner = ({
           </div>
 
           {community.description ? (
-            <p className="md:text-[14px] text-xs text-white  tracking-wide   max-w-2xl md:max-w-6xl leading-relaxed md:leading-[26px] mb-3 mt-1 md:mb-3">
+            <p className="md:text-[14px] text-xs px-1.5 md:px-0 text-white  tracking-wide   max-w-2xl md:max-w-6xl leading-relaxed md:leading-[26px] mb-2.5 mt-1 md:mb-3">
               {community?.description}
             </p>
           ) : (
@@ -265,7 +265,7 @@ const CommunityBanner = ({
             </p>
           )}
 
-          <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex px-1 md:px-0 flex-wrap items-center justify-between gap-3">
             <div className="flex flex-wrap gap-2 md:gap-4">
               {[
                 { icon: TbUsers, val: (community?.memberCount-community.coordinatorsCount) || 0, label: "members" },
