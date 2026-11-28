@@ -256,7 +256,7 @@ const CommunityBanner = ({
           </div>
 
           {community.description ? (
-            <p className="md:text-[14px] text-xs text-white md:font-normal tracking-wide  font-semibold max-w-2xl md:max-w-6xl leading-relaxed md:leading-[26px] mb-3 mt-1 md:mb-3">
+            <p className="md:text-[14px] text-xs text-white  tracking-wide   max-w-2xl md:max-w-6xl leading-relaxed md:leading-[26px] mb-3 mt-1 md:mb-3">
               {community?.description}
             </p>
           ) : (
