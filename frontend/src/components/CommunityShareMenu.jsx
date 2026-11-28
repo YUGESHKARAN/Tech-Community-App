@@ -4,12 +4,15 @@ import { Link } from "react-router-dom";
 import { TbDotsVertical, TbSettings, TbShare } from "react-icons/tb";
 import toast from "./toaster/Toast";
 import { shareCommunity } from "../utils/shareCommunity";
+import { twMerge } from "tailwind-merge";
+import clsx from "clsx";
 
 export default function CommunityShareMenu({
   community,
   className = "",
   editPath,
   editDisabled = false,
+  bgClass="",
 }) {
   const [open, setOpen] = useState(false);
   const menuRef = useRef(null);
@@ -81,12 +84,21 @@ export default function CommunityShareMenu({
         aria-expanded={open}
         disabled={!community?._id || !community?.name}
         onClick={() => setOpen((value) => !value)}
-        className="flex h-8 w-8 items-center justify-center rounded-xl text-white/90 hover:text-white transition-colors  disabled:opacity-50"
+        className="flex h-8 w-8 items-center justify-center rounded-xl text-white/90 hover:text-white transition-colors  disabled:opacity-50 "
       >
         <TbDotsVertical className="text-sm md:text-lg" aria-hidden="true" />
       </button>
       {open && (
-        <div ref={itemsRef} role="menu" className="absolute right-0 bg-gray-900/80 md:bg-white/10 rounded top-full md:mt-1">
+        <div ref={itemsRef} role="menu" 
+         className={twMerge(
+                clsx(
+                  `
+              absolute right-0 bg-white/25 rounded top-full md:mt-1
+                  `,
+                  bgClass
+                )
+              )}
+        >
           {editPath && (
             editDisabled ? (
               <button
