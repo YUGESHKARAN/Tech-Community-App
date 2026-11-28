@@ -200,7 +200,7 @@ const CommunityBanner = ({
         <div className="relative px-4 md:px-5 p-3.5 md:pt-4 md:pb-5">
           <div className="flex flex-wrap items-start justify-between gap-2 mb-0.5 mt-0.5 md:mb-1">
             <div className="flex min-w-[140px] flex-1 items-start gap-3">
-              <div className="md:w-10 w-9 h-9 md:h-10 rounded-xl md:mt-1 bg-white/20 flex items-center justify-center flex-shrink-0">
+              <div className="md:w-10 w-9 h-9 md:h-10 rounded-lg md:rounded-xl md:mt-1 bg-white/20 flex items-center justify-center flex-shrink-0">
                 <Icon className="text-white text-lg md:text-xl" />
               </div>
               <div className="min-w-0 break-words">
