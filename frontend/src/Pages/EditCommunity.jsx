@@ -302,7 +302,8 @@ const BannerPreview = ({ form, gradient, loader, userRole, community }) => {
             </div>
           </div>
 
-          <p className="md:text-xs text-[10px] text-white font-semibold max-w-2xl leading-relaxed mb-2 md:mb-2.5">
+          {/* <p className="md:text-xs text-[10px] text-white font-semibold max-w-2xl leading-relaxed mb-2 md:mb-2.5"> */}
+          <p className="md:text-[14px] text-xs px-1.5 md:px-0 text-white  tracking-wide   max-w-2xl md:max-w-6xl leading-relaxed md:leading-[26px] mb-2.5 mt-1 md:mb-3">
             {form.description}
           </p>
 
